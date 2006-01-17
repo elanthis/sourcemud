@@ -1,0 +1,25 @@
+// Object extensions
+// Copyright (C) 2002  AwesomePlay Productions, Inc.
+
+function saveObjectBlueprint(blueprint, writer)
+{
+	if (String(blueprint.read_text))
+		writer.setString('read_text', blueprint.read_text);
+	if (String(blueprint.read_room))
+		writer.setString('read_room', blueprint.read_room);
+
+	if (String(blueprint.eat_text))
+		writer.setString('eat_text', blueprint.eat_text);
+	if (String(blueprint.eat_room))
+		writer.setString('eat_room', blueprint.eat_room);
+
+	if (String(blueprint.drink_text))
+		writer.setString('drink_text', blueprint.drink_text);
+	if (String(blueprint.drink_room))
+		writer.setString('drink_room', blueprint.drink_room);
+}
+
+function init()
+{
+	registerHook('save_object_blueprint', saveObjectBlueprint);
+}

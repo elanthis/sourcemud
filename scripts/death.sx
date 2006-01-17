@@ -1,0 +1,51 @@
+/*
+ * AweMUD NG - Next Generation AwesomePlay MUD
+ * death.sx - Death hangling for AweMUD
+ * Copyright (C) 2000-2003	AwesomePlay Productions, Inc.
+ * See the file COPYING for license details
+ * http://www.awemud.net
+ */
+
+var death_time_minutes = 5;
+
+// start death cycle
+function playerDeath(player)
+{
+	player.decay_rounds = 60 * death_time_minutes;
+}
+
+function playerHeartbeat(player)
+{
+	// decaying?
+	var decay = Int(player.decay_rounds);
+	if (player.isDead() && decay != nil) {
+		// decayed?
+		if (--decay <= 0) {
+			// find the city of the dead
+			var city_of_dead = getRoom('city_of_dead');
+			if (city_of_dead) {
+				// take them there, heal them
+				player.print("Your vision fades to darkness...\n");
+				player.rprint(player, " decays.\n");
+				player.enter(city_of_dead, nil);
+				player.heal(1 - player.getHp());
+			}
+			player.decay_rounds = nil;
+			return;
+		}
+		player.decay_rounds = decay;
+	}
+}
+
+function savePlayer(player, writer)
+{
+	if (Int(player.decay_rounds) > 0)
+		writer.setInt('decay_rounds', Int(player.decay_rounds));
+}
+
+function init()
+{
+	registerHook('player_death', playerDeath);
+	registerHook('player_heartbeat', playerHeartbeat);
+	registerHook('save_player', savePlayer);
+}

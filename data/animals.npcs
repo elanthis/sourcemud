@@ -1,0 +1,121 @@
+# AweMUD Next Generation - Default NPC blueprints
+# Copyright (C) 2003-2005  AwesomePlay Productions Inc.
+# Sean Middleditch <elanthis@awemud.net>
+
+# --- ANIMALS ---
+npc_blueprint {
+  id = "rabbit"
+  name = "rabbit"
+
+  desc = "{.D} is small and covered in brown fur.  Its nose twitches occasionally as it searches for food."
+
+  ai = animal
+  @ai_flee = 95
+  @ai_foodchain = 5
+
+  @raise_as = "rabbit_skeleton"
+
+  combat.dodge = 10
+
+  equip = "claws_animal"
+  
+  stat : Strength = 10
+  stat : Agility = 90
+  stat : Fortitude = 10
+  stat : Intellect = 10
+  stat : Spirit = 35
+  stat : Willpower = 30
+}
+npc_blueprint {
+  id = "fox"
+  name = "fox"
+
+  desc = "The red {.n} scurries about, looking for danger."
+
+  ai = animal
+  @ai_flee = 95
+  @ai_foodchain = 15
+
+  @raise_as = "fox_skeleton"
+
+  combat.dodge = 10
+
+  equip = "claws_animal"
+  
+  stat : Strength = 30
+  stat : Agility = 85
+  stat : Fortitude = 40
+  stat : Intellect = 10
+  stat : Spirit = 30
+  stat : Willpower = 30
+}
+npc_blueprint {
+  id = "wolf"
+  name = "wolf"
+
+  desc = "{.D} doesn't appear to be afraid of much."
+
+  ai = animal
+  @ai_flee = 60
+  @ai_foodchain = 45
+
+  @raise_as = "wolf_skeleton"
+
+  combat.dodge = 5
+
+  equip = "claws_animal"
+  
+  stat : Strength = 60
+  stat : Agility = 80
+  stat : Fortitude = 50
+  stat : Intellect = 10
+  stat : Spirit = 30
+  stat : Willpower = 40
+}
+npc_blueprint {
+  id = "wolf_large"
+  name = "large wolf"
+
+  desc = "{.D} is huge, larger than most other wolves by far.  Its gray fur is rough and coarse.  The wolf doesn't look friendly."
+
+  ai = animal
+  @ai_flee = 60
+  @ai_foodchain = 55
+
+  @raise_as = "wolf_skeleton"
+
+  combat.dodge = 4
+
+  equip = "claws_animal"
+  
+  stat : Strength = 90
+  stat : Agility = 75
+  stat : Fortitude = 55
+  stat : Intellect = 10
+  stat : Spirit = 30
+  stat : Willpower = 40
+}
+npc_blueprint {
+  id = "wolf_dire"
+  name = "dire wolf"
+  alignment = -700
+
+  desc = "Demonic in appearnace, {.D} is larger than any wolf could be through natural means.  Its eyes glow red, and its near-black fur is broken in places, where spiked ridges run along its body.  {.D} has as sinister a nature as any animal could have."
+
+  ai = animal
+  @ai_flee = 10
+  @ai_foodchain = 70
+
+  @raise_as = "wolf_skeleton"
+
+  combat.dodge = 7
+
+  equip = "claws_animal"
+  
+  stat : Strength = 120
+  stat : Agility = 100
+  stat : Fortitude = 110
+  stat : Intellect = 30
+  stat : Spirit = 10
+  stat : Willpower = 50
+}

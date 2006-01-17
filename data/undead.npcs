@@ -1,0 +1,51 @@
+# AweMUD Next Generation - Default NPC blueprints
+# Copyright (C) 2003-2005  AwesomePlay Productions Inc.
+# Sean Middleditch <elanthis@awemud.net>
+
+# --- BASE ---
+npc_blueprint {
+  id = "base_undead"
+
+  ai = animal
+  @ai_flee = -1
+  @ai_foodchain = 100
+
+  equip = "claws_animal"
+  
+  stat : Strength = 10
+  stat : Agility = 20
+  stat : Fortitude = 10
+  stat : Intellect = 0
+  stat : Spirit = 10
+  stat : Willpower = 0
+}
+
+# --- ANIMALS ---
+npc_blueprint {
+  id = "rabbit_skeleton"
+  parent = "base_undead"
+  name = "rabbit skeleton"
+  desc = "Bits of fur and sinew hang off the tiny bones of {.D}."
+  @corpse_name = "rabbit skeleton"
+}
+npc_blueprint {
+  id = "fox_skeleton"
+  parent = "base_undead"
+  name = "fox skeleton"
+  desc = "{.D} shambles around with none of the grace of a living fox."
+  @corpse_name = "fox skeleton"
+}
+npc_blueprint {
+  id = "wolf_skeleton"
+  parent = "base_undead"
+  name = "wolf skeleton"
+  desc = "The eyes of {.d} glow a malevolent red."
+  @corpse_name = "wolf skeleton"
+}
+npc_blueprint {
+  id = "skeleton"
+  parent = "base_undead"
+  name = "skeleton"
+  desc = "Bleached bones and glowing red eyes shamble around seeking for the living."
+  @corpse_name = "skeleton"
+}

@@ -1,0 +1,57 @@
+/*
+ * AweMUD NG - Next Generation AwesomePlay MUD
+ * whereis.sx - Whereis administration command
+ * Copyright (C) 2000-2003  AwesomePlay Productions, Inc.
+ * See the file COPYING for license details
+ * http://www.awemud.net
+ */
+
+// whereis command
+function whereis(who, argv)
+{
+	// player?
+	if (argv[1] == 'player') {
+		var player = getPlayer(argv[0]);
+		if (!player) {
+			who.print ("Player '", argv[0], "' is not logged in.\n");
+			return;
+		}
+
+		if (!player.room()) {
+			who.print ("The player ", player, " isn't in any room.\n");
+			return;
+		}
+
+		who.print ("The player ", player, " is in room ", player.room(), " <", player.room().getId(), ">, in zone ", player.room().zone(), " <", player.room().zone().getId(), ">.\n");
+	// uname
+	} else {
+		var elist = getEntitiesByTag(argv[0]);
+		if (!elist) {
+			who.print("No entity with tag '", argv[0], "' exists.\n");
+			return;
+		}
+
+		foreach(var entity in elist) {
+			var room = entity.getRoom();
+			if (!room) {
+				who.print(entity.getNamef(EN_DEF, true), " is not in a room.\n");
+				return;
+			}
+
+			who.print(entity.getNamef(EN_DEF, true), " is in room ", room, " <", room.getId(), "> in zone ", room.zone(), " <", room.zone().getId(), ">.\n");
+		}
+	}
+}
+
+// register command
+function init ()
+{
+	registerCommand(
+		"whereis",
+		"whereis player <player>\n" ::
+		"whereis uname <uname>\n",
+		["whereis :1player :0*",
+		"whereis :1uname :0*"],
+		whereis,
+		"gm");
+}

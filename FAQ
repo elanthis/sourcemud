@@ -1,0 +1,107 @@
+AweMUD Next Generation
+Copyright (C) 2003-2005 AwesomePlay Productions, Inc.
+Sean Middleditch <elanthis@awesomeplay.com>
+Frequently Asked Questions
+------------------------------------------------------
+
+1. I found a bug!  How do I report it?
+   ===================================
+
+   Please report any bugs to http://bugs.awemud.net.  You may also post
+   feature requests in the bug tracker, or discuss ideas on the forums,
+   at http://forums.awemud.net.
+
+2. What are the software requirements of AweMUD?
+   =============================================
+
+   In order to build AweMUD, you need very little external software.  Your
+   standard build tools (compiler, make tool, UNIX shell tools, etc.) are a
+   necessity.  Specifically, you need a GNU Make compatible make program, and
+   the GCC C++ compiler (version 3.1 or higher), with an up-to-date STL
+   implementation.
+
+   The only external library required by AweMUD is the Boehm GC.
+   Boehm GC: http://www.hpl.hp.com/personal/Hans_Boehm/gc/
+
+   When compiling and installing the Boehm GC, be sure to pass the
+   --enable-cplusplus option to the ./configure script.
+
+   In order to build the documentation, you will need a properly installed
+   xsltproc with a full set of DocBook XML stylesheets.  We use the Docbook
+   tools (docbook2txt, docbook2html) for performing the builds.
+
+   If you want to work on AweMUD as a coder, you'll likely also need the GNU
+   autotools, specifically automake and autoconf.  You'll also need xsltproc
+   for building the scripting interface.  Finally, you'll need GNU Bison and
+   Flex.
+   GNU Autoconf: http://www.gnu.org/software/autoconf/
+   GNU Automake: http://www.gnu.org/software/automake/
+   GNU Bison: http://www.gnu.org/software/bison/
+   GNU Flex: http://www.gnu.org/software/flex/
+   xsltproc: http://www.xmlsoft.org
+
+   Most of these packages come standard with popular GNU/Linux and UNIX
+   operating systems.
+
+3. Why won't AweMUD build on Mac OS X?
+   ===================================
+
+   If you are using Mac OS X, you must install a UNIX software support system
+   such as Fink (http://fink.sourceforge.net).  If you are using Fink,
+   libtool14 and libxslt installed.  You also must perform additional
+   configuration after installing Fink to compile applications.
+   (See http://fink.sourceforge.net/faq/usage-general.php#compile-myself)
+   These instructions have a slight typo, however.  Change the line
+     AC_LOCAL="-I/sw/share/aclocal"
+   to
+     AC_LOCAL="-I /sw/share/aclocal"
+   That added space after the -I is required.  If you modify the configure.ac
+   or other build files, you'll have to re-run the ./bootstrap script,
+   otherwise the aclocal script may fail.
+
+4. AweMUD won't compile with GCC 2.9x!?
+   ====================================
+
+   AweMUD only supports GCC versions 3.3 and higher.
+
+5. How come AweMUD doesn't work after 'make install'?
+   ==================================================
+
+   Make sure that the settings in the installed awemud.conf file are
+   correct for your system.
+
+6. How can I help?
+   ===============
+
+   AweMUD is in need of all sorts of different help - testers, builders,
+   programmers, and so on.
+
+   Testers
+   -------
+   If you want to test AweMUD, see the Temporary Server page.  There you can
+   log into a test server that is sometimes up.  If you encounter any problems,
+   bugs, typos, or weird behaviour, then please submit a bug report at the
+   AweMUD Project Page.
+
+   Builders
+   --------
+   AweMUD could really use some nifty worlds!  Additionally, builders can help
+   out as testers.  We could use any advice on features you'd like to see, or
+   OLC/building interfaces you think could be improved.  If there's a problem
+   blocking you from making the world you've always wanted in AweMUD, we want
+   to know about, so we can smash it.
+
+   Programmers
+   -----------
+   There is plenty of work to be done by programmers! Ask on the awemud-devel
+   mailing list for some pointers on what needs to be done.  AweMUD also needs
+   to assistance of anyone interested in porting to new platforms.  The only
+   tested platform for AweMUD is Linux.  I'd love to see it running on *BSD,
+   Solaris, AIX, HP-UX, other UN*X's, Win32, BeOS, MacOS X, and all the other
+   wonderful systems out there! AweMUD will also probably need some work to get
+   it running on non 32-bit systems.
+
+   Writers
+   -------
+   AweMUD documentation sucks.  A lot.  If anyone with technical writing skills
+   wants to give this a shot, you will win a meta-physical medal.  ^,^

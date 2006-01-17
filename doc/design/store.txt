@@ -1,0 +1,100 @@
+Stores and custom ordering
+AweMUD Next Generation
+Copyright (C) 2003  AwesomePlay Productions, Inc.
+Sean Middleditch <elanthis@awemud.net>
+-------------------------------------------------
+
+1. Introduction
+   ============
+
+   Stores are an integral part of any MUD.  In many MUDs, stores are little
+   more than a list of items which a player may browse, examination, and
+   purchase from.
+
+   The AweMUD approach intends to make use of a more realistic and interesting
+   store interface.
+
+2. Basic Stores
+   ============
+
+   The most basic stores will make use a simple "menu", and the ability to buy
+   any item off of the menu.  Menus will be actual game objects, such as a
+   sign.  Players will need to 'read menu' or 'look menu' in order to view
+   items on it.
+
+   Purchasing an item will be done using the 'buy' command.  For example,
+   after looking at the menu, the player decides he wants bread.  He types,
+   'buy bread', and the shopkeeper hands him the item in exchange for the
+   cost.
+
+   Examining items will not be possible before hand.  These store interfaces
+   are designed for the simplest of items, however - basic things such as
+   bread, waterskins, and so on, which do not need any examination.
+
+3. Advanced and Dynamic Stores
+   ===========================
+
+   The advanced stores, which will also be more easily made dynamic, will use
+   a show room approach.  Basically, the show room will have one or more
+   tables, wardrobes, racks, shelves, and so on, that have various items in
+   them.  Players can examine and check the items first hand.
+
+   Purchasing an item will, again, require the 'buy' command.  Example, 'buy
+   the fire blade'.
+
+   Tapping the item in question will result in the shop keeper mentioning
+   price and any other relevant information.
+
+   Selling items will also be possible at these stores, using the 'sell'
+   command.  Negotiation/pricing can be done using the 'show' command; 'show
+   my sword to the clerk'.
+
+4. Custom Orders
+   =============
+
+   For truly special items, such as magic arms and armor, a player may need to
+   special order the item.  Even in cases where there are many identical
+   items in existance (such as a generic 'fire blade'), the special order
+   procedure helps to show that making such an item isn't so easy a task that
+   a shop can stock up on them.  Instead, they must be made when an order is
+   placed.  This also means players have to wait for the item to be crafted
+   for them.
+
+   Custom orders will be done thru the 'order' command.  In most cases, this
+   will be identical to the Basic Store interface.  The only difference is,
+   the player doesn't immediately get the goods, but must instead come back
+   when the order is ready.
+
+5. Architecture
+   ============
+
+   Basic stores will contain a list in the room.  The list will be all the
+   items available for purchase.  Extra information, such as rates (i.e., sell
+   goods at 110% of their normal price) and currency choice (when we get
+   multiple currency support in) will also be stored w/ the list.  The list
+   itself will just be an object blueprint ID - names and prices will be looked
+   up from that.
+
+   Signs will have the ability to 'import' the sale list.  This could be done
+   by having a special flag on an object's 'read' action that states its a
+   store list.  Signs should never be removable, so it can look at the room at
+   use time.
+
+   Order-based stores will work largely the same way.  Only, in addition to
+   the list of items, a list of Work in Progress items will also be stored.
+   These will simply be an object blueprint ID, the player's name, and time
+   remaining.
+
+   The advanced stores will be the most complicated.  TDB: figure out how the
+   hell they'll actually work.  ;-)
+
+   Selling will be simple enough.  A buyer NPC will be in a room.  Using the
+   'show' or 'sell' commands will default to the seller NPC in the room if no
+   specific NPC name is given.  Seller's will take any item in exchange for
+   some amount of the value, based on their rate.
+
+   Sellers should also have a way of filtering out object types.  I.e., weapon
+   shops aren't going to buy used waterskins, and a gem cutter isn't going to
+   buy broadswords.  This is going to require that objects have a type
+   associated with them - i.e., 'weapon', 'gem', 'jewelry', 'food', 'wand',
+   etc.

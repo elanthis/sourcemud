@@ -1,0 +1,24 @@
+// Extension routines for AweMUG NG
+// Copyright (C) 2003  AwesomePlay Productions, Inc.
+
+// Pause for X ticks
+public function pause (ticks)
+{
+	// check ticks is a valid, >0 integer
+	ticks = Int(ticks);
+	if (!ticks || ticks < 0)
+		return;
+	
+	// starting time
+	var start = getTicks();
+
+	// first yield; at least one will be needed...
+	yield;
+
+	// yield until enough ticks have passed
+	while ((getTicks() - start) < ticks) {
+		yield;
+	}
+
+	// all set
+}

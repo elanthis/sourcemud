@@ -1,0 +1,164 @@
+Version 0.24
+============
+
+  * Merged Scriptix into AweMUD codebase.
+  * Code reorganization and cleanup.
+  * Update data files to use correct parsing format.
+  * Removed unmaintained documentation.
+
+Version 0.23
+============
+
+  * Added skill framework.
+  * Added character traits.
+  * New text expansion syntax.
+  * New file format syntax.
+  * Added entity UIDs.
+  * NPC and Object blueprints.
+  * Enhanced scripting capabilities.
+  * Object cleanup.
+  * Added NPC corpses.
+  * Pending actions system.
+  * Major revisions throughout the entire engine.
+
+Version 0.22
+============
+
+  * GCC 3.4.0 support.
+  * Improved PID file handling.
+  * Improved selection and sorting of entity lookups.
+  * Ability to 'look' through an exit.
+  * All new C++ combat engine base.
+  * Large restructuring of entity data and blueprints.
+  * Improved NPC AI.
+  * Entity tagging and lookups.
+  * Garbage collection fixes.
+  * New IManager interface for server data control.
+  * Improved offline and online help.
+  * Improved text parser as used in room/entity descriptions.
+  * Improved event manager.
+  * Better security checks for the control interface.
+  * Usual tons of bug fixes and minor improvements.
+
+Version 0.21
+============
+
+  * Removed mostly unused XML-RPC support.
+  * Exits have a 'used' script for custom usage behaviour.
+  * Role based privilege system.
+  * Equipment shown when characters are looked at.
+  * Parsing system can use named entities instead of just indexes.
+  * Control interface. (doc/control.txt)
+  * Much more detailed player description support.
+  * Tons of (you guessed it) bug fixes and minor improvements.
+
+Version 0.20
+============
+
+  * Improved room exits.
+  * Basic AI architecture.
+  * Replaced LibSGC with the Boehm-Demer-Weiser GC.
+  * Added basic stores.
+  * Added object classes.
+  * Tons of miscellaneous tweaks and improvements.
+
+Version 0.19
+============
+
+  * New command architecture.
+  * Proper English naming of entities with articles.
+  * Cygwin support.
+  * Object and NPC templates.
+  * Text parser supports if/elif/else statements.
+  * Player eye and hair color.
+  * Many small UI cleanups.
+
+Version 0.18
+============
+
+  * More available actions (like drinking/eating).
+  * MCCPv2 support.
+  * Object weighting.
+  * Action response system.
+  * Players, templates, the world, and zones are in the new format.
+  * More complete online creation commands.
+  * ZMP (http://www.awemud.net/zmp/) support is in.
+  * Email support is in (for abuse/bug reports, and more).
+
+Version 0.17
+============
+
+  * More documentation work (manpage).
+  * IPv6 support.
+  * Whole new file i/o system and format.
+  * Races, Classes, Socials, and Calendar use new file i/o system.
+  * Added alignment for characters.
+  * New userdb module.
+  * New message parsing code.
+  * New social framework and definiton file.
+  * Xml-rpc framework supports authentication.
+  * Config file (awemud.conf) is in new format.
+  * Spawning system for objects/npcs.
+
+Version 0.16
+============
+
+  * Documentation work.
+  * Weight and cost on objects.
+  * New TCP layer.
+  * IP blocking and connection managing.
+  * FreeBSD porting work.
+  * Character creation is in a script.
+  * Remove unused unique ID property on entities.
+  * New calendar defintion support w/ holidays.
+  * Began moving core rules code into scripts.
+
+Version 0.15
+============
+
+  * Fixed documentation.
+  * More powerful/complete scripting support.
+  * Basic coins/money.
+  * Track user real names and e-mail address.
+  * New MD5 code for portability.
+  * More detailed character creation.
+  * Work on xml-rpc support.
+  * New template system.
+  * Multiple names support on entities.
+
+Version 0.14
+============
+
+  * New string handling code.
+  * New XML interface.
+  * Tighter Scriptix integration.
+
+Version 0.13
+============
+
+  * World broken into zones.
+  * Lots of minor/subtle internal work.
+
+Version 0.12
+============
+
+  * Code cleanups.
+  * More powerful scripting facilities.
+  * Moved combat code to a script.
+  * Property bags.
+  * Documentation work.
+
+Version 0.11
+============
+
+  * More powerful exit system.
+  * Beginning of editing support.
+  * User configurable colours.
+  * Scriptix support.
+  
+Version 0.10
+============
+
+  * New help system.
+  * Configuration file support in INI format.
+  * New design direction.

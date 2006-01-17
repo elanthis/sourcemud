@@ -1,0 +1,35 @@
+# Player file = "Admin"
+# Timestamp = "Wed Jan 21 11:28:15 2004"
+# 
+
+name = "Admin"
+position = "stand"
+gender = "male"
+hp = 500
+stat : Strength = 100
+stat : Agility = 100
+stat : Fortitude = 100
+stat : Intellect = 100
+stat : Spirit = 100
+stat : Willpower = 100
+equip.right_hand {
+  blueprint = "sw_fire"
+}
+equip.body{
+  blueprint = "ar_chain_shirt"
+}
+equip.back{
+  blueprint = "co_leather_backpack"
+}
+race = "human"
+birthday = "0245/06/10 09.14"
+trait : "eye color" = "white"
+trait : "hair color" = "silver"
+trait : "skin color" = "fair"
+trait : "hair style" = "long"
+trait : "build" = "lean"
+location = "altar"
+exp : General = 0
+exp : Warrior = 0
+exp : Rogue = 0
+exp : Caster = 0

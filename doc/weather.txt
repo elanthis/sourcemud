@@ -1,0 +1,69 @@
+Weather and climate design document
+AweMUD Next Generation
+Copyright (C) 2003  AwesomePlay Productions, Inc.
+Sean Middleditch <elanthis@awesomeplay.com>
+-------------------------------------------------
+
+1. Introduction
+   ============
+
+   AweMUD has a sub-system which is concerned with simulating the environment;
+   i.e., weather.  Varying weather allows for a more realistic and interesting
+   game system.
+
+2. Design Goals
+   ============
+   
+   First, we want weather to vary by season.  It should be cold and snowy in
+   winter, and hot and dry in summer.  At least, in some regions.  Another
+   design goal is to offer separate climates.  After all, the weather in a
+   desert is much different than that high in the mountains.  Finally, we need
+   disparate areas to have different weather states.  By that, I mean that if
+   we have two temperate regions, one may be sunny while the other rainy.
+
+3. Climates and Regions
+   ====================
+
+   The weather system will be broken into climates.  Each climate will be
+   comprised of several weather patterns, based on season.  For example, a
+   moderate climate may have snowy and cloudy patterns for winter, and sunny
+   and rainy patterns for summer.
+
+   A region will be, simply, a weather state and a climate.  Each region is in
+   one climate and one climate only (altho many regisions may have the same
+   climate).  Regions have indepdent states.  A region's state is, basically,
+   the current pattern (and stage) the region is in, along with same basic
+   book keeping information.  (Like timing before the weather changes again.)
+
+4. Weather Patterns
+   ================
+
+   Patterns are a single type of weather.  For example, a rainy pattern, or a
+   snowy pattern.
+
+   Each pattern is comprised of one or more (usually several) stages.  Stages
+   vary in severity.  Lighter severity stages have no impact on gameplay; they
+   are just flavour.  Mid-range severity has a light impact on gameplay; such
+   as reduced visibility or movement.  High-range severity has a big impact on
+   gameplay; greatly limited vision or movement, environmental damage to
+   equipment and possibly very light damage to people.  Finally, extreme
+   severity is completely unsafe for people, as it results in lots of damage.
+
+   An example pattern is rainy.  At the low severity ranges, it may be
+   drizzling or lightly raining.  In mid-range severity, it could be pouring
+   and perhaps light thunderstorming, with heavy wind.  High range severity
+   would be heavily pouring rain/hail, lots of lightning and thunder, and high
+   speed wind.  Extreme severity might have lots of hail, terrible lightning,
+   and deadly winds.
+
+5. Stage and Pattern Selection
+   ===========================
+
+   More severe stages are more and more rare.  The chances of weather turning
+   to an extreme severity stage in any pattern is much much much lower than a
+   light severity stage being used.
+
+   Each pattern in a climate also has a varying chance of being selected.  For
+   example, a thunderstorm in winter is much rarer than a snow storm.
+   However, it's still possible.  Likewise, rain in a desert is very very
+   rare, but also still possible.

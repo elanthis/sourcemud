@@ -1,0 +1,142 @@
+# AweMUD Next Generation - Animal AI
+# Copyright (C) 2003  AwesomePlay Productions Inc.
+# Sean Middleditch <elanthis@awemud.net>
+
+# initialize after loading up
+load = <<[
+	self.ai_targets = new Array;
+	self.ai_group = String(self.ai_group);
+	self.ai_flee = Int(self.ai_flee) || 30;
+	self.setState('wander');
+	self.ai_wander = 120 + getRandom(300);
+]>>
+
+# save data
+save = <<[
+	if (String(self.ai_group))
+		writer.setString('ai_group', self.ai_group);
+	if (String(self.ai_state))
+		writer.setString('ai_state', self.ai_state);
+	if (Int(self.ai_flee))
+		writer.setInt('ai_flee', self.ai_flee);
+	if (Int(self.ai_foodchain))
+		writer.setInt('ai_foodchain', self.ai_foodchain);
+]>>
+
+# attacked!?
+event : attack = <<[
+	// is it ourself?
+	if (actor == self)
+		return;
+
+	// set new target
+	self.ai_target = actor;
+]>>
+
+# heartbeat
+heartbeat = <<[
+	// wander
+	if (self.ai_state == 'wander') {
+		if (self.getRoundTime() > 0)
+			return;
+
+		self.ai_wander -= 1;
+		if (self.ai_wander == 0) {
+			self.ai_wander = 200 + getRandom(500);
+			self.goRandomExit();
+		}
+	}
+]>>
+
+# someone new to toy with
+event : enter = <<[
+	// automatically flee if we're injured
+	if (actor != self && self.getHpPercent() < 20) {
+		self.setState('flee');
+		return;
+	}
+
+	// if *we* entered, search to see if we should fight or run
+	if (actor == self && self.getHpPercent() < 20) {
+		foreach (var npc in self.getRoom().characters()) {
+			// run if they're scary
+			if (npc.foodchain() >= self.foodchain()) {
+				self.setState('flee');
+			// or attack if they're easy pickins
+			} else if (self.ai_state == 'wander' && npc.foodchain() < self.foodchain()) {
+				self.ai_target = npc; 
+				self.setState('attack');
+			}
+		}
+		return;
+	}
+
+	// run if they're scary
+	if (actor.foodchain() > self.foodchain()) {
+		self.setState('flee');
+	// or attack if they're easy pickins
+	} else if (self.ai_state == 'wander' && actor.foodchain() < actor.foodchain()) {
+		self.ai_target = actor;
+		self.setState('attack');
+	}
+]>>
+
+# ready to act
+ready = <<[
+	if (self.ai_state == 'attack') {
+		// attacker still here?
+		if (!self.ai_target.isDead() && self.ai_target.room() == self.room()) {
+			// kill him!
+			self.attack(self.ai_target);
+			return;
+		}
+
+		// find another target
+		var target = nil;
+		foreach (var attacker in self.ai_targets) {
+			if (!attacker.isDead() && attacker.room() == self.room()) {
+				target = attacker;
+				break;
+			}
+		}
+
+		// got an attacker?
+		if (target) {
+			// kill!
+			self.ai_target = target;
+			self.attack(target);
+			return;
+		}
+
+		// calm down
+		self.ai_target = nil; 
+		self.setState('wander');
+	} else if (self.ai_state == 'flee') {
+		// run if there's danger
+		attacker = nil;
+		foreach (var person in self.room().characters()) {
+			if (person.foodchain() > self.foodchain()) {
+				attacker = person; 
+				break;
+			}
+		}
+
+		if (attacker && !self.goRandomExit()) {
+			self.attack(attacker);
+		} else {
+			self.setState('wander');
+		}
+	}
+]>>
+
+# state changes
+pump = <<[
+	if (data == 'state') {
+		if (self.ai_state == 'attack')
+			self.attack(self.ai_target);
+		else if (self.ai_state == 'flee')
+			self.goRandomExit();
+	}
+]>>
+
+# vim: set filetype=scriptix :

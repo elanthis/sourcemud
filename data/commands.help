@@ -1,0 +1,245 @@
+# AweMUD Next Generation - Command help data
+# Copyright (C) 2003-2005  AwesomePlay Productions Inc.
+# Sean Middleditch <elanthis@awemud.net>
+
+# Help for topic 'quit'
+topic : quit = <<[
+Returns you to the main menu.
+]>>
+
+# Help for topic 'help'
+topic : help = <<[
+The {bold 'help'} command will display help information on a requested topic.
+]>>
+
+# Help for topic 'inventory'
+topic : inventory = <<[
+Shows the items that your character has equiped.
+]>>
+
+# Help for topic 'equip'
+topic : equip = <<[
+{bold 'equip'} will add a held item to your person, depending on the type of item.
+]>>
+
+# Help for topic 'look'
+topic : look = <<[
+The look command displays information about a room, character, or object.  Simply typing {bold 'look'} will display the current room, its title, its obvious exits, the characters in the room, and the object in the room.
+
+Supplying the name of a character after look (i.e. {bold 'look Bob'}) will display some information about the character, mainly their appearance and equipment.
+
+Entering the name of an item after look (i.e. {bold 'look shoe'}) will display the item's description.
+]>>
+
+# Help for topic 'get'
+topic : get = <<[
+The {bold 'get'} command will pickup and items laying on the floor of the current room.  You must have an empty hand with which to pick up the item in.
+]>>
+
+# Help for topic 'stats'
+topic : stats = <<[
+The {bold 'stats'} command will display your character's attributes, such his/her strength and health.
+]>>
+
+# Help for topic 'remove'
+topic : remove = <<[
+The {bold 'remove'} command will unequip and item your character is wearing. You must have a free hand in which to hold the item.
+]>>
+
+# Help for topic 'quit'
+topic : quit = <<[
+Quitting the game requires a special command, {bold 'quit'}.  This command cannot be abbreviated, you must type out the whole word. You will then be asked if you truly wish to leave. Enter {bold 'yes'} to quit, or {bold 'no'} to stay.
+]>>
+
+# Help for topic 'drop'
+topic : drop = <<[
+The {bold 'drop'} command will put any item your are holding (is in one of your hands) onto the floor.
+]>>
+
+# Help for topic 'info'
+topic : info = <<[
+The {bold 'info'} command displays information about your character that doesn't belong with any other command, such as appearance.
+]>>
+
+# Help for topic 'sit'
+topic : sit = <<[
+Sitting on the ground is required for certain activies.  You can sit down by typing {bold 'sit'}.
+]>>
+
+# Help for topic 'stand'
+topic : stand = <<[
+In order to fight, walk, or climb, you must be standing up.  This can be done with the {bold 'stand'} command.
+]>>
+
+# Help for topic 'lay'
+topic : lay = <<[
+Laying may be necessary at times, or perhaps just fun to do for role-playing purposes.  You can lay down with the {bold 'lay'} command.
+]>>
+
+# Help for topic 'dance'
+topic : dance = <<[
+Nothing is as much fun as making a fool out of yourself by doing a strange dance in front of total strangers.  You can easily humiliate yourself with the {bold 'dance'} command.  If you're of the mind to do so, you could also irritate someone by dancing around them.  This can be done by supplying their name after dance (i.e. dance Sean).
+]>>
+
+# Help for topic 'laugh'
+topic : laugh = <<[
+A good joke deserves a good laugh.  Compliment the dancing fool with a hearty laugh, using the {bold 'laugh'} command.  To really embarass someone, trying laughing at them (i.e. {bold 'laugh Fool'}).
+]>>
+
+# Help for topic 'skills'
+topic : skills = <<[
+The {bold 'skills'} command will display your skills, their levels, and how close you are to incrementing the skill's level (this is displayed as a percentage).
+]>>
+
+# Help for topic 'tell'
+topic : tell = <<[
+The {bold 'tell'} command will send a message to another player, much as if you were speaking in a room.  Simply type {bold 'tell'}, followed by the player's name, and then the message.
+]>>
+
+# Help for topic 'server'
+topic : server = <<[
+Give general information about the AweMUD server.
+]>>
+
+# Help for topic 'open'
+topic : open = <<[
+Open a door or container.
+]>>
+
+# Help for topic 'close'
+topic : close = <<[
+Close a door or container.
+]>>
+
+# Help for topic 'lock'
+topic : lock = <<[
+Lock a door or container (you must have the key).
+]>>
+
+# Help for topic 'unlock'
+topic : unlock = <<[
+Unlock a door or container (you must have the key).
+]>>
+
+# Help for topic 'go'
+topic : go = <<[
+{bold 'Go'} to an exit, such as a door.
+]>>
+
+# Help for topic 'climb'
+topic : climb = <<[
+Climb over, up, or down an exit.
+]>>
+
+# Help for topic 'crawl'
+topic : crawl = <<[
+Crawl through or under an exit.
+]>>
+
+# Help for topic 'stand'
+topic : stand = <<[
+Stand up.  Many activities require you to be standing, such as walking.
+]>>
+
+# Help for topic 'sit'
+topic : sit = <<[
+Sit down.  Some actitivies require you to be sitting, or work better if you are sitting.
+]>>
+
+# Help for topic 'lay'
+topic : lay = <<[
+Lay down.  You will heal faster if laying down.
+]>>
+
+# Help for topic 'kneel'
+topic : kneel = <<[
+Kneel.  Some people like it better if you kneel while speaking to them.
+]>>
+
+# Help for topic 'setcolor'
+topic : setcolor = <<[
+Use this command to change the colors used by various parts of the engine.  For example, to change the color of speech to cyan, type:
+
+  setcolor talk cyan
+
+The format is {bold 'setcolor <type> <color>'}.  Valid types include:
+
+  player npc title desc item exit talk admin
+
+Valid colors include:
+
+  grey black blue cyan green red brown magenta
+]>>
+
+# Help for topic 'prompt'
+topic : prompt = <<[
+The {bold 'prompt'} command lets you change your prompt.  Simply type {bold 'prompt'} followed by the prompt you wish to use.  There are several special sequences you can use for insertin current health and other information into your prompt.  Sequences allowed include:
+
+  %h - current health
+  %H - maximum health
+  %n - your name
+
+Example:
+
+  prompt %h/%H HP (%n) >
+]>>
+
+# Help for topic 'say'
+topic : say = <<[
+Anything following this command will be shown to the room as speech.
+]>>
+
+# Help for topic 'sing'
+topic : sing = <<[
+Similar to the {bold 'say'} command, the {bold 'sing'} command will provide vocal output to the room.  Anything sung however will be presented in a different format.  Each chunk of text separated by a semi-colon (;) will be put on its own line, presenting more interesting output.
+
+For example:
+  > sing There exists a teacher ; the greatest of all ;
+    yet he is the cause ; of his own students' fall.
+  {.name} sings,
+    "There exists a teacher
+       the greatest of all
+     yet he is the cause
+       of his own students' fall."
+]>>
+
+# Help for topic 'emote'
+topic : emote = <<[
+Anything following this command will be shown to the room as a social action (also called an emote).  The text is appended to your name, and wrapped in paranthesis.  Example:
+
+  emote dances happily.
+
+Will display:
+
+  (Player dances happily.)
+
+to everyone in the room.
+]>>
+
+# movement
+topic : north = <<[
+Travel to the north if an exit in that direction exists.
+]>>
+topic : south = <<[
+Travel to the south if an exit in that direction exists.
+]>>
+topic : west = <<[
+Travel to the west if an exit in that direction exists.
+]>>
+topic : east = <<[
+Travel to the east if an exit in that direction exists.
+]>>
+topic : northeast = <<[
+Travel to the northeast if an exit in that direction exists.
+]>>
+topic : northwest = <<[
+Travel to the northwest if an exit in that direction exists.
+]>>
+topic : southeast = <<[
+Travel to the southeast if an exit in that direction exists.
+]>>
+topic : southwest = <<[
+Travel to the southwest if an exit in that direction exists.
+]>>
+
+# vim: set shiftwidth=2 tabstop=2 expandtab :

@@ -1,0 +1,195 @@
+Description and text parsing documentation.
+AweMUD Next Generation
+Copyright (C) 2005  AwesomePlay Productions, Inc.
+Sean Middleditch <elanthis@awemud.net>
+-------------------------------------------------
+
+1. Introduction
+   ============
+
+   AweMUD features a text parsing system that is used for room descriptions
+   and many other areas of the engine where complex output is required.
+
+   The text parsing system is designed to allow several important features:
+   - Provide the ability to display dynamic information.
+   - Allow conditional output of text based on game state.
+   - Be easy and intuitive to use.
+
+   The parsing system uses simple commands to direct the engine as to
+   what text should be output.  The syntax of the format is explained below.
+
+2. Syntax
+   ======
+
+   The main format is just a chunk of text.  This chunk of text may be a
+   single word, a sentence, a paragraph, or many paragraphs.  Text is
+   simply output verbatim, unless a special escape character is encountered.
+
+   The escape character is { (left curly bracket), and the command text
+   continues until a matching } (right curly bracket) is encountered.  Thus,
+   all commands are inside of {} pairs.
+
+   In the most basic form a single command will be placed inside of the
+   brackets.  For example, to get the server software's version, you would
+   use enter the following in your block of text:
+
+     {version}
+
+   Some commands take a list of arguments.  Arguments may either be a string or
+   a sub-command.  Strings are enclosed in either a pair of double quotes (")
+   or single quotes (').  Sub-commands are just that; additionall commands in
+   pairs of curly brackets.  For example, to check if the software version is
+   equal to 0.22, the following command would work:
+
+     {eq {version} '0.22'}
+
+   In addition to commands, there are also variables.  A variable is either a
+   string or a game entity (such as a character, object, or room).  To access
+   the value of a variable, simply enter the variable's name prefixed with a
+   dollar sign ($).  All variables can be referenced by their numeric
+   identifier, and some variables have named identifiers as well.  For example,
+   to access the first variable, the following would work:
+
+     {$1}
+
+   If the variable were named foo, then it could be access using:
+
+     {$foo}
+
+   For string values, the result is the string itself.  For entity variables,
+   the result is the entity's name with color.  (NOTE: because of how the color
+   codes are encoded into the name, you cannot compare an entity name with a
+   string and get the expected results.)
+
+   Variables also have methods.  A method is the same thing as a function,
+   except that methods are attached to particular variables.  The available
+   methods differ depenending on what kind of data is in the variable.  Some
+   methods that only work for players are not available if the variable holds a
+   string or an object.
+
+
+   To invoke a method, add a period (.) and the method name after the variable
+   name.  For example, to get the length of a string, you can use the length
+   method as so:
+
+     {$1.length}
+
+   That would not work on a player or room, because neither have a length
+   method.  Methods may also take arguments, just like functions.  Observe the
+   trait method on player, which returns the value of a particular trait that
+   the player has:
+
+     {$1.trait 'hair color'}
+
+   It is worth noting that when you wish to use a variable as an argument to a
+   function or method, you must use a sub-command.  That is, the following is
+   incorrect and will not work:
+
+     {eq $1 $2}
+
+   The correct form would be as follows:
+
+     {eq {$1} {$2}}
+
+   If a command is prefixed with an exclamation point (!), then the result of
+   the command will be run through the parser a second time, with the same
+   variables available.  This allows you to generate some code using a command
+   and then invoke that code.  An example use if in player traits, where some
+   traits reference other traits, such as the player's hair color being
+   included in the player's hair style.  To parse this, use:
+
+     {!player.trait 'hair style'}
+
+   The final major feature of the parsing engine is conditional execution.
+   Four special commands exist: if, elif, else, and endif.  These commands have
+   some special properties, but they look and operate very similar to normal
+   commands.
+
+   The most basic conditional block is built using an if command followed by an
+   endif command.  To use an if command, simply enter a command as normal, but
+   add the word if to the beginning.  For example:
+
+     {if eq {$enable} 'yes'}
+
+   If the result of the command is empty (that is, there is no result), then
+   the if command is false.  If the result is non-empty, than the if command is
+   true.  When an if command evaluates to false, all text and commands up to
+   the matching endif command are ignored.  This can be used to add text that
+   is only shown in limited circumstances:
+
+     {if eq {$player.race} 'elf'}You notice a gateway against the wall.{endif}
+
+   You may also use the else command after an if command.  This builds an
+   if-else logic block.  An example:
+
+     {if eq {$var} '2'}var is two{else}var is not two{endif}
+
+   If the variable var is equal to 2, then the result will say that var is two,
+   while if var is not two, the output will be that var is not two.
+
+   The elif command is a shortcut for building multiple if commands.  For example:
+
+     {if eq {$player.race} 'human'}It is a human{elif eq {$player.race}
+     'elf'}It is a long-ear{elif eq {$player.race} 'kalruan'}It is a
+     cat{endif}.
+
+A. Global Commands
+   ===============
+   - eq
+     Takes two strings as arguments.  If the strings are identical, the result
+     is 'ok', otherwise there is no result.  This is useful in if commands.
+
+   - ne
+     The opposite of the eq command.  The result is 'ok' if the strings are
+     different, and there is no result if the strings are equal.
+
+   - bold
+     Takes a single string as an argument.  The result is the provided string,
+     but with bold color tags added to it.  Use this to highlight text.  It is
+     best to only highlight single words or very short phrases.
+
+   - version
+     The version of the server software.
+  
+   - build
+     The build date and time of the server binary.
+  
+   - uptime
+     Time passed since the server was brought online.
+     
+   - player-count
+     Number of currently active players.
+     
+   - day-or-night
+     The text 'day' during game day time, and the text 'night' during game
+     night time.
+
+   - hostname
+     The server's recognized hostname.
+     
+   - date
+     The game date.
+     
+   - time
+     The game time.
+     
+   - date-year
+     Current game year.
+     
+   - date-month
+     Current game month.
+     
+   - date-day
+     Current game day of the month.
+     
+   - time-hours24
+     Current game hour in 24-hour format.
+     
+   - time-hours12
+     Current game hour in 12-hour format.
+     
+   - time-ampm
+     The text 'am' during the AM hours, and the text 'pm' during the PM hours.
+     
+   - time-minutes
+     Current approximated game minutes.

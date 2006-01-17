@@ -1,0 +1,8 @@
+#!/bin/sh
+
+FILE="$1"
+
+touch "$FILE"
+tla file-diffs "$FILE" > "$FILE.diff"
+patch -p1 -R < "$FILE.diff"
+test -s "$FILE.diff" || rm -f "$FILE.diff"

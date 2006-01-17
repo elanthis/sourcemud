@@ -1,0 +1,57 @@
+// Core Ruleset for AweMUG NG
+// Copyright (C) 2002  AwesomePlay Productions, Inc.
+
+// ----------- Commands ------------
+
+// View player experience pools
+function experience (player)
+{
+	// experience chart
+	player.showExp();
+}
+
+// Show player stats
+function stats (player, argv)
+{
+	player.showStats();
+}
+
+// Show player attributes
+function info (player, argv)
+{
+	player.showInfo();
+}
+function self (player, argv)
+{
+	player.showInfo();
+}
+function score (player, argv)
+{
+	player.showInfo();
+}
+function status (player, argv)
+{
+	player.showInfo();
+}
+
+// register command
+function init() {
+	registerCommand(
+		"experience",
+		"experience\n",
+		"experience",
+		experience,
+		nil);
+	registerCommand(
+		"stats",
+		"stats\n",
+		"stats",
+		stats,
+		nil);
+	registerCommand(
+		"score",
+		"score\n",
+		["score","self","info","status"],
+		score,
+		nil);
+}

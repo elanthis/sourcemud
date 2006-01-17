@@ -1,0 +1,122 @@
+// Player extensions
+// Copyright (C) 2002  AwesomePlay Productions, Inc.
+
+// show experience
+function playerShowExp(self)
+{
+	self.print ("Experience chart:\n");
+	if (self.getExp(EXP_WARRIOR))
+		printInfo(self, "Warrior", self.getExp(EXP_WARRIOR));
+	if (self.getExp(EXP_ROGUE))
+		printInfo(self, "Rogue", self.getExp(EXP_ROGUE));
+	if (self.getExp(EXP_CASTER))
+		printInfo(self, "Caster", self.getExp(EXP_CASTER));
+	printInfo(self, "General", self.getExp(EXP_GENERAL));
+}
+
+// show stats
+function playerShowStats(self)
+{
+	self.print("Your statistics:\n");
+	for (var i = 0; i < STAT_COUNT; ++i) {
+		var stat = self.getEffectiveStat(i);
+		var mod = self.getStatModifier(i);
+
+		// name
+		self.print('  ', getStatName(i), ': ');
+
+		// descriptor
+		self.setIndent(14);
+		self.print(getStatColor(stat), getStatLevel(stat), CNORMAL);
+
+		// value/+mod
+		self.setIndent(25);
+		self.print('(', stat, '/');
+		if (mod >= 0)
+			self.print('+');
+		self.print(mod, ")\n");
+
+		self.setIndent(0);
+	}
+}
+	
+// show all player info
+function playerShowInfo(self)
+{
+	// basics
+	self.print("Your status:\n");
+	printInfo(self, "Name", self);
+	printInfo(self, "Race", capwords(self.getRace().getName()));
+	if (self.getGender() == GENDER_MALE)
+		printInfo(self, "Gender", "Male");
+	else if (self.getGender() == GENDER_FEMALE)
+		printInfo(self, "Gender", "Female");
+	else
+		printInfo(self, "Gender", "Neuter");
+
+	// age
+	printInfo(self, "Age", self.getAge() :: " years (born on " :: self.getBirthday().getDate() :: ")");
+
+	// appearance
+	printInfo(self, "Appearance", strParse("{$1.Desc}", self));
+
+	// alignment
+	if (self.isNeutral()) {
+		if (self.isGood())
+			printInfo(self, "Alignment", "Neutral (with good tendancies)");
+		else if (self.isEvil())
+			printInfo(self, "Alignment", "Neutral (with evil tendancies)");
+		else
+			printInfo(self, "Alignment", "Neutral");
+	} else if (self.isGood()) {
+		printInfo(self, "Alignment", "Good");
+	} else if (self.isEvil()) {
+		printInfo(self, "Alignment", "Evil");
+	} else {
+		printInfo(self, "Alignment", "Unknown");
+	}
+
+	self.print("\n");
+	self.showExp();
+}
+
+// male/female articles
+function playerHisHer(self)
+{
+	var gen = self.getGender();
+	if (gen == GENDER_MALE)
+		return "his";
+	else if (gen == GENDER_FEMALE)
+		return "her";
+	else
+		return "its";
+}
+function playerHisHers(self)
+{
+	var gen = self.getGender();
+	if (gen == GENDER_MALE)
+		return "his";
+	else if (gen == GENDER_FEMALE)
+		return "hers";
+	else
+		return "its";
+}
+
+// helper function
+function printInfo(player, label, data)
+{
+	player.print('  ', label, ': ');
+	player.setIndent(14);
+	player.print(data, "\n");
+	player.setIndent(0);
+}
+
+// extend Player
+function init()
+{
+	Player.addMethod('showExp', playerShowExp);
+	Player.addMethod('showStats', playerShowStats);
+	Player.addMethod('showInfo', playerShowInfo);
+	Player.addMethod('hisHers', playerHisHers);
+	Player.addMethod('hisHer', playerHisHer);
+}

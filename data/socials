@@ -1,0 +1,744 @@
+# AweMUD Next Generation - Social commands list
+# Copyright (C) 2003-2005  AwesomePlay Productions Inc.
+# Sean Middleditch <elanthis@awemud.net>
+
+# laughing 
+social {
+  name = laugh
+  speech = "true"
+  touch = "false"
+  move = "false"
+
+  # default action 
+adverb {
+    name = default
+    action {
+      you = "You laugh out loud."
+      others = "{$actor.C} laughs out loud."
+    }
+    thing {
+      you = "You laugh at {$target.d}."
+      others = "{$actor.C} laughs at {$target.d}."
+    }
+    person {
+      you = "You laugh at {$target.d}."
+      target = "{$actor.C} laughs at you."
+      others = "{$actor.C} laughs at {$target.d}."
+    }
+    ghost {
+      you = "You laugh."
+      others = "A ghostly voice laughs."
+    }
+  }
+  
+  # evilly 
+adverb {
+    name = evilly
+    action {
+      you = "You laugh like an evil mad{$actor.man}."
+      others = "{$actor.C} laughs like an evil mad{$actor.man}."
+    }
+    thing {
+      you = "You laugh evilly at {$target.d}."
+      others = "{$actor.C} laughs evilly at {$target.d}."
+    }
+    person {
+      you = "You laugh evilly at {$target.d}."
+      target = "{$actor.C} laughs evilly at you."
+      others = "{$actor.C} laughs evilly at {$target.d}."
+    }
+    ghost {
+      you = "You laugh evilly."
+      others = "You hear an evil, ethereal laugh."
+    }
+  }
+  
+  # quietly 
+adverb {
+    name = quietly
+    action {
+      you = "You laugh quietly under your breath."
+      others = "{$actor.C} laughs quietly under {.his} breath."
+    }
+    thing {
+      you = "You laugh quietly at {$target.d}."
+      others = "{$actor.C} laughs quietly at {$target.d}."
+    }
+    person {
+      you = "You laugh quietly at {$target.d}."
+      target = "{$actor.C} laughs quietly at you."
+      others = "{$actor.C} laughs quietly at {$target.d}."
+    }
+    ghost {
+      you = "You quietly laugh."
+      others = "Quiet, ghostly laughter touches your ears."
+    }
+  }
+}
+
+# chuckling
+social {
+  name = chuckle
+  speech = "true"
+  touch = "false"
+  move = "false"
+
+  # normal 
+adverb {
+    name = default
+    action {
+      you = "You chuckle."
+      others = "{$actor.C} chuckles."
+    }
+    thing {
+      you = "You chuckle at {$actor.C}."
+      others = "{$actor.C} chuckles at {$actor.C}."
+    }
+    person {
+      you = "You chuckle at {$actor.C}."
+      target = "{$actor.C} chuckles at you."
+      others = "{$actor.C} chuckles at {$actor.C}."
+    }
+    ghost {
+      you = "You chuckle."
+      others = "A ghostly voice chuckles."
+    }
+  }
+  
+  # heartily
+adverb {
+    name = heartily
+    action {
+      you = "You chuckle heartily."
+      others = "{$actor.C} heartily chuckles."
+    }
+    thing {
+      you = "You chuckle heartily at {$target.d}."
+      others = "{$actor.C} chuckles heartily at {$target.d}."
+    }
+    person {
+      you = "You heartily chuckle at {$target.d}."
+      target = "{$actor.C} heartily chuckles at you."
+      others = "{$actor.C} chuckles heartily at {$target.d}."
+    }
+    ghost {
+      you = "You chuckle."
+      others = "A ghostly voice chuckles heartily."
+    }
+  }
+}
+
+# giggling
+social {
+  name = giggle
+  speech = "true"
+  touch = "false"
+  move = "false"
+
+  # normal
+adverb {
+    name = default
+    action {
+      you = "You giggle."
+      others = "{$actor.C} giggles."
+    }
+    thing {
+      you = "You giggle at {$target.d}."
+      others = "{$actor.C} giggles at {$target.d}."
+    }
+    person {
+      you = "You giggle at {$target.d}."
+      target = "{$actor.C} giggles at you."
+      others = "{$actor.C} giggles at {$target.d}."
+    }
+    ghost {
+      you = "You giggle."
+      others = "Musical, ghostly giggling fills the area."
+    }
+  }
+}
+
+# bowing
+social {
+  name = bow
+  speech = "false"
+  touch = "false"
+  move = "true"
+
+  # normal
+adverb {
+    name = default
+    action {
+      you = "You bow."
+      others = "{$actor.C} bows."
+    }
+    thing {
+      you = "You bow towards {$target.d}."
+      others = "{$actor.C} bows towards {$target.d}."
+    }
+    person {
+      you = "You bow to {$target.d}."
+      target = "{$actor.C} bows to you."
+      others = "{$actor.C} bows to {$target.d}."
+    }
+  }
+}
+
+#smile
+social {
+  name = smile
+  speech = "false"
+  touch = "false"
+  move = "true"
+
+  # normal
+adverb {
+    name = default
+    action {
+      you = "You smile."
+      others = "{$actor.C} smiles."
+    }
+    thing {
+      you = "You smile at {$target.d}."
+      others = "{$actor.C} smiles at {$target.d}."
+    }
+    person {
+      you = "You smile at {$target.d}."
+      others = "{$actor.C} smiles at {$target.d}."
+      target = "{$actor.C} smiles at you."
+    }
+  }
+
+  # warmly
+adverb {
+    name = warmly
+    action {
+      you = "You smile warmly."
+      others = "{$actor.C} smiles warmly."
+    }
+    thing {
+      you = "You smiles warmly at {$target.d}."
+      others = "{$actor.C} smiles warmly at {$target.d}."
+    }
+    person {
+      you = "You smile warmly at {$target.d}."
+      others = "{$actor.C} smiles warmly to {$target.d}."
+      target = "{$actor.C} smiles warmly to you."
+    }
+  }
+}
+
+#pray
+social {
+  name = pray
+  speech = "true"
+  touch = "false"
+  move = "true"
+
+  # normal
+adverb {
+    name = default
+    action {
+      you = "You pray to the gods."
+      others = "{$actor.C} prays to the gods."
+    }
+    thing {
+      you = "You pray to {$target.d}."
+      others = "{$actor.C} prays to {$target.d}."
+    }
+    person {
+      you = "You pray for {$target.d}."
+      others = "{$actor.C} prays for {$target.d}."
+      target = "{$actor.C} prays for you."
+    }
+  }
+}
+
+# nodding
+social {
+  name = nod
+  speech = "false"
+  touch = "false"
+  move = "true"
+
+  # default action 
+adverb {
+    name = default
+    action {
+      you = "You nod your head."
+      others = "{$actor.C} nods {$actor.his} head."
+    }
+    thing {
+      you = "You nod at {$target.d}."
+      others = "{$actor.C} nods at {$target.d}."
+    }
+    person {
+      you = "You nod at {$target.d}."
+      target = "{$actor.C} nods at you."
+      others = "{$actor.C} nods at {$target.d}."
+    }
+  }
+
+  # slow nod
+adverb {
+    name = slowly
+    action {
+      you = "You nod your head slowly."
+      others = "{$actor.C} nods {$actor.his} head slowly."
+    }
+    thing {
+      you = "You slowly nod at {$target.d}."
+      others = "{$actor.C} slowly nods at {$target.d}."
+    }
+    person {
+      you = "You slowly nod at {$target.d}."
+      target = "{$actor.C} nods slowly at you."
+      others = "{$actor.C} nods slowly at {$target.d}."
+    }
+  }
+
+  # slow nod
+adverb {
+    name = happily
+    action {
+      you = "You nod your head happily."
+      others = "{$actor.C} nods {$actor.his} head happily."
+    }
+    thing {
+      you = "You happily nod at {$target.d}."
+      others = "{$actor.C} happily nods at {$target.d}."
+    }
+    person {
+      you = "You happily nod at {$target.d}."
+      target = "{$actor.C} nods happily at you."
+      others = "{$actor.C} nods happily at {$target.d}."
+    }
+  }
+
+  # grim nod
+adverb {
+    name = grimly
+    action {
+      you = "You nod your head grimly."
+      others = "{$actor.C} grimly nods."
+    }
+    thing {
+      you = "You grimly nod at {$target.d}."
+      others = "{$actor.C} grimly nods at {$target.d}."
+    }
+    person {
+      you = "You happily nod at {$target.d}."
+      target = "{$actor.C} grimly nods to you."
+      others = "{$actor.C} grimly nods to {$target.d}."
+    }
+  }
+}
+
+# shrug
+social {
+  name = shrug
+  speech = "false"
+  touch = "false"
+  move = "true"
+
+  # normal
+adverb {
+    name = default
+    action {
+      you = "You shrug."
+      others = "{$actor.C} shrugs."
+    }
+  }
+}
+
+# wink
+social {
+  name = wink
+  speech = "false"
+  touch = "false"
+  move = "move"
+
+  # default action 
+adverb {
+    name = default
+    action {
+      you = "You wink your eye."
+      others = "{$actor.C} winks {$actor.his} eye."
+    }
+    thing {
+      you = "You wink at {$target.d}."
+      others = "{$actor.C} winks at {$target.d}."
+    }
+    person {
+      you = "You wink at {$target.d}."
+      target = "{$actor.C} winks at you."
+      others = "{$actor.C} winks at {$target.d}."
+    }
+  }
+
+  # lewd wink
+adverb {
+    name = lewdly
+    action {
+      you = "You wink lewdly."
+      others = "{$actor.C} lewdly winks {$actor.his} eye."
+    }
+    thing {
+      you = "You wink lewdly at {$target.d}."
+      others = "{$actor.C} winks lewdly at {$target.d}."
+    }
+    person {
+      you = "You lewdly wink at {$target.d}."
+      target = "{$actor.C} lewdly winks at you."
+      others = "{$actor.C} lewdly winks at {$target.d}."
+    }
+  }
+
+  # knowing wink
+adverb {
+    name = knowingly
+    action {
+      you = "You wink knowingly."
+      others = "{$actor.C} knowingly winks {$actor.his} eye."
+    }
+    thing {
+      you = "You wink knowingly at {$target.d}."
+      others = "{$actor.C} winks knowingly at {$target.d}."
+    }
+    person {
+      you = "You knowingly wink at {$target.d}."
+      target = "{$actor.C} knowingly winks at you."
+      others = "{$actor.C} knowingly winks at {$target.d}."
+    }
+  }
+
+  # sly wink
+adverb {
+    name = slyly
+    action {
+      you = "You wink slyly."
+      others = "{$actor.C} slyly winks {$actor.his} eye."
+    }
+    thing {
+      you = "You wink slyly at {$target.d}."
+      others = "{$actor.C} winks slyly at {$target.d}."
+    }
+    person {
+      you = "You slyly wink at {$target.d}."
+      target = "{$actor.C} slyly winks at you."
+      others = "{$actor.C} slyly winks at {$target.d}."
+    }
+  }
+}
+
+# wave
+social {
+  name = wave
+  speech = "false"
+  touch = "false"
+  move = "true"
+
+  # default action 
+adverb {
+    name = default
+    action {
+      you = "You wave."
+      others = "{$actor.C} waves."
+    }
+    thing {
+      you = "You wave at {$target.d}."
+      others = "{$actor.C} waves at {$target.d}."
+    }
+    person {
+      you = "You wave at {$target.d}."
+      target = "{$actor.C} waves at you."
+      others = "{$actor.C} waves at {$target.d}."
+    }
+  }
+
+  # wave dismissively
+adverb {
+    name = dismissively
+    action {
+      you = "You wave dismissively to everyone."
+      others = "{$actor.C} waves dismissively to everyone."
+    }
+    thing {
+      you = "You wave dismissively at {$target.d}."
+      others = "{$actor.C} waves dismissively at {$target.d}."
+    }
+    person {
+      you = "You wave dismissively at {$target.d}."
+      target = "{$actor.C} waves dismissively at you."
+      others = "{$actor.C} waves dismissively at {$target.d}."
+    }
+  }
+}
+
+# gesture
+social {
+  name = gesture
+  speech = "false"
+  touch = "false"
+  move = "true"
+
+  # rude, evil gesture
+adverb {
+    name = rudley
+    action {
+      you = "You rudely gesture."
+      others = "{$actor.C} rudely gestures."
+    }
+    thing {
+      you = "You rudely gesture at {$target.d}."
+      others = "{$actor.C} rudely gestures at {$target.d}."
+    }
+    person {
+      you = "You rudely gesture at {$target.d}."
+      target = "{$actor.C} rudely gestures at you."
+      others = "{$actor.C} rudely gestures at {$target.d}."
+    }
+  }
+}
+
+# tap
+social {
+  name = tap
+  speech = "false"
+  touch = "true"
+  move = "true"
+
+  # default
+adverb {
+    name = default
+    thing {
+      you = "You tap {$target.d}."
+      others = "{$actor.C} taps {$target.d}."
+    }
+    person {
+      you = "You tap {$target.d}."
+      target = "{$actor.C} taps you."
+      others = "{$actor.C} taps {$target.d}."
+    }
+  }
+}
+
+# snort
+social {
+  name = snort
+  speech = "true"
+  touch = "false"
+  move = "false"
+
+  # default
+adverb {
+    name = default
+    action {
+      you = "You snort."
+      others = "{$actor.C} snorts."
+    }
+    thing {
+      you = "You snort at {$target.d}."
+      others = "{$actor.C} snorts at {$target.d}."
+    }
+    person {
+      you = "You snort at {$target.d}."
+      target = "{$actor.C} snorts at you."
+      others = "{$actor.C} snorts at {$target.d}."
+    }
+  }
+}
+
+# cackle
+social {
+  name = cackle
+  speech = "true"
+  touch = "false"
+  move = "false"
+
+  # default
+adverb {
+    name = default
+    action {
+      you = "You cackle."
+      others = "{$actor.C} cackles."
+    }
+    thing {
+      you = "You cackle at {$target.d}."
+      others = "{$actor.C} cackles at {$target.d}."
+    }
+    person {
+      you = "You cackle at {$target.d}."
+      target = "{$actor.C} cackles at you."
+      others = "{$actor.C} cackles at {$target.d}."
+    }
+    ghost {
+      you = "You cackle."
+      others = "An ethereal voice bursts out with ghostly cackling."
+    }
+  }
+}
+
+# glare
+social {
+  name = glare
+  speech = "false"
+  touch = "false"
+  move = "false"
+
+  # default
+adverb {
+    name = default
+    thing {
+      you = "You glare at {$target.d}."
+      others = "{$actor.C} glares at {$target.d}."
+    }
+    person {
+      you = "You glare at {$target.d}."
+      target = "{$actor.C} glares at you."
+      others = "{$actor.C} glares at {$target.d}."
+    }
+  }
+}
+
+#grin
+social {
+  name = grin
+  speech = "false"
+  touch = "false"
+  move = "true"
+
+  # normal
+adverb {
+    name = default
+    action {
+      you = "You grin."
+      others = "{$actor.C} grins."
+    }
+    thing {
+      you = "You grin at {$target.d}."
+      others = "{$actor.C} grins at {$target.d}."
+    }
+    person {
+      you = "You grin at {$target.d}."
+      others = "{$actor.C} grins at {$target.d}."
+      target = "{$actor.C} grins at you."
+    }
+  }
+
+  # fiercely
+adverb {
+    name = fiercely
+    action {
+      you = "You grin fiercely."
+      others = "{$actor.C} grins fiercely."
+    }
+    thing {
+      you = "You grins fiercely at {$target.d}."
+      others = "{$actor.C} grins fiercely at {$target.d}."
+    }
+    person {
+      you = "You grin fiercely at {$target.d}."
+      others = "{$actor.C} grins fiercely to {$target.d}."
+      target = "{$actor.C} grins fiercely to you."
+    }
+  }
+}
+
+# clap hands
+social {
+  name = clap
+  speech = "false"
+  touch = "false"
+  move = "true"
+
+  # default
+adverb {
+    name = default
+    action {
+      you = "You clap your hands."
+      others = "{$actor.C} claps {$actor.his} hands."
+    }
+  }
+}
+
+# applaud
+social {
+  name = applaud
+  speech = "false"
+  touch = "false"
+  move = "true"
+
+  # default
+adverb {
+    name = default
+    action {
+      you = "You applaud."
+      others = "{$actor.C} applauds."
+    }
+  }
+}
+
+# whistle
+social {
+  name = whistle
+  speech = "true"
+  touch = "false"
+  move = "false"
+
+  #default
+adverb {
+    name = default
+    action {
+      you = "You whistle a nameless tune."
+      others = "{$actor.C} whistles a nameless tune."
+    }
+    thing {
+      you = "You whistle at {$target.d}."
+      others = "{$actor.C} whistles at {$target.i}."
+    }
+    person {
+      you = "You whistle at {$target.d}."
+      others = "{$actor.C} whistles at {$target.i}."
+      target = "{$actor.C} whistles at you."
+    }
+  }
+
+  # in awe
+adverb {
+    name = awe
+    action {
+      you = "You whistle in awe."
+      others = "{$actor.C} whistles in awe."
+    }
+    thing {
+      you = "You whistle in awe at {$target.d}."
+      others = "{$actor.C} whistles in awe at {$target.i}."
+    }
+    person {
+      you = "You whistle in awe at {$target.d}."
+      others = "{$actor.C} whistles in awe at {$target.i}."
+      target = "{$actor.C} whistles in awe at you."
+    }
+  }
+
+  # appreciately
+adverb {
+    name = appreciatively
+    action {
+      you = "You wistle appreciatively."
+      others = "{$actor.C} whistles appreciatively."
+    }
+    thing {
+      you = "You whistle appreciatively at {$target.d}."
+      others = "{$actor.C} whistles appreciatively at {$target.i}."
+    }
+    person {
+      you = "You whistle appreciatively at {$target.d}."
+      others = "{$actor.C} whistles appreciatively at {$target.i}."
+      target = "{$actor.C} whistles appreciatively at you."
+    }
+  }
+}
+
+# vim: set shiftwidth=2 tabstop=2 expandtab:

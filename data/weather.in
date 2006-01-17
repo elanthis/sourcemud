@@ -1,0 +1,110 @@
+# AweMUD Next Generation - Default weather definition
+# Copyright (C) 2003-2005  AwesomePlay Productions Inc.
+# Sean Middleditch <elanthis@awemud.net>
+
+state {
+  id = clear
+  desc = "The sky is perfectly clear."
+  change {
+    target = rain
+    chance = 10
+    text = "Rain begins to fall."
+  }
+}
+state {
+  id = rain
+  desc = "Rain is pouring steadily."
+  change {
+    target = clear
+    chance = 20
+    text = "The rain ceases."
+  }
+}
+
+#pattern {
+#  title = raining
+#  chance = 30
+#  stage {
+#    desc = "The rain is drizzling down."
+#  }
+#  stage {
+#    up = "Rain begins falling more heavily."
+#    down = "The rain reduces to a drizzle."
+#    desc = "Rain is falling lightly."
+#  }
+#  stage {
+#    up = "The rain begins to downpour."
+#    down = "The rain eases up."
+#    desc = "Rain is pouring heavily."
+#  }
+#  stage {
+#    up = "A storm begins to spread its wrath."
+#    down = "The storm subsides."
+#    desc = "A rainstorm is raging across the land."
+#  }
+#  change {
+#    pattern = cloudy
+#    desc = "The rain ceases falling."
+#  }
+#}
+#pattern {
+#  title = snowing
+#  chance = 10
+#  stage {
+#    desc = "Snowflakes are gently floating to the ground."
+#  }
+#  stage {
+#    up = "The snow begins to fall more heavily."
+#    down = "The falling snow thins up."
+#    desc = "Snowflakes are steadily falling."
+#  }
+#  stage {
+#    up = "The falling snow thickens."
+#    down = "The falling snow begins to thin out."
+#    desc = "Snow is quickly covering the land."
+#  }
+#  change {
+#    pattern = cloudy
+#    desc = "The snow ceases falling."
+#  }
+#}
+#pattern {
+#  title = cloudy
+#  chance = 70
+#  stage {
+#    desc = "The sky is partly cloudy."
+#  }
+#  stage {
+#    up = "The clouds thicken."
+#    down = "The clouds thin out."
+#    desc = "The sky is mostly cloudy."
+#  }
+#  stage {
+#    up = "The sky is covered with clouds."
+#    down = "The clouds begin to thin up."
+#    desc = "The sky is blanketed in clouds."
+#  }
+#  change {
+#    pattern = clear
+#    desc = "The clouds clear up."
+#  }
+#  change {
+#    pattern = raining
+#    desc = "Rain begins to fall."
+#  }
+#  change {
+#    pattern = snowing
+#    desc = "Snow begins to fall."
+#  }
+#}
+#pattern {
+#  title = clear
+#  chance = 100
+#  stage {
+#    desc = "The sky is perfectly clear."
+#  }
+#  change {
+#    pattern = cloudy
+#    desc = "Clouds start moving in."
+#  }
+#}

@@ -1,0 +1,101 @@
+// NPC extensions
+// Copyright (C) 2002  AwesomePlay Productions, Inc.
+
+// Character's foodchain value controls some AI
+function getFoodchain(self)
+{
+	var foodchain = Int(self.ai_foodchain);
+	if (foodchain > 0)
+		return foodchain;
+	return 50;
+}
+
+// random exit walking for NPCs
+function goRandomExit(self)
+{
+	// round time?
+	if (self.getRoundTime() > 0)
+		return false;
+
+	// get room
+	var room = self.room();
+	if (!room)
+		return false;
+
+	// get count
+	var exits = new Array;
+	foreach(var exit in room.exits())
+		if (self.canUseExit(exit))
+			exits.append(exit);
+	if (!exits)
+		return false;
+
+	// random selection
+	var rand = getRandom(exits.length());
+	self.doGo(exits[rand]);
+	return true;
+}
+
+// AI state handling
+function setState(self, state)
+{
+	state = String(state);
+	if (self.ai_state != state) {
+		self.ai_state = state;
+		self.pumpAI('state');
+	}
+}
+
+// generate a corpse
+function makeCorpse(npc)
+{
+	// npc must be in a room
+	var room = npc.getRoom();
+	if (!room)
+		return;
+
+	// make the corpse object
+	var corpse = createObjectFromBlueprint('npc_corpse');
+	if (!corpse)
+		return;
+
+	// note npc blueprint
+	corpse.npc_blueprint = npc.getBlueprint().getId();
+
+	// rename corpse
+	var cname = npc.corpse_name;
+	if (cname)
+		corpse.setName(cname);
+	else
+		corpse.setName(npc.getName() :: ' corpse');
+	corpse.setArticle(npc.getArticle());
+
+	// move equipment over
+	while (var obj = npc.getEquipAt(0))
+		if (obj.isDropable())
+			corpse.addObject(obj, CON_ON);
+		else
+			obj.destroy();
+
+	// add corpse to room
+	room.addObject(corpse);
+
+	// destroy npc
+	npc.destroy();
+}
+
+// save NPC blueprint on corpse
+function saveCorpseBlueprint(object, writer)
+{
+	if (String(object.npc_blueprint))
+		writer.setString('npc_blueprint', object.npc_blueprint);
+}
+
+function init() {
+	registerHook('save_object', saveCorpseBlueprint);
+	registerHook('npc_death', makeCorpse);
+
+	Character.addMethod('foodchain', getFoodchain);
+	NPC.addMethod('goRandomExit', goRandomExit);
+	NPC.addMethod('setState', setState);
+}

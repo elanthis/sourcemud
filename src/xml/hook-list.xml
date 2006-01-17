@@ -1,0 +1,97 @@
+<?xml version="1.0"?>
+<hooks>
+	<hook name="save_character">
+		<arg name="this" type="Character" />
+		<arg name="writer" type="ScriptRestrictedWriter" />
+		<doc>save_character</doc>
+	</hook>
+	<hook name="character_heartbeat">
+		<arg name="this" type="Character" />
+		<doc>character_heartbeat</doc>
+	</hook>
+	<hook name="save_entity">
+		<arg name="this" type="Entity" />
+		<arg name="writer" type="ScriptRestrictedWriter" />
+		<doc>save_entity</doc>
+	</hook>
+	<hook name="save_exit">
+		<arg name="this" type="RoomExit" />
+		<arg name="writer" type="ScriptRestrictedWriter" />
+		<doc>save_exit</doc>
+	</hook>
+	<hook name="ready">
+		<doc>ready</doc>
+	</hook>
+	<hook name="change_hour">
+		<doc>change_hour</doc>
+	</hook>
+	<hook name="save_npc">
+		<arg name="this" type="Npc" />
+		<arg name="writer" type="ScriptRestrictedWriter" />
+		<doc>save_npc</doc>
+	</hook>
+	<hook name="npc_death">
+		<arg name="this" type="Npc" />
+		<arg name="killer" type="Character" />
+		<doc>npc_death</doc>
+	</hook>
+	<hook name="npc_heartbeat">
+		<arg name="this" type="Npc" />
+		<doc>npc_heartbeat</doc>
+	</hook>
+	<hook name="save_object_blueprint">
+		<arg name="this" type="ObjectBlueprint" />
+		<arg name="swriter" type="ScriptRestrictedWriter" />
+		<doc>save_object_blueprint</doc>
+	</hook>
+	<hook name="save_object">
+		<arg name="this" type="Object" />
+		<arg name="writer" type="ScriptRestrictedWriter" />
+		<doc>save_object</doc>
+	</hook>
+	<hook name="object_heartbeat">
+		<arg name="this" type="Object" />
+		<doc>object_heartbeat</doc>
+	</hook>
+	<hook name="save_player">
+		<arg name="this" type="Player" />
+		<arg name="writer" type="ScriptRestrictedWriter" />
+		<doc>save_player</doc>
+	</hook>
+	<hook name="player_start">
+		<arg name="this" type="Player" />
+		<doc>player_start</doc>
+	</hook>
+	<hook name="create_character">
+		<arg name="this" type="Player" />
+		<doc>create_character</doc>
+	</hook>
+	<hook name="player_death">
+		<arg name="this" type="Player" />
+		<arg name="killer" type="Character" />
+		<doc>player_death</doc>
+	</hook>
+	<hook name="player_heartbeat">
+		<arg name="this" type="Player" />
+		<doc>player_heartbeat</doc>
+	</hook>
+	<hook name="save_room">
+		<arg name="this" type="Room" />
+		<arg name="writer" type="ScriptRestrictedWriter" />
+		<doc>save_room</doc>
+	</hook>
+	<hook name="room_heartbeat">
+		<arg name="this" type="Room" />
+		<doc>room_heartbeat</doc>
+	</hook>
+	<hook name="show_room">
+		<arg name="this" type="Room" />
+		<arg name="viewer" type="Character" />
+		<doc>show_room</doc>
+	</hook>
+	<hook name="save_zone">
+		<arg name="this" type="Zone" />
+		<arg name="writer" type="ScriptRestrictedWriter" />
+		<doc>save_zone</doc>
+	</hook>
+</hooks>

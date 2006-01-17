@@ -1,0 +1,7 @@
+script = "awemud.sx"
+script = "string.sx"
+script = "corerules.sx"
+script = "npc.sx"
+script = "object.sx"
+script = "player.sx"
+pattern = "*.sx"

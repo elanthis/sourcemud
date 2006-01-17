@@ -1,0 +1,125 @@
+# AweMUD Next Generation - Help data
+# Copyright (C) 2003-2005  AwesomePlay Productions Inc.
+# Sean Middleditch <elanthis@awemud.net>
+
+# Help for topic 'general'
+topic : general = <<[
+To view help on a specific topic, type
+  help [topic]
+For example,
+  help commands
+
+-- The Basics --
+  characters
+  talking
+  moving
+  quit
+
+-- Information --
+  commands
+  license
+
+-- Advanced --
+  building
+]>>
+
+# ---- TOPICS ----
+
+# Help for topic 'talking'
+topic : talking = <<[
+Talking in AweMUD is very simple.  You need to merely type {bold 'say'} followed by what you wish your character to speak.  For example, to say {bold 'Hi'} to a someone, you'd type:
+  say Hi
+
+You may also make use of the quotation symbol (") to speak.  You do _not_ need to put an end-quote on your text.  For example:
+  "Hi
+]>>
+
+# Help for topic 'moving'
+topic : moving = <<[
+Moving around in AweMUD is very simple.  In every area (or room) on the MUD, you will see a list of visible exits.  You only need to type {bold 'go'} followed by the exit, in most cases.  For example, to go thru an open door, type:
+  go door
+
+Additionally, most exits have a direction associated with them.  Many exits will simply be labelled as their direction.  (Such as north, or south.)  By typing in a direction (like east), you will use the exit in that direction, if one exists.
+
+Example:
+ You wish to move north out of a room, so you could type:
+  north
+  n
+  nor
+  etc.
+
+Each room will list its exits when you look at the room.  If you try to go in a direction in which there is no exit, you will go nowhere and be informed of your mistake.
+
+There are also "hidden" exits in a room.  Many of these exits can be found by carefully reading the room's description.  You use the "go" command to use one of these exits.  For example, if you see a room that says there is a large wooden door on one wall, you might type:
+  go door
+  go wooden door
+  go wo do
+]>>
+
+# Help for topic 'roleplaying'
+topic : roleplaying = <<[
+Role-Playing Help
+]>>
+
+# Help for topic 'login'
+topic : login = <<[
+Please enter your character name and password to login to AweMUD.
+
+If you wish to create a new character, just type in the name you wish to use.  If the character name is available, you'll be asked if you wish to create a new character.  If the character is not available
+]>>
+
+topic : charcreate-race = <<[
+Your race, or species, has a very large impact on your character.  Different races have different physical, mental, and spiritual attributes.
+
+Selecting a race will affect your statistics (such as strength, or agility), determine much of your appearance, and can have an in-game effect.
+
+To select a race, simply enter the name of the race, or the number displayed next to the race's name.
+]>>
+
+topic : charcreate-class = <<[
+A class is a set of skills and abilities that you have learned.  You are not limited to a single class, but may learn the skills and abilities of many classes.  However, starting characters are assumed to be new to the field of adventuring, and thus have only the experience and knowledge of but a single class's field.
+
+Your class affects starting equipment, minimum stat values, and your starting set of skills and abilities.
+
+To select a class, simply enter the name of the class, or the number displayed next to the class's name.
+]>>
+
+topic : charcreate-stats = <<[
+Your statistics are a measure of your physical, mental, and spiritual abilities.
+
+Statistics define what you are to a large degree.  A higher strength score means you have more muscle, and are capable of mightier feats of power.  Likewise, a low agility score would mean you are clumsy, and suffer from poor coordination.
+
+You are given 6 tokens with which to assign to any of your stats.  Each token will increase a stat score by 5 points.  No score may be increased over 90 points.
+
+To spend a token, enter the name of statistic.  I.e., to spend one token to increase your strength by 5 points, type {bold 'strength'}.  To spend a second token, increasing your stength by another 5 points, type {bold 'strength'} again.
+
+You may also type {bold 'reroll'} at any time, to reset the random distribution of points among your stat scores, and return all 6 of your tokens.
+]>>
+
+topic : charcreate-align = <<[
+Alignment is your moral standing on the classic scale of Good and Evil.  Alignment is much more a reflection of your actions than your outlook, or even others perception of you.  Many classic literary antagonists believed they were doing good, while in the process they did a great deal of evil.  Few people ever truly believe themselves to be evil, in any case.
+
+Your alignment is very flexible, and changes with almost every action you perform.  The alignment you select during character creation may be wildly different from what you end up with after an amount of actual play time.
+
+You should consider your alignmen the sum of the actions of your character's past.  Be creative.
+]>>
+
+# Help for topic 'license'
+topic : license = <<[
+AweMUD Engine
+Copyright (c) 2000,2001,2003-2005  AwesomePlay Productions, Inc. and contributors.  All rights reserved.
+
+Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+  * Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+  * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+]>>
+
+# Help for topic 'characters'
+topic : characters = <<[
+No help yet
+]>>
+
+# vim: set shiftwidth=2 tabstop=2 expandtab :

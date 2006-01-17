@@ -1,0 +1,28 @@
+# AweMUD Next Generation - gem object blueprints
+# Copyright (C) 2003-2005  AwesomePlay Productions Inc.
+# Sean Middleditch <elanthis@awemud.net>
+
+object_blueprint {
+  id = "gem"
+}
+
+object_blueprint {
+  id = "gem_ruby"
+  name = "ruby"
+  parent = "gem"
+  desc = "A small, red gem."
+  weight = 1
+  cost = 200
+}
+
+object_blueprint {
+  id = "gem_emerald"
+  name = "emerald"
+  article = "vowel"
+  parent = "gem"
+  desc = "A small, green gem."
+  weight = 1
+  cost = 250
+}
+
+# vim: set shiftwidth=2 tabstop=2 expandtab:

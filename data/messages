@@ -1,0 +1,54 @@
+# AweMUD Next Generation - Editable messages
+# Copyright (C) 2003-2005  AwesomePlay Productions Inc.
+# Sean Middleditch <elanthis@awemud.net>
+
+text : connect = <<[
+
+          .  [31m/=-=\\[0m           [31m/\\ /\\[0m [31m\\   /[0m [31m\\==\\[0m
+   .     /|__[31m[   ][0m___________[31m[ " ][0m_[31m[   ][0m_[31m[   ][0m___
+  [34mo[0m|[33mxxxxx[0m|=__[31m[=-=][0m_[31m\\  /[0m_[31m/==\\[0m_[31m[ ' ][0m_[31m[   ][0m_[31m[   ][0m__/
+   '     \\|  [31m[   ][0m [31m[  ][0m [31m[--'[0m [31m[   ][0m [31m[   ][0m [31m[   ][0m  
+          '  [31m/   \\[0m [31m\\/\\/[0m [31m\\==/[0m [31m/   \\[0m [31m\\=-=/[0m [31m/==/[0m
+
+ [36mBuild[0m   - V{version}, {build}
+ [36mUptime[0m  - {uptime}
+ [36mHost[0m    - {hostname}
+ [36mPlayers[0m - {player-count}
+
+Enter your account name and password to login.  To create a new account, simply type {bold 'new'}.
+
+]>>
+
+text : menu_banner = <<[
+
+          .  [31m/=-=\\[0m           [31m/\\ /\\[0m [31m\\   /[0m [31m\\==\\[0m
+   .     /|__[31m[   ][0m___________[31m[ " ][0m_[31m[   ][0m_[31m[   ][0m___
+  [34mo[0m|[33mxxxxx[0m|=__[31m[=-=][0m_[31m\\  /[0m_[31m/==\\[0m_[31m[ ' ][0m_[31m[   ][0m_[31m[   ][0m__/
+   '     \\|  [31m[   ][0m [31m[  ][0m [31m[--'[0m [31m[   ][0m [31m[   ][0m [31m[   ][0m  
+          '  [31m/   \\[0m [31m\\/\\/[0m [31m\\==/[0m [31m/   \\[0m [31m\\=-=/[0m [31m/==/[0m
+
+]>>
+
+text : login = <<[
+Welcome, {1.n}!
+
+If you find yourself in need of assistance, try using the {bold 'help'} command.
+]>>
+
+text : quit = <<[
+
+ ,-----------------,
+ | [31mFare thee well.[0m |
+ `-----------------`
+
+]>>
+
+text : other_banner = <<[
+
+[33m   __  __                                   __  __ 
+  \\  /\\  /[37m=================================[33m\\  /\\  /
+   \\/__\\/  [31mA W E M U D - T H E L H A R I N[33m  \\/__\\/ 
+    \\  /[37m=====================================[33m\\  /
+     \\/                                       \\/[0m
+
+]>>

@@ -1,0 +1,111 @@
+## -- awemud.conf --
+## Configuration file for AweMUD
+## @VERSION@
+
+## Log file.
+log_file = @DATADIR@/log/awemud.log
+
+## PID file
+pid_file = @DATADIR@/run/awemud.pid
+
+## Directory holding player files.
+player_dir = @DATADIR@/lib/awemud/players/
+
+## Directory holding account files.
+account_dir = @DATADIR@/lib/awemud/accounts/
+
+## Directory holding zones.
+zone_dir = @DATADIR@/lib/awemud/world/
+
+## Directory holding world state.
+world_dir = @DATADIR@/lib/awemud/world/
+
+## Directory holding scripts.
+script_dir = @DATADIR@/lib/awemud/scripts/
+
+## Directory holding AI definitions.
+ai_dir = @DATADIR@/lib/awemud/scripts/
+
+## Directory holding blueprints.
+blueprint_dir = @DATADIR@/lib/awemud/blueprints/
+
+## Directory holding help files.
+help_dir = @DATADIR@/lib/awemud/help/
+
+## Directory holding misc. data.
+misc_dir = @DATADIR@/lib/awemud/data/
+
+## Path of the control interface UNIX socket.
+#control_sock = @DATADIR@/run/awemud-ctrl.sock
+
+## Users who can perform read-only ops on the control interface.
+#control_users = awemud,www-data
+
+## Users who can perform edit ops on the control interface.
+#control_admins = 
+
+## Port to listen on for both IPv4 and IPv6 clients.
+#port = 4545
+
+## Maximum number of connections allowed from a single host address.
+#max_per_host = 5
+
+## Maximum number of connections allowed in total from all hosts.
+#max_clients = 1000
+
+## Minutes of inactivity on a connection before it is disconnected.
+#activity_timeout = 15
+
+## Enable IPv6 support.
+#ipv6 = true
+
+## List of denies hosts and networks.
+#denied_hosts_file = @DATADIR@/etc/awemud/hosts.deny
+
+## The host name of the server.
+hostname = @HOSTNAME@
+
+## Maximum number of charaters allowed per account.
+#chars_per_account = 3
+
+## Maximum number of characters which may be active per account.
+#active_per_account = 1
+
+## Enable creation of new accounts.
+#account_creation = true
+
+## Auto-save time in minutes.
+#auto_save = 15
+
+## Backup zone files.
+#backup_zones = true
+
+## Backup player files.
+#backup_players = true
+
+## Run in the background as a server daemon.
+daemon = true
+
+## Lock server into a directory, increasing security.
+#chroot = /home/awemud/jail
+
+## Always run as the given user.  (Server must be started as root.)
+#user = awemud
+
+## Always run as the given group.  (Server must be started as root.)
+#group = daemon
+
+## Path to the sendmail binary.
+sendmail = @SENDMAIL@
+
+## Address to send admin notifications to.
+#admin_mail = awemud-admin@@HOSTNAME@
+
+## Address to send bug reports to.
+#bug_mail = awemud-bugs@@HOSTNAME@
+
+## Address to send player abuse reports to.
+#abuse_mail = awemud-abuse@@HOSTNAME@
+
+## Address to send typo reports to.
+#typo_mail = awemud-typo@@HOSTNAME@

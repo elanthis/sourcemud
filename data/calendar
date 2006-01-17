@@ -1,0 +1,100 @@
+# AweMUD Next Generation - Default calendar definition
+# Copyright (C) 2003-2005  AwesomePlay Productions Inc.
+# Sean Middleditch <elanthis@awemud.net>
+
+# Enumerate weekday names
+weekday = "Sunday"
+weekday = "Monday"
+weekday = "Tuesday"
+weekday = "Wednesday"
+weekday = "Thursday"
+weekday = "Friday"
+weekday = "Saturday"
+
+# Various day/night texts
+day = "The Sun is casting its light about the world."
+day = "The Sun's golden rays are illuminating the lands."
+day = "Shadows creep away as the Sun slowly travels overhead."
+night = "The moon is making its trek across the night sky."
+night = "The lands are dark, save for the silver light of the moon."
+night = "Night's darkness enshrouds the lands."
+sunrise = "The Sun rises in the East."
+sunrise = "Glorious light banishes the darkness as it crests the eastern horizon."
+sunrise = "Night fades into day."
+sunset = "The Sun sets on the Western horiron."
+sunset = "Darkness creeps across the lands as night embraces the world."
+sunset = "The day is conquered by night, and warm light fades into cool darkness."
+
+# Define months
+month {
+  name = "January"
+   days = 31
+}
+month {
+  name = "February"
+   days = 28
+  # leap day, once per 4 years
+  leap = 4
+}
+month {
+  name = "March"
+  days = 31
+}
+month {
+  name = "April"
+  days = 30
+}
+month {
+  name = "May"
+  days = 31
+}
+month {
+  name = "June"
+  days = 30
+}
+month {
+  name = "July"
+  days = 31
+}
+month {
+  name = "August"
+  days = 31
+}
+month {
+  name = "September"
+  days = 30
+}
+month {
+  name = "October"
+  days = 31
+}
+month {
+  name = "November"
+  days = 30
+}
+month {
+  name = "December"
+  days = 31
+}
+
+# Define holidays
+holiday {
+  name = "Winter Solstice"
+  # Every 21st of December
+  month = "December"
+  day = 21
+}
+holiday {
+  name = "Turur Frer"
+  # Every other year, second Tuesday of March
+  years = 2
+  month = "March"
+  weekday = "Tuesday"
+  wdindex = 2
+}
+holiday {
+  name = "10th Day of 4th Year"
+  # 10th day of every month, every 4 years
+  years = 4
+  day = 10
+}

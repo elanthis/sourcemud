@@ -1,0 +1,163 @@
+# AweMUD Next Generation - Armor object blueprints
+# Copyright (C) 2003-2005  AwesomePlay Productions Inc.
+# Sean Middleditch <elanthis@awemud.net>
+# Additions by Gary Mix copyright 2004
+# See COPYING for details
+
+object_blueprint {
+  id = "armor"
+}
+
+object_blueprint {
+  id = "ar_chain_mail"
+  parent = "armor"
+  equip = "torso"
+  name = "chain mail"
+  article = "plural"
+  desc = "The chain mail is a set of armor, crafted of interlocked rings of iron."
+  weight = 20
+  cost = 250
+  @defend = 14
+}
+object_blueprint {
+  id = "ar_chain_shirt"
+  parent = "armor"
+  equip = "torso"
+  name = "chain shirt"
+  desc = "The chain shirt is a set of armor covering the upper torso, crafted of interlocked rings of iron."
+  weight = 15
+  cost = 175
+  @defend = 10
+}
+object_blueprint {
+  id = "ar_leather_armor"
+  parent = "armor"
+  name = "leather armor"
+  article = "plural"
+  desc = "The leather armor is a full set of protective wear, crafted of leather."
+  weight = 10
+  cost = 140
+  @defend = 7
+}
+object_blueprint {
+  id = "ar_leather_tunic"
+  parent = "armor"
+  equip = "torso"
+  name = "leather tunic"
+  desc = "The leather tunic is a simple shirt, made of some kind of cured hide."
+  weight = 8
+  cost = 79
+  @defend = 3
+}
+object_blueprint {
+  id = "ar_helm"
+  parent = "armor"
+  equip = "head"
+  name = "helm"
+  desc = "The helm is made of iron and is slightly dented in places."
+  weight = 5
+  cost = 30
+  @defend = 5
+}
+object_blueprint {
+  id = "ar_chain_leggings"
+  parent = "armor"
+  equip = "legs"
+  name = "chain leggings"
+  article = "plural"
+  desc = "The chain leggings are armor for covering the legs, crafted of interlocked rings of iron."
+  weight = 5
+  cost = 89
+  @defend = 6
+}
+object_blueprint {
+  id = "ar_leather_bracer"
+  parent = "armor"
+  equip = "wrist"
+  name = "leather bracer"
+  desc = "The leather bracer is made from boiled leather and give protection to one's wrist during combat."
+  weight = 3
+  cost = 15
+  @defend = 2
+}
+object_blueprint {
+  id = "ar_casting_robe"
+  parent = "armor"
+  equip = "torso"
+  name = "casting robes"
+  article = "plural"
+  desc = "These comfortable robes are lose fitting, and are lined with pockets. Colorful, but not gaudy, they speak of functional simplicity."
+  weight = 3
+  cost = 129
+  @defend = 6
+}
+object_blueprint {
+  id = "ar_leather_choker"
+  parent = "armor"
+  equip = "neck"
+  name = "leather chocker"
+  desc = "This black leather choker has twelve half inch spikes tooled into the soft grain, which encompass the entire length."
+  weight = 1
+  cost = 9
+  @defend = 2
+}
+object_blueprint {
+  id = "ar_hunting_boots"
+  parent = "armor"
+  equip = "feet"
+  name = "hunting boots"
+  article = "plural"
+  desc = "These side lace hunting boots are custom made of gray wolf skin leather, and have reinforced soles."
+  weight = 3
+  cost = 79
+  @defend = 4
+}
+object_blueprint {
+  id = "ar_hunting_gloves"
+  parent = "armor"
+  equip = "hands"
+  name = "hunting gloves"
+  article = "plural"
+  desc = "Basic leather gloves"
+  weight = 1
+  cost = 25
+  @defend = 3
+}
+object_blueprint {
+  id = "ar_ruby_earring"
+  parent = "armor"
+  equip = "ear"
+  name = "ruby earring"
+  desc = "This earring has a beautiful ruby gemstone, affixed to a golden stud."
+  weight = 1
+  @defend = 0
+}
+object_blueprint {
+  id = "ar_diamond_earring"
+  parent = "armor"
+  equip = "ear"
+  name = "diamond earring"
+  desc = "This earring has a beautiful diamond gemstone, affixed to a golden stud."
+  weight = 1
+  @defend = 0
+}
+object_blueprint {
+  id = "ar_turquoise_anklet"
+  parent = "armor"
+  equip = "ankle"
+  name = "turquoise anklet"
+  desc = "A shiny turquoise anklet."
+  weight = 1
+  @defend = 0
+}
+object_blueprint {
+  id = "ar_gold_anklet"
+  parent = "armor"
+  equip = "ankle"
+  name = "gold anklet"
+  desc = "A shiny gold anklet."
+  weight = 1
+  @defend = 0
+}
+
+# vim: set shiftwidth=2 tabstop=2 expandtab:

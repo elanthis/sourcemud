@@ -1,0 +1,53 @@
+#!/bin/sh
+
+# SETTINGS
+
+ADMIN_EMAIL=$(sed -n '/admin:/{s/^.*admin: \(.*\)$/\1/;p}' awemud.conf)
+PAUSE=$(expr 60 '*' 5)
+BIN=$(test -x './awemud' && echo './awemud' || test -x './src/awemud' && echo './src/awemud')
+LOG='awemud.log'
+MAIL=$(test -x /usr/sbin/sendmail && echo /usr/sbin/sendmail || which sendmail)
+
+# CODE
+
+# no executable?
+if test "x$BIN" = "x" ; then
+	echo "No executable found" >&2
+	exit 2
+fi
+
+# allow core files
+ulimit -c unlimited
+
+# run loop
+while true ; do
+	# run MUD - exit on proper exit
+	if "$BIN" ; then
+		exit 0
+	fi
+
+	# find core file
+	CORE=$(ls core core.* 2>/dev/null)
+	if test -f "$CORE" ; then
+		# mail message
+		echo 'AweMUD Crash at' `date` > mail.txt
+		echo >> mail.txt
+
+		# log file
+		echo '50 lines of log:' >> mail.txt
+		test -f "$LOG" && tail -n 50 "$LOG" >> mail.txt
+		echo >> mail.txt
+
+		# backtrace
+		echo 'Backtrace:' >> mail.txt
+		echo 'backtrace' > gdb.cmds.txt
+		gdb "$BIN" "$CORE" -batch -x gdb.cmds.txt >> mail.txt
+		rm -f gdb.cmds.txt
+
+		# do mail
+		"$MAIL" -s 'AweMUD Crash' "$ADMIN_EMAIL" < mail.txt
+	fi
+
+	# pause before restart
+	sleep "$PAUSE"
+done

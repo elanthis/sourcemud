@@ -1,0 +1,110 @@
+// Code for the example zone
+
+// settings
+var portal_tag_name = 'cave_waterfall_portal';
+var portal_room_name = 'cave_waterfall';
+
+// global tag; so we don't have to spend time in lookup
+var portal_tag = nil;
+
+// check if the portal _should_ be open or closed
+function checkPortalTime()
+{
+	// must be between noon and 3pm
+	var hour = getTime().getHour();
+	return hour >= 12 && hour <= 15;
+}
+
+// open the portal and create object
+function openPortal(room, exit)
+{
+	exit.setDisabled(false);
+
+	var obj = createObjectFromBlueprint(portal_tag_name);
+	if (obj) {
+		obj.addTag(portal_tag);
+		room.addObject(obj);
+	}
+
+	room.print('With no announcement or great fan fare a glowing blue portal appears against the northern wall.\n');
+}
+
+// close the portal and destroy object
+function closePortal(room, exit)
+{
+	exit.setDisabled(true);
+
+	foreach (var entity in getEntitiesByTag(portal_tag))
+		entity.remove();
+
+	room.print('The portal collapses in on itself in a silent mockery of death and fades from sight.\n');
+}
+
+// update the portal state:
+//  if the portal is closed but should be open, open it
+//  if the portal is open but should be closed, close it
+//  otherwise, don't do anything
+function updatePortal()
+{
+	// get the correct room; bail if not found
+	var room = getRoom(portal_room_name);
+	if (!room)
+		return;
+
+	// get the correct exit; bail if not found
+	//exit = room.getExitById(portal_exit_id);
+	var exit = nil;
+	if (!exit)
+		return;
+
+	// check whether exit is already disabled
+	var open = !exit.isDisabled();
+
+	// current state same as what it should be? bail
+	if (open == checkPortalTime())
+		return;
+
+	// open or close the portal
+	if (!open)
+		openPortal(room, exit);
+	else
+		closePortal(room, exit);
+}
+
+// force destruction of the portal
+function destroyPortal()
+{
+	// get the correct room; bail if not found
+	var room = getRoom(portal_room_name);
+	if (!room)
+		return;
+
+	// get the correct exit; bail if not found
+	//exit = room.getExitById(portal_exit_id);
+	var exit = nil;
+	if (!exit)
+		return;
+
+	// and close
+	closePortal(room, exit);
+}
+
+// called when the server initially boots to set the proper portal status
+// also does some basic initialization
+function initPortal()
+{
+	// get the portal tag once so we don't have to look it up again
+	portal_tag = createTag(portal_tag_name);
+
+	// explicitly close the portal, in case things are out of sync
+	destroyPortal();
+
+	// update it if necessary
+	updatePortal();
+}
+
+function init()
+{
+	registerHook('ready', initPortal);
+	registerHook('change_hour', updatePortal);
+}

@@ -1,0 +1,93 @@
+# AweMUD Next Generation - Misc object blueprints
+# Copyright (C) 2003-2005  AwesomePlay Productions Inc.
+# Sean Middleditch <elanthis@awemud.net>
+
+object_blueprint {
+  id = "currency"
+}
+
+object_blueprint {
+  id = "co_leather_backpack"
+  equip = "back"
+  name = "leather backpack"
+  desc = "The leather backpack is very simple in design.  Intended for rugged travel, it is both sturdy and large."
+  weight = 8
+  container = "in"
+}
+object_blueprint {
+  id = "bank_note"
+  name = "bank note"
+  parent = "currency"
+  desc = "The bank note is signed by the First Bank of the Lands, and is worth {1.cost} coins with any merchant who accepts bank notes."
+  weight = 1
+  cost = 1000
+}
+object_blueprint {
+  id = "npc_corpse"
+  name = "corpse"
+  desc = "The {.name} appears fresh.  It is laying on the ground, motionless, as any good corpse should do."
+  weight = 10
+  cost = 0
+  container = "on"
+  rotting = true
+}
+
+object_blueprint {
+  id = "cave_waterfall_portal"
+  name = "glowing portal"
+  desc = "The glowing portal's ovoid, smooth surface gives off a faint blue light as it rests against the northern cavern wall.  The various hues of blue that make up the swirling pattern on the portal's face seem almost at battle, with tides of darker blue giving way to hordes of pale blue, only to resurge and drive back the onslaught."
+}
+
+object_blueprint {
+  id = "raise_undead_talisman"
+  name = "skull talisman"
+  desc = "The talisman is a small golden amulet in the shape of a skull.  Though hard to tell, the eyes appear to faintly glow red."
+
+  action {
+    id = raise
+    script = <<[
+      var room = self.getRoom();
+
+      // raise messages (FIXME: dumb that we have to duplicate that here)
+      user.printf('{2.D} flashes a malevolent red as you raise it into the air.\n', self);
+      user.rprint(strParse('{1.N} raises {2.n} into the air, and {1.d} flashes an evil red.\n', user, self));
+
+      // find all corpses in the room
+      foreach (var object in room.objects()) {
+        // only if its a corpse
+        if (object.isBlueprint('npc_corpse')) {
+          
+          // corpse must specify its NPC blueprint
+          if (!String(object.npc_blueprint))
+            continue;
+
+          // get NPC blueprint
+          var npc_blueprint = getNpcBlueprint(object.npc_blueprint);
+          if (!npc_blueprint)
+            continue;
+
+          // check that the NPC has a raise_as attribute
+          if (!String(npc_blueprint.raise_as))
+            continue;
+
+          // create undead NPC
+          var undead = createNpcFromBlueprint(npc_blueprint.raise_as);
+          if (!undead) {
+            message("NPC blueprint with invalid raise_as: " + npc_blueprint.raise_as);
+            continue;
+          }
+
+          // creation message, add to room, etc
+          room.printf('{2.D} rises from the ground as {3.n}.\n', object, undead);
+          undead.enter(room, nil);
+          object.destroy();
+        }
+      }
+
+      // don't print default message
+      return OBJACT_OK_QUIET;
+    ]>>
+  }
+}
+
+# vim: set shiftwidth=2 tabstop=2 expandtab:

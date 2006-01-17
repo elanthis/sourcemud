@@ -1,0 +1,15 @@
+#!/bin/sh
+
+prefix="@prefix@"
+sysconfdir="@sysconfdir@"
+exec_prefix="@exec_prefix@"
+bindir="@bindir@"
+tarname='@PACKAGE_TARNAME@'
+
+if ! test -x "$bindir/awemud-bin" || ! test -f "$sysconfdir/$tarname/awemud.conf" ; then
+	echo "You must first 'make install' to use this utility."
+	echo "To run AweMUD from the source directory, use './awemud-bin'"
+	exit 1
+fi
+
+"$bindir/awemud-bin" -C "$sysconfdir/$tarname/awemud.conf"

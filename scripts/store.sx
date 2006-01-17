@@ -1,0 +1,260 @@
+// Stores for AweMUD
+// Copyright (C) 2003  AwesomePlay Productions, Inc.
+
+function show_menu (player)
+{
+	// get room
+	var room = player.room();
+	if (!room) {
+		player.print('You are not in a room.\n');
+		return;
+	}
+
+	// is there a menu?
+	var list = room.store_list;
+	if (!String(list)) {
+		player.print('There is no store here.\n');
+		return;
+	}
+
+	// get rate
+	var rate = Int(room.store_rate);
+	if (rate <= 0)
+		rate = 100;
+
+	// show the menu
+	player.print('Items for Sale:\n');
+	player.setIndent(2);
+	player.print('-name-');
+	player.setIndent(20);
+	player.print(' -cost-\n');
+	foreach (var item in list.split(',')) {
+		var blueprint = getObjectBlueprint(item);
+		if (blueprint) {
+			player.setIndent(2);
+			player.print(blueprint.getName().substr(0, 18));
+			player.setIndent(20);
+			player.print(pad(String(blueprint.getCost() * rate / 100), 7), '\n');
+		}
+	}
+	player.setIndent(0);
+}
+
+function buy_item (player, argv)
+{
+	// get room
+	var room = player.room();
+	if (!room) {
+		player.print('You are not in a room.\n');
+		return;
+	}
+
+	// is there a menu?
+	var list = room.store_list;
+	if (!String(list)) {
+		player.print('There is no store here.\n');
+		return;
+	}
+
+	// get rate
+	var rate = Int(room.store_rate);
+	if (rate <= 0)
+		rate = 100;
+
+	// find the item (blueprint)
+	var purchase = nil;
+	foreach (var item in list.split(',')) {
+		var blueprint = getObjectBlueprint(item);
+		if (blueprint && strMatch(argv[0], blueprint.getName())) {
+			purchase = blueprint;
+			break;
+		}
+	}
+	if (!purchase) {
+		player.print('There is no \'', argv[0], '\' for sale here.\n');
+		return;
+	}
+
+	// check cost
+	var cost = purchase.getCost() * rate / 100;
+	if (cost > player.getCoins()) {
+		player.print('You don\'t have enough money to purchase that.\n');
+		return;
+	}
+
+	// have a free hand?
+	if (!player.freeHands()) {
+		player.print('Your hands are full.\n');
+		return;
+	}
+
+	// create the item
+	var object = purchase.create();
+	if (!object) {
+		message('Store in ', room, ' has invalid item \'', purchase.getId(), '\'');
+		player.print('The store is currently out of stock.\n');
+		return;
+	}
+
+	// do transaction
+	player.takeCoins(cost);
+	player.hold(object);
+	player.print('You pay ', cost, ' coins in exchange for ', object.getNamef(EN_INDEF, false), '.\n');
+	player.rprint(player.getNamef(EN_INDEF, true), ' exchanges some coins for a ', object.getNamef(EN_INDEF, false), '.\n');
+}
+
+function price_item (player, argv)
+{
+	// get room
+	var room = player.room();
+	if (!room) {
+		player.print('You are not in a room.\n');
+		return;
+	}
+
+	// is there a store buy list?
+	var buys = room.store_buys;
+	if (!buys) {
+		player.print('You cannot sell items here.\n');
+		return;
+	}
+	buys = buys.split(',');
+
+	// get rate
+	var rate = Int(room.store_rate);
+	if (rate <= 0)
+		rate = 100;
+	rate = 10000 / rate; // invert rate; i.e., 125% => 80%
+	rate -= 20;
+	if (rate < 0)
+		rate = 0;
+	
+	// get item
+	var object = player.clFindObject(argv[0], GOC_HELD, false);
+	if (!object)
+		return;
+
+	// check item class
+	var ok = false;
+	foreach (var class in buys) {
+		if (object.isBlueprint(class)) {
+			ok = true;
+			break;
+		}
+	}
+	if (!ok) {
+		player.printf('You cannot sell {2.i} here.\n', object);
+		return;
+	}
+
+	// determine sell cost of item
+	var cost = object.getCost();
+	cost = cost * rate / 100;
+	if (cost <= 0) {
+		player.print('That item is worthless here.\n');
+		return;
+	} else if (cost == 1) {
+		player.printf('{2.D} can be sold for one coin.\n', object);
+	} else if (cost > 0) {
+		player.printf('{2.D} can be sold for {3} coins.\n', object, cost);
+	}
+}
+
+function sell_item (player, argv)
+{
+	// get room
+	var room = player.room();
+	if (!room) {
+		player.print('You are not in a room.\n');
+		return;
+	}
+
+	// is there a store buy list?
+	var buys = room.store_buys;
+	if (!buys) {
+		player.print('You cannot sell items here.\n');
+		return;
+	}
+	buys = buys.split(',');
+
+	// get rate
+	var rate = Int(room.store_rate);
+	if (rate <= 0)
+		rate = 100;
+	rate = 10000 / rate; // invert rate; i.e., 125% => 80%
+	rate -= 20;
+	if (rate < 0)
+		rate = 0;
+	
+	// get item
+	var object = player.clFindObject(argv[0], GOC_HELD, false);
+	if (!object)
+		return;
+
+	// check item class
+	var ok = false;
+	foreach (var class in buys) {
+		if (object.isBlueprint(class)) {
+			ok = true;
+			break;
+		}
+	}
+	if (!ok) {
+		player.printf('You cannot sell {2.i} here.\n', object);
+		return;
+	}
+
+	// determine sell cost of item
+	var cost = object.getCost();
+	cost = cost * rate / 100;
+	if (cost <= 0) {
+		player.print('That item is worthless here.\n');
+		return;
+	}
+
+	// do transaction
+	player.giveCoins(cost);
+	object.remove();
+	player.printf('You receive {2} coins in exchange for {3.i}.\n', cost, object);
+	player.rprint(player.getNamef(EN_INDEF, true), ' receives some coins in exchange for ', object.getNamef(EN_INDEF, false), '.\n');
+}
+
+function save_store (room, writer)
+{
+	if (String(room.store_list))
+		writer.setString('store_list', room.store_list);
+	if (String(room.store_buys))
+		writer.setString('store_buys', room.store_buys);
+	if (Int(room.store_rate))
+		writer.setInt('store_rate', room.store_rate);
+}
+
+function init ()
+{
+	registerHook('save_room', save_store);
+
+	registerCommand(
+		"menu",
+		"menu\n",
+		"menu",
+		show_menu,
+		nil);
+	registerCommand(
+		"buy",
+		"buy <item>\n",
+		"buy :0*",
+		buy_item,
+		nil);
+	registerCommand(
+		"sell",
+		"sell <item>\n",
+		"sell :0*",
+		sell_item,
+		nil);
+	registerCommand(
+		"price",
+		"price <item>\n",
+		"price :0*",
+		price_item,
+		nil);
+}

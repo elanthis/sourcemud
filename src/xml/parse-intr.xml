@@ -1,0 +1,103 @@
+<?xml version="1.0"?>
+<parse-interface>
+  <include>server.h</include>
+  <include>player.h</include>
+
+  <command name="eq">
+    <arg type="string" name="s1" />
+    <arg type="string" name="s2" />
+    <code><![CDATA[
+      stream << (str_eq(s1, s2) ? "yes" : "");
+    ]]></code>
+  </command>
+  <command name="ne">
+    <arg type="string" name="s1" />
+    <arg type="string" name="s2" />
+    <code><![CDATA[
+      stream << (str_eq(s1, s2) ? "" : "yes");
+    ]]></code>
+  </command>
+  <command name="version">
+    <code><![CDATA[
+      stream << VERSION;
+    ]]></code>
+  </command>
+  <command name="build">
+    <code><![CDATA[
+      stream << __DATE__ " " __TIME__;
+    ]]></code>
+  </command>
+  <command name="uptime">
+    <code><![CDATA[
+      stream << AweMUD::get_uptime();
+    ]]></code>
+  </command>
+  <command name="player-count">
+    <code><![CDATA[
+      stream << PlayerManager.count();
+    ]]></code>
+  </command>
+  <command name="day-or-night">
+    <code><![CDATA[
+      stream << (TimeManager.time.is_night() ? "night" : "day");
+    ]]></code>
+  </command>
+  <command name="bold">
+    <arg type="string" name="str" />
+    <code><![CDATA[
+      stream << CBOLD << str << CNORMAL;
+    ]]></code>
+  </command>
+  <command name="hostname">
+    <code><![CDATA[
+      stream << NetworkManager.get_host();
+    ]]></code>
+  </command>
+  <command name="date">
+    <code><![CDATA[
+      stream << TimeManager.time.date_str();
+    ]]></code>
+  </command>
+  <command name="time">
+    <code><![CDATA[
+      stream << TimeManager.time.time_str();
+    ]]></code>
+  </command>
+  <command name="date-year">
+    <code><![CDATA[
+      stream << TimeManager.time.get_year();
+    ]]></code>
+  </command>
+  <command name="date-month">
+    <code><![CDATA[
+      stream << TimeManager.time.get_month();
+    ]]></code>
+  </command>
+  <command name="date-day">
+    <code><![CDATA[
+      stream << TimeManager.time.get_day();
+    ]]></code>
+  </command>
+  <command name="time-hours24">
+    <code><![CDATA[
+      stream << TimeManager.time.get_hour();
+    ]]></code>
+  </command>
+  <command name="time-hours12">
+    <code><![CDATA[
+      uint hours = TimeManager.time.get_hour();
+      stream << (hours == 0 ? 12 : (hours <= 12 ? hours : hours - 12));
+    ]]></code>
+  </command>
+  <command name="time-ampm">
+    <code><![CDATA[
+      stream << (TimeManager.time.get_hour() < 12 ? "am" : "pm");
+    ]]></code>
+  </command>
+  <command name="time-minutes">
+    <code><![CDATA[
+      stream << (TimeManager.time.get_minutes());
+    ]]></code>
+  </command>
+</parse-interface>
+<!-- vim: set filetype=xml shiftwidth=2 tabstop=2 expandtab : -->

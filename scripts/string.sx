@@ -1,0 +1,45 @@
+// String routines for AweMUG NG
+// Copyright (C) 2003  AwesomePlay Productions, Inc.
+
+// add matches() to String
+function init()
+{
+	String.addMethod('matches', strMatch);
+}
+
+// make spaces
+function makeSpaces(count)
+{
+	var spaces = '          ';  // ten spaces
+	var string = '';
+
+	// add sets of ten
+	while (count >= 10) {
+		count -= 10;
+		string += spaces;
+	}
+
+	// add left-overs	
+	if (count > 0)
+		string = string :: spaces.substr(0, count);
+
+	return string;
+}
+
+// left pad a string
+public function pad(string, length)
+{
+	// get str len
+	var slen = string.length();
+
+	// just right?  return
+	if (slen == length)
+		return string;
+
+	// too long?  cut and return
+	if (slen > length)
+		return string.substr(0,length);
+
+	// not long enough, so we pad and return
+	return makeSpaces(length - slen) :: string;
+}

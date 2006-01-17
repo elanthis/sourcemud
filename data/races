@@ -1,0 +1,255 @@
+# AweMUD Next Generation - Player race definitions
+# Copyright (C) 2003-2005  AwesomePlay Productions Inc."
+# Sean Middleditch <elanthis@awemud.net>
+
+# Human race
+race {
+  name = "human"
+
+  # basics
+  adj = "human"
+  body = "humanoid"
+
+  # description
+  about = "Humans are perhaps the most versatile of the races.  Looked down upon by the other races for their ambition, humans often are capable of reaching achievements far quicker than the other races."
+
+  desc = "{$1.D} is a {$1.trait 'build'} {$1.male} standing at {$1.height}, with {$1.trait 'skin color'} skin, {$1.trait 'eye color'} eyes, and {! $1.trait 'hair style'}."
+
+  # eye colors
+  trait : "eye color" = "brown"
+  trait : "eye color" = "blue"
+  trait : "eye color" = "green"
+  trait : "eye color" = "grey"
+  trait : "eye color" = "black"
+
+  # hair colors
+  trait : "hair color" = "brown"
+  trait : "hair color" = "grey"
+  trait : "hair color" = "white"
+  trait : "hair color" = "black"
+  trait : "hair color" = "blonde"
+  trait : "hair color" = "red"
+
+  # skin colors
+  trait : "skin color" = "fair"
+  trait : "skin color" = "dark"
+  trait : "skin color" = "tan"
+
+  # hair styles
+  trait : "hair style" = "short"
+  trait : "hair style" = "long"
+  trait : "hair style" = "flowing"
+  trait : "hair style" = "bun"
+  trait : "hair style" = "curly"
+  trait : "hair style" = "ponytail"
+  trait : "hair style" = "spiked"
+  trait : "hair style" = "shaved"
+
+  # body builds
+  trait : "build" = "average"
+  trait : "build" = "broad"
+  trait : "build" = "fat"
+  trait : "build" = "large"
+  trait : "build" = "lean"
+  trait : "build" = "hunched"
+  trait : "build" = "slim"
+  trait : "build" = "stocky"
+
+  # age
+  min_age = 18
+  max_age = 25
+  lifespan = 90
+}
+
+# Elven race
+race {
+  name = "elf"
+
+  # basics
+  adj = "elven"
+  body = "humanoid"
+
+  # description
+  about = "Elves are tall, graceful people.  Usually living in the forest, the elven people have an affinity for nature, and abhor the destruction wrought to the lands by humans.  Elves live exceptionally long lives."
+
+  desc = "{$1.D} stands {$1.height} tall, with an air of graceful nobility.  {! $1.Trait 'hair style'} frames {$1.his} angular facial features.  {$1.His} {if eq {$1.trait 'eye color'} 'white'}shining white{elif eq {$1.trait 'eye color'} 'silver'} magnificent silver{else}deep {$1.trait 'eye color'}{endif} eyes stand starkly apart from the {$1.trait 'skin color'} skin of {$1.his} {! $1.trait 'build'} frame."
+
+  # mods
+  stat : strength = -5
+  stat : fortitude = -10
+  stat : spirit = 5
+  stat : agility = 10
+
+  # age and lifespan
+  min_age = 50
+  max_age = 400
+  lifespan = 2000
+
+  # eye colors
+  trait : "eye color" = "brown"
+  trait : "eye color" = "blue"
+  trait : "eye color" = "green"
+  trait : "eye color" = "black"
+
+  # hair colors
+  trait : "hair color" = "brown"
+  trait : "hair color" = "silver"
+  trait : "hair color" = "white"
+  trait : "hair color" = "black"
+  trait : "hair color" = "blonde"
+  trait : "hair color" = "green"
+  trait : "hair color" = "blue"
+  trait : "hair color" = "red"
+
+  # skin colors
+  trait : "skin color" = "fair"
+  trait : "skin color" = "tan"
+
+  # hair styles
+  trait : "hair style" = "short"
+  trait : "hair style" = "long"
+  trait : "hair style" = "flowing"
+  trait : "hair style" = "bun"
+  trait : "hair style" = "curly"
+  trait : "hair style" = "ponytail"
+  trait : "hair style" = "spiked"
+  trait : "hair style" = "shaved"
+
+  # body builds
+  trait : "build" = "average"
+  trait : "build" = "lean"
+  trait : "build" = "hunched"
+  trait : "build" = "slim"
+
+  # heights
+  male_height = 74
+  female_height = 72
+}
+
+# Kalruan race (cat-people)
+race {
+  name = "kalruan"
+
+  # basics
+  adj = "kalruan"
+  body = "humanoid"
+
+  about = "Mischevious humanoids that look like nothing but a cross between a cat and a human.  The kalruan have a fine coat of fur covering their bodies, tails, and feline ears, and have cat-like features about their face.  The kalruan are known for their hedonistic behaviour."
+
+  desc = "{$1.D} stands {$1.height} in height.  {$1.His} {! $1.Trait 'build'} body and long tail are covered in {$1.trait 'fur color'} fur.  {$1.He} has {! $1.trait 'hair style'}.  {$1.His} eyes are {if eq {$1.trait 'eye color'} 'green'}a brilliant green{else}{$1.trait 'eye color'}{endif} and twinkle with a mischevious spark."
+
+  # mods
+  stat : spirit = 5
+  stat : agility = 10
+  stat : fortitude = -5
+  stat : willpower = -10
+
+  # age and lifespan
+  min_age = 12
+  max_age = 20
+  lifespan = 60
+
+  # eye colors
+  trait : "eye color" = "brown"
+  trait : "eye color" = "blue"
+  trait : "eye color" = "green"
+  trait : "eye color" = "black"
+  trait : "eye color" = "yellow"
+
+  # hair colors
+  trait : "hair color" = "brown"
+  trait : "hair color" = "black"
+  trait : "hair color" = "red"
+  trait : "hair color" = "orange"
+
+  # fur colors
+  trait : "skin color" = "pink"
+  trait : "fur color" = "brown"
+  trait : "fur color" = "black"
+  trait : "fur color" = "red"
+  trait : "fur color" = "orange"
+  trait : "fur color" = "tan"
+
+  # hair styles
+  trait : "hair style" = "short"
+  trait : "hair style" = "spiked"
+
+  # body builds
+  trait : "build" = "average"
+  trait : "build" = "broad"
+  trait : "build" = "fat"
+  trait : "build" = "large"
+  trait : "build" = "lean"
+  trait : "build" = "hunched"
+  trait : "build" = "slim"
+  trait : "build" = "stocky"
+
+  # heights
+  male_height = 72
+  female_height = 60
+}
+
+# Dwarvish race
+race {
+  name = "dwarf"
+
+  # basics
+  adj = "dwarven"
+  body = "humanoid"
+
+  about = "Tough as stone, and not much better looking, dwarves are a race of beings who live in the earth itself.  Their craftsmanship, in both metal and stone, is reknown by all.  Despite their shorter heights, a dwarf is often far stronger than the other races; they are also excellent warriors."
+
+  desc = "{$1.D} is {$1.height} tall and {! $1.trait 'build'} with a long {! $1.trait 'hair color'} beard.  {$1.His} {$1.trait 'eye color'} eyes look almost like gems set in the {$1.trait 'skin color'} rocky skin of {$1.his} face, topped with {! $1.trait 'hair style'}."
+
+  # mods
+  stat : strength = 5
+  stat : fortitude = 10
+  stat : spirit = -15
+
+  # age and lifespan
+  min_age = 30
+  max_age = 100
+  lifespan = 400
+
+  # eye colors
+  trait : "eye color" = "brown"
+  trait : "eye color" = "black"
+  trait : "eye color" = "red"
+
+  # hair colors
+  trait : "hair color" = "brown"
+  trait : "hair color" = "white"
+  trait : "hair color" = "black"
+  trait : "hair color" = "blonde"
+  trait : "hair color" = "red"
+
+  # skin colors
+  trait : "skin color" = "tan"
+  trait : "skin color" = "reddish"
+  trait : "skin color" = "dark"
+  trait : "skin color" = "granite"
+
+  # hair styles
+  trait : "hair style" = "short"
+  trait : "hair style" = "long"
+  trait : "hair style" = "flowing"
+  trait : "hair style" = "bun"
+  trait : "hair style" = "curly"
+  trait : "hair style" = "ponytail"
+  trait : "hair style" = "spiked"
+  trait : "hair style" = "shaved"
+
+  # body builds
+  trait : "build" = "average"
+  trait : "build" = "broad"
+  trait : "build" = "fat"
+  trait : "build" = "large"
+  trait : "build" = "hunched"
+  trait : "build" = "stocky"
+
+  # heights
+  male_height = 55
+  female_height = 53
+}
+
+# vim: set shiftwidth=2 tabstop=2 expandtab:

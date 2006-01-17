@@ -1,0 +1,19 @@
+#!/bin/sh
+
+prefix="@prefix@"
+exec_prefix="@exec_prefix@"
+localstatedir="@localstatedir@"
+sysconfigdir="@sysconfdir@"
+version="@VERSION@"
+package="@PACKAGE_TARNAME@"
+sendmail="@PATH_SENDMAIL@"
+hostname="@HOSTNAME@"
+
+sed "
+s![@]PREFIX[@]!$prefix!g;
+s![@]DATADIR[@]!$localstatedir!g;
+s![@]CONFDIR[@]!$sysconfigdir!g;
+s![@]VERSION[@]!$version!g;
+s![@]SENDMAIL[@]!$sendmail!g;
+s![@]HOSTNAME[@]!$hostname!g;
+" < "$1" > "$2"

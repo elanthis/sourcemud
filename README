@@ -1,0 +1,104 @@
+AweMUD Next Generation
+Copyright (C) 2002,2003  AwesomePlay Productions, Inc.
+Sean Middleditch <elanthis@awesomeplay.com>
+Basic AweMUD NG Information
+------------------------------------------------------
+
+
+1. Introduction
+   ============
+   AweMUD NG is a MUD (Multi-User Dungeon) game server.  Players connect to the
+   server using telnet, or a MUD client application, to play in a fantasy world
+   with other players.
+
+   AweMUD NG is a new codebase; it is not derived from any older codebases like
+   many other popular MUDs.  One consequence of this is that many terms and
+   systems found in most other MUDs are different in AweMUD.
+
+   The Scriptix scripting language is used to extending and modifying the
+   engine core features.
+
+
+2. Documentation
+   =============
+   The files in the doc/ directory contain lots of useful information.  If you
+   received AweMUD in a pre-packaged form, there should be both plain text and
+   HTML versions of all the documents.  If those files are not present, and you
+   have tools for DocBook XML processing installed, the files will be built
+   when you run 'make'.
+
+   In particular, building and installation instructions can be found in the
+   admin guide (e.g. doc/admin.txt), along with basic configuration details.
+
+   Useful guides for players (who probably won't even be reading this file), an
+   administration guide, FAQ file, scripting API reference (for the AweMUD-
+   specific APIs), and more are located in doc/.
+
+   Please note that the coders tend to get out of sync with the document
+   writers (even when they are usually the same person), and the documents
+   often lag behind the code.
+
+
+3. Support
+   =======
+   If the documentation doesn't provide an answer, or just confused you more,
+   you can find support in several place.  The AweMUD website
+   (http://www.awemud.net) has both user forums and a bug tracking system.  The
+   website also has information on the AweMUD mailing lists.  You can also
+   (occasionally) find people in the #awemud channel on the FreeNode IRC
+   network.
+
+
+4. Upgrading
+   =========
+   If you are upgrading from a previous AweMUD release, please keep these
+   points in mind:
+
+   * Be warned that 'make install' will overwrite several key files in the
+     target directory, including awemud.conf, and all the files in data/*.  You
+     should back up your modified copies, or manually install the AweMUD files
+     you wish to upgrade.
+   * Read the ChangeLog and script documentation before running the new AweMUD
+     with your old scripts.  Pre-1.0 AweMUD releases are very likely to change
+     the API exposed the scripts.
+   * Data files may very likely need to be modified, converted, or flat out
+     rewritten.  While we try to stay compatible between pre-1.0 release, it
+     doesn't make sense to limit development of features for compatibility
+     reasons in alpha software.
+
+
+5. Legal
+   =====
+   AweMUD comes with no warranty.  If something bad happens to you because of
+   your use of AweMUD, we (the authors, distributors, builders, and testers)
+   are not responsible for your misfortune and/or mistakes.  See the disclaimer
+   section below.
+
+   AweMUD is licensed under the BSD license.  See the COPYING file for more
+   details.  As a summary, the BSD license gives you rights to do whatever you
+   want with the code.  Note: you can NOT change the license of our code, or
+   modify copyrights.  Our code is our code, and it is released under the BSD
+   license - end of story.  You can, however, add new code or modify existing
+   code.  Any code you write is yours, and licensed under whichever license you
+   choose - end of story.  The BSD license grants you the right to distribute
+   binaries; the license does NOT guarantee receivers of the binaries rights to
+   the source code, original or modified.  The BSD license is ideal if you wish
+   to release a modified codebase in a commercial setting.
+
+   We do appreciate being given credit if you distribute binaries, but it is
+   not legally required.
+
+
+6. Disclaimer
+   ==========
+   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+   AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+   IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+   ARE DISCLAIMED. IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE FOR
+   ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+   DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+   SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+   CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+   LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+   OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
+   DAMAGE.

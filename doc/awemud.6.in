@@ -1,0 +1,176 @@
+.TH AweMUD 6 "@BUILD_DATE@" "AweMUD NG" "AweMUD Manual"
+
+.SH NAME
+.PP
+.B AweMUD NG V@VERSION@
+- AwesomePlay Next Generation MUD Engine
+
+.SH SYNOPSIS
+.PP
+.B awemud
+[conffile]
+
+.SH DESCRIPTION
+.PP
+.B AweMUD
+provides a MUD server, and program used to build and deploy interactive, multi-user text-based games.
+.PP
+The MUD server is used by connecting over the network using either a telnet client, or a specialized MUD client.  Users type in commands to tell the server what they wish to do, and the server tells them the result.  Multiple users can interact together, with the server arbitrating rules and so on the players.
+.PP
+The players exist in a world that the administrator's can craft.  The world is broken in rooms, or divisions of the world.  Players can interfact with non-player characters (computer controlled people and creatures), or objects
+in the world.
+.PP
+.B AweMUD
+is designed for fantasy-genre gameplay in a world of adventure.
+
+.SH CONFIGURING
+.PP
+.B AweMUD
+is controlled mainly thru the use of the
+.I awemud.conf
+configuration file.
+.PP
+See the
+.I Administrator's Guide
+for more details on this file.
+.PP
+The
+.I awemud.conf
+file is similar to a DOS .ini file.  It is separated into sections, and each section has key:value pairs.  Comments (unparsed bits of text to remind people what parts of the file mean) are also allowed.
+.PP
+A section is defined by putting the section name, followed by a { (left curly bracket).  You must put at } (right curly bracket) at the end of the section.
+.PP
+.B 	network { ... }
+.PP
+Individual options in a section must be in the key:value format.
+.PP
+.B 	mykey:some value
+.PP
+Comments appear after a
+.B #
+(hash).  From the hash to the end of the line is considered the comment, and ignored by the file parser.
+.PP
+.B 	# some commented text
+.PP
+The following are descriptions of the accepted sections, and their accepted key/value pairs. 
+
+.SH CONFIGURATION FILE
+# awemud.conf
+.PP
+.B path
+{
+.RS
+# Where to log messages and errors.
+.br
+.BI logfile: path
+
+# File to write out the server's PID.
+.br
+.BI pidfile: path
+
+# Directory where zone files are stored.
+.br
+.BI world: path
+
+# Directory where player files are stored
+.br
+.BI players: path
+
+# Directory where account files are stored
+.br
+.BI accounts: path
+.RE
+}
+
+.PP
+.B network
+{
+.RS
+# Port to listen on for player connections.
+.br
+.BI port: port
+
+# The maximum number of connections to accept from
+.br
+# a single host.
+.br
+.BI maxhostconn: connections
+
+# The total maximum number of connections to accept.
+.br
+.BI maxconn: connections
+
+# Enable IPv6 usage.  (Requires IPv6 support.)
+.br
+.BR ipv6: yes
+
+# Number of minutes a player may be inactive
+.br
+# before being disconnected.
+.br
+.BI timeout: minutes
+.RE
+}
+
+.PP
+.B backup
+{
+.RS
+# Enable automatic backups of world and zone files.
+.br
+.BR world: on
+
+# Enable automatic backups of player files.
+.br
+.BR players: on
+.RE
+}
+
+.PP
+.B system
+{
+.RS
+# Run as a daemon.
+.br
+.BR daemon: on
+
+# Run chrooted in the specified path.
+.br
+# (Must be started as root.)
+.br
+.BI chroot: path
+
+# Switch to the specified user.
+.br
+# (Must be started as root.)
+.br
+.BI user: user
+
+# Switch to the specified group.
+.br
+# (Must be started as root.)
+.br
+.BI group: group
+.RE
+}
+
+.SH BUGS
+.PP
+A list of known bugs in
+.B AweMUD
+can be found online, at
+.br
+.I http://www.awemud.net/bugs/
+.PP
+That web site also allows you to place new bugs if you find any in
+.B AweMUD
+or related projects.  (Submitting bugs lets the developers known about them so
+they can be fixed.)
+
+.SH AUTHORS
+.PP
+AwesomePlay Productions, Inc.
+.br
+Sean Middleditch <elanthis@awemud.net>
+.br
+Philip Scott <scottythesmell@users.sourceforge.net>
