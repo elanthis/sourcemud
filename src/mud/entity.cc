@@ -22,23 +22,6 @@
 #include "mud/clock.h"
 #include "mud/hooks.h"
 
-String EntityArticle::names[] = {
-	"normal",
-	"proper",
-	"unique",
-	"plural",
-	"vowel"
-};
-
-EntityArticle
-EntityArticle::lookup (StringArg name)
-{
-	for (uint i = 0; i < COUNT; ++i)
-		if (str_eq(name, names[i]))
-			return i;
-	return NORMAL;
-}
-
 // ----- Entity -----
 
 Entity::Entity (const Scriptix::TypeInfo* type) : Scriptix::Native(type)
@@ -140,53 +123,6 @@ Entity::name_match (StringArg name) const
 
 	// no match
 	return false;
-}
-
-
-// display
-void
-Entity::display_name (const StreamControl& stream, EntityArticleType atype, bool capitalize) const
-{
-	StringArg name = get_name();
-	EntityArticle article = get_article();
-
-	// proper names, no articles
-	if (article == EntityArticle::PROPER || atype == NONE) {
-		// specialize output
-		stream << ncolor();
-		if (capitalize && name) {
-			stream << (char)toupper(name[0]) << name.c_str() + 1;
-		} else {
-			stream << name;
-		}
-		stream << CNORMAL;
-		return;
-	// definite articles - uniques
-	} else if (atype == DEFINITE || article == EntityArticle::UNIQUE) {
-		if (capitalize)
-			stream << "The ";
-		else
-			stream << "the ";
-	// pluralized name
-	} else if (article == EntityArticle::PLURAL) {
-		if (capitalize)
-			stream << "Some ";
-		else
-			stream << "some ";
-	// starts with a vowel-sound
-	} else if (article == EntityArticle::VOWEL) {
-		if (capitalize)
-			stream << "An ";
-		else
-			stream << "an ";
-	// normal-type name, nifty.
-	} else {
-		if (capitalize)
-			stream << "A ";
-		else
-			stream << "a ";
-	}
-	stream << ncolor() << name << CNORMAL;
 }
 
 void

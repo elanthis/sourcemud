@@ -54,10 +54,8 @@ class Zone : public Entity
 	void set_id (StringArg new_id) { id = new_id; }
 
 	// name information
-	virtual String get_name () const { return name; }
-	virtual EntityArticle get_article () const { return EntityArticle::UNIQUE; }
-	virtual void set_name (StringArg s_name) { name = s_name; }
-	virtual void set_article (EntityArticle s_article) {}
+	virtual EntityName get_name () const { return name; }
+	virtual void set_name (StringArg s_name) { name.set_name(s_name); }
 
 	// description information
 	virtual String get_desc () const { return desc; }
@@ -99,7 +97,7 @@ class Zone : public Entity
 
 	protected:
 	String id;
-	String name;
+	EntityName name;
 	String desc;
 
 	typedef GCType::vector<class Room*> RoomList;

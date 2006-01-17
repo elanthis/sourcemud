@@ -32,7 +32,6 @@ void command_create (Player* builder, char** argv)
 			}
 		} else {
 			new_npc = new Npc();
-			new_npc->set_name("new npc");
 		}
 
 		new_npc->enter (builder->get_room(), NULL);
@@ -48,7 +47,6 @@ void command_create (Player* builder, char** argv)
 			}
 		} else {
 			new_object = new Object();
-			new_object->set_name("new object");
 		}
 
 		builder->get_room()->add_object (new_object);

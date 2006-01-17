@@ -28,10 +28,8 @@ class Room : public Entity
 	Room (void);
 
 	// name information
-	inline virtual String get_name (void) const { return name; }
-	inline virtual EntityArticle get_article (void) const { return EntityArticle::PROPER; }
-	inline void set_name (StringArg s_name) { name = s_name; }
-	inline void set_article (EntityArticle s_article) {}
+	inline virtual EntityName get_name (void) const { return name; }
+	inline void set_name (StringArg s_name) { name.set_name(s_name); }
 
 	// description information
 	inline virtual String get_desc (void) const { return desc; }
@@ -111,7 +109,7 @@ class Room : public Entity
 
 	protected:
 	String id;
-	String name;
+	EntityName name;
 	String desc;
 	class Zone* zone;
 	uint coins;

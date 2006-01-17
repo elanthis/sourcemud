@@ -267,7 +267,7 @@ Character::do_look (RoomExit *exit)
 		*this << "There is nothing remarkable about " << StreamName(*exit, DEFINITE) << ".  ";
 
 	// show direction
-	if (exit->get_dir().valid() && exit->get_name() != exit->get_dir().get_name())
+	if (exit->get_dir().valid() && exit->get_name().get_text() != exit->get_dir().get_name())
 		*this << StreamName(*exit, DEFINITE, true) << " heads " << exit->get_dir().get_name() << ".  ";
 
 	// closed exit?

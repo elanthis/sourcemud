@@ -30,7 +30,7 @@ text : menu_banner = <<[
 ]>>
 
 text : login = <<[
-Welcome, {1.n}!
+Welcome, {$1.n}!
 
 If you find yourself in need of assistance, try using the {bold 'help'} command.
 ]>>

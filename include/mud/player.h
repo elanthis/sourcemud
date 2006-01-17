@@ -68,10 +68,8 @@ class Player : public Character
 	Player (class Account* s_account, StringArg s_name);
 
 	// name information (special for players)
-	virtual String get_name (void) const { return name; }
-	virtual EntityArticle get_article (void) const { return EntityArticle::PROPER; }
-	virtual void set_name (StringArg s_name) {}
-	virtual void set_article (EntityArticle s_article) {}
+	virtual EntityName get_name (void) const { return name; }
+	bool set_name (StringArg s_name) { return name.set_name(s_name); }
 
 	// title
 	inline String get_title (void) const { return title; }
@@ -89,9 +87,6 @@ class Player : public Character
 	virtual inline CharAlign get_alignment (void) const { return alignment; }
 	inline void set_alignment (CharAlign s_align) { alignment = s_align; }
 	inline CharAlign adjust_alignment (int mod) { set_alignment(CharAlign(get_alignment() + mod)); return get_alignment(); }
-
-	// display
-	virtual void display_name (const class StreamControl& stream, EntityArticleType, bool capitalize) const;
 
 	// save and load
 	virtual void save (File::Writer& writer);
@@ -207,7 +202,7 @@ class Player : public Character
 	typedef GCType::map<const class Class*, uint> ClassList;
 	typedef GCType::map<CharacterTraitID, CharacterTraitValue> TraitMap;
 
-	String name;
+	EntityName name;
 	class TelnetHandler* conn;
 	Account* account;
 	String last_command;

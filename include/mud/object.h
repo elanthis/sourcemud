@@ -66,10 +66,8 @@ ObjectBlueprint : public Scriptix::Native
 	inline String get_id (void) const { return id; }
 
 	// name
-	inline const String& get_name (void) const { return name.name; }
-	inline void set_name (StringArg s_name) { name.name = s_name; set_flags.name = true; }
-	inline EntityArticle get_article (void) const { return name.article; }
-	inline void set_article (EntityArticle s_type) { name.article = s_type; set_flags.article = true; }
+	inline const EntityName& get_name (void) const { return name; }
+	inline bool set_name (StringArg s_name) { bool ret = name.set_name(s_name); set_flags.name = true; return ret; }
 	void reset_name (void);
 
 	inline const StringList& get_keywords (void) const { return keywords; }
@@ -190,16 +188,11 @@ Object : public Entity
 	Object (ObjectBlueprint* s_blueprint);
 
 	// name info
-	virtual String get_name (void) const;
-	virtual EntityArticle get_article (void) const;
+	virtual EntityName get_name (void) const;
 	virtual bool name_match (StringArg name) const;
 
 	// description
 	virtual String get_desc (void) const;
-
-	// not supported - blueprint
-	inline void set_name (StringArg s_name) { name.name = s_name; }
-	inline void set_article (EntityArticle s_article) { name.article = s_article; }
 
 	// save/load
 	virtual int load_node (File::Reader& reader, File::Node& node);
@@ -267,7 +260,6 @@ Object : public Entity
 
 	// data
 	private:
-	EntityName name;
 	Entity *owner;
 	ObjectBlueprint* blueprint;
 	ContainerType location;

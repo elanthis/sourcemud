@@ -229,6 +229,7 @@ noinst_HEADERS=\
 	include/mud/help.h \
 	include/mud/idmap.h \
 	include/mud/message.h \
+	include/mud/name.h \
 	include/mud/network.h \
 	include/mud/npc.h \
 	include/mud/object.h \
@@ -344,6 +345,7 @@ awemud_bin_SOURCES=\
 	src/mud/main.cc \
 	src/mud/md5.cc \
 	src/mud/message.cc \
+	src/mud/name.cc \
 	src/mud/network.cc \
 	src/mud/npc.cc \
 	src/mud/object.cc \

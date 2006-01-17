@@ -34,20 +34,20 @@ void command_gm_boot (Player* gm, char** argv)
 		if (cn->get_telnet()) {
 			*gm << "Booting " << StreamName(cn) << "...\n";
 			*cn << CADMIN "You are being booted by a GM." CNORMAL "\n";
-			Log::Info << "User " << cn->get_name () << " booted by " << gm->get_name ();
+			Log::Info << "User " << cn->get_account()->get_id() << " booted by " << gm->get_account()->get_id();
 			cn->get_telnet()->disconnect();
 		} else {
-			*gm << "User " << cn->get_name() << " is already disconnected.\n";
+			*gm << StreamName(cn, DEFINITE, true) << " is already disconnected.\n";
 		}
 	}
 }
 
 void command_gm_teleport_room (Player* gm, char** argv)
 {
-	Room *r = ZoneManager.get_room (argv[0]);
-	if (r) {
-		*gm << "Jumping to " << r->get_name () << ".\n";
-		gm->enter (r, NULL);
+	Room *room = ZoneManager.get_room (argv[0]);
+	if (room) {
+		*gm << "Jumping to " << StreamName(room, DEFINITE, true) << ".\n";
+		gm->enter (room, NULL);
 	} else
 		*gm << "Could not find room '" << argv[0] << "'.\n";
 }

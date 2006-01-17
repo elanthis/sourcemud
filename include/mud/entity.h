@@ -28,6 +28,7 @@
 #include "mud/clock.h"
 #include "mud/parse.h"
 #include "scriptix/native.h"
+#include "mud/name.h"
 
 #define E_SUBTYPE(name,par) \
 	public: \
@@ -35,52 +36,6 @@
 	inline static const void *get_setype () { return (const void *)name::get_setype; } \
 	virtual bool check_etype (const void *type) const { return (type == name::get_setype ()) || par::check_etype(type); }
 #define E_TYPE(name) E_SUBTYPE(name,Entity)
-
-class EntityArticle {
-	public:
-	typedef enum {
-		NORMAL = 0,	// normal noun, like 'table' or 'priest':
-					//	definite 'the', indefinte 'a'
-		PROPER, 	// full proper name, like 'Sean' or 'Glamdring':
-					//	no definite or indefinite
-		UNIQUE, 	// unique non-proper, like the 'prince', the 'moon':
-					//	definite and indefinite 'the'
-					// also for proper nouns that need 'the', like the
-					//  'Arctic Circle' or the 'King of England'
-		PLURAL, 	// normal noun in plural form, like 'pants' or 'glasses':
-					//	definite 'the', indefinite 'some'
-		VOWEL,		// normal noun beginning with vowel, like 'emerald' or
-					//  'adventurer': definite 'the', indefinite 'an'
-		COUNT
-	} type_t;
-	
-	public:
-	EntityArticle (int s_value) : value((type_t)s_value) {}
-	EntityArticle () : value(NORMAL) {}
-
-	StringArg get_name() const { return names[value]; }
-	type_t get_value () const { return value; }
-	static EntityArticle lookup (StringArg name);
-
-	inline bool operator == (const EntityArticle& dir) const { return dir.value == value; }
-	inline bool operator != (const EntityArticle& dir) const { return dir.value != value; }
-
-	private:
-	type_t value;
-
-	static String names[];
-};
-
-enum EntityArticleType {
-	NONE = 0, // just the name, ma'am
-	DEFINITE, // definite article: the
-	INDEFINITE, // indefinite article: a or an
-};
-
-struct EntityName {
-	String name;
-	EntityArticle article;
-};
 
 // for the global entity list
 typedef std::list<Entity*> EntityList; // NOTE: no gc_alloc, don't want GC to scan this
@@ -101,9 +56,7 @@ class Entity : public Scriptix::Native
 	inline const UniqueID& get_uid () const { return uid; }
 
 	// name stuff
-	virtual String get_name () const = 0;
-
-	virtual EntityArticle get_article () const = 0;
+	virtual EntityName get_name () const = 0;
 
 	// description
 	virtual String get_desc () const = 0;
@@ -129,7 +82,6 @@ class Entity : public Scriptix::Native
 	inline const TagList& get_tags () const { return tags; }
 
 	// output
-	virtual void display_name (const class StreamControl& stream, EntityArticleType = NONE, bool upper = false) const;
 	virtual void display_desc (const class StreamControl& stream) const;
 	virtual const char* ncolor () const { return CNORMAL; }
 
@@ -239,31 +191,6 @@ class SEntityManager : public IManager
 	friend class Entity;
 };
 extern SEntityManager EntityManager;
-
-// stream entity names
-struct
-StreamName {
-	// constructors
-	inline
-	explicit StreamName(const Entity* s_ptr, EntityArticleType s_atype = NONE, bool s_capitalize = false) :
-		ref(*s_ptr), atype(s_atype), capitalize(s_capitalize) {}
-	inline
-	explicit StreamName(const Entity& s_ref, EntityArticleType s_atype = NONE, bool s_capitalize = false) :
-		ref(s_ref), atype(s_atype), capitalize(s_capitalize) {}
-
-	friend inline
-	const StreamControl&
-	operator << (const StreamControl& stream, const StreamName& name)
-	{
-		name.ref.display_name(stream, name.atype, name.capitalize);
-		return stream;
-	}
-
-	// data
-	const Entity& ref; // the entity to print
-	EntityArticleType atype; // article type
-	bool capitalize; // capitalize or not
-};
 
 // --- CASTING/TYPE-CHECKING ---
 

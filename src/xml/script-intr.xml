@@ -619,7 +619,7 @@ number = roll_dice(3, 6);]]></example>
           stream << val.get_string();
         } else if (val.is_a(AweMUD_EntityType)) {
           Entity* entity = (Entity*)val.get();
-          stream << entity->get_name();
+          stream << entity;
         }
       }
   
@@ -823,17 +823,17 @@ number = roll_dice(3, 6);]]></example>
       <name>getName</name>
       <return>
         <type>String</type>
-        <doc>The entity's name.</doc>
+        <doc>The entity's name, without the article.</doc>
       </return>
-      <invoke>get_name</invoke>
+      <code><![CDATA[_return = _self->get_name().get_text();]]></code>
     </method>
     <method>
-      <name>getArticle</name>
+      <name>getFullName</name>
       <return>
-        <type>Integer</type>
+        <type>String</type>
+        <doc>The entity's name, withthe article.</doc>
       </return>
-      <code><![CDATA[_return = _self->get_article().get_value();]]></code>
-      <invoke>get_article</invoke>
+      <code><![CDATA[_return = _self->get_name().get_name();]]></code>
     </method>
     <method>
       <name>getDesc</name>
@@ -891,7 +891,7 @@ number = roll_dice(3, 6);]]></example>
         <type>Boolean</type>
         <doc>If true, the named will have forced capitalization.  (For the beginnings of sentences.)</doc>
       </arg>
-      <code><![CDATA[_return << StreamName(_self, (EntityArticleType)_arg_article, _arg_capitalize);]]></code>
+      <code><![CDATA[_return << StreamName(_self, (EntityArticleUsage)_arg_article, _arg_capitalize);]]></code>
       <doc>Returns a formatted display name.  This name will have color codes embedded, optional prefixes or suffices, and an article.  This should be used for printing out names using the <link method="Room.print"/> and Player.print() methods.</doc>
       <example><![CDATA[// set 'capitalize' to true at the beginning of a sentence
 room.print(entity.get_name(EN_DEF, true), " is in the room.\n");
@@ -2159,11 +2159,19 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
     </method>
     <method>
       <name>getName</name>
-      <invoke>get_name</invoke>
       <return>
         <type>String</type>
-        <doc>The blueprint's primary name.</doc>
+        <doc>The blueprint's name, without the article.</doc>
       </return>
+      <code><![CDATA[_return = _self->get_name().get_text();]]></code>
+    </method>
+    <method>
+      <name>getFullName</name>
+      <return>
+        <type>String</type>
+        <doc>The blueprint's name, with the article.</doc>
+      </return>
+      <code><![CDATA[_return = _self->get_name().get_name();]]></code>
     </method>
 
     <!-- create -->
@@ -2201,29 +2209,6 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
     <new><![CDATA[
       return new Object();
     ]]></new>
-
-    <method>
-      <name>setName</name>
-      <invoke>set_name</invoke>
-      <arg>
-        <name>name</name>
-        <type>String</type>
-        <doc>New entity name.</doc>
-      </arg>
-      <invoke>set_name</invoke>
-    </method>
-    <method>
-      <name>setArticle</name>
-      <arg>
-        <name>article</name>
-        <type>Integer</type>
-      </arg>
-      <code><![CDATA[
-        if (_arg_article != EntityArticle::NORMAL && _arg_article != EntityArticle::PLURAL && _arg_article != EntityArticle::PROPER && _arg_article != EntityArticle::UNIQUE && _arg_article != EntityArticle::VOWEL)
-          return Scriptix::Nil; // FIXME: raise error
-        _self->set_article((EntityArticle)_arg_article);
-      ]]></code>
-    </method>
 
     <!-- Misc -->
     <method>
@@ -2415,9 +2400,17 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
       <name>getName</name>
       <return>
         <type>String</type>
-        <doc>The blueprint's primary name.</doc>
+        <doc>The blueprint's name, without the article.</doc>
       </return>
-      <invoke>get_name</invoke>
+      <code><![CDATA[_return = _self->get_name().get_text();]]></code>
+    </method>
+    <method>
+      <name>getFullName</name>
+      <return>
+        <type>String</type>
+        <doc>The blueprint's name, with the article.</doc>
+      </return>
+      <code><![CDATA[_return = _self->get_name().get_name();]]></code>
     </method>
     <method>
       <name>getCost</name>
@@ -2473,18 +2466,6 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
         <doc>New entity name.</doc>
       </arg>
       <invoke>set_name</invoke>
-    </method>
-    <method>
-      <name>setArticle</name>
-      <arg>
-        <name>article</name>
-        <type>Integer</type>
-      </arg>
-      <code><![CDATA[
-        if (_arg_article != EntityArticle::NORMAL && _arg_article != EntityArticle::PLURAL && _arg_article != EntityArticle::PROPER && _arg_article != EntityArticle::UNIQUE && _arg_article != EntityArticle::VOWEL)
-          return Scriptix::Nil; // FIXME: raise error
-        _self->set_article((EntityArticle)_arg_article);
-      ]]></code>
     </method>
     <method>
       <name>setDesc</name>
@@ -2781,19 +2762,6 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
         <doc>New entity name.</doc>
       </arg>
       <invoke>set_name</invoke>
-    </method>
-    <method>
-      <name>setArticle</name>
-      <arg>
-        <name>article</name>
-        <type>Integer</type>
-      </arg>
-      <code><![CDATA[
-        if (_arg_article != EntityArticle::NORMAL && _arg_article != EntityArticle::PLURAL && _arg_article != EntityArticle::PROPER && _arg_article != EntityArticle::UNIQUE && _arg_article != EntityArticle::VOWEL)
-          return Scriptix::Nil; // FIXME: raise error
-        _self->set_article((EntityArticle)_arg_article);
-      ]]></code>
-      <invoke>set_article</invoke>
     </method>
     <method>
       <name>setDesc</name>

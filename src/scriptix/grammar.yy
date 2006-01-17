@@ -207,7 +207,7 @@ func_args: args { $$ = $1; }
 
 lval: name { $$ = sxp_new_lookup(compiler, Atom::create($1)); }
 	| expr '[' expr ']' { $$ = sxp_new_getindex(compiler, $1, $3); }
-	| expr TDEREFERENCE name { $$ = sxp_new_get_member(compiler, $1, Atom::create($3)); }
+	| expr TDEREFERENCE name { $$ = sxp_new_get_property(compiler, $1, Atom::create($3)); }
 	;
 
 expr: expr '+' expr { $$ = sxp_new_math (compiler, OP_ADD, $1, $3); }
@@ -241,7 +241,7 @@ expr: expr '+' expr { $$ = sxp_new_math (compiler, OP_ADD, $1, $3); }
 	| TVAR name '=' expr { $$ = sxp_new_declare (compiler, Atom::create($2), $4); }
 	| name '=' expr { $$ = sxp_new_assign (compiler, Atom::create($1), $3); }
 	| expr '[' expr ']' '=' expr %prec '=' { $$ = sxp_new_setindex (compiler, $1, $3, $6); }
-	| expr TDEREFERENCE name '=' expr { $$ = sxp_new_set_member(compiler, $1, Atom::create($3), $5); }
+	| expr TDEREFERENCE name '=' expr { $$ = sxp_new_set_property(compiler, $1, Atom::create($3), $5); }
 
 	| lval TADDASSIGN expr { $$ = sxp_new_preop (compiler, $1, OP_ADD, $3); }
 	| lval TSUBASSIGN expr { $$ = sxp_new_preop (compiler, $1, OP_SUBTRACT, $3); }

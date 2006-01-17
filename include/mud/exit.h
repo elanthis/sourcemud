@@ -125,17 +125,15 @@ class RoomExit : public Entity
 	RoomExit (void);
 
 	// name information
-	virtual String get_name (void) const { return name.name.empty() ? dir.get_name() : name.name; }
-	virtual EntityArticle get_article (void) const { return name.article; }
-	virtual void set_name (StringArg s_name) { name.name = s_name; }
-	virtual void set_article (EntityArticle s_article) { name.article = s_article; }
+	virtual EntityName get_name (void) const { return name; }
+	bool set_name (StringArg s_name) { return name.set_name(s_name); }
 
 	// description information
 	virtual String get_desc (void) const { return desc; }
 	virtual void set_desc (StringArg s_desc) { desc = s_desc; }
 
 	// 'standard' exits have no custom name
-	inline bool is_standard (void) const { return name.name.empty(); }
+	inline bool is_standard (void) const { return name.get_name().empty(); }
 
 	// the taget room and exit (target exit is the exit you come out of)
 	inline StringArg get_target (void) const { return target; }

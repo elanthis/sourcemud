@@ -159,17 +159,6 @@ Player::~Player (void)
 	if (i != PlayerManager.player_list.end())
 		PlayerManager.player_list.erase(i);
 }
-
-void
-Player::display_name (const StreamControl& stream, EntityArticleType, bool) const
-{
-	// prefix title
-	if (title)
-		stream << title << ' ';
-
-	// name
-	stream << ncolor() << get_name() << CNORMAL;
-}
 	
 void
 Player::save (File::Writer& writer)

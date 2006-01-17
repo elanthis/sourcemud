@@ -170,11 +170,8 @@ RoomExit::is_valid (void) const
 void
 RoomExit::save (File::Writer& writer)
 {
-	if (!name.name.empty())
-		writer.attr("name", name.name);
-
-	if (name.article != EntityArticle::NORMAL)
-		writer.attr("article", name.article.get_name());
+	if (!name.empty())
+		writer.attr("name", name.get_name());
 
 	if (!desc.empty())
 		writer.attr("desc", desc);
@@ -233,8 +230,6 @@ RoomExit::load_node (File::Reader& reader, File::Node& node)
 	FO_NODE_BEGIN
 		FO_ATTR("name")
 			set_name(node.get_data());
-		FO_ATTR("article")
-			set_article(EntityArticle::lookup(node.get_data()));
 		FO_ATTR("keyword")
 			keywords.push_back(node.get_data());
 		FO_ATTR("desc")

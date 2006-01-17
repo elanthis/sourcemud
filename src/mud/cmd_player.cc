@@ -64,7 +64,7 @@ void
 Player::do_tell (Player* who, StringArg what)
 {
 	*who << "[" << StreamName(this) << "]: " CTALK << what << CNORMAL "\n";
-	who->last_tell = get_name();
+	who->last_tell = get_name().get_text();
 	*this << "Message sent to " << StreamName(who) << ".\n";
 }
 
