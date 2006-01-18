@@ -5,7 +5,7 @@
 # --- ANIMALS ---
 npc_blueprint {
   id = "rabbit"
-  name = "rabbit"
+  name = "a rabbit"
 
   desc = "{.D} is small and covered in brown fur.  Its nose twitches occasionally as it searches for food."
 
@@ -28,7 +28,7 @@ npc_blueprint {
 }
 npc_blueprint {
   id = "fox"
-  name = "fox"
+  name = "a fox"
 
   desc = "The red {.n} scurries about, looking for danger."
 
@@ -51,7 +51,7 @@ npc_blueprint {
 }
 npc_blueprint {
   id = "wolf"
-  name = "wolf"
+  name = "a wolf"
 
   desc = "{.D} doesn't appear to be afraid of much."
 
@@ -74,7 +74,7 @@ npc_blueprint {
 }
 npc_blueprint {
   id = "wolf_large"
-  name = "large wolf"
+  name = "a large wolf"
 
   desc = "{.D} is huge, larger than most other wolves by far.  Its gray fur is rough and coarse.  The wolf doesn't look friendly."
 
@@ -97,7 +97,7 @@ npc_blueprint {
 }
 npc_blueprint {
   id = "wolf_dire"
-  name = "dire wolf"
+  name = "a dire wolf"
   alignment = -700
 
   desc = "Demonic in appearnace, {.D} is larger than any wolf could be through natural means.  Its eyes glow red, and its near-black fur is broken in places, where spiked ridges run along its body.  {.D} has as sinister a nature as any animal could have."

@@ -208,7 +208,7 @@ OLC_BEGIN_TYPE(Entity)
 	OLC_END_ATTR
 	OLC_BEGIN_ATTR(name)
 		OLC_GET
-			OLC_DISPLAY(edit->get_name())
+			OLC_DISPLAY(edit->get_name().get_name())
 	OLC_END_ATTR
 	OLC_BEGIN_ATTR(desc)
 		OLC_GET

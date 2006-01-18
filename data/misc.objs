@@ -9,14 +9,14 @@ object_blueprint {
 object_blueprint {
   id = "co_leather_backpack"
   equip = "back"
-  name = "leather backpack"
+  name = "a leather backpack"
   desc = "The leather backpack is very simple in design.  Intended for rugged travel, it is both sturdy and large."
   weight = 8
   container = "in"
 }
 object_blueprint {
   id = "bank_note"
-  name = "bank note"
+  name = "a bank note"
   parent = "currency"
   desc = "The bank note is signed by the First Bank of the Lands, and is worth {1.cost} coins with any merchant who accepts bank notes."
   weight = 1
@@ -24,7 +24,7 @@ object_blueprint {
 }
 object_blueprint {
   id = "npc_corpse"
-  name = "corpse"
+  name = "a corpse"
   desc = "The {.name} appears fresh.  It is laying on the ground, motionless, as any good corpse should do."
   weight = 10
   cost = 0
@@ -34,13 +34,13 @@ object_blueprint {
 
 object_blueprint {
   id = "cave_waterfall_portal"
-  name = "glowing portal"
+  name = "a glowing portal"
   desc = "The glowing portal's ovoid, smooth surface gives off a faint blue light as it rests against the northern cavern wall.  The various hues of blue that make up the swirling pattern on the portal's face seem almost at battle, with tides of darker blue giving way to hordes of pale blue, only to resurge and drive back the onslaught."
 }
 
 object_blueprint {
   id = "raise_undead_talisman"
-  name = "skull talisman"
+  name = "a skull talisman"
   desc = "The talisman is a small golden amulet in the shape of a skull.  Though hard to tell, the eyes appear to faintly glow red."
 
   action {

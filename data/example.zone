@@ -49,7 +49,7 @@ room {
   }
   object {
     blueprint {
-      name = "clear pond"
+      name = "a clear pond"
       desc = "The clear waters of the pond do not appear to house any waterlife.  The water is very still, and doesn't seem to be disturbed often."
       roomlist = false
       gettable = false
@@ -79,7 +79,7 @@ room {
   }
   object {
     blueprint {
-      name = "stone altar"
+      name = "a stone altar"
       desc = "{.D} is very simple in design.  It is little more than a stone block, with runes to forest gods and spirits inscribed on all four sides.  The top of the alter is perfectly smooth."
       weight = 140
       roomlist = false
@@ -143,7 +143,7 @@ room {
   }
   object {
     blueprint {
-      name = "tree"
+      name = "a tree"
       desc = "The broken tree trunk appears to have fallen recently.  The marks on its separated ends look to be the result of cutting, perhaps by a saw or axe."
       roomlist = false
       gettable = false
@@ -151,6 +151,10 @@ room {
       container = "under"
     }
     uid = $0d9b4478-5bb47-c42-00000122-0a767046
+  }
+  object {
+    blueprint = "sw_fire"
+    uid = $611b8f26-e29c3-c42-0000028e-0b6aa879
   }
 }
 room {
@@ -165,7 +169,7 @@ room {
     target = "broken_tree"
   }
   exit {
-    name = "cliff"
+    name = "a cliff"
     uid = $2f683314-5bc60-c42-00000125-0a767046
     keyword = "down"
     usage = "climb"
@@ -174,7 +178,7 @@ room {
     target = "cliff_ledge"
   }
   exit {
-    name = "large tree"
+    name = "a large tree"
     desc = "It looks as if the tree is often climbed.  Perhaps it offers a good vantage point."
     uid = $0d06fb5e-5bcbc-c42-00000126-0a767046
     keyword = "up"
@@ -185,7 +189,7 @@ room {
   }
   object {
     blueprint {
-      name = "valley"
+      name = "a valley"
       desc = "Deep below is a mist shrouded valley.  Poking up through the white mist are the tops of tall trees, indicating the valley is as forested as the mountain's higher areas."
       roomlist = false
       gettable = false
@@ -203,7 +207,7 @@ room {
     uid = $1f0b8188-607ad-c42-00000132-0a767046
     tag = "forest_critter"
     position = "stand"
-    hp = 99
+    hp = 100
     equip.right_hand {
       blueprint = "claws_animal"
       uid = $46c9a75c-6081c-c42-00000133-0a767046
@@ -222,7 +226,7 @@ room {
   uid = $7696e754-6057b-c42-0000012c-0a767046
   outdoors = true
   exit {
-    name = "cliff"
+    name = "a cliff"
     uid = $19309bc0-605d9-c42-0000012d-0a767046
     keyword = "up"
     usage = "climb"
@@ -230,7 +234,7 @@ room {
     target = "forest_cliff"
   }
   exit {
-    name = "cave"
+    name = "a cave"
     desc = "A narrow cave leads into the cliff face, twisting off towards the northeast."
     uid = $444da696-60636-c42-0000012e-0a767046
     dir = "north"
@@ -239,7 +243,7 @@ room {
   }
   object {
     blueprint {
-      name = "valley"
+      name = "a valley"
       desc = "Deep below is a mist shrouded valley.  Poking up through the white mist are the tops of tall trees, indicating the valley is as forested as the mountain's higher areas."
       roomlist = false
       gettable = false
@@ -256,7 +260,7 @@ room {
   uid = $7dd8f76d-606f3-c42-00000130-0a767046
   outdoors = true
   exit {
-    name = "tree"
+    name = "a tree"
     uid = $7ec2225f-60750-c42-00000131-0a767046
     keyword = "down"
     usage = "climb"
@@ -275,7 +279,7 @@ room {
     target = "cave_niche"
   }
   exit {
-    name = "opening"
+    name = "a opening"
     desc = "The cave exit here leads out onto a small ledge on the face of a cliff, towering over the valley below."
     uid = $7561c8d3-65101-c42-00000137-0a767046
     dir = "south"
@@ -299,7 +303,7 @@ room {
   }
   object {
     blueprint {
-      name = "niche"
+      name = "a niche"
       desc = "The niche is about three feet tall, four feet wide, and two feet deep.  It begins nearly three feet above the cave floor.  The niche is smooth and precisely carved into the wall of the cave."
       roomlist = false
       gettable = false
@@ -351,7 +355,7 @@ room {
     target = "cave_niche"
   }
   exit {
-    name = "glowing portal"
+    name = "a glowing portal"
     uid = $037bc702-6a718-c42-00000141-0a767046
     dir = "north"
     detail = "through"
@@ -362,7 +366,7 @@ room {
   }
   object {
     blueprint {
-      name = "waterfall"
+      name = "a waterfall"
       desc = "The water pouring past the cave entrance is very loud, and very fierce.  You cannot see past the water, as too much is coming down."
       roomlist = false
       gettable = false
@@ -372,7 +376,7 @@ room {
   }
   object {
     blueprint {
-      name = "scone"
+      name = "a scone"
       desc = "The scone is a very simple rock pedestal.  A bright flame reaches up from it, trying to touch the ceiling.  The flame doesn't seem to be bothered by the water and general dampness by the waterfall."
       gettable = false
       trashable = false
@@ -386,7 +390,7 @@ room {
   desc = "Surrounded by the cries of the tormented echoing from the towers of great walls is the City of the Dead.  It is here that those who perish in the mortal realms come to await judgement.  Those faithful to their gods are taken to paradise, while those who failed their deity are taken to the tall, red towers stretching into the darkness above.  Wandering the streets of the city are the lost souls; those who never found a god to call their own, and are left to find paradise as they will in the bleak city, just as they did in life.  The spirits all avoid the wide river flowing through the center of the city, trembling in fear of it even as they cross the wide bridges spanning the black, murky water."
   uid = $2974e177-6a9f2-c42-00000147-0a767046
   exit {
-    name = "bridge"
+    name = "a bridge"
     desc = "A wide bridge spanning the murky waters of a river."
     uid = $562f1b3f-6aa51-c42-00000148-0a767046
     dir = "northeast"
@@ -394,8 +398,7 @@ room {
   }
   object {
     blueprint {
-      name = "River Styx"
-      article = "unique"
+      name = "the River Styx"
       desc = "The dark river is quite calm, and rather peaceful in appearance.  Despite this tranquil facade, supernatural fear still penetrates into the core of your soul when you look at it.  {.C} is none other than the River Styx, one of the few ways spoken of in legends to forever destroy a soul."
       keyword = "murky river"
       roomlist = false
@@ -445,7 +448,7 @@ room {
     target = "forest_trail_west"
   }
   exit {
-    name = "granite portal"
+    name = "a granite portal"
     desc = "The portal is a granite frame, nestled between two tall, thick trees.  Within the stone frame, a mirror-smooth surface of rolling blue color gives off an eerie light."
     uid = $6c709f9e-70013-c42-00000150-0a767046
     detail = "through"
@@ -470,7 +473,7 @@ room {
     target = "forest_trail_west"
   }
   exit {
-    name = "hidden path"
+    name = "a hidden path"
     uid = $78c1606b-7018e-c42-00000154-0a767046
     detail = "under"
     hidden = true
@@ -478,7 +481,7 @@ room {
   }
   object {
     blueprint {
-      name = "wooden bridge"
+      name = "a wooden bridge"
       desc = "The bridge is simple, yet stout.  The wooden beams supporting the walking planks rise a few spans above the rapids below, providing safe and dry passage across."
       roomlist = false
       gettable = false
@@ -488,7 +491,7 @@ room {
   }
   object {
     blueprint {
-      name = "river"
+      name = "a river"
       desc = "The river is not very wide, yet still too far to leap across.  The water of the river is moving swiftly, rushing over the edge of the mountain, deep into the mist shrouded valley below."
       keyword = "waterfall"
       roomlist = false
@@ -506,14 +509,14 @@ room {
   uid = $3aee61ef-702b8-c42-00000157-0a767046
   outdoors = true
   exit {
-    name = "cave"
+    name = "a cave"
     desc = "The cave opening leads downwards into the earth."
     uid = $7a10b3a1-75772-c42-00000158-0a767046
     detail = "in"
     target = "cave_waterfall"
   }
   exit {
-    name = "path"
+    name = "a path"
     desc = "The path climbs back up towards the main path and the wooden bridge."
     uid = $6c7c79e4-75859-c42-00000159-0a767046
     detail = "up"
@@ -571,7 +574,7 @@ room {
     target = "darlet_gate_west"
   }
   exit {
-    name = "gem cutter"
+    name = "a gem cutter"
     desc = "The gem cutter's door is made of a dark wood.  Its appears to be of very sturdy craftsmanship."
     uid = $0da20284-75c28-c42-00000163-0a767046
     dir = "north"
@@ -581,7 +584,7 @@ room {
   }
   object {
     blueprint {
-      name = "ornate sign"
+      name = "a ornate sign"
       desc = "The sign reads, Cutter and Trader of Gems."
       roomlist = false
       gettable = false
@@ -598,7 +601,7 @@ room {
   desc = "The room is simple but well kept.  Cases filled with cut jewels and fine jewelry cover the dark wood of the north and east walls."
   uid = $2c70ac94-7bdc5-c42-00000165-0a767046
   exit {
-    name = "out"
+    name = "a out"
     desc = "The gem cutter's door is made of a dark wood.  Its appears to be of very sturdy craftsmanship."
     uid = $3716e3fb-7be2c-c42-00000166-0a767046
     dir = "south"
@@ -608,7 +611,7 @@ room {
   }
   object {
     blueprint {
-      name = "ivory plaque"
+      name = "a ivory plaque"
       desc = "The plaque is made of ivory, with golden script covering its white surface."
       gettable = false
       trashable = false
@@ -618,7 +621,7 @@ room {
   }
   object {
     blueprint {
-      name = "gem case"
+      name = "a gem case"
       desc = "The {.n} is crafted of a light stained wood, and set with thick glass.  Dozens and dozens of jewels, of all colours, lie neatly organized in the case.  Several bits of fine jewelry can also be found, fitted with fine gems."
       roomlist = false
       gettable = false
@@ -628,7 +631,7 @@ room {
   }
   object {
     blueprint {
-      name = "gem case"
+      name = "a gem case"
       desc = "The {.n} is crafted of a light stained wood, and set with thick glass.  Dozens and dozens of jewels, of all colours, lie neatly organized in the case.  Several bits of fine jewelry can also be found, fitted with fine gems."
       roomlist = false
       gettable = false
@@ -659,7 +662,7 @@ room {
   desc = "Numerous weapons are stacked around the room on racks and stands.  The place has a sooty smell, and the constant hammering from forge behind the building echoes through the showroom."
   uid = $14ebe551-7bfb0-c42-0000016a-0a767046
   exit {
-    name = "door"
+    name = "a door"
     desc = "The weapon smith's door is made of a dark, hard metal."
     uid = $0f7813e3-7c011-c42-0000016b-0a767046
     keyword = "outside"
@@ -671,7 +674,7 @@ room {
   }
   object {
     blueprint {
-      name = "wooden sign"
+      name = "a wooden sign"
       desc = "The wooden sign looks to be fairly new.  It is contructed of a dark wood, and has writing on it in large, white colored letters."
       gettable = false
       trashable = false
@@ -747,14 +750,14 @@ room {
     target = "darlet_ashwood_1"
   }
   exit {
-    name = "door"
+    name = "a door"
     uid = $0bf12fa3-80de9-c42-00000179-0a767046
     hidden = true
     target = "darlet_armorer"
   }
   object {
     blueprint {
-      name = "large stone clock"
+      name = "a large stone clock"
       desc = "The tall clock is a granite obelisk reaching some ten feet above the cobblestones.  A clock face resides on each of the monument's four sides, almost at the top, staring out in the cardinal directions.  The time reads {time}."
       roomlist = true
       gettable = false
@@ -913,7 +916,7 @@ room {
     target = "darlet_ashwood_vine"
   }
   exit {
-    name = "metal door"
+    name = "a metal door"
     desc = "The weapon smith's door is made of a dark, hard metal."
     uid = $51bee4da-91327-c42-00000196-0a767046
     keyword = "weapon smith"
@@ -1019,7 +1022,7 @@ room {
   }
   object {
     blueprint {
-      name = "home"
+      name = "a home"
       desc = "The manor house of Dallin Grayrock is quit large, compared to most of the homes in Darlet.  Made of stone, the main living area is three stories tall, and topped with a gray slate roof.  The northern and southern ends of the home rise another span and a half higher than the main portion of the house, making the structure look like a small castle.  A long paved walkway leads from the front gate, past a small stable, and up to the front porch of the home.  It's quite apparent the owner is one of Darlets more affluent citizens."
       roomlist = false
       gettable = false
@@ -1053,7 +1056,7 @@ room {
 }
 room {
   id = "clover_3"
-  name = "clover_3"
+  name = "a clover_3"
   uid = $0e77a844-9ca4a-c42-000001ad-0a767046
   outdoors = true
   exit {
@@ -1069,7 +1072,7 @@ room {
 }
 room {
   id = "clover_4"
-  name = "clover_4"
+  name = "a clover_4"
   uid = $421c01c6-9cb70-c42-000001b0-0a767046
   outdoors = true
   exit {
@@ -1107,7 +1110,7 @@ room {
 }
 room {
   id = "bowmans_1"
-  name = "bowmans_1"
+  name = "a bowmans_1"
   uid = $2c4bcbda-a15c9-c42-000001b7-0a767046
 }
 room {
@@ -1195,14 +1198,14 @@ room {
     target = "darlet_rosewood_east_8"
   }
   exit {
-    name = "gate"
+    name = "a gate"
     desc = "The wrought iron gate is old and rusted in some places but over all it is in good repair.  Arched and topped with pointed tips, the gate is about a span high.  Tall enough to keep out all but the most daring of climbers.  A sign has been inlaid into the iron work which reads \"Sleep peacefully in the arms of Morphious\"."
     uid = $42de7e64-accb6-c42-000001c7-0a767046
     target = "cemetery_1"
   }
   object {
     blueprint {
-      name = "gate"
+      name = "a gate"
       roomlist = false
       gettable = false
       touchable = true
@@ -1284,12 +1287,12 @@ room {
     target = "bowmans_5"
   }
   exit {
-    name = "clearing"
+    name = "a clearing"
     uid = $235f0eb5-b1994-c42-000001d6-0a767046
     target = "fest_1"
   }
   exit {
-    name = "path"
+    name = "a path"
     uid = $65b45980-b19f7-c42-000001d7-0a767046
     hidden = true
     target = "path_tower_1"
@@ -1503,7 +1506,7 @@ room {
 }
 room {
   id = "path_tower_1"
-  name = "path_tower_1"
+  name = "a path_tower_1"
   uid = $767cca1a-c5e26-c42-000001fd-0a767046
   outdoors = true
   exit {
@@ -1512,14 +1515,14 @@ room {
     target = "path_tower_2"
   }
   exit {
-    name = "road"
+    name = "a road"
     uid = $50a0e2d4-c5ef1-c42-000001ff-0a767046
     target = "bowmans_6"
   }
 }
 room {
   id = "path_tower_2"
-  name = "path_tower_2"
+  name = "a path_tower_2"
   uid = $34b3e059-c5f57-c42-00000200-0a767046
   exit {
     uid = $778a3119-c5fbd-c42-00000201-0a767046
@@ -1534,29 +1537,29 @@ room {
 }
 room {
   id = "fest_1"
-  name = "fest_1"
+  name = "a fest_1"
   desc = "Welcome to the fest area {$actor.name}"
   uid = $1184d280-c6090-c42-00000203-0a767046
   outdoors = true
   exit {
-    name = "road"
+    name = "a road"
     uid = $32561b15-c60f6-c42-00000204-0a767046
     target = "bowmans_6"
   }
 }
 room {
   id = "cemetery_1"
-  name = "cemetery_1"
+  name = "a cemetery_1"
   uid = $4452d986-cb170-c42-00000205-0a767046
   exit {
-    name = "gate"
+    name = "a gate"
     uid = $7eda5159-cb258-c42-00000206-0a767046
     target = "darlet_rosewood_east_9"
   }
 }
 room {
   id = "path2"
-  name = "path2"
+  name = "a path2"
   uid = $08f72de3-cb2ce-c42-00000207-0a767046
   exit {
     uid = $3c2bb336-cb336-c42-00000208-0a767046
@@ -1571,7 +1574,7 @@ room {
   uid = $155b2335-cb39f-c42-00000209-0a767046
   coins = 1000
   exit {
-    name = "door"
+    name = "a door"
     uid = $09e511c6-cb404-c42-0000020a-0a767046
     dir = "south"
     target = "darlet_rosewood_east_2"
@@ -1615,7 +1618,7 @@ room {
   }
   object {
     blueprint {
-      name = "wooden box"
+      name = "a wooden box"
       desc = "{.D} looks like it might have once been a coffin, though it is now nothing but broken planks of rotted wood."
       roomlist = false
       gettable = false
@@ -1625,8 +1628,7 @@ room {
   }
   object {
     blueprint {
-      name = "open grave"
-      article = "vowel"
+      name = "an open grave"
       desc = "The grave looks to have been dug long ago, but never filled in."
       roomlist = false
       gettable = false
@@ -1653,7 +1655,7 @@ room {
   }
   object {
     blueprint {
-      name = "gnarled tree"
+      name = "a gnarled tree"
       desc = "{.D} appears dead.  Its roots and branches are twisted as if in agony, and a length of rotted rope hangs from one of its higher boughs, a sure mark of the deceased tree's grim function in past times."
       roomlist = false
       gettable = false
@@ -1691,7 +1693,7 @@ room {
   }
   object {
     blueprint {
-      name = "mausoleum"
+      name = "a mausoleum"
       desc = "{.D} is made of granite, and decorated with dark marble and faded inscriptions.  The building appears mostly intact, save for the front door, which appears to have been damaged by some kind of heavy force, like a battering ram.  {.D}'s only legible inscription reads, 'Ravelor Materna'."
       roomlist = false
       gettable = false

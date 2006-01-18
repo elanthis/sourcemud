@@ -122,7 +122,7 @@ const char *exp_names[] = {
 };
 
 SCRIPT_TYPE(Player);
-Player::Player (class Account* s_account, StringArg s_name) : Character (AweMUD_PlayerType), birthday()
+Player::Player (class Account* s_account, StringArg s_id) : Character (AweMUD_PlayerType), birthday()
 {
 	// initialize
 	account = s_account;
@@ -146,7 +146,8 @@ Player::Player (class Account* s_account, StringArg s_name) : Character (AweMUD_
 	}
 
 	// set name
-	name = s_name;
+	name.set_text(s_id);
+	name.set_article(EntityArticleClass::PROPER);
 
 	// register
 	PlayerManager.player_list.push_back(this);
@@ -173,9 +174,6 @@ Player::save (File::Writer& writer)
 	if (prompt)
 		writer.attr("prompt", prompt);
 
-	if (title)
-		writer.attr("title", title);
-
 	writer.attr("alignment", alignment);
 
 	for (int i = 0; i < CharStatID::COUNT; ++i)
@@ -200,7 +198,7 @@ Player::save (File::Writer& writer)
 void
 Player::save (void)
 {
-	String path = PlayerManager.path (get_name());
+	String path = PlayerManager.path(get_id());
 
 	// backup player file
 	if (SettingsManager.get_backup_players()) {
@@ -220,7 +218,7 @@ Player::save (void)
 	// do save
 	mode_t omask = umask(0066);
 	File::Writer writer(path);
-	writer.comment(String("Player file: ") + get_name());
+	writer.comment(String("Player file: ") + get_id());
 	time_t t;
 	time(&t);
 	writer.comment(String("Timestamp: ") + String(ctime(&t)));
@@ -230,7 +228,7 @@ Player::save (void)
 	umask(omask);
 
 	// log
-	Log::Info << "Saved player " << get_name();
+	Log::Info << "Saved player " << get_id();
 
 	return;
 }
@@ -249,7 +247,8 @@ Player::load_node (File::Reader& reader, File::Node& node)
 		FO_PARENT(Character)
 		// our primary name
 		FO_ATTR("name")
-			set_name(node.get_data());
+			name.set_text(node.get_data());
+			name.set_article(EntityArticleClass::PROPER);
 		// description
 		FO_ATTR("desc")
 			set_desc(node.get_data());
@@ -281,8 +280,6 @@ Player::load_node (File::Reader& reader, File::Node& node)
 		FO_ATTR("height")
 			FO_TYPE_ASSERT(INT);
 			pdesc.height = tolong(node.get_data());
-		FO_ATTR("title")
-			title = node.get_data();
 		FO_ATTR("location")
 			location = ZoneManager.get_room(node.get_data());
 			if (location == NULL)
@@ -339,31 +336,31 @@ Player::start (void)
 	if (!is_active()) {
 		if (location) {
 			// announce arrival
-			ZoneManager.announce (CADMIN "**" CNORMAL " " CPLAYER + get_name() + CNORMAL " has entered this world, leaving behind " + get_gender().get_hisher() + " mundane life. " CADMIN "**" CNORMAL);
+			ZoneManager.announce (CADMIN "**" CNORMAL " " CPLAYER + get_id() + CNORMAL " has entered this world, leaving behind " + get_gender().get_hisher() + " mundane life. " CADMIN "**" CNORMAL);
 
 			// try to enter room
 			if (!enter(location, NULL)) {
 				*this << CADMIN "Internal error: could not enter room" CNORMAL;
-				Log::Error << "Player '" << get_name() << "' could not enter '" << location->get_id() << "' at login";
+				Log::Error << "Player '" << get_id() << "' could not enter '" << location->get_id() << "' at login";
 				return -1;
 			}
 		} else {
 			// location/room doesn't exist - go back to 'starting' location
 			if (Hooks::player_start(this) == 0) {
 				*this << CADMIN "Internal error: no player_start hook" CNORMAL;
-				Log::Error << "Player '" << get_name() << "' could not login because there is no player_start hook";
+				Log::Error << "Player '" << get_id() << "' could not login because there is no player_start hook";
 				return -1;
 			}
 
 			// no valid location - eek!
 			if (!location) {
 				*this << CADMIN "Internal error: no start location given" CNORMAL;
-				Log::Error << "Player '" << get_name() << "' could not login because the player_start hook did not assign a start location";
+				Log::Error << "Player '" << get_id() << "' could not login because the player_start hook did not assign a start location";
 				return -1;
 			}
 
 			// announce login
-			ZoneManager.announce (CADMIN "**" CNORMAL " " CPLAYER + get_name() + CNORMAL " has entered this world, leaving behind " + get_gender().get_hisher() + " mundane life. " CADMIN "**" CNORMAL);
+			ZoneManager.announce (CADMIN "**" CNORMAL " " CPLAYER + get_id() + CNORMAL " has entered this world, leaving behind " + get_gender().get_hisher() + " mundane life. " CADMIN "**" CNORMAL);
 		}
 
 		// Example affect - make strong
@@ -409,7 +406,7 @@ Player::validate (void)
 		return -1;
 
 	// add character to account
-	get_account()->add_character(get_name());
+	get_account()->add_character(get_id());
 	get_account()->save();
 
 	// set as valid
@@ -419,7 +416,7 @@ Player::validate (void)
 	save();
 
 	// log it
-	Log::Info << "New player " << get_name() << " created for account " << get_account()->get_id();
+	Log::Info << "New player " << get_id() << " created for account " << get_account()->get_id();
 
 	// start the player
 	return start();
@@ -434,7 +431,7 @@ Player::quit (void)
 		save();
 
 	// quit message
-	ZoneManager.announce (CADMIN "**" CNORMAL " " CPLAYER + get_name() + CNORMAL " has left this world, returning to " + get_gender().get_hisher() + " mundane life. " CADMIN "**" CNORMAL);
+	ZoneManager.announce (CADMIN "**" CNORMAL " " CPLAYER + get_id() + CNORMAL " has left this world, returning to " + get_gender().get_hisher() + " mundane life. " CADMIN "**" CNORMAL);
 
 	// disengage from game world
 	destroy();
@@ -599,7 +596,7 @@ Player::heartbeat(void) {
 
 	// timeout?  then die
 	if (ninfo.timeout_ticks == 1) {
-		Log::Info << "Player '" << get_name() << "' has timed out.";
+		Log::Info << "Player '" << get_id() << "' has timed out.";
 		quit();
 	} else if (ninfo.timeout_ticks > 0) {
 		--ninfo.timeout_ticks;
@@ -796,7 +793,7 @@ Player::connect (TelnetHandler* handler)
 
 	// had a previous connection?  kill it
 	if (conn) {
-		Log::Info << "Booting previous connection for player '" << get_name() << "'";
+		Log::Info << "Booting previous connection for player '" << get_id() << "'";
 		*this << CADMIN << "Connection replaced by second login.\n" CNORMAL;
 		disconnect();
 	}
@@ -878,7 +875,7 @@ Player::handle_event (const Event& event)
 	if (has_bvision())
 		*this << CADMIN "Event[" << event.get_name() <<
 			"] R:" << (event.get_room() ? event.get_room()->get_id() : "n/a") <<
-			" A:" << (event.get_actor() ? event.get_actor()->get_name() : "n/a") <<
+			" A:" << (event.get_actor() ? event.get_actor()->get_name().get_text() : "n/a") <<
 			" D1:" << (event.get_data(0).get() ? event.get_data(0).get()->get_type()->get_name().name() : "n/a") <<
 			" D2:" << (event.get_data(1).get() ? event.get_data(1).get()->get_type()->get_name().name() : "n/a") <<
 			" D3:" << (event.get_data(2).get() ? event.get_data(2).get()->get_type()->get_name().name() : "n/a") <<

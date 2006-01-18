@@ -118,7 +118,7 @@ Entity::destroy (void)
 bool
 Entity::name_match (StringArg name) const
 {
-	if (phrase_match (get_name(), name))
+	if (phrase_match (get_name().get_text(), name))
 		return true;
 
 	// no match
@@ -332,7 +332,7 @@ Entity::set_owner (Entity* owner)
 bool
 Entity::operator< (const Entity& ent) const
 {
-	return strcasecmp(get_name().c_str(), ent.get_name().c_str()) < 0;
+	return strcasecmp(get_name().get_text().c_str(), ent.get_name().get_text().c_str()) < 0;
 }
 
 // ----- SEntityManager -----

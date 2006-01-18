@@ -60,6 +60,10 @@ enum EntityArticleUsage {
 
 class EntityName {
 	public:
+	inline EntityName () : text(), article(EntityArticleClass::NORMAL) {}
+	inline EntityName (EntityArticleClass s_article, StringArg s_text) :
+		text(s_text), article(s_article) {}
+
 	// these handle full names with articles
 	String get_name () const;
 	bool set_name (StringArg s_name); // returns false if it had to guess at the article
@@ -67,6 +71,8 @@ class EntityName {
 	// these handle name components
 	inline String get_text () const { return text; }
 	inline EntityArticleClass get_article () const { return article; }
+	inline void set_text (StringArg s_text) { text = s_text; }
+	inline void set_article (EntityArticleClass s_article) { article = s_article; }
 
 	inline bool empty () const { return text.empty(); }
 

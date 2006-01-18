@@ -12,8 +12,7 @@ object_blueprint {
   id = "ar_chain_mail"
   parent = "armor"
   equip = "torso"
-  name = "chain mail"
-  article = "plural"
+  name = "some chain mail"
   desc = "The chain mail is a set of armor, crafted of interlocked rings of iron."
   weight = 20
   cost = 250
@@ -23,7 +22,7 @@ object_blueprint {
   id = "ar_chain_shirt"
   parent = "armor"
   equip = "torso"
-  name = "chain shirt"
+  name = "a chain shirt"
   desc = "The chain shirt is a set of armor covering the upper torso, crafted of interlocked rings of iron."
   weight = 15
   cost = 175
@@ -32,8 +31,7 @@ object_blueprint {
 object_blueprint {
   id = "ar_leather_armor"
   parent = "armor"
-  name = "leather armor"
-  article = "plural"
+  name = "some leather armor"
   desc = "The leather armor is a full set of protective wear, crafted of leather."
   weight = 10
   cost = 140
@@ -43,7 +41,7 @@ object_blueprint {
   id = "ar_leather_tunic"
   parent = "armor"
   equip = "torso"
-  name = "leather tunic"
+  name = "a leather tunic"
   desc = "The leather tunic is a simple shirt, made of some kind of cured hide."
   weight = 8
   cost = 79
@@ -53,7 +51,7 @@ object_blueprint {
   id = "ar_helm"
   parent = "armor"
   equip = "head"
-  name = "helm"
+  name = "a helm"
   desc = "The helm is made of iron and is slightly dented in places."
   weight = 5
   cost = 30
@@ -63,8 +61,7 @@ object_blueprint {
   id = "ar_chain_leggings"
   parent = "armor"
   equip = "legs"
-  name = "chain leggings"
-  article = "plural"
+  name = "some chain leggings"
   desc = "The chain leggings are armor for covering the legs, crafted of interlocked rings of iron."
   weight = 5
   cost = 89
@@ -74,7 +71,7 @@ object_blueprint {
   id = "ar_leather_bracer"
   parent = "armor"
   equip = "wrist"
-  name = "leather bracer"
+  name = "a leather bracer"
   desc = "The leather bracer is made from boiled leather and give protection to one's wrist during combat."
   weight = 3
   cost = 15
@@ -84,8 +81,7 @@ object_blueprint {
   id = "ar_casting_robe"
   parent = "armor"
   equip = "torso"
-  name = "casting robes"
-  article = "plural"
+  name = "some casting robes"
   desc = "These comfortable robes are lose fitting, and are lined with pockets. Colorful, but not gaudy, they speak of functional simplicity."
   weight = 3
   cost = 129
@@ -95,7 +91,7 @@ object_blueprint {
   id = "ar_leather_choker"
   parent = "armor"
   equip = "neck"
-  name = "leather chocker"
+  name = "a leather chocker"
   desc = "This black leather choker has twelve half inch spikes tooled into the soft grain, which encompass the entire length."
   weight = 1
   cost = 9
@@ -105,8 +101,7 @@ object_blueprint {
   id = "ar_hunting_boots"
   parent = "armor"
   equip = "feet"
-  name = "hunting boots"
-  article = "plural"
+  name = "some hunting boots"
   desc = "These side lace hunting boots are custom made of gray wolf skin leather, and have reinforced soles."
   weight = 3
   cost = 79
@@ -116,8 +111,7 @@ object_blueprint {
   id = "ar_hunting_gloves"
   parent = "armor"
   equip = "hands"
-  name = "hunting gloves"
-  article = "plural"
+  name = "some hunting gloves"
   desc = "Basic leather gloves"
   weight = 1
   cost = 25
@@ -127,7 +121,7 @@ object_blueprint {
   id = "ar_ruby_earring"
   parent = "armor"
   equip = "ear"
-  name = "ruby earring"
+  name = "a ruby earring"
   desc = "This earring has a beautiful ruby gemstone, affixed to a golden stud."
   weight = 1
   @defend = 0
@@ -136,7 +130,7 @@ object_blueprint {
   id = "ar_diamond_earring"
   parent = "armor"
   equip = "ear"
-  name = "diamond earring"
+  name = "a diamond earring"
   desc = "This earring has a beautiful diamond gemstone, affixed to a golden stud."
   weight = 1
   @defend = 0
@@ -145,7 +139,7 @@ object_blueprint {
   id = "ar_turquoise_anklet"
   parent = "armor"
   equip = "ankle"
-  name = "turquoise anklet"
+  name = "a turquoise anklet"
   desc = "A shiny turquoise anklet."
   weight = 1
   @defend = 0
@@ -154,7 +148,7 @@ object_blueprint {
   id = "ar_gold_anklet"
   parent = "armor"
   equip = "ankle"
-  name = "gold anklet"
+  name = "a gold anklet"
   desc = "A shiny gold anklet."
   weight = 1
   @defend = 0

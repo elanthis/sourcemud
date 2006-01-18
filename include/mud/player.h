@@ -65,15 +65,13 @@ class Player : public Character
 {
 	public:
 	// create
-	Player (class Account* s_account, StringArg s_name);
+	Player (class Account* s_account, StringArg s_id);
+
+	// player's unique ID (this is identical to their name)
+	inline String get_id () const { return name.get_text(); }
 
 	// name information (special for players)
-	virtual EntityName get_name (void) const { return name; }
-	bool set_name (StringArg s_name) { return name.set_name(s_name); }
-
-	// title
-	inline String get_title (void) const { return title; }
-	inline void set_title (StringArg s_title) { title = s_title; }
+	inline virtual EntityName get_name (void) const { return name; }
 
 	// description information
 	virtual inline String get_desc (void) const { return String(); }
@@ -224,7 +222,6 @@ class Player : public Character
 	ClassList classes;
 	GameTime birthday;
 	SkillSet skills;
-	String title;
 	struct NetworkInfo {
 		uint last_rt; // last reported round-time
 		uint last_max_rt; // last reported max round-time

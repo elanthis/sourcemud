@@ -125,7 +125,7 @@ class RoomExit : public Entity
 	RoomExit (void);
 
 	// name information
-	virtual EntityName get_name (void) const { return name; }
+	virtual EntityName get_name (void) const;
 	bool set_name (StringArg s_name) { return name.set_name(s_name); }
 
 	// description information

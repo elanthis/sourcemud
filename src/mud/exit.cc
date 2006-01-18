@@ -135,13 +135,23 @@ ExitDetail::lookup (StringArg name)
 }
 
 SCRIPT_TYPE(RoomExit);
-RoomExit::RoomExit(void) : Entity(AweMUD_RoomExitType), target(),
-	text(), dir(), usage(), detail(), parent_room(NULL),
+RoomExit::RoomExit() : Entity(AweMUD_RoomExitType), name(),
+	target(), dir(), usage(), detail(), parent_room(NULL),
 	flags(), on_use(NULL), on_use_source()
 {}
 
+EntityName
+RoomExit::get_name () const
+{
+	// default name w/ direction
+	if (name.empty())
+		return EntityName(EntityArticleClass::UNIQUE, dir.get_name());
+	else
+		return name;
+}
+
 Room *
-RoomExit::get_target_room (void) const
+RoomExit::get_target_room () const
 {
 	if (target)
 		return ZoneManager.get_room (target);
@@ -150,7 +160,7 @@ RoomExit::get_target_room (void) const
 }
 
 RoomExit *
-RoomExit::get_target_exit (void) const
+RoomExit::get_target_exit () const
 {
 	Room *r = ZoneManager.get_room (target);
 	if (r == NULL)
@@ -162,9 +172,9 @@ RoomExit::get_target_exit (void) const
 }
 
 bool
-RoomExit::is_valid (void) const
+RoomExit::is_valid () const
 {
-	return get_name() && target && ZoneManager.get_room (target);
+	return target && ZoneManager.get_room (target);
 }
 
 void
@@ -279,17 +289,13 @@ RoomExit::load_node (File::Reader& reader, File::Node& node)
 }
 
 int
-RoomExit::load_finish (void)
+RoomExit::load_finish ()
 {
-	// check name
-	if (!get_name() && dir)
-		name.name = dir.get_name();
-
 	return 0;
 }
 
 void
-RoomExit::open (void) {
+RoomExit::open () {
 	flags.closed = false;;
 
 	if (is_synced ()) {
@@ -302,7 +308,7 @@ RoomExit::open (void) {
 }
 
 void
-RoomExit::close (void) {
+RoomExit::close () {
 	flags.closed = true;;
 
 	if (is_synced ()) {
@@ -315,7 +321,7 @@ RoomExit::close (void) {
 }
 
 void
-RoomExit::unlock (void) {
+RoomExit::unlock () {
 	flags.locked = false;;
 
 	if (is_synced ()) {
@@ -328,7 +334,7 @@ RoomExit::unlock (void) {
 }
 
 void
-RoomExit::lock (void) {
+RoomExit::lock () {
 	flags.locked = true;;
 
 	if (is_synced ()) {
@@ -341,7 +347,7 @@ RoomExit::lock (void) {
 }
 
 void
-RoomExit::heartbeat (void)
+RoomExit::heartbeat ()
 {
 }
 
@@ -354,7 +360,7 @@ RoomExit::set_owner (Entity* owner)
 }
 
 Entity*
-RoomExit::get_owner (void) const
+RoomExit::get_owner () const
 {
 	return parent_room;
 }
@@ -367,7 +373,7 @@ RoomExit::owner_release (Entity* child)
 }
 
 StringArg
-RoomExit::get_go (void) const
+RoomExit::get_go () const
 {
 	// customized?
 	if (text.go)
@@ -378,7 +384,7 @@ RoomExit::get_go (void) const
 }
 
 StringArg
-RoomExit::get_leaves (void) const
+RoomExit::get_leaves () const
 {
 	// customized?
 	if (text.leaves)
@@ -389,7 +395,7 @@ RoomExit::get_leaves (void) const
 }
 
 StringArg
-RoomExit::get_enters (void) const
+RoomExit::get_enters () const
 {
 	// customized?
 	if (text.enters)
@@ -403,9 +409,9 @@ bool
 RoomExit::operator< (const RoomExit& exit) const
 {
 	// empty names always first
-	if (name.name.empty() && !exit.name.name.empty())
+	if (name.empty() && !exit.name.empty())
 		return true;
-	else if (!name.name.empty() && exit.name.name.empty())
+	else if (!name.empty() && exit.name.empty())
 		return false;
 		
 	// sort by direction
@@ -415,13 +421,13 @@ RoomExit::operator< (const RoomExit& exit) const
 		return false;
 
 	// then name
-	return strcasecmp(get_name(), exit.get_name()) < 0;
+	return strcasecmp(get_name().get_text(), exit.get_name().get_text()) < 0;
 }
 
 bool
 RoomExit::name_match (StringArg name) const
 {
-	if (phrase_match (get_name(), name))
+	if (phrase_match (get_name().get_text(), name))
 		return true;
 
 	// try keywords

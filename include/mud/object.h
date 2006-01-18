@@ -60,75 +60,75 @@ ObjectBlueprint : public Scriptix::Native
 	typedef GCType::set<ContainerType> ContainerList;
 	typedef GCType::map<String,Scriptix::ScriptFunctionSource> ActionList;
 
-	ObjectBlueprint (void);
+	ObjectBlueprint ();
 
 	// blueprint id
-	inline String get_id (void) const { return id; }
+	inline String get_id () const { return id; }
 
 	// name
-	inline const EntityName& get_name (void) const { return name; }
+	virtual EntityName get_name () const;
 	inline bool set_name (StringArg s_name) { bool ret = name.set_name(s_name); set_flags.name = true; return ret; }
-	void reset_name (void);
+	void reset_name ();
 
-	inline const StringList& get_keywords (void) const { return keywords; }
+	inline const StringList& get_keywords () const { return keywords; }
 
 	// description
-	inline const String& get_desc (void) const { return desc; }
+	inline const String& get_desc () const { return desc; }
 	inline void set_desc (StringArg s_desc) { desc = s_desc; set_flags.desc = true; }
-	void reset_desc (void);
+	void reset_desc ();
 
 	// weight
-	inline uint get_weight (void) const { return weight; }
+	inline uint get_weight () const { return weight; }
 	inline void set_weight (uint s_weight) { weight = s_weight; set_flags.weight = true; }
-	void reset_weight (void);
+	void reset_weight ();
 
 	// cost
-	inline uint get_cost (void) const { return cost; }
+	inline uint get_cost () const { return cost; }
 	inline void set_cost (uint s_cost) { cost = s_cost; set_flags.cost = true; }
-	void reset_cost (void);
+	void reset_cost ();
 
 	// equip location
-	inline EquipLocation get_equip (void) const { return equip; }
+	inline EquipLocation get_equip () const { return equip; }
 	inline void set_equip (EquipLocation s_equip) { equip = s_equip; set_flags.equip = true; }
-	void reset_equip (void);
+	void reset_equip ();
 
 	// flags
-	inline bool is_hidden (void) const { return flags.hidden; }
+	inline bool is_hidden () const { return flags.hidden; }
 	inline void set_hidden (bool v) { flags.hidden = v; set_flags.hidden = true; }
-	void reset_hidden (void);
-	inline bool is_touchable (void) const { return flags.touchable; }
+	void reset_hidden ();
+	inline bool is_touchable () const { return flags.touchable; }
 	inline void set_touchable (bool v) { flags.touchable = v; set_flags.touchable = true; }
-	void reset_touchable (void);
-	inline bool is_gettable (void) const { return flags.gettable; }
+	void reset_touchable ();
+	inline bool is_gettable () const { return flags.gettable; }
 	inline void set_gettable (bool v) { flags.gettable = v; set_flags.gettable = true; }
-	void reset_gettable (void);
-	inline bool is_dropable (void) const { return flags.dropable; }
+	void reset_gettable ();
+	inline bool is_dropable () const { return flags.dropable; }
 	inline void set_dropable (bool v) { flags.dropable = v; set_flags.dropable = true; }
-	void reset_dropable (void);
-	inline bool is_trashable (void) const { return flags.trashable; }
+	void reset_dropable ();
+	inline bool is_trashable () const { return flags.trashable; }
 	inline void set_trashable (bool v) { flags.trashable = v; set_flags.trashable = true; }
-	void reset_trashable (void);
-	inline bool is_rotting (void) const { return flags.rotting; }
+	void reset_trashable ();
+	inline bool is_rotting () const { return flags.rotting; }
 	inline void set_rotting (bool v) { flags.rotting = v; set_flags.rotting = true; }
-	void reset_rotting (void);
+	void reset_rotting ();
 
 	// update inherited data
-	void refresh (void);
+	void refresh ();
 
 	// containers
-	inline const ContainerList& get_containers (void) const { return containers; }
+	inline const ContainerList& get_containers () const { return containers; }
 	bool set_container_exist (ContainerType type, bool);
 	bool has_container (ContainerType type) const;
 
 	// actions
-	inline const ActionList& get_actions (void) const { return actions; }
+	inline const ActionList& get_actions () const { return actions; }
 
 	// load
 	int load (File::Reader& reader);
 	void save (File::Writer& writer);
 
 	// parent blueprint
-	virtual ObjectBlueprint* get_parent (void) const { return parent; }
+	virtual ObjectBlueprint* get_parent () const { return parent; }
 
 	private:
 	String id;
@@ -148,7 +148,7 @@ ObjectBlueprint : public Scriptix::Native
 	struct Flags {
 		char hidden:1, touchable:1, gettable:1, dropable:1,
 			trashable:1, rotting:1;
-		inline Flags (void) : hidden(false), touchable(true),
+		inline Flags () : hidden(false), touchable(true),
 			gettable(true), dropable(true), trashable(true),
 			rotting(false) {}
 	} flags;
@@ -156,7 +156,6 @@ ObjectBlueprint : public Scriptix::Native
 	// set flags
 	struct SetFlags {
 		int	name:1,
-			article:1,
 			desc:1,
 			weight:1,
 			cost:1,
@@ -168,7 +167,7 @@ ObjectBlueprint : public Scriptix::Native
 			trashable:1,
 			attack:1,
 			rotting:1;
-		inline SetFlags (void) : name(false), article(false), desc(false),
+		inline SetFlags () : name(false), desc(false),
 			weight(false), cost(false), equip(false),
 			hidden(false), touchable(false), gettable(false), dropable(false),
 			trashable(false), attack(false), rotting(false) {}
@@ -184,70 +183,70 @@ class
 Object : public Entity
 {
 	public:
-	Object (void);
+	Object ();
 	Object (ObjectBlueprint* s_blueprint);
 
 	// name info
-	virtual EntityName get_name (void) const;
+	virtual EntityName get_name () const;
 	virtual bool name_match (StringArg name) const;
 
 	// description
-	virtual String get_desc (void) const;
+	virtual String get_desc () const;
 
 	// save/load
 	virtual int load_node (File::Reader& reader, File::Node& node);
-	virtual int load_finish (void);
+	virtual int load_finish ();
 	virtual void save (File::Writer& writer);
 	virtual void save_hook (class ScriptRestrictedWriter* writer);
 
 	// weight
-	inline uint get_weight (void) const { return calc_weight + get_real_weight(); }
-	uint get_real_weight (void) const;
+	inline uint get_weight () const { return calc_weight + get_real_weight(); }
+	uint get_real_weight () const;
 
 	// owner tracking - see entity.h
-	virtual inline Entity* get_owner (void) const { return owner; }
+	virtual inline Entity* get_owner () const { return owner; }
 	virtual void set_owner (Entity* s_owner);
 	virtual void owner_release (Entity* child);
 
 	// returns the room the object is in (tracing through parents) or the
 	// character holding the object (again, tracing through parenst)
-	class Character* get_holder (void) const;
-	class Room* get_room (void) const;
+	class Character* get_holder () const;
+	class Room* get_room () const;
 
 	// actions
 	Scriptix::ScriptFunction get_action (StringArg action);
 	ObjectActionCode do_action (StringArg action, Entity* user, Scriptix::Value data = Scriptix::Value());
 
 	// name color
-	virtual const char *ncolor (void) const { return CITEM; }
+	virtual const char *ncolor () const { return CITEM; }
 
 	// for parsing, pull a property based on a char*
 	virtual int parse_property (const class StreamControl& stream, StringArg method, const ParseArgs& argv) const;
 
 	// object properties
-	uint get_cost (void) const;
-	EquipLocation get_equip (void) const;
+	uint get_cost () const;
+	EquipLocation get_equip () const;
 
 	// check flags
-	bool is_hidden (void) const;
-	bool is_touchable (void) const;
-	bool is_gettable (void) const;
-	bool is_dropable (void) const;
-	bool is_trashable (void) const;
-	bool is_rotting (void) const;
+	bool is_hidden () const;
+	bool is_touchable () const;
+	bool is_gettable () const;
+	bool is_dropable () const;
+	bool is_trashable () const;
+	bool is_rotting () const;
 
 	// return ture if we derive from the named blueprint
 	bool is_blueprint (StringArg blueprint) const;
 
 	// (de)activate children
-	virtual void activate (void);
-	virtual void deactivate (void);
+	virtual void activate ();
+	virtual void deactivate ();
 
 	// heartbeat
-	void heartbeat (void);
+	void heartbeat ();
 
 	// blueprint information
-	virtual ObjectBlueprint* get_blueprint (void) const { return blueprint; }
+	virtual ObjectBlueprint* get_blueprint () const { return blueprint; }
 	void set_blueprint (ObjectBlueprint* blueprint);
 	static Object* load_blueprint (StringArg name);
 
@@ -260,6 +259,7 @@ Object : public Entity
 
 	// data
 	private:
+	EntityName name;
 	Entity *owner;
 	ObjectBlueprint* blueprint;
 	ContainerType location;
@@ -269,10 +269,10 @@ Object : public Entity
 	EList<Object> children; // child objects
 
 	// weight tracking
-	void recalc_weight (void);
+	void recalc_weight ();
 
 	protected:
-	virtual ~Object (void);
+	virtual ~Object ();
 
 	virtual Scriptix::Value get_undefined_property (Scriptix::Atom id) const;
 
@@ -284,9 +284,9 @@ class SObjectBlueprintManager : public IManager
 	typedef GCType::map<String,ObjectBlueprint*> BlueprintMap;
 
 	public:
-	int initialize (void);
+	int initialize ();
 
-	void shutdown (void);
+	void shutdown ();
 
 	ObjectBlueprint* lookup (StringArg id);
 

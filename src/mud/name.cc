@@ -5,10 +5,12 @@
  * http://www.awemud.net
  */
 
-#include "mud/text.h"
+#include "common/awestr.h"
+#include "common/streams.h"
+#include "mud/name.h"
 #include "mud/entity.h"
 
-String EntityArticle::texts[] = {
+String EntityArticleClass::names[] = {
 	"normal",
 	"proper",
 	"unique",
@@ -16,11 +18,11 @@ String EntityArticle::texts[] = {
 	"vowel"
 };
 
-EntityArticle
-EntityArticle::lookup (StringArg text)
+EntityArticleClass
+EntityArticleClass::lookup (StringArg text)
 {
 	for (uint i = 0; i < COUNT; ++i)
-		if (str_eq(text, texts[i]))
+		if (str_eq(text, names[i]))
 			return i;
 	return NORMAL;
 }
@@ -28,11 +30,11 @@ EntityArticle::lookup (StringArg text)
 String
 EntityName::get_name () const
 {
-	switch (article) {
+	switch (article.get_value()) {
 		case EntityArticleClass::NORMAL:
 			return "a " + text;
 			break;
-		case EntityArticlClass::PROPER:
+		case EntityArticleClass::PROPER:
 			return text;
 			break;
 		case EntityArticleClass::UNIQUE:
@@ -51,48 +53,48 @@ EntityName::get_name () const
 }
 
 bool
-EntityName::set_name (StringArg text)
+EntityName::set_name (StringArg s_text)
 {
 	// empty text?  no article, no text
-	if (text.empty()) {
-		article = EntityArticleClass::NONE;
-		text = text;
+	if (s_text.empty()) {
+		article = EntityArticleClass::NORMAL;
+		text = s_text;
 		return false;
 	// start with capital letter?
-	} else if (isupper(text[0])) {
+	} else if (isupper(s_text[0])) {
 		article = EntityArticleClass::PROPER;
-		text = text;
+		text = s_text;
 		return true;
 	// start with the article 'the'?
-	} else if (!strncasecmp("the ", text)) {
+	} else if (!strncasecmp("the ", s_text, 4)) {
 		article = EntityArticleClass::UNIQUE;
-		text = trim(text + 4);
+		text = s_text.c_str() + 4;
 		return true;
 	// start with the article 'some'?
-	} else if (!strncasecmp("some ", text)) {
+	} else if (!strncasecmp("some ", s_text, 5)) {
 		article = EntityArticleClass::PLURAL;
-		text = trim(text + 5);
+		text = s_text.c_str() + 5;
 		return true;
 	// start with the article 'an'?
-	} else if (!strncasecmp("an ", text)) {
+	} else if (!strncasecmp("an ", s_text, 3)) {
 		article = EntityArticleClass::VOWEL;
-		text = trim(text + 3);
+		text = s_text.c_str() + 3;
 		return true;
 	// start with the article 'a'?
-	} else if (!strncasecmp("a ", text)) {
+	} else if (!strncasecmp("a ", s_text, 2)) {
 		article = EntityArticleClass::NORMAL;
-		text = trim(text + 2);
+		text = s_text.c_str() + 2;
 		return true;
 	// no known article or rule... time to guess
 	} else {
-		text = text;
-		if (text[text.size() - 1] == 's') {
+		text = s_text;
+		if (s_text[s_text.size() - 1] == 's') {
 			article = EntityArticleClass::PLURAL;
-		} else if (toupper(text[0]) == 'a' ||
-				toupper(text[0]) == 'e' ||
-				toupper(text[0]) == 'i' ||
-				toupper(text[0]) == 'o' ||
-				toupper(text[0]) == 'u')
+		} else if (toupper(s_text[0]) == 'a' ||
+				toupper(s_text[0]) == 'e' ||
+				toupper(s_text[0]) == 'i' ||
+				toupper(s_text[0]) == 'o' ||
+				toupper(s_text[0]) == 'u') {
 			article = EntityArticleClass::VOWEL;
 		} else {
 			article = EntityArticleClass::NORMAL;
@@ -104,62 +106,62 @@ EntityName::set_name (StringArg text)
 const StreamControl&
 operator << (const StreamControl& stream, const StreamName& name)
 {
-	String name = name.ref.get_text();
-	EntityArticleClass article = name.ref.get_article();
+	String text = name.ref.get_name().get_text();
+	EntityArticleClass article = name.ref.get_name().get_article();
 
 	// PROPER NAMES (SPECIAL ARTICLES)
 	
 	// proper names, no articles
-	if (article == EntityArticle::PROPER || name.article == NONE) {
+	if (article == EntityArticleClass::PROPER || name.article == NONE) {
 		// specialize output
 		stream << name.ref.ncolor();
-		if (capitalize && name) {
-			stream << (char)toupper(name[0]) << name.c_str() + 1;
+		if (name.capitalize && text) {
+			stream << (char)toupper(text[0]) << text.c_str() + 1;
 		} else {
-			stream << name;
+			stream << text;
 		}
 		stream << CNORMAL;
-		return;
+		return stream;
 	// definite articles - uniques
-	} else if (name.article == DEFINITE || article == EntityArticle::UNIQUE) {
-		if (capitalize)
+	} else if (name.article == DEFINITE || article == EntityArticleClass::UNIQUE) {
+		if (name.capitalize)
 			stream << "The ";
 		else
 			stream << "the ";
 	
 	// POSSESSIVE ARTICLES
 	} else if (name.article == YOUR) {
-		if (capitalize)
+		if (name.capitalize)
 			stream << "Your ";
 		else
 			stream << "your ";
 	} else if (name.article == MY) {
-		if (capitalize)
+		if (name.capitalize)
 			stream << "My ";
 		else
 			stream << "my ";
 	} else if (name.article == OUR) {
-		if (capitalize)
+		if (name.capitalize)
 			stream << "Our ";
 		else
 			stream << "our ";
 	} else if (name.article == HIS) {
-		if (capitalize)
+		if (name.capitalize)
 			stream << "His ";
 		else
 			stream << "his ";
 	} else if (name.article == HER) {
-		if (capitalize)
+		if (name.capitalize)
 			stream << "Her ";
 		else
 			stream << "her ";
 	} else if (name.article == ITS) {
-		if (capitalize)
+		if (name.capitalize)
 			stream << "Its ";
 		else
 			stream << "its ";
 	} else if (name.article == THEIR) {
-		if (capitalize)
+		if (name.capitalize)
 			stream << "Their ";
 		else
 			stream << "their ";
@@ -167,25 +169,27 @@ operator << (const StreamControl& stream, const StreamName& name)
 	// REGULAR NOUNS ARTICLES
 	
 	// pluralized name
-	} else if (article == EntityArticle::PLURAL) {
-		if (capitalize)
+	} else if (article == EntityArticleClass::PLURAL) {
+		if (name.capitalize)
 			stream << "Some ";
 		else
 			stream << "some ";
 	// starts with a vowel-sound
-	} else if (article == EntityArticle::VOWEL) {
-		if (capitalize)
+	} else if (article == EntityArticleClass::VOWEL) {
+		if (name.capitalize)
 			stream << "An ";
 		else
 			stream << "an ";
 	// normal-type name, nifty.
 	} else {
-		if (capitalize)
+		if (name.capitalize)
 			stream << "A ";
 		else
 			stream << "a ";
 	}
 
 	// actually pump out the name
-	stream << ncolor() << name << CNORMAL;
+	stream << name.ref.ncolor() << text << CNORMAL;
+
+	return stream;
 }

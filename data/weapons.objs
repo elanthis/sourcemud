@@ -14,7 +14,7 @@ object_blueprint {
 object_blueprint {
   id = "ma_iron"
   parent = "ma_base"
-  name = "iron mace"
+  name = "an iron mace"
   desc = "A simple soldier's mace."
   weight = 155
   cost = 50
@@ -44,7 +44,7 @@ object_blueprint {
 object_blueprint {
   id = "sw_short"
   parent = "sw_base"
-  name = "short sword"
+  name = "a short sword"
   keyword = "shortsword"
   desc = "A simple short sword."
   weight = 110
@@ -57,7 +57,7 @@ object_blueprint {
 object_blueprint {
   id = "sw_fire"
   parent = "sw_base"
-  name = "fire blade"
+  name = "a fire blade"
   keyword = "fire sword"
   desc = "The fire blade is a rune-covered long sword, with a red-orange tint to the blade.  The pommel is crafted to look like a dragon's maw, breathing fire down the length of the blade."
   weight = 135
@@ -89,7 +89,7 @@ object_blueprint {
 object_blueprint {
   id = "sw_great"
   parent = "sw_base"
-  name = "great sword"
+  name = "a great sword"
   keyword = "greatsword"
   desc = "A long, heavy sword made of solid iron.  A human would need two hands to properly wield this massive weapon."
   weight = 160
@@ -102,8 +102,7 @@ object_blueprint {
 
 object_blueprint {
   id = "claws_base"
-  name = "claws"
-  article = "plural"
+  name = "some claws"
   parent = "weapon"
   desc = "Sharp, pointy claws."
   weight = 0
@@ -123,7 +122,7 @@ object_blueprint {
 
 object_blueprint {
   id = "fist_base"
-  name = "fist"
+  name = "a fist"
   parent = "weapon"
   desc = "Bunched fist."
   weight = 0

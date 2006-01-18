@@ -24,16 +24,13 @@ void
 NpcBlueprint::reset_name (void)
 {
 	// clear
-	name.name = "npc";
-	name.article = EntityArticle::VOWEL;
+	name.set_name("an npc");
 	set_flags.name = false;
-	set_flags.article = false;
 
 	// get parent value
 	const NpcBlueprint* data = get_parent();
 	if (data != NULL) {
-		name.name = data->get_name();
-		name.article = data->get_article();
+		name = data->get_name();
 	}
 }
 
@@ -194,8 +191,6 @@ NpcBlueprint::load (File::Reader& reader)
 			}
 		FO_ATTR("name")
 			set_name(node.get_data());
-		FO_ATTR("article")
-			set_article(EntityArticle::lookup(node.get_data()));
 		FO_ATTR("keyword")
 			keywords.push_back(node.get_data());
 		FO_ATTR("desc")
@@ -234,10 +229,7 @@ void
 NpcBlueprint::save (File::Writer& writer)
 {
 	if (set_flags.name)
-		writer.attr("name", name.name);
-
-	if (set_flags.article)
-		writer.attr("article", name.article.get_name());
+		writer.attr("name", name.get_name());
 
 	for (StringList::const_iterator i = keywords.begin(); i != keywords.end(); ++i)
 		writer.attr("keyword", *i);
@@ -369,18 +361,11 @@ Npc::save_hook (ScriptRestrictedWriter* writer)
 		ai->do_save(this, writer);
 }
 	
-String
+EntityName
 Npc::get_name (void) const
 {
 	assert(blueprint != NULL);
 	return blueprint->get_name();
-}
-
-EntityArticle
-Npc::get_article (void) const
-{
-	assert(blueprint != NULL);
-	return blueprint->get_article();
 }
 
 String
@@ -540,7 +525,7 @@ Npc::load_blueprint (StringArg name)
 			if (object != NULL)
 				npc->equip(object);
 			else
-				Log::Error << "Object blueprint '" << *i << "' from NPC blueprint '" << npc->get_name() << "' does not exist.";
+				Log::Error << "Object blueprint '" << *i << "' from NPC blueprint '" << blueprint->get_id() << "' does not exist.";
 		}
 		blueprint = blueprint->get_parent();
 	}
@@ -622,7 +607,7 @@ Npc::is_blueprint (StringArg name) const
 bool
 Npc::name_match (StringArg name) const
 {
-	if (phrase_match (get_name(), name))
+	if (phrase_match (get_name().get_text(), name))
 		return true;
 
 	// blueprint keywords

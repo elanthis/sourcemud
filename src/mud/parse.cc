@@ -614,7 +614,7 @@ namespace parse {
 					switch (*in) {
 						// our name
 						case 'n':
-							snprintf (result, sizeof(result), "%s", ch->get_name ().c_str());
+							snprintf (result, sizeof(result), "%s", ch->get_name().get_text().c_str());
 							break;
 						// current health
 						case 'h':

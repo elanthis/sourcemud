@@ -757,12 +757,12 @@ TelnetModePlay::initialize (void)
 	// start the player
 	if (!player->is_valid() || player->start()) {
 		*get_handler() << "\n" CADMIN "Failed to start your login session." CNORMAL "\n";
-		Log::Warning << "Failed to start login session for '" << player->get_name() << "'.";
+		Log::Warning << "Failed to start login session for '" << player->get_id() << "'.";
 		return -1;
 	}
 
 	// finish off
-	Log::Info << player->get_name () << " logged in";
+	Log::Info << player->get_id() << " logged in";
 	return 0;
 }
 
@@ -806,7 +806,7 @@ TelnetModeNewPlayer::initialize (void)
 	// start creation
 	if (player->create()) {
 		*get_handler() << "\n" CADMIN "Failed to start your login session." CNORMAL "\n";
-		Log::Warning << "Failed to start login session for '" << player->get_name() << "'.\n";
+		Log::Warning << "Failed to start login session for '" << player->get_id() << "'.\n";
 		return -1;
 	}
 	return 0;

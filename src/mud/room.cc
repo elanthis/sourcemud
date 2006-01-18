@@ -112,7 +112,7 @@ Room::save (File::Writer& writer)
 	writer.attr("id", id);
 
 	if (!name.empty())
-		writer.attr("name", name);
+		writer.attr("name", name.get_name());
 
 	if (!desc.empty())
 		writer.attr("desc", desc);

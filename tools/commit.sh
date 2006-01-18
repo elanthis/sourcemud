@@ -132,4 +132,4 @@ fi
 
 mv -f .commit.log .commit.log~
 
-[ "x$PUSH" = "xyes"] && cg-push
+[ "x$PUSH" = "xyes" ] && cg-push

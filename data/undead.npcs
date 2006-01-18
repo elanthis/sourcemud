@@ -24,28 +24,28 @@ npc_blueprint {
 npc_blueprint {
   id = "rabbit_skeleton"
   parent = "base_undead"
-  name = "rabbit skeleton"
+  name = "a rabbit skeleton"
   desc = "Bits of fur and sinew hang off the tiny bones of {.D}."
   @corpse_name = "rabbit skeleton"
 }
 npc_blueprint {
   id = "fox_skeleton"
   parent = "base_undead"
-  name = "fox skeleton"
+  name = "a fox skeleton"
   desc = "{.D} shambles around with none of the grace of a living fox."
   @corpse_name = "fox skeleton"
 }
 npc_blueprint {
   id = "wolf_skeleton"
   parent = "base_undead"
-  name = "wolf skeleton"
+  name = "a wolf skeleton"
   desc = "The eyes of {.d} glow a malevolent red."
   @corpse_name = "wolf skeleton"
 }
 npc_blueprint {
   id = "skeleton"
   parent = "base_undead"
-  name = "skeleton"
+  name = "a skeleton"
   desc = "Bleached bones and glowing red eyes shamble around seeking for the living."
   @corpse_name = "skeleton"
 }

@@ -8,7 +8,7 @@ object_blueprint {
 
 object_blueprint {
   id = "gem_ruby"
-  name = "ruby"
+  name = "a ruby"
   parent = "gem"
   desc = "A small, red gem."
   weight = 1
@@ -17,8 +17,7 @@ object_blueprint {
 
 object_blueprint {
   id = "gem_emerald"
-  name = "emerald"
-  article = "vowel"
+  name = "an emerald"
   parent = "gem"
   desc = "A small, green gem."
   weight = 1

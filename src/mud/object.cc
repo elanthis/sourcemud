@@ -43,31 +43,37 @@ ContainerType::lookup (StringArg name)
 // ----- ObjectBlueprint -----
 
 SCRIPT_TYPE(ObjectBlueprint);
-ObjectBlueprint::ObjectBlueprint (void) : Scriptix::Native(AweMUD_ObjectBlueprintType), parent(NULL)
+ObjectBlueprint::ObjectBlueprint () : Scriptix::Native(AweMUD_ObjectBlueprintType), parent(NULL)
 {
 	weight = 0;
 	cost = 0;
 }
 
+EntityName
+ObjectBlueprint::get_name () const
+{
+	if (set_flags.name || parent == NULL)
+		return name;
+	else
+		return parent->get_name();
+}
+
 void
-ObjectBlueprint::reset_name (void)
+ObjectBlueprint::reset_name ()
 {
 	// clear
-	name.name = "object";
-	name.article = EntityArticle::VOWEL;
+	name.set_name("an object");
 	set_flags.name = false;
-	set_flags.article = false;
 
 	// get parent value
 	const ObjectBlueprint* data = get_parent();
 	if (data != NULL) {
-		name.name = data->get_name();
-		name.article = data->get_article();
+		name = data->get_name();
 	}
 }
 
 void
-ObjectBlueprint::reset_desc (void)
+ObjectBlueprint::reset_desc ()
 {
 	// clear
 	desc = "object";
@@ -80,7 +86,7 @@ ObjectBlueprint::reset_desc (void)
 }
 
 void
-ObjectBlueprint::reset_weight (void)
+ObjectBlueprint::reset_weight ()
 {
 	// clear
 	weight = 0;
@@ -93,7 +99,7 @@ ObjectBlueprint::reset_weight (void)
 }
 
 void
-ObjectBlueprint::reset_cost (void)
+ObjectBlueprint::reset_cost ()
 {
 	// clear
 	cost = 0;
@@ -106,7 +112,7 @@ ObjectBlueprint::reset_cost (void)
 }
 
 void
-ObjectBlueprint::reset_equip (void)
+ObjectBlueprint::reset_equip ()
 {
 	// clear
 	equip = 0;
@@ -119,7 +125,7 @@ ObjectBlueprint::reset_equip (void)
 }
 
 void
-ObjectBlueprint::reset_hidden (void)
+ObjectBlueprint::reset_hidden ()
 {
 	// clear
 	flags.hidden = false;
@@ -132,7 +138,7 @@ ObjectBlueprint::reset_hidden (void)
 }
 
 void
-ObjectBlueprint::reset_gettable (void)
+ObjectBlueprint::reset_gettable ()
 {
 	// clear
 	flags.gettable = true;
@@ -145,7 +151,7 @@ ObjectBlueprint::reset_gettable (void)
 }
 
 void
-ObjectBlueprint::reset_touchable (void)
+ObjectBlueprint::reset_touchable ()
 {
 	// clear
 	flags.touchable = true;
@@ -158,7 +164,7 @@ ObjectBlueprint::reset_touchable (void)
 }
 
 void
-ObjectBlueprint::reset_dropable (void)
+ObjectBlueprint::reset_dropable ()
 {
 	// clear
 	flags.dropable = true;
@@ -171,7 +177,7 @@ ObjectBlueprint::reset_dropable (void)
 }
 
 void
-ObjectBlueprint::reset_trashable (void)
+ObjectBlueprint::reset_trashable ()
 {
 	// clear
 	flags.trashable = true;
@@ -184,7 +190,7 @@ ObjectBlueprint::reset_trashable (void)
 }
 
 void
-ObjectBlueprint::reset_rotting (void)
+ObjectBlueprint::reset_rotting ()
 {
 	// clear
 	flags.rotting = true;
@@ -197,7 +203,7 @@ ObjectBlueprint::reset_rotting (void)
 }
 
 void
-ObjectBlueprint::refresh (void)
+ObjectBlueprint::refresh ()
 {
 	if (!set_flags.name)
 		reset_name();
@@ -230,10 +236,7 @@ ObjectBlueprint::save (File::Writer& writer)
 		writer.attr("id", id);
 
 	if (set_flags.name)
-		writer.attr("name", name.name);
-
-	if (set_flags.article)
-		writer.attr("article", name.article.get_name());
+		writer.attr("name", name.get_name());
 
 	if (set_flags.desc)
 		writer.attr("desc", desc);
@@ -290,8 +293,6 @@ ObjectBlueprint::load (File::Reader& reader)
 			id = node.get_data();
 		FO_ATTR("name")
 			set_name(node.get_data());
-		FO_ATTR("article")
-			set_article(EntityArticle::lookup(node.get_data()));
 		FO_ATTR("keyword")
 			keywords.push_back(node.get_data());
 		FO_ATTR("desc")
@@ -420,7 +421,7 @@ ObjectBlueprint::has_container (ContainerType type) const
 // ----- Object -----
 
 SCRIPT_TYPE(Object);
-Object::Object (void) : Entity (AweMUD_ObjectType)
+Object::Object () : Entity (AweMUD_ObjectType)
 {
 	blueprint = NULL;
 	owner = NULL;
@@ -437,7 +438,7 @@ Object::Object (ObjectBlueprint* s_blueprint) : Entity(AweMUD_ObjectType)
 	trash_timer = 0;
 }
 
-Object::~Object (void)
+Object::~Object ()
 {
 }
 
@@ -478,7 +479,7 @@ Object::save_hook (ScriptRestrictedWriter* writer)
 }
 
 int
-Object::load_finish (void)
+Object::load_finish ()
 {
 	recalc_weight();
 	
@@ -549,7 +550,7 @@ Object::owner_release (Entity* child)
 }
 
 void
-Object::heartbeat(void)
+Object::heartbeat()
 {
 	// see if we can trash the object
 	if (is_trashable()) {
@@ -580,7 +581,7 @@ Object::heartbeat(void)
 }
 
 void
-Object::activate (void)
+Object::activate ()
 {
 	Entity::activate();
 
@@ -589,7 +590,7 @@ Object::activate (void)
 }
 
 void
-Object::deactivate (void)
+Object::deactivate ()
 {
 	for (EList<Object>::iterator e = children.begin (); e != children.end(); ++e)
 		(*e)->deactivate();
@@ -625,7 +626,7 @@ Object::do_action (StringArg name, Entity* user, Scriptix::Value data)
 
 	// sanity check return value
 	if (res != OBJECT_ACTION_OK_NORMAL && res != OBJECT_ACTION_OK_QUIET && res != OBJECT_ACTION_CANCEL_NORMAL && res != OBJECT_ACTION_CANCEL_QUIET) {
-		Log::Error << "Object action '" << name << "' on " << get_name() << " returned invalid object action code";
+		Log::Error << "Object action '" << name << "' on " << get_name().get_text() << " returned invalid object action code";
 		return OBJECT_ACTION_CANCEL_NORMAL;
 	}
 
@@ -734,7 +735,7 @@ Object::find_object (const char *name, uint index, ContainerType type, uint *mat
 
 // recalc weight of object
 void
-Object::recalc_weight (void)
+Object::recalc_weight ()
 {
 	calc_weight = 0;
 
@@ -746,7 +747,7 @@ Object::recalc_weight (void)
 
 // find parent room
 Room*
-Object::get_room (void) const
+Object::get_room () const
 {
 	Entity* owner = get_owner();
 	while (owner != NULL && !ROOM(owner))
@@ -756,7 +757,7 @@ Object::get_room (void) const
 
 // find parent owner
 Character* 
-Object::get_holder (void) const
+Object::get_holder () const
 {
 	Entity* owner = get_owner();
 	while (owner != NULL && !CHARACTER(owner))
@@ -765,28 +766,19 @@ Object::get_holder (void) const
 }
 
 // get object name information
-String
-Object::get_name (void) const
+EntityName
+Object::get_name () const
 {
 	assert(blueprint != NULL);
-	if (name.name.empty())
+	if (name.empty())
 		return blueprint->get_name();
 	else
-		return name.name;
-}
-EntityArticle
-Object::get_article (void) const
-{
-	assert(blueprint != NULL);
-	if (name.name.empty())
-		return blueprint->get_article();
-	else
-		return name.article;
+		return name;
 }
 
 // get object description
 String
-Object::get_desc (void) const
+Object::get_desc () const
 {
 	assert(blueprint != NULL);
 	return blueprint->get_desc();
@@ -794,19 +786,19 @@ Object::get_desc (void) const
 
 // get object properties
 uint
-Object::get_cost (void) const
+Object::get_cost () const
 {
 	assert(blueprint != NULL);
 	return blueprint->get_cost();
 }
 uint
-Object::get_real_weight (void) const
+Object::get_real_weight () const
 {
 	assert(blueprint != NULL);
 	return blueprint->get_weight();
 }
 EquipLocation
-Object::get_equip (void) const
+Object::get_equip () const
 {
 	assert(blueprint != NULL);
 	return blueprint->get_equip();
@@ -814,37 +806,37 @@ Object::get_equip (void) const
 
 // get flags
 bool
-Object::is_hidden (void) const
+Object::is_hidden () const
 {
 	assert(blueprint != NULL);
 	return blueprint->is_hidden();
 }
 bool
-Object::is_trashable (void) const
+Object::is_trashable () const
 {
 	assert(blueprint != NULL);
 	return blueprint->is_trashable();
 }
 bool
-Object::is_gettable (void) const
+Object::is_gettable () const
 {
 	assert(blueprint != NULL);
 	return blueprint->is_gettable();
 }
 bool
-Object::is_dropable (void) const
+Object::is_dropable () const
 {
 	assert(blueprint != NULL);
 	return blueprint->is_dropable();
 }
 bool
-Object::is_touchable (void) const
+Object::is_touchable () const
 {
 	assert(blueprint != NULL);
 	return blueprint->is_touchable();
 }
 bool
-Object::is_rotting (void) const
+Object::is_rotting () const
 {
 	assert(blueprint != NULL);
 	return blueprint->is_rotting();
@@ -903,7 +895,7 @@ Object::is_blueprint (StringArg name) const
 bool
 Object::name_match (StringArg name) const
 {
-	if (phrase_match (get_name(), name))
+	if (phrase_match (get_name().get_text(), name))
 		return true;
 
 	// blueprint keywords
@@ -934,7 +926,7 @@ Object::get_undefined_property (Scriptix::Atom id) const
 SObjectBlueprintManager ObjectBlueprintManager;
 
 int
-SObjectBlueprintManager::initialize (void)
+SObjectBlueprintManager::initialize ()
 {
 	// requirements
 	if (require(ScriptBindings) != 0)
@@ -986,7 +978,7 @@ SObjectBlueprintManager::initialize (void)
 }
 
 void
-SObjectBlueprintManager::shutdown (void)
+SObjectBlueprintManager::shutdown ()
 {
 }
 

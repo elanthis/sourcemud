@@ -94,7 +94,6 @@ NpcBlueprint : public Scriptix::Native
 
 	struct SetFlags {
 		int	name:1,
-			article:1,
 			desc:1,
 			gender:1,
 			alignment:1,
@@ -102,7 +101,7 @@ NpcBlueprint : public Scriptix::Native
 			attack:1,
 			damage:1,
 			stats:1;
-		inline SetFlags () : name(false), article(false), desc(false),
+		inline SetFlags () : name(false), desc(false),
 			gender(false), alignment(false), dodge(false), attack(false),
 			damage(false), stats(false) {}
 	} set_flags;

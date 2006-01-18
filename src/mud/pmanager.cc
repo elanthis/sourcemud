@@ -66,7 +66,7 @@ SPlayerManager::get (StringArg name)
 
 	// try loading alive
 	for (PlayerList::iterator i = player_list.begin(); i != player_list.end(); ++i)
-		if (((*i)->is_valid() || (*i)->is_active()) && str_eq (name, (*i)->get_name ()))
+		if (((*i)->is_valid() || (*i)->is_active()) && str_eq (name, (*i)->get_id()))
 			return *i;
 
 	// not found
@@ -170,7 +170,7 @@ SPlayerManager::exists (String name)
 
 	// look thru list for valid and/or connected players
 	for (PlayerList::iterator i = player_list.begin(); i != player_list.end(); ++i) {
-		if (str_eq((*i)->get_name(), name)) {
+		if (str_eq((*i)->get_id(), name)) {
 			if ((*i)->is_connected() || (*i)->is_valid())
 				return true;
 			break;
@@ -209,7 +209,7 @@ SPlayerManager::destroy (StringArg name)
 
 	// player already on?  force quit, invalidate
 	for (PlayerList::iterator i = player_list.begin(); i != player_list.end(); ++i) {
-		if ((*i)->get_name() == name) {
+		if ((*i)->get_id() == name) {
 			if ((*i)->is_connected())
 				(*i)->quit();
 			(*i)->flags.valid = false;

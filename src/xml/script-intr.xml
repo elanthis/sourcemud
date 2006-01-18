@@ -1727,27 +1727,6 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
       <doc>Set the race of the player.  This does not apply any racial modifiers.</doc>
     </method>
 
-    <!-- title -->
-    <method>
-      <name>getTitle</name>
-      <invoke>get_title</invoke>
-      <return>
-        <type>String</type>
-        <doc>The player's title.</doc>
-      </return>
-      <doc>The player's title is displayed in front of the player's name.  Titles include prefixes like Sir, Lady, Her Excellency, and so on.</doc>
-    </method>
-    <method>
-      <name>setTitle</name>
-      <invoke>set_title</invoke>
-      <arg>
-        <name>title</name>
-        <type>String</type>
-        <doc>The player's title.</doc>
-      </arg>
-      <doc>The player's title is displayed in front of the player's name.  Titles include prefixes like Sir, Lady, Her Excellency, and so on.</doc>
-    </method>
-
     <!-- Birthday/age -->
     <method>
       <name>getBirthday</name>

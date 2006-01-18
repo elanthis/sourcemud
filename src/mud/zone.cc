@@ -205,7 +205,7 @@ Zone::save (File::Writer& writer)
 	writer.bl();
 	writer.comment ("--- BASICS ---");
 	writer.attr("id", id);
-	writer.attr("name", name);
+	writer.attr("name", name.get_name());
 	writer.attr("desc", desc);
 	Entity::save(writer);
 
@@ -267,7 +267,7 @@ Zone::save (void)
 		strftime (time_buffer, sizeof (time_buffer), "%Y%m%d%H%M%S", localtime (&base_t));
 		String backup = path + "." + time_buffer + "~";
 		if (rename (path, backup)) /* move file */
-			Log::Error << "Backup of zone '" << get_name() << "' to " << backup << " failed: " << strerror(errno);
+			Log::Error << "Backup of zone '" << get_id() << "' to " << backup << " failed: " << strerror(errno);
 	}
 
 	File::Writer writer;

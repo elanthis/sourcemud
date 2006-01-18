@@ -64,7 +64,7 @@ void
 Player::do_tell (Player* who, StringArg what)
 {
 	*who << "[" << StreamName(this) << "]: " CTALK << what << CNORMAL "\n";
-	who->last_tell = get_name().get_text();
+	who->last_tell = get_id();
 	*this << "Message sent to " << StreamName(who) << ".\n";
 }
 
@@ -84,7 +84,7 @@ Player::do_reply (StringArg what)
 	Player* who = PlayerManager.get(last_tell);
 	if (who) {
 		*who << "[" << StreamName(this) << "]: " CTALK << what << CNORMAL "\n";
-		who->last_tell = get_name ();
+		who->last_tell = get_id();
 		*this << "Reply sent to " << StreamName(who) << ".\n";
 	} else {
 		*this << "Player '" << last_tell << "' is not logged in.\n";
@@ -224,7 +224,7 @@ void command_bug (Player* player, char** argv)
 	body << "# -- HEADER --\n";
 	body << "Issue: BUG\n";
 	body << "Host: " << NetworkManager.get_host() << "\n";
-	body << "From: " << player->get_name() << "\n";
+	body << "From: " << player->get_account()->get_id() << "\n";
 	body << "# -- END --\n";
 	body << "# -- BODY --\n";
 	body << argv[0] << "\n";
@@ -234,7 +234,7 @@ void command_bug (Player* player, char** argv)
 	msg.send();
 
 	// send message 
-	Log::Info << "Player " << player->get_name() << " issued a bug report.";
+	Log::Info << "Player " << player->get_account()->get_id() << " issued a bug report.";
 	*player << "Your bug report has been sent.\n";
 #else // HAVE_SENDMAIL
 	*player << CADMIN "Bug reporting has been disabled." CNORMAL "\n";
@@ -256,7 +256,7 @@ void command_abuse (Player* player, char** argv)
 	body << "# -- HEADER --\n";
 	body << "Issue: ABUSE\n";
 	body << "Host: " << NetworkManager.get_host() << "\n";
-	body << "From: " << player->get_name() << "\n";
+	body << "From: " << player->get_account()->get_id() << "\n";
 	body << "About: " << argv[0] << "\n";
 	body << "# -- END --\n";
 	body << "# -- BODY --\n";
@@ -267,7 +267,7 @@ void command_abuse (Player* player, char** argv)
 	msg.send();
 
 	// send message 
-	Log::Info << "Player " << player->get_name() << " issued an abuse report.";
+	Log::Info << "Player " << player->get_account()->get_id() << " issued an abuse report.";
 	*player << "Your abuse report has been sent.\n";
 #else // HAVE_SENDMAIL
 	*player << CADMIN "Bug reporting has been disabled." CNORMAL "\n";
