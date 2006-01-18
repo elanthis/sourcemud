@@ -7,24 +7,23 @@
 #  file will be converted into a ChangeLog entry.  Finally, cvs commit
 #  will be called.
 
-# dirs to commit
-# COMMIT=". src include tools doc scripts data test"
-
 # do changelog
 CHANGELOG="yes"
 
 # update version
 VERSION="yes"
 
+# do push
+PUSH="yes"
+
 # remove data dir if asked
 while [ -n "$1" ] ; do
   case "$1" in
-    -d)
-      #COMMIT=$(echo "$COMMIT" | sed 's/\<data\>//')
-	  echo "Not implemented" >&2
-      ;;
     -c)
       CHANGELOG="no"
+      ;;
+    -p)
+      PUSH="no"
       ;;
     -v)
       VERSION="no"
@@ -65,6 +64,9 @@ fi
 if [ -z "$EMAIL" ] ; then
   EMAIL="$USER@$DOMAIN"
 fi
+
+export GIT_AUTHOR_NAME="$FULLNAME"
+export GIT_AUTHOR_EMAIL="$EMAIL"
 
 # find fmt command
 FMT=$(which fmt)
@@ -122,10 +124,12 @@ if [ "x$CHANGELOG" = "xyes" ] ; then
   fi
 fi
 
-if ! tla commit -l .commit.tmp ; then
+if ! cg-commit -m - < .commit.tmp  ; then
   # failed - revert changes
   [ "x$CHANGELOG" = "xyes" ] && mv -f .ChangeLog~ ChangeLog
   exit 1
 fi
 
 mv -f .commit.log .commit.log~
+
+[ "x$PUSH" = "xyes"] && cg-push

@@ -2,7 +2,7 @@ AUTOMAKE_OPTIONS = subdir-objects
 
 ### EXECUTABLE SCRIPTS ###
 
-TOOL_FILES = tools/commit.sh tools/massroom.pl tools/note.sh tools/parse-report.pl tools/new-version.sh tools/undo
+TOOL_FILES = tools/commit.sh tools/massroom.pl tools/note.sh tools/parse-report.pl tools/new-version.sh
 
 XSL_FILES = tools/script-code.xsl tools/script-doc.xsl tools/events-code.xsl tools/events-doc.xsl tools/events-header.xsl tools/parse-code.xsl tools/hooks-doc.xsl tools/hooks-code.xsl tools/hooks-header.xsl
 
