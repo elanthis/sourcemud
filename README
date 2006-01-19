@@ -1,17 +1,17 @@
 AweMUD Next Generation
 Copyright (C) 2002,2003  AwesomePlay Productions, Inc.
 Sean Middleditch <elanthis@awesomeplay.com>
-Basic AweMUD NG Information
+Basic AweMUD Information
 ------------------------------------------------------
 
 
 1. Introduction
    ============
-   AweMUD NG is a MUD (Multi-User Dungeon) game server.  Players connect to the
+   AweMUD is a MUD (Multi-User Dungeon) game server.  Players connect to the
    server using telnet, or a MUD client application, to play in a fantasy world
    with other players.
 
-   AweMUD NG is a new codebase; it is not derived from any older codebases like
+   AweMUD is a new codebase; it is not derived from any older codebases like
    many other popular MUDs.  One consequence of this is that many terms and
    systems found in most other MUDs are different in AweMUD.
 
@@ -27,13 +27,6 @@ Basic AweMUD NG Information
    have tools for DocBook XML processing installed, the files will be built
    when you run 'make'.
 
-   In particular, building and installation instructions can be found in the
-   admin guide (e.g. doc/admin.txt), along with basic configuration details.
-
-   Useful guides for players (who probably won't even be reading this file), an
-   administration guide, FAQ file, scripting API reference (for the AweMUD-
-   specific APIs), and more are located in doc/.
-
    Please note that the coders tend to get out of sync with the document
    writers (even when they are usually the same person), and the documents
    often lag behind the code.
@@ -44,9 +37,7 @@ Basic AweMUD NG Information
    If the documentation doesn't provide an answer, or just confused you more,
    you can find support in several place.  The AweMUD website
    (http://www.awemud.net) has both user forums and a bug tracking system.  The
-   website also has information on the AweMUD mailing lists.  You can also
-   (occasionally) find people in the #awemud channel on the FreeNode IRC
-   network.
+   website also has information on the AweMUD mailing lists.
 
 
 4. Upgrading

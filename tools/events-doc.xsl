@@ -14,17 +14,14 @@
 
   <!-- main()  ~,^ -->
   <xsl:template match="events">
-    <event-reference>
-      <!-- make an appendix of all the events -->
-      <appendix id="ch_events">
-        <title>Events</title>
-        <para>Events are sent between <link linkend="Entity">Entities</link> to indicate that some action has been taken or occured.</para>
-        <para>Most events have both an actor and a target.  These are <link linkend="Entity">Entities</link>.  All events have a <link linkend="Room">Room</link>, which is the room they occured in.</para>
+    <appendix id="ap_events">
+      <title>Events Reference</title>
+      <para>Events are sent between <link linkend="Entity">Entities</link> to indicate that some action has been taken or occured.</para>
+      <para>Most events have both an actor and a target.  These are <link linkend="Entity">Entities</link>.  All events have a <link linkend="Room">Room</link>, which is the room they occured in.</para>
 
-        <!-- spit out the events -->
-        <xsl:apply-templates select="event"><xsl:sort select="name"/></xsl:apply-templates>
-      </appendix>
-    </event-reference>
+      <!-- spit out the events -->
+      <xsl:apply-templates select="event"><xsl:sort select="name"/></xsl:apply-templates>
+    </appendix>
   </xsl:template>
 
   <!-- document an event -->

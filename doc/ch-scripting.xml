@@ -1,20 +1,12 @@
-<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN" "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd">
-<book id="script-guide">
-  <?dbhtml file="index.html"?>
-  <bookinfo>
-    <title>AweMUD Scripting Guide</title>
-  </bookinfo>
-
-  <chapter id="ch_intro">
-    <title>Introduction</title>
-    <warning>THIS DOCUMENT IS EXTREMELY OUT-OF-DATE!</warning>
-    <para>AweMUD makes use of the Scriptix language to extend and modify the behaviour of the core engine.  This guide gives a short over-view of using Scriptix with AweMUD.  We do not attempt to teach the Scriptix language in this document (that is the job of yet-to-be-written Scritpix Programming Manual).</para>
-    <section>
-      <title>Using Scriptix</title>
-      <para>When AweMUD boots up, it loads all the scripts found in the Scriptix folder (./scripts/ by default).  Each of these scripts is compiled into bytecode for use by AweMUD.  You cannot, at this time, specify the order scripts are loaded, ignore scripts in the Scriptix folder, or load scripts after AweMUD has booted.</para>
-    </section>
-  </chapter>
-  <chapter id="ch_commands">
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN" "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd">
+<chapter id="ch_scripting">
+  <title>Scripting</title>
+  <para>AweMUD makes use of the Scriptix language to extend and modify the behaviour of the core engine.  This guide gives a short over-view of using Scriptix with AweMUD.  We do not attempt to teach the Scriptix language in this document (that is the job of yet-to-be-written Scritpix Programming Manual).</para>
+  <section>
+    <title>Using Scriptix</title>
+    <para>When AweMUD boots up, it loads all the scripts listed in <filename>scripts/load</filename>.  Each of these scripts is compiled into bytecode for use by AweMUD.  You cannot, at this time, specify the order scripts are loaded, ignore scripts in the Scriptix folder, or load scripts after AweMUD has booted.</para>
+  </section>
+  <section id="sect_commands">
     <title>Commands</title>
     <para>One of the many abilities Scriptix has in AweMUD is to register new commands.  A command is what a player types in when playing to game to perform actions or query the server for information.</para>
     <section>
@@ -24,32 +16,31 @@
       <para>Take for example a command to teleport to a home location.  Let's call the command <command>home</command>.  Commands like these are popular for assisting newbies in getting used to the game.  However, we only want this command to be usable by newbies; more powerful/experiences players shouldn't be able to use it.  We could simply have the command print out a "You are not a newbie" message for experienced players that try to use the command; however, the command will still "clash" with other commands when short-cutting (for example, an experienced player may type <userinput>h</userinput> for a <command>hack</command> command, and end up triggering the newbie command).</para>
       <para>If the newbie command instead remains silent, and returns a false value instead, the command parser will continue looking for more command matches, and find the <command>hack</command> as expected.</para>
       <example><title>A basic command handler.</title>
-        <programlisting><![CDATA[command
-  dance (who, args)
-  {
-    // information to append to dance output
-    out = nil;
+        <programlisting><![CDATA[function dance (player, argv)
+{
+  // information to append to dance output
+  out = nil;
 
-    // check argument type
-    if (args[0]) {
-      if (args[0] == 'happily') {
-        out = ' like a happy fool!';
-      } else if (args[0] == 'drunkenly') {
-        out = ' sloppily across the room, like a drunkard!';
-      } else if (args[0] == 'vigorously') {
-        out = ' vigorously.  Tango time!';
-      }
+  // check argument type
+  if (argv[0]) {
+    if (argv[0] == 'happily') {
+      out = ' like a happy fool!';
+    } else if (argv[0] == 'drunkenly') {
+      out = ' sloppily across the room, like a drunkard!';
+    } else if (argv[0] == 'vigorously') {
+    out = ' vigorously.  Tango time!';
     }
+  }
 
-    // what do we print
-    if (out) {
-      who.print('You dance ', out, "\n");
-      who.rprint(who, ' dances ', out, "\n");
-    } else {
-      who.print("You dance about.\n");
-      who.rprint(who, " dances about.\n");
-    }
-  }]]></programlisting>
+  // what do we print
+  if (out) {
+    player.print('You dance ', out, "\n");
+    player.rprint(player, ' dances ', out, "\n");
+  } else {
+    player.print("You dance about.\n");
+    player.rprint(player, " dances about.\n");
+  }
+}]]></programlisting>
       </example>
     </section>
     <section>
@@ -81,23 +72,17 @@
         <para><userinput>"put :0* :1in :2*"</userinput></para>
         <para><userinput>"create :0exit :1% to :2%"</userinput></para>
       </example>
+      <example><title>Using registerCommand</title>
+        <programlisting><![CDATA[function init() {
+  registerCommand(
+    "dance",
+    "dance [adverb]\n",
+    "dance :0%",
+    dance,
+    nil);
+}]]></programlisting>
+      </example>
     </section>
-  </chapter>
-  <chapter id="npc_ai">
-    <title>NPC AI</title>
-    <para>AI, or artificial intelligence, allows a script coder to define and control and NPCs behaviour.  This behaviour may be as simple or as complex as one wishes.</para>
-    <para>The AI system in AweMUD is based entirely on <link linkend="ch_events">events</link>.  NPCs receive both events intended for themselves, and events which occur in the room they are in.  For example, an NPC will receive <link linkend="event_enter">enter</link> events whenever a new NPC or Player enters the room.  The AI may dictate that the NPC nod at any who enter, for example.</para>
-    <para>The AI system also provides specializations for two particular events: the heartbeat, and the roundtime expiration.  Round time expiration is useful mainly for combat purposes, as it allows the NPC to immediately react when the roundtime has expired.  The heartbeat reaction is usually used in conjuction with counters to implement random or intermittent behaviour; for example, to have the NPC hum once every 15 seconds.</para>
-  </chapter>
-
-  <!-- include API reference -->
-  <xi:include href="../doc/script-ref.xml" xpointer="xpointer(/script-reference/*)" parse="xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
-
-  <!-- include Event reference -->
-  <xi:include href="../doc/event-ref.xml" xpointer="xpointer(/event-reference/*)" parse="xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
-
-  <!-- include hook reference -->
-  <xi:include href="../doc/hook-ref.xml" xpointer="xpointer(/hook-reference/*)" parse="xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
-
-</book>
+  </section>
+</chapter>
 <!-- vim: set filetype=xml shiftwidth=2 tabstop=2 expandtab : -->

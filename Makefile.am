@@ -51,7 +51,8 @@ aiscript_DATA = $(AI_FILES)
 
 ### DOCUMENTATION ###
 
-DOCBOOK := doc/script-guide.xml
+DOCBOOK := doc/awemud-manual.xml
+MANUAL_CHAPTERS := doc/ch-introduction.xml doc/ch-scripting.xml
 
 if BUILD_DOCS
 DOCBOOK_TXT := $(DOCBOOK:%.xml=%.txt)
@@ -61,10 +62,7 @@ DOCBOOK_PDF := $(DOCBOOK:%.xml=%.pdf)
 endif
 endif
 
-#DOCS := $(DOCBOOK_TXT) $(DOCBOOK_HTML) $(DOCBOOK_PDF)
-DOCS := $(DOCBOOK_HTML) $(DOCBOOK_PDF)
-DESIGN_DOCS := \
-	doc/design/store.txt
+DOCS := $(DOCBOOK_HTML) $(DOCBOOK_PDF) $(DOCBOOK_TXT)
 USER_DOCS := \
 	doc/control.txt doc/parse.txt doc/zmp-x-awemud.txt
 OTHER_DOCS := \
@@ -72,9 +70,6 @@ OTHER_DOCS := \
 
 docdir = ${datadir}/doc/@PACKAGE_TARNAME@-@VERSION@
 doc_DATA = README NEWS COPYING AUTHORS FAQ $(DOCBOOK_TXT) $(USER_DOCS)
-
-designdocdir = ${docdir}/design
-designdoc_DATA = $(DESIGN_DOCS)
 
 htmldir = ${datadir}/doc/@PACKAGE_TARNAME@-@VERSION@/html
 html_DATA = $(DOCBOOK_HTML) doc/index.html
@@ -94,8 +89,11 @@ doc/event-ref.xml: tools/events-doc.xsl src/xml/event-list.xml
 doc/hook-ref.xml: tools/hooks-doc.xsl src/xml/hook-list.xml
 	$(PATH_XSLTPROC) '$(top_srcdir)/tools/hooks-doc.xsl' '$(top_srcdir)/src/xml/hook-list.xml' > doc/hook-ref.xml
 
-doc/script-guide.xml: doc/script-ref.xml doc/event-ref.xml doc/hook-ref.xml
-	-touch doc/script-guide.xml
+doc/awemud-manual.xml: doc/ch-scripting.xml
+	-touch doc/awemud-manual.xml
+
+doc/ch-scripting.xml: doc/script-ref.xml doc/event-ref.xml doc/hook-ref.xml
+	-touch doc/ch-scripting.xml
 
 %.html: %.xml
 	-@PATH_XMLTO@ --skip-validation -o doc/tmp.html html $<
@@ -108,13 +106,13 @@ doc/script-guide.xml: doc/script-ref.xml doc/event-ref.xml doc/hook-ref.xml
 %.pdf: %.xml
 	@PATH_XMLTO@ --skip-validation -o doc/ pdf $<
 
-EXTRA_DIST += doc/script-ref.xml doc/event-ref.xml doc/hook-ref.xml
+EXTRA_DIST += doc/script-ref.xml doc/event-ref.xml doc/hook-ref.xml $(MANUAL_CHAPTERS)
 CLEANFILES = doc/script-ref.xml doc/event-ref.xml doc/hook-ref.xml $(DOCBOOK_TXT) $(DOCBOOK_PDF)
 
 clean-local:
 	-for guide in $(DOCBOOK_HTML) ; do test -d "$$guide" && rm -fr "$$guide" ; done
 
-EXTRA_DIST += NEWS FAQ ChangeLog $(DOCBOOK) $(DESIGN_DOCS) $(OTHER_DOCS) $(USER_DOCS)
+EXTRA_DIST += NEWS FAQ ChangeLog $(DOCBOOK) $(OTHER_DOCS) $(USER_DOCS)
 
 ### CONFIGURATION FILES ###
 

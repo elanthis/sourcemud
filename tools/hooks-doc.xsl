@@ -14,14 +14,12 @@
 
   <!-- main()  ~,^ -->
   <xsl:template match="hooks">
-    <hook-reference>
-      <!-- make an appendix of all the hooks -->
-      <appendix id="ch_hooks">
-        <title>Hooks</title>
-        <!-- spit out the hooks -->
-        <xsl:apply-templates select="hook"><xsl:sort select="@name"/></xsl:apply-templates>
-      </appendix>
-    </hook-reference>
+    <!-- make an appendix of all the hooks -->
+    <appendix id="ch_hooks">
+      <title>Script Hooks Reference</title>
+      <!-- spit out the hooks -->
+      <xsl:apply-templates select="hook"><xsl:sort select="@name"/></xsl:apply-templates>
+    </appendix>
   </xsl:template>
 
   <!-- document an hook -->

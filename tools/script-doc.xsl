@@ -23,9 +23,10 @@
 
   <!-- main()  ~,^ -->
   <xsl:template match="script-interface">
-    <script-reference>
+    <appendix id="ap_script_ai">
+      <title>Script API Reference</title>
       <!-- make an appendix of the global constants -->
-      <appendix>
+      <section>
         <xsl:attribute name="id"><xsl:text>ch_constants</xsl:text></xsl:attribute>
         <title>Constants</title>
         <xsl:element name="para">
@@ -47,10 +48,10 @@
 
         <!-- ungrouped globals -->
         <xsl:apply-templates select="global"><xsl:sort select="name" /></xsl:apply-templates>
-      </appendix>
+      </section>
 
       <!-- global functions appendix -->
-      <appendix>
+      <section>
         <xsl:attribute name="id"><xsl:text>ch_functions</xsl:text></xsl:attribute>
         <!-- header/doc -->
         <title>Functions</title>
@@ -58,10 +59,10 @@
 
         <!-- spit them out -->
         <xsl:apply-templates select="function"><xsl:sort select="name" /></xsl:apply-templates>
-      </appendix>
+      </section>
 
       <!-- appendix of all types -->
-      <appendix>
+      <section>
         <xsl:attribute name="id"><xsl:text>ch_types</xsl:text></xsl:attribute>
         <!-- header/doc -->
         <title>Types</title>
@@ -69,8 +70,8 @@
 
         <!-- spit out the types -->
         <xsl:apply-templates select="type"><xsl:sort select="name" /></xsl:apply-templates>
-      </appendix>
-    </script-reference>
+      </section>
+    </appendix>
   </xsl:template>
 
   <!-- document a global -->

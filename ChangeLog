@@ -1,3 +1,11 @@
+2006-01-19 20:47:55  Sean Middleditch <elanthis@awesomeplay.com>
+
+  * Update the command document in the script guide to be accurate.
+  * Update the FAQ.
+  * Created awemud-manual.xml and ch-introduction.xml and renamed
+    script-guide.xml to ch-scripting.xml.  Goal is to build all
+    documentation as a single AweMUD Manual document.
+
 2006-01-18 21:26:13  Sean Middleditch <elanthis@awesomeplay.com>
 
   * Removed player titles.
