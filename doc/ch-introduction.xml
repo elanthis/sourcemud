@@ -1,0 +1,8 @@
+<!DOCTYPE chatper PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN" "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd">
+<chapter id="ch_introduction">
+  <title>Introduction</title>
+  <warning>THIS DOCUMENT IS STILL IN DEVELOPMENT!</warning>
+  <para>AweMUD is a MUD (Multi-User Dungeon) game server.  Players connect to the server using telnet, or a MUD client application, to play in a fantasy world with other players.</para>
+  <para>AweMUD is a new codebase; it is not derived from any older codebases like many other popular MUDs.  One consequence of this is that many terms and systems found in most other MUDs are different in AweMUD.</para>
+</chapter>
+<!-- vim: set filetype=xml shiftwidth=2 tabstop=2 expandtab : -->

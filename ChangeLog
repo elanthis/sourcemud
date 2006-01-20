@@ -1,3 +1,7 @@
+2006-01-20 21:18:24  Sean Middleditch <elanthis@awesomeplay.com>
+
+  * Add missing doc/ch-introduction.xml file.
+
 2006-01-20 21:04:33  Sean Middleditch <elanthis@awesomeplay.com>
 
   * Use inet_pton if getnameinfo isn't available. (Cygwin)
