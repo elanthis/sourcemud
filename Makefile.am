@@ -200,7 +200,6 @@ noinst_HEADERS=\
 	include/scriptix/scriptix.h \
 	include/scriptix/struct.h \
 	include/scriptix/sxstring.h \
-	include/scriptix/sysdep.h \
 	include/scriptix/system.h \
 	include/scriptix/thread.h \
 	include/scriptix/type.h \
@@ -270,6 +269,7 @@ INCLUDES=-I@top_srcdir@/include/common -I@top_srcdir@/include/scriptix -I@top_sr
 
 COMMON_SOURCES=\
 	src/common/gc.cc \
+	src/common/md5.cc \
 	src/common/rand.cc \
 	src/common/regex.cc \
 	src/common/strings.cc
@@ -342,7 +342,6 @@ awemud_bin_SOURCES=\
 	src/mud/login.cc \
 	src/mud/mail.cc \
 	src/mud/main.cc \
-	src/mud/md5.cc \
 	src/mud/message.cc \
 	src/mud/name.cc \
 	src/mud/network.cc \

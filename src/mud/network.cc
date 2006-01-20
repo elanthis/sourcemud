@@ -546,7 +546,15 @@ Network::get_addr_name(const SockStorage& addr)
 	char buffer[512];
 
 	// get the info
+#if HAVE_GETNAMEINFO
 	getnameinfo((sockaddr*)&addr, sizeof(addr), hostbuf, sizeof(hostbuf), servbuf, sizeof(servbuf), NI_NUMERICHOST | NI_NUMERICSERV);
+#elif defined(HAVE_INET_PTON)
+	struct sockaddr_in* sin = (struct sockaddr_in*)&addr;
+	inet_ntop(AF_INET, &sin->sin_addr, hostbuf, sizeof(hostbuf));
+	snprintf(servbuf, sizeof(servbuf), "%d", ntohs(sin->sin_port));
+#else
+	return "<unknown>";
+#endif
 
 	// no port?  just return the address
 	if (!strlen(servbuf))
@@ -554,7 +562,7 @@ Network::get_addr_name(const SockStorage& addr)
 
 	// host have a : (*cough* IPv6 *cough*) ? format [addr]:port
 	if (strchr(hostbuf, ':'))
-		snprintf(buffer, sizeof(buffer), "[%s]:%s]", hostbuf, servbuf);
+		snprintf(buffer, sizeof(buffer), "[%s]:%s", hostbuf, servbuf);
 	else
 		snprintf(buffer, sizeof(buffer), "%s:%s", hostbuf, servbuf);
 

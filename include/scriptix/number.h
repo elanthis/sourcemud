@@ -28,7 +28,9 @@
 #ifndef SCRIPTIX_NUMBER_H
 #define SCRIPTIX_NUMBER_H
 
-#include "scriptix/sysdep.h"
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 
 namespace Scriptix {
 

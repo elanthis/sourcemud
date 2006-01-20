@@ -18,15 +18,11 @@
 #include <netinet/in.h>
 #include <sys/socket.h>
 
-#include "types.h"
-#include "awestr.h"
-#include "server.h"
-#include "imanager.h"
-#include "gcbase.h"
-
-#if !defined(HAVE_SOCKLEN_T)
-#define socklen_t size_t
-#endif
+#include "common/types.h"
+#include "common/awestr.h"
+#include "mud/server.h"
+#include "common/imanager.h"
+#include "common/gcbase.h"
 
 #include <vector>
 

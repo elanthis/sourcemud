@@ -123,7 +123,7 @@ class ITelnetMode : public GC
 class TelnetHandler : public Scriptix::Native, public SocketUser, public IStreamSink
 {
 	public:
-	TelnetHandler (int s_sock, const SockStorage& s_addr);
+	TelnetHandler (int s_sock, const SockStorage& s_netaddr);
 
 	// color info
 	inline uint get_color (uint i) const { return color_set[i] < 0 ? color_type_defaults[i] : color_set[i]; }

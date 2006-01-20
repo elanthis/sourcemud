@@ -30,7 +30,6 @@
 
 #include "common/gcbase.h"
 #include "common/awestr.h"
-#include "scriptix/sysdep.h"
 
 namespace Scriptix {
 
@@ -62,7 +61,7 @@ class Value : public GCType::GC {
 	Value (long value);
 
 	inline Value (const char* s_value) { *this = Value(String(s_value)); }
-	inline Value (intptr_t s_value) { *this = Value((long)s_value); }
+	inline Value (int s_value) { *this = Value((long)s_value); }
 
 	// get IValue*
 	inline operator IValue* () { return value; }

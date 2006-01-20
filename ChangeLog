@@ -1,3 +1,21 @@
+2006-01-20 21:04:33  Sean Middleditch <elanthis@awesomeplay.com>
+
+  * Use inet_pton if getnameinfo isn't available. (Cygwin)
+  * Don't check for socklen_t, we always screw the check up, and
+    all our target platforms have it.  (Cygwin/MacOS X 10.3/Solaris)
+  * Use fcntl with O_NONBLOCK instead of the MSG_DONTWAIT flag.
+    (Cygwin)
+  * Rename parameter s_addr to s_netaddr in mud/telnet.h and
+    mud/telnet.cc, since s_addr can be a freaky macro.  (Solaris)
+  * Make md5.cc use uint32_t from common/types.h.  (Solaris)
+  * Move md5.cc from src/mud to src/common.
+  * Fixup common/types.h to use standard int32_t and friends if
+    stdint.h or inttypes.h is available.
+  * NOTE: I have compiled and connected to AweMUD successfully
+    on a sparc Solaris machine... only to have it crash almost
+    immediately.  Not sure if the bug is in libgc or AweMUD
+    itself yet.
+
 2006-01-20 17:00:25  Sean Middleditch <elanthis@awesomeplay.com>
 
   * Remove custom prompts; code is bit-rotted and unused.

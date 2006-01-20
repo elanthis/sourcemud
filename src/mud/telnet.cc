@@ -241,9 +241,9 @@ TextBuffer::release (void)
 }
 
 SCRIPT_TYPE(Telnet);
-TelnetHandler::TelnetHandler (int s_sock, const SockStorage& s_addr) : Scriptix::Native (AweMUD_TelnetType), SocketUser(s_sock)
+TelnetHandler::TelnetHandler (int s_sock, const SockStorage& s_netaddr) : Scriptix::Native (AweMUD_TelnetType), SocketUser(s_sock)
 {
-	addr = s_addr;
+	addr = s_netaddr;
 
 	// various state settings
 	in_cnt = out_cnt = sb_cnt = outchunk_cnt = esc_cnt = 0;
@@ -1303,7 +1303,7 @@ TelnetHandler::out_ready (void)
 	if (out_cnt == 0)
 		return;
 
-	int ret = send(sock, output.data(), out_cnt, MSG_DONTWAIT);
+	int ret = send(sock, output.data(), out_cnt, 0);
 	if (ret == -1 && errno != EAGAIN && errno != EINTR) {
 		Log::Error << "send() failed: " << strerror(errno);
 		return;

@@ -163,7 +163,7 @@ namespace {
 	void
 	dump_to_sock (int sock, const char* text)
 	{
-		send(sock, text, strlen(text), MSG_DONTWAIT);
+		send(sock, text, strlen(text), 0);
 	}
 
 	void
@@ -394,8 +394,14 @@ main (int argc, char **argv)
 		"This is free software, and you are welcome to redistribute it\n"
 		"under certain conditions; for details, see the file COPYING.\n");
 
+#if (defined(sparc) || defined(__sparc)) && defined(sun)
+	// do nothing; GC_INIT() fails in C++ mode and is only necessary
+	// for older Solaris environment, which we aren't going to support
+	// anyhow.
+#else
 	// initialize GC
 	GC_INIT();
+#endif
 
 	// load settings
 	if (IManager::require(SettingsManager))

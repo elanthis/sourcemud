@@ -70,6 +70,18 @@ fi
 AC_SUBST(PATH_BISON)
 AC_SUBST(PATH_FLEX)
 
+# Networking libraries
+AC_CHECK_LIB(socket,connect)
+AC_CHECK_LIB(nsl,gethostbyname)
+AC_CHECK_FUNC(getpeereid,AC_DEFINE(HAVE_GETPEEREID,1,[Have getpeereid() available]))
+AC_CHECK_FUNC(connect,,AC_MSG_ERROR([can't find connect()]))
+AC_CHECK_FUNC(gethostname,,AC_MSG_ERROR([can't find gethostname()]))
+AC_CHECK_FUNC(getnameinfo,AC_DEFINE(HAVE_GETNAMEINFO,1,[Have getnameinfo() available]))
+AC_CHECK_FUNC(gethostbyname,,AC_MSG_ERROR([can't find gethostbyname()]))
+AC_CHECK_FUNC(inet_pton,AC_DEFINE(HAVE_INET_PTON,1,[Have inet_pton()]))
+AC_CHECK_FUNC(inet_ntop,AC_DEFINE(HAVE_INET_NTOP,1,[Have inet_ntop()]))
+AC_CHECK_FUNC(poll,AC_DEFINE(HAVE_POLL,1,[Have poll() available]))
+
 # Standard functions
 AC_CHECK_FUNC(strdup,,AC_MSG_ERROR([can't find strdup()]))
 AC_CHECK_FUNC(strcasecmp,,AC_MSG_ERROR([can't find strcasecmp()]))
@@ -77,15 +89,6 @@ AC_CHECK_FUNC(strncasecmp,,AC_MSG_ERROR([can't find strncasecmp()]))
 AC_CHECK_FUNC(snprintf,,AC_MSG_ERROR([can't find snprintf()]))
 AC_CHECK_FUNC(random,,AC_MSG_ERROR([can't find random()]))
 AC_CHECK_FUNC(fnmatch,,AC_MSG_ERROR([can't find fnmatch()]))
-AC_CHECK_FUNC(gethostname,,AC_MSG_ERROR([can't find gethostname()]))
-AC_CHECK_FUNC(getnameinfo,,AC_MSG_ERROR([can't find getnameinfo()]))
-AC_CHECK_FUNC(poll,AC_DEFINE(HAVE_POLL,1,[Have poll() available]))
-AC_CHECK_FUNC(getpeereid,AC_DEFINE(HAVE_GETPEEREID,1,[Have getpeereid() available]))
-AC_CHECK_TYPE(socklen_t,AC_DEFINE(HAVE_SOCKLEN_T,1,[Have socklen_t type available]),[])
-AC_CHECK_FUNC(connect,,[AC_CHECK_LIB(socket,connect)])
-AC_CHECK_FUNC(gethostbyname,,[AC_CHECK_LIB(nsl,gethostbyname)])
-AC_CHECK_FUNC(inet_pton,AC_DEFINE(HAVE_INET_PTON,1,[Have inet_pton()]))
-AC_CHECK_FUNC(inet_ntop,AC_DEFINE(HAVE_INET_NTOP,1,[Have inet_ntop()]))
 AC_CHECK_FUNC(regcomp,,AC_MSG_ERROR([can't find regcomp()]))
 
 # Standard types

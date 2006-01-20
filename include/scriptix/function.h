@@ -28,9 +28,12 @@
 #ifndef SCRIPTIX_FUNCTION_H
 #define SCRIPTIX_FUNCTION_H
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include "common/gcbase.h"
 
-#include "scriptix/sysdep.h"
 #include "scriptix/value.h"
 #include "scriptix/atom.h"
 #include "scriptix/type.h"

@@ -30,7 +30,6 @@
 #define SCRIPTIX_NATIVE_H
 
 #include "scriptix/value.h"
-#include "scriptix/sysdep.h"
 #include "scriptix/struct.h"
 
 namespace Scriptix {

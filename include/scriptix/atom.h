@@ -30,8 +30,11 @@
 
 #include <stdlib.h>
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include "common/awestr.h"
-#include "scriptix/sysdep.h"
 
 namespace Scriptix {
 
