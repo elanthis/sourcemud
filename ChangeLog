@@ -1,3 +1,8 @@
+2006-01-20 17:00:25  Sean Middleditch <elanthis@awesomeplay.com>
+
+  * Remove custom prompts; code is bit-rotted and unused.
+  * Cleanup use of EntityName a little.
+
 2006-01-20 02:51:57  Sean Middleditch <elanthis@awesomeplay.com>
 
   * Removed doc/index.html.

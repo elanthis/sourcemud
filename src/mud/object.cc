@@ -625,10 +625,8 @@ Object::do_action (StringArg name, Entity* user, Scriptix::Value data)
 	int res = func.run(this, user, data);
 
 	// sanity check return value
-	if (res != OBJECT_ACTION_OK_NORMAL && res != OBJECT_ACTION_OK_QUIET && res != OBJECT_ACTION_CANCEL_NORMAL && res != OBJECT_ACTION_CANCEL_QUIET) {
-		Log::Error << "Object action '" << name << "' on " << get_name().get_text() << " returned invalid object action code";
+	if (res != OBJECT_ACTION_OK_NORMAL && res != OBJECT_ACTION_OK_QUIET && res != OBJECT_ACTION_CANCEL_NORMAL && res != OBJECT_ACTION_CANCEL_QUIET)
 		return OBJECT_ACTION_CANCEL_NORMAL;
-	}
 
 	// return script code
 	return (ObjectActionCode)res;
@@ -893,16 +891,16 @@ Object::is_blueprint (StringArg name) const
 }
 
 bool
-Object::name_match (StringArg name) const
+Object::name_match (StringArg match) const
 {
-	if (phrase_match (get_name().get_text(), name))
+	if (name.matches(match))
 		return true;
 
 	// blueprint keywords
 	ObjectBlueprint* blueprint = get_blueprint();
 	while (blueprint != NULL) {
 		for (StringList::const_iterator i = blueprint->get_keywords().begin(); i != blueprint->get_keywords().end(); i ++)
-			if (phrase_match (*i, name))
+			if (phrase_match (*i, match))
 				return true;
 
 		blueprint = blueprint->get_parent();

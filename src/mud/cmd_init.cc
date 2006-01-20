@@ -376,15 +376,6 @@ SCommandManager::initialize (void)
 			Character)
 		FORMAT(50, "affects")
 	END_COMM
-	COMMAND("prompt",
-			"prompt reset\n"
-			"prompt <prompt>\n",
-			prompt,
-			ACCESS_ALL,
-			Player)
-		FORMAT(50, "prompt reset")
-		FORMAT(50, "prompt :0*")
-	END_COMM
 	COMMAND("set color",
 			"set color <type> <color>\n",
 			setcolor,

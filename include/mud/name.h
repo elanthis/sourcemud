@@ -8,6 +8,7 @@
 #ifndef MUD_NAME_H
 #define MUD_NAME_H
 
+#include "common/awestr.h"
 
 class EntityArticleClass {
 	public:
@@ -68,6 +69,9 @@ class EntityName {
 	String get_name () const;
 	bool set_name (StringArg s_name); // returns false if it had to guess at the article
 
+	// compare name to string
+	bool matches (StringArg match) const; // returns true on match; uses phrase_match
+
 	// these handle name components
 	inline String get_text () const { return text; }
 	inline EntityArticleClass get_article () const { return article; }
@@ -75,6 +79,8 @@ class EntityName {
 	inline void set_article (EntityArticleClass s_article) { article = s_article; }
 
 	inline bool empty () const { return text.empty(); }
+
+	inline bool operator < (const EntityName& ref) { return strcasecmp(text.c_str(), ref.text.c_str()) < 0; }
 
 	private:
 	String text;

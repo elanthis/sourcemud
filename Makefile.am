@@ -52,7 +52,13 @@ aiscript_DATA = $(AI_FILES)
 ### DOCUMENTATION ###
 
 DOCBOOK := doc/awemud-manual.xml
-MANUAL_CHAPTERS := doc/ch-introduction.xml doc/ch-control.xml doc/ch-scripting.xml
+MANUAL_CHAPTERS := \
+	doc/ch-introduction.xml \
+	doc/ch-installation.xml \
+	doc/ch-accounts.xml \
+	doc/ch-olc.xml \
+	doc/ch-control.xml \
+	doc/ch-scripting.xml
 
 if BUILD_DOCS
 DOCBOOK_TXT := $(DOCBOOK:%.xml=%.txt)

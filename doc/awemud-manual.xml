@@ -8,6 +8,15 @@
   <!-- include Introduction -->
   <xi:include href="../doc/ch-introduction.xml" xpointer="xpointer(/chapter)" parse="xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
+  <!-- include Installation -->
+  <xi:include href="../doc/ch-installation.xml" xpointer="xpointer(/chapter)" parse="xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+
+  <!-- include Account Management -->
+  <xi:include href="../doc/ch-accounts.xml" xpointer="xpointer(/chapter)" parse="xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+
+  <!-- include OLC -->
+  <xi:include href="../doc/ch-olc.xml" xpointer="xpointer(/chapter)" parse="xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+
   <!-- include Control Interface -->
   <xi:include href="../doc/ch-control.xml" xpointer="xpointer(/chapter)" parse="xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 

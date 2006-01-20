@@ -103,6 +103,12 @@ EntityName::set_name (StringArg s_text)
 	}
 }
 
+bool
+EntityName::matches (StringArg match) const
+{
+	return phrase_match(get_text(), match);
+}
+
 const StreamControl&
 operator << (const StreamControl& stream, const StreamName& name)
 {

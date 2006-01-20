@@ -91,17 +91,6 @@ Player::do_reply (StringArg what)
 	}
 }
 
-void command_prompt (Player* player, char** argv)
-{
-	if (argv[0] != NULL) {
-		player->set_prompt(argv[0]);
-		*player << "Prompt set to '" << argv[0] << "'.\n";
-	} else {
-		player->default_prompt();
-		*player << "Prompt reset to default.\n";
-	}
-}
-
 void command_inventory (Player* player, char**)
 {
 	player->display_inventory ();

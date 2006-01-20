@@ -178,10 +178,6 @@ class Player : public Character
 	uint get_width (void);
 	void clear_scr (void);
 
-	// modify prompt
-	inline void set_prompt (StringArg s_prompt) { prompt = s_prompt; }
-	inline void default_prompt (void) { prompt.clear(); }
-
 	// parsing
 	virtual int parse_property (const class StreamControl& stream, StringArg method, const ParseArgs& argv) const;
 
@@ -205,7 +201,6 @@ class Player : public Character
 	Account* account;
 	String last_command;
 	String last_tell;
-	String prompt;
 	struct PDesc {
 		GenderType gender;
 		uint8 height; // centimeters;

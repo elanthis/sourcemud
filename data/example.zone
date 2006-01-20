@@ -644,7 +644,7 @@ room {
     uid = $74aab25b-5bd19-c42-00000127-0a767046
     tag = "forest_critter"
     position = "stand"
-    hp = 43
+    hp = 44
     equip.right_hand {
       blueprint = "claws_animal"
       uid = $7690e760-5bdb1-c42-00000128-0a767046

@@ -421,18 +421,18 @@ RoomExit::operator< (const RoomExit& exit) const
 		return false;
 
 	// then name
-	return strcasecmp(get_name().get_text(), exit.get_name().get_text()) < 0;
+	return get_name() < exit.get_name();
 }
 
 bool
-RoomExit::name_match (StringArg name) const
+RoomExit::name_match (StringArg match) const
 {
-	if (phrase_match (get_name().get_text(), name))
+	if (name.matches(match))
 		return true;
 
 	// try keywords
 	for (StringList::const_iterator i = keywords.begin(); i != keywords.end(); i ++)
-		if (phrase_match (*i, name))
+		if (phrase_match (*i, match))
 			return true;
 
 	// no match

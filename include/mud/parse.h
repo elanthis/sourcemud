@@ -49,7 +49,6 @@ typedef GCType::vector<ParseValue> ParseArgs;
 
 namespace parse {
 	const StreamControl& text (const StreamControl& stream, StringArg format, const ParseArgs& argv, const ParseNames& names);
-	const char *prompt (const char *format, const class Character *ch);
 }
 
 // parse info

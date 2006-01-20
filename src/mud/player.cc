@@ -171,9 +171,6 @@ Player::save (File::Writer& writer)
 
 	writer.attr("birthday", birthday.encode());
 
-	if (prompt)
-		writer.attr("prompt", prompt);
-
 	writer.attr("alignment", alignment);
 
 	for (int i = 0; i < CharStatID::COUNT; ++i)
@@ -266,8 +263,6 @@ Player::load_node (File::Reader& reader, File::Node& node)
 		FO_ATTR("birthday")
 			if (birthday.decode(node.get_data()))
 				throw File::Error ("Invalid birthday");
-		FO_ATTR("prompt")
-			prompt = node.get_data();
 		FO_KEYED("trait")
 			FO_TYPE_ASSERT(STRING)
 			CharacterTraitID trait = CharacterTraitID::lookup(node.get_key());
@@ -710,9 +705,6 @@ Player::show_prompt (void)
 	// processor prompt
 	if (!procs.empty()) {
 		*this << procs.front()->prompt ();
-	// custom propmpt
-	} else if (!prompt.empty()) {
-		*this << parse::prompt (prompt, this);
 	// net.awemud around?  just show >
 	} else if (get_telnet()->has_zmp_net_awemud()) {
 		*this << ">";
@@ -872,16 +864,20 @@ int
 Player::handle_event (const Event& event)
 {
 	// only if we have builder vision
-	if (has_bvision())
+	if (has_bvision()) {
 		*this << CADMIN "Event[" << event.get_name() <<
-			"] R:" << (event.get_room() ? event.get_room()->get_id() : "n/a") <<
-			" A:" << (event.get_actor() ? event.get_actor()->get_name().get_text() : "n/a") <<
-			" D1:" << (event.get_data(0).get() ? event.get_data(0).get()->get_type()->get_name().name() : "n/a") <<
+			"] R:" << (event.get_room() ? event.get_room()->get_id() : "n/a");
+		if (event.get_actor())
+			*this << "A: " << StreamName(event.get_actor());
+		else
+			*this << "A: n/a";
+		*this << " D1:" << (event.get_data(0).get() ? event.get_data(0).get()->get_type()->get_name().name() : "n/a") <<
 			" D2:" << (event.get_data(1).get() ? event.get_data(1).get()->get_type()->get_name().name() : "n/a") <<
 			" D3:" << (event.get_data(2).get() ? event.get_data(2).get()->get_type()->get_name().name() : "n/a") <<
 			" D4:" << (event.get_data(3).get() ? event.get_data(3).get()->get_type()->get_name().name() : "n/a") <<
 			" D5:" << (event.get_data(4).get() ? event.get_data(4).get()->get_type()->get_name().name() : "n/a") <<
 			CNORMAL "\n";
+	}
 
 	// propogate
 	return Character::handle_event(event);

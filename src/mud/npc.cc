@@ -605,16 +605,16 @@ Npc::is_blueprint (StringArg name) const
 }
 
 bool
-Npc::name_match (StringArg name) const
+Npc::name_match (StringArg match) const
 {
-	if (phrase_match (get_name().get_text(), name))
+	if (get_name().matches(match))
 		return true;
 
 	// blueprint keywords
 	NpcBlueprint* blueprint = get_blueprint();
 	while (blueprint != NULL) {
 		for (StringList::const_iterator i = blueprint->get_keywords().begin(); i != blueprint->get_keywords().end(); i ++)
-			if (phrase_match (*i, name))
+			if (phrase_match (*i, match))
 				return true;
 
 		blueprint = blueprint->get_parent();
