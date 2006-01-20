@@ -19,8 +19,5 @@
 
   <!-- include Event reference -->
   <xi:include href="../doc/event-ref.xml" xpointer="xpointer(/appendix)" parse="xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
-
-  <!-- include Script Hook reference -->
-  <xi:include href="../doc/hook-ref.xml" xpointer="xpointer(/appendix)" parse="xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 </book>
 <!-- vim: set filetype=xml shiftwidth=2 tabstop=2 expandtab : -->

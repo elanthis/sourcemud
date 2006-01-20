@@ -157,7 +157,6 @@ data/admin.ply
 data/admin.acct
 data/time
 data/weather
-doc/awemud.6
 tools/replace.sh
 ])
 

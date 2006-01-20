@@ -84,5 +84,32 @@
       </example>
     </section>
   </section>
+  <section>
+    <title>Hooks</title>
+    <para>Hooks are special entry points in the main code which scripts may insert special behavior intoa.</para>
+    <section>
+      <title>Invoking Hooks</title>
+      <para>When the engine invokes a hook, it calls all of the functions registered with that hook in the order of registration.  The engine may perform different tasks after invoking the hook if no script functions were registered with the hook.</para>
+    </section>
+    <section>
+      <title>Registering Hooks</title>
+      <para>Registering a hook requires a single function call, registerHook.</para>
+      <para>The registerHook function takes two arguments.  The first is the name of the hook to register, and the second is a callback function which is invoked when the engine invokes the hook.</para>
+      <para>The callback function may be passed function arguments, depending on the hook in question.  Check the hook regerence to see which paramters a hook will pass to its callback functions.</para>
+      <example>
+        <title>Register a Hook</title>
+        <programlisting><![CDATA[function playerDeathHook(player) {
+  message('Player ' + player.get_name() + ' died!');
+}
+
+function init() {
+  registerHook('player_death', playerDeathHook);
+}]]></programlisting>
+      </example>
+    </section>
+
+    <!-- include hooks reference -->
+    <xi:include href="../doc/hook-ref.xml" xpointer="xpointer(/section)" parse="xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+  </section>
 </chapter>
 <!-- vim: set filetype=xml shiftwidth=2 tabstop=2 expandtab : -->

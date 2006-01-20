@@ -1,3 +1,8 @@
+2006-01-20 02:51:57  Sean Middleditch <elanthis@awesomeplay.com>
+
+  * Removed doc/index.html.
+  * Greatly improve script hook documentation.
+
 2006-01-20 01:30:08  Sean Middleditch <elanthis@awesomeplay.com>
 
   * Changed the control socket protocol's quote characters from {}

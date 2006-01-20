@@ -65,14 +65,12 @@ endif
 DOCS := $(DOCBOOK_HTML) $(DOCBOOK_PDF) $(DOCBOOK_TXT)
 USER_DOCS := \
 	doc/parse.txt doc/zmp-x-awemud.txt
-OTHER_DOCS := \
-	doc/index.html
 
 docdir = ${datadir}/doc/@PACKAGE_TARNAME@-@VERSION@
 doc_DATA = README NEWS COPYING AUTHORS FAQ $(DOCBOOK_TXT) $(USER_DOCS)
 
 htmldir = ${datadir}/doc/@PACKAGE_TARNAME@-@VERSION@/html
-html_DATA = $(DOCBOOK_HTML) doc/index.html
+html_DATA = $(DOCBOOK_HTML)
 
 pdfdir = ${datadir}/doc/@PACKAGE_TARNAME@-@VERSION@/pdf
 pdf_DATA = $(DOCBOOK_PDF)
@@ -109,7 +107,7 @@ CLEANFILES = doc/script-ref.xml doc/event-ref.xml doc/hook-ref.xml $(DOCBOOK_TXT
 clean-local:
 	-for guide in $(DOCBOOK_HTML) ; do test -d "$$guide" && rm -fr "$$guide" ; done
 
-EXTRA_DIST += NEWS FAQ ChangeLog $(DOCBOOK) $(OTHER_DOCS) $(USER_DOCS)
+EXTRA_DIST += NEWS FAQ ChangeLog $(DOCBOOK) $(USER_DOCS)
 
 ### CONFIGURATION FILES ###
 

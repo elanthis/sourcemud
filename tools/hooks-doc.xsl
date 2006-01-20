@@ -15,54 +15,58 @@
   <!-- main()  ~,^ -->
   <xsl:template match="hooks">
     <!-- make an appendix of all the hooks -->
-    <appendix id="ch_hooks">
-      <title>Script Hooks Reference</title>
-      <!-- spit out the hooks -->
-      <xsl:apply-templates select="hook"><xsl:sort select="@name"/></xsl:apply-templates>
-    </appendix>
+    <section>
+      <title>Available Hooks</title>
+      <variablelist>
+        <!-- spit out the hooks -->
+        <xsl:apply-templates select="hook"><xsl:sort select="@name"/></xsl:apply-templates>
+      </variablelist>
+    </section>
   </xsl:template>
 
   <!-- document an hook -->
   <xsl:template match="hook">
     <!-- craft section/id -->
-    <section id="hook_{@name}">
+    <varlistentry id="hook_{@name}">
       <!-- title -->
-      <title><xsl:value-of select="@name"/></title>
-      <!-- doc paragraph -->
-      <xsl:apply-templates select="doc"/>
-      <xsl:for-each select="arg">
-        <para>
-          <varname><xsl:value-of select="@name" /></varname>
-          <xsl:text> : </xsl:text>
-          <xsl:choose>
-            <xsl:when test="type">
-              <xsl:call-template name="type">
-                <xsl:with-param name="type"><xsl:value-of select="@type"/></xsl:with-param>
-              </xsl:call-template>
-            </xsl:when>
-            <xsl:otherwise>
-              <xsl:call-template name="type">
-                <xsl:with-param name="type">Mixed</xsl:with-param>
-              </xsl:call-template>
-            </xsl:otherwise>
-          </xsl:choose>
-        </para>
-        <xsl:if test="doc">
-          <blockquote>
-            <xsl:apply-templates select="doc"/>
-          </blockquote>
+      <term><xsl:value-of select="@name"/></term>
+      <listitem>
+        <!-- doc paragraph -->
+        <xsl:apply-templates select="doc"/>
+        <xsl:for-each select="arg">
+          <para>
+            <varname><xsl:value-of select="@name" /></varname>
+            <xsl:text> : </xsl:text>
+            <xsl:choose>
+              <xsl:when test="type">
+                <xsl:call-template name="type">
+                  <xsl:with-param name="type"><xsl:value-of select="@type"/></xsl:with-param>
+                </xsl:call-template>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:call-template name="type">
+                  <xsl:with-param name="type">Mixed</xsl:with-param>
+                </xsl:call-template>
+              </xsl:otherwise>
+            </xsl:choose>
+          </para>
+          <xsl:if test="doc">
+            <blockquote>
+              <xsl:apply-templates select="doc"/>
+            </blockquote>
+          </xsl:if>
+        </xsl:for-each>
+        <!-- args and stuff -->
+        <xsl:apply-templates select="arg" mode="doc"/>
+        <!-- example code -->
+        <xsl:if test="example">
+          <example>
+          <title>Usage of the <xsl:value-of select="@name"/> hook</title>
+            <programlisting><xsl:value-of select="example" /></programlisting>
+          </example>
         </xsl:if>
-      </xsl:for-each>
-      <!-- args and stuff -->
-      <xsl:apply-templates select="arg" mode="doc"/>
-      <!-- example code -->
-      <xsl:if test="example">
-        <example>
-        <title>Usage of the <xsl:value-of select="@name"/> hook</title>
-          <programlisting><xsl:value-of select="example" /></programlisting>
-        </example>
-      </xsl:if>
-    </section>
+      </listitem>
+    </varlistentry>
   </xsl:template>
 
   <!-- document an argument -->

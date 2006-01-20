@@ -3,95 +3,95 @@
 	<hook name="save_character">
 		<arg name="this" type="Character" />
 		<arg name="writer" type="ScriptRestrictedWriter" />
-		<doc>save_character</doc>
+		<doc>Called whenever a Character is saved to disk.  Additional properties may be saved to the writer.</doc>
 	</hook>
 	<hook name="character_heartbeat">
 		<arg name="this" type="Character" />
-		<doc>character_heartbeat</doc>
+		<doc>Called once per heartbeat for every Character.</doc>
 	</hook>
 	<hook name="save_entity">
 		<arg name="this" type="Entity" />
 		<arg name="writer" type="ScriptRestrictedWriter" />
-		<doc>save_entity</doc>
+		<doc>Called whenever any Entity is saved to disk.  Additional properties may be saved to the writer.</doc>
 	</hook>
 	<hook name="save_exit">
 		<arg name="this" type="RoomExit" />
 		<arg name="writer" type="ScriptRestrictedWriter" />
-		<doc>save_exit</doc>
+		<doc>Called whenever a RoomExit is saved to disk.  Additional properties may be saved to the writer.</doc>
 	</hook>
 	<hook name="ready">
-		<doc>ready</doc>
+		<doc>This hook is called once when the engine first initialized and the game is ready to begin.</doc>
 	</hook>
 	<hook name="change_hour">
-		<doc>change_hour</doc>
+		<doc>Called every time the in-game hour increments.</doc>
 	</hook>
 	<hook name="save_npc">
 		<arg name="this" type="Npc" />
 		<arg name="writer" type="ScriptRestrictedWriter" />
-		<doc>save_npc</doc>
+		<doc>Called whenever an Npc is saved to disk.  Additional properties may be saved to the writer.</doc>
 	</hook>
 	<hook name="npc_death">
 		<arg name="this" type="Npc" />
 		<arg name="killer" type="Character" />
-		<doc>npc_death</doc>
+		<doc>This hook is called whenever any Npc dies.</doc>
 	</hook>
 	<hook name="npc_heartbeat">
 		<arg name="this" type="Npc" />
-		<doc>npc_heartbeat</doc>
+		<doc>Called once per heartbeat for every Npc.</doc>
 	</hook>
 	<hook name="save_object_blueprint">
 		<arg name="this" type="ObjectBlueprint" />
 		<arg name="swriter" type="ScriptRestrictedWriter" />
-		<doc>save_object_blueprint</doc>
+		<doc>Called whenever an ObjectBlueprint is saved to disk.  Additional properties may be saved to the writer.</doc>
 	</hook>
 	<hook name="save_object">
 		<arg name="this" type="Object" />
 		<arg name="writer" type="ScriptRestrictedWriter" />
-		<doc>save_object</doc>
+		<doc>Called whenever an Object is saved to disk.  Additional properties may be saved to the writer.</doc>
 	</hook>
 	<hook name="object_heartbeat">
 		<arg name="this" type="Object" />
-		<doc>object_heartbeat</doc>
+		<doc>Called once per heartbeat for every Object.</doc>
 	</hook>
 	<hook name="save_player">
 		<arg name="this" type="Player" />
 		<arg name="writer" type="ScriptRestrictedWriter" />
-		<doc>save_player</doc>
+		<doc>Called whenever a Player is saved to disk.  Additional properties may be saved to the writer.</doc>
 	</hook>
 	<hook name="player_start">
 		<arg name="this" type="Player" />
-		<doc>player_start</doc>
+		<doc>Invoked when a player first logins in.  A primary use of this hook is to set a starting Room for the player.</doc>
 	</hook>
 	<hook name="create_character">
 		<arg name="this" type="Player" />
-		<doc>create_character</doc>
+		<doc>Invoked when a user attempts to create a new character.  The hook should begin a character creation process.</doc>
 	</hook>
 	<hook name="player_death">
 		<arg name="this" type="Player" />
 		<arg name="killer" type="Character" />
-		<doc>player_death</doc>
+		<doc>Invoked whenever a Player dies.</doc>
 	</hook>
 	<hook name="player_heartbeat">
 		<arg name="this" type="Player" />
-		<doc>player_heartbeat</doc>
+		<doc>Called once per heartbeat for every Player.</doc>
 	</hook>
 	<hook name="save_room">
 		<arg name="this" type="Room" />
 		<arg name="writer" type="ScriptRestrictedWriter" />
-		<doc>save_room</doc>
+		<doc>Called whenever a Room is saved to disk.  Additional properties may be saved to the writer.</doc>
 	</hook>
 	<hook name="room_heartbeat">
 		<arg name="this" type="Room" />
-		<doc>room_heartbeat</doc>
+		<doc>Called once per heartbeat for every Room.</doc>
 	</hook>
 	<hook name="show_room">
 		<arg name="this" type="Room" />
 		<arg name="viewer" type="Character" />
-		<doc>show_room</doc>
+		<doc>Invoked whenever a room description is displayed to a character.  This hook is called just after the description display, and may be used to display additional information about a room.</doc>
 	</hook>
 	<hook name="save_zone">
 		<arg name="this" type="Zone" />
 		<arg name="writer" type="ScriptRestrictedWriter" />
-		<doc>save_zone</doc>
+		<doc>Called whenever a Zone is saved to disk.  Additional properties may be saved to the writer.</doc>
 	</hook>
 </hooks>
