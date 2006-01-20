@@ -2,7 +2,7 @@ AUTOMAKE_OPTIONS = subdir-objects
 
 ### EXECUTABLE SCRIPTS ###
 
-TOOL_FILES = tools/commit.sh tools/massroom.pl tools/note.sh tools/parse-report.pl tools/new-version.sh
+TOOL_FILES = tools/commit.sh tools/note.sh tools/parse-report.pl tools/new-version.sh
 
 XSL_FILES = tools/script-code.xsl tools/script-doc.xsl tools/events-code.xsl tools/events-doc.xsl tools/events-header.xsl tools/parse-code.xsl tools/hooks-doc.xsl tools/hooks-code.xsl tools/hooks-header.xsl
 
@@ -52,7 +52,7 @@ aiscript_DATA = $(AI_FILES)
 ### DOCUMENTATION ###
 
 DOCBOOK := doc/awemud-manual.xml
-MANUAL_CHAPTERS := doc/ch-introduction.xml doc/ch-scripting.xml
+MANUAL_CHAPTERS := doc/ch-introduction.xml doc/ch-control.xml doc/ch-scripting.xml
 
 if BUILD_DOCS
 DOCBOOK_TXT := $(DOCBOOK:%.xml=%.txt)
@@ -64,9 +64,9 @@ endif
 
 DOCS := $(DOCBOOK_HTML) $(DOCBOOK_PDF) $(DOCBOOK_TXT)
 USER_DOCS := \
-	doc/control.txt doc/parse.txt doc/zmp-x-awemud.txt
+	doc/parse.txt doc/zmp-x-awemud.txt
 OTHER_DOCS := \
-	doc/index.html doc/awemud.6 doc/awemud.6.in
+	doc/index.html
 
 docdir = ${datadir}/doc/@PACKAGE_TARNAME@-@VERSION@
 doc_DATA = README NEWS COPYING AUTHORS FAQ $(DOCBOOK_TXT) $(USER_DOCS)
@@ -77,9 +77,6 @@ html_DATA = $(DOCBOOK_HTML) doc/index.html
 pdfdir = ${datadir}/doc/@PACKAGE_TARNAME@-@VERSION@/pdf
 pdf_DATA = $(DOCBOOK_PDF)
 
-mandir = ${datadir}/doc/@PACKAGE_TARNAME@-@VERSION@/man
-man_MANS = doc/awemud.6
-
 doc/script-ref.xml: tools/script-doc.xsl src/xml/script-intr.xml
 	$(PATH_XSLTPROC) '$(top_srcdir)/tools/script-doc.xsl' '$(top_srcdir)/src/xml/script-intr.xml' > doc/script-ref.xml
 
@@ -89,7 +86,7 @@ doc/event-ref.xml: tools/events-doc.xsl src/xml/event-list.xml
 doc/hook-ref.xml: tools/hooks-doc.xsl src/xml/hook-list.xml
 	$(PATH_XSLTPROC) '$(top_srcdir)/tools/hooks-doc.xsl' '$(top_srcdir)/src/xml/hook-list.xml' > doc/hook-ref.xml
 
-doc/awemud-manual.xml: doc/ch-scripting.xml
+doc/awemud-manual.xml: $(MANUAL_CHAPTERS)
 	-touch doc/awemud-manual.xml
 
 doc/ch-scripting.xml: doc/script-ref.xml doc/event-ref.xml doc/hook-ref.xml

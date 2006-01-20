@@ -8,6 +8,9 @@
   <!-- include Introduction -->
   <xi:include href="../doc/ch-introduction.xml" xpointer="xpointer(/chapter)" parse="xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
+  <!-- include Control Interface -->
+  <xi:include href="../doc/ch-control.xml" xpointer="xpointer(/chapter)" parse="xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+
   <!-- include Scripting -->
   <xi:include href="../doc/ch-scripting.xml" xpointer="xpointer(/chapter)" parse="xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 

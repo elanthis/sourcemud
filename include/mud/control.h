@@ -8,13 +8,15 @@
 #ifndef CONTROL_H
 #define CONTROL_H
 
+#include <sys/types.h>
 #include <unistd.h>
 
-#include "network.h"
-#include "server.h"
-#include "imanager.h"
-#include "streams.h"
-#include "gcvector.h"
+#include "mud/network.h"
+#include "mud/server.h"
+#include "common/imanager.h"
+#include "common/streams.h"
+#include "common/gcvector.h"
+#include "mud/account.h"
 
 #define CONTROL_BUFFER_SIZE 1024
 
@@ -22,29 +24,30 @@
 class ControlHandler : public IStreamSink, public SocketUser
 {
 	public:
-	ControlHandler (int s_sock, bool s_admin_flag);
-	~ControlHandler (void) {}
+	ControlHandler (int s_sock, uid_t s_uid);
+	~ControlHandler () {}
 
 	// output strings
 	virtual void stream_put (const char* str, size_t len);
 
 	// return true if the user can edit stuff
-	inline bool is_admin (void) const { return admin_flag; }
+	bool is_admin () const;
 
 	// network I/O
-	virtual void prepare (void) {}
+	virtual void prepare () {}
 	virtual void in_handle (char* buf, size_t size);
-	virtual char get_poll_flags (void);
-	virtual void out_ready (void);
-	virtual void hangup (void);
+	virtual char get_poll_flags ();
+	virtual void out_ready ();
+	virtual void hangup ();
 
 	private:
 	char in_buffer[CONTROL_BUFFER_SIZE];
 	String out_buffer;
-	bool admin_flag;
+	Account* account;
+	uid_t uid;
 
 	// parse input into command
-	void process (void);
+	void process ();
 
 	// handle command
 	void handle (int argc, char** argv);
@@ -55,15 +58,15 @@ class SControlManager : public IManager
 {
 	public:
 	// initialize the control manager
-	virtual int initialize (void);
+	virtual int initialize ();
 
 	// shutdown the control manager
-	virtual void shutdown (void);
+	virtual void shutdown ();
 
-	// return true if user has read-only access
+	// return true if the user id may use the control interface
 	bool has_user_access (uid_t uid) const;
 	
-	// return true if user has admina ccess
+	// return true if user has admin access
 	bool has_admin_access (uid_t uid) const;
 
 	private:

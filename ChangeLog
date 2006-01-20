@@ -1,3 +1,14 @@
+2006-01-20 01:30:08  Sean Middleditch <elanthis@awesomeplay.com>
+
+  * Changed the control socket protocol's quote characters from {}
+    to "" to make scripting easier.
+  * Added a 'login' command to the control socket protocol.
+  * Add tools/awemud-control.inc.php (COMPLETELY UNTESTED!) so
+    web developers can easily make use of AweMUD control interface.
+  * Incorporated doc/control.txt into the AweMUD Manual.
+  * Removed massroom.pl, dear is it old.
+  * Removed awemud.6 manpage, totally out of date.
+
 2006-01-19 20:47:55  Sean Middleditch <elanthis@awesomeplay.com>
 
   * Update the command document in the script guide to be accurate.

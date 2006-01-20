@@ -12,13 +12,13 @@
 
 #include <algorithm>
 
-#include "control.h"
-#include "log.h"
-#include "player.h"
-#include "server.h"
-#include "account.h"
-#include "zone.h"
-#include "settings.h"
+#include "mud/control.h"
+#include "common/log.h"
+#include "mud/player.h"
+#include "mud/server.h"
+#include "mud/account.h"
+#include "mud/zone.h"
+#include "mud/settings.h"
 
 SControlManager ControlManager;
 
@@ -30,10 +30,15 @@ SControlManager ControlManager;
 		return; \
 	} \
 
-ControlHandler::ControlHandler (int s_sock, bool s_admin_flag) : SocketUser(s_sock)
+ControlHandler::ControlHandler (int s_sock, uid_t s_uid) : SocketUser(s_sock), account(NULL), uid(s_uid)
 {
 	in_buffer[0] = '\0';
-	admin_flag = s_admin_flag;
+}
+
+bool
+ControlHandler::is_admin () const
+{
+	return ControlManager.has_admin_access(uid) || (account != NULL && account->is_admin());
 }
 
 void
@@ -55,7 +60,7 @@ ControlHandler::in_handle (char* buffer, size_t size)
 }
 
 void
-ControlHandler::out_ready (void)
+ControlHandler::out_ready ()
 {
 	// FIXME: might lose output
 	if (send(sock, out_buffer.c_str(), out_buffer.size(), MSG_DONTWAIT) == -1) {
@@ -68,7 +73,7 @@ ControlHandler::out_ready (void)
 }
 
 char
-ControlHandler::get_poll_flags (void)
+ControlHandler::get_poll_flags ()
 {
 	char flags = POLLSYS_READ;
 	if (!out_buffer.empty())
@@ -77,7 +82,7 @@ ControlHandler::get_poll_flags (void)
 }
 
 void
-ControlHandler::hangup (void)
+ControlHandler::hangup ()
 {
 	Log::Network << "Control client disconnected";
 }
@@ -89,7 +94,7 @@ ControlHandler::stream_put (const char* str, size_t len)
 }
 
 void
-ControlHandler::process (void)
+ControlHandler::process ()
 {
 	int len = strlen(in_buffer);
 
@@ -123,7 +128,7 @@ ControlHandler::process (void)
 			// quoted?  handle specially
 			} else if (quote && *cptr) {
 				// end quote?
-				if (*cptr == '}')
+				if (*cptr == '"')
 					quote = false;
 				// normal char
 				else
@@ -148,8 +153,8 @@ ControlHandler::process (void)
 				*bptr = 0;
 				++argc;
 				break;
-			// non-quoted { ?  begin quote
-			} else if (!quote && *cptr == '{') {
+			// non-quoted " ?  begin quote
+			} else if (!quote && *cptr == '"') {
 				quote = true;
 			// normal char
 			} else {
@@ -190,7 +195,7 @@ ControlHandler::handle (int argc, char **argv)
 		*this << "+OK Farewell\n";
 		close(sock);
 		sock = -1;
-	// change password
+	// change passphrase
 	} else if (str_eq(argv[0], "chpass")) {
 		if (argc != 3) {
 			*this << "+BADPARAM chpass <account> <pass>\n";
@@ -206,10 +211,10 @@ ControlHandler::handle (int argc, char **argv)
 			return;
 		}
 
-		// set password
+		// set passphrase
 		account->set_passphrase(argv[2]);
 
-		Log::Info << "Password of account '" << argv[1] << "' changed over control interface";
+		Log::Info << "Password of account '" << account->get_id() << "' changed over control interface";
 		*this << "+OK Password changed\n";
 	// new account
 	} else if (str_eq(argv[0], "newaccount")) {
@@ -418,6 +423,27 @@ ControlHandler::handle (int argc, char **argv)
 			*this << '-' << Network::get_addr_name(i->addr) << '\t' << i->conns << '\n';
 
 		*this << "+OK\n";
+	// attempt to login
+	} else if (str_eq("login", argv[0])) {
+		if (argc < 3) {
+			*this << "+BADPARAM login <user> <passphrase>\n";
+			return;
+		}
+
+		account = AccountManager.get(argv[1]);
+		if (account == NULL) {
+			*this << "+NOTFOUND Incorrect account name or passphrase\n";
+			return;
+		}
+
+		if (!account->check_passphrase(argv[2])) {
+			account = NULL;
+			*this << "+NOTFOUND Incorrect account name or passphrase\n";
+			return;
+		}
+
+		Log::Info << "User '" << account->get_id() << "' logged in over control interface";
+		*this << "+OK Welcome " << account->get_id() << "\n";
 	// unknown command
 	} else {
 		*this << "+BADCOMMAND " << argv[0] << "\n";
@@ -425,7 +451,7 @@ ControlHandler::handle (int argc, char **argv)
 }
 
 int
-SControlManager::initialize (void)
+SControlManager::initialize ()
 {
 	struct passwd* pwd;
 
@@ -456,14 +482,17 @@ SControlManager::initialize (void)
 }
 
 void
-SControlManager::shutdown (void)
+SControlManager::shutdown ()
 {
 }
 
 bool
 SControlManager::has_user_access (uid_t uid) const
 {
-	return std::find(user_list.begin(), user_list.end(), uid) != user_list.end();
+	if (std::find(user_list.begin(), user_list.end(), uid) != user_list.end())
+		return true;
+
+	return has_admin_access(uid);
 }
 
 bool

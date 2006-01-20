@@ -296,8 +296,7 @@ namespace {
 		}
 
 		// deny blocked users
-		bool admin = ControlManager.has_admin_access(uid);
-		if (!admin && !ControlManager.has_user_access(uid)) {
+		if (!ControlManager.has_user_access(uid)) {
 			dump_to_sock(client, "+NOACCESS Access Denied\n");
 			Log::Network << "Control interface client rejected: " << uid << ": user not allowed";
 			close(client);
@@ -308,7 +307,7 @@ namespace {
 		Log::Network << "Control interface client connected: " << uid;
 
 		// create a new connection
-		ControlHandler* conn = new ControlHandler(client, admin);
+		ControlHandler* conn = new ControlHandler(client, uid);
 		if (conn == NULL) {
 			dump_to_sock(client, "+INTERNAL Internal server error.\n");
 			Log::Warning << "ControlHandler() failed, closing connection.";
