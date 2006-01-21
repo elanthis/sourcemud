@@ -81,6 +81,7 @@ html_DATA = $(DOCBOOK_HTML)
 pdfdir = ${datadir}/doc/@PACKAGE_TARNAME@-@VERSION@/pdf
 pdf_DATA = $(DOCBOOK_PDF)
 
+if USE_XSLT
 doc/script-ref.xml: tools/script-doc.xsl src/xml/script-intr.xml
 	$(PATH_XSLTPROC) '$(top_srcdir)/tools/script-doc.xsl' '$(top_srcdir)/src/xml/script-intr.xml' > doc/script-ref.xml
 
@@ -89,6 +90,7 @@ doc/event-ref.xml: tools/events-doc.xsl src/xml/event-list.xml
 
 doc/hook-ref.xml: tools/hooks-doc.xsl src/xml/hook-list.xml
 	$(PATH_XSLTPROC) '$(top_srcdir)/tools/hooks-doc.xsl' '$(top_srcdir)/src/xml/hook-list.xml' > doc/hook-ref.xml
+endif
 
 doc/awemud-manual.xml: $(MANUAL_CHAPTERS)
 	-touch doc/awemud-manual.xml
@@ -108,7 +110,7 @@ doc/ch-scripting.xml: doc/script-ref.xml doc/event-ref.xml doc/hook-ref.xml
 	@PATH_XMLTO@ --skip-validation -o doc/ pdf $<
 
 EXTRA_DIST += doc/script-ref.xml doc/event-ref.xml doc/hook-ref.xml $(MANUAL_CHAPTERS)
-CLEANFILES = doc/script-ref.xml doc/event-ref.xml doc/hook-ref.xml $(DOCBOOK_TXT) $(DOCBOOK_PDF)
+CLEANFILES = $(DOCBOOK_TXT) $(DOCBOOK_PDF)
 
 clean-local:
 	-for guide in $(DOCBOOK_HTML) ; do test -d "$$guide" && rm -fr "$$guide" ; done
@@ -248,6 +250,7 @@ noinst_HEADERS=\
 	include/mud/zmp.h \
 	include/mud/zone.h
 
+if USE_XSLT
 include/mud/eventids.h: tools/events-header.xsl src/xml/event-list.xml
 	mkdir -p $(top_builddir)/include/mud
 	$(PATH_XSLTPROC) '$(top_srcdir)/tools/events-header.xsl' '$(top_srcdir)/src/xml/event-list.xml' > $(top_builddir)/include/mud/eventids.h
@@ -255,10 +258,10 @@ include/mud/eventids.h: tools/events-header.xsl src/xml/event-list.xml
 include/mud/hooks.h: tools/hooks-header.xsl src/xml/hook-list.xml
 	mkdir -p $(top_builddir)/include/mud
 	$(PATH_XSLTPROC) '$(top_srcdir)/tools/hooks-header.xsl' '$(top_srcdir)/src/xml/hook-list.xml' > $(top_builddir)/include/mud/hooks.h
+endif
 
 EXTRA_DIST += include/mud/eventids.h include/mud/hooks.h
 BUILT_SOURCES = include/mud/eventids.h include/mud/hooks.h
-CLEANFILES += include/mud/eventids.h include/mud/hooks.h
 
 ### EXECUTABLES ###
 
@@ -295,14 +298,16 @@ SCRIPTIX_SOURCES=\
 	src/scriptix/type.cc \
 	src/scriptix/value.cc
 
-EXTRA_DIST+=src/scriptix/grammar.hh src/scriptix/grammar.cc src/scriptix/lexer.cc src/scriptix/grammar.yy src/scriptix/lexer.ll
+EXTRA_DIST += src/scriptix/grammar.hh src/scriptix/grammar.cc src/scriptix/lexer.cc src/scriptix/grammar.yy src/scriptix/lexer.ll
 
+if BUILD_GRAMMAR
 src/scriptix/grammar.cc src/scriptix/grammar.hh: src/scriptix/grammar.yy
 	@PATH_BISON@ -y -d -o src/scriptix/grammar.cc src/scriptix/grammar.yy
 	-[ -f src/scriptix/grammar.cc.h ] && mv -f src/scriptix/grammar.cc.h src/scriptix/grammar.hh
 
 src/scriptix/lexer.cc: src/scriptix/lexer.ll src/scriptix/grammar.hh
 	@PATH_FLEX@ -osrc/scriptix/lexer.cc src/scriptix/lexer.ll
+endif
 
 awemud_ctrl_SOURCES=\
 	src/util/awemud-ctrl.c
@@ -365,6 +370,7 @@ awemud_bin_SOURCES=\
 	src/mud/zmp.cc \
 	src/mud/zone.cc
 
+if USE_XSLT
 src/mud/bindings.cc: tools/script-code.xsl src/xml/script-intr.xml
 	$(PATH_XSLTPROC) '$(top_srcdir)/tools/script-code.xsl' '$(top_srcdir)/src/xml/script-intr.xml' > src/mud/bindings.cc
 
@@ -376,7 +382,7 @@ src/mud/eventids.cc: tools/events-code.xsl src/xml/event-list.xml
 
 src/mud/hooks.cc: tools/hooks-code.xsl src/xml/hook-list.xml
 	$(PATH_XSLTPROC) '$(top_srcdir)/tools/hooks-code.xsl' '$(top_srcdir)/src/xml/hook-list.xml' > src/mud/hooks.cc
+endif
 
 EXTRA_DIST += src/mud/bindings.cc src/mud/parse_commands.cc src/mud/eventids.cc src/mud/hooks.cc
-CLEANFILES += src/mud/bindings.cc src/mud/parse_commands.cc src/mud/eventids.cc src/mud/hooks.cc
 BUILT_SOURCES += src/mud/bindings.cc src/mud/parse_commands.cc src/mud/eventids.cc src/mud/hooks.cc

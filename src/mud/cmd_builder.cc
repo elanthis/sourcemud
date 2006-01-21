@@ -150,21 +150,6 @@ void command_create (Player* builder, char** argv)
 	}
 }
 
-void command_edit (Player* builder, char** argv)
-{
-	Entity* entity;
-	
-	// get choice
-	if (!lookup_editable(builder, argv[0], entity)) {
-		return;
-	}
-	if (entity == NULL)
-		return;
-
-	// add processor
-	builder->add_processor(new EditProcessor(builder, entity));
-}
-
 void command_destroy (Player* builder, char** argv)
 {
 	Entity* entity;

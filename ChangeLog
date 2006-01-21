@@ -1,3 +1,12 @@
+2006-01-21 16:31:50  Sean Middleditch <elanthis@awesomeplay.com>
+
+  * Removed the chpass command, trying to remove the IProcessor
+    stuff, it's unclean.
+  * Don't build-depend on bison, flex, or xsltproc.  Only people
+    wanting to hack on the source will need those utilities.
+    This makes installing AweMUD a lot easier, especially on
+    older/non-gnu systems.
+
 2006-01-21 04:56:03  Sean Middleditch <elanthis@awesomeplay.com>
 
   * OS X 10.3's compiler was being a dork, these fixes make it

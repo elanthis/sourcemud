@@ -1,9 +1,9 @@
 # AweMUD NG
 # Configuration script
 BASE_VERSION=0.24
-VERSION=0.24.20060120
+VERSION=0.24.20060121
 
-AC_INIT([AweMUD], 0.24.20060120, [http://bugs.awemud.net/submit.php])
+AC_INIT([AweMUD], 0.24.20060121, [http://bugs.awemud.net/submit.php])
 AC_CONFIG_SRCDIR(src/mud/main.cc)
 AC_CONFIG_AUX_DIR(.)
 AM_INIT_AUTOMAKE([1.8])
@@ -41,9 +41,7 @@ AM_CONDITIONAL(BUILD_PDFDOCS, test "x$BUILD_PDFDOCS" != "xno")
 
 # XSLT processor
 AC_PATH_PROG(PATH_XSLTPROC,xsltproc)
-if test "x$PATH_XSLTPROC" = "x" ; then
-	AC_MSG_ERROR([could not find xsltproc])
-fi
+AM_CONDITIONAL(USE_XSLT, test -n "$PATH_XSLTPROC")
 
 # Look for sendmail
 AC_ARG_WITH(sendmail,[  --with-sendmail=<path>  Path of your sendmail bianry],[PATH_SENDMAIL="$withval"],[AC_PATH_PROG(PATH_SENDMAIL, sendmail, none, [$PATH:/usr/sbin:/sbin])])
@@ -60,15 +58,8 @@ AC_CHECK_HEADER(execinfo.h,[
 
 # don't use automake's yacc/lex support - it's totally broken for our needs
 AC_PATH_PROG(PATH_BISON,bison)
-if test -z "$PATH_BISON" ; then
-	AC_MSG_ERROR([can't find bison])
-fi
 AC_PATH_PROG(PATH_FLEX,flex)
-if test -z "$PATH_FLEX" ; then
-	AC_MSG_ERROR([can't find flex])
-fi
-AC_SUBST(PATH_BISON)
-AC_SUBST(PATH_FLEX)
+AM_CONDITIONAL(BUILD_GRAMMAR, test -n "$PATH_BISON" -a -n "$PATH_FLEX")
 
 # Networking libraries
 AC_CHECK_LIB(socket,connect)
@@ -171,20 +162,37 @@ echo "Copyright (C) 2000,2001,2002,2003,2004  AwesomePlay Productions, Inc."
 echo "See COPYING for license details."
 
 echo
-echo "  Version   ... $PACKAGE_VERSION"
-echo "  Install   ... ${prefix}"
-echo "  Documents ... ${DOCS}"
-if test "x$IPV6" = "xyes" ; then
-	echo "   -- IPv6 Enabled --"
+echo "  Version    ... $PACKAGE_VERSION"
+echo "  Install    ... ${prefix}"
+if test -n "$DOCS" ; then
+	echo "  Documents  ... ${DOCS}"
+else
+	echo "  Documents  ... none"
 fi
-if test "x$XMLRPC" = "xyes" ; then
-	echo "   -- XML-RPC Enabled --"
+if test "x$IPV6" = "xyes" ; then
+	echo "  IPv6       ... enabled"
+else
+	echo "  IPv6       ... disabled"
 fi
 if test "x$ZLIB" = "xyes" ; then
-	echo "   -- MCCP2 Enabled -- "
+	echo "  MCCPv2     ... enabled"
+else
+	echo "  MCCPv2     ... disabled"
 fi
-if test "x$SENDMAIL" = "xyes" ; then
-	echo "   -- Mail Enabled -- "
+if test "x$ZLIB" = "xyes" ; then
+	echo "  Sendmail   ... enabled"
+else
+	echo "  Sendmail   ... disabled"
+fi
+if test -n "$PATH_BISON" -a -n "$PATH_FLEX" ; then
+	echo "  Bison/Flex ... enabled"
+else
+	echo "  Bison/Flex ... disabled (do not edit Scriptix grammar)"
+fi
+if test -n "$PATH_XSLTPROC" ; then
+	echo "  XSLT       ... enabled"
+else
+	echo "  XSLT       ... disabled (do not edit files in src/xml/)"
 fi
 
 echo

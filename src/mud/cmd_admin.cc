@@ -13,22 +13,6 @@
 #include "mud/zone.h"
 #include "mud/account.h"
 
-// handle changing of player password
-class ChpassProcessor : public IProcessor
-{
-	public:
-	ChpassProcessor (Player* s_player, Account* s_account) : IProcessor(s_player), account(s_account), pass() {}
-	
-	int init (void) { player->toggle_echo (false); return 0; }
-	void finish (void) { player->toggle_echo (true); }
-	int process (char*);
-	const char* prompt (void);
-
-	private:
-	Account* account;
-	String pass;
-};
-
 // shutdown the server
 void command_admin_shutdown (Player* admin, char**) {
 	*admin << CADMIN "Shutdown issued." CNORMAL "\n";
@@ -86,46 +70,4 @@ void command_admin_blockip (Player* admin, char** argv) {
 		*admin << "Invalid deny value.\n";
 	}
 	*/
-}
-
-// change a user's password
-void command_admin_chpass (Player* admin, char** argv) {
-	// lookup user info
-	Account* account;
-	if ((account = AccountManager.get(argv[0])) == NULL) {
-		*admin << CADMIN "Account '" << argv[0] << "' does not exist." CNORMAL "\n";
-	} else {
-		admin->add_processor(new ChpassProcessor(admin, account));
-	}
-}
-
-// --- ChpassProcessor ---
-
-const char *
-ChpassProcessor::prompt (void)
-{
-	if (pass)
-		return "Verify password:";
-	else
-		return "New password:";
-}
-
-int
-ChpassProcessor::process (char *line)
-{
-	*player << "\n";
-	if (pass) {
-		if (!strcmp (pass, line)) {
-			account->set_passphrase(line);
-			*player << CADMIN "Password for account " CPLAYER << account->get_id() << CNORMAL " changed successfully." CNORMAL "\n";
-			Log::Admin << "Password for account '" << account->get_id() << "' changed by '" << player->get_account()->get_id() << "'";
-		} else {
-			*player << CADMIN "Passwords do not match." CNORMAL "\n";
-		}
-		return true;
-	} else {
-		pass = line;
-	}
-
-	return 0;
 }

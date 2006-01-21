@@ -467,13 +467,6 @@ SCommandManager::initialize (void)
 		FORMAT(80, "create :0exit :1%?")
 		FORMAT(80, "create :0exit :1% to :2%")
 	END_COMM
-	COMMAND("edit",
-			"edit [<type>] <entity\n",
-			edit,
-			ACCESS_BUILDER,
-			Player)
-		FORMAT(80, "edit :0*")
-	END_COMM
 	COMMAND("destroy",
 			"destroy [<type>] <entity>\n",
 			destroy,
@@ -561,13 +554,6 @@ SCommandManager::initialize (void)
 			ACCESS_ADMIN,
 			Player)
 		FORMAT(80, "admin blockip :0%")
-	END_COMM
-	COMMAND("admin chpass",
-			"admin chpass <player>\n",
-			admin_chpass,
-			ACCESS_ADMIN,
-			Player)
-		FORMAT(80, "admin chpass :0%")
 	END_COMM
 
 	return 0;

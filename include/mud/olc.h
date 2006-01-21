@@ -48,21 +48,4 @@ namespace OLC {
 	void show_zone (Player* builder, Zone* zone);
 }
 
-// OLC processor
-class EditProcessor : public IProcessor
-{
-	Entity* ent;
-
-	protected:
-	void display (void);
-
-	public:
-	EditProcessor (Player* s_player, Entity* s_ent) : IProcessor(s_player), ent(s_ent) {}
-
-	int init (void);
-	void finish (void);
-	int process (char* line);
-	const char* prompt (void) { return "OLC:"; }
-};
-
 #endif
