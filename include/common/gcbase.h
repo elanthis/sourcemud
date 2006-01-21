@@ -5,12 +5,13 @@
  * http://www.awemud.net
  */
 
-#ifndef GCBASE_H
-#define GCBASE_H
+#ifndef AWEMUD_COMMON_GCBASE_H
+#define AWEMUD_COMMON_GCBASE_H
 
 #define GC_NAME_CONFLICT 1
 
 #include <gc/gc_cpp.h>
+#include <gc/gc_allocator.h>
 
 namespace GCType
 {

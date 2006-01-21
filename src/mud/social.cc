@@ -7,10 +7,10 @@
 
 #include <list>
 
-#include "awestr.h"
-#include "social.h"
-#include "settings.h"
-#include "log.h"
+#include "common/awestr.h"
+#include "mud/social.h"
+#include "mud/settings.h"
+#include "common/log.h"
 
 SSocialManager SocialManager;
 

@@ -5,9 +5,9 @@
  * http://www.awemud.net
  */
 
-#include "command.h"
-#include "player.h"
-#include "help.h"
+#include "mud/command.h"
+#include "mud/player.h"
+#include "mud/help.h"
 
 namespace {
 	template <typename TYPE>

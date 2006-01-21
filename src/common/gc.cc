@@ -9,7 +9,7 @@
 
 #include <typeinfo>
 
-#include "gcbase.h"
+#include "common/gcbase.h"
 
 namespace GCType {
 	Cleanup::Cleanup(void)

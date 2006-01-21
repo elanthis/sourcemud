@@ -10,15 +10,15 @@
 
 #include <list>
 
-#include "awestr.h"
-#include "player.h"
-#include "command.h"
-#include "settings.h"
-#include "streams.h"
-#include "color.h"
-#include "fileobj.h"
-#include "parse.h"
-#include "help.h"
+#include "common/awestr.h"
+#include "mud/player.h"
+#include "mud/command.h"
+#include "mud/settings.h"
+#include "common/streams.h"
+#include "mud/color.h"
+#include "mud/fileobj.h"
+#include "mud/parse.h"
+#include "mud/help.h"
 
 SHelpManager HelpManager;
 

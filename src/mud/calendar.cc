@@ -5,10 +5,10 @@
  * http://www.awemud.net
  */
 
-#include "gametime.h"
-#include "fileobj.h"
-#include "settings.h"
-#include "log.h"
+#include "mud/gametime.h"
+#include "mud/fileobj.h"
+#include "mud/settings.h"
+#include "common/log.h"
 
 int
 GameCalendar::load (void)

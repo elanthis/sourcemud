@@ -8,8 +8,8 @@
 #ifndef ACTION_H
 #define ACTION_H
 
-#include "types.h"
-#include "gcbase.h"
+#include "common/types.h"
+#include "common/gcbase.h"
 
 class Character;
 class StreamControl;

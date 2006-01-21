@@ -5,10 +5,10 @@
  * http://www.awemud.net
  */
 
-#include "gametime.h"
-#include "settings.h"
-#include "server.h"
-#include "clock.h"
+#include "mud/gametime.h"
+#include "mud/settings.h"
+#include "mud/server.h"
+#include "mud/clock.h"
 
 STimeManager TimeManager;
 

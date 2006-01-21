@@ -5,12 +5,12 @@
  * http://www.awemud.net
  */
 
-#ifndef MAP_H
-#define MAP_H
+#ifndef AWEMUD_MUD_ROOM_H
+#define AWEMUD_MUD_ROOM_H
 
-#include "elist.h"
-#include "awestr.h"
-#include "exit.h"
+#include "mud/elist.h"
+#include "common/awestr.h"
+#include "mud/exit.h"
 
 class Object;
 class RoomExit;

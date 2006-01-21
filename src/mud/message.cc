@@ -5,10 +5,10 @@
  * http://www.awemud.net
  */
 
-#include "message.h"
-#include "fileobj.h"
-#include "settings.h"
-#include "log.h"
+#include "mud/message.h"
+#include "mud/fileobj.h"
+#include "mud/settings.h"
+#include "common/log.h"
 
 SMessageManager MessageManager;
 

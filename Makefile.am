@@ -197,7 +197,6 @@ noinst_HEADERS=\
 	include/scriptix/native.h \
 	include/scriptix/number.h \
 	include/scriptix/opcodes.h \
-	include/scriptix/scriptix.h \
 	include/scriptix/struct.h \
 	include/scriptix/sxstring.h \
 	include/scriptix/system.h \
@@ -265,10 +264,12 @@ CLEANFILES += include/mud/eventids.h include/mud/hooks.h
 
 bin_PROGRAMS=awemud-ctrl awemud-bin
 
-INCLUDES=-I@top_srcdir@/include/common -I@top_srcdir@/include/scriptix -I@top_srcdir@/include/mud -I@top_srcdir@/include
+INCLUDES=-I@top_srcdir@/include
 
 COMMON_SOURCES=\
+	src/common/error.cc \
 	src/common/gc.cc \
+	src/common/imanager.cc \
 	src/common/md5.cc \
 	src/common/rand.cc \
 	src/common/regex.cc \
@@ -329,7 +330,6 @@ awemud_bin_SOURCES=\
 	src/mud/control.cc \
 	src/mud/efactory.cc \
 	src/mud/entity.cc \
-	src/mud/error.cc \
 	src/mud/event.cc \
 	src/mud/eventids.cc \
 	src/mud/exit.cc \
@@ -337,7 +337,6 @@ awemud_bin_SOURCES=\
 	src/mud/help.cc \
 	src/mud/hooks.cc \
 	src/mud/idmap.cc \
-	src/mud/imanager.cc \
 	src/mud/log.cc \
 	src/mud/login.cc \
 	src/mud/mail.cc \

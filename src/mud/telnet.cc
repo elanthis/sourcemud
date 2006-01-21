@@ -24,18 +24,18 @@
 #include <ctype.h>
 #include <stdarg.h>
 
-#include "error.h"
-#include "server.h"
-#include "network.h"
-#include "parse.h"
-#include "command.h"
-#include "room.h"
-#include "zmp.h"
-#include "streams.h"
-#include "color.h"
-#include "message.h"
-#include "telnet.h"
-#include "settings.h"
+#include "common/error.h"
+#include "mud/server.h"
+#include "mud/network.h"
+#include "mud/parse.h"
+#include "mud/command.h"
+#include "mud/room.h"
+#include "mud/zmp.h"
+#include "common/streams.h"
+#include "mud/color.h"
+#include "mud/message.h"
+#include "mud/telnet.h"
+#include "mud/settings.h"
 
 #define TELOPT_MCCP2 86
 

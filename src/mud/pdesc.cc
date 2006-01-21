@@ -5,10 +5,10 @@
  * http://www.awemud.net
  */
 
-#include "pdesc.h"
-#include "awestr.h"
-#include "settings.h"
-#include "fileobj.h"
+#include "mud/pdesc.h"
+#include "common/awestr.h"
+#include "mud/settings.h"
+#include "mud/fileobj.h"
 
 SCharacterTraitManager CharacterTraitManager;
 

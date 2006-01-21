@@ -5,7 +5,7 @@
  * http://www.awemud.net
  */
 
-#include "caffect.h"
+#include "mud/caffect.h"
 
 String CharacterAffectType::names[] = {
 	"unknown",

@@ -5,8 +5,7 @@
  * http://www.awemud.net
  */
 
-#include "idmap.h"
-#include "log.h"
+#include "mud/idmap.h"
 
 IDManager::IDManager ()
 {

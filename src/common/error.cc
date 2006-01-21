@@ -11,8 +11,8 @@
 #include <unistd.h>
 #include <fcntl.h>
 
-#include "error.h"
-#include "log.h"
+#include "common/error.h"
+#include "common/log.h"
 
 void
 fatal (char const *err_text, ...)

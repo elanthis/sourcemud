@@ -19,6 +19,12 @@
 #include "mud/command.h"
 #include "common/log.h"
 #include "mud/fileobj.h"
+#include "scriptix/number.h"
+#include "scriptix/array.h"
+#include "scriptix/system.h"
+#include "scriptix/struct.h"
+#include "scriptix/type.h"
+#include "scriptix/vimpl.h"
 
 #define SCRIPTIX_MAX_ARGV 32
 

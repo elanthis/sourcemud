@@ -9,16 +9,17 @@
 
 #include <vector>
 
-#include "error.h"
-#include "command.h"
-#include "char.h"
-#include "player.h"
-#include "social.h"
-#include "streams.h"
-#include "color.h"
-#include "account.h"
-#include "parse.h"
-#include "help.h"
+#include "common/error.h"
+#include "mud/command.h"
+#include "mud/char.h"
+#include "mud/player.h"
+#include "mud/social.h"
+#include "common/streams.h"
+#include "mud/color.h"
+#include "mud/account.h"
+#include "mud/parse.h"
+#include "mud/help.h"
+#include "scriptix/array.h"
 
 SCommandManager CommandManager;
 

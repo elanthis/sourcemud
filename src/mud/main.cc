@@ -5,9 +5,6 @@
  * http://www.awemud.net
  */
 
-#include "server.h"
-#include "settings.h"
-
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
@@ -45,6 +42,8 @@
 #include "mud/parse.h"
 #include "mud/bindings.h"
 #include "mud/hooks.h"
+#include "mud/server.h"
+#include "mud/settings.h"
 
 // DECLARATIONS
 namespace {

@@ -12,7 +12,9 @@
 #include "config.h"
 #endif
 
-#include "scriptix/scriptix.h"
+#include "scriptix/value.h"
+#include "scriptix/native.h"
+#include "scriptix/system.h"
 #include "common/gcbase.h"
 #include "common/gcmap.h"
 #include "common/awestr.h"

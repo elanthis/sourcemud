@@ -29,7 +29,10 @@
 #define SCRIPTIX_STRING_H
 
 #include <string>
-#include "awestr.h"
+
+#include "common/awestr.h"
+#include "scriptix/value.h"
+#include "scriptix/type.h"
 
 namespace Scriptix {
 

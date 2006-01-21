@@ -8,9 +8,9 @@
 #ifndef SETTINGS_H
 #define SETTINGS_H
 
-#include "awestr.h"
-#include "server.h"
-#include "imanager.h"
+#include "common/awestr.h"
+#include "mud/server.h"
+#include "common/imanager.h"
 
 #define SETTING_INT(name) int val_ ## name; inline int get_ ## name (void) const { return val_ ## name; }
 #define SETTING_STRING(name) String val_ ## name; inline const String& get_ ## name (void) const { return val_ ## name; }

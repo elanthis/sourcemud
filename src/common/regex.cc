@@ -5,7 +5,7 @@
  * http://www.awemud.net
  */
 
-#include "aweregex.h"
+#include "common/aweregex.h"
 
 RegEx::RegEx (StringArg pattern, bool nocase)
 {

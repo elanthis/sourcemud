@@ -16,9 +16,9 @@
 #include <unistd.h>
 #include <errno.h>
 
-#include "mail.h"
-#include "log.h"
-#include "settings.h"
+#include "common/mail.h"
+#include "common/log.h"
+#include "mud/settings.h"
 
 void
 MailMessage::append (StringArg data)

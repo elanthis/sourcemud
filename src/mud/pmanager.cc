@@ -7,9 +7,9 @@
 
 #include <fnmatch.h>
 
-#include "player.h"
-#include "account.h"
-#include "settings.h"
+#include "mud/player.h"
+#include "mud/account.h"
+#include "mud/settings.h"
 
 // helper function to generate path names
 String

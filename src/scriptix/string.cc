@@ -28,9 +28,11 @@
 #include <iostream>
 #include <ctype.h>
 
-#include "scriptix/scriptix.h"
 #include "scriptix/sxstring.h"
 #include "scriptix/system.h"
+#include "scriptix/number.h"
+#include "scriptix/array.h"
+#include "scriptix/vimpl.h"
 
 using namespace Scriptix;
 

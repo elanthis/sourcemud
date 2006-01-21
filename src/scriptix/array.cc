@@ -27,8 +27,12 @@
 
 #include <string.h>
 
-#include "scriptix.h"
-#include "system.h"
+#include "scriptix/type.h"
+#include "scriptix/value.h"
+#include "scriptix/array.h"
+#include "scriptix/system.h"
+#include "scriptix/number.h"
+#include "scriptix/vimpl.h"
 
 #include <algorithm>
 #include <iostream>

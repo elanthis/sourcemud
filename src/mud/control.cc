@@ -9,7 +9,6 @@
 #include <errno.h>
 #include <sys/types.h>
 #include <pwd.h>
-#include <fcntl.h>
 
 #include <algorithm>
 
@@ -34,8 +33,6 @@ SControlManager ControlManager;
 ControlHandler::ControlHandler (int s_sock, uid_t s_uid) : SocketUser(s_sock), account(NULL), uid(s_uid)
 {
 	in_buffer[0] = '\0';
-
-	fcntl(s_sock, F_SETFL, O_NONBLOCK);
 }
 
 bool

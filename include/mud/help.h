@@ -5,10 +5,10 @@
  * http://www.awemud.net
  */
 
-#ifndef HELP_H
-#define HELP_H
+#ifndef AWEMUD_MUD_HELP_H
+#define AWEMUD_MUD_HELP_H
 
-#include "imanager.h"
+#include "common/imanager.h"
 
 struct HelpTopic : public GC {
 	String name;

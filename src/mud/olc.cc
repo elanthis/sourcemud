@@ -5,20 +5,20 @@
  * http://www.awemud.net
  */
 
-#include "char.h"
-#include "server.h"
-#include "room.h"
-#include "command.h"
-#include "player.h"
-#include "npc.h"
-#include "zone.h"
-#include "object.h"
-#include "streams.h"
-#include "help.h"
-#include "olc.h"
-#include "telnet.h"
-#include "account.h"
-#include "zmp.h"
+#include "mud/char.h"
+#include "mud/server.h"
+#include "mud/room.h"
+#include "mud/command.h"
+#include "mud/player.h"
+#include "mud/npc.h"
+#include "mud/zone.h"
+#include "mud/object.h"
+#include "common/streams.h"
+#include "mud/help.h"
+#include "mud/olc.h"
+#include "mud/telnet.h"
+#include "mud/account.h"
+#include "mud/zmp.h"
 
 enum OLCMode {
 	OLC_MODE_SET,

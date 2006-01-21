@@ -8,8 +8,8 @@
 #ifndef PARSE_H
 #define PARSE_H
 
-#include "gcvector.h"
-#include "streams.h"
+#include "common/gcvector.h"
+#include "common/streams.h"
 
 class Entity;
 class Character;

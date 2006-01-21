@@ -5,13 +5,13 @@
  * http://www.awemud.net
  */
 
-#include "awestr.h"
-#include "server.h"
-#include "command.h"
-#include "player.h"
-#include "streams.h"
-#include "zone.h"
-#include "account.h"
+#include "common/awestr.h"
+#include "mud/server.h"
+#include "mud/command.h"
+#include "mud/player.h"
+#include "common/streams.h"
+#include "mud/zone.h"
+#include "mud/account.h"
 
 // handle changing of player password
 class ChpassProcessor : public IProcessor

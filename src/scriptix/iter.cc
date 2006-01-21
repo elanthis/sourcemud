@@ -25,8 +25,10 @@
  * DAMAGE.
  */
 
-#include "scriptix.h"
-#include "system.h"
+#include "scriptix/type.h"
+#include "scriptix/iterator.h"
+#include "scriptix/system.h"
+#include "scriptix/vimpl.h"
 
 #include <iostream>
 

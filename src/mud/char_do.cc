@@ -5,19 +5,18 @@
  * http://www.awemud.net
  */
 
-
-#include "char.h"
-#include "server.h"
-#include "room.h"
-#include "body.h"
-#include "player.h"
-#include "social.h"
-#include "streams.h"
-#include "parse.h"
-#include "eventids.h"
-#include "action.h"
-#include "object.h"
-#include "npc.h"
+#include "mud/char.h"
+#include "mud/server.h"
+#include "mud/room.h"
+#include "mud/body.h"
+#include "mud/player.h"
+#include "mud/social.h"
+#include "common/streams.h"
+#include "mud/parse.h"
+#include "mud/eventids.h"
+#include "mud/action.h"
+#include "mud/object.h"
+#include "mud/npc.h"
 
 void
 Character::do_emote (char const *action)

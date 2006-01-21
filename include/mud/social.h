@@ -5,14 +5,14 @@
  * http://www.awemud.net
  */
 
-#ifndef SOCIAL_H
-#define SOCIAL_H
+#ifndef AWEMUD_MUD_SOCIAL_H
+#define AWEMUD_MUD_SOCIAL_H
 
-#include "awestr.h"
-#include "fileobj.h"
-#include "types.h"
-#include "server.h"
-#include "imanager.h"
+#include "common/awestr.h"
+#include "mud/fileobj.h"
+#include "common/types.h"
+#include "mud/server.h"
+#include "common/imanager.h"
 
 // actions performed by socials
 struct SocialAction : public GC

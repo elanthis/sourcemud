@@ -25,7 +25,10 @@
  * DAMAGE.
  */
 
-#include "scriptix.h"
+#include "scriptix/type.h"
+#include "scriptix/function.h"
+#include "scriptix/system.h"
+#include "scriptix/vimpl.h"
 
 using namespace Scriptix;
 

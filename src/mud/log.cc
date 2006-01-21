@@ -11,11 +11,11 @@
 #include <time.h>
 #include <errno.h>
 
-#include "log.h"
-#include "error.h"
-#include "awestr.h"
-#include "server.h"
-#include "settings.h"
+#include "common/log.h"
+#include "common/error.h"
+#include "common/awestr.h"
+#include "mud/server.h"
+#include "mud/settings.h"
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"

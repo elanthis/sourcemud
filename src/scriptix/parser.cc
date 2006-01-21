@@ -31,9 +31,8 @@
 
 #include <algorithm>
 
-#include "scriptix.h"
-#include "system.h"
-#include "compiler.h"
+#include "scriptix/system.h"
+#include "scriptix/compiler.h"
 
 using namespace Scriptix;
 using namespace Scriptix::Compiler;

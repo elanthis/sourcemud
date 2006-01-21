@@ -5,16 +5,11 @@
  * http://www.awemud.net
  */
 
-#ifndef GC_VECTOR_H
-#define GC_VECTOR_H
+#ifndef AWEMUD_COMMON_GCVECTOR_H
+#define AWEMUD_COMMON_GCVECTOR_H
 
-/* fix for this file being broken... */
-#ifndef AWESOMEPLAY_GC_ALLOCATOR_H
-#define AWESOMEPLAY_GC_ALLOCATOR_H
-#include <gc/gc_allocator.h>
-#endif
+#include "common/gcbase.h"
 
-#include "gcbase.h"
 #include <vector>
 
 namespace GCType

@@ -5,13 +5,13 @@
  * http://www.awemud.net
  */
 
-#ifndef ZONE_H
-#define ZONE_H
+#ifndef AWEMUD_MUD_ZONE_H
+#define AWEMUD_MUD_ZONE_H
 
-#include "entity.h"
-#include "gcvector.h"
-#include "server.h"
-#include "imanager.h"
+#include "mud/entity.h"
+#include "common/gcvector.h"
+#include "mud/server.h"
+#include "common/imanager.h"
 
 // announce flags
 enum AnnounceFlags {

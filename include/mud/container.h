@@ -5,10 +5,10 @@
  * http://www.awemud.net
  */
 
-#ifndef CONTAINER_H
-#define CONTAINER_H
+#ifndef AWEMUD_MUD_CONTAINER_H
+#define AWEMUD_MUD_CONTAINER_H
 
-#include "awestr.h"
+#include "common/awestr.h"
 
 // Container type object
 class ContainerType {

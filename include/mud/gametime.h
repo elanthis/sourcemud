@@ -5,16 +5,16 @@
  * http://www.awemud.net
  */
 
-#ifndef TIME_H
-#define TIME_H
+#ifndef AWEMUD_MUD_TIME_H
+#define AWEMUD_MUD_TIME_H
 
-#include "types.h"
-#include "awestr.h"
-#include "fileobj.h"
-#include "server.h"
-#include "imanager.h"
-#include "clock.h"
-#include "gcvector.h"
+#include "common/types.h"
+#include "common/awestr.h"
+#include "mud/fileobj.h"
+#include "mud/server.h"
+#include "common/imanager.h"
+#include "mud/clock.h"
+#include "common/gcvector.h"
 
 #define TICKS_PER_HOUR ROUNDS_TO_TICKS((60 * 60) / GAME_TIME_SCALE)
 

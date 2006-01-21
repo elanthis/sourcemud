@@ -27,8 +27,10 @@
 
 #include <stdio.h>
 
-#include "scriptix.h"
-#include "compiler.h"
+#include "scriptix/system.h"
+#include "scriptix/compiler.h"
+#include "scriptix/number.h"
+#include "scriptix/vimpl.h"
 
 using namespace Scriptix;
 using namespace Scriptix::Compiler;

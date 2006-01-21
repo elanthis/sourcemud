@@ -1,3 +1,12 @@
+2006-01-21 03:14:56  Sean Middleditch <elanthis@awesomeplay.com>
+
+  * Make all accept()ed sockets non-blocking.
+  * Remove include/scriptix/scriptix.h.
+  * Remove the -Iinclude/common -Iinclude/mud -Iinclude/scriptix
+    compile flags, forcing all includes to specify the source
+    module.
+  * Move a few source files from src/mud to src/common.
+
 2006-01-20 21:18:24  Sean Middleditch <elanthis@awesomeplay.com>
 
   * Add missing doc/ch-introduction.xml file.

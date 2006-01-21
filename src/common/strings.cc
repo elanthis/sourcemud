@@ -24,10 +24,10 @@
 
 #include <vector>
 
-#include "types.h"
-#include "awestr.h"
-#include "error.h"
-#include "log.h"
+#include "common/types.h"
+#include "common/awestr.h"
+#include "common/error.h"
+#include "common/log.h"
 
 // for portability
 #ifndef __va_copy

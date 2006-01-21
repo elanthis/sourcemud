@@ -5,17 +5,16 @@
  * http://www.awemud.net
  */
 
-
-#include "char.h"
-#include "error.h"
-#include "server.h"
-#include "room.h"
-#include "command.h"
-#include "body.h"
-#include "player.h"
-#include "parse.h"
-#include "streams.h"
-#include "object.h"
+#include "mud/char.h"
+#include "common/error.h"
+#include "mud/server.h"
+#include "mud/room.h"
+#include "mud/command.h"
+#include "mud/body.h"
+#include "mud/player.h"
+#include "mud/parse.h"
+#include "common/streams.h"
+#include "mud/object.h"
 
 void
 Character::process_cmd (const char* line)

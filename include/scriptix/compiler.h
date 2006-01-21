@@ -31,6 +31,8 @@
 #include "common/gcbase.h"
 #include "common/gcvector.h"
 
+#include "scriptix/array.h"
+
 namespace Scriptix {
 namespace Compiler {
 

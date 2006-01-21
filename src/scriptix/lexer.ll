@@ -32,8 +32,8 @@
 	#include <errno.h>
 	#include <gc/gc.h>
 
-	#include "scriptix.h"
-	#include "compiler.h"
+	#include "scriptix/system.h"
+	#include "scriptix/compiler.h"
 
 	using namespace Scriptix;
 	using namespace Scriptix::Compiler;

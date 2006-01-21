@@ -5,13 +5,13 @@
  * http://www.awemud.net
  */
 
-#ifndef EFACTORY_H
-#define EFACTORY_H
+#ifndef AWEMUD_MUD_EFACTORY_H
+#define AWEMUD_MUD_EFACTORY_H
 
-#include "awestr.h"
-#include "server.h"
-#include "imanager.h"
-#include "gcmap.h"
+#include "common/awestr.h"
+#include "mud/server.h"
+#include "common/imanager.h"
+#include "common/gcmap.h"
 
 class Entity;
 

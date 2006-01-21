@@ -5,13 +5,13 @@
  * http://www.awemud.net
  */
 
-#ifndef WEATHER_H
-#define WEATHER_H
+#ifndef AWEMUD_MUD_WEATHER_H
+#define AWEMUD_MUD_WEATHER_H
 
-#include "gcvector.h"
-#include "fileobj.h"
-#include "awestr.h"
-#include "imanager.h"
+#include "common/gcvector.h"
+#include "mud/fileobj.h"
+#include "common/awestr.h"
+#include "common/imanager.h"
 
 // description of a change in the weather, such as 'the rain starts falling more heavily'
 struct WeatherChange {

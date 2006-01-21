@@ -5,13 +5,13 @@
  * http://www.awemud.net
  */
 
-#ifndef PDESC_H
-#define PDESC_H
+#ifndef AWEMUD_MUD_PDESC_H
+#define AWEMUD_MUD_PDESC_H
 
-#include "awestr.h"
-#include "server.h"
-#include "imanager.h"
-#include "idmap.h"
+#include "common/awestr.h"
+#include "mud/server.h"
+#include "common/imanager.h"
+#include "mud/idmap.h"
 
 DECLARE_IDMAP(CharacterTrait)
 

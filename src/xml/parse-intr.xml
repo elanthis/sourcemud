@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <parse-interface>
-  <include>server.h</include>
-  <include>player.h</include>
+  <include>mud/server.h</include>
+  <include>mud/player.h</include>
 
   <command name="eq">
     <arg type="string" name="s1" />

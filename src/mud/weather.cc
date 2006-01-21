@@ -5,14 +5,14 @@
  * http://www.awemud.net
  */
 
-#include "server.h"
-#include "rand.h"
-#include "fileobj.h"
-#include "weather.h"
-#include "settings.h"
-#include "zone.h"
-#include "gametime.h"
-#include "clock.h"
+#include "mud/server.h"
+#include "common/rand.h"
+#include "mud/fileobj.h"
+#include "mud/weather.h"
+#include "mud/settings.h"
+#include "mud/zone.h"
+#include "mud/gametime.h"
+#include "mud/clock.h"
 
 SWeatherManager WeatherManager;
 

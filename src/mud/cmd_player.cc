@@ -5,15 +5,15 @@
  * http://www.awemud.net
  */
 
-#include "player.h"
-#include "server.h"
-#include "parse.h"
-#include "command.h"
-#include "streams.h"
-#include "mail.h"
-#include "color.h"
-#include "telnet.h"
-#include "settings.h"
+#include "mud/player.h"
+#include "mud/server.h"
+#include "mud/parse.h"
+#include "mud/command.h"
+#include "common/streams.h"
+#include "common/mail.h"
+#include "mud/color.h"
+#include "mud/telnet.h"
+#include "mud/settings.h"
 
 void
 Player::process_cmd (const char *line)

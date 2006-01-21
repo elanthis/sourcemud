@@ -8,7 +8,7 @@
 #ifndef SERVER_H
 #define SERVER_H
 
-#include "awestr.h"
+#include "common/awestr.h"
 
 #define SERVER_MAX_CLIENTS 10000
 

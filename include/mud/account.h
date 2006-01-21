@@ -8,12 +8,12 @@
 #ifndef __ACCOUNT_H__
 #define __ACCOUNT_H__
 
-#include "gcbase.h"
-#include "gcset.h"
-#include "awestr.h"
-#include "server.h"
-#include "imanager.h"
-#include "idmap.h"
+#include "common/gcbase.h"
+#include "common/gcset.h"
+#include "common/awestr.h"
+#include "mud/server.h"
+#include "common/imanager.h"
+#include "mud/idmap.h"
 
 // account name length requirements
 #define ACCOUNT_NAME_MIN_LEN 3

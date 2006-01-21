@@ -5,10 +5,8 @@
  * http://www.awemud.net
  */
 
-#include "settings.h"
-#include "server.h"
-#include "fileobj.h"
-#include "gcmap.h"
+#include "common/gcmap.h"
+#include "common/imanager.h"
 
 GCType::vector<IManager*>* IManager::managers = NULL;
 GCType::vector<IManager*>* IManager::pending = NULL;

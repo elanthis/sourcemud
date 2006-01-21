@@ -10,10 +10,10 @@
 #include <errno.h>
 #include <string.h>
 
-#include "awestr.h"
-#include "settings.h"
-#include "fileobj.h"
-#include "log.h"
+#include "common/awestr.h"
+#include "mud/settings.h"
+#include "mud/fileobj.h"
+#include "common/log.h"
 
 SSettingsManager SettingsManager;
 

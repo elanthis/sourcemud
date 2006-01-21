@@ -5,16 +5,11 @@
  * http://www.awemud.net
  */
 
-#ifndef GC_SET_H
-#define GC_SET_H
-
-/* fix for this file being broken... */
-#ifndef AWESOMEPLAY_GC_ALLOCATOR_H
-#define AWESOMEPLAY_GC_ALLOCATOR_H
-#include <gc/gc_allocator.h>
-#endif
+#ifndef AWEMUD_COMMON_GCSET_H
+#define AWEMUD_COMMON_GCSET_H
 
 #include "common/gcbase.h"
+
 #include <set>
 
 namespace GCType

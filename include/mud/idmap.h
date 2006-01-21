@@ -10,9 +10,9 @@
 
 #include <algorithm>
 
-#include "awestr.h"
-#include "gcset.h"
-#include "gcvector.h"
+#include "common/awestr.h"
+#include "common/gcset.h"
+#include "common/gcvector.h"
 
 // NOTE:
 // The funky static methods to retrieve the name list and intptr_t map

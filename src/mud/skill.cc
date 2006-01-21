@@ -7,10 +7,10 @@
 
 #include <stdlib.h>
 
-#include "skill.h"
-#include "fileobj.h"
-#include "settings.h"
-#include "skill.h"
+#include "mud/skill.h"
+#include "mud/fileobj.h"
+#include "mud/settings.h"
+#include "mud/skill.h"
 
 #include <algorithm>
 

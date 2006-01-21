@@ -8,12 +8,12 @@
 #include <dirent.h>
 #include <fnmatch.h>
 
-#include "settings.h"
-#include "char.h"
-#include "ai.h"
-#include "room.h"
-#include "eventids.h"
-#include "bindings.h"
+#include "mud/settings.h"
+#include "mud/char.h"
+#include "mud/ai.h"
+#include "mud/room.h"
+#include "mud/eventids.h"
+#include "mud/bindings.h"
 
 SAIManager AIManager;
 

@@ -30,7 +30,7 @@
 #include <string.h>
 #include <stdarg.h>
 
-#include "scriptix.h"
+#include "scriptix/system.h"
 
 using namespace Scriptix;
 

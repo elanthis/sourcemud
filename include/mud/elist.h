@@ -5,14 +5,14 @@
  * http://www.awemud.net
  */
 
-#ifndef ELIST_H
-#define ELIST_H
+#ifndef AWEMUD_MUD_ELIST_H
+#define AWEMUD_MUD_ELIST_H
 
 #include <algorithm>
 
-#include "awestr.h"
-#include "gcvector.h"
-#include "error.h"
+#include "common/awestr.h"
+#include "common/gcvector.h"
+#include "common/error.h"
 
 // --- EList Definition ---
 template<class EntType>

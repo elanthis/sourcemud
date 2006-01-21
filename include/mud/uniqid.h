@@ -10,10 +10,10 @@
 
 #include <sys/time.h>
 
-#include "server.h"
-#include "imanager.h"
-#include "types.h"
-#include "awestr.h"
+#include "mud/server.h"
+#include "common/imanager.h"
+#include "common/types.h"
+#include "common/awestr.h"
 
 class UniqueID
 {

@@ -5,14 +5,14 @@
  * http://www.awemud.net
  */
 
-#ifndef CHAR_H
-#define CHAR_H
+#ifndef AWEMUD_MUD_CHAR_H
+#define AWEMUD_MUD_CHAR_H
 
-#include "entity.h"
-#include "types.h"
-#include "awestr.h"
-#include "body.h"
-#include "streams.h"
+#include "mud/entity.h"
+#include "common/types.h"
+#include "common/awestr.h"
+#include "mud/body.h"
+#include "common/streams.h"
 
 class IAction;
 

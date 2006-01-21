@@ -9,11 +9,11 @@
 
 #include <ctype.h>
 
-#include "entity.h"
-#include "parse.h"
-#include "char.h"
-#include "streams.h"
-#include "gametime.h"
+#include "mud/entity.h"
+#include "mud/parse.h"
+#include "mud/char.h"
+#include "common/streams.h"
+#include "mud/gametime.h"
 
 #define PARSE_OUT_SIZE 2048
 #define PARSE_BUFFER_SIZE 4096

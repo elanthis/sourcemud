@@ -5,13 +5,13 @@
  * http://www.awemud.net
  */
 
-#ifndef CAFFECT_H
-#define CAFFECT_H
+#ifndef AWEMUD_MUD_CAFFECT_H
+#define AWEMUD_MUD_CAFFECT_H
 
-#include "gcbase.h"
-#include "awestr.h"
-#include "gcvector.h"
-#include "char.h"
+#include "common/gcbase.h"
+#include "common/awestr.h"
+#include "common/gcvector.h"
+#include "mud/char.h"
 
 class CharacterAffectType
 {

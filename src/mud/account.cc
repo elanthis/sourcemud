@@ -7,10 +7,10 @@
 
 #include <ctype.h>
 
-#include "account.h"
-#include "fileobj.h"
-#include "settings.h"
-#include "md5.h"
+#include "mud/account.h"
+#include "mud/fileobj.h"
+#include "mud/settings.h"
+#include "common/md5.h"
 
 SAccountManager AccountManager;
 

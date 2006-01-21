@@ -5,16 +5,14 @@
  * http://www.awemud.net
  */
 
-#include "player.h"
-#include "object.h"
-#include "exit.h"
-#include "room.h"
-#include "server.h"
-#include "eventids.h"
-#include "rand.h"
-#include "parse.h"
-#include "action.h"
-#include "settings.h"
+#include "mud/player.h"
+#include "mud/object.h"
+#include "mud/server.h"
+#include "mud/eventids.h"
+#include "mud/room.h"
+#include "common/rand.h"
+#include "mud/parse.h"
+#include "mud/action.h"
 
 // attack command
 void

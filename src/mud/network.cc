@@ -22,11 +22,12 @@
 #if defined(HAVE_POLL)
 #include <sys/poll.h>
 #endif
+#include <fcntl.h>
 
-#include "log.h"
-#include "types.h"
-#include "settings.h"
-#include "network.h"
+#include "common/log.h"
+#include "common/types.h"
+#include "mud/settings.h"
+#include "mud/network.h"
 
 #include <vector>
 
@@ -667,8 +668,15 @@ Network::listen_tcp (int port, int family)
 int
 Network::accept_tcp (int sock, SockStorage& addr)
 {
+	// accept socket
 	socklen_t sslen = sizeof(addr);
-	return accept(sock, (struct sockaddr*)&addr, &sslen);
+	int client = accept(sock, (struct sockaddr*)&addr, &sslen);
+	if (client == -1)
+		return -1;
+
+	// set non-blocking flag
+	fcntl(client, F_SETFL, O_NONBLOCK);
+	return client;
 }
 
 
@@ -751,11 +759,15 @@ Network::accept_unix (int sock, uid_t& uid)
 	if (client == -1)
 		return -1;
 
+	// get peer UID
 	uid = 0;
 	if (get_peer_uid(client, uid)) {
 		close(client);
 		return -1;
 	}
+
+	// set non-blocking flag
+	fcntl(client, F_SETFL, O_NONBLOCK);
 
 	return client;
 }

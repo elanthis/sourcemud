@@ -29,8 +29,9 @@
 #include <stdio.h>
 #include <stdarg.h>
 
-#include "scriptix.h"
-#include "system.h"
+#include "scriptix/error.h"
+#include "scriptix/system.h"
+#include "scriptix/number.h"
 
 using namespace Scriptix;
 

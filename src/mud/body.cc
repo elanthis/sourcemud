@@ -11,15 +11,15 @@
 // STL stuffs
 #include <algorithm>
 
-#include "body.h"
-#include "object.h"
-#include "error.h"
-#include "awestr.h"
-#include "char.h"
-#include "server.h"
-#include "room.h"
-#include "streams.h"
-#include "settings.h"
+#include "mud/body.h"
+#include "mud/object.h"
+#include "common/error.h"
+#include "common/awestr.h"
+#include "mud/char.h"
+#include "mud/server.h"
+#include "mud/room.h"
+#include "common/streams.h"
+#include "mud/settings.h"
 
 String GenderType::names[GenderType::COUNT] = {
 	"none",

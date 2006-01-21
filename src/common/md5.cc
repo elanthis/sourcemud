@@ -319,7 +319,7 @@ void MD5Transform(uint32 buf[4], uint32 const in[16])
  */
 
 #include <sys/types.h>
-#include "rand.h"
+#include "common/rand.h"
 
 static char itoa64[] =		/* 0 ... 63 => ascii - 64 */
 	"./0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";

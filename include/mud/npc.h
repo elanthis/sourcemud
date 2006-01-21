@@ -5,12 +5,12 @@
  * http://www.awemud.net
  */
 
-#ifndef NPC_H
-#define NPC_H
+#ifndef AWEMUD_MUD_NPC_H
+#define AWEMUD_MUD_NPC_H
 
-#include "char.h"
-#include "ai.h"
-#include "imanager.h"
+#include "mud/char.h"
+#include "mud/ai.h"
+#include "common/imanager.h"
 
 // Npc blueprint
 class

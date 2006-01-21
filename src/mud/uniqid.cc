@@ -8,9 +8,9 @@
 #include <sys/time.h>
 #include <unistd.h>
 
-#include "settings.h"
-#include "uniqid.h"
-#include "fileobj.h"
+#include "mud/settings.h"
+#include "mud/uniqid.h"
+#include "mud/fileobj.h"
 
 SUniqueIDManager UniqueIDManager;
 

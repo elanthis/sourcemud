@@ -5,9 +5,9 @@
  * http://www.awemud.net
  */
 
-#include "streams.h"
-#include "parse.h"
-#include "room.h"
+#include "common/streams.h"
+#include "mud/parse.h"
+#include "mud/room.h"
 
 // flush room output
 bool

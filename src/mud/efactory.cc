@@ -7,8 +7,8 @@
 
 #include <assert.h>
 
-#include "efactory.h"
-#include "log.h"
+#include "mud/efactory.h"
+#include "common/log.h"
 
 int
 SEntityFactoryManager::initialize (void)

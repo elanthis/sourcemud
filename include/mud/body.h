@@ -5,14 +5,14 @@
  * http://www.awemud.net
  */
 
-#ifndef BODY_H
-#define BODY_H
+#ifndef AWEMUD_MUD_BODY_H
+#define AWEMUD_MUD_BODY_H
 
-#include "awestr.h"
-#include "gcbase.h"
-#include "gcvector.h"
-#include "fileobj.h"
-#include "server.h"
+#include "common/awestr.h"
+#include "common/gcbase.h"
+#include "common/gcvector.h"
+#include "mud/fileobj.h"
+#include "mud/server.h"
 
 // Gender
 class GenderType

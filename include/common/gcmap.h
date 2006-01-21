@@ -5,14 +5,10 @@
  * http://www.awemud.net
  */
 
-#ifndef GC_MAP_H
-#define GC_MAP_H
+#ifndef AWEMUD_COMMON_GCMAP_H
+#define AWEMUD_COMMON_GCMAP_H
 
-/* fix for this file being broken... */
-#ifndef AWESOMEPLAY_GC_ALLOCATOR_H
-#define AWESOMEPLAY_GC_ALLOCATOR_H
-#include <gc/gc_allocator.h>
-#endif
+#include "common/gcbase.h"
 
 #include <map>
 

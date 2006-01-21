@@ -30,6 +30,8 @@
 
 #include "common/gcbase.h"
 #include "common/gcmap.h"
+#include "scriptix/atom.h"
+#include "scriptix/value.h"
 
 namespace Scriptix {
 

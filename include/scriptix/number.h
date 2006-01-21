@@ -28,9 +28,8 @@
 #ifndef SCRIPTIX_NUMBER_H
 #define SCRIPTIX_NUMBER_H
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
+#include "common/types.h"
+#include "scriptix/value.h"
 
 namespace Scriptix {
 

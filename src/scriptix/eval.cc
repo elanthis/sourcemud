@@ -51,7 +51,11 @@ char *alloca ();
 #include <stdlib.h>
 #include <stdio.h>
 
-#include "scriptix.h"
+#include "scriptix/system.h"
+#include "scriptix/struct.h"
+#include "scriptix/number.h"
+#include "scriptix/array.h"
+#include "scriptix/vimpl.h"
 
 using namespace Scriptix;
 

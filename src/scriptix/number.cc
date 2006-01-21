@@ -31,8 +31,9 @@
 #include <stdarg.h>
 #include <stdlib.h>
 
-#include "scriptix.h"
-#include "system.h"
+#include "scriptix/number.h"
+#include "scriptix/system.h"
+#include "scriptix/vimpl.h"
 
 using namespace Scriptix;
 

@@ -28,7 +28,9 @@
 #include <string.h>
 #include <iostream>
 
-#include "scriptix.h"
+#include "scriptix/system.h"
+#include "scriptix/function.h"
+#include "scriptix/vimpl.h"
 
 using namespace Scriptix;
 

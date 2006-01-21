@@ -5,16 +5,16 @@
  * http://www.awemud.net
  */
 
-#include "char.h"
-#include "error.h"
-#include "server.h"
-#include "room.h"
-#include "command.h"
-#include "player.h"
-#include "streams.h"
-#include "color.h"
-#include "zone.h"
-#include "telnet.h"
+#include "mud/char.h"
+#include "common/error.h"
+#include "mud/server.h"
+#include "mud/room.h"
+#include "mud/command.h"
+#include "mud/player.h"
+#include "common/streams.h"
+#include "mud/color.h"
+#include "mud/zone.h"
+#include "mud/telnet.h"
 
 void command_gm_announce (Player* gm, char** argv)
 {

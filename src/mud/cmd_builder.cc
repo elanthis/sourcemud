@@ -5,17 +5,17 @@
  * http://www.awemud.net
  */
 
-#include "char.h"
-#include "error.h"
-#include "server.h"
-#include "room.h"
-#include "zone.h"
-#include "command.h"
-#include "player.h"
-#include "npc.h"
-#include "object.h"
-#include "streams.h"
-#include "olc.h"
+#include "mud/char.h"
+#include "common/error.h"
+#include "mud/server.h"
+#include "mud/room.h"
+#include "mud/zone.h"
+#include "mud/command.h"
+#include "mud/player.h"
+#include "mud/npc.h"
+#include "mud/object.h"
+#include "common/streams.h"
+#include "mud/olc.h"
 
 using namespace OLC;
 
