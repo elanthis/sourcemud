@@ -5,9 +5,10 @@
  * http://www.awemud.net
  */
 
-#ifndef __AWEREGEX_H__
-#define __AWEREGEX_H__ 1
+#ifndef AWEMUD_COMMON_AWEREGEX_H
+#define AWEMUD_COMMON_AWEREGEX_H 1
 
+#include <sys/types.h>
 #include <regex.h>
 
 #include "gcbase.h"
