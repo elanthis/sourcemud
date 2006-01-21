@@ -2916,7 +2916,7 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
         <type>Iterator</type>
       </return>
       <iterdata>size_t index; Zone* zone;</iterdata>
-      <iternext>_iterval = zone->get_room_at(index++); return _iterval;</iternext>
+      <iternext>_iterval = zone->get_room_at(index++); return !_iterval.is_nil();</iternext>
       <code>_return = new _iterator(); _return->index= 0; _return->zone = _self;</code>
       <doc>Returns an iterator for all the rooms in the zone.</doc>
     </method>
@@ -2948,7 +2948,7 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
       <type>Iterator</type>
     </return>
     <iterdata>size_t index;</iterdata>
-    <iternext>_iterval = ZoneManager.get_zone_at(index++); return _iterval;</iternext>
+    <iternext>_iterval = ZoneManager.get_zone_at(index++); return !_iterval.is_nil();</iternext>
     <code>_return = new _iterator(); _return->index= 0;</code>
     <doc>Returns an iterator for all the zones.</doc>
   </function>

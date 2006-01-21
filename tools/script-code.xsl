@@ -358,7 +358,7 @@ namespace Scriptix { extern const TypeDef Struct_Type; }
   <xsl:template name="args-get">
     <xsl:param name="arg-offset">0</xsl:param>
     <xsl:for-each select="arg">
-      <xsl:if test="nullok">if (_argv[<xsl:value-of select="position()-1"/> + <xsl:value-of select="$arg-offset" />]) {</xsl:if>
+      <xsl:if test="nullok">if (!_argv[<xsl:value-of select="position()-1"/> + <xsl:value-of select="$arg-offset" />].is_nil()) {</xsl:if>
       <xsl:choose>
         <xsl:when test="string(type)='Integer'">
           _arg_<xsl:value-of select="name"/> = Scriptix::Number::to_int(_argv[<xsl:value-of select="position()-1"/> + <xsl:value-of select="$arg-offset" />]);
