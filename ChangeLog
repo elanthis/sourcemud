@@ -1,3 +1,8 @@
+2006-01-21 16:41:15  Sean Middleditch <elanthis@awesomeplay.com>
+
+  * Remove dependency on libtool.  We don't actually build any
+    libraries, so we don't need it.
+
 2006-01-21 16:31:50  Sean Middleditch <elanthis@awesomeplay.com>
 
   * Removed the chpass command, trying to remove the IProcessor

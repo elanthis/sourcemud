@@ -1,16 +1,9 @@
 #!/bin/sh
 
-if which glibtoolize 2>/dev/null ; then
-	LIBTOOLIZE='glibtoolize'
-else
-	LIBTOOLIZE='libtoolize'
-fi
-
 set -e
 set -x
 
 aclocal $ACLOCAL_FLAGS
 autoheader
-$LIBTOOLIZE --force --copy
 automake --add-missing --copy
 autoconf
