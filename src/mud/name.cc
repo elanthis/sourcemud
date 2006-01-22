@@ -5,7 +5,7 @@
  * http://www.awemud.net
  */
 
-#include "common/awestr.h"
+#include "common/string.h"
 #include "common/streams.h"
 #include "mud/name.h"
 #include "mud/entity.h"

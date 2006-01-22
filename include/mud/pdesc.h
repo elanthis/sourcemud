@@ -8,7 +8,7 @@
 #ifndef AWEMUD_MUD_PDESC_H
 #define AWEMUD_MUD_PDESC_H
 
-#include "common/awestr.h"
+#include "common/string.h"
 #include "mud/server.h"
 #include "common/imanager.h"
 #include "mud/idmap.h"

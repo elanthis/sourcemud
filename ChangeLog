@@ -1,3 +1,11 @@
+2006-01-22 07:02:06  Sean Middleditch <elanthis@awesomeplay.com>
+
+  * Minor documentation additions.
+  * Remove builder vision.  We so don't use that crap.
+  * Removed script-intr.xml to bindings.xml.
+  * Renamed common/awestr.h to common/string.h, common/aweregex.h
+    to common/regex.h, and scriptix/sxstring.h to scriptix/string.h.
+
 2006-01-21 16:41:15  Sean Middleditch <elanthis@awesomeplay.com>
 
   * Remove dependency on libtool.  We don't actually build any

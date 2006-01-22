@@ -9,7 +9,7 @@
 #define ROOMEXIT_H
 
 #include "mud/entity.h"
-#include "common/awestr.h"
+#include "common/string.h"
 #include "scriptix/function.h"
 
 // Direction object

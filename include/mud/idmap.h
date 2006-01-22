@@ -10,7 +10,7 @@
 
 #include <algorithm>
 
-#include "common/awestr.h"
+#include "common/string.h"
 #include "common/gcset.h"
 #include "common/gcvector.h"
 

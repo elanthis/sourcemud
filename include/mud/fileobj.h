@@ -12,7 +12,7 @@
 
 #include <fstream>
 
-#include "common/awestr.h"
+#include "common/string.h"
 #include "common/gcbase.h"
 #include "common/log.h"
 #include "scriptix/native.h"

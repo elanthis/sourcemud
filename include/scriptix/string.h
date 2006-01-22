@@ -30,7 +30,7 @@
 
 #include <string>
 
-#include "common/awestr.h"
+#include "common/string.h"
 #include "scriptix/value.h"
 #include "scriptix/type.h"
 

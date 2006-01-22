@@ -1,14 +1,3 @@
-AweMUD Installation
-===================
-
-   Please read the Administration Guide for installation instructions.
-   This document can be found in the doc/ folder in the source
-   distribution.
-
-   The rest of this document is a stock GNU autotools guide, which may
-   get into too much detail where you don't need it, and too little
-   where you do.  :)
-
 Basic Installation
 ==================
 

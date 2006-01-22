@@ -8,8 +8,8 @@
 #ifndef IMANAGER_H
 #define IMANAGER_H
 
-#include "awestr.h"
-#include "gcvector.h"
+#include "common/string.h"
+#include "common/gcvector.h"
 
 // all *Manager classes should derive from this...
 class IManager

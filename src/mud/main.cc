@@ -25,7 +25,7 @@
 #include <fstream>
 
 #include "common/error.h"
-#include "common/awestr.h"
+#include "common/string.h"
 #include "common/rand.h"
 #include "mud/network.h"
 #include "mud/player.h"

@@ -6,7 +6,7 @@
  */
 
 #include "mud/pdesc.h"
-#include "common/awestr.h"
+#include "common/string.h"
 #include "mud/settings.h"
 #include "mud/fileobj.h"
 

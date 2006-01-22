@@ -10,7 +10,7 @@
 
 #include <list>
 
-#include "common/awestr.h"
+#include "common/string.h"
 #include "mud/player.h"
 #include "mud/command.h"
 #include "mud/settings.h"

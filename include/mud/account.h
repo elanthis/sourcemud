@@ -10,7 +10,7 @@
 
 #include "common/gcbase.h"
 #include "common/gcset.h"
-#include "common/awestr.h"
+#include "common/string.h"
 #include "mud/server.h"
 #include "common/imanager.h"
 #include "mud/idmap.h"

@@ -16,9 +16,9 @@ EXTRA_DIST = awemud.in startup bootstrap $(TOOL_FILES) $(XSL_FILES)
 
 ### DATA SOURCES ###
 
-noinst_DATA += src/xml/script-intr.xml src/xml/event-list.xml src/xml/parse-intr.xml src/xml/hook-list.xml
+noinst_DATA += src/xml/bindings.xml src/xml/event-list.xml src/xml/parse-intr.xml src/xml/hook-list.xml
 
-EXTRA_DIST += src/xml/script-intr.xml src/xml/event-list.xml src/xml/parse-intr.xml src/xml/hook-list.xml
+EXTRA_DIST += src/xml/bindings.xml src/xml/event-list.xml src/xml/parse-intr.xml src/xml/hook-list.xml
 
 ### GAME SCRIPTS ###
 
@@ -82,8 +82,8 @@ pdfdir = ${datadir}/doc/@PACKAGE_TARNAME@-@VERSION@/pdf
 pdf_DATA = $(DOCBOOK_PDF)
 
 if USE_XSLT
-doc/script-ref.xml: tools/script-doc.xsl src/xml/script-intr.xml
-	$(PATH_XSLTPROC) '$(top_srcdir)/tools/script-doc.xsl' '$(top_srcdir)/src/xml/script-intr.xml' > doc/script-ref.xml
+doc/script-ref.xml: tools/script-doc.xsl src/xml/bindings.xml
+	$(PATH_XSLTPROC) '$(top_srcdir)/tools/script-doc.xsl' '$(top_srcdir)/src/xml/bindings.xml' > doc/script-ref.xml
 
 doc/event-ref.xml: tools/events-doc.xsl src/xml/event-list.xml
 	$(PATH_XSLTPROC) '$(top_srcdir)/tools/events-doc.xsl' '$(top_srcdir)/src/xml/event-list.xml' > doc/event-ref.xml
@@ -175,8 +175,6 @@ rundata_DATA =
 ### HEADERS ###
 
 noinst_HEADERS=\
-	include/common/aweregex.h \
-	include/common/awestr.h \
 	include/common/error.h \
 	include/common/gcbase.h \
 	include/common/gclist.h \
@@ -188,7 +186,9 @@ noinst_HEADERS=\
 	include/common/mail.h \
 	include/common/md5.h \
 	include/common/rand.h \
+	include/common/regex.h \
 	include/common/streams.h \
+	include/common/string.h \
 	include/common/types.h \
 	include/scriptix/array.h \
 	include/scriptix/atom.h \
@@ -199,8 +199,8 @@ noinst_HEADERS=\
 	include/scriptix/native.h \
 	include/scriptix/number.h \
 	include/scriptix/opcodes.h \
+	include/scriptix/string.h \
 	include/scriptix/struct.h \
-	include/scriptix/sxstring.h \
 	include/scriptix/system.h \
 	include/scriptix/thread.h \
 	include/scriptix/type.h \
@@ -371,8 +371,8 @@ awemud_bin_SOURCES=\
 	src/mud/zone.cc
 
 if USE_XSLT
-src/mud/bindings.cc: tools/script-code.xsl src/xml/script-intr.xml
-	$(PATH_XSLTPROC) '$(top_srcdir)/tools/script-code.xsl' '$(top_srcdir)/src/xml/script-intr.xml' > src/mud/bindings.cc
+src/mud/bindings.cc: tools/script-code.xsl src/xml/bindings.xml
+	$(PATH_XSLTPROC) '$(top_srcdir)/tools/script-code.xsl' '$(top_srcdir)/src/xml/bindings.xml' > src/mud/bindings.cc
 
 src/mud/parse_commands.cc: tools/parse-code.xsl src/xml/parse-intr.xml
 	$(PATH_XSLTPROC) '$(top_srcdir)/tools/parse-code.xsl' '$(top_srcdir)/src/xml/parse-intr.xml' > src/mud/parse_commands.cc

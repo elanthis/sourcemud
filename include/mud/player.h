@@ -15,7 +15,7 @@
 #include <vector>
 #include <algorithm>
 
-#include "common/awestr.h"
+#include "common/string.h"
 #include "mud/char.h"
 #include "mud/color.h"
 #include "mud/network.h"
@@ -107,11 +107,6 @@ class Player : public Character
 	// connected?
 	//   currently in use by someone
 	inline bool is_connected (void) const { return conn != NULL; }
-
-	// enable builder-vision?
-	inline bool has_bvision (void) const { return flags.bvision; }
-	inline void set_bvision (bool value) { flags.bvision = value; }
-	inline int handle_event (const Event& event); // deal with builder-vision
 
 	// commands
 	virtual void process_cmd (const char *);
@@ -207,7 +202,7 @@ class Player : public Character
 		TraitMap traits;
 	} pdesc;
 	struct PlayerFlags {
-		uint valid:1, bvision:1;
+		uint valid:1;
 	} flags;
 	CharStatArray base_stats;
 	ProcessorList procs;

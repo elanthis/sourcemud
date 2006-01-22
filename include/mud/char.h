@@ -10,7 +10,7 @@
 
 #include "mud/entity.h"
 #include "common/types.h"
-#include "common/awestr.h"
+#include "common/string.h"
 #include "mud/body.h"
 #include "common/streams.h"
 

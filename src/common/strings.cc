@@ -25,7 +25,7 @@
 #include <vector>
 
 #include "common/types.h"
-#include "common/awestr.h"
+#include "common/string.h"
 #include "common/error.h"
 #include "common/log.h"
 

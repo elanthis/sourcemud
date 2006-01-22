@@ -8,7 +8,7 @@
 #ifndef AWEMUD_MUD_BODY_H
 #define AWEMUD_MUD_BODY_H
 
-#include "common/awestr.h"
+#include "common/string.h"
 #include "common/gcbase.h"
 #include "common/gcvector.h"
 #include "mud/fileobj.h"

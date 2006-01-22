@@ -13,7 +13,7 @@
 
 #include "mud/entity.h"
 #include "common/error.h"
-#include "common/awestr.h"
+#include "common/string.h"
 #include "mud/server.h"
 #include "mud/parse.h"
 #include "common/streams.h"

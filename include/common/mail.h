@@ -15,7 +15,7 @@
 #ifdef HAVE_SENDMAIL
 
 #include <vector>
-#include "awestr.h"
+#include "common/string.h"
 
 class MailMessage : public GC {
 	private:

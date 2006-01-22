@@ -12,7 +12,7 @@
 
 #include "mud/entity.h"
 #include "mud/object.h"
-#include "common/awestr.h"
+#include "common/string.h"
 #include "common/error.h"
 #include "mud/char.h"
 #include "mud/room.h"

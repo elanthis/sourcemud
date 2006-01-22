@@ -10,7 +10,7 @@
 #include <stdio.h>
 
 #include "mud/entity.h"
-#include "common/awestr.h"
+#include "common/string.h"
 #include "mud/server.h"
 #include "mud/room.h"
 #include "mud/eventids.h"

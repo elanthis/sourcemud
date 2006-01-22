@@ -16,7 +16,7 @@
 #include "common/gcbase.h"
 #include "common/types.h"
 #include "common/error.h"
-#include "common/awestr.h"
+#include "common/string.h"
 #include "common/imanager.h"
 #include "common/gcset.h"
 #include "mud/uniqid.h"

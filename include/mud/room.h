@@ -9,7 +9,7 @@
 #define AWEMUD_MUD_ROOM_H
 
 #include "mud/elist.h"
-#include "common/awestr.h"
+#include "common/string.h"
 #include "mud/exit.h"
 
 class Object;
@@ -80,7 +80,6 @@ class Room : public Entity
 
 	// output
 	void put (const char* text, size_t len, GCType::vector<class Character*>* ignore = NULL);
-	void builder (StringArg text);
 
 	// get entities
 	class Character* find_character (const char *name, uint c = 1, uint *matches = NULL);

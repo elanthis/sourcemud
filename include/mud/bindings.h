@@ -17,7 +17,7 @@
 #include "scriptix/system.h"
 #include "common/gcbase.h"
 #include "common/gcmap.h"
-#include "common/awestr.h"
+#include "common/string.h"
 #include "common/imanager.h"
 
 // initialize bindings

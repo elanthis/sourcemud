@@ -34,7 +34,7 @@
 #include "config.h"
 #endif
 
-#include "common/awestr.h"
+#include "common/string.h"
 
 namespace Scriptix {
 

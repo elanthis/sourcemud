@@ -14,7 +14,7 @@
 #include "mud/body.h"
 #include "mud/object.h"
 #include "common/error.h"
-#include "common/awestr.h"
+#include "common/string.h"
 #include "mud/char.h"
 #include "mud/server.h"
 #include "mud/room.h"

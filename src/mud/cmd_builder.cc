@@ -233,22 +233,3 @@ void command_exitlist (Player *builder, char** argv)
 
 	room->show_exits (*builder);
 }
-
-void command_bvision (Player* builder, char** argv)
-{
-	// no arg
-	if (argv[0] == NULL) {
-		*builder << "Builder vision is currently " CADMIN << (builder->has_bvision() ? "on" : "off") << CNORMAL ".\n";
-	// arg is on
-	} else if (str_eq(argv[0], "on")) {
-		builder->set_bvision(true);
-		*builder << "Builder vision turned on.\n";
-	// arg is off
-	} else if (str_eq(argv[0], "off")) {
-		builder->set_bvision(false);
-		*builder << "Builder vision turned off.\n";
-	// eh?
-	} else {
-		*builder << "You must specify 'on' or 'off'.\n";
-	}
-}

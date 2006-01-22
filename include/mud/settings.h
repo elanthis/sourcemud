@@ -8,7 +8,7 @@
 #ifndef SETTINGS_H
 #define SETTINGS_H
 
-#include "common/awestr.h"
+#include "common/string.h"
 #include "mud/server.h"
 #include "common/imanager.h"
 

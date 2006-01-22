@@ -11,8 +11,8 @@
 #include <sys/types.h>
 #include <regex.h>
 
-#include "gcbase.h"
-#include "awestr.h"
+#include "common/gcbase.h"
+#include "common/string.h"
 
 class RegEx : public GCType::CleanupNonVirtual {
 	public:

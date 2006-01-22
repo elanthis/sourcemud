@@ -8,7 +8,7 @@
 #ifndef AWEMUD_MUD_EFACTORY_H
 #define AWEMUD_MUD_EFACTORY_H
 
-#include "common/awestr.h"
+#include "common/string.h"
 #include "mud/server.h"
 #include "common/imanager.h"
 #include "common/gcmap.h"

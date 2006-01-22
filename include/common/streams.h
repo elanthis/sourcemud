@@ -8,8 +8,8 @@
 #ifndef AWEMUD_STREAMS_H
 #define AWEMUD_STREAMS_H
 
-#include "gcbase.h"
-#include "awestr.h"
+#include "common/gcbase.h"
+#include "common/string.h"
 
 // pre-defines
 class Character;

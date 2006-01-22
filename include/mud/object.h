@@ -9,7 +9,7 @@
 #define OBJECT_H
 
 #include "mud/entity.h"
-#include "common/awestr.h"
+#include "common/string.h"
 #include "common/error.h"
 #include "mud/body.h"
 #include "mud/elist.h"

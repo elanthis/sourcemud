@@ -9,7 +9,7 @@
 #define SKILL_H
 
 #include "common/types.h"
-#include "common/awestr.h"
+#include "common/string.h"
 #include "mud/server.h"
 #include "common/imanager.h"
 #include "common/gcbase.h"

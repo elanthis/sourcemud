@@ -8,7 +8,7 @@
 #ifndef AWEMUD_MUD_SOCIAL_H
 #define AWEMUD_MUD_SOCIAL_H
 
-#include "common/awestr.h"
+#include "common/string.h"
 #include "mud/fileobj.h"
 #include "common/types.h"
 #include "mud/server.h"

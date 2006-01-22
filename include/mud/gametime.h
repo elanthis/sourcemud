@@ -9,7 +9,7 @@
 #define AWEMUD_MUD_TIME_H
 
 #include "common/types.h"
-#include "common/awestr.h"
+#include "common/string.h"
 #include "mud/fileobj.h"
 #include "mud/server.h"
 #include "common/imanager.h"

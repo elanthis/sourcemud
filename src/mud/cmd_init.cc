@@ -481,13 +481,6 @@ SCommandManager::initialize (void)
 			Player)
 		FORMAT(80, "exitlist :0%?")
 	END_COMM
-	COMMAND("bvision",
-			"bvision [on|off]\n",
-			bvision,
-			ACCESS_BUILDER,
-			Player)
-		FORMAT(80, "bvision :0%?")
-	END_COMM
 
 	// GM commands
 	COMMAND("gm teleport room",

@@ -33,7 +33,7 @@
 #define ZMP_H 1
 
 #include "common/gcvector.h"
-#include "common/awestr.h"
+#include "common/string.h"
 #include "common/types.h"
 #include "mud/telnet.h"
 #include "common/imanager.h"

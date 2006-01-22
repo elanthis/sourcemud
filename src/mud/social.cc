@@ -7,7 +7,7 @@
 
 #include <list>
 
-#include "common/awestr.h"
+#include "common/string.h"
 #include "mud/social.h"
 #include "mud/settings.h"
 #include "common/log.h"

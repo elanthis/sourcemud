@@ -26,7 +26,7 @@
  */
 
 #include "scriptix/system.h"
-#include "scriptix/sxstring.h"
+#include "scriptix/string.h"
 #include "scriptix/number.h"
 #include "scriptix/vimpl.h"
 

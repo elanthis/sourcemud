@@ -8,7 +8,7 @@
 #ifndef AWEMUD_MUD_CONTAINER_H
 #define AWEMUD_MUD_CONTAINER_H
 
-#include "common/awestr.h"
+#include "common/string.h"
 
 // Container type object
 class ContainerType {

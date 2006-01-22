@@ -28,7 +28,7 @@
 #include <iostream>
 #include <ctype.h>
 
-#include "scriptix/sxstring.h"
+#include "scriptix/string.h"
 #include "scriptix/system.h"
 #include "scriptix/number.h"
 #include "scriptix/array.h"

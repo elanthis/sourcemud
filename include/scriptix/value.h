@@ -29,7 +29,7 @@
 #define SCRIPTIX_VALUE_H
 
 #include "common/gcbase.h"
-#include "common/awestr.h"
+#include "common/string.h"
 
 namespace Scriptix {
 

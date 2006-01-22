@@ -15,7 +15,7 @@
 #include <algorithm>
 
 #include "mud/room.h"
-#include "common/awestr.h"
+#include "common/string.h"
 #include "common/error.h"
 #include "mud/color.h"
 #include "mud/server.h"
@@ -196,18 +196,6 @@ Room::new_exit (void)
 	exit->activate();
 	exits.add(exit);
 	return exit;
-}
-
-void
-Room::builder (StringArg text)
-{
-	Player* builder;
-	for (EList<Character>::iterator i = chars.begin(); i != chars.end(); ++i) {
-		builder = PLAYER((*i));
-		// check builder status
-		if (builder && builder->has_bvision())
-			*builder << CADMIN "Builder Vision: " CNORMAL << text << "\n";
-	}
 }
 
 // coins

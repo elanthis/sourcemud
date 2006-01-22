@@ -9,7 +9,7 @@
 #define AWEMUD_MUD_CAFFECT_H
 
 #include "common/gcbase.h"
-#include "common/awestr.h"
+#include "common/string.h"
 #include "common/gcvector.h"
 #include "mud/char.h"
 

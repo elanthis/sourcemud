@@ -12,7 +12,7 @@
 #include <ctype.h>
 
 #include "mud/room.h"
-#include "common/awestr.h"
+#include "common/string.h"
 #include "common/error.h"
 #include "mud/color.h"
 #include "mud/server.h"

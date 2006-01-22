@@ -13,7 +13,7 @@
 #include <dirent.h>
 
 #include "common/gcbase.h"
-#include "common/awestr.h"
+#include "common/string.h"
 #include "mud/bindings.h"
 #include "mud/settings.h"
 #include "mud/command.h"
@@ -494,7 +494,7 @@ namespace Scriptix { extern const TypeDef Struct_Type; }
       <xsl:otherwise>
         <xsl:if test="function-available('saxon:line-number')" xmlns:saxon="http://icl.com/saxon">
     <xsl:text>
-    //#line </xsl:text><xsl:value-of select="saxon:line-number()"/> <xsl:text> "src/xml/script-intr.xml"
+    //#line </xsl:text><xsl:value-of select="saxon:line-number()"/> <xsl:text> "src/xml/bindings.xml"
     </xsl:text>
         </xsl:if>
         <xsl:if test="return/type">_return = </xsl:if>
@@ -516,7 +516,7 @@ namespace Scriptix { extern const TypeDef Struct_Type; }
       <xsl:otherwise>
         <xsl:if test="function-available('saxon:line-number')" xmlns:saxon="http://icl.com/saxon">
     <xsl:text>
-    //#line </xsl:text><xsl:value-of select="saxon:line-number()"/> <xsl:text> "src/xml/script-intr.xml"
+    //#line </xsl:text><xsl:value-of select="saxon:line-number()"/> <xsl:text> "src/xml/bindings.xml"
     </xsl:text>
         </xsl:if>
         <xsl:if test="return/type">_return = </xsl:if>_self->
@@ -533,7 +533,7 @@ namespace Scriptix { extern const TypeDef Struct_Type; }
   <xsl:template match="code">
     <xsl:if test="function-available('saxon:line-number')" xmlns:saxon="http://icl.com/saxon">
 <xsl:text>
-//#line </xsl:text><xsl:value-of select="saxon:line-number()"/> <xsl:text> "src/xml/script-intr.xml"
+//#line </xsl:text><xsl:value-of select="saxon:line-number()"/> <xsl:text> "src/xml/bindings.xml"
 </xsl:text>
     </xsl:if>
     <xsl:value-of select="."/>

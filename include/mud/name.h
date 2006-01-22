@@ -8,7 +8,7 @@
 #ifndef MUD_NAME_H
 #define MUD_NAME_H
 
-#include "common/awestr.h"
+#include "common/string.h"
 
 class EntityArticleClass {
 	public:

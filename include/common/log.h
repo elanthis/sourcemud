@@ -10,10 +10,10 @@
 
 #include <stdio.h>
 
-#include "awestr.h"
-#include "error.h"
-#include "streams.h"
-#include "imanager.h"
+#include "common/string.h"
+#include "common/error.h"
+#include "common/streams.h"
+#include "common/imanager.h"
 
 enum LogClass {
 	LOG_NOTICE,

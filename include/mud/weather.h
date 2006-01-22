@@ -10,7 +10,7 @@
 
 #include "common/gcvector.h"
 #include "mud/fileobj.h"
-#include "common/awestr.h"
+#include "common/string.h"
 #include "common/imanager.h"
 
 // description of a change in the weather, such as 'the rain starts falling more heavily'

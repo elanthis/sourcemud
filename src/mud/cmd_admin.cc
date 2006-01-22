@@ -5,7 +5,7 @@
  * http://www.awemud.net
  */
 
-#include "common/awestr.h"
+#include "common/string.h"
 #include "mud/server.h"
 #include "mud/command.h"
 #include "mud/player.h"

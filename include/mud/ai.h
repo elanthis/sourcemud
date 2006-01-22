@@ -8,7 +8,7 @@
 #ifndef AI_H
 #define AI_H
 
-#include "common/awestr.h"
+#include "common/string.h"
 #include "common/imanager.h"
 #include "common/gcbase.h"
 #include "common/gcmap.h"

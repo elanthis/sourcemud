@@ -13,7 +13,7 @@
 #include "mud/char.h"
 #include "common/error.h"
 #include "mud/server.h"
-#include "common/awestr.h"
+#include "common/string.h"
 #include "mud/body.h"
 #include "mud/room.h"
 #include "common/rand.h"

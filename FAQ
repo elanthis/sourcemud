@@ -47,42 +47,18 @@ Frequently Asked Questions
    operating systems.  For the Boehm GC, make sure you have the development
    packages installed in addition to the core library package.
 
-3. Why won't AweMUD build on Mac OS X?
-   ===================================
-
-   If you are using Mac OS X, you must install a UNIX software support system
-   such as Fink (http://fink.sourceforge.net).  If you are using Fink,
-   libtool14 and libxslt installed.  You also must perform additional
-   configuration after installing Fink to compile applications.
-   (See http://fink.sourceforge.net/faq/usage-general.php#compile-myself)
-   These instructions have a slight typo, however.  Change the line
-     AC_LOCAL="-I/sw/share/aclocal"
-   to
-     AC_LOCAL="-I /sw/share/aclocal"
-   That added space after the -I is required.  If you modify the configure.ac
-   or other build files, you'll have to re-run the ./bootstrap script,
-   otherwise the aclocal script may fail.
-
-4. Why won't AweMUD build on Windows?
-   ==================================
-
-   Windows (including Cygwin) is not a supported platform of AweMUD.
-
-   Patches to get AweMUD to compile or run on Windows/Cygwin are quite
-   welcome, however.
-
-5. AweMUD won't compile with GCC 2.9x!?
+3. AweMUD won't compile with GCC 2.9x!?
    ====================================
 
    AweMUD only supports GCC versions 3.3 and higher.
 
-6. How come AweMUD doesn't work after 'make install'?
+4. How come AweMUD doesn't work after 'make install'?
    ==================================================
 
    Make sure that the settings in the installed awemud.conf file are
    correct for your system.
 
-7. How can I help?
+5. How can I help?
    ===============
 
    AweMUD is in a constant state of development, and could its developers

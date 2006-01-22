@@ -16,7 +16,7 @@
 
 #include "mud/char.h"
 #include "mud/player.h"
-#include "common/awestr.h"
+#include "common/string.h"
 #include "mud/body.h"
 #include "mud/settings.h"
 #include "mud/room.h"
@@ -130,7 +130,6 @@ Player::Player (class Account* s_account, StringArg s_id) : Character (AweMUD_Pl
 	conn = NULL;
 
 	flags.valid = false;
-	flags.bvision = false;
 
 	pdesc.height = 68;
 
@@ -857,30 +856,6 @@ Player::clear_scr (void)
 {
 	if (get_telnet())
 		get_telnet()->clear_scr();
-}
-
-// event logging
-int
-Player::handle_event (const Event& event)
-{
-	// only if we have builder vision
-	if (has_bvision()) {
-		*this << CADMIN "Event[" << event.get_name() <<
-			"] R:" << (event.get_room() ? event.get_room()->get_id() : "n/a");
-		if (event.get_actor())
-			*this << "A: " << StreamName(event.get_actor());
-		else
-			*this << "A: n/a";
-		*this << " D1:" << (event.get_data(0).get() ? event.get_data(0).get()->get_type()->get_name().name() : "n/a") <<
-			" D2:" << (event.get_data(1).get() ? event.get_data(1).get()->get_type()->get_name().name() : "n/a") <<
-			" D3:" << (event.get_data(2).get() ? event.get_data(2).get()->get_type()->get_name().name() : "n/a") <<
-			" D4:" << (event.get_data(3).get() ? event.get_data(3).get()->get_type()->get_name().name() : "n/a") <<
-			" D5:" << (event.get_data(4).get() ? event.get_data(4).get()->get_type()->get_name().name() : "n/a") <<
-			CNORMAL "\n";
-	}
-
-	// propogate
-	return Character::handle_event(event);
 }
 
 // show player description
