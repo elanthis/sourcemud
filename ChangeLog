@@ -1,3 +1,13 @@
+2006-01-23 17:36:03  Sean Middleditch <elanthis@awesomeplay.com>
+
+  * Remove the .in data files.
+  * Make System::get_oparg return intptr_t, not int, so we work
+    on 64-bit systems properly.
+  * Change the String operator[] definition a bit so that we work
+    on more G++ versions.
+  * Fix fileobj.cc in read_token to use ints rather than chars,
+    so we don't crash on OpenPOWER.
+
 2006-01-22 07:02:06  Sean Middleditch <elanthis@awesomeplay.com>
 
   * Minor documentation additions.

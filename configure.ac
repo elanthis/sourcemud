@@ -1,9 +1,9 @@
 # AweMUD NG
 # Configuration script
 BASE_VERSION=0.24
-VERSION=0.24.20060122
+VERSION=0.24.20060123
 
-AC_INIT([AweMUD], 0.24.20060122, [http://bugs.awemud.net/submit.php])
+AC_INIT([AweMUD], 0.24.20060123, [http://bugs.awemud.net/submit.php])
 AC_CONFIG_SRCDIR(src/mud/main.cc)
 AC_CONFIG_AUX_DIR(.)
 AM_INIT_AUTOMAKE([1.8])
@@ -146,10 +146,6 @@ AC_SUBST(LIBS)
 AC_OUTPUT([
 Makefile
 awemud
-data/admin.ply
-data/admin.acct
-data/time
-data/weather
 tools/replace.sh
 ])
 

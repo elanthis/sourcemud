@@ -77,7 +77,7 @@ File::Reader::Token
 File::Reader::read_token (String& outstr)
 {
 	StringBuffer data;
-	char test;
+	int test;
 
 	// loop until we actually have a token
 	do {
@@ -207,7 +207,7 @@ File::Reader::read_token (String& outstr)
 	// number
 	} else if (isdigit(test) || test == '-') {
 		// read in name
-		data << test;
+		data << (char)test;
 		while (in && isdigit(in.peek()))
 			data << (char)in.get();
 
@@ -217,7 +217,7 @@ File::Reader::read_token (String& outstr)
 	// name
 	} else if (isalpha(test)) {
 		// read in name
-		data << test;
+		data << (char)test;
 		while (in) {
 			test = in.peek();
 			if (!VALID_NAME_CHAR(test))
@@ -248,7 +248,7 @@ File::Reader::read_token (String& outstr)
 	}
 
 	// errror
-	data << test;
+	data << (char)test;
 	while (in && !isspace(in.peek()))
 		data << (char)in.get();
 

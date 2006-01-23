@@ -446,7 +446,7 @@ namespace {
 		char operator ()(char c) {
 			char* r = strchr(from.c_str(), c);
 			if (r != NULL)
-				return to[from.c_str() - r];
+				return to[(int)(from.c_str() - r)];
 			return c;
 		}
 	};

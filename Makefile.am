@@ -130,14 +130,12 @@ CLEANFILES += awemud.conf
 
 ### DATA FILES ###
 
-PLAYERS_IN = data/admin.ply.in
 PLAYERS = data/admin.ply
 PLAYERINFO = data/badnames
 
-ACCOUNTS_IN = data/admin.acct.in
 ACCOUNTS = data/admin.acct
 
-WORLD_IN = data/time.in data/weather.in
+WORLD_IN = data/time data/weather
 WORLD = data/time data/weather
 ZONES = data/example.zone
 

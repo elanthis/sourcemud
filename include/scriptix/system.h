@@ -102,7 +102,7 @@ class SScriptManager : public IManager {
 	inline Value get_value (void) { return data_stack.back(); }
 
 	// Fetch item from frame stack for op atrgs; "eats" arg
-	inline int get_oparg (void) { return get_frame().func->nodes[get_frame().op_ptr++]; }
+	inline intptr_t get_oparg (void) { return get_frame().func->nodes[get_frame().op_ptr++]; }
 
 	// Manipulate data stack - INLINE for speed
 	inline int

@@ -41,7 +41,7 @@ class String : public BaseString, public GC
 	// auto convert to c string
 	inline operator const char * (void) const { return c_str(); }
 
-	// use BaseString indexers
+	inline const char operator[] (size_t index) const { return BaseString::operator[](index); }
 	inline const char operator[] (int index) const { return BaseString::operator[](index); }
 };
 
