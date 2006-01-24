@@ -54,6 +54,7 @@ namespace {
 		SETTING_STRING(scripts_path, 0, NULL, "script_dir", "scripts")
 		SETTING_STRING(world_path, 0, NULL, "world_dir", "data")
 		SETTING_STRING(misc_path, 0, NULL, "misc_dir", "data")
+		SETTING_STRING(db_path, 'D', "db", "db", "data/awemud.db")
 		SETTING_STRING(abuse_email, 0, NULL, "abuse_mail", "awemud@localhost")
 		SETTING_STRING(bugs_email, 0, NULL, "bug_mail", "awemud@localhost")
 		SETTING_STRING(admin_email, 0, NULL, "admin_mail", "awemud@localhost")

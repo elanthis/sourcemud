@@ -14,7 +14,7 @@ noinst_DATA = $(XSL_FILES)
 
 EXTRA_DIST = awemud.in startup bootstrap $(TOOL_FILES) $(XSL_FILES)
 
-### DATA SOURCES ###
+### XML SOURCES ###
 
 noinst_DATA += src/xml/bindings.xml src/xml/event-list.xml src/xml/parse-intr.xml src/xml/hook-list.xml
 
@@ -130,6 +130,9 @@ CLEANFILES += awemud.conf
 
 ### DATA FILES ###
 
+DB = data/awemud.db
+SQL = data/awemud.sql
+
 PLAYERS = data/admin.ply
 PLAYERINFO = data/badnames
 
@@ -144,7 +147,7 @@ GAMEDATA = data/messages data/races data/socials data/calendar data/skills data/
 TEMPLATES = data/animals.npcs data/undead.npcs data/armor.objs data/misc.objs data/weapons.objs data/gems.objs 
 DATAFILES = $(WORLD) $(HELP) $(GAMEDATA) $(TEMPLATES)
 
-EXTRA_DIST += $(DATAFILES) $(PLAYERS_IN) $(ACCOUNTS_IN) $(WORLD_IN) $(ZONES) $(PLAYERINFO)
+EXTRA_DIST += $(DATAFILES) $(PLAYERS_IN) $(ACCOUNTS_IN) $(WORLD_IN) $(ZONES) $(PLAYERINFO) $(SQL)
 
 worlddir=${localstatedir}/lib/@PACKAGE_TARNAME@/world
 world_DATA = $(WORLD) $(ZONES)
@@ -164,16 +167,23 @@ blueprint_DATA = $(TEMPLATES)
 gamedatadir=${localstatedir}/lib/@PACKAGE_TARNAME@/data
 gamedata_DATA = $(GAMEDATA)
 
+dbdir=${localstatedir}/lib/@PACKAGE_TARNAME@/data
+db_DATA = $(DB)
+
 logdatadir=${localstatedir}/log
 logdata_DATA =
 
 rundatadir=${localstatedir}/run
 rundata_DATA =
 
+data/awemud.db:
+	cat $(SQL) | $(PATH_SQLITE3) data/awemud.db
+
 ### HEADERS ###
 
 noinst_HEADERS=\
 	include/common/error.h \
+	include/common/db.h \
 	include/common/gcbase.h \
 	include/common/gclist.h \
 	include/common/gcmap.h \
@@ -269,6 +279,7 @@ INCLUDES=-I@top_srcdir@/include
 
 COMMON_SOURCES=\
 	src/common/error.cc \
+	src/common/db.cc \
 	src/common/gc.cc \
 	src/common/imanager.cc \
 	src/common/md5.cc \

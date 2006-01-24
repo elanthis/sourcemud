@@ -42,6 +42,7 @@ class SSettingsManager : public IManager
 	SETTING_STRING(player_path)
 	SETTING_STRING(help_path)
 	SETTING_STRING(scripts_path)
+	SETTING_STRING(db_path)
 	SETTING_STRING(misc_path)
 	SETTING_STRING(abuse_email)
 	SETTING_STRING(bugs_email)

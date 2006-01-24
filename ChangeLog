@@ -1,3 +1,8 @@
+2006-01-24 04:09:05  Sean Middleditch <elanthis@awesomeplay.com>
+
+  * Add beginning of database backend.
+  * Depend on sqlite3.
+
 2006-01-23 17:36:03  Sean Middleditch <elanthis@awesomeplay.com>
 
   * Remove the .in data files.
