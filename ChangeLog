@@ -1,3 +1,8 @@
+2006-01-24 21:58:53  Sean Middleditch <elanthis@awesomeplay.com>
+
+  * Fix the alignment problems with the telnet NAWS code so
+    sparc works.
+
 2006-01-24 04:55:11  Sean Middleditch <elanthis@awesomeplay.com>
 
   * More of the db backend is in place.

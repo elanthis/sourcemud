@@ -992,9 +992,14 @@ TelnetHandler::process_sb (void)
 			break;
 		// resize of telnet window
 		case TELOPT_NAWS:
-			width = ntohs(*(uint16*)&data[1]);
-			height = ntohs(*(uint16*)&data[3]);
+		{
+			uint16 new_width, new_height;
+			memcpy(&new_width, &data[1], 2);
+			memcpy(&new_height, &data[3], 2);
+			width = ntohs(new_width);
+			height = ntohs(new_height);
 			break;
+		}
 		// handle terminal type
 		case TELOPT_TTYPE:
 			// proper input?
