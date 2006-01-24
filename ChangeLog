@@ -1,3 +1,12 @@
+2006-01-24 04:55:11  Sean Middleditch <elanthis@awesomeplay.com>
+
+  * More of the db backend is in place.
+  * Added a data file which will eventually store the example
+    game world.  This will be the only file in git and shipped
+    with the tarball.  The actual .db file will be generated from
+    this SQL file only if the .db file doesn't already exist.
+    This way upgrades won't clobber your work.
+
 2006-01-24 04:09:05  Sean Middleditch <elanthis@awesomeplay.com>
 
   * Add beginning of database backend.

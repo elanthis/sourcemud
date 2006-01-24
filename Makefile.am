@@ -131,7 +131,7 @@ CLEANFILES += awemud.conf
 ### DATA FILES ###
 
 DB = data/awemud.db
-SQL = data/awemud.sql
+SQL = data/awemud.sql data/example.sql
 
 PLAYERS = data/admin.ply
 PLAYERINFO = data/badnames

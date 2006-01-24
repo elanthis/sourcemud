@@ -22,10 +22,14 @@ class DBEntry {
 	String get_property (StringArg name) const;
 	void set_property (StringArg name, StringArg value);
 
+	void clear ();
+
 	private:
 	uint32 id;
 	String klass;
 	GCType::map<String,String> properties;
+
+	friend class SDBManager;
 };
 
 class SDBManager : public IManager
