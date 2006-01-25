@@ -9,18 +9,18 @@
 #define AWEMUD_MUD_EFACTORY_H
 
 #include "common/string.h"
-#include "mud/server.h"
 #include "common/imanager.h"
 #include "common/gcmap.h"
+#include "common/db.h"
 
 class Entity;
 
+// Creates an entity from a DBEntry
 class IEntityFactory
 {
 	public:
 	virtual ~IEntityFactory () {}
-	virtual String get_name () = 0;
-	virtual Entity* create () = 0;
+	virtual Entity* create (const DBEntry& data) = 0;
 };
 
 class SEntityFactoryManager : public IManager
@@ -29,9 +29,10 @@ class SEntityFactoryManager : public IManager
 	int initialize ();
 	void shutdown ();
 
-	void add_factory (IEntityFactory*);
+	void add_factory (StringArg klass, IEntityFactory*);
 
-	Entity* create (StringArg name);
+	Entity* load (DBID id); // load the given ID
+	Entity* load (DBID id, StringArg klass); // load the given ID if the class matches
 
 	private:
 	typedef GCType::map<String, IEntityFactory*> FactoryList;

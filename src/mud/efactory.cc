@@ -22,19 +22,51 @@ SEntityFactoryManager::shutdown (void)
 }
 
 void
-SEntityFactoryManager::add_factory (IEntityFactory* factory)
+SEntityFactoryManager::add_factory (StringArg klass, IEntityFactory* factory)
 {
+	assert(!klass.empty());
 	assert(factory != NULL);
 
-	factories[factory->get_name()] = factory;
+	factories.insert(std::pair<String, IEntityFactory*>(klass, factory));
 }
 
 Entity*
-SEntityFactoryManager::create (StringArg name)
+SEntityFactoryManager::load (DBID id)
 {
-	FactoryList::iterator i = factories.find(name);
-	if (i != factories.end())
-		return i->second->create();
-	else
+	DBEntry entry;
+	GCType::map<String, IEntityFactory*>::iterator factory;
+
+	if (DBManager.get_entry(id, entry) != 0)
 		return NULL;
+
+	factory = factories.find(entry.get_class());
+	if (factory == factories.end()) {
+		Log::Error << "No entity factory found for class '" << entry.get_class() << "'";
+		return NULL;
+	}
+
+	return factory->second->create(entry);
+}
+
+Entity*
+SEntityFactoryManager::load (DBID id, StringArg klass)
+{
+	DBEntry entry;
+	GCType::map<String, IEntityFactory*>::iterator factory;
+
+	if (DBManager.get_entry(id, entry) != 0)
+		return NULL;
+
+	if (entry.get_class() != klass) {
+		Log::Warning << "Entity " << entry.get_id() << " class '" << entry.get_class() << "' does not match expected class '" << klass << "'";
+		return NULL;
+	}
+
+	factory = factories.find(entry.get_class());
+	if (factory == factories.end()) {
+		Log::Error << "No entity factory found for class '" << entry.get_class() << "'";
+		return NULL;
+	}
+
+	return factory->second->create(entry);
 }

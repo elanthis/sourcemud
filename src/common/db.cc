@@ -52,6 +52,30 @@ DBEntry::set_property (StringArg name, StringArg value)
 	properties.insert(std::pair<String,String>(name,value));
 }
 
+bool
+DBEntry::get_property_bool (StringArg name) const
+{
+	return get_property(name) == "true";
+}
+
+int32
+DBEntry::get_property_int32 (StringArg name) const
+{
+	return tolong(get_property(name));
+}
+
+void
+DBEntry::set_property_bool (StringArg name, bool value)
+{
+	set_property(name, value ? "true" : "false");
+}
+
+void
+DBEntry::set_property_int32 (StringArg name, int32 value)
+{
+	set_property(name, tostr(value));
+}
+
 void
 DBEntry::clear ()
 {
@@ -114,12 +138,6 @@ SDBManager::initialize ()
 		return 1;
 	}
 
-	DBEntry db;
-	db.id = 3;
-	db.klass = "test";
-	db.set_property("name", "test");
-	put_entry(db);
-
 	return 0;
 }
 
@@ -145,7 +163,7 @@ SDBManager::shutdown ()
 }
 
 int
-SDBManager::get_entry (uint32 id, DBEntry& out)
+SDBManager::get_entry (DBID id, DBEntry& out)
 {
 	out.clear();
 
@@ -168,18 +186,22 @@ SDBManager::get_entry (uint32 id, DBEntry& out)
 int
 SDBManager::put_entry (const DBEntry& in)
 {
+	// begin transaction
 	sqlite3_step(db->begin);
 	sqlite3_reset(db->begin);
 
+	// (re)create the object
 	sqlite3_bind_int(db->create_object, 1, in.get_id());
 	sqlite3_bind_text(db->create_object, 2, in.get_class(), -1, SQLITE_TRANSIENT);
 	sqlite3_step(db->create_object);
 	sqlite3_reset(db->create_object);
 
+	// clear any existing properties
 	sqlite3_bind_int(db->clear_object_properties, 1, in.get_id());
 	sqlite3_step(db->clear_object_properties);
 	sqlite3_reset(db->clear_object_properties);
 
+	// set the properties
 	sqlite3_bind_int(db->put_object_property, 1, in.get_id());
 	for (GCType::map<String,String>::const_iterator i = in.properties.begin(); i != in.properties.end(); ++i) {
 		sqlite3_bind_text(db->put_object_property, 2, i->first, -1, SQLITE_TRANSIENT);
@@ -188,8 +210,21 @@ SDBManager::put_entry (const DBEntry& in)
 		sqlite3_reset(db->put_object_property);
 	}
 	
+	// commit changes
 	sqlite3_step(db->commit);
 	sqlite3_reset(db->commit);
 
 	return 0;
+}
+
+DBID
+SDBManager::new_entry (StringArg klass)
+{
+	// create the object
+	sqlite3_bind_null(db->create_object, 1);
+	sqlite3_bind_text(db->create_object, 2, klass, -1, SQLITE_TRANSIENT);
+	sqlite3_step(db->create_object);
+	sqlite3_reset(db->create_object);
+
+	return sqlite3_last_insert_rowid(db->db);
 }

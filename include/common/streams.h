@@ -205,6 +205,13 @@ const StreamControl& operator << (const StreamControl& stream, unsigned long ui)
 	return stream.stream_put(buf);
 }
 inline
+const StreamControl& operator << (const StreamControl& stream, long long lli)
+{
+	char buf[40];
+	snprintf(buf,sizeof(buf),"%lld",lli);
+	return stream.stream_put(buf);
+}
+inline
 const StreamControl& operator << (const StreamControl& stream, int i)
 {
 	return stream << (long)i;

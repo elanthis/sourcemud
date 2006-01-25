@@ -3,6 +3,7 @@ Version 0.25
 
   * Portability updates: Linux, BSD, Solaris, Cygwin, OS X.
   * Better entity name handling.
+  * SQLite3 database backend.
 
 Version 0.24
 ============

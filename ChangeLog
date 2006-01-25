@@ -1,3 +1,8 @@
+2006-01-25 19:04:02  Sean Middleditch <elanthis@awesomeplay.com>
+
+  * More work on the DB backend.
+  * Updated entity factory code to utilize DB.
+
 2006-01-24 21:58:53  Sean Middleditch <elanthis@awesomeplay.com>
 
   * Fix the alignment problems with the telnet NAWS code so
