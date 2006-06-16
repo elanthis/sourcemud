@@ -126,6 +126,7 @@ namespace File
 		// core attributes
 		void attr (StringArg name, StringArg data);
 		void attr (StringArg name, long data);
+		void attr (StringArg name, long long data);
 		void attr (StringArg name, bool data);
 		void attr (StringArg name, const UniqueID& data);
 

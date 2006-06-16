@@ -92,7 +92,8 @@ Array::Array () : IValue(), list() { }
 
 Array::Array (size_t n_size, Value n_list[]) : IValue(), list(n_size)
 {
-	memcpy(&list[0], n_list, n_size*sizeof(Value));
+	if (n_list != NULL)
+		memcpy(&list[0], n_list, n_size*sizeof(Value));
 };
 
 const TypeInfo*

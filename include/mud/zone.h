@@ -118,6 +118,9 @@ class SZoneManager : public IManager
 	virtual void shutdown ();
 	virtual void save ();
 
+	// load the world
+	int load_world ();
+
 	// lookup entries
 	Zone* get_zone (StringArg);
 	Zone* get_zone_at (size_t index);

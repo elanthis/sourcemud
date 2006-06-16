@@ -11,7 +11,6 @@
 #include "common/string.h"
 #include "common/imanager.h"
 #include "common/gcmap.h"
-#include "common/db.h"
 
 class Entity;
 
@@ -20,7 +19,7 @@ class IEntityFactory
 {
 	public:
 	virtual ~IEntityFactory () {}
-	virtual Entity* create (const DBEntry& data) = 0;
+	virtual Entity* create () = 0;
 };
 
 class SEntityFactoryManager : public IManager
@@ -31,14 +30,26 @@ class SEntityFactoryManager : public IManager
 
 	void add_factory (StringArg klass, IEntityFactory*);
 
-	Entity* load (DBID id); // load the given ID
-	Entity* load (DBID id, StringArg klass); // load the given ID if the class matches
-
 	private:
 	typedef GCType::map<String, IEntityFactory*> FactoryList;
 	FactoryList factories;
 };
 
 extern SEntityFactoryManager EntityFactoryManager;
+
+#define BEGIN_EFACTORY(name) \
+	namespace { \
+		class Factory_ ## name : public IEntityFactory, public IManager { \
+			virtual int initialize () { \
+				require(EntityFactoryManager); \
+				EntityFactoryManager.add_factory(#name, this); \
+				return 0; \
+			} \
+			virtual void shutdown () {} \
+			virtual Entity* create () {
+#define END_EFACTORY \
+			} \
+		} factory_ ## name; \
+	}
 
 #endif

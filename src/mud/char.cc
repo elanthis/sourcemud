@@ -201,27 +201,27 @@ Character::load_node (File::Reader& reader, File::Node& node)
 		FO_OBJECT("equip.right_hand")
 			equipment.right_held = new Object();
 			if (equipment.right_held->load (reader))
-				throw "failed to load object";
+				throw "Failed to load object";
 			equipment.right_held->set_owner(this);
 		FO_OBJECT("equip.left_hand")
 			equipment.left_held = new Object();
 			if (equipment.left_held->load (reader))
-				throw "failed to load object";
+				throw "Failed to load object";
 			equipment.left_held->set_owner(this);
 		FO_OBJECT("equip.body")
 			equipment.body_worn = new Object();
 			if (equipment.body_worn->load (reader))
-				throw "failed to load object";
+				throw "Failed to load object";
 			equipment.body_worn->set_owner(this);
 		FO_OBJECT("equip.back")
 			equipment.back_worn = new Object();
 			if (equipment.back_worn->load (reader))
-				throw "failed to load object";
+				throw "Failed to load object";
 			equipment.back_worn->set_owner(this);
 		FO_OBJECT("equip.waist")
 			equipment.waist_worn = new Object();
 			if (equipment.waist_worn->load (reader))
-				throw "failed to load object";
+				throw "Failed to load object";
 			equipment.waist_worn->set_owner(this);
 	FO_NODE_END
 }

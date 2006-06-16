@@ -2,6 +2,7 @@ name = "Administrator"
 email = "awemud@localhost"
 passphrase = "$1$tNUNjzkD$F.tONxYNdR8hpYwuekqr7/"
 character = "Admin"
-access = "admin"
 access = "gm"
+access = "admin"
 access = "builder"
+# vim: set shiftwidth=2 tabstop=2 expandtab:

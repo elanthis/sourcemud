@@ -33,17 +33,17 @@ room {
   uid = $64a85bad-52d2f-c42-00000111-0a767046
   outdoors = true
   exit {
-    uid = $3a747bc9-56c23-c42-00000112-0a767046
+    uid = $1a5f43fd-2e3b0-c42-0000046c-0c2ec4b9
     dir = "east"
     target = "forest_trail_west"
   }
   exit {
-    uid = $4a5d6055-56d03-c42-00000113-0a767046
+    uid = $178f8aff-2e3b8-c42-0000046d-0c2ec4b9
     dir = "northwest"
     target = "altar"
   }
   exit {
-    uid = $48f0afee-56d65-c42-00000114-0a767046
+    uid = $1df47580-2e3c0-c42-0000046e-0c2ec4b9
     dir = "southwest"
     target = "broken_tree"
   }
@@ -68,12 +68,12 @@ room {
   uid = $19363995-56e26-c42-00000116-0a767046
   outdoors = true
   exit {
-    uid = $19af426c-56e82-c42-00000117-0a767046
+    uid = $126e60f5-2e3cb-c42-0000046f-0c2ec4b9
     dir = "south"
     target = "broken_tree"
   }
   exit {
-    uid = $54a41078-56edf-c42-00000118-0a767046
+    uid = $282fe6ac-2e3d2-c42-00000470-0c2ec4b9
     dir = "southeast"
     target = "clear_pond"
   }
@@ -122,22 +122,22 @@ room {
   uid = $21d37e09-570b9-c42-0000011d-0a767046
   outdoors = true
   exit {
-    uid = $73c8e3c7-5b959-c42-0000011e-0a767046
+    uid = $1dd93946-2e3e0-c42-00000471-0c2ec4b9
     dir = "north"
     target = "altar"
   }
   exit {
-    uid = $4f6d2597-5ba24-c42-0000011f-0a767046
+    uid = $133ec9a6-2e3e7-c42-00000472-0c2ec4b9
     dir = "south"
     target = "forest_cliff"
   }
   exit {
-    uid = $31bb6d5a-5ba89-c42-00000120-0a767046
+    uid = $3bcc8916-2e3ef-c42-00000473-0c2ec4b9
     dir = "west"
     target = "graveyard_gate"
   }
   exit {
-    uid = $23863190-5bae7-c42-00000121-0a767046
+    uid = $0a48201c-2e3f6-c42-00000474-0c2ec4b9
     dir = "northeast"
     target = "clear_pond"
   }
@@ -164,13 +164,13 @@ room {
   uid = $397d1915-5bba7-c42-00000123-0a767046
   outdoors = true
   exit {
-    uid = $34f0fc14-5bc04-c42-00000124-0a767046
+    uid = $2b064f45-2e403-c42-00000475-0c2ec4b9
     dir = "north"
     target = "broken_tree"
   }
   exit {
     name = "a cliff"
-    uid = $2f683314-5bc60-c42-00000125-0a767046
+    uid = $5d8cd4a8-2e40b-c42-00000476-0c2ec4b9
     keyword = "down"
     usage = "climb"
     detail = "down"
@@ -180,7 +180,7 @@ room {
   exit {
     name = "a large tree"
     desc = "It looks as if the tree is often climbed.  Perhaps it offers a good vantage point."
-    uid = $0d06fb5e-5bcbc-c42-00000126-0a767046
+    uid = $63ab0c5a-2e413-c42-00000477-0c2ec4b9
     keyword = "up"
     usage = "climb"
     detail = "up"
@@ -227,7 +227,7 @@ room {
   outdoors = true
   exit {
     name = "a cliff"
-    uid = $19309bc0-605d9-c42-0000012d-0a767046
+    uid = $33340192-2e42f-c42-00000478-0c2ec4b9
     keyword = "up"
     usage = "climb"
     detail = "up"
@@ -236,7 +236,7 @@ room {
   exit {
     name = "a cave"
     desc = "A narrow cave leads into the cliff face, twisting off towards the northeast."
-    uid = $444da696-60636-c42-0000012e-0a767046
+    uid = $02224fc9-2e437-c42-00000479-0c2ec4b9
     dir = "north"
     detail = "in"
     target = "cave_entrance"
@@ -261,7 +261,7 @@ room {
   outdoors = true
   exit {
     name = "a tree"
-    uid = $7ec2225f-60750-c42-00000131-0a767046
+    uid = $795f94d1-2e443-c42-0000047a-0c2ec4b9
     keyword = "down"
     usage = "climb"
     detail = "down"
@@ -274,14 +274,14 @@ room {
   desc = "The cave opens onto a ledge on the side of a great cliff.  Not much can be seen deeper in the cave, as it twists and turns towards the northeast.  The sound of dripping water echos from deeper in the tunnels."
   uid = $3841bb1d-64fcb-c42-00000135-0a767046
   exit {
-    uid = $6078e9c8-6509e-c42-00000136-0a767046
+    uid = $61869c04-2e44d-c42-0000047b-0c2ec4b9
     dir = "northeast"
     target = "cave_niche"
   }
   exit {
     name = "a opening"
     desc = "The cave exit here leads out onto a small ledge on the face of a cliff, towering over the valley below."
-    uid = $7561c8d3-65101-c42-00000137-0a767046
+    uid = $51910848-2e456-c42-0000047c-0c2ec4b9
     dir = "south"
     target = "cliff_ledge"
   }
@@ -292,12 +292,12 @@ room {
   desc = "The cave is very dark and damp.  You can hear the sounds of running water from the east.  The northern wall has a rectangular niche carved into it."
   uid = $422d0184-65161-c42-00000138-0a767046
   exit {
-    uid = $56d92987-651c0-c42-00000139-0a767046
+    uid = $724b65bc-2e460-c42-0000047d-0c2ec4b9
     dir = "east"
     target = "cave_waterfall"
   }
   exit {
-    uid = $69ec5917-6522a-c42-0000013a-0a767046
+    uid = $0deb1c4b-2e468-c42-0000047e-0c2ec4b9
     dir = "southwest"
     target = "cave_entrance"
   }
@@ -350,13 +350,13 @@ room {
   desc = "This section of cave is just behind a wide waterfall.  The rushing water pouring past the cave mouth is near deafening in sound, and a thick mist of cold water droplets scatter about the cave, making the cave very damp and the floor quite slick.  There is a lone scone in the middle of the cave floor, with a bright flame burning in it, seemingly unaffected by the water."
   uid = $2a6814eb-65406-c42-0000013f-0a767046
   exit {
-    uid = $013b6e6f-65464-c42-00000140-0a767046
+    uid = $0d3893dc-2e484-c42-0000047f-0c2ec4b9
     dir = "west"
     target = "cave_niche"
   }
   exit {
     name = "a glowing portal"
-    uid = $037bc702-6a718-c42-00000141-0a767046
+    uid = $314d54d0-2e48c-c42-00000480-0c2ec4b9
     dir = "north"
     detail = "through"
     hidden = true
@@ -392,7 +392,7 @@ room {
   exit {
     name = "a bridge"
     desc = "A wide bridge spanning the murky waters of a river."
-    uid = $562f1b3f-6aa51-c42-00000148-0a767046
+    uid = $3c0885a5-2e49d-c42-00000481-0c2ec4b9
     dir = "northeast"
     target = "cave_waterfall"
   }
@@ -422,17 +422,17 @@ room {
   uid = $2960d6a9-6ab10-c42-0000014a-0a767046
   outdoors = true
   exit {
-    uid = $4cc60293-6ab6f-c42-0000014b-0a767046
+    uid = $53dd61d4-2e4ab-c42-00000482-0c2ec4b9
     dir = "north"
     target = "portal"
   }
   exit {
-    uid = $7e1c0188-6fe21-c42-0000014c-0a767046
+    uid = $358be5f6-2e4b4-c42-00000483-0c2ec4b9
     dir = "east"
     target = "forest_bridge"
   }
   exit {
-    uid = $6dae7d3f-6feea-c42-0000014d-0a767046
+    uid = $32b68edc-2e4bc-c42-00000484-0c2ec4b9
     dir = "west"
     target = "clear_pond"
   }
@@ -443,14 +443,14 @@ room {
   desc = "Hidden between the majestic oaks of the forest, a small granite portal rests here, its surface a shimmering, deep blue.  The portal doesn't seem to see much use, as the ground at its feet is mostly untrampled.  The trees seem unaffected by its obvious magically nature."
   uid = $217423c6-6ff54-c42-0000014e-0a767046
   exit {
-    uid = $7bf4f8f5-6ffb3-c42-0000014f-0a767046
+    uid = $03c47636-2e4c7-c42-00000485-0c2ec4b9
     dir = "south"
     target = "forest_trail_west"
   }
   exit {
     name = "a granite portal"
     desc = "The portal is a granite frame, nestled between two tall, thick trees.  Within the stone frame, a mirror-smooth surface of rolling blue color gives off an eerie light."
-    uid = $6c709f9e-70013-c42-00000150-0a767046
+    uid = $5abd1603-2e4d0-c42-00000486-0c2ec4b9
     detail = "through"
     nolook = true
     target = "city_of_dead"
@@ -463,18 +463,18 @@ room {
   uid = $407fa54e-70073-c42-00000151-0a767046
   outdoors = true
   exit {
-    uid = $42bea051-700d2-c42-00000152-0a767046
+    uid = $58eeb977-2e4dc-c42-00000487-0c2ec4b9
     dir = "east"
     target = "forest_trail_east"
   }
   exit {
-    uid = $0d2e57fa-70130-c42-00000153-0a767046
+    uid = $6f9b9f10-2e4e5-c42-00000488-0c2ec4b9
     dir = "west"
     target = "forest_trail_west"
   }
   exit {
     name = "a hidden path"
-    uid = $78c1606b-7018e-c42-00000154-0a767046
+    uid = $7062e4aa-2e4ee-c42-00000489-0c2ec4b9
     detail = "under"
     hidden = true
     target = "forest_under_bridge"
@@ -511,14 +511,14 @@ room {
   exit {
     name = "a cave"
     desc = "The cave opening leads downwards into the earth."
-    uid = $7a10b3a1-75772-c42-00000158-0a767046
+    uid = $0322f348-2e500-c42-0000048a-0c2ec4b9
     detail = "in"
     target = "cave_waterfall"
   }
   exit {
     name = "a path"
     desc = "The path climbs back up towards the main path and the wooden bridge."
-    uid = $6c7c79e4-75859-c42-00000159-0a767046
+    uid = $09fae30d-2e509-c42-0000048b-0c2ec4b9
     detail = "up"
     target = "forest_bridge"
   }
@@ -530,12 +530,12 @@ room {
   uid = $6161bee2-758c4-c42-0000015a-0a767046
   outdoors = true
   exit {
-    uid = $72bd5b32-75925-c42-0000015b-0a767046
+    uid = $07f26fa9-2e514-c42-0000048c-0c2ec4b9
     dir = "west"
     target = "forest_bridge"
   }
   exit {
-    uid = $4a31b6c3-75984-c42-0000015c-0a767046
+    uid = $211768c8-2e51d-c42-0000048d-0c2ec4b9
     dir = "northeast"
     target = "darlet_gate_west"
   }
@@ -547,12 +547,12 @@ room {
   uid = $5742416b-759e4-c42-0000015d-0a767046
   outdoors = true
   exit {
-    uid = $1d25701e-75a44-c42-0000015e-0a767046
+    uid = $1c694402-2e529-c42-0000048e-0c2ec4b9
     dir = "east"
     target = "darlet_rosewood_west"
   }
   exit {
-    uid = $4b6d2532-75aa2-c42-0000015f-0a767046
+    uid = $30225656-2e532-c42-0000048f-0c2ec4b9
     dir = "southwest"
     target = "forest_trail_east"
   }
@@ -564,19 +564,19 @@ room {
   uid = $5abe086d-75b01-c42-00000160-0a767046
   outdoors = true
   exit {
-    uid = $010a9e1f-75b60-c42-00000161-0a767046
+    uid = $3ef0a20f-2e53e-c42-00000490-0c2ec4b9
     dir = "east"
     target = "darlet_rosewood_east_1"
   }
   exit {
-    uid = $01998fb5-75bc9-c42-00000162-0a767046
+    uid = $2fa80da8-2e546-c42-00000491-0c2ec4b9
     dir = "west"
     target = "darlet_gate_west"
   }
   exit {
     name = "a gem cutter"
     desc = "The gem cutter's door is made of a dark wood.  Its appears to be of very sturdy craftsmanship."
-    uid = $0da20284-75c28-c42-00000163-0a767046
+    uid = $6beedf6c-2e54f-c42-00000492-0c2ec4b9
     dir = "north"
     detail = "through"
     door = true
@@ -603,7 +603,7 @@ room {
   exit {
     name = "a out"
     desc = "The gem cutter's door is made of a dark wood.  Its appears to be of very sturdy craftsmanship."
-    uid = $3716e3fb-7be2c-c42-00000166-0a767046
+    uid = $4938c22b-2e55e-c42-00000493-0c2ec4b9
     dir = "south"
     detail = "through"
     door = true
@@ -644,7 +644,7 @@ room {
     uid = $74aab25b-5bd19-c42-00000127-0a767046
     tag = "forest_critter"
     position = "stand"
-    hp = 47
+    hp = 56
     equip.right_hand {
       blueprint = "claws_animal"
       uid = $7690e760-5bdb1-c42-00000128-0a767046
@@ -664,7 +664,7 @@ room {
   exit {
     name = "a door"
     desc = "The weapon smith's door is made of a dark, hard metal."
-    uid = $0f7813e3-7c011-c42-0000016b-0a767046
+    uid = $5aae5cee-2e580-c42-00000494-0c2ec4b9
     keyword = "outside"
     keyword = "street"
     dir = "north"
@@ -690,17 +690,17 @@ room {
   uid = $36600917-7c0d2-c42-0000016d-0a767046
   outdoors = true
   exit {
-    uid = $0b6d0cd9-7c139-c42-0000016e-0a767046
+    uid = $497bb414-2e590-c42-00000495-0c2ec4b9
     dir = "east"
     target = "darlet_rosewood_east_5"
   }
   exit {
-    uid = $3a96d782-809a5-c42-0000016f-0a767046
+    uid = $2ce3ce85-2e599-c42-00000496-0c2ec4b9
     dir = "south"
     target = "vine_1"
   }
   exit {
-    uid = $76dfae66-80a6d-c42-00000170-0a767046
+    uid = $0de25e80-2e5a3-c42-00000497-0c2ec4b9
     dir = "west"
     target = "darlet_rosewood_east_4"
   }
@@ -712,12 +712,12 @@ room {
   uid = $4e2bad2a-80ad8-c42-00000171-0a767046
   outdoors = true
   exit {
-    uid = $47c52f7c-80b3a-c42-00000172-0a767046
+    uid = $4b9e03dd-2e5b0-c42-00000498-0c2ec4b9
     dir = "east"
     target = "darlet_rosewood_east_2"
   }
   exit {
-    uid = $6fa10ed1-80ba7-c42-00000173-0a767046
+    uid = $26436356-2e5b9-c42-00000499-0c2ec4b9
     dir = "west"
     target = "darlet_rosewood_west"
   }
@@ -729,29 +729,29 @@ room {
   uid = $71633744-80c09-c42-00000174-0a767046
   outdoors = true
   exit {
-    uid = $4a55504a-80c6a-c42-00000175-0a767046
+    uid = $6f68fa84-2e5c6-c42-0000049a-0c2ec4b9
     dir = "north"
     hidden = true
     target = "darlet_armorer"
   }
   exit {
-    uid = $2a8f70c1-80cca-c42-00000176-0a767046
+    uid = $1d2f0c25-2e5cf-c42-0000049b-0c2ec4b9
     dir = "west"
     target = "darlet_rosewood_east_1"
   }
   exit {
-    uid = $6b73eae6-80d29-c42-00000177-0a767046
+    uid = $188ec913-2e5d9-c42-0000049c-0c2ec4b9
     dir = "northeast"
     target = "darlet_rosewood_east_3"
   }
   exit {
-    uid = $36d1ca2e-80d89-c42-00000178-0a767046
+    uid = $7d5416cf-2e5e2-c42-0000049d-0c2ec4b9
     dir = "southeast"
     target = "darlet_ashwood_1"
   }
   exit {
     name = "a door"
-    uid = $0bf12fa3-80de9-c42-00000179-0a767046
+    uid = $2a67a001-2e5eb-c42-0000049e-0c2ec4b9
     hidden = true
     target = "darlet_armorer"
   }
@@ -774,12 +774,12 @@ room {
   uid = $010380f1-85723-c42-0000017b-0a767046
   outdoors = true
   exit {
-    uid = $6333710e-8578a-c42-0000017c-0a767046
+    uid = $49dc1de3-2e5fc-c42-0000049f-0c2ec4b9
     dir = "east"
     target = "darlet_rosewood_east_4"
   }
   exit {
-    uid = $7b56b636-857ec-c42-0000017d-0a767046
+    uid = $395c9c75-2e605-c42-000004a0-0c2ec4b9
     dir = "southwest"
     target = "darlet_rosewood_east_2"
   }
@@ -791,12 +791,12 @@ room {
   uid = $4c70a623-8584e-c42-0000017e-0a767046
   outdoors = true
   exit {
-    uid = $3df1797c-858af-c42-0000017f-0a767046
+    uid = $7e4501d6-2e613-c42-000004a1-0c2ec4b9
     dir = "east"
     target = "darlet_ashwood_2"
   }
   exit {
-    uid = $7c615455-8590f-c42-00000180-0a767046
+    uid = $7f6803da-2e61c-c42-000004a2-0c2ec4b9
     dir = "northwest"
     target = "darlet_rosewood_east_2"
   }
@@ -808,12 +808,12 @@ room {
   uid = $4e0a35d9-85979-c42-00000181-0a767046
   outdoors = true
   exit {
-    uid = $4b937c00-859da-c42-00000182-0a767046
+    uid = $6c132b51-2e62a-c42-000004a3-0c2ec4b9
     dir = "east"
     target = "darlet_ashwood_vine"
   }
   exit {
-    uid = $6e581bd4-85a3b-c42-00000183-0a767046
+    uid = $0209780c-2e633-c42-000004a4-0c2ec4b9
     dir = "west"
     target = "darlet_ashwood_1"
   }
@@ -825,22 +825,22 @@ room {
   uid = $7a7ae26d-85a9c-c42-00000184-0a767046
   outdoors = true
   exit {
-    uid = $02aa5ffb-8ae61-c42-00000185-0a767046
+    uid = $5a2519dd-2e641-c42-000004a5-0c2ec4b9
     dir = "north"
     target = "vine_1"
   }
   exit {
-    uid = $367dfe91-8af28-c42-00000186-0a767046
+    uid = $4501e4c8-2e64b-c42-000004a6-0c2ec4b9
     dir = "east"
     target = "darlet_ashwood_3"
   }
   exit {
-    uid = $0bd6f4c8-8af9d-c42-00000187-0a767046
+    uid = $71a5171c-2e654-c42-000004a7-0c2ec4b9
     dir = "south"
     target = "bowmans_2"
   }
   exit {
-    uid = $63221a9f-8b000-c42-00000188-0a767046
+    uid = $4a87fe87-2e65e-c42-000004a8-0c2ec4b9
     dir = "west"
     target = "darlet_ashwood_2"
   }
@@ -851,12 +851,12 @@ room {
   desc = "A short distance southward, residential housing can be seen.  The town appears to be growing if the number of newer homes is any indication.  On the north side of the street is an older building with weathered paint, displaying a sign which reads, Tillards Barter Shop."
   uid = $4b69e3e2-8b067-c42-00000189-0a767046
   exit {
-    uid = $1b4f08ac-8b0c9-c42-0000018a-0a767046
+    uid = $4824d810-2e66c-c42-000004a9-0c2ec4b9
     dir = "east"
     target = "darlet_ashwood_4"
   }
   exit {
-    uid = $31485283-8b12b-c42-0000018b-0a767046
+    uid = $7b9ffa29-2e675-c42-000004aa-0c2ec4b9
     dir = "west"
     target = "darlet_ashwood_vine"
   }
@@ -867,12 +867,12 @@ room {
   desc = "A bend in the road takes Ashwood lane slightly northward as the lane travels easterly.  To the west the road runs long and straight towards a large intersection.  North of the street is an old, two story, wooden building.  The front porch is built up high in spots, and several doors set in the front of the structure appear like wide, gaping maws.  The building is surrounded by a wrought iron fence, and a sign near the gate reads, Rudan and Son, Warehouser."
   uid = $01c9ecfa-8b18e-c42-0000018c-0a767046
   exit {
-    uid = $26bc1585-8b1ef-c42-0000018d-0a767046
+    uid = $527a6e31-2e683-c42-000004ab-0c2ec4b9
     dir = "west"
     target = "darlet_ashwood_3"
   }
   exit {
-    uid = $6bdf2a06-8b250-c42-0000018e-0a767046
+    uid = $693c40d9-2e68d-c42-000004ac-0c2ec4b9
     dir = "northeast"
     target = "darlet_ashwood_5"
   }
@@ -884,17 +884,17 @@ room {
   uid = $78a99b60-8b2b2-c42-0000018f-0a767046
   outdoors = true
   exit {
-    uid = $74e7c2af-91056-c42-00000190-0a767046
+    uid = $18093e2b-2e69b-c42-000004ad-0c2ec4b9
     dir = "east"
     target = "darlet_rosewood_east_7"
   }
   exit {
-    uid = $33a45982-91133-c42-00000191-0a767046
+    uid = $029cc487-2e6a5-c42-000004ae-0c2ec4b9
     dir = "northwest"
     target = "darlet_rosewood_east_6"
   }
   exit {
-    uid = $684aaa31-9119a-c42-00000192-0a767046
+    uid = $282ce2e8-2e6af-c42-000004af-0c2ec4b9
     dir = "southwest"
     target = "darlet_ashwood_4"
   }
@@ -906,19 +906,19 @@ room {
   uid = $664af9f4-91203-c42-00000193-0a767046
   outdoors = true
   exit {
-    uid = $7df9a9cc-91265-c42-00000194-0a767046
+    uid = $47b14bd4-2e6bd-c42-000004b0-0c2ec4b9
     dir = "north"
     target = "darlet_square"
   }
   exit {
-    uid = $12da1af2-912c6-c42-00000195-0a767046
+    uid = $6e8ba3f3-2e6c7-c42-000004b1-0c2ec4b9
     dir = "south"
     target = "darlet_ashwood_vine"
   }
   exit {
     name = "a metal door"
     desc = "The weapon smith's door is made of a dark, hard metal."
-    uid = $51bee4da-91327-c42-00000196-0a767046
+    uid = $7165a513-2e6d1-c42-000004b2-0c2ec4b9
     keyword = "weapon smith"
     dir = "south"
     detail = "through"
@@ -933,12 +933,12 @@ room {
   uid = $34cb73fb-91389-c42-00000197-0a767046
   outdoors = true
   exit {
-    uid = $1ecb4a95-913ea-c42-00000198-0a767046
+    uid = $225fa8c2-2e6e0-c42-000004b3-0c2ec4b9
     dir = "east"
     target = "darlet_square"
   }
   exit {
-    uid = $2ff02af2-9144c-c42-00000199-0a767046
+    uid = $38075807-2e6ea-c42-000004b4-0c2ec4b9
     dir = "west"
     target = "darlet_rosewood_east_3"
   }
@@ -950,12 +950,12 @@ room {
   uid = $35cef4ec-914ad-c42-0000019a-0a767046
   outdoors = true
   exit {
-    uid = $01febba4-95d7f-c42-0000019b-0a767046
+    uid = $1e497399-2e702-c42-000004b5-0c2ec4b9
     dir = "east"
     target = "darlet_rosewood_east_6"
   }
   exit {
-    uid = $2b46e129-95e56-c42-0000019c-0a767046
+    uid = $30420742-2e70c-c42-000004b6-0c2ec4b9
     dir = "west"
     target = "darlet_square"
   }
@@ -967,12 +967,12 @@ room {
   uid = $023f9b10-95ec1-c42-0000019d-0a767046
   outdoors = true
   exit {
-    uid = $3ff03520-95f30-c42-0000019e-0a767046
+    uid = $03a55be4-2e71b-c42-000004b7-0c2ec4b9
     dir = "west"
     target = "darlet_rosewood_east_5"
   }
   exit {
-    uid = $27a8357e-95f93-c42-0000019f-0a767046
+    uid = $448cd6ef-2e725-c42-000004b8-0c2ec4b9
     dir = "southeast"
     target = "darlet_ashwood_5"
   }
@@ -984,22 +984,22 @@ room {
   uid = $5049d0e9-95ff7-c42-000001a0-0a767046
   outdoors = true
   exit {
-    uid = $0b83b120-96059-c42-000001a1-0a767046
+    uid = $1fab01c7-2e734-c42-000004b9-0c2ec4b9
     dir = "north"
     target = "clover_1"
   }
   exit {
-    uid = $16005152-960bb-c42-000001a2-0a767046
+    uid = $20d4680a-2e73e-c42-000004ba-0c2ec4b9
     dir = "east"
     target = "darlet_rosewood_east_8"
   }
   exit {
-    uid = $4ac4b356-9611c-c42-000001a3-0a767046
+    uid = $5d1ba002-2e74c-c42-000004bb-0c2ec4b9
     dir = "south"
     target = "clover_3"
   }
   exit {
-    uid = $0e2e111b-9617e-c42-000001a4-0a767046
+    uid = $1cff1896-2e756-c42-000004bc-0c2ec4b9
     dir = "west"
     target = "darlet_ashwood_5"
   }
@@ -1011,12 +1011,12 @@ room {
   uid = $4c7e4fe4-961e1-c42-000001a5-0a767046
   outdoors = true
   exit {
-    uid = $569ba81e-9c713-c42-000001a6-0a767046
+    uid = $4b3c080b-2e765-c42-000004bd-0c2ec4b9
     dir = "north"
     target = "clover_2"
   }
   exit {
-    uid = $71502bba-9c7dd-c42-000001a7-0a767046
+    uid = $26f7bde6-2e76f-c42-000004be-0c2ec4b9
     dir = "south"
     target = "darlet_rosewood_east_7"
   }
@@ -1039,17 +1039,17 @@ room {
   uid = $71eab0ca-9c8bd-c42-000001a9-0a767046
   outdoors = true
   exit {
-    uid = $22987e3e-9c921-c42-000001aa-0a767046
+    uid = $565bb50b-2e784-c42-000004bf-0c2ec4b9
     dir = "south"
     target = "clover_1"
   }
   exit {
-    uid = $19b220c0-9c984-c42-000001ab-0a767046
+    uid = $498109e1-2e78e-c42-000004c0-0c2ec4b9
     dir = "west"
     target = "bowmans_11"
   }
   exit {
-    uid = $18a6c64f-9c9e7-c42-000001ac-0a767046
+    uid = $265fc1c0-2e798-c42-000004c1-0c2ec4b9
     dir = "northeast"
     target = "bowmans_10"
   }
@@ -1060,12 +1060,12 @@ room {
   uid = $0e77a844-9ca4a-c42-000001ad-0a767046
   outdoors = true
   exit {
-    uid = $125bbc20-9caac-c42-000001ae-0a767046
+    uid = $426ee05c-2e7a8-c42-000004c2-0c2ec4b9
     dir = "north"
     target = "darlet_rosewood_east_7"
   }
   exit {
-    uid = $0d8e88ff-9cb0e-c42-000001af-0a767046
+    uid = $4b8a81ee-2e7b3-c42-000004c3-0c2ec4b9
     dir = "southwest"
     target = "clover_4"
   }
@@ -1076,12 +1076,12 @@ room {
   uid = $421c01c6-9cb70-c42-000001b0-0a767046
   outdoors = true
   exit {
-    uid = $7aa66652-a1300-c42-000001b1-0a767046
+    uid = $0084db9d-2e7c2-c42-000004c4-0c2ec4b9
     dir = "south"
     target = "clover_6"
   }
   exit {
-    uid = $73d982f3-a13cc-c42-000001b2-0a767046
+    uid = $0770c525-2e7cd-c42-000004c5-0c2ec4b9
     dir = "northeast"
     target = "clover_3"
   }
@@ -1093,17 +1093,17 @@ room {
   uid = $4015ab93-a1439-c42-000001b3-0a767046
   outdoors = true
   exit {
-    uid = $0d808144-a149e-c42-000001b4-0a767046
+    uid = $3d2f990a-2e7dd-c42-000004c6-0c2ec4b9
     dir = "north"
     target = "clover_4"
   }
   exit {
-    uid = $459867cd-a1501-c42-000001b5-0a767046
+    uid = $4b0cda25-2e7e7-c42-000004c7-0c2ec4b9
     dir = "east"
     target = "bowmans_4"
   }
   exit {
-    uid = $74e11f8e-a1565-c42-000001b6-0a767046
+    uid = $4f959d35-2e7f2-c42-000004c8-0c2ec4b9
     dir = "west"
     target = "bowmans_3"
   }
@@ -1120,12 +1120,12 @@ room {
   uid = $758892bf-a162d-c42-000001b8-0a767046
   outdoors = true
   exit {
-    uid = $2ab0147a-a1691-c42-000001b9-0a767046
+    uid = $38cf9334-2e807-c42-000004c9-0c2ec4b9
     dir = "north"
     target = "darlet_ashwood_vine"
   }
   exit {
-    uid = $2e4a877e-a170a-c42-000001ba-0a767046
+    uid = $1d874856-2e812-c42-000004ca-0c2ec4b9
     dir = "southeast"
     target = "bowmans_3"
   }
@@ -1137,12 +1137,12 @@ room {
   uid = $20cf73e8-a176f-c42-000001bb-0a767046
   outdoors = true
   exit {
-    uid = $2cefaf8a-a5f9f-c42-000001bc-0a767046
+    uid = $38d1de0e-2e822-c42-000004cb-0c2ec4b9
     dir = "east"
     target = "clover_6"
   }
   exit {
-    uid = $6e3abc9e-a607e-c42-000001bd-0a767046
+    uid = $50d8d15f-2e82c-c42-000004cc-0c2ec4b9
     dir = "northwest"
     target = "bowmans_2"
   }
@@ -1154,12 +1154,12 @@ room {
   uid = $4877a967-a60f7-c42-000001be-0a767046
   outdoors = true
   exit {
-    uid = $7d398073-a615c-c42-000001bf-0a767046
+    uid = $20240cdd-2e83d-c42-000004cd-0c2ec4b9
     dir = "west"
     target = "clover_6"
   }
   exit {
-    uid = $79be6dbe-a61c1-c42-000001c0-0a767046
+    uid = $60fec0f6-2e848-c42-000004ce-0c2ec4b9
     dir = "northeast"
     target = "bowmans_5"
   }
@@ -1171,12 +1171,12 @@ room {
   uid = $5e77fab9-a622e-c42-000001c1-0a767046
   outdoors = true
   exit {
-    uid = $47fe33c9-a62c0-c42-000001c2-0a767046
+    uid = $188a1d33-2e858-c42-000004cf-0c2ec4b9
     dir = "east"
     target = "darlet_rosewood_east_9"
   }
   exit {
-    uid = $07ec7ed9-a6323-c42-000001c3-0a767046
+    uid = $0eafb0d0-2e863-c42-000004d0-0c2ec4b9
     dir = "west"
     target = "darlet_rosewood_east_7"
   }
@@ -1188,19 +1188,19 @@ room {
   uid = $2af64a9d-a63a0-c42-000001c4-0a767046
   outdoors = true
   exit {
-    uid = $1e99dbe8-a6404-c42-000001c5-0a767046
+    uid = $5264660a-2e873-c42-000004d1-0c2ec4b9
     dir = "east"
     target = "darlet_rosewood_east_10"
   }
   exit {
-    uid = $793caa93-acbaa-c42-000001c6-0a767046
+    uid = $3ae9c5f5-2e87e-c42-000004d2-0c2ec4b9
     dir = "west"
     target = "darlet_rosewood_east_8"
   }
   exit {
     name = "a gate"
     desc = "The wrought iron gate is old and rusted in some places but over all it is in good repair.  Arched and topped with pointed tips, the gate is about a span high.  Tall enough to keep out all but the most daring of climbers.  A sign has been inlaid into the iron work which reads \"Sleep peacefully in the arms of Morphious\"."
-    uid = $42de7e64-accb6-c42-000001c7-0a767046
+    uid = $46b708d7-2e889-c42-000004d3-0c2ec4b9
     target = "cemetery_1"
   }
   object {
@@ -1221,22 +1221,22 @@ room {
   uid = $1bd528d1-acda6-c42-000001c9-0a767046
   outdoors = true
   exit {
-    uid = $5c909f24-ace0a-c42-000001ca-0a767046
+    uid = $70add9a3-2e89f-c42-000004d4-0c2ec4b9
     dir = "north"
     target = "bowmans_8"
   }
   exit {
-    uid = $292b5302-acfb5-c42-000001cb-0a767046
+    uid = $6b2bcd38-2e8aa-c42-000004d5-0c2ec4b9
     dir = "east"
     target = "darlet_rosewood_east_11"
   }
   exit {
-    uid = $2a4cd115-ad01b-c42-000001cc-0a767046
+    uid = $4a5c64bb-2e8b5-c42-000004d6-0c2ec4b9
     dir = "south"
     target = "bowmans_7"
   }
   exit {
-    uid = $6eec5b45-ad07f-c42-000001cd-0a767046
+    uid = $353ab092-2e8c1-c42-000004d7-0c2ec4b9
     dir = "west"
     target = "darlet_rosewood_east_9"
   }
@@ -1248,7 +1248,7 @@ room {
   uid = $36b9dc01-b15bf-c42-000001ce-0a767046
   outdoors = true
   exit {
-    uid = $6c68d2dc-b16c3-c42-000001cf-0a767046
+    uid = $0ad6ceff-2e8d1-c42-000004d8-0c2ec4b9
     dir = "west"
     target = "darlet_rosewood_east_10"
   }
@@ -1260,12 +1260,12 @@ room {
   uid = $6992c197-b1731-c42-000001d0-0a767046
   outdoors = true
   exit {
-    uid = $2a935ef4-b1796-c42-000001d1-0a767046
+    uid = $6b30ccc5-2e8e2-c42-000004d9-0c2ec4b9
     dir = "northeast"
     target = "bowmans_6"
   }
   exit {
-    uid = $2c7e7e6f-b17fa-c42-000001d2-0a767046
+    uid = $12565095-2e8ed-c42-000004da-0c2ec4b9
     dir = "southwest"
     target = "bowmans_4"
   }
@@ -1277,23 +1277,23 @@ room {
   uid = $771342db-b1867-c42-000001d3-0a767046
   outdoors = true
   exit {
-    uid = $702bc6c1-b18cd-c42-000001d4-0a767046
+    uid = $27d5e795-2e8ff-c42-000004db-0c2ec4b9
     dir = "northeast"
     target = "bowmans_7"
   }
   exit {
-    uid = $215f9dfd-b1931-c42-000001d5-0a767046
+    uid = $366cd4d1-2e90a-c42-000004dc-0c2ec4b9
     dir = "southwest"
     target = "bowmans_5"
   }
   exit {
     name = "a clearing"
-    uid = $235f0eb5-b1994-c42-000001d6-0a767046
+    uid = $394e0e7b-2e915-c42-000004dd-0c2ec4b9
     target = "fest_1"
   }
   exit {
     name = "a path"
-    uid = $65b45980-b19f7-c42-000001d7-0a767046
+    uid = $7e319ca1-2e920-c42-000004de-0c2ec4b9
     hidden = true
     target = "path_tower_1"
   }
@@ -1305,12 +1305,12 @@ room {
   uid = $4c0fb277-b1a5c-c42-000001d8-0a767046
   outdoors = true
   exit {
-    uid = $51a99633-b60df-c42-000001d9-0a767046
+    uid = $7feddeb2-2e932-c42-000004df-0c2ec4b9
     dir = "north"
     target = "darlet_rosewood_east_10"
   }
   exit {
-    uid = $0683cd69-b61b5-c42-000001da-0a767046
+    uid = $5fadd03b-2e93d-c42-000004e0-0c2ec4b9
     dir = "southwest"
     target = "bowmans_6"
   }
@@ -1322,12 +1322,12 @@ room {
   uid = $78ff6202-b6224-c42-000001db-0a767046
   outdoors = true
   exit {
-    uid = $3fe452d1-b6293-c42-000001dc-0a767046
+    uid = $40a07cfd-2e94f-c42-000004e1-0c2ec4b9
     dir = "south"
     target = "darlet_rosewood_east_10"
   }
   exit {
-    uid = $4efb76d0-b62f9-c42-000001dd-0a767046
+    uid = $4b7860a0-2e95a-c42-000004e2-0c2ec4b9
     dir = "northwest"
     target = "bowmans_9"
   }
@@ -1339,12 +1339,12 @@ room {
   uid = $7638e275-b635f-c42-000001de-0a767046
   outdoors = true
   exit {
-    uid = $39a2c08f-b63c4-c42-000001df-0a767046
+    uid = $6032abd8-2e96b-c42-000004e3-0c2ec4b9
     dir = "northwest"
     target = "bowmans_10"
   }
   exit {
-    uid = $2d737189-b6428-c42-000001e0-0a767046
+    uid = $48114222-2e977-c42-000004e4-0c2ec4b9
     dir = "southeast"
     target = "bowmans_8"
   }
@@ -1355,12 +1355,12 @@ room {
   uid = $3e37163f-b648d-c42-000001e1-0a767046
   outdoors = true
   exit {
-    uid = $418f3f68-b64f1-c42-000001e2-0a767046
+    uid = $08a7f9ab-2e989-c42-000004e5-0c2ec4b9
     dir = "southeast"
     target = "bowmans_9"
   }
   exit {
-    uid = $5869bc27-b6555-c42-000001e3-0a767046
+    uid = $2b3f85fd-2e994-c42-000004e6-0c2ec4b9
     dir = "southwest"
     target = "clover_2"
   }
@@ -1372,12 +1372,12 @@ room {
   uid = $5cd0f227-bac0d-c42-000001e4-0a767046
   outdoors = true
   exit {
-    uid = $3acbe9fc-bacfd-c42-000001e5-0a767046
+    uid = $17a6df58-2e9a6-c42-000004e7-0c2ec4b9
     dir = "east"
     target = "clover_2"
   }
   exit {
-    uid = $1b483a8b-bad69-c42-000001e6-0a767046
+    uid = $41778cdf-2e9b2-c42-000004e8-0c2ec4b9
     dir = "northwest"
     target = "bowmans_12"
   }
@@ -1389,12 +1389,12 @@ room {
   uid = $6d557ed9-badd1-c42-000001e7-0a767046
   outdoors = true
   exit {
-    uid = $56a112cd-bae37-c42-000001e8-0a767046
+    uid = $48c6ce53-2e9c4-c42-000004e9-0c2ec4b9
     dir = "west"
     target = "bowmans_13"
   }
   exit {
-    uid = $77d8d9af-bae9c-c42-000001e9-0a767046
+    uid = $5078bd66-2e9cf-c42-000004ea-0c2ec4b9
     dir = "southeast"
     target = "bowmans_11"
   }
@@ -1406,12 +1406,12 @@ room {
   uid = $1680d1db-baf02-c42-000001ea-0a767046
   outdoors = true
   exit {
-    uid = $00ede3e3-baf66-c42-000001eb-0a767046
+    uid = $12505e3e-2e9e1-c42-000004eb-0c2ec4b9
     dir = "north"
     target = "woodmens_way_1"
   }
   exit {
-    uid = $66c534f4-bafcb-c42-000001ec-0a767046
+    uid = $68eadb30-2e9ed-c42-000004ec-0c2ec4b9
     dir = "east"
     target = "bowmans_12"
   }
@@ -1422,12 +1422,12 @@ room {
   uid = $4d3aaddc-bb030-c42-000001ed-0a767046
   outdoors = true
   exit {
-    uid = $6d56b6bf-bb095-c42-000001ee-0a767046
+    uid = $31777e5d-2e9ff-c42-000004ed-0c2ec4b9
     dir = "north"
     target = "woodmens_way_1"
   }
   exit {
-    uid = $5057f68b-c02fd-c42-000001ef-0a767046
+    uid = $2ada7b72-2ea0b-c42-000004ee-0c2ec4b9
     dir = "east"
     target = "bowmans_13"
   }
@@ -1439,17 +1439,17 @@ room {
   uid = $77ce0cd0-c03d9-c42-000001f0-0a767046
   outdoors = true
   exit {
-    uid = $19d5352e-c0444-c42-000001f1-0a767046
+    uid = $779a8c00-2ea1d-c42-000004ef-0c2ec4b9
     dir = "south"
     target = "bowmans_13"
   }
   exit {
-    uid = $476b3967-c04ab-c42-000001f2-0a767046
+    uid = $03dbe467-2ea29-c42-000004f0-0c2ec4b9
     dir = "northwest"
     target = "woodmens_way_4"
   }
   exit {
-    uid = $67f9d391-c050f-c42-000001f3-0a767046
+    uid = $65c44167-2ea35-c42-000004f1-0c2ec4b9
     dir = "northeast"
     target = "woodmens_way_2"
   }
@@ -1461,12 +1461,12 @@ room {
   uid = $3b34d32b-c0576-c42-000001f4-0a767046
   outdoors = true
   exit {
-    uid = $6aca481c-c05db-c42-000001f5-0a767046
+    uid = $3e5194d7-2ea48-c42-000004f2-0c2ec4b9
     dir = "northwest"
     target = "woodmens_way_3"
   }
   exit {
-    uid = $4dae2d12-c0640-c42-000001f6-0a767046
+    uid = $7489be0a-2ea54-c42-000004f3-0c2ec4b9
     dir = "southwest"
     target = "woodmens_way_1"
   }
@@ -1478,12 +1478,12 @@ room {
   uid = $074485a2-c06af-c42-000001f7-0a767046
   outdoors = true
   exit {
-    uid = $3c73de50-c0716-c42-000001f8-0a767046
+    uid = $50f00e9f-2ea66-c42-000004f4-0c2ec4b9
     dir = "southeast"
     target = "woodmens_way_1"
   }
   exit {
-    uid = $5431fa7b-c077b-c42-000001f9-0a767046
+    uid = $08adf993-2ea72-c42-000004f5-0c2ec4b9
     dir = "southwest"
     target = "woodmens_way_4"
   }
@@ -1494,12 +1494,12 @@ room {
   uid = $0043e7a4-c5c64-c42-000001fa-0a767046
   outdoors = true
   exit {
-    uid = $7c583121-c5d54-c42-000001fb-0a767046
+    uid = $29c46e9c-2ea84-c42-000004f6-0c2ec4b9
     dir = "northeast"
     target = "woodmens_way_3"
   }
   exit {
-    uid = $232d714b-c5dbf-c42-000001fc-0a767046
+    uid = $5bc6dd9e-2ea91-c42-000004f7-0c2ec4b9
     dir = "southeast"
     target = "woodmens_way_1"
   }
@@ -1510,13 +1510,13 @@ room {
   uid = $767cca1a-c5e26-c42-000001fd-0a767046
   outdoors = true
   exit {
-    uid = $35faf1b1-c5e8c-c42-000001fe-0a767046
+    uid = $73dec658-2eaa3-c42-000004f8-0c2ec4b9
     dir = "southeast"
     target = "path_tower_2"
   }
   exit {
     name = "a road"
-    uid = $50a0e2d4-c5ef1-c42-000001ff-0a767046
+    uid = $3c1abf31-2eab0-c42-000004f9-0c2ec4b9
     target = "bowmans_6"
   }
 }
@@ -1525,12 +1525,12 @@ room {
   name = "a path_tower_2"
   uid = $34b3e059-c5f57-c42-00000200-0a767046
   exit {
-    uid = $778a3119-c5fbd-c42-00000201-0a767046
+    uid = $039cc534-2eac3-c42-000004fa-0c2ec4b9
     dir = "east"
     target = "path2"
   }
   exit {
-    uid = $290a9efb-c6022-c42-00000202-0a767046
+    uid = $2a4b9b29-2eacf-c42-000004fb-0c2ec4b9
     dir = "northwest"
     target = "path_tower_1"
   }
@@ -1543,7 +1543,7 @@ room {
   outdoors = true
   exit {
     name = "a road"
-    uid = $32561b15-c60f6-c42-00000204-0a767046
+    uid = $7568cdac-2eaeb-c42-000004fc-0c2ec4b9
     target = "bowmans_6"
   }
 }
@@ -1553,7 +1553,7 @@ room {
   uid = $4452d986-cb170-c42-00000205-0a767046
   exit {
     name = "a gate"
-    uid = $7eda5159-cb258-c42-00000206-0a767046
+    uid = $01ce61d5-2eafe-c42-000004fd-0c2ec4b9
     target = "darlet_rosewood_east_9"
   }
 }
@@ -1562,7 +1562,7 @@ room {
   name = "a path2"
   uid = $08f72de3-cb2ce-c42-00000207-0a767046
   exit {
-    uid = $3c2bb336-cb336-c42-00000208-0a767046
+    uid = $2a3979dc-2eb11-c42-000004fe-0c2ec4b9
     dir = "west"
     target = "path_tower_2"
   }
@@ -1575,7 +1575,7 @@ room {
   coins = 1000
   exit {
     name = "a door"
-    uid = $09e511c6-cb404-c42-0000020a-0a767046
+    uid = $55169de7-2eb24-c42-000004ff-0c2ec4b9
     dir = "south"
     target = "darlet_rosewood_east_2"
   }
@@ -1586,12 +1586,12 @@ room {
   desc = "Dark vines wind their way up an old iron gate, hanging loose from its hinges, which leads from the forest into the old graveyard.  Tombstones and mausoleums are spread haphazardly around the place, and the stench of death hangs in the air."
   uid = $22f0e82a-cb46a-c42-0000020b-0a767046
   exit {
-    uid = $6295d111-cb4cf-c42-0000020c-0a767046
+    uid = $426eded2-2eb38-c42-00000500-0c2ec4b9
     dir = "east"
     target = "broken_tree"
   }
   exit {
-    uid = $773bc885-cb534-c42-0000020d-0a767046
+    uid = $75b1da7c-2eb44-c42-00000501-0c2ec4b9
     dir = "west"
     target = "graveyard_grave"
   }
@@ -1602,17 +1602,17 @@ room {
   desc = "Tombstones dot the landscape, littered between the simple mausoleums erected in memory of local gentry.  An open grave is here, as is a shattered wooden box."
   uid = $7348deb6-cb59a-c42-0000020e-0a767046
   exit {
-    uid = $5a63dde2-cb600-c42-0000020f-0a767046
+    uid = $354949c0-2eb58-c42-00000502-0c2ec4b9
     dir = "east"
     target = "graveyard_gate"
   }
   exit {
-    uid = $1110fdb3-d0303-c42-00000210-0a767046
+    uid = $0a8020f5-2eb64-c42-00000503-0c2ec4b9
     dir = "west"
     target = "graveyard_mausoleum"
   }
   exit {
-    uid = $3ab4181d-d03dd-c42-00000211-0a767046
+    uid = $7e59d427-2eb70-c42-00000504-0c2ec4b9
     dir = "northwest"
     target = "graveyard_tree"
   }
@@ -1644,12 +1644,12 @@ room {
   desc = "Amidst the tombstones rises a large, gnarled tree.  Little else beyond the rows of granite markers and dirt is here."
   uid = $61f23e89-d0665-c42-00000217-0a767046
   exit {
-    uid = $643dd900-d06cc-c42-00000218-0a767046
+    uid = $6088cfbd-2eb91-c42-00000505-0c2ec4b9
     dir = "south"
     target = "graveyard_mausoleum"
   }
   exit {
-    uid = $53ce3e25-d0732-c42-00000219-0a767046
+    uid = $2227004d-2eb9d-c42-00000506-0c2ec4b9
     dir = "southeast"
     target = "graveyard_grave"
   }
@@ -1682,12 +1682,12 @@ room {
   desc = "The tombstones are accompanies here by a small mausoleum, more ornate than the other crumbling structures in the grave yard."
   uid = $076b4a4b-d57dd-c42-0000021b-0a767046
   exit {
-    uid = $4a4b083f-d58c8-c42-0000021c-0a767046
+    uid = $3fd16106-2ebc7-c42-00000507-0c2ec4b9
     dir = "north"
     target = "graveyard_tree"
   }
   exit {
-    uid = $1445615c-d5936-c42-0000021d-0a767046
+    uid = $294f9e11-2ebd3-c42-00000508-0c2ec4b9
     dir = "east"
     target = "graveyard_grave"
   }

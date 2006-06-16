@@ -127,6 +127,7 @@ class RoomExit : public Entity
 	// name information
 	virtual EntityName get_name (void) const;
 	bool set_name (StringArg s_name) { return name.set_name(s_name); }
+	void add_keyword (StringArg keyword);
 
 	// description information
 	virtual String get_desc (void) const { return desc; }
@@ -151,6 +152,7 @@ class RoomExit : public Entity
 
 	// get a function to call when used
 	inline const Scriptix::ScriptFunction& get_use (void) const { return on_use; }
+	void set_use (StringArg script);
 
 	// enter message
 	StringArg get_enters (void) const;
@@ -244,8 +246,7 @@ class RoomExit : public Entity
 	} flags;
 
 	// scripts
-	Scriptix::ScriptFunction on_use;
-	String on_use_source;
+	Scriptix::ScriptFunctionSource on_use;
 
 	protected:
 	~RoomExit (void) {}

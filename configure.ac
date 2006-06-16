@@ -1,9 +1,9 @@
 # AweMUD NG
 # Configuration script
 BASE_VERSION=0.24
-VERSION=0.24.20060125
+VERSION=0.24.20060616
 
-AC_INIT([AweMUD], 0.24.20060125, [http://bugs.awemud.net/submit.php])
+AC_INIT([AweMUD], 0.24.20060616, [http://bugs.awemud.net/submit.php])
 AC_CONFIG_SRCDIR(src/mud/main.cc)
 AC_CONFIG_AUX_DIR(.)
 AM_INIT_AUTOMAKE([1.8])
@@ -122,13 +122,13 @@ AC_CHECK_LIB(dl,dlopen,[LIBS="$LIBS -ldl"])
 AC_CHECK_LIB(gc,GC_malloc,,[AC_MSG_ERROR([Could not find suitable libgc])])
 
 # sqlite3
-AC_ARG_WITH(sqlite,[  --with-sqlite=<path>    Prefix of your sqlite3 library installation],[LDFLAGS="$LDFLAGS -L$withval/lib";CXXFLAGS="$CXXFLAGS -I$withval/include"])
-AC_CHECK_LIB(sqlite3,sqlite3_open,,[AC_MSG_ERROR([Could not find suitable libsqlite3])])
-AC_PATH_PROG(PATH_SQLITE3,sqlite3,none,[$PATH:$withval])
-if test "x$PATH_SQLITE3" = "xnone" ; then
-	AC_MSG_ERROR([Could not find sqlite3 binary])
-fi
-AC_SUBST(PATH_SQLITE3)
+# AC_ARG_WITH(sqlite,[  --with-sqlite=<path>    Prefix of your sqlite3 library installation],[LDFLAGS="$LDFLAGS -L$withval/lib";CXXFLAGS="$CXXFLAGS -I$withval/include"])
+# AC_CHECK_LIB(sqlite3,sqlite3_open,,[AC_MSG_ERROR([Could not find suitable libsqlite3])])
+# AC_PATH_PROG(PATH_SQLITE3,sqlite3,none,[$PATH:$withval])
+#if test "x$PATH_SQLITE3" = "xnone" ; then
+#	AC_MSG_ERROR([Could not find sqlite3 binary])
+#fi
+#AC_SUBST(PATH_SQLITE3)
 
 # Debugging, always
 AC_DEFINE(DEBUG, 1, [Enable debugging features])

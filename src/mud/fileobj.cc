@@ -460,6 +460,21 @@ File::Writer::attr (StringArg name, long data)
 }
 
 void
+File::Writer::attr (StringArg name, long long data)
+{
+	if (!out)
+		return;
+
+	if (!str_is_valid_id(name)) {
+		Log::Error << "Attempted to write id '" << name << "'";
+		return;
+	}
+
+	do_indent();
+	out << name << " = " << data << "\n";
+}
+
+void
 File::Writer::attr (StringArg name, bool data)
 {
 	if (!out)

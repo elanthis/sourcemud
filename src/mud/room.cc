@@ -30,6 +30,7 @@
 #include "mud/char.h"
 #include "mud/exit.h"
 #include "mud/hooks.h"
+#include "mud/efactory.h"
 
 /* constructor */
 SCRIPT_TYPE(Room);
@@ -73,7 +74,7 @@ Room::load_node (File::Reader& reader, File::Node& node)
 			if (exit == NULL)
 				throw File::Error("new RoomExit() failed");
 			if (exit->load(reader))
-				throw File::Error("failed to load exit");
+				throw File::Error("Failed to load exit");
 
 			// add
 			exit->parent_room = this;
@@ -85,12 +86,12 @@ Room::load_node (File::Reader& reader, File::Node& node)
 		FO_OBJECT("object")
 			Object *obj = new Object ();
 			if (obj->load (reader) != 0)
-				throw File::Error("failed to load object");
+				throw File::Error("Failed to load object");
 			add_object(obj);
 		FO_OBJECT("npc")
 			Npc *npc = new Npc ();
 			if (npc->load (reader) != 0)
-				throw File::Error("failed to load npc");
+				throw File::Error("Failed to load npc");
 			add_character(npc);
 		FO_PARENT(Entity)
 	FO_NODE_END

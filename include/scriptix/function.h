@@ -87,6 +87,8 @@ class ScriptFunction : public GCType::GC
 
 	inline bool empty () const { return func == NULL; }
 
+	inline void clear () { func = NULL; }
+
 	inline Scriptix::Function* get () const { return func; }
 	inline operator Scriptix::Function* () const { return get(); }
 
@@ -115,6 +117,8 @@ class ScriptFunctionSource : public ScriptFunction
 	inline ScriptFunctionSource (const ScriptFunction& s_func, StringArg s_source) : ScriptFunction(s_func), source(s_source) {}
 
 	inline const String& get_source () const { return source; }
+
+	inline void clear () { ScriptFunction::clear(); source.clear(); }
 
 	static ScriptFunctionSource compile (StringArg func_name, StringArg code, StringArg args, StringArg filename, unsigned long fileline);
 

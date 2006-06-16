@@ -499,7 +499,7 @@ Object::load_node(File::Reader& reader, File::Node& node)
 			// creates a new anonymous blueprint
 			ObjectBlueprint* blueprint = new ObjectBlueprint();
 			if (blueprint->load(reader))
-				throw File::Error("failed to load anonymous blueprint");
+				throw File::Error("Failed to load anonymous blueprint");
 			set_blueprint(blueprint);
 		FO_ATTR("blueprint")
 			// sets a real blueprint
@@ -513,7 +513,7 @@ Object::load_node(File::Reader& reader, File::Node& node)
 		FO_OBJECT("object")
 			Object* obj = new Object ();
 			if (obj->load (reader))
-				throw File::Error("failed to load object");
+				throw File::Error("Failed to load object");
 			if (!obj->location.valid())
 				throw File::Error("child object has no valid location");
 			obj->set_owner (this);

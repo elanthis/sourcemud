@@ -1,35 +1,55 @@
-# Player file = "Admin"
-# Timestamp = "Wed Jan 21 11:28:15 2004"
+# Player file: Admin
+# Timestamp: Fri Jun 16 11:28:56 2006
 # 
 
-name = "Admin"
+uid = $575a66a6-43da6-c42-00000332-0bb9fd14
 position = "stand"
-gender = "male"
-hp = 500
-stat : Strength = 100
-stat : Agility = 100
-stat : Fortitude = 100
-stat : Intellect = 100
-stat : Spirit = 100
-stat : Willpower = 100
+hp = 150
 equip.right_hand {
   blueprint = "sw_fire"
+  uid = $3afd1c69-43dc6-c42-00000333-0bb9fd14
 }
-equip.body{
+equip.body {
   blueprint = "ar_chain_shirt"
+  uid = $7e26b1ee-43dd3-c42-00000334-0bb9fd14
 }
-equip.back{
+equip.back {
   blueprint = "co_leather_backpack"
+  uid = $23d5b6a2-43de0-c42-00000335-0bb9fd14
 }
 race = "human"
-birthday = "0245/06/10 09.14"
-trait : "eye color" = "white"
-trait : "hair color" = "silver"
+birthday = "245/6/10 9.14"
+alignment = 0
+stat : "Strength" = 100
+stat : "Agility" = 100
+stat : "Fortitude" = 100
+stat : "Intellect" = 100
+stat : "Spirit" = 100
+stat : "Willpower" = 100
+trait : "build" = "lean"
 trait : "skin color" = "fair"
 trait : "hair style" = "long"
-trait : "build" = "lean"
-location = "altar"
-exp : General = 0
-exp : Warrior = 0
-exp : Rogue = 0
-exp : Caster = 0
+trait : "hair color" = "silver"
+trait : "eye color" = "white"
+gender = "male"
+height = 68
+location = "broken_tree"
+exp : "General" = 0
+exp : "Warrior" = 0
+exp : "Rogue" = 0
+exp : "Caster" = 0
+skill : "Agility" = 0
+skill : "Arcane Barrier" = 0
+skill : "Balance" = 0
+skill : "Dodge" = 0
+skill : "Health" = 0
+skill : "Intellect" = 0
+skill : "Light" = 0
+skill : "Luck" = 0
+skill : "Magic Lore" = 0
+skill : "Melee" = 0
+skill : "Shield" = 0
+skill : "Spirit" = 0
+skill : "Strength" = 0
+skill : "Will Power" = 0
+# vim: set shiftwidth=2 tabstop=2 expandtab:

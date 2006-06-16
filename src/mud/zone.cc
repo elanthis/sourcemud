@@ -34,7 +34,7 @@ Spawn::check (const Zone* zone) const
 }
 
 bool
-Spawn::heartbeat (void)
+Spawn::heartbeat ()
 {
 	// ready for update?
 	if (++dcount >= delay) {
@@ -142,7 +142,7 @@ Spawn::save (File::Writer& writer) const
 }
 
 SCRIPT_TYPE(Zone);
-Zone::Zone (void) : Entity(AweMUD_ZoneType), rooms() {}
+Zone::Zone () : Entity(AweMUD_ZoneType), rooms() {}
 
 Room*
 Zone::get_room (StringArg id) const
@@ -165,7 +165,7 @@ Zone::get_room_at (size_t index) const
 }
 
 size_t
-Zone::get_room_count (void) const
+Zone::get_room_count () const
 {
 	return rooms.size();
 }
@@ -183,14 +183,14 @@ Zone::load_node (File::Reader& reader, File::Node& node)
 		FO_OBJECT("room")
 			Room* room = new Room();
 			if (room->load (reader))
-				throw File::Error("failed to load room");
+				throw File::Error("Failed to load room");
 			add_room(room);
 		FO_OBJECT("spawn")
 			Spawn spawn;
 			if (!spawn.load (reader))
 				spawns.push_back(spawn);
 			else
-				throw File::Error("failed to load room");
+				throw File::Error("Failed to load room");
 		FO_PARENT(Entity)
 	FO_NODE_END
 }
@@ -255,7 +255,7 @@ Zone::load (StringArg name)
 }
 
 void
-Zone::save (void)
+Zone::save ()
 {
 	String path = SettingsManager.get_zone_path() + "/" + get_id() + ".zone";
 
@@ -288,7 +288,7 @@ Zone::add_room (Room *room)
 }
 
 void
-Zone::heartbeat (void)
+Zone::heartbeat ()
 {
 	// spawn systems
 	for (SpawnList::iterator i = spawns.begin(); i != spawns.end(); ++i) {
@@ -299,7 +299,7 @@ Zone::heartbeat (void)
 }
 
 void
-Zone::activate (void)
+Zone::activate ()
 {
 	Entity::activate();
 
@@ -308,7 +308,7 @@ Zone::activate (void)
 }
 
 void
-Zone::deactivate (void)
+Zone::deactivate ()
 {
 	for (RoomList::iterator i = rooms.begin(); i != rooms.end(); ++i)
 		(*i)->deactivate();
@@ -334,7 +334,7 @@ Zone::owner_release (Entity* child)
 }
 
 void
-Zone::destroy (void)
+Zone::destroy ()
 {
 	SZoneManager::ZoneList::iterator i = find(ZoneManager.zones.begin(), ZoneManager.zones.end(), this);
 	if (i != ZoneManager.zones.end())
@@ -343,9 +343,8 @@ Zone::destroy (void)
 	Entity::destroy();
 }
 
-// initialize zone manager, load world
 int
-SZoneManager::initialize (void)
+SZoneManager::initialize ()
 {
 	// modules we need
 	if (require(UniqueIDManager) != 0)
@@ -362,7 +361,13 @@ SZoneManager::initialize (void)
 		return 1;
 	if (require(WeatherManager) != 0)
 		return 1;
+	return 0;
+}
 
+// load the world
+int
+SZoneManager::load_world ()
+{
 	Log::Info << "Loading zones";
 
 	// read zones dir
@@ -389,7 +394,7 @@ SZoneManager::initialize (void)
 
 // close down zone manager
 void
-SZoneManager::shutdown (void)
+SZoneManager::shutdown ()
 {
 	while (!zones.empty()) {
 		zones.front()->deactivate();
@@ -400,7 +405,7 @@ SZoneManager::shutdown (void)
 
 // save zones
 void
-SZoneManager::save (void)
+SZoneManager::save ()
 {
 	for (ZoneList::iterator i = zones.begin(); i != zones.end(); ++i)
 		(*i)->save();

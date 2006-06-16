@@ -1,3 +1,9 @@
+2006-06-16 15:48:40  Sean Middleditch <elanthis@awesomeplay.com>
+
+  * Remove DB code.
+  * Make Scriptix::Array::Array(count, list) handle list==NULL as
+    it's supposed to.
+
 2006-01-25 19:04:02  Sean Middleditch <elanthis@awesomeplay.com>
 
   * More work on the DB backend.

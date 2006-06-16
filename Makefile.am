@@ -130,7 +130,6 @@ CLEANFILES += awemud.conf
 
 ### DATA FILES ###
 
-DB = data/awemud.db
 SQL = data/awemud.sql data/example.sql
 
 PLAYERS = data/admin.ply
@@ -167,23 +166,16 @@ blueprint_DATA = $(TEMPLATES)
 gamedatadir=${localstatedir}/lib/@PACKAGE_TARNAME@/data
 gamedata_DATA = $(GAMEDATA)
 
-dbdir=${localstatedir}/lib/@PACKAGE_TARNAME@/data
-db_DATA = $(DB)
-
 logdatadir=${localstatedir}/log
 logdata_DATA =
 
 rundatadir=${localstatedir}/run
 rundata_DATA =
 
-data/awemud.db:
-	cat $(SQL) | $(PATH_SQLITE3) data/awemud.db
-
 ### HEADERS ###
 
 noinst_HEADERS=\
 	include/common/error.h \
-	include/common/db.h \
 	include/common/gcbase.h \
 	include/common/gclist.h \
 	include/common/gcmap.h \
@@ -279,7 +271,6 @@ INCLUDES=-I@top_srcdir@/include
 
 COMMON_SOURCES=\
 	src/common/error.cc \
-	src/common/db.cc \
 	src/common/gc.cc \
 	src/common/imanager.cc \
 	src/common/md5.cc \

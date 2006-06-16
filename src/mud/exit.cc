@@ -21,6 +21,7 @@
 #include "mud/zone.h"
 #include "mud/hooks.h"
 #include "scriptix/function.h"
+#include "mud/efactory.h"
 
 const String ExitDetail::names[] = {
 	"none",
@@ -107,6 +108,10 @@ namespace {
 	};
 }
 
+BEGIN_EFACTORY(roomexit)
+	return NULL;
+END_EFACTORY
+
 ExitDir
 ExitDir::lookup (StringArg name)
 {
@@ -137,7 +142,7 @@ ExitDetail::lookup (StringArg name)
 SCRIPT_TYPE(RoomExit);
 RoomExit::RoomExit() : Entity(AweMUD_RoomExitType), name(),
 	target(), dir(), usage(), detail(), parent_room(NULL),
-	flags(), on_use(NULL), on_use_source()
+	flags(), on_use()
 {}
 
 EntityName
@@ -148,6 +153,12 @@ RoomExit::get_name () const
 		return EntityName(EntityArticleClass::UNIQUE, dir.get_name());
 	else
 		return name;
+}
+
+void
+RoomExit::add_keyword (StringArg keyword)
+{
+	keywords.push_back(keyword);
 }
 
 Room *
@@ -223,8 +234,8 @@ RoomExit::save (File::Writer& writer)
 	if (text.go)
 		writer.attr ("go", text.go);
 
-	if (on_use_source)
-		writer.block ("used", on_use_source);
+	if (!on_use.empty())
+		writer.block ("used", on_use.get_source());
 }
 
 void
@@ -282,8 +293,7 @@ RoomExit::load_node (File::Reader& reader, File::Node& node)
 		FO_ATTR("go")
 			text.go = node.get_data();
 		FO_ATTR("used")
-			on_use_source = node.get_data();
-			on_use = Scriptix::ScriptFunction::compile("used", on_use_source, "exit,user", reader.get_filename(), node.get_line());
+			on_use = Scriptix::ScriptFunctionSource::compile("used", node.get_data(), "exit,user", reader.get_filename(), node.get_line());
 		FO_PARENT(Entity)
 	FO_NODE_END
 }
@@ -437,4 +447,14 @@ RoomExit::name_match (StringArg match) const
 
 	// no match
 	return false;
+}
+
+void
+RoomExit::set_use (StringArg script)
+{
+	if (script) {
+		on_use = Scriptix::ScriptFunctionSource::compile("used", script, "exit,user", "exit db", 1);
+	} else {
+		on_use.clear();
+	}
 }

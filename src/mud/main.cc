@@ -532,6 +532,10 @@ main (int argc, char **argv)
 	if (IManager::initialize_all())
 		return 1;
 
+	// load the world
+	if (ZoneManager.load_world())
+		return 1;
+
 	// listen sockets
 	int player_ipv4 = -1;
 	int player_ipv6 = -1;
