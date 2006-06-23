@@ -53,10 +53,11 @@ namespace Events {
 	<xsl:text>); }
 </xsl:text>
 </xsl:for-each>
+<xsl:text>} // namespace Events</xsl:text>
 
 <!-- initializer -->
 <xsl:text><![CDATA[
-void SEventManager::initialize_ids (void) {
+void SEventManager::initialize_ids () {
 ]]></xsl:text>
 <xsl:for-each select="event">
 	Events::ON_<xsl:value-of select="translate(name, 'abcdefghijklmnopqrstuvwxyz', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"/><xsl:text> = EventID::create("</xsl:text><xsl:value-of select="name"/><xsl:text>");
@@ -86,8 +87,6 @@ SEventManager::compile (EventID id, StringArg source, StringArg filename, unsign
 <xsl:text><![CDATA[
 	return Scriptix::ScriptFunction::compile(String("event ") + EventID::nameof(id), source, "self,event,room,actor,data1,data2,data3,data4,data5", filename, fileline);
 } // compile_event()
-
-} // namespace Events
 ]]></xsl:text>
 
   </xsl:template>

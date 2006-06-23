@@ -1,3 +1,7 @@
+2006-06-23 17:17:17  Sean Middleditch <elanthis@awesomeplay.com>
+
+  * Fix compilation with gcc 4.1.
+
 2006-06-16 15:48:40  Sean Middleditch <elanthis@awesomeplay.com>
 
   * Remove DB code.
