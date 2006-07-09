@@ -1947,17 +1947,6 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
       <code><![CDATA[_return = _self->get_account()->has_access(AccessID::lookup(_arg_privilege));]]></code>
     </method>
     <!-- NOTE: do not offer access changing methods, those are for admins only -->
-
-    <!-- FIXME: temporary 'hack' method to allow character creation in scriptix -->
-    <method>
-      <name>validate</name>
-      <invoke>validate</invoke>
-      <return>
-        <type>Integer</type>
-        <doc>Zero on success, non-zero on failure.</doc>
-      </return>
-      <doc>Sets the player as being fully valid, and adds the player to the account's character list along with saving the character to disk.</doc>
-    </method>
   </type>
   <!-- Player functions -->
   <function>

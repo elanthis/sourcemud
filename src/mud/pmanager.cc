@@ -189,17 +189,6 @@ SPlayerManager::exists (String name)
 	return true;
 }
 
-Player*
-SPlayerManager::create (class Account* account, StringArg name)
-{
-	// already exists?
-	if (exists(name))
-		return NULL;
-
-	// create
-	return new Player(account, name);
-}
-
 int
 SPlayerManager::destroy (StringArg name)
 {

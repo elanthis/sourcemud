@@ -629,25 +629,8 @@ Player::deactivate (void)
 void
 Player::process_command (char* data)
 {
-	// always handle quit
 	if (str_eq(data, "quit")) {
 		quit();
-	// have we an input processor?
-	} else if (!procs.empty()) {
-		IProcessor* proc = procs.front();
-		// use the processor
-		if (proc->process (data)) {
-			// processor finished
-			proc->finish ();
-			procs.erase(procs.begin());
-
-			// init next, or quit if we aren't valid
-			if (!procs.empty())
-				procs.front()->init();
-			else if (!is_valid())
-				quit();
-		}
-	// normal character command processing
 	} else {
 		process_cmd (data);
 	}
@@ -660,11 +643,8 @@ Player::show_prompt (void)
 	if (!get_telnet())
 		return;
 
-	// processor prompt
-	if (!procs.empty()) {
-		*this << procs.front()->prompt ();
 	// net.awemud around?  just show >
-	} else if (get_telnet()->has_zmp_net_awemud()) {
+	if (get_telnet()->has_zmp_net_awemud()) {
 		*this << ">";
 	// do the full/stock prompt
 	} else {
@@ -716,22 +696,6 @@ Player::parse_property (const StreamControl& stream, StringArg comm, const Parse
 	else {
 		return Character::parse_property(stream, comm, argv);
 	}
-}
-
-// add a new command processor
-int
-Player::add_processor (IProcessor *p)
-{
-	assert (p != NULL);
-
-	// add processor
-	procs.push_back(p);
-
-	// initialize it
-	if (procs.front() == p)
-		p->init();
-
-	return 0;
 }
 
 // connect to a telnet handler

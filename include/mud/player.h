@@ -44,23 +44,6 @@ enum exp_spec {
 	NUM_EXPS
 };
 
-// input processor
-class IProcessor : public GC
-{
-	protected:
-	class Player* player;
-
-	public:
-	IProcessor (class Player* s_player) : gc(), player(s_player) {}
-	virtual ~IProcessor(void) { player = NULL; }
-
-	virtual int init (void) = 0;
-	virtual void finish (void) = 0;
-	// return true/non-zero in order to remove the IProcessor
-	virtual int process (char *line) = 0;
-	virtual const char *prompt (void) = 0;
-};
-
 class Player : public Character
 {
 	public:
@@ -158,9 +141,6 @@ class Player : public Character
 	virtual void display_desc (const class StreamControl& stream) const;
 	void display_skills (void);
 
-	// processor
-	int add_processor (IProcessor *);
-
 	// I/O
 	virtual void stream_put (const char* data, size_t len = 0);
 	void show_prompt (void);
@@ -178,8 +158,6 @@ class Player : public Character
 
 	// handling "player states"
 	int start (void); // start the session
-	int create (void); // create new character
-	int validate (void); // make the player valid
 	void quit (void); // save and exit
 
 	// player-only actions
@@ -187,7 +165,6 @@ class Player : public Character
 	void do_reply (StringArg what);
 
 	protected:
-	typedef GCType::vector<IProcessor*> ProcessorList;
 	typedef GCType::map<const class Class*, uint> ClassList;
 	typedef GCType::map<CharacterTraitID, CharacterTraitValue> TraitMap;
 
@@ -205,7 +182,6 @@ class Player : public Character
 		uint valid:1;
 	} flags;
 	CharStatArray base_stats;
-	ProcessorList procs;
 	class Race *race;
 	CharAlign alignment;
 	uint exp[NUM_EXPS];
@@ -259,8 +235,8 @@ class SPlayerManager : public IManager
 	// load a player - from disk
 	Player* load (class Account* account, StringArg name);
 
-	// create a new player with a given name
-	Player* create (class Account* account, StringArg name);
+	// Begin creation process with an account
+	int create (class TelnetHandler* telnet, class Account* account);
 
 	// DESTROY a player permanently (with backup)
 	int destroy (StringArg name);

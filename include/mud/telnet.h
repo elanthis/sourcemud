@@ -46,15 +46,15 @@ class TextBufferList
 
 	public:
 	TextBufferList (size_t s_size) : list (), size(s_size), allocs(0), pallocs(0), out(0) {}
-	~TextBufferList (void) {
+	~TextBufferList () {
 		for (GCType::vector<char*>::iterator i = list.begin(); i != list.end(); ++i)
 			if (*i)
 				delete[] *i;
 	}
 
-	size_t get_size (void) const { return size; }
+	size_t get_size () const { return size; }
 
-	char* alloc (void);
+	char* alloc ();
 	void release (char* buf) {
 		-- out;
 		list.push_back(buf);
@@ -80,14 +80,14 @@ class TextBuffer
 	static TextBufferList lists[COUNT];
 
 	public:
-	TextBuffer (void) : bsize(EMPTY), bdata(NULL) {}
-	~TextBuffer (void) { release(); }
+	TextBuffer () : bsize(EMPTY), bdata(NULL) {}
+	~TextBuffer () { release(); }
 
-	size_t size(void) const { return bsize != EMPTY ? lists[bsize].get_size() : 0; }
-	char *data(void) const { return bdata; }
-	void release (void);
+	size_t size() const { return bsize != EMPTY ? lists[bsize].get_size() : 0; }
+	char *data() const { return bdata; }
+	void release ();
 	int alloc(SizeType size);
-	int grow (void);
+	int grow ();
 
 	TextBuffer& copy (TextBuffer& buffer) {
 		if (bdata != NULL)
@@ -104,17 +104,17 @@ class ITelnetMode : public GC
 {
 	public:
 	ITelnetMode (class TelnetHandler* s_handler) : handler(s_handler) {}
-	virtual ~ITelnetMode (void) {}
+	virtual ~ITelnetMode () {}
 
 	// basics
-	virtual int initialize (void) = 0;
-	virtual void prompt (void) = 0;
+	virtual int initialize () = 0;
+	virtual void prompt () = 0;
 	virtual void process (char* line) = 0;
-	virtual void shutdown (void) = 0;
-	virtual void check (void) = 0;
+	virtual void shutdown () = 0;
+	virtual void check () = 0;
 
 	// the handler this mode is connected to
-	inline class TelnetHandler* get_handler (void) const { return handler; }
+	inline class TelnetHandler* get_handler () const { return handler; }
 
 	private:
 	class TelnetHandler* handler;
@@ -129,20 +129,20 @@ class TelnetHandler : public Scriptix::Native, public SocketUser, public IStream
 	inline uint get_color (uint i) const { return color_set[i] < 0 ? color_type_defaults[i] : color_set[i]; }
 	inline void set_color (uint i, uint v) { color_set[i] = v; }
 	inline void clear_color (uint i) { color_set[i] = -1; }
-	inline bool use_color (void) const { return io_flags.use_ansi; }
+	inline bool use_color () const { return io_flags.use_ansi; }
 
 	// processing IO
-	void process (void);
-	inline int get_width (void) const { return width; }
+	void process ();
+	inline int get_width () const { return width; }
 	bool toggle_echo (bool value);
 	void process_command (char* cmd); // just as if typed in by user
-	void disconnect (void);
+	void disconnect ();
 
 	// output
 	virtual void stream_put (const char*, size_t len);
-	void clear_scr (void); // clear da screen
+	void clear_scr (); // clear da screen
 	void set_indent (uint amount);
-	inline uint get_indent (void) const { return margin; }
+	inline uint get_indent () const { return margin; }
 	void draw_bar (uint percent); // draws a 14 character width progress bar
 	inline void force_update () { io_flags.need_prompt = true; }
 
@@ -150,9 +150,9 @@ class TelnetHandler : public Scriptix::Native, public SocketUser, public IStream
 	inline void set_timeout (uint s_timeout) { timeout = s_timeout; }
 
 	// ZMP
-	inline bool has_zmp (void) const { return io_flags.zmp; }
-	inline bool has_zmp_net_awemud (void) const { return io_flags.zmp_net_awemud; } // supports the net.awemud. package?
-	inline bool has_zmp_color (void) const { return io_flags.zmp_color; } // supports the color.define command?
+	inline bool has_zmp () const { return io_flags.zmp; }
+	inline bool has_zmp_net_awemud () const { return io_flags.zmp_net_awemud; } // supports the net.awemud. package?
+	inline bool has_zmp_color () const { return io_flags.zmp_color; } // supports the color.define command?
 	void send_zmp (size_t argc, const char** argv);
 	inline void send_zmp (size_t argc, char** argv) { send_zmp(argc, (const char**)argv); }
 	void zmp_support (const char* pkg, bool value);
@@ -163,18 +163,18 @@ class TelnetHandler : public Scriptix::Native, public SocketUser, public IStream
 		// is a hack necessitated by Player needing to be able to tell
 		// TelnetModePlay to exit and reinstate TelnetModeMainMenu.  Our
 		// encapsulation here sucks.
-	void check_mode (void);
+	void check_mode ();
 
 	// low-level IO
 	virtual void in_handle (char* buffer, size_t size);
-	virtual char get_poll_flags (void);
-	virtual void out_ready (void);
-	virtual void hangup (void);
-	virtual void prepare (void);
+	virtual char get_poll_flags ();
+	virtual void out_ready ();
+	virtual void hangup ();
+	virtual void prepare ();
 
 	protected:
 	// destructor
-	~TelnetHandler (void) {}
+	~TelnetHandler () {}
 
 	protected:
 	TextBuffer input; // player input buffer
@@ -230,13 +230,13 @@ class TelnetHandler : public Scriptix::Native, public SocketUser, public IStream
 
 #ifdef HAVE_LIBZ
 	// compression
-	bool begin_mccp (void);
-	void end_mccp (void);
+	bool begin_mccp ();
+	void end_mccp ();
 #endif // HAVE_LIBZ
 
 	// processing
-	void process_input (void);
-	void process_sb (void);
+	void process_input ();
+	void process_sb ();
 	void process_zmp (size_t size, char* chunk);
 
 	// command handling
@@ -246,31 +246,13 @@ class TelnetHandler : public Scriptix::Native, public SocketUser, public IStream
 	void add_output (const char* data, size_t len);
 	void add_to_out_buffer (const char* data, size_t len);
 	void add_to_chunk (const char* data, size_t len);
-	void end_chunk (void);
+	void end_chunk ();
 	void send_iac (uint, ...); // build iac
 	void send_data (uint, ...); // don't escape
 	void add_zmp (size_t argc, const char** argv);
 
 	// timeout handling
-	int check_time (void); // check to see if we should disconnect
-};
-
-// LOGIN
-class TelnetModeLogin : public ITelnetMode
-{
-	public:
-	TelnetModeLogin (TelnetHandler* s_handler) : ITelnetMode (s_handler), account(NULL), pass(false), tries(0) {}
-
-	virtual int initialize (void);
-	virtual void prompt (void);
-	virtual void process (char* line);
-	virtual void shutdown (void);
-	virtual void check (void) {}
-
-	private:
-	class Account* account;
-	bool pass;
-	int tries;
+	int check_time (); // check to see if we should disconnect
 };
 
 // indent stream

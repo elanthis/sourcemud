@@ -44,6 +44,7 @@
 #include "mud/hooks.h"
 #include "mud/server.h"
 #include "mud/settings.h"
+#include "mud/login.h"
 
 // DECLARATIONS
 namespace {

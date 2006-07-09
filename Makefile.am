@@ -226,6 +226,7 @@ noinst_HEADERS=\
 	include/mud/gametime.h \
 	include/mud/help.h \
 	include/mud/idmap.h \
+	include/mud/login.h \
 	include/mud/message.h \
 	include/mud/name.h \
 	include/mud/network.h \
@@ -323,7 +324,6 @@ awemud_bin_SOURCES=\
 	src/mud/calendar.cc \
 	src/mud/char.cc \
 	src/mud/char_do.cc \
-	src/mud/char_create.cc \
 	src/mud/cmd_admin.cc \
 	src/mud/cmd_builder.cc \
 	src/mud/cmd_char.cc \
@@ -333,6 +333,7 @@ awemud_bin_SOURCES=\
 	src/mud/combat.cc \
 	src/mud/command.cc \
 	src/mud/control.cc \
+	src/mud/creation.cc \
 	src/mud/efactory.cc \
 	src/mud/entity.cc \
 	src/mud/event.cc \
@@ -346,6 +347,7 @@ awemud_bin_SOURCES=\
 	src/mud/login.cc \
 	src/mud/mail.cc \
 	src/mud/main.cc \
+	src/mud/menu.cc \
 	src/mud/message.cc \
 	src/mud/name.cc \
 	src/mud/network.cc \

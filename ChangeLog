@@ -1,3 +1,15 @@
+2006-07-09 20:07:39  Sean Middleditch <elanthis@awesomeplay.com>
+
+  * Split up the login/main menu code to login.cc and menu.cc.
+  * Readying to reimplement character creation as a TelnetMode,
+    not as an IProcessor, since character creation is the only
+    IProcessor left.  Also, this'll make doing the character
+    creation code a bit easier and a lot cleaner, and simplify
+    the Player class as well.
+  * Remove the IProcessor code completely, as we no longer use it.
+  * Disable building of char_create.cc, it will be replaced by
+    creation.cc.
+
 2006-07-09 19:03:03  Sean Middleditch <elanthis@awesomeplay.com>
 
   * Change signature on phrase_match to something a little saner.
