@@ -77,9 +77,9 @@ bool str_eq (const char *, const char *, size_t len = 0); // are strings equal, 
 
 // match words in a phrase
 // string to match is first, string being tested is second
-// i.e., phrase_match("bob", str) will see if str is all of or
+// i.e., phrase_match("bob", str) will return true if str is all of or
 // part of "bob"
-int phrase_match (const char *full, const char *chunk);
+bool phrase_match (StringArg full, StringArg chunk);
 
 // determine a numeric value from input word, i.e. first=>1, second=>2, etc.
 uint str_value (StringArg);

@@ -1644,29 +1644,6 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
     </method>
   </type>
 
-  <!-- Scripted Processor -->
-  <type>
-    <name>Processor</name>
-    <cppname>ScriptProcessor</cppname>
-    <doc>A processor handles input from a player, and interprets in a special way.  It over-rides and replaces the normal command/response mechanism.</doc>
-
-    <!-- new -->
-    <new>
-      return new ScriptProcessor(_type);
-    </new>
-
-    <!-- Methods -->
-    <method>
-      <name>setPrompt</name>
-      <invoke>set_prompt</invoke>
-      <arg>
-        <name>value</name>
-        <type>String</type>
-      </arg>
-      <doc>Sets the prompt that will be used while this processor is running.</doc>
-    </method>
-  </type>
-
   <!-- Player -->
   <type>
     <name>Player</name>
@@ -1832,19 +1809,6 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
         <type>Telnet</type>
         <doc>The Telnet object connected to this player, or Nil if no Telnet object is connected.</doc>
       </return>
-    </method>
-    <method>
-      <name>addProc</name>
-      <arg>
-        <name>processor</name>
-        <type>Processor</type>
-      </arg>
-      <code><![CDATA[
-        IProcessor* proc = new ScriptProcessorWrapper(_self, _arg_processor);
-        if (proc)
-          _self->add_processor(proc);
-      ]]></code>
-      <doc>Adds a processor to the player's processor stack.</doc>
     </method>
     <method>
       <name>clearScr</name>

@@ -1,3 +1,9 @@
+2006-07-09 19:03:03  Sean Middleditch <elanthis@awesomeplay.com>
+
+  * Change signature on phrase_match to something a little saner.
+  * Begin moving character creation code into C++.
+  * Remove script bindings version of Processor/IProcessor.
+
 2006-06-23 17:17:17  Sean Middleditch <elanthis@awesomeplay.com>
 
   * Fix compilation with gcc 4.1.

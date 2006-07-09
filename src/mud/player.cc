@@ -375,47 +375,6 @@ Player::start (void)
 	return 0;
 }
 
-// 'create' the chracter
-int
-Player::create (void)
-{
-	assert(!flags.valid);
-
-	// either run the hook, or start creation processor
-	if (!Hooks::create_character(this)) {
-		*this << CADMIN "New character creation is not available." CNORMAL "\n";
-		Log::Error << "No create_character hook available but character creation is enabled";
-		return -1;
-	}
-
-	return 0;
-}
-
-// make player valid
-int
-Player::validate (void)
-{
-	// already valid?  silly dink.
-	if (is_valid())
-		return -1;
-
-	// add character to account
-	get_account()->add_character(get_id());
-	get_account()->save();
-
-	// set as valid
-	flags.valid = true;
-
-	// save
-	save();
-
-	// log it
-	Log::Info << "New player " << get_id() << " created for account " << get_account()->get_id();
-
-	// start the player
-	return start();
-}
-
 // quit from game
 void
 Player::quit (void)
@@ -881,47 +840,3 @@ Player::set_trait (CharacterTraitID id, CharacterTraitValue value)
 {
 	pdesc.traits[id] = value;
 }
-
-int
-ScriptProcessorWrapper::init (void)
-{
-	if (core) {
-		Scriptix::ScriptFunction method = core->get_type()->get_method(String("init"));
-		if (!method.empty())
-			return method.run(core, player).to_int();
-	}
-	return 0;
-}
-
-void
-ScriptProcessorWrapper::finish (void)
-{
-	if (core) {
-		Scriptix::ScriptFunction method = core->get_type()->get_method(String("close"));
-		if (!method.empty())
-			method.run(core, player);
-	}
-}
-
-int
-ScriptProcessorWrapper::process (char* line)
-{
-	if (core) {
-		Scriptix::ScriptFunction method = core->get_type()->get_method(String("update"));
-		if (method.empty())
-			return -1;
-		return method.run(core, player, line).to_int();
-	} else {
-		return 1; // end
-	}
-}
-
-const char*
-ScriptProcessorWrapper::prompt (void)
-{
-	if (core && core->s_prompt)
-		return core->s_prompt.get_string().c_str();
-	else
-		return NULL;
-}
-

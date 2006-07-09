@@ -234,21 +234,6 @@ class Player : public Character
 	~Player (void);
 };
 
-// Wrap a ScriptProcessor - neesd *somewhere*....
-class ScriptProcessorWrapper : public IProcessor
-{
-	private:
-	ScriptProcessor* core;
-
-	public:
-	inline ScriptProcessorWrapper(Player* s_player, ScriptProcessor* s_core) : IProcessor(s_player), core(s_core) {}
-
-	int init (void);
-	void finish (void);
-	int process (char*);
-	const char* prompt (void);
-};
-
 // manage all players
 class SPlayerManager : public IManager
 {

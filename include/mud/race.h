@@ -32,7 +32,7 @@ Race : public Scriptix::Native
 	public:
 	// this is an ugly hack, but it lets us construct the linked
 	// list as we need to do
-	Race (StringArg s_name, Race *s_next);
+	Race (StringArg s_name, Race* s_next);
 
 	int load (File::Reader&);
 
@@ -53,7 +53,7 @@ Race : public Scriptix::Native
 	
 	inline const String& get_skin_type (void) const { return skin_type; }
 
-	inline Race *get_next (void) const { return next; }
+	inline Race* get_next (void) const { return next; }
 
 	// ---- data ----
 	protected:
@@ -84,9 +84,9 @@ class SRaceManager : public IManager
 
 	void shutdown (void);
 
-	Race *get (StringArg name);
+	Race* get (StringArg name);
 
-	inline Race *first (void) { return head; }
+	inline Race* first (void) { return head; }
 
 	private:
 	Race* head;

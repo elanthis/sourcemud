@@ -155,8 +155,8 @@ str_eq (const char *str_a, const char *str_b, size_t len)
 		return !strcasecmp (str_a, str_b);
 }
 
-int
-phrase_match (const char *match, const char *test)
+bool
+phrase_match (StringArg match, StringArg test)
 {
 	if (!match || !test)
 		return false;
@@ -213,7 +213,6 @@ phrase_match (const char *match, const char *test)
 				++ matches;
 				if (matches == cchunk)
 					return true;
-					
 			}
 
 			// find next word

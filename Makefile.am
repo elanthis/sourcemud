@@ -29,7 +29,6 @@ SX_FILES=\
 	scripts/player.sx \
 	scripts/npc.sx \
 	scripts/object.sx \
-	scripts/creation.sx \
 	scripts/death.sx \
 	scripts/store.sx \
 	scripts/whereis.sx \
@@ -324,6 +323,7 @@ awemud_bin_SOURCES=\
 	src/mud/calendar.cc \
 	src/mud/char.cc \
 	src/mud/char_do.cc \
+	src/mud/char_create.cc \
 	src/mud/cmd_admin.cc \
 	src/mud/cmd_builder.cc \
 	src/mud/cmd_char.cc \
