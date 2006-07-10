@@ -161,7 +161,6 @@ class Player : public Character
 	void do_reply (StringArg what);
 
 	protected:
-	typedef GCType::map<const class Class*, uint> ClassList;
 	typedef GCType::map<CharacterTraitID, CharacterTraitValue> TraitMap;
 
 	EntityName name;
@@ -178,7 +177,6 @@ class Player : public Character
 	class Race *race;
 	CharAlign alignment;
 	uint exp[NUM_EXPS];
-	ClassList classes;
 	GameTime birthday;
 	SkillSet skills;
 	struct NetworkInfo {

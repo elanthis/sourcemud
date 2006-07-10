@@ -136,7 +136,7 @@ race {
 
   about = "Mischevious humanoids that look like nothing but a cross between a cat and a human.  The kalruan have a fine coat of fur covering their bodies, tails, and feline ears, and have cat-like features about their face.  The kalruan are known for their hedonistic behaviour."
 
-  desc = "{$1.D} stands {$1.height} in height.  {$1.His} {! $1.Trait 'build'} body and long tail are covered in {$1.trait 'fur color'} fur.  {$1.He} has {! $1.trait 'hair style'}.  {$1.His} eyes are {if eq {$1.trait 'eye color'} 'green'}a brilliant green{else}{$1.trait 'eye color'}{endif} and twinkle with a mischevious spark."
+  desc = "{$1.D} stands {$1.height} in height.  {$1.His} {! $1.trait 'build'} body and long tail are covered in {$1.trait 'fur color'} fur.  {$1.He} has {! $1.trait 'hair style'}.  {$1.His} eyes are {if eq {$1.trait 'eye color'} 'green'}a brilliant green{else}{$1.trait 'eye color'}{endif} and twinkle with a mischevious spark."
 
   # mods
   stat : spirit = 5

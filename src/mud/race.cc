@@ -117,34 +117,6 @@ Race::load (File::Reader& reader)
 	return 0;
 }
 
-int
-Race::get_rand_age (void) const
-{
-	return age_min + get_random (age_max - age_min);
-}
-
-bool
-Race::has_trait_value (CharacterTraitID trait, CharacterTraitValue value) const
-{
-	GCType::map<CharacterTraitID, GCType::set<CharacterTraitValue> >::const_iterator i = traits.find(trait);
-	if (i == traits.end())
-		return false;
-
-	return i->second.find(value) != i->second.end();
-}
-
-const GCType::set<CharacterTraitValue>&
-Race::get_trait_values (CharacterTraitID trait) const
-{
-	static const GCType::set<CharacterTraitValue> empty; // if we don't have the trait, we return a reference to this
-
-	GCType::map<CharacterTraitID, GCType::set<CharacterTraitValue> >::const_iterator i = traits.find(trait);
-	if (i == traits.end())
-		return empty;
-
-	return i->second;
-}
-
 Race *
 SRaceManager::get (StringArg name)
 {

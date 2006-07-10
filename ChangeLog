@@ -1,3 +1,10 @@
+2006-07-10 19:37:49  Sean Middleditch <elanthis@awesomeplay.com>
+
+  * Removed Race skin_type stuff from the script bindigns; oops.
+  * Updates to Race to make character creation saner.
+  * Character creation code is now feature complete.  Could use
+    some cleaning up in the UI, though.
+
 2006-07-10 18:00:14  Sean Middleditch <elanthis@awesomeplay.com>
 
   * The skin_type value in Race hasn't been used in a while,

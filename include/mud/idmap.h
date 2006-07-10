@@ -53,7 +53,7 @@ class BaseID
 
 	inline static BaseID<tag> lookup (StringArg idname) { return BaseID<tag>(get_manager().lookup(idname)); }
 	inline static BaseID<tag> create (StringArg idname) { return BaseID<tag>(get_manager().create(idname)); }
-	inline String name () { return id != NULL ? *id : String(); }
+	inline String name () const { return id != NULL ? *id : String(); }
 	inline static String nameof (BaseID<tag> id) { return id.name(); }
 
 	static const IDManager::IDMap& get_all () { return get_manager().get_all(); }

@@ -25,6 +25,8 @@
 #include "common/imanager.h"
 #include "scriptix/native.h"
 
+typedef GCType::map<CharacterTraitID, GCType::set<CharacterTraitValue> > RaceTraitMap;
+
 /* store information about a race */
 class
 Race : public Scriptix::Native
@@ -36,22 +38,23 @@ Race : public Scriptix::Native
 
 	int load (File::Reader&);
 
-	int get_rand_age (void) const;
-	inline int get_life_span (void) const { return life_span; }
+	inline int get_life_span () const { return life_span; }
+	inline int get_age_min () const { return age_min; }
+	inline int get_age_max () const { return age_max; }
+
 	inline int get_stat (int i) const { if (i >= 0 && i < CharStatID::COUNT) return stats[i] ; else return 0; }
 
 	inline int get_average_height (GenderType gender) const { return height[gender.get_value()]; }
 
-	inline const String& get_name (void) const { return name; }
-	inline const String& get_adj (void) const { return adj; }
-	inline const String& get_body (void) const { return body; }
-	inline const String& get_about (void) const { return about; }
-	inline const String& get_desc (void) const { return desc; }
+	inline const String& get_name () const { return name; }
+	inline const String& get_adj () const { return adj; }
+	inline const String& get_body () const { return body; }
+	inline const String& get_about () const { return about; }
+	inline const String& get_desc () const { return desc; }
 
-	bool has_trait_value (CharacterTraitID trait, CharacterTraitValue value) const;
-	const GCType::set<CharacterTraitValue>& get_trait_values (CharacterTraitID trait) const;
+	const RaceTraitMap& get_traits () const { return traits; }
 	
-	inline Race* get_next (void) const { return next; }
+	inline Race* get_next () const { return next; }
 
 	// ---- data ----
 	protected:
@@ -61,7 +64,7 @@ Race : public Scriptix::Native
 	String about;
 	String desc;
 
-	GCType::map<CharacterTraitID, GCType::set<CharacterTraitValue> > traits;
+	RaceTraitMap traits;
 
 	int age_min, age_max, life_span;
 
@@ -75,15 +78,15 @@ Race : public Scriptix::Native
 class SRaceManager : public IManager
 {
 	public:
-	inline SRaceManager (void) : head(NULL) {}
+	inline SRaceManager () : head(NULL) {}
 
-	int initialize (void);
+	int initialize ();
 
-	void shutdown (void);
+	void shutdown ();
 
 	Race* get (StringArg name);
 
-	inline Race* first (void) { return head; }
+	inline Race* first () { return head; }
 
 	private:
 	Race* head;

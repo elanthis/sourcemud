@@ -53,14 +53,26 @@ void TelnetModeNewCharacter::prompt ()
 		case STATE_GENDER:
 			*get_handler() << "Choose thy gender:";
 			break;
-		case STATE_STATS:
-			*get_handler() << "Which attribute shall thee increase?";
-			break;
 		case STATE_HEIGHT:
 			*get_handler() << "Choose thy stature:";
 			break;
+		case STATE_TRAITS:
+		{
+			const RaceTraitMap& all = race->get_traits();
+			for (RaceTraitMap::const_iterator i = all.begin(); i != all.end(); ++i) {
+				if (traits.find(i->first) == traits.end()) {
+					*get_handler() << "Choose thy " << i->first.name() << ':';
+					break;
+				}
+			}
+	  		break;
+		}
+		case STATE_STATS:
+			*get_handler() << "Which attribute shall thee increase?";
+			break;
 		case STATE_NAME_CONFIRM:
 		case STATE_RACE_CONFIRM:
+		case STATE_TRAITS_CONFIRM:
 		case STATE_STATS_CONFIRM:
 		case STATE_FINAL_CONFIRM:
 		case STATE_RENAME_CONFIRM:
@@ -143,13 +155,71 @@ void TelnetModeNewCharacter::process (char* line)
 		case STATE_GENDER:
 			if (numeric == 1 || is_match("female", input)) {
 				gender = GenderType::FEMALE;
-				enter_state(STATE_STATS);
+				enter_state(STATE_HEIGHT);
 			} else if (numeric == 2 || is_match("male", input)) {
 				gender = GenderType::MALE;
-				enter_state(STATE_STATS);
+				enter_state(STATE_HEIGHT);
 			} else {
 				show_error("I do not understand thy response.");
 			}
+			break;
+		case STATE_HEIGHT:
+		{
+			// determine input
+			if (numeric == 2 || is_match("short", line)) {
+				height = HEIGHT_SHORT;
+			} else if (numeric == 1 || is_match("very short", line)) {
+				height = HEIGHT_VERY_SHORT;
+			} else if (numeric == 4 || is_match("tall", line)) {
+				height = HEIGHT_TALL;
+			} else if (numeric == 5 || is_match("very tall", line)) {
+				height = HEIGHT_VERY_TALL;
+			} else if (numeric == 3 || is_match("average", line)) {
+				height = HEIGHT_AVERAGE;
+			} else {
+				show_error("I do not understand they response.");
+				break;
+			}
+
+			// go to last step
+			enter_state(STATE_TRAITS);
+			break;
+		}
+		case STATE_TRAITS:
+		{
+			// determine current trait
+			const RaceTraitMap& all = race->get_traits();
+			RaceTraitMap::const_iterator trait;
+			for (trait = all.begin(); trait != all.end(); ++trait) {
+				if (traits.find(trait->first) == traits.end())
+					break;
+			}
+			assert(trait != all.end());
+
+			// set trait
+			int index = 1;
+			for (GCType::set<CharacterTraitValue>::const_iterator i = trait->second.begin(); i != trait->second.end(); ++i, ++index) {
+				if (numeric == index || is_match(i->get_name(), input)) {
+					traits.insert(std::pair<CharacterTraitID,CharacterTraitValue>(trait->first, *i));
+					++trait; // now we need the next trait
+					break;
+				}
+			}
+
+			// if we found/set the trait, and are now out of traits, go to confirmation
+			if (trait == all.end())
+				enter_state(STATE_TRAITS_CONFIRM);
+			else
+				display();
+	  		break;
+		}
+		case STATE_TRAITS_CONFIRM:
+			if (!input || is_match("yes", input))
+				enter_state(STATE_STATS);
+			else if (is_match("no", input))
+				enter_state(STATE_GENDER); // redo gender and height, too
+			else
+				show_error("I do not understand thy response.");
 			break;
 		case STATE_STATS:
 		{
@@ -193,34 +263,12 @@ void TelnetModeNewCharacter::process (char* line)
 		}
 		case STATE_STATS_CONFIRM:
 			if (!input || is_match("yes", input))
-				enter_state(STATE_HEIGHT);
+				enter_state(STATE_FINAL_CONFIRM);
 			else if (is_match("no", input))
 				enter_state(STATE_STATS);
 			else
 				show_error("I do not understand thy response.");
 			break;
-		case STATE_HEIGHT:
-		{
-			// determine input
-			if (numeric == 2 || is_match("short", line)) {
-				height = HEIGHT_SHORT;
-			} else if (numeric == 1 || is_match("very short", line)) {
-				height = HEIGHT_VERY_SHORT;
-			} else if (numeric == 4 || is_match("tall", line)) {
-				height = HEIGHT_TALL;
-			} else if (numeric == 5 || is_match("very tall", line)) {
-				height = HEIGHT_VERY_TALL;
-			} else if (numeric == 3 || is_match("average", line)) {
-				height = HEIGHT_AVERAGE;
-			} else {
-				show_error("I do not understand they response.");
-				break;
-			}
-
-			// go to last step
-			enter_state(STATE_FINAL_CONFIRM);
-			break;
-		}
 		case STATE_FINAL_CONFIRM:
 			if (!input || is_match("yes", input)) {
 				if (PlayerManager.exists(name))
@@ -249,34 +297,6 @@ void TelnetModeNewCharacter::display ()
 		*get_handler() << "Race: " << capwords(race->get_name()) << "\n";
 	if (state > STATE_GENDER)
 		*get_handler() << "Gender: " << capwords(gender.get_name()) << "\n";
-	if (state > STATE_STATS_CONFIRM) {
-		*get_handler() << "Attributes: ";
-		for (int i = 0; i < CharStatID::COUNT; ++i) {
-			if (i > 0)
-				*get_handler() << ", ";
-			*get_handler() << CharStatID(i).get_name() << '(' << stats[i] << ')';
-		}
-		*get_handler() << '\n';
-	}
-	if (state > STATE_HEIGHT) {
-		switch (height) {
-			case HEIGHT_VERY_SHORT:
-				*get_handler() << "Stature: Very short\n";
-				break;
-			case HEIGHT_SHORT:
-				*get_handler() << "Stature: Short\n";
-				break;
-			case HEIGHT_AVERAGE:
-				*get_handler() << "Stature: Average\n";
-				break;
-			case HEIGHT_TALL:
-				*get_handler() << "Stature: Tall\n";
-				break;
-			case HEIGHT_VERY_TALL:
-				*get_handler() << "Stature: Very tall\n";
-				break;
-		}
-	}
 	*get_handler() << "\n";
 
 	switch (state) {
@@ -329,6 +349,27 @@ void TelnetModeNewCharacter::display ()
 		case STATE_GENDER:
 			*get_handler() << "1) Female\n2) Male\n\n";
 			break;
+		case STATE_TRAITS:
+		{
+			const RaceTraitMap& all = race->get_traits();
+			for (RaceTraitMap::const_iterator i = all.begin(); i != all.end(); ++i) {
+				if (traits.find(i->first) == traits.end()) {
+					int index = 1;
+					*get_handler() << capwords(i->first.name()) << ":\n";
+					for (GCType::set<CharacterTraitValue>::const_iterator ii = i->second.begin(); ii != i->second.end(); ++ii, ++index) {
+						*get_handler() << index << ") " << capwords(ii->get_name()) << "\n";
+					}
+					*get_handler() << "\n";
+					break;
+				}
+			}
+	  		break;
+		}
+		case STATE_TRAITS_CONFIRM:
+			for (TraitMap::const_iterator i = traits.begin(); i != traits.end(); ++i) {
+				*get_handler() << capwords(i->first.name()) << ": " << capwords(i->second.get_name()) << "\n";
+			}
+			break;
 		case STATE_STATS:
 		case STATE_STATS_CONFIRM:
 		{
@@ -377,6 +418,39 @@ void TelnetModeNewCharacter::display ()
 			break;
 		case STATE_FINAL_CONFIRM:
 		case STATE_RENAME_CONFIRM:
+			// display all details
+			if (state > STATE_HEIGHT) {
+				switch (height) {
+					case HEIGHT_VERY_SHORT:
+						*get_handler() << "Stature: Very short\n";
+						break;
+					case HEIGHT_SHORT:
+						*get_handler() << "Stature: Short\n";
+						break;
+					case HEIGHT_AVERAGE:
+						*get_handler() << "Stature: Average\n";
+						break;
+					case HEIGHT_TALL:
+						*get_handler() << "Stature: Tall\n";
+						break;
+					case HEIGHT_VERY_TALL:
+						*get_handler() << "Stature: Very tall\n";
+						break;
+				}
+			}
+			for (TraitMap::const_iterator i = traits.begin(); i != traits.end(); ++i) {
+				*get_handler() << capwords(i->first.name()) << ": " << capwords(i->second.get_name()) << "\n";
+			}
+			if (state > STATE_STATS_CONFIRM) {
+				*get_handler() << "Attributes: ";
+				for (int i = 0; i < CharStatID::COUNT; ++i) {
+					if (i > 0)
+						*get_handler() << ", ";
+					*get_handler() << CharStatID(i).get_name() << '(' << stats[i] << ')';
+				}
+				*get_handler() << '\n';
+			}
+
 			*get_handler() << "Is it thy wish for me to create this profile?\n\n";
 			break;
 		case STATE_CONTINUE:
@@ -404,6 +478,20 @@ void TelnetModeNewCharacter::enter_state (state_t new_state)
 		case STATE_RACE:
 			race = NULL;
 			break;
+		case STATE_TRAITS:
+		{
+			// clear all traits
+			traits.clear();
+
+			// set any traits with only one option
+			const RaceTraitMap& all = race->get_traits();
+			for (RaceTraitMap::const_iterator i = all.begin(); i != all.end(); ++i) {
+				if (i->second.size() == 1) {
+					traits.insert(std::pair<CharacterTraitID,CharacterTraitValue>(i->first, *i->second.begin()));
+				}
+			}
+			break;
+		}
 		case STATE_STATS:
 		{
 			tokens = STAT_TOKENS;
@@ -424,10 +512,20 @@ void TelnetModeNewCharacter::create ()
 {
 	Player* player;
 
+	// create the player
 	player = new Player(account, name);
+
+	// set basics
 	player->set_race(race);
 	player->set_gender(gender);
 
+	// set birthday
+	int age = race->get_age_min() + get_random(race->get_age_max() - race->get_age_min());
+	GameTime birthday = TimeManager.time;
+	birthday.set_year(birthday.get_year() - age);
+	player->set_birthday(birthday);
+
+	// set height
 	int adjust;
 	switch (height) {
 		case HEIGHT_VERY_SHORT: adjust = -12; break;
@@ -438,6 +536,12 @@ void TelnetModeNewCharacter::create ()
 	}
 	player->set_height (race->get_average_height(gender) - 3 + get_random(7) + adjust);
 
+	// set traits
+	for (TraitMap::const_iterator i = traits.begin(); i != traits.end(); ++i) {
+		player->set_trait(i->first, i->second);
+	}
+
+	// set stats
 	for (int i = 0; i < CharStatID::COUNT; ++i)
 		player->set_base_stat(i, stats[i]);
 

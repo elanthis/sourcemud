@@ -5,6 +5,7 @@
  * http://www.awemud.net
  */
 
+#include "common/gcmap.h"
 #include "mud/pdesc.h"
 #include "common/string.h"
 #include "mud/settings.h"

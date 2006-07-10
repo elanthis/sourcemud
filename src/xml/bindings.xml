@@ -2921,14 +2921,6 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
       <invoke>get_name</invoke>
     </method>
     <method>
-      <name>getRandAge</name>
-      <return>
-        <type>Integer</type>
-      </return>
-      <doc>Returns a random starting age for the race.</doc>
-      <invoke>get_rand_age</invoke>
-    </method>
-    <method>
       <name>getLifeSpan</name>
       <return>
         <type>Integer</type>
@@ -2971,51 +2963,6 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
       </return>
       <doc>Description.</doc>
       <invoke>get_about</invoke>
-    </method>
-    <method>
-      <name>hasTraitValue</name>
-      <arg>
-        <name>trait</name>
-        <type>String</type>
-        <doc>The trait to test.</doc>
-      </arg>
-      <arg>
-        <name>value</name>
-        <type>String</type>
-        <doc>The value to test for.</doc>
-      </arg>
-      <return>
-        <type>Boolean</type>
-        <doc>True if the race has the given value for the given trait, false otherwise.</doc>
-      </return>
-      <code><![CDATA[_return = _self->has_trait_value(CharacterTraitID::lookup(_arg_trait), CharacterTraitValue::lookup(_arg_value));]]></code>
-    </method>
-    <method>
-      <name>getTraitValues</name>
-      <arg>
-        <name>trait</name>
-        <type>String</type>
-        <doc>The trait to query the values of.</doc>
-      </arg>
-      <return>
-        <type>Array</type>
-        <doc>Array of value names.</doc>
-      </return>
-      <code><![CDATA[
-        const GCType::set<CharacterTraitValue>& values = _self->get_trait_values(CharacterTraitID::lookup(_arg_trait));
-        _return = new Scriptix::Array(values.size(), NULL);
-        for (GCType::set<CharacterTraitValue>::const_iterator i = values.begin(); i != values.end(); ++i)
-          _return->append(Scriptix::Value(i->get_name()));
-      ]]></code>
-    </method>
-    <method>
-      <name>getSkinType</name>
-      <return>
-        <type>String</type>
-        <doc>The name of race's skin type, such as "skin" or "fur".</doc>
-      </return>
-      <doc>The return of this method should be used anywhere you would otherwise print the word "skin" to a player.  This is intended to allow races whose body is covered by or comprised of something other than skin on the outside, such as furry or insect-like creatures.</doc>
-      <invoke>get_skin_type</invoke>
     </method>
     <method>
       <name>getDesc</name>

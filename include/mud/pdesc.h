@@ -39,11 +39,6 @@ class CharacterTraitValue {
 	friend class SCharacterTraitManager;
 };
 
-// Specific traits.. temporary hack
-typedef CharacterTraitValue ColorType;
-typedef CharacterTraitValue HairStyleType;
-typedef CharacterTraitValue BodyBuildType;
-
 // Loads all known traits
 class SCharacterTraitManager : public IManager
 {
