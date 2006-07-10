@@ -17,11 +17,12 @@
 #include "mud/account.h"
 #include "mud/settings.h"
 #include "mud/login.h"
+#include "mud/creation.h"
 
 // --- MAIN MENU ----
 
 int
-TelnetModeMainMenu::initialize (void)
+TelnetModeMainMenu::initialize ()
 {
 	// set timeout to account's value
 	if (account->get_timeout() != 0)
@@ -33,7 +34,7 @@ TelnetModeMainMenu::initialize (void)
 }
 
 void
-TelnetModeMainMenu::show_banner (void)
+TelnetModeMainMenu::show_banner ()
 {
 	get_handler()->clear_scr();
 	*get_handler() << StreamParse(MessageManager.get("menu_banner")) << "\n";
@@ -41,7 +42,7 @@ TelnetModeMainMenu::show_banner (void)
 }
 
 void
-TelnetModeMainMenu::show_main (void)
+TelnetModeMainMenu::show_main ()
 {
 	show_banner();
 
@@ -55,7 +56,7 @@ TelnetModeMainMenu::show_main (void)
 }
 
 void
-TelnetModeMainMenu::show_chars (void)
+TelnetModeMainMenu::show_chars ()
 {
 	show_banner();
 
@@ -76,7 +77,7 @@ TelnetModeMainMenu::show_chars (void)
 }
 
 void
-TelnetModeMainMenu::show_account (void)
+TelnetModeMainMenu::show_account ()
 {
 	show_banner();
 
@@ -89,12 +90,11 @@ TelnetModeMainMenu::show_account (void)
 }
 
 void
-TelnetModeMainMenu::prompt (void)
+TelnetModeMainMenu::prompt ()
 {
 	switch (state) {
 		case STATE_MENU: *get_handler() << "Select:"; break;
 		case STATE_PLAY_SELECT: *get_handler() << "Character to play:"; break;
-		case STATE_CREATE_SELECT: *get_handler() << "New character's name:"; break;
 		case STATE_DELETE_SELECT: *get_handler() << "Character to delete:"; break;
 		case STATE_DELETE_CONFIRM: *get_handler() << "Confirm:"; break;
 		case STATE_ACCOUNT: *get_handler() << "Select:"; break;
@@ -107,7 +107,7 @@ TelnetModeMainMenu::prompt (void)
 }
 
 void
-TelnetModeMainMenu::show_create (void)
+TelnetModeMainMenu::show_create ()
 {
 	show_banner();
 
@@ -133,8 +133,10 @@ TelnetModeMainMenu::process (char* line)
 					show_main();
 					*get_handler() << "You already have the maximum number of characters allowed.\n\n";
 				} else {
-					show_create();
-					state = STATE_CREATE_SELECT;
+					// create
+					ITelnetMode* mode = new TelnetModeNewCharacter(get_handler(), account);
+					if (mode != NULL)
+						get_handler()->set_mode(new TelnetModeNewCharacter(get_handler(), account));
 				}
 			// account?
 			} else if (str_eq("3", line) || phrase_match("account", line)) {
@@ -200,45 +202,6 @@ TelnetModeMainMenu::process (char* line)
 
 			// set play mode
 			get_handler()->set_mode(new TelnetModePlay(get_handler(), player));
-			break;
-		}
-		case STATE_CREATE_SELECT:
-		{
-			// return?
-			if (!strlen(line) || phrase_match("return", line)) {
-				show_main();
-				state = STATE_MENU;
-				break;
-			}
-
-			// valid?
-			if (!PlayerManager.valid_name(line)) {
-				show_create();
-				*get_handler() << "Character names must be between " << PLAYER_NAME_MIN_LEN << " and " << PLAYER_NAME_MAX_LEN << " characters long, and may consist only of letters.\n\n";
-				break;
-			}
-
-			// fixup name
-			String name;
-			capwords(name, line);
-
-			// player already exist?
-			if (PlayerManager.exists(name)) {
-				show_create();
-				*get_handler() << "A character named " CPLAYER << name << CNORMAL " already exists.\n\n";
-				break;
-			}
-
-			// check max
-			if (account->get_char_list().size() >= account->get_max_chars()) {
-				state = STATE_MENU;
-				show_main();
-				*get_handler() << "You already have the maximum number of characters allowed.\n\n";
-				break;
-			}
-
-			// create
-			PlayerManager.create(get_handler(), account);
 			break;
 		}
 		case STATE_ACCOUNT:
@@ -419,12 +382,12 @@ TelnetModeMainMenu::process (char* line)
 
 // --- PLAY ---
 int
-TelnetModePlay::initialize (void)
+TelnetModePlay::initialize ()
 {
 	player->connect(get_handler());
 
 	// start the player
-	if (!player->is_valid() || player->start()) {
+	if (player->start()) {
 		*get_handler() << "\n" CADMIN "Failed to start your login session." CNORMAL "\n";
 		Log::Warning << "Failed to start login session for '" << player->get_id() << "'.";
 		return -1;
@@ -436,7 +399,7 @@ TelnetModePlay::initialize (void)
 }
 
 void
-TelnetModePlay::prompt (void)
+TelnetModePlay::prompt ()
 {
 	player->show_prompt();
 }
@@ -448,17 +411,14 @@ TelnetModePlay::process (char* line)
 }
 
 void
-TelnetModePlay::check (void)
+TelnetModePlay::finish ()
 {
-	if (player->get_telnet() != get_handler()) {
-		get_handler()->set_mode(new TelnetModeMainMenu(get_handler(), player->get_account()));
-		player = NULL;
-		return;
-	}
+	// disconnect if necessary
+	get_handler()->set_mode(new TelnetModeMainMenu(get_handler(), player->get_account()));
 }
 
 void
-TelnetModePlay::shutdown (void)
+TelnetModePlay::shutdown ()
 {
 	if (player && player->get_telnet() == get_handler()) {
 		player->disconnect();

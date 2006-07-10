@@ -177,6 +177,10 @@ TelnetModeLogin::prompt (void)
 void
 TelnetModeLogin::process (char* data)
 {
+	// NUL process command?
+	if (data == NULL)
+		return;
+
 	// quit?
 	if (str_eq(data, "quit")) {
 		get_handler()->disconnect();

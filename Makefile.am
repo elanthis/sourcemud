@@ -217,6 +217,7 @@ noinst_HEADERS=\
 	include/mud/command.h \
 	include/mud/container.h \
 	include/mud/control.h \
+	include/mud/creation.h \
 	include/mud/efactory.h \
 	include/mud/elist.h \
 	include/mud/entity.h \

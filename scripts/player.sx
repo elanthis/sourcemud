@@ -111,6 +111,12 @@ function printInfo(player, label, data)
 	player.setIndent(0);
 }
 
+// player starting location
+function playerStart(player)
+{
+	player.enter(getRoom('altar'), nil);
+}
+
 // extend Player
 function init()
 {
@@ -119,4 +125,5 @@ function init()
 	Player.addMethod('showInfo', playerShowInfo);
 	Player.addMethod('hisHers', playerHisHers);
 	Player.addMethod('hisHer', playerHisHer);
+	registerHook('player_start', playerStart);
 }

@@ -1,3 +1,9 @@
+2006-07-10 04:15:56  Sean Middleditch <elanthis@awesomeplay.com>
+
+  * All of the character creation code is in C++ as a TelnetMode
+    now.  However, the player traits portion of character creation
+    is still missing.  That'll come up in the next commit.
+
 2006-07-09 20:07:39  Sean Middleditch <elanthis@awesomeplay.com>
 
   * Split up the login/main menu code to login.cc and menu.cc.

@@ -364,7 +364,7 @@ int CharacterCreationProcessor::process (char* input)
 		}
 
 		// stat maxed out?
-		if (player->get_base_stat (stat) >= STAT_MAX) {
+		if (stats[stat] >= STAT_MAX) {
 			display();
 			*player << "You cannot increase that statistic any further.\n\n";
 			return 0;

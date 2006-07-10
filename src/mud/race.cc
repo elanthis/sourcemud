@@ -100,10 +100,9 @@ Race::load (File::Reader& reader)
 				std::pair<GCType::set<CharacterTraitValue>::iterator, bool> ret = i->second.insert(value);
 			}
 		FO_KEYED("stat")
-			CharStatID stat = CharStatID::lookup(node.get_name());
-			if (stat) {
+			CharStatID stat = CharStatID::lookup(node.get_key());
+			if (stat)
 				stats[stat.get_value()] = tolong(node.get_data());
-			}
 	FO_READ_ERROR
 		return -1;
 	FO_READ_END

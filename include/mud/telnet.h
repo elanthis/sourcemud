@@ -111,7 +111,7 @@ class ITelnetMode : public GC
 	virtual void prompt () = 0;
 	virtual void process (char* line) = 0;
 	virtual void shutdown () = 0;
-	virtual void check () = 0;
+	virtual void finish (); // disconnect session by default
 
 	// the handler this mode is connected to
 	inline class TelnetHandler* get_handler () const { return handler; }
@@ -137,6 +137,7 @@ class TelnetHandler : public Scriptix::Native, public SocketUser, public IStream
 	bool toggle_echo (bool value);
 	void process_command (char* cmd); // just as if typed in by user
 	void disconnect ();
+	void finish (); // tells the current mode to 'end', disconnects by default
 
 	// output
 	virtual void stream_put (const char*, size_t len);
@@ -159,11 +160,6 @@ class TelnetHandler : public Scriptix::Native, public SocketUser, public IStream
 
 	// mode
 	void set_mode (ITelnetMode* new_mode);
-		// ask mode to see if needs to do anything special - FIXME: this
-		// is a hack necessitated by Player needing to be able to tell
-		// TelnetModePlay to exit and reinstate TelnetModeMainMenu.  Our
-		// encapsulation here sucks.
-	void check_mode ();
 
 	// low-level IO
 	virtual void in_handle (char* buffer, size_t size);

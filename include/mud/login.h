@@ -20,7 +20,6 @@ class TelnetModeLogin : public ITelnetMode
 	virtual void prompt ();
 	virtual void process (char* line);
 	virtual void shutdown ();
-	virtual void check () {}
 
 	private:
 	class Account* account;
@@ -35,11 +34,10 @@ class TelnetModeNewAccount : public ITelnetMode
 	public:
 	inline TelnetModeNewAccount (TelnetHandler* s_handler) : ITelnetMode (s_handler) {}
 
-	virtual int initialize (void);
-	inline virtual void shutdown (void) {}
+	virtual int initialize ();
+	inline virtual void shutdown () {}
 	virtual void process (char* line);
-	virtual void prompt (void);
-	virtual void check (void) {}
+	virtual void prompt ();
 
 	private:
 	String id;
@@ -48,24 +46,23 @@ class TelnetModeNewAccount : public ITelnetMode
 	String passphrase;
 	int state;
 
-	void show_info (void);
+	void show_info ();
 };
 
 class TelnetModeMainMenu : public ITelnetMode
 {
-	enum { STATE_MENU, STATE_PLAY_SELECT, STATE_CREATE_SELECT,
-		STATE_DELETE_SELECT, STATE_DELETE_CONFIRM, STATE_ACCOUNT,
-		STATE_CHANGE_EMAIL, STATE_CHANGE_NAME, STATE_CHPASS_CHALLENGE,
-		STATE_CHPASS_SELECT, STATE_CHPASS_CONFIRM };
+	enum { STATE_MENU, STATE_PLAY_SELECT, STATE_DELETE_SELECT,
+		STATE_DELETE_CONFIRM, STATE_ACCOUNT, STATE_CHANGE_EMAIL,
+		STATE_CHANGE_NAME, STATE_CHPASS_CHALLENGE, STATE_CHPASS_SELECT,
+		STATE_CHPASS_CONFIRM };
 
 	public:
 	inline TelnetModeMainMenu (TelnetHandler* s_handler, Account* s_account) : ITelnetMode(s_handler), account(s_account), state(STATE_MENU) {}
 
-	virtual int initialize (void);
-	inline virtual void shutdown (void) {}
+	virtual int initialize ();
+	inline virtual void shutdown () {}
 	virtual void process (char* line);
-	virtual void prompt (void);
-	virtual void check (void) {}
+	virtual void prompt ();
 
 	private:
 	Account* account;
@@ -75,12 +72,12 @@ class TelnetModeMainMenu : public ITelnetMode
 	String tmp;
 
 	// menus
-	void show_banner (void);
-	void show_main (void);
-	void show_chars (void);
-	void show_create (void);
-	void show_del_confirm (void);
-	void show_account (void);
+	void show_banner ();
+	void show_main ();
+	void show_chars ();
+	void show_create ();
+	void show_del_confirm ();
+	void show_account ();
 };
 
 class TelnetModePlay : public ITelnetMode
@@ -88,29 +85,14 @@ class TelnetModePlay : public ITelnetMode
 	public:
 	TelnetModePlay (TelnetHandler* s_handler, class Player* s_player) : ITelnetMode (s_handler), player(s_player) {}
 
-	virtual int initialize (void);
-	virtual void prompt (void);
-	virtual void process (char* line);
-	virtual void shutdown (void);
-	virtual void check (void);
-
-	private:
-	class Player* player;
-};
-
-class TelnetModeNewCharacter : public ITelnetMode
-{
-	public:
-	TelnetModeNewCharacter (TelnetHandler* s_handler, Account* s_account) : ITelnetMode (s_handler), account(s_account) {}
-
 	virtual int initialize ();
 	virtual void prompt ();
 	virtual void process (char* line);
 	virtual void shutdown ();
-	virtual void check () {}
+	virtual void finish ();
 
 	private:
-	Account* account;
+	class Player* player;
 };
 
 #endif

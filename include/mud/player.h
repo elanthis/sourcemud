@@ -83,10 +83,6 @@ class Player : public Character
 	// account
 	inline class Account* get_account (void) const { return account; }
 
-	// valid character?
-	//   is to a playable character
-	inline bool is_valid (void) const { return flags.valid; }
-
 	// connected?
 	//   currently in use by someone
 	inline bool is_connected (void) const { return conn != NULL; }
@@ -178,9 +174,6 @@ class Player : public Character
 		uint8 height; // centimeters;
 		TraitMap traits;
 	} pdesc;
-	struct PlayerFlags {
-		uint valid:1;
-	} flags;
 	CharStatArray base_stats;
 	class Race *race;
 	CharAlign alignment;
@@ -234,9 +227,6 @@ class SPlayerManager : public IManager
 
 	// load a player - from disk
 	Player* load (class Account* account, StringArg name);
-
-	// Begin creation process with an account
-	int create (class TelnetHandler* telnet, class Account* account);
 
 	// DESTROY a player permanently (with backup)
 	int destroy (StringArg name);

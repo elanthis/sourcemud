@@ -129,8 +129,6 @@ Player::Player (class Account* s_account, StringArg s_id) : Character (AweMUD_Pl
 
 	conn = NULL;
 
-	flags.valid = false;
-
 	pdesc.height = 68;
 
 	ninfo.last_rt = 0;
@@ -311,9 +309,6 @@ Player::load_node (File::Reader& reader, File::Node& node)
 int
 Player::load_finish (void)
 {
-	// becomes valid is loaded
-	flags.valid = true;
-	
 	// chracter stuff
 	return Character::load_finish();
 }
@@ -366,9 +361,6 @@ Player::start (void)
 		do_look();
 	}
 
-	// player becomes valid
-	flags.valid = true;
-
 	// no timeout - yet
 	ninfo.timeout_ticks = 0;
 
@@ -379,9 +371,8 @@ Player::start (void)
 void
 Player::quit (void)
 {
-	// save player if valid; invalid needs explicit save
-	if (is_valid())
-		save();
+	// save the player
+	save();
 
 	// quit message
 	ZoneManager.announce (CADMIN "**" CNORMAL " " CPLAYER + get_id() + CNORMAL " has left this world, returning to " + get_gender().get_hisher() + " mundane life. " CADMIN "**" CNORMAL);
@@ -732,8 +723,8 @@ Player::disconnect (void)
 	// remove telnet handler
 	conn = NULL;
 
-	// have telnet check its mode, disconnect
-	telnet->check_mode();
+	// end the current telnet mode
+	telnet->finish();
 
 	// begin timeout
 	ninfo.timeout_ticks = ROUNDS_TO_TICKS(60); // 60 second timeout

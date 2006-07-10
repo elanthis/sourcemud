@@ -73,6 +73,7 @@ enum {
 #define CITEM		"\033!C5!"
 #define CSPECIAL	"\033!C6!"
 #define CADMIN		"\033!C7!"
+#define CWARNING	"\033!C7!"
 #define CEXIT		"\033!C8!"
 #define CSTAT		"\033!C9!"
 #define CSTAT_BAD2	"\033!C10!"

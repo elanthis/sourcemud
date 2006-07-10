@@ -177,7 +177,7 @@ TextBufferList TextBuffer::lists[] = {
 };
 
 char*
-TextBufferList::alloc (void) {
+TextBufferList::alloc () {
 	++ allocs;
 	++ out;
 	if (!list.empty()) {
@@ -207,7 +207,7 @@ TextBuffer::alloc (SizeType size)
 	return 0;
 }
 int
-TextBuffer::grow (void)
+TextBuffer::grow ()
 {
 	if (bsize == EMPTY) {
 		// base allocation
@@ -231,7 +231,7 @@ TextBuffer::grow (void)
 	}
 }
 void
-TextBuffer::release (void)
+TextBuffer::release ()
 {
 	if (bdata != NULL) {
 		lists[bsize].release(bdata);
@@ -292,7 +292,7 @@ TelnetHandler::TelnetHandler (int s_sock, const SockStorage& s_netaddr) : Script
 
 // initialize compression
 bool
-TelnetHandler::begin_mccp (void)
+TelnetHandler::begin_mccp ()
 {
 	if (!zstate) {
 		// allocte
@@ -321,7 +321,7 @@ TelnetHandler::begin_mccp (void)
 
 // end compressed stream
 void
-TelnetHandler::end_mccp (void)
+TelnetHandler::end_mccp ()
 {
 	if (zstate) {
 		// free
@@ -334,7 +334,7 @@ TelnetHandler::end_mccp (void)
 
 // disconnect
 void
-TelnetHandler::disconnect (void)
+TelnetHandler::disconnect ()
 {
 	// log
 	Log::Network << "Telnet client disconnected: " << Network::get_addr_name(addr);
@@ -571,7 +571,7 @@ TelnetHandler::stream_put (const char *text, size_t len)
 
 // clear the screen
 void
-TelnetHandler::clear_scr (void)
+TelnetHandler::clear_scr ()
 {
 	// try clear screen sequence
 	if (io_flags.use_ansi) {
@@ -858,7 +858,7 @@ TelnetHandler::in_handle (char* buffer, size_t size)
 
 // handle entered commands
 void
-TelnetHandler::process_input (void)
+TelnetHandler::process_input ()
 {
 	// have we any input?
 	if (!in_cnt)
@@ -913,13 +913,6 @@ TelnetHandler::set_mode (ITelnetMode* new_mode)
 		mode = NULL;
 		disconnect();
 	}
-}
-
-void
-TelnetHandler::check_mode (void)
-{
-	if (mode)
-		mode->check();
 }
 
 void
@@ -978,7 +971,7 @@ TelnetHandler::process_telnet_command(char* data)
 
 // process a telnet sub command
 void
-TelnetHandler::process_sb (void)
+TelnetHandler::process_sb ()
 {
 	char* data = subrequest.data();
 	if (data == NULL || sb_cnt == 0)
@@ -1044,7 +1037,7 @@ TelnetHandler::process_sb (void)
 
 // flush out the output, write prompt
 void
-TelnetHandler::prepare (void)
+TelnetHandler::prepare ()
 {
 	// fix up color
 	if (!colors.empty()) {
@@ -1250,7 +1243,7 @@ TelnetHandler::add_to_out_buffer (const char* data, size_t len)
 }
 
 void
-TelnetHandler::end_chunk (void)
+TelnetHandler::end_chunk ()
 {
 	// only if we have data
 	if (outchunk_cnt > 0) {
@@ -1273,7 +1266,7 @@ TelnetHandler::end_chunk (void)
 
 // check various timeouts
 int
-TelnetHandler::check_time (void)
+TelnetHandler::check_time ()
 {
 	// get time diff
 	time_t now;
@@ -1294,7 +1287,7 @@ TelnetHandler::check_time (void)
 }
 
 char
-TelnetHandler::get_poll_flags (void)
+TelnetHandler::get_poll_flags ()
 {
 	char flags = POLLSYS_READ;
 	if (out_cnt > 0)
@@ -1303,7 +1296,7 @@ TelnetHandler::get_poll_flags (void)
 }
 
 void
-TelnetHandler::out_ready (void)
+TelnetHandler::out_ready ()
 {
 	if (out_cnt == 0)
 		return;
@@ -1326,7 +1319,22 @@ TelnetHandler::out_ready (void)
 }
 
 void
-TelnetHandler::hangup (void)
+TelnetHandler::hangup ()
 {
 	disconnect();
+}
+
+void
+TelnetHandler::finish ()
+{
+	if (mode)
+		mode->finish();
+	else
+		disconnect();
+}
+
+void
+ITelnetMode::finish ()
+{
+	handler->disconnect();
 }
