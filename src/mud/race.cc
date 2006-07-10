@@ -37,7 +37,6 @@ Race::load (File::Reader& reader)
 	life_span = 0;
 	body = "human";
 	traits.clear();
-	skin_type = "skin";
 	height[GenderType::NONE] = 72;
 	height[GenderType::FEMALE] = 65;
 	height[GenderType::MALE] = 68;
@@ -60,9 +59,6 @@ Race::load (File::Reader& reader)
 		FO_ATTR("about")
 			FO_TYPE_ASSERT(STRING)
 			about = node.get_data();
-		FO_ATTR("skin_type")
-			FO_TYPE_ASSERT(STRING)
-			skin_type = node.get_data();
 		FO_ATTR("min_age")
 			FO_TYPE_ASSERT(INT)
 			age_min = tolong(node.get_data());

@@ -51,8 +51,6 @@ Race : public Scriptix::Native
 	bool has_trait_value (CharacterTraitID trait, CharacterTraitValue value) const;
 	const GCType::set<CharacterTraitValue>& get_trait_values (CharacterTraitID trait) const;
 	
-	inline const String& get_skin_type (void) const { return skin_type; }
-
 	inline Race* get_next (void) const { return next; }
 
 	// ---- data ----
@@ -62,7 +60,6 @@ Race : public Scriptix::Native
 	String body;
 	String about;
 	String desc;
-	String skin_type;
 
 	GCType::map<CharacterTraitID, GCType::set<CharacterTraitValue> > traits;
 
