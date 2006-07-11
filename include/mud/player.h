@@ -75,7 +75,6 @@ class Player : public Character
 	void save (void);
 
 	int load_node (File::Reader& reader, File::Node& node);
-	int load_finish (void);
 
 	// output color
 	inline const char *ncolor (void) const { return CPLAYER; }
@@ -86,9 +85,6 @@ class Player : public Character
 	// connected?
 	//   currently in use by someone
 	inline bool is_connected (void) const { return conn != NULL; }
-
-	// commands
-	virtual void process_cmd (const char *);
 
 	// birthday/age
 	uint get_age (void) const;
@@ -140,7 +136,7 @@ class Player : public Character
 	// I/O
 	virtual void stream_put (const char* data, size_t len = 0);
 	void show_prompt (void);
-	void process_command (char* cmd);
+	void process_command (String cmd);
 	void connect (class TelnetHandler* telnet);
 	void disconnect (void);
 	inline class TelnetHandler* get_telnet(void) const { return conn; }
@@ -254,9 +250,7 @@ extern SPlayerManager PlayerManager;
 
 #define PLAYER(ent) E_CAST((ent),Player)
 
-extern const char* exp_names[];
-
-extern const char* get_stat_level (uint value);
+extern String get_stat_level (uint value);
 extern const char* get_stat_color (uint value);
 
 #endif

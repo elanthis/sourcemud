@@ -13,6 +13,7 @@
 #include "common/string.h"
 #include "mud/body.h"
 #include "common/streams.h"
+#include "mud/container.h"
 
 class IAction;
 
@@ -187,9 +188,9 @@ Character : public Entity, public IStreamSink
 	class Object* get_worn_by_loc (uint loc) const;
 	class Object* get_equip_by_loc (uint loc) const;
 
-	class Object* find_held (const char* name, uint count = 1, uint* matches = NULL) const;
-	class Object* find_worn (const char* name, uint count = 1, uint* matches = NULL) const;
-	class Object* find_equip (const char* name, uint count = 1, uint* matches = NULL) const;
+	class Object* find_held (StringArg name, uint count = 1, uint* matches = NULL) const;
+	class Object* find_worn (StringArg name, uint count = 1, uint* matches = NULL) const;
+	class Object* find_equip (StringArg name, uint count = 1, uint* matches = NULL) const;
 
 	void release_object (class Object*); // *ONLY* for use by Object::release() !!!!
 
@@ -233,18 +234,17 @@ Character : public Entity, public IStreamSink
 
 	// input/output
 	virtual void stream_put (const char*, size_t len) {};
-	void process_cmd (const char*);
+	virtual void process_command (StringArg);
 
-	/* command processing utility funcs
-	 * Note: these need to be able to mangle the name argument using the
-	 * command::* functions.  They will return the input to its original
-	 * state, however, using command::fix_arg()/restore() */
-	class Object* cl_find_object (char *name, int type, bool silent = false);
-	class Character* cl_find_character (char *name, bool silent = false);
-	class RoomExit* cl_find_exit (char *name, bool silent = false);
+	// command processing utility funcs
+	class Object* cl_find_object (StringArg name, int type, bool silent = false);
+	class Object* cl_find_object (StringArg name, class Object* container, ContainerType type, bool silent = false);
+
+	class Character* cl_find_character (StringArg name, bool silent = false);
+	class RoomExit* cl_find_exit (StringArg name, bool silent = false);
 	/* cl_find_any looks for a character, then an object, then an exit.
 	 * Object searching is the same as using cl_find_object w/ GOC_ANY. */
-	class Entity* cl_find_any (char *name, bool silent = false);
+	class Entity* cl_find_any (StringArg name, bool silent = false);
 
 	// heartbeat
 	virtual void heartbeat (void);
@@ -277,10 +277,10 @@ Character : public Entity, public IStreamSink
 	void display_affects (const class StreamControl& stream) const;
 
 	// == ACTIONS ==
-	void do_emote (char const *text);
+	void do_emote (StringArg text);
 	void do_social (const class SocialAdverb* social, Entity* target);
-	void do_say (char const *text);
-	void do_sing (char const *text);
+	void do_say (StringArg text);
+	void do_sing (StringArg text);
 
 	void do_look (void);
 	void do_look (Character *who);
@@ -363,9 +363,7 @@ class StreamCharDesc {
 };
 
 
-extern const char *stat_levels[];
-
-const char *get_stat_level (uint);
+String get_stat_level (uint);
 
 #define CHARACTER(ent) E_CAST(ent,Character)
 

@@ -50,7 +50,7 @@ class Room : public Entity
 	// exits
 	class RoomExit* get_exit_at (uint);
 	class RoomExit* get_exit_by_dir (ExitDir);
-	class RoomExit* find_exit (const char *, uint c = 1, uint *matches = NULL);
+	class RoomExit* find_exit (StringArg, uint c = 1, uint *matches = NULL);
 	class RoomExit* new_exit (void); //  will pick a unique ID, return exit
 	void sort_exits (void); // re-sort exits; FIXME: this is ugly to have to do manually
 
@@ -79,11 +79,11 @@ class Room : public Entity
 	void show_exits (const class StreamControl& stream);
 
 	// output
-	void put (const char* text, size_t len, GCType::vector<class Character*>* ignore = NULL);
+	void put (StringArg text, size_t len, GCType::vector<class Character*>* ignore = NULL);
 
 	// get entities
-	class Character* find_character (const char *name, uint c = 1, uint *matches = NULL);
-	class Object* find_object (const char *name, uint c = 1, uint *matches = NULL);
+	class Character* find_character (StringArg name, uint c = 1, uint *matches = NULL);
+	class Object* find_object (StringArg name, uint c = 1, uint *matches = NULL);
 
 	// count players in room
 	unsigned long count_players (void) const;

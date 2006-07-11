@@ -36,8 +36,8 @@
 using namespace Scriptix;
 
 // Root typedef
-namespace { const MethodDef Value_Methods[] = { { NULL, 0, 0, } }; }
-const TypeDef Scriptix::IValue_Type = { "Value", NULL, Value_Methods, NULL };
+namespace { const MethodDef Value_Methods[] = { { String(), 0, 0, } }; }
+const TypeDef Scriptix::IValue_Type = { S("Value"), NULL, Value_Methods, NULL };
 
 // CONSTRUCTORS
 Value::Value (StringArg s_value)
@@ -143,7 +143,7 @@ Value::to_string() const
 		return value;
 
 	Value ret;
-	static Atom to_string_id = Atom("toString");
+	static Atom to_string_id = Atom(S("toString"));
 	if (ScriptManager.invoke(value, to_string_id, 0, NULL, &ret))
 		return Nil;
 
@@ -160,7 +160,7 @@ Value::to_int() const
 		return value;
 
 	Value ret;
-	static Atom to_int_id = Atom("toInt");
+	static Atom to_int_id = Atom(S("toInt"));
 	if (ScriptManager.invoke(value, to_int_id, 0, NULL, &ret))
 		return Nil;
 

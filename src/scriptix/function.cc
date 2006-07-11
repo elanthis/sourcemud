@@ -163,7 +163,7 @@ Function::get_line_of (size_t op_ptr) const {
 ScriptFunction
 ScriptFunction::compile (StringArg name, StringArg code, StringArg args, StringArg filename, unsigned long fileline)
 {
-	String cname = str_tr(trim(name, "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_ "), " ", "_");
+	String cname = str_tr(trim(name, S("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_ ")), S(" "), S("_"));
 	String source;
 	source += "function " + cname + " (" + args + ") {\n" + code + "\n}";
 

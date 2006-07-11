@@ -24,37 +24,37 @@ AI::load (File::Reader& reader)
 {
 	FO_READ_BEGIN
 		FO_ATTR("load")
-			load_cb = Scriptix::ScriptFunction::compile("load", node.get_data(), "self", reader.get_filename(), node.get_line());
+			load_cb = Scriptix::ScriptFunction::compile(S("load"), node.get_data(), S("self"), reader.get_filename(), node.get_line());
 			
 			if (load_cb.empty())
-				throw File::Error("Script compile failed");
+				throw File::Error(S("Script compile failed"));
 		FO_ATTR("save")
-			save_cb = Scriptix::ScriptFunction::compile("save", node.get_data(), "self,writer", reader.get_filename(), node.get_line());
+			save_cb = Scriptix::ScriptFunction::compile(S("save"), node.get_data(), S("self,writer"), reader.get_filename(), node.get_line());
 			
 			if (save_cb.empty())
-				throw File::Error("Script compile failed");
+				throw File::Error(S("Script compile failed"));
 		FO_ATTR("heartbeat")
-			heartbeat_cb = Scriptix::ScriptFunction::compile("heartbeat", node.get_data(), "self", reader.get_filename(), node.get_line());
+			heartbeat_cb = Scriptix::ScriptFunction::compile(S("heartbeat"), node.get_data(), S("self"), reader.get_filename(), node.get_line());
 			
 			if (heartbeat_cb.empty())
-				throw File::Error("Script compile failed");
+				throw File::Error(S("Script compile failed"));
 		FO_ATTR("ready")
-			ready_cb = Scriptix::ScriptFunction::compile("ready", node.get_data(), "self", reader.get_filename(), node.get_line());
+			ready_cb = Scriptix::ScriptFunction::compile(S("ready"), node.get_data(), S("self"), reader.get_filename(), node.get_line());
 			
 			if (ready_cb.empty())
-				throw File::Error("Script compile failed");
+				throw File::Error(S("Script compile failed"));
 		FO_ATTR("pump")
-			pump_cb = Scriptix::ScriptFunction::compile("pump", node.get_data(), "self,data", reader.get_filename(), node.get_line());
+			pump_cb = Scriptix::ScriptFunction::compile(S("pump"), node.get_data(), S("self,data"), reader.get_filename(), node.get_line());
 			
 			if (pump_cb.empty())
-				throw File::Error("Script compile failed");
+				throw File::Error(S("Script compile failed"));
 		FO_KEYED("event")
 			EventID event = EventID::lookup(node.get_key());
 			if (event.valid()) {
 				Scriptix::ScriptFunction handler = EventManager.compile(event, node.get_data(), reader.get_filename(), node.get_line());
 
 				if (handler.empty())
-					throw File::Error("Script compile failed");
+					throw File::Error(S("Script compile failed"));
 
 				event_cb[EventID::lookup(node.get_name())] = handler;
 			}

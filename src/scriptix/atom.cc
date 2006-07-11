@@ -68,7 +68,7 @@ String
 Scriptix::Atom::name () const
 {
 	if (!id)
-		return NULL;
+		return String();
 
 	return ID_TO_NAME(id);
 }

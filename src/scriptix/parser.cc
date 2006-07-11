@@ -88,7 +88,7 @@ Scriptix::Compiler::Compiler::add_method(Atom name, const NameList& args, Compil
 	func->pub = false;
 
 	// append magic 'self' argument
-	func->vars.insert(func->vars.begin(), Atom("self"));
+	func->vars.insert(func->vars.begin(), Atom(S("self")));
 
 	extends.back()->methods.push_back(func);
 	return func;

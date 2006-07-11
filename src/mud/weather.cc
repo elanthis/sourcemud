@@ -69,7 +69,7 @@ WeatherRegion::load (File::Reader& reader)
 		FO_ATTR("state")
 			state = get_state(node.get_data());
 			if (state < 0)
-				throw File::Error("Current state out of range");
+				throw File::Error(S("Current state out of range"));
 		FO_ATTR("ticks")
 			FO_TYPE_ASSERT(INT);
 			ticks = tolong(node.get_data());
@@ -101,22 +101,22 @@ void
 WeatherRegion::save (File::Writer& writer) const
 {
 	for (GCType::vector<WeatherState>::const_iterator si = states.begin(); si != states.end(); ++si) {
-		writer.begin("state");
-		writer.attr("id", si->id);
+		writer.begin(S("state"));
+		writer.attr(S("id"), si->id);
 		for (StringList::const_iterator di = si->descs.begin(); di != si->descs.end(); ++di)
-			writer.attr("desc", *di);
+			writer.attr(S("desc"), *di);
 		for (GCType::vector<WeatherChange>::const_iterator ci = si->changes.begin(); ci != si->changes.end(); ++ci) {
-			writer.begin("change");
-			writer.attr("target", ci->to);
-			writer.attr("chance", ci->chance);
-			writer.attr("text", ci->desc);
+			writer.begin(S("change"));
+			writer.attr(S("target"), ci->to);
+			writer.attr(S("chance"), ci->chance);
+			writer.attr(S("text"), ci->desc);
 			writer.end();
 		}
 		writer.end();
 	}
 
-	writer.attr("state", states[state].id);
-	writer.attr("ticks", ticks);
+	writer.attr(S("state"), states[state].id);
+	writer.attr(S("ticks"), ticks);
 }
 
 int

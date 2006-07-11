@@ -31,7 +31,7 @@ namespace parse {
 
   <xsl:template match="command">
     <!-- declare code block -->
-    if (str_eq(_cmd_name, "<xsl:value-of select="@name" />")) {
+    if (str_eq(_cmd_name, S("<xsl:value-of select="@name" />"))) {
 
     <!-- args -->
       if (_cmd_argv.size() != <xsl:value-of select="count(arg)" />)
@@ -55,7 +55,7 @@ namespace parse {
   <xsl:template match="code">
     <xsl:if test="function-available('saxon:line-number')" xmlns:saxon="http://icl.com/saxon">
 <xsl:text>
-#line </xsl:text><xsl:value-of select="saxon:line-number()"/> <xsl:text> "gen/parse-intr.xml"
+#line </xsl:text><xsl:value-of select="saxon:line-number()"/> <xsl:text> "src/xml/parse-intr.xml"
 </xsl:text>
     </xsl:if>
     <xsl:value-of select="."/>

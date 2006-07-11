@@ -37,7 +37,7 @@ void
 TelnetModeMainMenu::show_banner ()
 {
 	get_handler()->clear_scr();
-	*get_handler() << StreamParse(MessageManager.get("menu_banner")) << "\n";
+	*get_handler() << StreamParse(MessageManager.get(S("menu_banner"))) << S("\n");
 	*get_handler() << "Greetings, " CPLAYER << account->get_name() << CNORMAL "!\n\n";
 }
 
@@ -117,17 +117,19 @@ TelnetModeMainMenu::show_create ()
 void
 TelnetModeMainMenu::process (char* line)
 {
+	String input(line);
+
 	switch (state) {
 		case STATE_MENU:
 			// erm, nothing?
-			if (!strlen(line)) {
+			if (!strlen(input)) {
 				show_main();
 			// play?
-			} else if (str_eq("1", line) || phrase_match("play", line)) {
+			} else if (str_eq(S("1"), input) || phrase_match(S("play"), input)) {
 				state = STATE_PLAY_SELECT;
 				show_chars();
 			// create?
-			} else if (str_eq("2", line) || phrase_match("create", line)) {
+			} else if (str_eq(S("2"), input) || phrase_match(S("create"), input)) {
 				// check max
 				if (account->get_char_list().size() >= account->get_max_chars()) {
 					show_main();
@@ -139,16 +141,16 @@ TelnetModeMainMenu::process (char* line)
 						get_handler()->set_mode(new TelnetModeNewCharacter(get_handler(), account));
 				}
 			// account?
-			} else if (str_eq("3", line) || phrase_match("account", line)) {
+			} else if (str_eq(S("3"), input) || phrase_match(S("account"), input)) {
 				state = STATE_ACCOUNT;
 				show_account();
 			// delete?
-			} else if (str_eq("4", line) || phrase_match("delete", line)) {
+			} else if (str_eq(S("4"), input) || phrase_match(S("delete"), input)) {
 				state = STATE_DELETE_SELECT;
 				show_chars();
 			// exit?
-			} else if (str_eq("5", line) || phrase_match("exit", line)) {
-				*get_handler() << StreamParse(MessageManager.get("quit"));
+			} else if (str_eq(S("5"), input) || phrase_match(S("exit"), input)) {
+				*get_handler() << StreamParse(MessageManager.get(S("quit")));
 				get_handler()->disconnect();
 			// eh?
 			} else {
@@ -159,8 +161,8 @@ TelnetModeMainMenu::process (char* line)
 		case STATE_PLAY_SELECT:
 		{
 			// conver input
-			int inopt = tolong(line) - 1;
-			if (inopt == (int)account->get_char_list().size() || phrase_match("return", line)) {
+			int inopt = tolong(input) - 1;
+			if (inopt == (int)account->get_char_list().size() || phrase_match(S("return"), input)) {
 				state = STATE_MENU;
 				show_main();
 				break;
@@ -169,7 +171,7 @@ TelnetModeMainMenu::process (char* line)
 			// whom did they ask for?
 			int choice = -1;
 			for (int i = 0; i < (int)account->get_char_list().size(); ++i) {
-				if (inopt == i || phrase_match(account->get_char_list()[i], line)) {
+				if (inopt == i || phrase_match(account->get_char_list()[i], input)) {
 					choice = i;
 					break;
 				}
@@ -206,25 +208,25 @@ TelnetModeMainMenu::process (char* line)
 		}
 		case STATE_ACCOUNT:
 			// change name?
-			if (str_eq("1", line) || phrase_match("name", line)) {
+			if (str_eq(S("1"), input) || phrase_match(S("name"), input)) {
 				state = STATE_CHANGE_NAME;
 				show_banner();
 				*get_handler() << "Current name: " << account->get_name() << ".\n\n";
 				*get_handler() << "You may correct your real-life name registered with this account.  To leave your name unchanged, do not enter and text and simple press return/enter.\n\n";
 			// change email?
-			} else if (str_eq("2", line) || phrase_match("email", line)) {
+			} else if (str_eq(S("2"), input) || phrase_match(S("email"), input)) {
 				state = STATE_CHANGE_EMAIL;
 				show_banner();
 				*get_handler() << "Current email address: " << account->get_email() << ".\n\n";
 				*get_handler() << "You may correct the email address registered with this account.  To leave your email address unchanged, do not enter and text and simple press return/enter.\n\n";
 			// change password?
-			} else if (str_eq("3", line) || phrase_match("passphrase", line)) {
+			} else if (str_eq(S("3"), input) || phrase_match(S("passphrase"), input)) {
 				state = STATE_CHPASS_CHALLENGE;
 				show_banner();
 				*get_handler() << "You must enter your current passphrase before you may select a new one.\n\n";
 				get_handler()->toggle_echo(false);
 			// return?
-			} else if (!strlen(line) || str_eq("4", line) || phrase_match("return", line)) {
+			} else if (!strlen(input) || str_eq(S("4"), input) || phrase_match(S("return"), input)) {
 				show_main();
 				state = STATE_MENU;
 			// er?
@@ -238,8 +240,8 @@ TelnetModeMainMenu::process (char* line)
 			state = STATE_ACCOUNT;
 
 			// not empty?  change
-			if (strlen(line)) {
-				account->set_name(line);
+			if (strlen(input)) {
+				account->set_name(input);
 				show_account();
 				*get_handler() << "Your name has been changed.\n\n";
 			} else {
@@ -251,8 +253,8 @@ TelnetModeMainMenu::process (char* line)
 			state = STATE_ACCOUNT;
 
 			// not empty?  change
-			if (strlen(line)) {
-				account->set_email(line);
+			if (strlen(input)) {
+				account->set_email(input);
 				show_account();
 				*get_handler() << "Your email address has been changed.\n\n";
 			} else {
@@ -261,7 +263,7 @@ TelnetModeMainMenu::process (char* line)
 			break;
 		case STATE_CHPASS_CHALLENGE:
 			// check it
-			if (!account->check_passphrase(line)) {
+			if (!account->check_passphrase(input)) {
 				state = STATE_ACCOUNT;
 				show_account();
 				*get_handler() << "Passphrase incorrect.\n\n";
@@ -276,7 +278,7 @@ TelnetModeMainMenu::process (char* line)
 			break;
 		case STATE_CHPASS_SELECT:
 			// must be valid
-			if (!strlen(line) || !AccountManager.valid_passphrase(line)) {
+			if (!strlen(input) || !AccountManager.valid_passphrase(input)) {
 				state = STATE_ACCOUNT;
 				show_account();
 				*get_handler() << "Passphrases must be at least " << ACCOUNT_PASS_MIN_LEN << " characters, and have both letters and numbers.  Passphrases may also contain symbols or punctuation characters.\n\n";
@@ -285,7 +287,7 @@ TelnetModeMainMenu::process (char* line)
 			}
 
 			// store it in temporary
-			tmp = line;
+			tmp = input;
 
 			// next state
 			state = STATE_CHPASS_CONFIRM;
@@ -297,7 +299,7 @@ TelnetModeMainMenu::process (char* line)
 			get_handler()->toggle_echo(true);
 
 			// confirm it
-			if (strcmp(line, tmp)) {
+			if (strcmp(input, tmp)) {
 				state = STATE_ACCOUNT;
 				show_account();
 				*get_handler() << "Passphrases do not match.\n\n";
@@ -306,7 +308,7 @@ TelnetModeMainMenu::process (char* line)
 
 
 			// set passphrase
-			account->set_passphrase(line);
+			account->set_passphrase(input);
 
 			// clear the tmp passphrase (no, this isn't for security - way too weak for that)
 			tmp.clear();
@@ -319,8 +321,8 @@ TelnetModeMainMenu::process (char* line)
 		case STATE_DELETE_SELECT:
 		{
 			// conver input
-			int inopt = tolong(line) - 1;
-			if (inopt == (int)account->get_char_list().size() || phrase_match("return", line)) {
+			int inopt = tolong(input) - 1;
+			if (inopt == (int)account->get_char_list().size() || phrase_match(S("return"), input)) {
 				state = STATE_MENU;
 				show_main();
 				break;
@@ -329,7 +331,7 @@ TelnetModeMainMenu::process (char* line)
 			// whom did they ask for?
 			int choice = -1;
 			for (int i = 0; i < (int)account->get_char_list().size(); ++i) {
-				if (inopt == i || phrase_match(account->get_char_list()[i], line)) {
+				if (inopt == i || phrase_match(account->get_char_list()[i], input)) {
 					choice = i;
 					break;
 				}
@@ -358,7 +360,7 @@ TelnetModeMainMenu::process (char* line)
 			show_main();
 
 			// confirmed?  delete...
-			if (!strcmp(line, "I am sure!")) {
+			if (!strcmp(input, "I am sure!")) {
 				// did delete work?
 				if (PlayerManager.destroy(tmp)) {
 					*get_handler() << "Internal error; could not delete character.\n\n";
@@ -407,7 +409,7 @@ TelnetModePlay::prompt ()
 void
 TelnetModePlay::process (char* line)
 {
-	player->process_command(line);
+	player->process_command(String(line));
 }
 
 void

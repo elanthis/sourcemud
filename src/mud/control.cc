@@ -105,7 +105,7 @@ ControlHandler::process ()
 
 		// setup
 		int argc = 0;
-		char* argv[MAX_CTRL_ARGS];
+		String argv[MAX_CTRL_ARGS];
 		argv[0] = in_buffer;
 		char* cptr = in_buffer;
 		char* bptr = in_buffer;
@@ -179,24 +179,24 @@ ControlHandler::process ()
 }
 
 void
-ControlHandler::handle (int argc, char **argv)
+ControlHandler::handle (int argc, String argv[])
 {
 	// server version
-	if (str_eq(argv[0], "version")) {
+	if (str_eq(argv[0], S("version"))) {
 		*this << "-" << VERSION << "\n+OK\n";
 	// server build
-	} else if (str_eq(argv[0], "build")) {
+	} else if (str_eq(argv[0], S("build"))) {
 		*this << "-" << __DATE__ << " " << __TIME__ << "\n+OK\n";
 	// account count
-	} else if (str_eq(argv[0], "pcount")) {
+	} else if (str_eq(argv[0], S("pcount"))) {
 		*this << "-" << PlayerManager.count() << "\n+OK\n";
 	// quit
-	} else if (str_eq(argv[0], "quit")) {
+	} else if (str_eq(argv[0], S("quit"))) {
 		*this << "+OK Farewell\n";
 		close(sock);
 		sock = -1;
 	// change passphrase
-	} else if (str_eq(argv[0], "chpass")) {
+	} else if (str_eq(argv[0], S("chpass"))) {
 		if (argc != 3) {
 			*this << "+BADPARAM chpass <account> <pass>\n";
 			return;
@@ -217,7 +217,7 @@ ControlHandler::handle (int argc, char **argv)
 		Log::Info << "Password of account '" << account->get_id() << "' changed over control interface";
 		*this << "+OK Password changed\n";
 	// new account
-	} else if (str_eq(argv[0], "newaccount")) {
+	} else if (str_eq(argv[0], S("newaccount"))) {
 		// check args
 		if (argc != 2) {
 			*this << "+BADPARAM newaccount <account>\n";
@@ -247,7 +247,7 @@ ControlHandler::handle (int argc, char **argv)
 
 		*this << "+OK\n";
 	// change name
-	} else if (str_eq(argv[0], "chname")) {
+	} else if (str_eq(argv[0], S("chname"))) {
 		if (argc < 3) {
 			*this << "+BADPARAM chname <account> <name>\n";
 			return;
@@ -266,7 +266,7 @@ ControlHandler::handle (int argc, char **argv)
 		Log::Info << "Real name of account '" << account->get_id() << "' changed over control interface";
 		*this << "+OK Name changed\n";
 	// change email
-	} else if (str_eq(argv[0], "chmail")) {
+	} else if (str_eq(argv[0], S("chmail"))) {
 		if (argc != 3) {
 			*this << "+BADPARAM chmail <account> <mail address>\n";
 			return;
@@ -285,7 +285,7 @@ ControlHandler::handle (int argc, char **argv)
 		Log::Info << "E-mail address of account '" << account->get_name() << "' changed over control interface";
 		*this << "+OK Mail address changed\n";
 	// disable an account
-	} else if (str_eq(argv[0], "disable")) {
+	} else if (str_eq(argv[0], S("disable"))) {
 		if (argc < 2) {
 			*this << "+BADPARAM disable <account>\n";
 			return;
@@ -305,7 +305,7 @@ ControlHandler::handle (int argc, char **argv)
 		Log::Info << "Account '" << account->get_id() << "' disabled over control interface";
 		*this << "+OK Account disabled\n";
 	// enable an account
-	} else if (str_eq(argv[0], "enable")) {
+	} else if (str_eq(argv[0], S("enable"))) {
 		if (argc < 2) {
 			*this << "+BADPARAM enable <account>\n";
 			return;
@@ -325,7 +325,7 @@ ControlHandler::handle (int argc, char **argv)
 		Log::Info << "Account '" << account->get_id() << "' enabled over control interface";
 		*this << "+OK Account enabled\n";
 	// set max chars for an account
-	} else if (str_eq(argv[0], "setmaxchars")) {
+	} else if (str_eq(argv[0], S("setmaxchars"))) {
 		if (argc < 3) {
 			*this << "+BADPARAM setmaxchars <account> <amount>\n";
 			return;
@@ -351,7 +351,7 @@ ControlHandler::handle (int argc, char **argv)
 		Log::Info << "Account '" << account->get_id() << "' has max chars set to " << amount << " over control interface";
 		*this << "+OK Account updated\n";
 	// set max active for an account
-	} else if (str_eq(argv[0], "setmaxactive")) {
+	} else if (str_eq(argv[0], S("setmaxactive"))) {
 		if (argc < 3) {
 			*this << "+BADPARAM setmaxactive <account> <amount>\n";
 			return;
@@ -377,7 +377,7 @@ ControlHandler::handle (int argc, char **argv)
 		Log::Info << "Account '" << account->get_id() << "' has max active set to " << amount << " over control interface";
 		*this << "+OK Account updated\n";
 	// show account info
-	} else if (str_eq(argv[0], "showaccount")) {
+	} else if (str_eq(argv[0], S("showaccount"))) {
 		if (argc < 2) {
 			*this << "+BADPARAM showaccount <account>\n";
 			return;
@@ -394,17 +394,17 @@ ControlHandler::handle (int argc, char **argv)
 		*this << "-EMAIL=" << account->get_email() << "\n";
 		*this << "-MAXCHARS=" << account->get_max_chars() << "\n";
 		*this << "-MAXACTIVE=" << account->get_max_active() << "\n";
-		*this << "-DISABLED=" << (account->is_disabled() ? "YES" : "NO") << "\n";
+		*this << "-DISABLED=" << (account->is_disabled() ? S("YES") : S("NO")) << "\n";
 		*this << "-CHARACTERS=" << implode(account->get_char_list(), ',') << "\n";
 		*this << "+OK\n";
 	// shutdown server
-	} else if (str_eq(argv[0], "shutdown")) {
+	} else if (str_eq(argv[0], S("shutdown"))) {
 		CHECK_ADMIN
 
 		AweMUD::shutdown();
 		*this << "+OK Shutting down\n";
 	// announce
-	} else if (str_eq(argv[0], "announce")) {
+	} else if (str_eq(argv[0], S("announce"))) {
 		if (argc < 2) {
 			*this << "+BADPARAM announce <text>\n";
 			return;
@@ -416,7 +416,7 @@ ControlHandler::handle (int argc, char **argv)
 
 		*this << "+OK\n";
 	// connection list
-	} else if (str_eq(argv[0], "connections")) {
+	} else if (str_eq(argv[0], S("connections"))) {
 		const IPConnList::ConnList& conn_list = NetworkManager.connections.get_conn_list();
 
 		for (IPConnList::ConnList::const_iterator i = conn_list.begin(); i != conn_list.end(); ++i)
@@ -424,7 +424,7 @@ ControlHandler::handle (int argc, char **argv)
 
 		*this << "+OK\n";
 	// attempt to login
-	} else if (str_eq("login", argv[0])) {
+	} else if (str_eq(S(S("login")), argv[0])) {
 		if (argc < 3) {
 			*this << "+BADPARAM login <user> <passphrase>\n";
 			return;

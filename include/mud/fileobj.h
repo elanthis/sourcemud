@@ -223,7 +223,7 @@ class ScriptRestrictedWriter : public Scriptix::Native
 #define FO_ATTR_END \
 				if (_x_is_read) { \
 					Log::Error << "Unrecognized " << (node.is_attr() ? "attribute" : "object") << " '" << node.get_name() << "' at " << reader.get_filename() << ':' << node.get_line() << " in " << __FILE__ <<  ':' << __LINE__; \
-					throw(File::Error("unexpected value")); \
+					throw(File::Error(S("unexpected value"))); \
 				} else { \
 					return FO_NOTFOUND_CODE; \
 				} \
@@ -243,7 +243,7 @@ class ScriptRestrictedWriter : public Scriptix::Native
 			else if (node.is_keyed()) Log::Error << "Unrecognized keyed attribute '" << node.get_name() << "' at " << reader.get_filename() << ':' << node.get_line(); \
 			else if (node.is_custom()) Log::Error << "Unexpected custom attribute '@" << node.get_name() << "' at " << reader.get_filename() << ':' << node.get_line(); \
 			else if (node.is_begin()) Log::Error << "Unrecognized object '" << node.get_name() << "' at " << reader.get_filename() << ':' << node.get_line(); \
-			throw(File::Error("unexpected value")); \
+			throw(File::Error(S("unexpected value"))); \
 		} \
 	} } catch (File::Error& error) { \
 		Log::Error << error.get_what() << " at " << reader.get_filename() << ':' << reader.get_line();
@@ -260,7 +260,7 @@ class ScriptRestrictedWriter : public Scriptix::Native
 #define FO_TYPE_ASSERT(type) \
 	if(node.get_datatype() != (File::TYPE_ ## type)) { \
 		Log::Error << "Incorrect data type for '" << node.get_name() << "' at " << reader.get_filename() << ':' << node.get_line(); \
-		throw(File::Error("data type mismatch")); \
+		throw(File::Error(S("data type mismatch"))); \
 	}
 
 #endif

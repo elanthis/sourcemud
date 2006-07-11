@@ -22,39 +22,39 @@
 #include "mud/settings.h"
 
 String GenderType::names[GenderType::COUNT] = {
-	"none",
-	"female",
-	"male",
+	S("none"),
+	S("female"),
+	S("male"),
 };
 String GenderType::hisher[GenderType::COUNT] = {
-	"its",
-	"her",
-	"his",
+	S("its"),
+	S("her"),
+	S("his"),
 };
 String GenderType::hishers[GenderType::COUNT] = {
-	"its",
-	"hers",
-	"his",
+	S("its"),
+	S("hers"),
+	S("his"),
 };
 String GenderType::heshe[GenderType::COUNT] = {
-	"it",
-	"she",
-	"he",
+	S("it"),
+	S("she"),
+	S("he"),
 };
 String GenderType::himher[GenderType::COUNT] = {
-	"it",
-	"her",
-	"him",
+	S("it"),
+	S("her"),
+	S("him"),
 };
 String GenderType::manwoman[GenderType::COUNT] = {
-	"thing",
-	"woman",
-	"man",
+	S("thing"),
+	S("woman"),
+	S("man"),
 };
 String GenderType::malefemale[GenderType::COUNT] = {
-	"neuter",
-	"female",
-	"male",
+	S("neuter"),
+	S("female"),
+	S("male"),
 };
 
 GenderType
@@ -67,18 +67,17 @@ GenderType::lookup (StringArg name)
 }
 
 String EquipLocation::names[] = {
-	"none",
-	"head",
-	"torso",
-	"arm",
-	"leg",
-	"hand",
-	"foot",
-	"neck",
-	"body",
-	"back",
-	"waist",
-	NULL
+	S("none"),
+	S("head"),
+	S("torso"),
+	S("arm"),
+	S("leg"),
+	S("hand"),
+	S("foot"),
+	S("neck"),
+	S("body"),
+	S("back"),
+	S("waist")
 };
 
 EquipLocation
@@ -258,9 +257,8 @@ Character::get_equip_at (uint i) const
 }
 
 Object *
-Character::find_worn (const char *name, uint count, uint *matches) const
+Character::find_worn (StringArg name, uint count, uint *matches) const
 {
-	assert (name != NULL);
 	assert (count != 0);
 
 	// count
@@ -290,9 +288,8 @@ Character::find_worn (const char *name, uint count, uint *matches) const
 }
 
 Object *
-Character::find_held (const char *name, uint count, uint *matches) const
+Character::find_held (StringArg name, uint count, uint *matches) const
 {
-	assert (name != NULL);
 	assert (count != 0);
 
 	// count
@@ -317,9 +314,8 @@ Character::find_held (const char *name, uint count, uint *matches) const
 }
 
 Object *
-Character::find_equip (const char *name, uint count, uint *matches) const
+Character::find_equip (StringArg name, uint count, uint *matches) const
 {
-	assert (name != NULL);
 	assert (count != 0);
 	uint held_matches;
 

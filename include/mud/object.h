@@ -254,7 +254,7 @@ Object : public Entity
 	bool has_container (ContainerType type) const;
 	bool add_object (Object *sub, ContainerType type);
 	void remove_object (Object *sub, ContainerType type);
-	Object *find_object (const char *name, uint index, ContainerType type, uint *matches = NULL) const;
+	Object *find_object (StringArg name, uint index, ContainerType type, uint *matches = NULL) const;
 	void show_contents (class Player *player, ContainerType type) const;
 
 	// data

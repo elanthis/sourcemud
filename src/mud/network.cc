@@ -338,7 +338,7 @@ IPDenyList::load (StringArg path)
 			continue;
 
 		// add and handle return codes
-		int err = add(line);
+		int err = add(String(line));
 		if (err == -1)
 			Log::Warning << "Invalid IP deny line at " << path << ":" << lcnt;
 	}
@@ -559,7 +559,7 @@ Network::get_addr_name(const SockStorage& addr)
 
 	// no port?  just return the address
 	if (!strlen(servbuf))
-		return hostbuf;
+		return String(hostbuf);
 
 	// host have a : (*cough* IPv6 *cough*) ? format [addr]:port
 	if (strchr(hostbuf, ':'))
@@ -567,7 +567,7 @@ Network::get_addr_name(const SockStorage& addr)
 	else
 		snprintf(buffer, sizeof(buffer), "%s:%s", hostbuf, servbuf);
 
-	return buffer;
+	return String(buffer);
 }
 
 // get peer uid on AF_UNIX sockets

@@ -16,12 +16,14 @@
 #include "mud/settings.h"
 
 void
-Player::process_cmd (const char *line)
+Player::process_command (String line)
 {
-	assert (line != NULL);
+	if (str_eq(line, S("quit")))
+		quit();
 
-	if (!line)
+	if (line.empty())
 		return;
+
 	if (line[0] == '#')
 		line = last_command;
 	else
@@ -33,7 +35,7 @@ Player::process_cmd (const char *line)
 		if (line[1] == '\0')
 			*this << "Say what?\n";
 		else
-			do_say (line+ 1);
+			do_say (String(line.c_str() + 1)); // FIXME: make this more efficient
 		return;
 	}
 
@@ -43,14 +45,14 @@ Player::process_cmd (const char *line)
 		if (line[1] == '\0')
 			*this << "Do what?\n";
 		else
-			do_emote (line + 1);
+			do_emote (String(line.c_str() + 1)); // FIXME: make this more efficient
 		return;
 	}
 
 	CommandManager.call (this, line);
 }
 
-void command_tell (Player* player, char** argv)
+void command_tell (Player* player, String argv[])
 {
 	Player* cn = PlayerManager.get(argv[0]);
 	if (cn) {
@@ -68,7 +70,7 @@ Player::do_tell (Player* who, StringArg what)
 	*this << "Message sent to " << StreamName(who) << ".\n";
 }
 
-void command_reply (Player* player, char** argv)
+void command_reply (Player* player, String argv[])
 {
 	player->do_reply(argv[0]);
 }
@@ -91,17 +93,17 @@ Player::do_reply (StringArg what)
 	}
 }
 
-void command_inventory (Player* player, char**)
+void command_inventory (Player* player, String[])
 {
 	player->display_inventory ();
 }
 
-void command_skills (Player* player, char**)
+void command_skills (Player* player, String[])
 {
 	player->display_skills ();
 }
 
-void command_setcolor (Player* player, char** argv)
+void command_setcolor (Player* player, String argv[])
 {
 	// must have a telnet connection
 	if (player->get_telnet() == NULL) {
@@ -110,11 +112,16 @@ void command_setcolor (Player* player, char** argv)
 	}
 
 	// get type/color
-	int ctype = get_index_of (color_type_names, argv[0]);
-	int cvalue = get_index_of (color_value_names, argv[1]);
+	int ctype, cvalue;
+	for (ctype = 0; !color_type_names[ctype].empty(); ++ctype)
+		if (str_eq(color_type_names[ctype], argv[0]))
+			break;
+	for (cvalue = 0; !color_value_names[cvalue].empty(); ++cvalue)
+		if (str_eq(color_value_names[cvalue], argv[1]))
+			break;
 
 	// invalid color type
-	if (ctype < 0) {
+	if (color_type_names[ctype].empty()) {
 		// determine column count
 		int max_col = (player->get_width() - 3) / 20; // figure max size
 		if (max_col <= 0)
@@ -123,7 +130,7 @@ void command_setcolor (Player* player, char** argv)
 		// print list
 		*player << "Invalid type '" << argv[0] << "'.  Possible options are:\n";
 		int col = 0;
-		for (uint i = 0; color_type_names[i] != NULL; ++i) {
+		for (uint i = 0; !color_type_names[i].empty(); ++i) {
 			// display
 			player->set_indent(col * 20 + 2);
 			*player << color_type_names[i];
@@ -139,7 +146,7 @@ void command_setcolor (Player* player, char** argv)
 		player->set_indent(0);
 
 	// invalid color
-	} else if (cvalue < 0) {
+	} else if (color_value_names[cvalue].empty()) {
 		// determine column count
 		int max_col = (player->get_width() - 3) / 20; // figure max size
 		if (max_col <= 0)
@@ -148,7 +155,7 @@ void command_setcolor (Player* player, char** argv)
 		// print list
 		*player << "Invalid color '" << argv[1] << "'.  Possible options are:\n";
 		int col = 0;
-		for (uint i = 0; color_value_names[i] != NULL; ++i) {
+		for (uint i = 0; !color_value_names[i].empty(); ++i) {
 			// display
 			player->set_indent(col * 20 + 2);
 			*player << color_value_names[i] << " (" << color_values[i] << "ABC" << CNORMAL << ")";
@@ -170,12 +177,12 @@ void command_setcolor (Player* player, char** argv)
 	}
 }
 
-void command_commands (Player *ply, char**)
+void command_commands (Player *ply, String[])
 {
 	CommandManager.show_list (ply);
 }
 
-void command_time (Player *player, char**)
+void command_time (Player *player, String[])
 {
 	char time_str[40];
 	char date_str[120];
@@ -188,17 +195,17 @@ void command_time (Player *player, char**)
 		*player << "It is nighttime.  The Sun will rise in " << ((TimeManager.time.get_hour() < SUN_UP_HOUR) ? SUN_UP_HOUR - TimeManager.time.get_hour() : SUN_UP_HOUR + 24 - TimeManager.time.get_hour()) << " hours.\n";
 }
 
-void command_who (Player *player, char**)
+void command_who (Player *player, String[])
 {
 	PlayerManager.list (*player);
 }
 
-void command_server (Player *player, char**)
+void command_server (Player *player, String[])
 {
 	*player << "AweMUD V" VERSION "\nBuild: " __DATE__ " " __TIME__ "\nUptime: " << AweMUD::get_uptime() << "\n";
 }
 
-void command_bug (Player* player, char** argv)
+void command_bug (Player* player, String argv[])
 {
 #ifdef HAVE_SENDMAIL
 	// mail address
@@ -230,7 +237,7 @@ void command_bug (Player* player, char** argv)
 #endif // HAVE_SENDMAIL
 }
 
-void command_abuse (Player* player, char** argv)
+void command_abuse (Player* player, String argv[])
 {
 #ifdef HAVE_SENDMAIL
 	// mail address
@@ -263,7 +270,7 @@ void command_abuse (Player* player, char** argv)
 #endif // HAVE_SENDMAIL
 }
 
-void command_man (Player* player, char** argv)
+void command_man (Player* player, String argv[])
 {
 	CommandManager.show_man(player, argv[0]);
 }

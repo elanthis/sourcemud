@@ -41,7 +41,7 @@ typedef class Value (*sx_constructor)(const class TypeInfo* type);
 
 class MethodDef {
 	public:
-	const char* name;
+	String name;
 	size_t argc;
 	bool varg;
 	void* method;
@@ -49,7 +49,7 @@ class MethodDef {
 
 class TypeDef {
 	public:
-	const char* name;		///< Name of type.
+	String name;		///< Name of type.
 	const TypeDef* parent;		///< Parent type.
 	const MethodDef* methods;	///< Array of methods.
 	const sx_constructor constructor;	///< Create a new class IValue of our TypeInfo.
@@ -111,15 +111,15 @@ extern const TypeDef IValue_Type;
 #define SX_TYPEIMPL(CPPNAME, SXNAME, CPPPARENT, CREATE) \
 	extern const Scriptix::TypeDef CPPNAME ## _Type; \
 	const Scriptix::TypeDef CPPNAME ## _Type = { \
-		SXNAME , \
+		S(SXNAME) , \
 		&CPPPARENT ## _Type, \
 		CPPNAME ## _Methods, \
 		CREATE \
 	}; 
-#define SX_NOMETHODS(CPPNAME) namespace { Scriptix::MethodDef CPPNAME ## _Methods[] = { { NULL, 0, 0, NULL } }; }
+#define SX_NOMETHODS(CPPNAME) namespace { Scriptix::MethodDef CPPNAME ## _Methods[] = { { String(), 0, 0, NULL } }; }
 #define SX_BEGINMETHODS(CPPNAME) namespace { Scriptix::MethodDef CPPNAME ## _Methods[] = {
-#define SX_ENDMETHODS { NULL, 0, 0, NULL } }; }
-#define SX_DEFMETHOD(CPPNAME, SXNAME, ARGC, VARARG) { SXNAME, ARGC, VARARG, (void*)CPPNAME }, 
+#define SX_ENDMETHODS { String(), 0, 0, NULL } }; }
+#define SX_DEFMETHOD(CPPNAME, SXNAME, ARGC, VARARG) { S(SXNAME), ARGC, VARARG, (void*)CPPNAME }, 
 
 } // namespace Scriptix
 

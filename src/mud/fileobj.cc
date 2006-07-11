@@ -298,7 +298,7 @@ File::Reader::get (Node& node)
 
 	// expect a name
 	if (op != TOKEN_STRING)
-		throw File::Error("Parse error: name expected");
+		throw File::Error(S("Parse error: name expected"));
 	node.name = opstr;
 
 	// get next token
@@ -306,18 +306,18 @@ File::Reader::get (Node& node)
 	if (op == TOKEN_ERROR)
 		throw File::Error(opstr);
 	if (op == TOKEN_EOF)
-		throw File::Error("Parse error: unexpected EOF");
+		throw File::Error(S("Parse error: unexpected EOF"));
 
 	// keyed attr?
 	if (op == TOKEN_KEY) {
 		// custom attrs don't have keys
 		if (custom)
-			throw File::Error("Parse error: unexpected :");
+			throw File::Error(S("Parse error: unexpected :"));
 
 		// read key
 		op = read_token(opstr);
 		if (op != TOKEN_STRING)
-			throw File::Error("Parse error: name expected after :");
+			throw File::Error(S("Parse error: name expected after :"));
 		node.key = opstr;
 
 		// next token
@@ -325,14 +325,14 @@ File::Reader::get (Node& node)
 		if (op == TOKEN_ERROR)
 			throw File::Error(opstr);
 		if (op == TOKEN_EOF)
-			throw File::Error("Parse error: unexpected EOF");
+			throw File::Error(S("Parse error: unexpected EOF"));
 	}
 
 	// object?
 	if (op == TOKEN_BEGIN) {
 		// if we had a custom marker or key, we can't be an object
 		if (custom || node.key)
-			throw File::Error("Parse error: unexpected object");
+			throw File::Error(S("Parse error: unexpected object"));
 
 		// return as object type
 		node.type = Node::BEGIN;
@@ -350,7 +350,7 @@ File::Reader::get (Node& node)
 		if (type == TOKEN_ERROR)
 			throw File::Error(data);
 		if (type == TOKEN_EOF)
-			throw File::Error("Parse error: unexpected EOF");
+			throw File::Error(S("Parse error: unexpected EOF"));
 
 		// set data
 		if (type == TOKEN_NUMBER) {
@@ -370,14 +370,14 @@ File::Reader::get (Node& node)
 			node.data = data;
 		// invalid syntax
 		} else {
-			throw File::Error("Parse error: invalid syntax");
+			throw File::Error(S("Parse error: invalid syntax"));
 		}
 
 		return true;
 	}
 
 	// wrong token
-	throw File::Error("Parse error: unexpected token");
+	throw File::Error(S("Parse error: unexpected token"));
 }
 
 void
@@ -759,10 +759,16 @@ File::Node::get_int () const
 	if (datatype != TYPE_INT) {
 		// FIXME: Log::Error << "Incorrect data type for '" << get_name() << "' at " << get_filename() << ':' << get_line();
 		Log::Error << "Incorrect data type for '" << get_name() << "' at :" << get_line();
-		throw(File::Error("data type mismatch"));
+		throw(File::Error(S("data type mismatch")));
 	}
 
 	return tolong(data);
+}
+
+bool
+File::Node::get_bool () const
+{
+	return data == "true" || data == "yes" || data == "on";
 }
 
 SCRIPT_TYPE(RestrictedWriter)

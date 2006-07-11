@@ -60,7 +60,6 @@ class Value : public GCType::GC {
 	Value (StringArg value);
 	Value (long value);
 
-	inline Value (const char* s_value) { *this = Value(String(s_value)); }
 	inline Value (int s_value) { *this = Value((long)s_value); }
 
 	// get IValue*

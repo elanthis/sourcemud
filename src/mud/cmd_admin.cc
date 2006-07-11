@@ -14,15 +14,15 @@
 #include "mud/account.h"
 
 // shutdown the server
-void command_admin_shutdown (Player* admin, char**) {
+void command_admin_shutdown (Player* admin, String[]) {
 	*admin << CADMIN "Shutdown issued." CNORMAL "\n";
 	Log::Admin << "Shutdown issued by " << admin->get_account()->get_id();
-	ZoneManager.announce ("Shutting down, NOW!");
+	ZoneManager.announce (S("Shutting down, NOW!"));
 	AweMUD::shutdown();
 }
 
 // grant privileges to a user
-void command_admin_grant (Player* admin, char** argv) {
+void command_admin_grant (Player* admin, String argv[]) {
 	Account *account = AccountManager.get(argv[0]);
 	if (account == NULL) {
 		*admin << "Account '" << argv[0] << "' not found.\n";
@@ -41,7 +41,7 @@ void command_admin_grant (Player* admin, char** argv) {
 }
 
 // revoke privileges from a user
-void command_admin_revoke (Player* admin, char** argv) {
+void command_admin_revoke (Player* admin, String argv[]) {
 	Account *account = AccountManager.get(argv[0]);
 	if (account == NULL) {
 		*admin << "Account '" << argv[0] << "' does not exist.\n";
@@ -59,7 +59,7 @@ void command_admin_revoke (Player* admin, char** argv) {
 }
 
 // block an IP address from connecting
-void command_admin_blockip (Player* admin, char** argv) {
+void command_admin_blockip (Player* admin, String argv[]) {
 	*admin << CADMIN "TEMPORARLY DISABLED" CNORMAL << "\n";
 	// FIXME: fix this
 	/*

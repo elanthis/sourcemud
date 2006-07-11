@@ -19,10 +19,10 @@
 
 using namespace OLC;
 
-void command_create (Player* builder, char** argv)
+void command_create (Player* builder, String argv[])
 {
 	// create npc from blueprint
-	if (str_eq (argv[0], "npc")) {
+	if (str_eq (argv[0], S("npc"))) {
 		Npc *new_npc = NULL;
 		if (argv[1]) {
 			new_npc = Npc::load_blueprint(argv[1]);
@@ -37,7 +37,7 @@ void command_create (Player* builder, char** argv)
 		new_npc->enter (builder->get_room(), NULL);
 		*builder << "New NPC " << StreamName(*new_npc, NONE) << " created.\n";
 	// creat object from blueprint
-	} else if (str_eq (argv[0], "object")) {
+	} else if (str_eq (argv[0], S("object"))) {
 		Object* new_object = NULL;
 		if (argv[1]) {
 			new_object = Object::load_blueprint(argv[1]);
@@ -52,7 +52,7 @@ void command_create (Player* builder, char** argv)
 		builder->get_room()->add_object (new_object);
 		*builder << "New object " << StreamName(*new_object, NONE) << " created.\n";
 	// create exit in room
-	} else if (str_eq(argv[0], "exit")) {
+	} else if (str_eq(argv[0], S("exit"))) {
 		Room* room = builder->get_room();
 		if (room == NULL) {
 			*builder << "You are not in a room.\n";
@@ -64,7 +64,7 @@ void command_create (Player* builder, char** argv)
 
 		if (exit) {
 			// have a name to set?
-			if (argv[1] != NULL) {
+			if (!argv[1].empty()) {
 				// try setting a direction as well
 				ExitDir dir = ExitDir::lookup(argv[1]);
 				if (dir.valid())
@@ -74,7 +74,7 @@ void command_create (Player* builder, char** argv)
 				exit->set_name (argv[1]);
 
 				// set target
-				if (argv[2] != NULL) {
+				if (!argv[2].empty()) {
 					Room* target = ZoneManager.get_room(argv[2]);
 					if (target != NULL) {
 						// do target set
@@ -105,9 +105,9 @@ void command_create (Player* builder, char** argv)
 			*builder << "Failed to create new exit.\n";
 		}
 	// create room in zone
-	} else if (str_eq(argv[0], "room")) {
+	} else if (str_eq(argv[0], S("room"))) {
 		Zone *zone = NULL;
-		if (argv[2] != NULL) {
+		if (!argv[2].empty()) {
 			zone = ZoneManager.get_zone(argv[2]);
 			if (zone == NULL) {
 				*builder << "Zone '" << argv[2] << "' does not exist.\n";
@@ -135,7 +135,7 @@ void command_create (Player* builder, char** argv)
 		*builder << "Room '" << room->get_id () << "' added.\n";
 		zone->add_room (room);
 	// create zone
-	} else if (str_eq(argv[0], "zone")) {
+	} else if (str_eq(argv[0], S("zone"))) {
 		if (ZoneManager.get_zone (argv[1])) {
 			*builder << "Zone '" << argv[1] << "' already exists.\n";
 			return;
@@ -150,12 +150,12 @@ void command_create (Player* builder, char** argv)
 	}
 }
 
-void command_destroy (Player* builder, char** argv)
+void command_destroy (Player* builder, String argv[])
 {
 	Entity* entity;
 
 	// valid form?
-	if (!lookup_editable(builder, argv[0], entity)) {
+	if (!lookup_editable(builder, argv[0], argv[1], entity)) {
 		return;
 	}
 
@@ -211,11 +211,11 @@ void command_destroy (Player* builder, char** argv)
 	}
 }
 
-void command_exitlist (Player *builder, char** argv)
+void command_exitlist (Player *builder, String argv[])
 {
 	Room *room = NULL;
 	
-	if (argv[0] == NULL) {
+	if (argv[0].empty()) {
 		room = ROOM(builder->get_room ());
 		if (room == NULL) {
 			*builder << "You are not in a room.\n";

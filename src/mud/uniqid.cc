@@ -60,12 +60,12 @@ SUniqueIDManager::save ()
 	if (writer.open(SettingsManager.get_misc_path() + "/uniqid"))
 		return;
 
-	writer.attr("sequence", seq);
-	writer.attr("clock", clock);
+	writer.attr(S("sequence"), seq);
+	writer.attr(S("clock"), clock);
 
 	StringBuffer tstr;
 	tstr << last_time.tv_sec << '.' << last_time.tv_usec;
-	writer.attr("last_time", tstr.str());
+	writer.attr(S("last_time"), tstr.str());
 }
 
 void
@@ -105,7 +105,7 @@ SUniqueIDManager::encode (const UniqueID& uid)
 			uid.seq,
 			uid.secs);
 
-	return buffer;
+	return String(buffer);
 }
 
 UniqueID

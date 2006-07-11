@@ -51,7 +51,7 @@ SkillInfo::load (File::Reader& reader)
 			else if (node.get_data() == "secret")
 				type = SKILL_TYPE_SECRET;
 			else
-				throw File::Error("Invalid skill type");
+				throw File::Error(S("Invalid skill type"));
 	FO_READ_ERROR
 		return -1;
 	FO_READ_END

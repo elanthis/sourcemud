@@ -308,7 +308,7 @@ namespace Scriptix { extern const TypeDef Struct_Type; }
     void
     SScriptBindings::bind() {
     <xsl:for-each select="function[not(code) or string-length(code)!=0]">
-      Scriptix::ScriptManager.add_function(new Scriptix::Function(Scriptix::Atom("<xsl:value-of select="name"/>"), <xsl:value-of select="count(arg)"/>, _inter_function_<xsl:value-of select="name"/>));
+      Scriptix::ScriptManager.add_function(new Scriptix::Function(Scriptix::Atom(S("<xsl:value-of select="name"/>")), <xsl:value-of select="count(arg)"/>, _inter_function_<xsl:value-of select="name"/>));
     </xsl:for-each>
 
     <xsl:for-each select="type[not(doconly)]">
@@ -316,7 +316,7 @@ namespace Scriptix { extern const TypeDef Struct_Type; }
     </xsl:for-each>
 
     <xsl:for-each select="global-group/global">
-      Scriptix::ScriptManager.add_global(Scriptix::Atom("<xsl:value-of select="name"/>"), <xsl:choose><xsl:when test="expr"><xsl:value-of select="expr"/></xsl:when><xsl:otherwise><xsl:value-of select="name"/></xsl:otherwise></xsl:choose>);
+      Scriptix::ScriptManager.add_global(Scriptix::Atom(S("<xsl:value-of select="name"/>")), <xsl:choose><xsl:when test="expr"><xsl:value-of select="expr"/></xsl:when><xsl:otherwise><xsl:value-of select="name"/></xsl:otherwise></xsl:choose>);
     </xsl:for-each>
 }
 

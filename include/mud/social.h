@@ -46,7 +46,7 @@ class Social : public GC
 
 	// basic info
 	StringArg get_name (void) const { return name; }
-	const SocialAdverb* get_adverb (const char* name) const;
+	const SocialAdverb* get_adverb (StringArg name) const;
 	const SocialAdverb* get_default (void) const { return adverbs; }
 
 	// flags

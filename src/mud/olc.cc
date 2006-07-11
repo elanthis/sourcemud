@@ -32,7 +32,7 @@ enum OLCMode {
 		type* edit = dynamic_cast<type*>(olc_entity); \
 	if (edit != NULL) {
 #define OLC_BEGIN_ATTR(attr_name) \
-	if (olc_mode == OLC_MODE_LIST || phrase_match(#attr_name, olc_attr)) { \
+	if (olc_mode == OLC_MODE_LIST || phrase_match(S(#attr_name), olc_attr)) { \
 		const char* attr = #attr_name; \
 		olc_ok = true; \
 		if (0) {
@@ -62,35 +62,28 @@ enum OLCMode {
 namespace OLC {
 	// lookup entity
 	bool 
-	lookup_editable (Player* builder, char* name, Entity*& entity)
+	lookup_editable (Player* builder, StringArg tname, StringArg name, Entity*& entity)
 	{
 		// init
 		entity = NULL;
-
 		enum { tNone, tPlayer, tChar, tNPC, tObject, tRoom, tExit, tZone } type = tNone;
 
-		if (!commands::is_arg(name))
-			return false;
-
 		// is name comprised of 'room' or 'zone' or whatever?
-		char* tname= commands::get_arg(&name);
-		if (str_eq(tname, "room"))
+		if (str_eq(tname, S("room")))
 			type = tRoom;
-		else if (str_eq(tname, "zone"))
+		else if (str_eq(tname, S("zone")))
 			type = tZone;
-		else if (str_eq(tname, "player"))
+		else if (str_eq(tname, S("player")))
 			type = tPlayer;
-		else if (str_eq(tname, "npc"))
+		else if (str_eq(tname, S("npc")))
 			type = tNPC;
-		else if (str_eq(tname, "exit"))
+		else if (str_eq(tname, S("exit")))
 			type = tExit;
-		else if (str_eq(tname, "object"))
+		else if (str_eq(tname, S("object")))
 			type = tObject;
-		else
-			commands::fix_arg(tname, &name);
 
 		if (type != tRoom && type != tZone) {
-			if (!commands::is_arg(name))
+			if (!name)
 				return false;
 		}
 
@@ -160,7 +153,7 @@ namespace OLC {
 		// find room?
 		if (type == tRoom) {
 			Room* room = NULL;
-			if (commands::is_arg(name)) 
+			if (!name.empty()) 
 				room = ZoneManager.get_room(name);
 			else
 				room = builder->get_room();
@@ -176,7 +169,7 @@ namespace OLC {
 		// find zone?
 		if (type == tZone) {
 			Zone* zone = NULL;
-			if (commands::is_arg(name))
+			if (!name.empty())
 				zone = ZoneManager.get_zone(name);
 			else
 				zone = builder->get_room() ? builder->get_room()->get_zone() : NULL;

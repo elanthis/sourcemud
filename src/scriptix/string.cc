@@ -52,9 +52,6 @@ namespace Scriptix {
 	SX_TYPEIMPL(ScriptString, "String", IValue, SX_TYPECREATENONE(ScriptString))
 }
 
-ScriptString::ScriptString (const String& src) : IValue(), data(src) {
-}
-
 const TypeInfo*
 ScriptString::get_type () const {
 	return ScriptManager.get_string_type();
@@ -242,10 +239,10 @@ ScriptString::method_trim (size_t argc, Value argv[])
 	ScriptString* self = (ScriptString*)argv[0].get();
 	size_t left = self->str().find_first_not_of(" \t\n");
 	if (left == BaseString::npos)
-		return new ScriptString("");
+		return new ScriptString();
 	size_t right = self->str().find_last_not_of(" \t\n");
 	if (right == BaseString::npos)
-		return new ScriptString("");
+		return new ScriptString();
 	return new ScriptString(self->str().substr(left, right - left + 1));
 }
 
@@ -255,7 +252,7 @@ ScriptString::method_ltrim (size_t argc, Value argv[])
 	ScriptString* self = (ScriptString*)argv[0].get();
 	size_t left = self->str().find_first_not_of(" \t\n");
 	if (left == BaseString::npos)
-		return new ScriptString("");
+		return new ScriptString();
 	return new ScriptString(self->str().substr(left, BaseString::npos));
 }
 
@@ -265,6 +262,6 @@ ScriptString::method_rtrim (size_t argc, Value argv[])
 	ScriptString* self = (ScriptString*)argv[0].get();
 	size_t right = self->str().find_last_not_of(" \t\n");
 	if (right == BaseString::npos)
-		return new ScriptString("");
+		return new ScriptString();
 	return new ScriptString(self->str().substr(0, right + 1));
 }

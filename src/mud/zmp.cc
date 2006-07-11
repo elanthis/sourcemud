@@ -48,10 +48,10 @@ SZMPManager ZMPManager;
 
 // built-in handlers
 namespace {
-	void handle_zmp_ping (TelnetHandler* telnet, size_t argc, char** argv);
-	void handle_zmp_check (TelnetHandler* telnet, size_t argc, char** argv);
-	void handle_zmp_support (TelnetHandler* telnet, size_t argc, char** argv);
-	void handle_zmp_input (TelnetHandler* telnet, size_t argc, char** argv);
+	void handle_zmp_ping (TelnetHandler* telnet, size_t argc, String argv[]);
+	void handle_zmp_check (TelnetHandler* telnet, size_t argc, String argv[]);
+	void handle_zmp_support (TelnetHandler* telnet, size_t argc, String argv[]);
+	void handle_zmp_input (TelnetHandler* telnet, size_t argc, String argv[]);
 }
 
 // return 0 if not valid, or non-0 if valid
@@ -77,37 +77,16 @@ namespace {
 }
 
 // new zmp packed command
-ZMPPack::ZMPPack (const char* command)
+ZMPPack::ZMPPack (StringArg command)
 {
 	add(command);
 }
 
-// free memory for command
-ZMPPack::~ZMPPack (void)
-{
-	for (ArgList::iterator i = args.begin(); i != args.end(); ++i)
-		delete[] *i;
-	args.resize(0);
-}
-
 // add a string
 ZMPPack&
-ZMPPack::add (const char* command)
+ZMPPack::add (StringArg command)
 {
-	// NULL evil.  grug kill.
-	assert(command != NULL);
-
-	// need to know length
-	size_t len = strlen(command);
-
-	// make new string of same length (plus NUL byte)
-	char* newcmd = new char[len + 1];
-
-	// copy string
-	strcpy(newcmd, command);
-
-	// add to arg list
-	args.push_back(newcmd);
+	args.push_back(command);
 
 	return *this;
 }
@@ -116,18 +95,16 @@ ZMPPack::add (const char* command)
 ZMPPack&
 ZMPPack::add (long i)
 {
-	char buffer[40];
-	snprintf(buffer, sizeof(buffer), "%ld", i);
-	return add(buffer);
+	args.push_back(tostr(i));
+	return *this;
 }
 
 // add a 'uint'
 ZMPPack&
 ZMPPack::add (ulong i)
 {
-	char buffer[40];
-	snprintf(buffer, sizeof(buffer), "%lu", i);
-	return add(buffer);
+	args.push_back(tostr(i));
+	return *this;
 }
 
 SZMPManager::SZMPManager (void) : commands()
@@ -142,13 +119,13 @@ SZMPManager::~SZMPManager (void)
 int
 SZMPManager::initialize (void)
 {
-	if (add("zmp.ping", handle_zmp_ping))
+	if (add(S("zmp.ping"), handle_zmp_ping))
 		return -1;
-	if (add("zmp.check", handle_zmp_check))
+	if (add(S("zmp.check"), handle_zmp_check))
 		return -1;
-	if (add("zmp.support", handle_zmp_support))
+	if (add(S("zmp.support"), handle_zmp_support))
 		return -1;
-	if (add("zmp.input", handle_zmp_input))
+	if (add(S("zmp.input"), handle_zmp_input))
 		return -1;
 	return 0;
 }
@@ -208,11 +185,11 @@ SZMPManager::add (StringArg name, Scriptix::ScriptFunction func)
 
 // find the request function; return NULL if not found
 ZMPCommand*
-SZMPManager::lookup(const char* name)
+SZMPManager::lookup(StringArg name)
 {
 	// search list - easy enough
 	for (ZMPCommandList::iterator i = commands.begin(); i != commands.end(); ++i) {
-		if (i->wild && !strncmp(i->name.c_str(), name, i->name.size()))
+		if (i->wild && str_eq(i->name, name, i->name.size()))
 			return &(*i);
 		if (!i->wild && i->name == name)
 			return &(*i);
@@ -223,27 +200,26 @@ SZMPManager::lookup(const char* name)
 
 // match a package pattern; non-zero on match
 bool
-SZMPManager::match(const char* pattern)
+SZMPManager::match(StringArg pattern)
 {
 	int package = 0; // are we looking for a package?
-	size_t plen = strlen(pattern);
 
 	// pattern must have a lengh
-	if (plen == 0)
+	if (pattern.empty())
 		return false;
 
 	// check if this is a package we're looking for
-	if (pattern[plen - 1] == '.')
+	if (pattern[pattern.size() - 1] == '.')
 		package = 1; // yes, it is
 
 	// search for match
 	for (ZMPCommandList::iterator i = commands.begin(); i != commands.end(); ++i) {
 		// package match?
-		if (package && !strncmp(i->name.c_str(), pattern, plen))
+		if (package && str_eq(i->name, pattern, pattern.size()))
 			return true; // found match
 		else if (!package && i->name == pattern)
 			return true; // found match
-		else if (i->wild && !strncmp(i->name.c_str(), pattern, i->name.size()))
+		else if (i->wild && str_eq(i->name, pattern, i->name.size()))
 			return true; // found match
 	}
 
@@ -256,7 +232,7 @@ void
 TelnetHandler::process_zmp(size_t size, char* data)
 {
 	const size_t argv_size = 20; // argv[] element size
-	char* argv[argv_size]; // arg list
+	String argv[argv_size]; // arg list
 	size_t argc; // number of args
 	char* cptr; // for searching
 	ZMPCommand* command;
@@ -266,7 +242,7 @@ TelnetHandler::process_zmp(size_t size, char* data)
 		return;
 	
 	// add command to argv
-	argv[0] = data;
+	argv[0] = String(data);
 	argc = 1;
 
 	// find the command
@@ -290,7 +266,7 @@ TelnetHandler::process_zmp(size_t size, char* data)
 	
 		// an argument follows
 		++cptr; // move past the NUL byte
-		argv[argc++] = cptr; // get argument
+		argv[argc++] = String(cptr); // get argument
 	}
 		
 	// invoke the proper command handler
@@ -308,7 +284,7 @@ TelnetHandler::process_zmp(size_t size, char* data)
 
 // send an zmp command
 void
-TelnetHandler::send_zmp(size_t argc, const char** argv)
+TelnetHandler::send_zmp(size_t argc, const String argv[])
 {
 	// check for ZMP support
 	if (!has_zmp())
@@ -358,7 +334,7 @@ TelnetHandler::send_zmp(size_t argc, const char** argv)
 
 // add a zmp command (to insert mid-processing, basically for color - YUCJ)
 void
-TelnetHandler::add_zmp(size_t argc, const char** argv)
+TelnetHandler::add_zmp(size_t argc, String argv[])
 {
 	// check for ZMP support
 	if (!has_zmp())
@@ -408,18 +384,17 @@ TelnetHandler::add_zmp(size_t argc, const char** argv)
 
 // deal with ZMP support/no-support
 void
-TelnetHandler::zmp_support (const char* pkg, bool value)
+TelnetHandler::zmp_support (StringArg pkg, bool value)
 {
 	// color.define?
-	if (str_eq(pkg, "color.define")) {
+	if (str_eq(pkg, S("color.define"))) {
 		io_flags.zmp_color = value;
 
 		// init if true
 		if (value) {
-			char buf[10];
-			const char* argv[4] = {"color.define", buf, NULL, NULL};
+			String argv[4] = {S("color.define"), String(), String(), String()};
 			for (int i = 1; i < NUM_CTYPES; ++i) {
-				snprintf(buf, sizeof(buf), "%d", i);
+				argv[1] = tostr(i);
 				argv[2] = color_type_names[i];
 				argv[3] = color_type_rgb[i];
 				send_zmp(4, argv);
@@ -428,28 +403,28 @@ TelnetHandler::zmp_support (const char* pkg, bool value)
 	}
 
 	// net.awemud?
-	else if (str_eq(pkg, "net.awemud.")) {
+	else if (str_eq(pkg, S("net.awemud."))) {
 		io_flags.zmp_net_awemud = value;
 
 		// init if true
 		if (value) {
 			// send net.awemud.name if we're on
-			ZMPPack name("net.awemud.name");
-			name.add("AweMUD NG");
+			ZMPPack name(S("net.awemud.name"));
+			name.add(S("AweMUD NG"));
 			name.send(this);
 
 			// make health status bar
-			ZMPPack health_bar("net.awemud.status.create");
-			health_bar.add("hp");
-			health_bar.add("Health");
-			health_bar.add("fraction");
+			ZMPPack health_bar(S("net.awemud.status.create"));
+			health_bar.add(S("hp"));
+			health_bar.add(S("Health"));
+			health_bar.add(S("fraction"));
 			health_bar.send(this);
 
 			// make round status bar
-			ZMPPack round_bar("net.awemud.status.create");
-			round_bar.add("rt");
-			round_bar.add("Round");
-			round_bar.add("count");
+			ZMPPack round_bar(S("net.awemud.status.create"));
+			round_bar.add(S("rt"));
+			round_bar.add(S("Round"));
+			round_bar.add(S("count"));
 			round_bar.send(this);
 		}
 	}
@@ -459,7 +434,7 @@ TelnetHandler::zmp_support (const char* pkg, bool value)
 namespace {
 	// handle a zmp.ping command
 	void
-	handle_zmp_ping (TelnetHandler* telnet, size_t argc, char** argv)
+	handle_zmp_ping (TelnetHandler* telnet, size_t argc, String argv[])
 	{
 		// generate response
 		char buffer[40];
@@ -467,15 +442,13 @@ namespace {
 		time(&t);
 		strftime(buffer, sizeof(buffer), "%Y-%m-%d %H:%M:%S", gmtime(&t));
 		buffer[sizeof(buffer) - 1] = 0;
-		const char* response[2];
-		response[0] = "zmp.time";
-		response[1] = buffer;
+		String response[2] = { S("zmp.time"), String(buffer) };
 		telnet->send_zmp(2, response);
 	}
 
 	// handle a zmp.check command
 	void
-	handle_zmp_check (TelnetHandler* telnet, size_t argc, char** argv)
+	handle_zmp_check (TelnetHandler* telnet, size_t argc, String argv[])
 	{
 		// valid args?
 		if (argc != 2)
@@ -483,18 +456,18 @@ namespace {
 
 		// have we the argument?
 		if (ZMPManager.match(argv[1])) {
-			argv[0] = "zmp.support";
+			argv[0] = S("zmp.support");
 			telnet->send_zmp(2, argv);
 		// nope
 		} else {
-			argv[0] = "zmp.no-support";
+			argv[0] = S("zmp.no-support");
 			telnet->send_zmp(2, argv);
 		}
 	}
 
 	// handle a zmp.support command
 	void
-	handle_zmp_support (TelnetHandler* telnet, size_t argc, char** argv)
+	handle_zmp_support (TelnetHandler* telnet, size_t argc, String argv[])
 	{
 		// valid args?
 		if (argc != 2)
@@ -506,7 +479,7 @@ namespace {
 
 	// handle a zmp.no-support command
 	void
-	handle_zmp_nosupport (TelnetHandler* telnet, size_t argc, char** argv)
+	handle_zmp_nosupport (TelnetHandler* telnet, size_t argc, String argv[])
 	{
 		// valid args?
 		if (argc != 2)
@@ -518,13 +491,16 @@ namespace {
 
 	// handle a zmp.input command
 	void
-	handle_zmp_input (TelnetHandler* telnet, size_t argc, char** argv)
+	handle_zmp_input (TelnetHandler* telnet, size_t argc, String argv[])
 	{
 		// valid args
 		if (argc != 2)
 			return;
 
 		// process input
-		telnet->process_command(argv[1]);
+		// FIXME: ugly hack!
+		char buffer[1024];
+		snprintf(buffer, sizeof(buffer), "%s", argv[1].c_str());
+		telnet->process_command(buffer);
 	}
 }

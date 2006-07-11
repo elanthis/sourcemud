@@ -77,7 +77,7 @@ BufferSink : public IStreamSink {
 	// get the string
 	inline const char* c_str (void) const { return buffer; }
 	inline char* c_str (void) { return buffer; }
-	inline String str (void) { return buffer; }
+	inline String str (void) { return String(buffer); }
 	inline operator const char* (void) const { return c_str(); }
 	inline operator char* (void) { return c_str(); }
 	inline bool empty (void) const { return buffer == ptr; }

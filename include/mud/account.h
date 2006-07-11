@@ -71,12 +71,12 @@ class Account : public Cleanup
 	bool grant_access (AccessID); // returns true if added, false is we already have
 	bool revoke_access (AccessID); // returns true if removed, flase if we didn't have it
 	inline const AccessList& get_access (void) const { return access; }
-	inline bool is_gm (void) const { return has_access(AccessID::lookup("gm")); }
-	inline bool is_admin (void) const { return has_access(AccessID::lookup("admin")); }
-	inline bool is_builder (void) const { return has_access(AccessID::lookup("builder")); }
-	inline void grant_admin (void) { grant_access(AccessID::lookup("admin")); }
-	inline void grant_gm (void) { grant_access(AccessID::lookup("gm")); }
-	inline void grant_builder (void) { grant_access(AccessID::lookup("builder")); }
+	inline bool is_gm (void) const { return has_access(AccessID::lookup(S("gm"))); }
+	inline bool is_admin (void) const { return has_access(AccessID::lookup(S("admin"))); }
+	inline bool is_builder (void) const { return has_access(AccessID::lookup(S("builder"))); }
+	inline void grant_admin (void) { grant_access(AccessID::lookup(S("admin"))); }
+	inline void grant_gm (void) { grant_access(AccessID::lookup(S("gm"))); }
+	inline void grant_builder (void) { grant_access(AccessID::lookup(S("builder"))); }
 
 	private:
 	String id;

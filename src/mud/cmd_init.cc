@@ -12,7 +12,7 @@
 namespace {
 	template <typename TYPE>
 	void
-	add_format (Command* command, const char* format, void(*func)(TYPE*, char**), int priority)
+	add_format (Command* command, StringArg format, void(*func)(TYPE*, String[]), int priority)
 	{
 		CommandFormat* cformat = new CommandFormat(command, priority);
 		cformat->set_callback(func);
@@ -23,10 +23,10 @@ namespace {
 
 #define COMMAND(name,usage,func,access,klass) \
 	{ \
-		extern void command_ ## func (klass*, char**); \
-		void (*fptr)(klass*, char**) = command_ ## func; \
-		Command* command = new Command(name,usage,access);
-#define FORMAT(priority, format) add_format(command, (format), fptr, (priority));
+		extern void command_ ## func (klass*, String[]); \
+		void (*fptr)(klass*, String[]) = command_ ## func; \
+		Command* command = new Command(S(name),S(usage),access);
+#define FORMAT(priority, format) add_format(command, S(format), fptr, (priority));
 #define END_COMM add(command); }
 		
 int
@@ -34,9 +34,9 @@ SCommandManager::initialize (void)
 {
 	// access IDs
 	AccessID ACCESS_ALL;
-	AccessID ACCESS_GM = AccessID::create("gm");
-	AccessID ACCESS_BUILDER = AccessID::create("builder");
-	AccessID ACCESS_ADMIN = AccessID::create("admin");
+	AccessID ACCESS_GM = AccessID::create(S("gm"));
+	AccessID ACCESS_BUILDER = AccessID::create(S("builder"));
+	AccessID ACCESS_ADMIN = AccessID::create(S("admin"));
 
 	// movement commands
 	COMMAND("north",
@@ -472,7 +472,7 @@ SCommandManager::initialize (void)
 			destroy,
 			ACCESS_BUILDER,
 			Player)
-		FORMAT(80, "destroy :0*")
+		FORMAT(80, "destroy :0(npc,object,room,exit)? :1*")
 	END_COMM
 	COMMAND("exitlist",
 			"exitlist [<room>]\n",

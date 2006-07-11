@@ -60,8 +60,10 @@ TelnetModeNewAccount::prompt (void)
 }
 
 void
-TelnetModeNewAccount::process (char* line)
+TelnetModeNewAccount::process (char* data)
 {
+	String line(data);
+
 	switch (state) {
 		// select an ID
 		case STATE_ID:
@@ -175,14 +177,16 @@ TelnetModeLogin::prompt (void)
 }
 
 void
-TelnetModeLogin::process (char* data)
+TelnetModeLogin::process (char* line)
 {
+	String data(line);
+
 	// NUL process command?
-	if (data == NULL)
+	if (data.empty())
 		return;
 
 	// quit?
-	if (str_eq(data, "quit")) {
+	if (str_eq(data, S("quit"))) {
 		get_handler()->disconnect();
 		return;
 	}
@@ -201,7 +205,7 @@ TelnetModeLogin::process (char* data)
 		}
 
 		// create account?
-		if (str_eq(data, "new") || str_eq(data, "create")) {
+		if (str_eq(data, S("new")) || str_eq(data, S("create"))) {
 			// enabled?
 			if (SettingsManager.get_account_creation()) {
 				get_handler()->set_mode(new TelnetModeNewAccount(get_handler()));

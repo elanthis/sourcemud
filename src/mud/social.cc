@@ -23,10 +23,8 @@ Social::Social (void) : name(), adverbs(NULL), next(NULL)
 
 // find an adverb in a social
 const SocialAdverb*
-Social::get_adverb (const char* name) const
+Social::get_adverb (StringArg name) const
 {
-	assert (name != NULL);
-
 	// search
 	for (SocialAdverb* adverb = adverbs; adverb != NULL; adverb = adverb->next) {
 		if (phrase_match(adverb->name, name))
@@ -91,7 +89,7 @@ Social::load (File::Reader& reader)
 	FO_READ_END
 
 	if (!name)
-		throw File::Error("Social has no name");
+		throw File::Error(S("Social has no name"));
 
 	return 0;
 }
@@ -184,7 +182,7 @@ SocialAdverb::load (File::Reader& reader)
 	FO_READ_END
 
 	if (!name)
-		throw File::Error("Adverb has no name");
+		throw File::Error(S("Adverb has no name"));
 
 	return 0;
 }

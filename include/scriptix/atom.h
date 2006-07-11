@@ -44,7 +44,6 @@ class Atom {
 	inline Atom () : id(0) {}
 	inline Atom (const Atom& atom) : id(atom.id) {}
 	Atom (StringArg name);
-	inline Atom (const char* name) { *this = Atom(String(name)); }
 
 	inline static Atom create (intptr_t value) { Atom atom; atom.id = value; return atom; }
 

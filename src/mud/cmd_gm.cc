@@ -16,12 +16,12 @@
 #include "mud/zone.h"
 #include "mud/telnet.h"
 
-void command_gm_announce (Player* gm, char** argv)
+void command_gm_announce (Player* gm, String argv[])
 {
 	ZoneManager.announce (String(CADMIN "Announcement: " CNORMAL) + String(argv[0]));
 }
 
-void command_gm_boot (Player* gm, char** argv)
+void command_gm_boot (Player* gm, String argv[])
 {
 	Player *cn = PlayerManager.get(argv[0]);
 	if (cn == gm) {
@@ -42,7 +42,7 @@ void command_gm_boot (Player* gm, char** argv)
 	}
 }
 
-void command_gm_teleport_room (Player* gm, char** argv)
+void command_gm_teleport_room (Player* gm, String argv[])
 {
 	Room *room = ZoneManager.get_room (argv[0]);
 	if (room) {
@@ -52,7 +52,7 @@ void command_gm_teleport_room (Player* gm, char** argv)
 		*gm << "Could not find room '" << argv[0] << "'.\n";
 }
 
-void command_gm_teleport_player (Player* gm, char** argv)
+void command_gm_teleport_player (Player* gm, String argv[])
 {
 	Player* player = PlayerManager.get(argv[0]);
 	if (player == gm) {
@@ -69,7 +69,7 @@ void command_gm_teleport_player (Player* gm, char** argv)
 	}
 }
 
-void command_gm_summon_player (Player* gm, char** argv)
+void command_gm_summon_player (Player* gm, String argv[])
 {
 	// check we have a room
 	if (!gm->get_room()) {

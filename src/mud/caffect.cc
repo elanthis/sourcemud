@@ -8,13 +8,13 @@
 #include "mud/caffect.h"
 
 String CharacterAffectType::names[] = {
-	"unknown",
-	"toxin",
-	"disease",
-	"innate",
-	"magic",
-	"psionic",
-	"tech",
+	S("unknown"),
+	S("toxin"),
+	S("disease"),
+	S("innate"),
+	S("magic"),
+	S("psionic"),
+	S("tech"),
 };
 
 CharacterAffectType

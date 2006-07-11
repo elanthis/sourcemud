@@ -21,8 +21,8 @@
 class Character;
 class Player;
 
-typedef void (*CharCommandFunc) (class Character*, char** argv); // can manipulate argv
-typedef void (*PlayerCommandFunc) (class Player*, char** argv); // can manipulate argv
+typedef void (*CharCommandFunc) (class Character*, String argv[]); // can manipulate argv
+typedef void (*PlayerCommandFunc) (class Player*, String argv[]); // can manipulate argv
 
 // a parsable command format string
 class CommandFormat : public GC
@@ -54,7 +54,7 @@ class CommandFormat : public GC
 	// 0 on no match, and positive on partial match; closer the match,
 	// higher the positive return value.  The argv MUST be at least
 	// COMMAND_MAX_ARGS elements in size.
-	inline int match (char** words, char** argv) const { return trymatch(0, words, argv); }
+	inline int match (char** words, String argv[]) const { return trymatch(0, words, argv); }
 
 	private:
 	class Command* command;
@@ -87,7 +87,7 @@ class CommandFormat : public GC
 	int priority;
 
 	// do the matching
-	int trymatch (int node, char** words, char** argv) const;
+	int trymatch (int node, char** words, String argv[]) const;
 
 	// let command manager see us
 	friend class SCommandManager;
@@ -138,7 +138,7 @@ class SCommandManager : public IManager
 	int add (Command* command);
 
 	// invoke a command
-	int call (class Character* character, const char* cmd_line);
+	int call (class Character* character, StringArg cmd_line);
 
 	// show a man page; return false if cmd_name is not found
 	bool show_man (class Player* player, StringArg cmd_name, bool quiet = false);

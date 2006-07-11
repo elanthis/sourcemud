@@ -60,7 +60,7 @@ namespace Events {
 void SEventManager::initialize_ids () {
 ]]></xsl:text>
 <xsl:for-each select="event">
-	Events::ON_<xsl:value-of select="translate(name, 'abcdefghijklmnopqrstuvwxyz', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"/><xsl:text> = EventID::create("</xsl:text><xsl:value-of select="name"/><xsl:text>");
+	Events::ON_<xsl:value-of select="translate(name, 'abcdefghijklmnopqrstuvwxyz', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"/><xsl:text> = EventID::create(S("</xsl:text><xsl:value-of select="name"/><xsl:text>"));
 </xsl:text>
 </xsl:for-each>
 
@@ -75,17 +75,17 @@ SEventManager::compile (EventID id, StringArg source, StringArg filename, unsign
 
 <xsl:for-each select="event">
 <xsl:text>	if(id == Events::ON_</xsl:text><xsl:value-of select="translate(name, 'abcdefghijklmnopqrstuvwxyz', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')" /><xsl:text>)
-		return Scriptix::ScriptFunction::compile("event </xsl:text><xsl:value-of select="name"/><xsl:text>", source, "self,event,actor,room</xsl:text>
+		return Scriptix::ScriptFunction::compile(S("event </xsl:text><xsl:value-of select="name"/><xsl:text>"), source, S("self,event,actor,room</xsl:text>
 		<xsl:for-each select="arg">
 			<xsl:text>, </xsl:text>
 			<xsl:value-of select="name" />
 		</xsl:for-each>
-		<xsl:text>", filename, fileline);
+		<xsl:text>"), filename, fileline);
 </xsl:text>
 </xsl:for-each>
 
 <xsl:text><![CDATA[
-	return Scriptix::ScriptFunction::compile(String("event ") + EventID::nameof(id), source, "self,event,room,actor,data1,data2,data3,data4,data5", filename, fileline);
+	return Scriptix::ScriptFunction::compile(S("event ") + EventID::nameof(id), source, S("self,event,room,actor,data1,data2,data3,data4,data5"), filename, fileline);
 } // compile_event()
 ]]></xsl:text>
 

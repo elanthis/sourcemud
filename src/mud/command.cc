@@ -157,14 +157,12 @@ SCommandManager::add (Command *command)
 }
 
 int
-SCommandManager::call (Character *ch, const char *comm) {
+SCommandManager::call (Character *ch, StringArg comm) {
 	Player *ply = PLAYER(ch);
-
-	assert (comm != NULL);
 
 	// break up words
 	char buffer[1024];
-	snprintf(buffer, sizeof(buffer), "%s", comm);
+	snprintf(buffer, sizeof(buffer), "%s", comm.c_str());
 	char* lptr = buffer;
 	char* words[MAX_COMMAND_WORDS + 1];
 	char* sep;
@@ -183,7 +181,7 @@ SCommandManager::call (Character *ch, const char *comm) {
 		return 1;
 
 	// find the command if we can, using the phrase command list
-	char* argv[MAX_COMMAND_ARGS];
+	String argv[MAX_COMMAND_ARGS];
 	int best_score = -1, result = 0;
 	CommandList best_cmds;
 	for (FormatList::iterator fi = formats.begin(); fi != formats.end(); ++fi) {
@@ -191,8 +189,6 @@ SCommandManager::call (Character *ch, const char *comm) {
 		Command* command = format->get_command();
 		// must check privileges
 		if (!command->access.valid() || (ply != NULL && ply->get_account()->has_access(command->access))) {
-			// clear args
-			memset(argv, 0, sizeof(char*) * MAX_COMMAND_ARGS);
 			// do match
 			result = format->match(words, argv);
 			if (result == -1) {
@@ -225,6 +221,9 @@ SCommandManager::call (Character *ch, const char *comm) {
 				if (std::find(best_cmds.begin(), best_cmds.end(), command) == best_cmds.end())
 					best_cmds.push_back(command);
 			}
+			// clear args
+			for (int i = 0; i < MAX_COMMAND_ARGS; ++i)
+				argv[i].clear();
 		}
 	}
 
@@ -242,16 +241,16 @@ SCommandManager::call (Character *ch, const char *comm) {
 	}
 
 	// not found - try socials database
-	const Social* social = SocialManager.find_social(words[0]);
+	const Social* social = SocialManager.find_social(String(words[0])); // FIXME: efficiency
 	if (social != NULL) {
 		// parse
 		const SocialAdverb* sa = NULL;
 		Entity* target = NULL;
 		if (words[1]) {
-			if ((sa = social->get_adverb(words[1])) != NULL) {
+			if ((sa = social->get_adverb(String(words[1]))) != NULL) { // FIXME: efficiency
 				// find target
 				if (words[2]) {
-					target = ch->cl_find_any (repair(&words[2]), false);
+					target = ch->cl_find_any (String(repair(&words[2])), false); // FIXME: efficiency
 					if (!target)
 						return 1;
 				}
@@ -263,7 +262,7 @@ SCommandManager::call (Character *ch, const char *comm) {
 			sa = social->get_default();
 			// find target
 			if (words[1]) {
-				target = ch->cl_find_any (repair(&words[1]), false);
+				target = ch->cl_find_any (String(repair(&words[1])), false); // FIXME: efficiency
 				if (!target)
 					return 1;
 			}
@@ -344,7 +343,7 @@ Command::show_man (Player* player)
 		player->set_indent(2);
 		*player << CSPECIAL "About:" CNORMAL "\n";
 		player->set_indent(4);
-		*player << StreamParse(topic->about, "player", player) << "\n";
+		*player << StreamParse(topic->about, S("player"), player) << S("\n");
 	}
 	player->set_indent(2);
 	*player << CSPECIAL "Usage:" CNORMAL "\n";
@@ -469,7 +468,7 @@ CommandFormat::build (StringArg s_format)
 
 // match command nodes
 int
-CommandFormat::trymatch (int node, char** words, char** argv) const
+CommandFormat::trymatch (int node, char** words, String argv[]) const
 {
 	int result;
 	int cnt;
@@ -528,7 +527,7 @@ CommandFormat::trymatch (int node, char** words, char** argv) const
 				return -1;
 			case FormatNode::TEXT:
 				// have we a word that matches
-				if (phrase_match(nodes[node].list.front(), words[0])) {
+				if (phrase_match(nodes[node].list.front(), String(words[0]))) { // FIXME: efficiency
 					// store the word
 					if (nodes[node].arg >= 0)
 						argv[nodes[node].arg] = const_cast<char*>(nodes[node].list.front().c_str());
@@ -555,7 +554,7 @@ CommandFormat::trymatch (int node, char** words, char** argv) const
 				// search list
 				cnt = 0;
 				for (StringList::const_iterator i = nodes[node].list.begin(); i != nodes[node].list.end(); ++i) {
-					if (phrase_match(*i, words[0]))
+					if (phrase_match(*i, String(words[0]))) // FIXME: efficiency
 						break;
 					++cnt;
 				}
@@ -664,7 +663,7 @@ SCommandManager::show_man (Player* player, StringArg name, bool quiet)
 	bool multiple = false;
 	Command* match = NULL;
 	for (CommandList::iterator i = commands.begin(); i != commands.end(); ++i) {
-		if (phrase_match((*i)->name, name)) {
+		if (phrase_match((*i)->name, String(name))) { // FIXME: efficiency
 			if (!multiple && match == NULL) {
 				match = *i;
 			} else if (!multiple) {

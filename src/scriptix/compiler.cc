@@ -523,7 +523,7 @@ Scriptix::Compiler::Compiler::CompileNode (CompilerFunction* func, CompilerNode 
 					if (node->parts.nodes[0])
 						_test(CompileNode(func, node->parts.nodes[0]))
 					func->func->add_opcode(OP_METHOD);
-					func->func->add_oparg(Atom("new").value());
+					func->func->add_oparg(Atom(S("new")).value());
 					func->func->add_oparg(_sxp_count (node->parts.nodes[0]));
 				}
 				break;

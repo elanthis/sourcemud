@@ -24,34 +24,34 @@
 #include "mud/efactory.h"
 
 const String ExitDetail::names[] = {
-	"none",
-	"in",
-	"on",
-	"over",
-	"under",
-	"across",
-	"out",
-	"up",
-	"down",
-	"through",
+	S("none"),
+	S("in"),
+	S("on"),
+	S("over"),
+	S("under"),
+	S("across"),
+	S("out"),
+	S("up"),
+	S("down"),
+	S("through"),
 };
 
 const String ExitUsage::names[] = {
-	"walk",
-	"climb",
-	"crawl",
+	S("walk"),
+	S("climb"),
+	S("crawl"),
 };
 
 const String ExitDir::names[] = {
-	"none",
-	"north",
-	"east",
-	"south",
-	"west",
-	"northwest",
-	"northeast",
-	"southeast",
-	"southwest",
+	S("none"),
+	S("north"),
+	S("east"),
+	S("south"),
+	S("west"),
+	S("northwest"),
+	S("northeast"),
+	S("southeast"),
+	S("southwest"),
 };
 ExitDir::dir_t ExitDir::opposites[] = {
 	ExitDir::NONE,
@@ -69,48 +69,44 @@ ExitDir::dir_t ExitDir::opposites[] = {
 namespace {
 	// When You go {the-exit}
 	const String exit_go_table[ExitDetail::COUNT][ExitUsage::COUNT] = {
-		{ "You head to {$exit.d}.", "You climb {$exit.d}.", "You crawl to {$exit.d}." },
-		{ "You go in {$exit.d}.", "You climb in {$exit.d}.", "You crawl in {$exit.d}." },
-		{ "You get on {$exit.d}.", "You climb on {$exit.d}.", "You crawl on {$exit.d}." },
-		{ "You head over {$exit.d}.", "You climb over {$exit.d}.", "You crawl over {$exit.d}." },
-		{ "You go under {$exit.d}.", "You climb beneath {$exit.d}.", "You crawl under {$exit.d}." },
-		{ "You head across {$exit.d}.", "You climb across {$exit.d}.", "You crawl across {$exit.d}." },
-		{ "You go out {$exit.d}.", "You climb out {$exit.d}.", "You crawl out {$exit.d}." },
-		{ "You go up {$exit.d}.", "You climb up {$exit.d}.", "You crawl up {$exit.d}." },
-		{ "You go down {$exit.d}.", "You climb down {$exit.d}.", "You crawl down {$exit.d}." },
-		{ "You head through {$exit.d}.", "You climb through {$exit.d}.", "You crawl through {$exit.d}." },
+		{ S("You head to {$exit.d}."), S("You climb {$exit.d}."), S("You crawl to {$exit.d}.") },
+		{ S("You go in {$exit.d}."), S("You climb in {$exit.d}."), S("You crawl in {$exit.d}.") },
+		{ S("You get on {$exit.d}."), S("You climb on {$exit.d}."), S("You crawl on {$exit.d}.") },
+		{ S("You head over {$exit.d}."), S("You climb over {$exit.d}."), S("You crawl over {$exit.d}.") },
+		{ S("You go under {$exit.d}."), S("You climb beneath {$exit.d}."), S("You crawl under {$exit.d}.") },
+		{ S("You head across {$exit.d}."), S("You climb across {$exit.d}."), S("You crawl across {$exit.d}.") },
+		{ S("You go out {$exit.d}."), S("You climb out {$exit.d}."), S("You crawl out {$exit.d}.") },
+		{ S("You go up {$exit.d}."), S("You climb up {$exit.d}."), S("You crawl up {$exit.d}.") },
+		{ S("You go down {$exit.d}."), S("You climb down {$exit.d}."), S("You crawl down {$exit.d}.") },
+		{ S("You head through {$exit.d}."), S("You climb through {$exit.d}."), S("You crawl through {$exit.d}.") },
 	};
 	// When {person} goes {the-exit}
 	const String exit_leaves_table[ExitDetail::COUNT][ExitUsage::COUNT] = {
-		{ "{$actor.I} heads to {$exit.d}.", "{$actor.I} climbs {$exit.d}.", "{$actor.I} crawls to {$exit.d}." },
-		{ "{$actor.I} goes in {$exit.d}.", "{$actor.I} climbs in {$exit.d}.", "{$actor.I} crawls in {$exit.d}." },
-		{ "{$actor.I} gets on {$exit.d}.", "{$actor.I} climbs on {$exit.d}.", "{$actor.I} crawls on {$exit.d}." },
-		{ "{$actor.I} heads over {$exit.d}.", "{$actor.I} climbs over {$exit.d}.", "{$actor.I} crawls over {$exit.d}." },
-		{ "{$actor.I} goes under {$exit.d}.", "{$actor.I} climbs beneath {$exit.d}.", "{$actor.I} crawls under {$exit.d}." },
-		{ "{$actor.I} heads across {$exit.d}.", "{$actor.I} climbs across {$exit.d}.", "{$actor.I} crawls across {$exit.d}." },
-		{ "{$actor.I} goes out {$exit.d}.", "{$actor.I} climbs out {$exit.d}.", "{$actor.I} crawls out {$exit.d}." },
-		{ "{$actor.I} goes up {$exit.d}.", "{$actor.I} climbs up {$exit.d}.", "{$actor.I} crawls up {$exit.d}." },
-		{ "{$actor.I} goes down {$exit.d}.", "{$actor.I} climbs down {$exit.d}.", "{$actor.I} crawls down {$exit.d}." },
-		{ "{$actor.I} heads through {$exit.d}.", "{$actor.I} climbs through {$exit.d}.", "{$actor.I} crawls through {$exit.d}." },
+		{ S("{$actor.I} heads to {$exit.d}."), S("{$actor.I} climbs {$exit.d}."), S("{$actor.I} crawls to {$exit.d}.") },
+		{ S("{$actor.I} goes in {$exit.d}."), S("{$actor.I} climbs in {$exit.d}."), S("{$actor.I} crawls in {$exit.d}.") },
+		{ S("{$actor.I} gets on {$exit.d}."), S("{$actor.I} climbs on {$exit.d}."), S("{$actor.I} crawls on {$exit.d}.") },
+		{ S("{$actor.I} heads over {$exit.d}."), S("{$actor.I} climbs over {$exit.d}."), S("{$actor.I} crawls over {$exit.d}.") },
+		{ S("{$actor.I} goes under {$exit.d}."), S("{$actor.I} climbs beneath {$exit.d}."), S("{$actor.I} crawls under {$exit.d}.") },
+		{ S("{$actor.I} heads across {$exit.d}."), S("{$actor.I} climbs across {$exit.d}."), S("{$actor.I} crawls across {$exit.d}.") },
+		{ S("{$actor.I} goes out {$exit.d}."), S("{$actor.I} climbs out {$exit.d}."), S("{$actor.I} crawls out {$exit.d}.") },
+		{ S("{$actor.I} goes up {$exit.d}."), S("{$actor.I} climbs up {$exit.d}."), S("{$actor.I} crawls up {$exit.d}.") },
+		{ S("{$actor.I} goes down {$exit.d}."), S("{$actor.I} climbs down {$exit.d}."), S("{$actor.I} crawls down {$exit.d}.") },
+		{ S("{$actor.I} heads through {$exit.d}."), S("{$actor.I} climbs through {$exit.d}."), S("{$actor.I} crawls through {$exit.d}.") },
 	};
 	// When {person} enters from {the-exit}
 	const String exit_enters_table[ExitDetail::COUNT][ExitUsage::COUNT] = {
-		{ "{$actor.I} arrives from {$exit.d}.", "{$actor.I} climbs in from {$exit.d}.", "{$actor.I} crawls in from {$exit.d}." },
-		{ "{$actor.I} comes out from {$exit.d}.", "{$actor.I} climbs out from {$exit.d}.", "{$actor.I} crawls out from {$exit.d}." },
-		{ "{$actor.I} gets off {$exit.d}.", "{$actor.I} climbs off {$exit.d}.", "{$actor.I} crawls off {$exit.d}." },
-		{ "{$actor.I} arrives from over {$exit.d}.", "{$actor.I} climbs over from {$exit.d}.", "{$actor.I} crawls over from {$exit.d}." },
-		{ "{$actor.I} comes from under {$exit.d}.", "{$actor.I} climbs from beneath {$exit.d}.", "{$actor.I} crawls from under {$exit.d}." },
-		{ "{$actor.I} arrives from across {$exit.d}.", "{$actor.I} climbs from across {$exit.d}.", "{$actor.I} crawls from across {$exit.d}." },
-		{ "{$actor.I} comes in from {$exit.d}.", "{$actor.I} climbs in from {$exit.d}.", "{$actor.I} crawls in from {$exit.d}." },
-		{ "{$actor.I} comes down from {$exit.d}.", "{$actor.I} climbs down {$exit.d}.", "{$actor.I} crawls down {$exit.d}." },
-		{ "{$actor.I} comes up {$exit.d}.", "{$actor.I} climbs up {$exit.d}.", "{$actor.I} crawls up {$exit.d}." },
-		{ "{$actor.I} comes through {$exit.d}.", "{$actor.I} climbs through from {$exit.d}.", "{$actor.I} crawls from through {$exit.d}." },
+		{ S("{$actor.I} arrives from {$exit.d}."), S("{$actor.I} climbs in from {$exit.d}."), S("{$actor.I} crawls in from {$exit.d}.") },
+		{ S("{$actor.I} comes out from {$exit.d}."), S("{$actor.I} climbs out from {$exit.d}."), S("{$actor.I} crawls out from {$exit.d}.") },
+		{ S("{$actor.I} gets off {$exit.d}."), S("{$actor.I} climbs off {$exit.d}."), S("{$actor.I} crawls off {$exit.d}.") },
+		{ S("{$actor.I} arrives from over {$exit.d}."), S("{$actor.I} climbs over from {$exit.d}."), S("{$actor.I} crawls over from {$exit.d}.") },
+		{ S("{$actor.I} comes from under {$exit.d}."), S("{$actor.I} climbs from beneath {$exit.d}."), S("{$actor.I} crawls from under {$exit.d}.") },
+		{ S("{$actor.I} arrives from across {$exit.d}."), S("{$actor.I} climbs from across {$exit.d}."), S("{$actor.I} crawls from across {$exit.d}.") },
+		{ S("{$actor.I} comes in from {$exit.d}."), S("{$actor.I} climbs in from {$exit.d}."), S("{$actor.I} crawls in from {$exit.d}.") },
+		{ S("{$actor.I} comes down from {$exit.d}."), S("{$actor.I} climbs down {$exit.d}."), S("{$actor.I} crawls down {$exit.d}.") },
+		{ S("{$actor.I} comes up {$exit.d}."), S("{$actor.I} climbs up {$exit.d}."), S("{$actor.I} crawls up {$exit.d}.") },
+		{ S("{$actor.I} comes through {$exit.d}."), S("{$actor.I} climbs through from {$exit.d}."), S("{$actor.I} crawls from through {$exit.d}.") },
 	};
 }
-
-BEGIN_EFACTORY(roomexit)
-	return NULL;
-END_EFACTORY
 
 ExitDir
 ExitDir::lookup (StringArg name)
@@ -192,50 +188,50 @@ void
 RoomExit::save (File::Writer& writer)
 {
 	if (!name.empty())
-		writer.attr("name", name.get_name());
+		writer.attr(S("name"), name.get_name());
 
 	if (!desc.empty())
-		writer.attr("desc", desc);
+		writer.attr(S("desc"), desc);
 	
 	Entity::save (writer);
 
 	for (StringList::const_iterator i = keywords.begin(); i != keywords.end(); ++i)
-		writer.attr("keyword", *i);
+		writer.attr(S("keyword"), *i);
 
 	if (dir.valid())
-		writer.attr ("dir", dir.get_name());
+		writer.attr (S("dir"), dir.get_name());
 	if (usage != ExitUsage::WALK)
-		writer.attr ("usage", usage.get_name());
+		writer.attr (S("usage"), usage.get_name());
 	if (detail != ExitDetail::NONE)
-		writer.attr ("detail", detail.get_name());
+		writer.attr (S("detail"), detail.get_name());
 	if (is_hidden ())
-		writer.attr ("hidden", "yes");
+		writer.attr (S("hidden"), true);
 	if (is_door ()) {
-		writer.attr ("door", "yes");
+		writer.attr (S("door"), true);
 		if (is_closed ())
-			writer.attr ("closed", "yes");
+			writer.attr (S("closed"), true);
 		if (is_locked ())
-			writer.attr ("locked", "yes");
+			writer.attr (S("locked"), true);
 		if (!is_synced ())
-			writer.attr ("nosync", "yes");
+			writer.attr (S("nosync"), true);
 	}
 	if (is_nolook())
-		writer.attr ("nolook", "yes");
+		writer.attr (S("nolook"), true);
 	if (is_disabled())
-		writer.attr ("disabled", "yes");
+		writer.attr (S("disabled"), true);
 
 	if (!target.empty())
-		writer.attr("target", target);
+		writer.attr(S("target"), target);
 
 	if (text.enters)
-		writer.attr ("enters", text.enters);
+		writer.attr (S("enters"), text.enters);
 	if (text.leaves)
-		writer.attr ("leaves", text.leaves);
+		writer.attr (S("leaves"), text.leaves);
 	if (text.go)
-		writer.attr ("go", text.go);
+		writer.attr (S("go"), text.go);
 
 	if (!on_use.empty())
-		writer.block ("used", on_use.get_source());
+		writer.block (S("used"), on_use.get_source());
 }
 
 void
@@ -293,7 +289,7 @@ RoomExit::load_node (File::Reader& reader, File::Node& node)
 		FO_ATTR("go")
 			text.go = node.get_data();
 		FO_ATTR("used")
-			on_use = Scriptix::ScriptFunctionSource::compile("used", node.get_data(), "exit,user", reader.get_filename(), node.get_line());
+			on_use = Scriptix::ScriptFunctionSource::compile(S("used"), node.get_data(), S("exit,user"), reader.get_filename(), node.get_line());
 		FO_PARENT(Entity)
 	FO_NODE_END
 }
@@ -453,7 +449,7 @@ void
 RoomExit::set_use (StringArg script)
 {
 	if (script) {
-		on_use = Scriptix::ScriptFunctionSource::compile("used", script, "exit,user", "exit db", 1);
+		on_use = Scriptix::ScriptFunctionSource::compile(S("used"), script, S("exit,user"), S("exit db"), 1);
 	} else {
 		on_use.clear();
 	}

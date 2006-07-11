@@ -26,7 +26,7 @@ GameTime::time_str () const
 {
 	char buffer[32];
 	time_str(buffer, sizeof(buffer));
-	return buffer;
+	return String(buffer);
 }
 
 void
@@ -36,7 +36,7 @@ GameTime::date_str (char *buf, int len) const
 	size_t add = snprintf (buf, len, "%s, %d%s of %s, %d",
 			TimeManager.calendar.weekdays[TimeManager.calendar.get_weekday (*this)].c_str(),
 			day,
-			get_num_suffix (day),
+			get_num_suffix (day).c_str(),
 			TimeManager.calendar.months[month - 1].name.c_str(),
 			year);
 	// append holiday if we have one
@@ -51,7 +51,7 @@ GameTime::date_str () const
 {
 	char buffer[256];
 	date_str(buffer, sizeof(buffer));
-	return buffer;
+	return String(buffer);
 }
 
 void
@@ -169,7 +169,7 @@ STimeManager::save ()
 		return;
 
 	// save
-	writer.attr("current", time.encode());
+	writer.attr(S("current"), time.encode());
 
 	writer.close();
 }

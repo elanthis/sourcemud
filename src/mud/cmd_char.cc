@@ -17,28 +17,18 @@
 #include "mud/object.h"
 
 void
-Character::process_cmd (const char* line)
+Character::process_command (StringArg line)
 {
-	assert (line != NULL);
-
-	// check for talking with \", a special case
-	if (line[0] == '\"' || line[0] == '\'')
-	{
-		if (line[1] != '\0')
-			do_say (line+ 1);
-		return;
-	}
-
-	// check for emote'ing with :, a special case
-	if (line[0] == ':' || line[0] == ';')
-	{
-		if (line[1] != '\0')
-			do_emote (line + 1);
-		return;
-	}
-
 	CommandManager.call (this, line);
 }
+
+Object* Character::cl_find_object (StringArg line, int type, bool silent) { return NULL; }
+Object* Character::cl_find_object (StringArg line, Object* container, ContainerType type, bool silent) { return NULL; }
+Character* Character::cl_find_character (StringArg line, bool silent) { return NULL; }
+RoomExit* Character::cl_find_exit (StringArg line, bool silent) { return NULL; }
+Entity* Character::cl_find_any (StringArg line, bool silent) { return NULL; }
+
+#if 0
 
 // parse a command line to get an object
 Object* 
@@ -378,6 +368,7 @@ Character::cl_find_any (char* line, bool silent)
 		*this << "You do not see '" << line << "'.\n";
 	return NULL;
 }
+#endif
 
 void
 handle_char_move (Character* ch, ExitDir dir) {
@@ -399,16 +390,16 @@ handle_char_move (Character* ch, ExitDir dir) {
 }
 
 // movement commands
-void command_north (Character* ch, char**) { handle_char_move (ch, ExitDir::NORTH); }
-void command_east (Character* ch, char**) { handle_char_move (ch, ExitDir::EAST); }
-void command_south (Character* ch, char**) { handle_char_move (ch, ExitDir::SOUTH); }
-void command_west (Character* ch, char**) { handle_char_move (ch, ExitDir::WEST); }
-void command_northwest (Character* ch, char**) { handle_char_move (ch, ExitDir::NORTHWEST); }
-void command_northeast (Character* ch, char**) { handle_char_move (ch, ExitDir::NORTHEAST); }
-void command_southwest (Character* ch, char**) { handle_char_move (ch, ExitDir::SOUTHWEST); }
-void command_southeast (Character* ch, char**) { handle_char_move (ch, ExitDir::SOUTHEAST); }
+void command_north (Character* ch, String[]) { handle_char_move (ch, ExitDir::NORTH); }
+void command_east (Character* ch, String[]) { handle_char_move (ch, ExitDir::EAST); }
+void command_south (Character* ch, String[]) { handle_char_move (ch, ExitDir::SOUTH); }
+void command_west (Character* ch, String[]) { handle_char_move (ch, ExitDir::WEST); }
+void command_northwest (Character* ch, String[]) { handle_char_move (ch, ExitDir::NORTHWEST); }
+void command_northeast (Character* ch, String[]) { handle_char_move (ch, ExitDir::NORTHEAST); }
+void command_southwest (Character* ch, String[]) { handle_char_move (ch, ExitDir::SOUTHWEST); }
+void command_southeast (Character* ch, String[]) { handle_char_move (ch, ExitDir::SOUTHEAST); }
 
-void command_go (Character* ch, char** argv)
+void command_go (Character* ch, String argv[])
 {
 	if (ch->get_pos() != CharPosition::STAND) {
 		*ch << "You cannot climb while " << ch->get_pos().get_verbing() << ".\n";
@@ -425,7 +416,7 @@ void command_go (Character* ch, char** argv)
 	}
 }
 
-void command_climb (Character* ch, char** argv)
+void command_climb (Character* ch, String argv[])
 {
 	if (ch->get_pos() != CharPosition::STAND) {
 		*ch << "You cannot climb while " << ch->get_pos().get_verbing() << ".\n";
@@ -442,7 +433,7 @@ void command_climb (Character* ch, char** argv)
 	}
 }
 
-void command_crawl (Character* ch, char** argv)
+void command_crawl (Character* ch, String argv[])
 {
 	if (ch->get_pos() != CharPosition::KNEEL && ch->get_pos() != CharPosition::SIT) {
 		*ch << "You cannot crawl while " << ch->get_pos().get_verbing() << ".\n";
@@ -460,7 +451,7 @@ void command_crawl (Character* ch, char** argv)
 }
 
 // basics
-void command_look (Character* ch, char** argv) {
+void command_look (Character* ch, String argv[]) {
 	// have we a target (argv[1])
 	if (!argv[1]) {
 		ch->do_look ();
@@ -468,7 +459,7 @@ void command_look (Character* ch, char** argv) {
 	}
 
 	// looking in/on/etc. container?
-	if (argv[0] && !phrase_match("at", argv[0])) {
+	if (argv[0] && !phrase_match(S("at"), argv[0])) {
 		ContainerType contain = ContainerType::lookup(argv[0]);
 		if (contain.valid()) {
 			Object* obj = ch->cl_find_object (argv[1], GOC_ANY);
@@ -493,26 +484,26 @@ void command_look (Character* ch, char** argv) {
 	}
 }
 
-void command_say (Character* ch, char** argv)
+void command_say (Character* ch, String argv[])
 {
 	ch->do_say (argv[0]);
 }
 
-void command_emote (Character* ch, char** argv)
+void command_emote (Character* ch, String argv[])
 {
 	ch->do_emote (argv[0]);
 }
 
 // position
 
-void command_stand (Character* ch, char**) { ch->do_position (CharPosition::STAND); }
-void command_sit (Character* ch, char**) { ch->do_position (CharPosition::SIT); }
-void command_lay (Character* ch, char**) { ch->do_position (CharPosition::LAY); }
-void command_kneel (Character* ch, char**) { ch->do_position (CharPosition::KNEEL); }
+void command_stand (Character* ch, String[]) { ch->do_position (CharPosition::STAND); }
+void command_sit (Character* ch, String[]) { ch->do_position (CharPosition::SIT); }
+void command_lay (Character* ch, String[]) { ch->do_position (CharPosition::LAY); }
+void command_kneel (Character* ch, String[]) { ch->do_position (CharPosition::KNEEL); }
 
 // interact
 
-void command_open (Character* ch, char** argv) {
+void command_open (Character* ch, String argv[]) {
 	RoomExit* exit;
 	if ((exit = ch->cl_find_exit (argv[0])) != NULL) {
 		if (exit->is_door ())
@@ -522,7 +513,7 @@ void command_open (Character* ch, char** argv) {
 	}
 }
 
-void command_close (Character* ch, char** argv) {
+void command_close (Character* ch, String argv[]) {
 	RoomExit* exit;
 	if ((exit = ch->cl_find_exit (argv[0])) != NULL) {
 		if (exit->is_door ())
@@ -532,7 +523,7 @@ void command_close (Character* ch, char** argv) {
 	}
 }
 
-void command_lock (Character* ch, char** argv) {
+void command_lock (Character* ch, String argv[]) {
 	RoomExit* exit;
 	if ((exit = ch->cl_find_exit (argv[0])) != NULL) {
 		if (exit->is_door ())
@@ -542,7 +533,7 @@ void command_lock (Character* ch, char** argv) {
 	}
 }
 
-void command_unlock (Character* ch, char** argv) {
+void command_unlock (Character* ch, String argv[]) {
 	RoomExit* exit;
 	if ((exit = ch->cl_find_exit (argv[0])) != NULL) {
 		if (exit->is_door ())
@@ -552,8 +543,8 @@ void command_unlock (Character* ch, char** argv) {
 	}
 }
 
-void command_get (Character* ch, char** argv) {
-	if (argv[2] != NULL) { // in, on, etc.
+void command_get (Character* ch, String argv[]) {
+	if (!argv[2].empty()) { // in, on, etc.
 		ContainerType type = argv[1] ? ContainerType::lookup(argv[1]) : ContainerType::NONE;
 
 		// get container
@@ -577,18 +568,8 @@ void command_get (Character* ch, char** argv) {
 			return;
 		}
 
-		// determine count
-		char* count = commands::get_arg(&argv[0]);
-		if (str_eq(count, "the"))
-			count = commands::get_arg(&argv[0]);
-		uint index = str_value (count);
-		if (index == 0) {
-			index = 1;
-			commands::fix_arg (count, &argv[0]);
-		}
-
 		// get object from container
-		Object* obj = cobj->find_object (argv[0], index, type);
+		Object* obj = ch->cl_find_object(argv[0], cobj, type);
 		if (obj)
 			ch->do_get (obj, cobj, type);
 		else
@@ -596,7 +577,7 @@ void command_get (Character* ch, char** argv) {
 	// get from the room
 	} else {
 		// coins?
-		if (argv[0] == NULL) {
+		if (argv[0].empty()) {
 			Room* room = ch->get_room();
 			if (room == NULL) {
 				*ch << "You are not in a room.\n";
@@ -607,7 +588,7 @@ void command_get (Character* ch, char** argv) {
 			int amount = 0;
 
 			// how many?
-			if (argv[3] == NULL) {
+			if (argv[3].empty()) {
 				amount = max;
 			} else {
 				amount = tolong(argv[3]);
@@ -648,7 +629,7 @@ void command_get (Character* ch, char** argv) {
 	}
 }
 
-void command_put (Character* ch, char** argv) {
+void command_put (Character* ch, String argv[]) {
 	ContainerType type = ContainerType::lookup(argv[1]);
 
 	Object* obj = ch->cl_find_object (argv[0], GOC_HELD);
@@ -662,7 +643,7 @@ void command_put (Character* ch, char** argv) {
 	ch->do_put (obj, cobj, type);
 }
 
-void command_give (Character* ch, char** argv)
+void command_give (Character* ch, String argv[])
 {
 	static const char* usage = "You must supply a positive number of coins to give.\n";
 
@@ -686,7 +667,7 @@ void command_give (Character* ch, char** argv)
 	ch->do_give_coins (target, amount);
 }
 
-void command_drop (Character* ch, char** argv)
+void command_drop (Character* ch, String argv[])
 {
 	// object?
 	if (argv[0]) {
@@ -734,35 +715,35 @@ void command_drop (Character* ch, char** argv)
 	}
 }
 
-void command_wear (Character* ch, char** argv)
+void command_wear (Character* ch, String argv[])
 {
 	Object* obj = ch->cl_find_object (argv[0], GOC_HELD);
 	if (obj)
 		ch->do_wear (obj);
 }
 
-void command_equip (Character* ch, char** argv)
+void command_equip (Character* ch, String argv[])
 {
 	Object* obj = ch->cl_find_object (argv[0], GOC_HELD);
 	if (obj)
 		ch->do_wear (obj);
 }
 
-void command_remove (Character* ch, char** argv) 
+void command_remove (Character* ch, String argv[]) 
 {
 	Object* obj = ch->cl_find_object (argv[0], GOC_WORN);
 	if (obj)
 		ch->do_remove (obj);
 }
 
-void command_read (Character* ch, char** argv)
+void command_read (Character* ch, String argv[])
 {
 	Object* obj = ch->cl_find_object (argv[0], GOC_ANY);
 	if (obj)
 		ch->do_read (obj);
 }
 
-void command_kick (Character* ch, char** argv)
+void command_kick (Character* ch, String argv[])
 {
 	Object* obj = ch->cl_find_object (argv[0], GOC_ANY, true);
 	if (obj) {
@@ -776,51 +757,51 @@ void command_kick (Character* ch, char** argv)
 	}
 }
 
-void command_raise (Character* ch, char** argv)
+void command_raise (Character* ch, String argv[])
 {
 	Object* obj = ch->cl_find_object (argv[0], GOC_HELD);
 	if (obj)
 		ch->do_raise (obj);
 }
 
-void command_eat (Character* ch, char** argv)
+void command_eat (Character* ch, String argv[])
 {
 	Object* obj = ch->cl_find_object (argv[0], GOC_HELD);
 	if (obj)
 		ch->do_eat (obj);
 }
 
-void command_drink (Character* ch, char** argv)
+void command_drink (Character* ch, String argv[])
 {
 	Object* obj = ch->cl_find_object (argv[0], GOC_ANY);
 	if (obj)
 		ch->do_drink (obj);
 }
 
-void command_swap (Character* ch, char**)
+void command_swap (Character* ch, String[])
 {
 	ch->swap_hands ();
 	*ch << "You swap the contents of your hands.\n";
 }
 
-void command_touch (Character* ch, char** argv)
+void command_touch (Character* ch, String argv[])
 {
 	Object* obj = ch->cl_find_object (argv[0], GOC_ANY);
 	if (obj)
 		ch->do_touch (obj);
 }
 
-void command_sing (Character* ch, char** argv)
+void command_sing (Character* ch, String argv[])
 {
 	ch->do_sing(argv[0]);
 }
 
-void command_affects (Character* ch, char** argv)
+void command_affects (Character* ch, String argv[])
 {
 	ch->display_affects(*ch);
 }
 
-void command_stop (Character* ch, char** argv)
+void command_stop (Character* ch, String argv[])
 {
 	ch->cancel_action();
 }

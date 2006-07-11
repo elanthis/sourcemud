@@ -44,7 +44,7 @@
 #define TELOPT_ZMP 93
 
 /* define a command */
-typedef void(*ZMPFunction)(class TelnetHandler* telnet, size_t argc, char** argv);
+typedef void(*ZMPFunction)(class TelnetHandler* telnet, size_t argc, String argv[]);
 struct ZMPCommand {
 	String name;	// name of command
 	bool wild;	// is this a wildcard match?
@@ -56,11 +56,10 @@ struct ZMPCommand {
 class ZMPPack
 {
 	public:
-	ZMPPack (const char* command);
-	~ZMPPack (void);
+	ZMPPack (StringArg command);
 
 	// add an argument
-	ZMPPack& add (const char* arg);
+	ZMPPack& add (StringArg arg);
 	ZMPPack& add (long);
 	ZMPPack& add (ulong);
 	inline ZMPPack& add (int i) { return add((long)i); }
@@ -69,11 +68,10 @@ class ZMPPack
 	// send the ZMP pack along!
 	inline void
 	send (TelnetHandler* telnet)
-	{ telnet->send_zmp(args.size(), (const char**)&args[0]); }
+	{ telnet->send_zmp(args.size(), &args[0]); }
 
 	private:
-	typedef GCType::vector<char*> ArgList;
-	ArgList args;
+	StringList args;
 };
 
 /* ---- ZMP INVOCATIONS ---- */
@@ -81,24 +79,24 @@ class ZMPPack
 class SZMPManager : public IManager
 {
 	public:
-	SZMPManager (void);
-	~SZMPManager (void);
+	SZMPManager ();
+	~SZMPManager ();
 
 	// initialize basic system
-	virtual int initialize (void);
+	virtual int initialize ();
 
 	// shutdown system
-	virtual void shutdown (void);
+	virtual void shutdown ();
 
 	// find a command
-	ZMPCommand* lookup (const char* name);
+	ZMPCommand* lookup (StringArg name);
 
 	// add a new command
 	int add (StringArg name, ZMPFunction func);
 	int add (StringArg name, Scriptix::ScriptFunction func);
 
 	// see if a specific command/package is supported
-	bool match (const char* pattern);
+	bool match (StringArg pattern);
 
 	private:
 	// the list of commands

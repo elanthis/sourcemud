@@ -39,21 +39,21 @@ Account::save (void) const
 		return -1;
 
 	// save it out
-	writer.attr("name", name);
-	writer.attr("email", email);
-	writer.attr("passphrase", pass);
+	writer.attr(S("name"), name);
+	writer.attr(S("email"), email);
+	writer.attr(S("passphrase"), pass);
 	for (StringList::const_iterator i = chars.begin(); i != chars.end(); ++i)
-		writer.attr("character", *i);
+		writer.attr(S("character"), *i);
 	if (flags.disabled)
-		writer.attr("disabled", "yes");
+		writer.attr(S("disabled"), "yes");
 	if (maxchars > 0)
-		writer.attr("maxchars", maxchars);
+		writer.attr(S("maxchars"), maxchars);
 	if (maxactive > 0)
-		writer.attr("maxactive", maxactive);
+		writer.attr(S("maxactive"), maxactive);
 	if (timeout > 0)
-		writer.attr("maxactive", timeout);
+		writer.attr(S("maxactive"), timeout);
 	for (AccessList::const_iterator i = access.begin(); i != access.end(); ++i)
-		writer.attr("access", AccessID::nameof(*i));
+		writer.attr(S("access"), AccessID::nameof(*i));
 
 	// done
 	writer.close();
@@ -241,27 +241,27 @@ SAccountManager::get (StringArg in_name)
 
 	// read it in
 	FO_READ_BEGIN
-		FO_ATTR("name")
+		FO_ATTR(S("name"))
 			account->name = node.get_data();
-		FO_ATTR("email")
+		FO_ATTR(S("email"))
 			account->email = node.get_data();
-		FO_ATTR("passphrase")
+		FO_ATTR(S("passphrase"))
 			account->pass = node.get_data();
-		FO_ATTR("character")
+		FO_ATTR(S("character"))
 			account->chars.push_back(node.get_data());
-		FO_ATTR("maxchars")
+		FO_ATTR(S("maxchars"))
 			FO_TYPE_ASSERT(INT);
 			account->maxchars = tolong(node.get_data());
-		FO_ATTR("maxactive")
+		FO_ATTR(S("maxactive"))
 			FO_TYPE_ASSERT(INT);
 			account->maxactive = tolong(node.get_data());
-		FO_ATTR("timeout")
+		FO_ATTR(S("timeout"))
 			FO_TYPE_ASSERT(INT);
 			account->timeout = tolong(node.get_data());
-		FO_ATTR("disabled")
+		FO_ATTR(S("disabled"))
 			FO_TYPE_ASSERT(BOOL);
 			account->flags.disabled = str_is_true(node.get_data());
-		FO_ATTR("access")
+		FO_ATTR(S("access"))
 			account->access.insert(AccessID::create(node.get_data()));
 	FO_READ_ERROR
 		account = NULL;

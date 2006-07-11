@@ -50,7 +50,7 @@ class ControlHandler : public IStreamSink, public SocketUser
 	void process ();
 
 	// handle command
-	void handle (int argc, char** argv);
+	void handle (int argc, String argv[]);
 };
 
 // manage control users

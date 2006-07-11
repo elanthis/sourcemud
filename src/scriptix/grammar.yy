@@ -145,7 +145,7 @@ global: TVAR name '=' data ';' { compiler->set_global(Atom::create($2), $4); }
 	;
 
 method: name '(' arg_names ')' '{' block '}' { compiler->add_method(Atom::create($1), ($3 ? *$3 : NameList()), $6); }
-	| TNEW '(' arg_names ')' '{' block '}' { compiler->add_method(Atom("new"), ($3 ? *$3 : NameList()), $6); }
+	| TNEW '(' arg_names ')' '{' block '}' { compiler->add_method(Atom(S("new")), ($3 ? *$3 : NameList()), $6); }
 	;
 
 methods: method

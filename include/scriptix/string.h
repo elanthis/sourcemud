@@ -38,7 +38,8 @@ namespace Scriptix {
 
 class ScriptString : public IValue {
 	public:
-	ScriptString (const String& src);
+	ScriptString () {}
+	ScriptString (const String& src) : data(src) {}
 
 	virtual const TypeInfo* get_type () const;
 

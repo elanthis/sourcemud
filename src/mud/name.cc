@@ -11,11 +11,11 @@
 #include "mud/entity.h"
 
 String EntityArticleClass::names[] = {
-	"normal",
-	"proper",
-	"unique",
-	"plural",
-	"vowel"
+	S("normal"),
+	S("proper"),
+	S("unique"),
+	S("plural"),
+	S("vowel")
 };
 
 EntityArticleClass

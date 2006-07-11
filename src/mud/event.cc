@@ -40,9 +40,9 @@ EventHandler::load (File::Reader& reader) {
 
 void
 EventHandler::save (File::Writer& writer) const {
-	writer.attr("id", EventID::nameof(event));
+	writer.attr(S("id"), EventID::nameof(event));
 	if (script)
-		writer.block("script", script);
+		writer.block(S("script"), script);
 }
 
 int

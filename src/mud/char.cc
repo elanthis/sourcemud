@@ -30,12 +30,12 @@
 // ----- CharStatID -----
 
 String CharStatID::names[CharStatID::COUNT] = {
-	"Strength",
-	"Agility",
-	"Fortitude",
-	"Intellect",
-	"Spirit",
-	"Willpower",
+	S("Strength"),
+	S("Agility"),
+	S("Fortitude"),
+	S("Intellect"),
+	S("Spirit"),
+	S("Willpower"),
 };
 
 CharStatID
@@ -47,20 +47,19 @@ CharStatID::lookup (StringArg name)
 	return NONE;
 }
 
-const char *stat_levels[] = {
-	"Wretched",
-	"Horrible",
-	"Bad",
-	"Poor",
-	"Average",
-	"Fair",
-	"Good",
-	"Excellent",
-	"Awesome",
-	NULL
+String stat_levels[] = {
+	S("Wretched"),
+	S("Horrible"),
+	S("Bad"),
+	S("Poor"),
+	S("Average"),
+	S("Fair"),
+	S("Good"),
+	S("Excellent"),
+	S("Awesome"),
 };
 
-const char *
+String
 get_stat_level (uint stat) {
 	if (stat <= 15)
 		return stat_levels[0];
@@ -99,28 +98,28 @@ get_stat_color (uint stat) {
 // ----- CharPosition -----
 
 String CharPosition::names[CharPosition::COUNT] = {
-	"stand",
-	"sit",
-	"lay",
-	"kneel",
+	S("stand"),
+	S("sit"),
+	S("lay"),
+	S("kneel"),
 };
 String CharPosition::verbs[CharPosition::COUNT] = {
-	"stand up",
-	"sit down",
-	"lay down",
-	"kneel",
+	S("stand up"),
+	S("sit down"),
+	S("lay down"),
+	S("kneel"),
 };
 String CharPosition::sverbs[CharPosition::COUNT] = {
-	"stands up",
-	"sits down",
-	"lays down",
-	"kneels",
+	S("stands up"),
+	S("sits down"),
+	S("lays down"),
+	S("kneels"),
 };
 String CharPosition::verbings[CharPosition::COUNT] = {
-	"standing",
-	"sitting",
-	"laying down",
-	"kneeling",
+	S("standing"),
+	S("sitting"),
+	S("laying down"),
+	S("kneeling"),
 };
 
 CharPosition
@@ -140,37 +139,37 @@ Character::save (File::Writer& writer)
 	Entity::save(writer);
 
 	if (dead)
-		writer.attr("dead", "yes");
+		writer.attr(S("dead"), S("yes"));
 
-	writer.attr("position", position.get_name());
+	writer.attr(S("position"), position.get_name());
 
 	if (coins)
-		writer.attr("coins", coins);
+		writer.attr(S("coins"), coins);
 
-	writer.attr("hp", health.cur);
+	writer.attr(S("hp"), health.cur);
 
 	if (equipment.right_held) {
-		writer.begin("equip.right_hand");
+		writer.begin(S("equip.right_hand"));
 		equipment.right_held->save(writer);
 		writer.end();
 	}
 	if (equipment.left_held) {
-		writer.begin("equip.left_hand");
+		writer.begin(S(S("equip.left_hand")));
 		equipment.left_held->save(writer);
 		writer.end();
 	}
 	if (equipment.body_worn) {
-		writer.begin("equip.body");
+		writer.begin(S("equip.body"));
 		equipment.body_worn->save(writer);
 		writer.end();
 	}
 	if (equipment.back_worn) {
-		writer.begin("equip.back");
+		writer.begin(S("equip.back"));
 		equipment.back_worn->save(writer);
 		writer.end();
 	}
 	if (equipment.waist_worn) {
-		writer.begin("equip.waist");
+		writer.begin(S("equip.waist"));
 		equipment.waist_worn->save(writer);
 		writer.end();
 	}
@@ -413,11 +412,11 @@ Character::enter (Room *new_room, RoomExit *old_exit)
 	// did we go thru an exit?
 	if (old_exit) {
 		// "You go..." message
-		*this << StreamParse(old_exit->get_go()).add("actor", this).add("exit", old_exit) << "\n";
+		*this << StreamParse(old_exit->get_go()).add(S("actor"), this).add(S("exit"), old_exit) << "\n";
 
 		// "So-and-so leaves thru..." message
 		if (get_room())
-			*get_room() << StreamIgnore(this) << StreamParse(old_exit->get_leaves()).add("actor", this).add( "exit", old_exit) << "\n";
+			*get_room() << StreamIgnore(this) << StreamParse(old_exit->get_leaves()).add(S("actor"), this).add( S("exit"), old_exit) << "\n";
 
 		// opposite exit is our entrance
 		enter_exit = new_room->get_exit_by_dir(old_exit->get_dir().get_opposite());
@@ -425,7 +424,7 @@ Character::enter (Room *new_room, RoomExit *old_exit)
 
 	// valid exit?
 	if (enter_exit)
-		*new_room << StreamParse(enter_exit->get_enters()).add("actor", this).add("exit", enter_exit) << "\n";
+		*new_room << StreamParse(enter_exit->get_enters()).add(S("actor"), this).add(S("exit"), enter_exit) << "\n";
 	else
 		*new_room << StreamName(this, INDEFINITE, true) << " arrives.\n";
 
@@ -570,38 +569,38 @@ int
 Character::parse_property (const StreamControl& stream, StringArg comm, const ParseArgs& argv) const
 {
 	// HE / SHE
-	if (str_eq(comm, "he")) {
+	if (str_eq(comm, S("he"))) {
 		stream << get_gender().get_heshe();
 	}
 	// HIM / HER
-	else if (str_eq(comm, "him")) {
+	else if (str_eq(comm, S("him"))) {
 		stream << get_gender().get_himher();
 	}
 	// HIS / HER
-	else if (str_eq(comm, "his")) {
+	else if (str_eq(comm, S("his"))) {
 		stream << get_gender().get_hisher();
 	}
 	// HIS / HERS
-	else if (str_eq(comm, "hers")) {
+	else if (str_eq(comm, S("hers"))) {
 		stream << get_gender().get_hishers();
 	}
 	// MAN / WOMAN
-	else if (str_eq(comm, "man")) {
+	else if (str_eq(comm, S("man"))) {
 		stream << get_gender().get_manwoman();
 	}
 	// MALE / FEMALE
-	else if (str_eq(comm, "male")) {
+	else if (str_eq(comm, S("male"))) {
 		stream << get_gender().get_malefemale();
 	}
 	// ALIVE / DEAD
-	else if (str_eq(comm, "alive")) {
+	else if (str_eq(comm, S("alive"))) {
 		if (is_dead())
 			stream << "dead";
 		else
 			stream << "alive";
 	}
 	// POSITION
-	else if (str_eq(comm, "position")) {
+	else if (str_eq(comm, S("position"))) {
 		stream << get_pos().get_verbing();
 	}
 	// default...
@@ -659,7 +658,7 @@ Character::display_equip (const StreamControl& stream) const
 			if (didshow) {
 				stream << ", ";
 			} else {
-				stream << StreamParse("  {$1.He} is wearing ", "self", this);
+				stream << StreamParse(S("  {$1.He} is wearing "), S("self"), this);
 				didshow = true;
 			}
 			// do show
@@ -674,7 +673,7 @@ Character::display_equip (const StreamControl& stream) const
 		if (didshow) {
 			stream << " and ";
 		} else {
-			stream << StreamParse("  {$1.He} is wearing ", "self", this);
+			stream << StreamParse(S("  {$1.He} is wearing "), S("self"), this);
 			didshow = true;
 		}
 		// show it
@@ -695,7 +694,7 @@ Character::display_equip (const StreamControl& stream) const
 			if (didshow) {
 				stream << ", ";
 			} else {
-				stream << StreamParse("  {$1.He} is holding ", "self", this);
+				stream << StreamParse(S("  {$1.He} is holding "), S("self"), this);
 				didshow = true;
 			}
 			// show
@@ -709,7 +708,7 @@ Character::display_equip (const StreamControl& stream) const
 		if (didshow) {
 			stream << " and ";
 		} else {
-			stream << StreamParse("  {$1.He} is holding ", "self", this);
+			stream << StreamParse(S("  {$1.He} is holding "), S("self"), this);
 			didshow = true;
 		}
 		// show it
@@ -718,18 +717,18 @@ Character::display_equip (const StreamControl& stream) const
 
 	// dead or position
 	if (is_dead())
-		stream << StreamParse("  {$1.He} is laying on the ground, dead.", "self", this);
+		stream << StreamParse(S("  {$1.He} is laying on the ground, dead."), S("self"), this);
 	else if (get_pos() != CharPosition::STAND)
-		stream << StreamParse("  {$1.He} is {$1.position}.", "self", this);
+		stream << StreamParse(S("  {$1.He} is {$1.position}."), S("self"), this);
 
 	// health
 	if (!is_dead() && get_max_hp() > 0) {
 		if (get_hp() * 100 / get_max_hp() <= 25)
-			stream << StreamParse("  {$1.He} appears severely wounded.", "self", this);
+			stream << StreamParse(S("  {$1.He} appears severely wounded."), S("self"), this);
 		else if (get_hp() * 100 / get_max_hp() <= 75)
-			stream << StreamParse("  {$1.He} appears wounded.", "self", this);
+			stream << StreamParse(S("  {$1.He} appears wounded."), S("self"), this);
 		else
-			stream << StreamParse("  {$1.He} appears to be in good health.", "self", this);
+			stream << StreamParse(S("  {$1.He} appears to be in good health."), S("self"), this);
 	}
 }
 

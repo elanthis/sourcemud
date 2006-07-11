@@ -1,5 +1,5 @@
 # Player file: Admin
-# Timestamp: Sun Jul  9 23:47:15 2006
+# Timestamp: Tue Jul 11 15:27:34 2006
 # 
 
 uid = $575a66a6-43da6-c42-00000332-0bb9fd14
@@ -34,10 +34,10 @@ trait : "eye color" = "white"
 gender = "male"
 height = 68
 location = "broken_tree"
-exp : "General" = 0
-exp : "Warrior" = 0
-exp : "Rogue" = 0
-exp : "Caster" = 0
+general_xp = 0
+warrior_xp = 0
+rogue_xp = 0
+caster_xp = 0
 skill : "Agility" = 0
 skill : "Arcane Barrier" = 0
 skill : "Balance" = 0

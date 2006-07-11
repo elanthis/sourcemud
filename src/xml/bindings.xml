@@ -71,46 +71,55 @@ if (value == false) { ... }</example>
 
     <global>
       <name>CNORMAL</name>
+			<expr>S(CNORMAL)</expr>
       <type>String</type>
       <doc>Normal color code.</doc>
     </global>
     <global>
       <name>CPLAYER</name>
+			<expr>S(CPLAYER)</expr>
       <type>String</type>
       <doc>Color code for player names.</doc>
     </global>
     <global>
       <name>CNPC</name>
+			<expr>S(CNPC)</expr>
       <type>String</type>
       <doc>Color code for npc names.</doc>
     </global>
     <global>
       <name>CEXIT</name>
+			<expr>S(CEXIT)</expr>
       <type>String</type>
       <doc>Color code for exits.</doc>
     </global>
     <global>
       <name>CTALK</name>
+			<expr>S(CTALK)</expr>
       <type>String</type>
       <doc>Color code for talking.</doc>
     </global>
     <global>
       <name>CTITLE</name>
+			<expr>S(CTITLE)</expr>
       <type>String</type>
       <doc>Color code for room titles.</doc>
     </global>
     <global>
       <name>CDESC</name>
+			<expr>S(CDESC)</expr>
       <type>String</type>
       <doc>Color code for room descriptions.</doc>
     </global>
     <global>
       <name>CITEM</name>
+			<expr>S(CITEM)</expr>
       <type>String</type>
       <doc>Color code for object names.</doc>
     </global>
     <global>
       <name>CADMIN</name>
+			<expr>S(CADMIN)</expr>
       <type>String</type>
       <doc>Color code for administrator/server messages.</doc>
     </global>
@@ -1206,6 +1215,7 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
     <!-- Searching -->
     <method>
       <name>clFindObject</name>
+      <invoke>cl_find_object</invoke>
       <return>
         <type>Object</type>
         <doc>The found object, or nil if not found.</doc>
@@ -1225,15 +1235,11 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
         <type>Boolean</type>
         <doc>Set to true if not "cannot find" message should be printed to the player.</doc>
       </arg>
-      <code><![CDATA[
-        char name[512];
-        snprintf(name, sizeof(name), "%s", _arg_name.c_str());
-        _return = _self->cl_find_object(name, _arg_location, _arg_silent);
-      ]]></code>
       <doc>Search the character's room (or inventory) for the named object.  The name should generally be player input.  This call can resolve arbitrary names, like "the sword" or "my other pouch."</doc>
     </method>
     <method>
       <name>clFindChar</name>
+      <invoke>cl_find_character</invoke>
       <return>
         <type>Character</type>
         <doc>The found player or <link type="NPC"/>, or nil if not found.</doc>
@@ -1248,15 +1254,11 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
         <type>Boolean</type>
         <doc>Set to true if not "cannot find" message should be printed to the player.</doc>
       </arg>
-      <code><![CDATA[
-        char name[512];
-        snprintf(name, sizeof(name), "%s", _arg_name.c_str());
-        _return = _self->cl_find_character(name, _arg_silent);
-      ]]></code>
       <doc>This function searched for the named character (<link type="NPC"/> or <link type="Player"/>) in the current room.  The function can handle arbitrary names, like "the wolf" or "second thug."</doc>
     </method>
     <method>
       <name>clFindExit</name>
+      <invoke>cl_find_exit</invoke>
       <return>
         <type>RoomExit</type>
         <doc>The found exit, or nil if not found.</doc>
@@ -1271,15 +1273,11 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
         <type>Boolean</type>
         <doc>Set to true if not "cannot find" message should be printed to the player.</doc>
       </arg>
-      <code><![CDATA[
-        char name[512];
-        snprintf(name, sizeof(name), "%s", _arg_name.c_str());
-        _return = _self->cl_find_exit(name, _arg_silent);
-      ]]></code>
       <doc>Searches the room for the named exit.</doc>
     </method>
     <method>
       <name>clFindAny</name>
+      <invoke>cl_find_any</invoke>
       <return>
         <type>Entity</type>
         <doc>The found <link type="Object"/>, <link type="Character"/>, or Exit, or nil if not found.</doc>
@@ -1294,11 +1292,6 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
         <type>Boolean</type>
         <doc>Set to true if not "cannot find" message should be printed to the player.</doc>
       </arg>
-      <code><![CDATA[
-        char name[512];
-        snprintf(name, sizeof(name), "%s", _arg_name.c_str());
-        _return = _self->cl_find_any(name, _arg_silent);
-      ]]></code>
     </method>
 
     <!-- ObjectUsages -->
@@ -1314,7 +1307,7 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
 
     <method>
       <name>exec</name>
-      <invoke>process_cmd</invoke>
+      <invoke>process_command</invoke>
       <arg>
         <name>command</name>
         <type>String</type>
@@ -2542,7 +2535,7 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
         <name>text</name>
         <type>String</type>
       </arg>
-      <code><![CDATA[_self->put(_arg_text.c_str(), _arg_text.size());]]></code>
+      <code><![CDATA[_self->put(_arg_text, _arg_text.size());]]></code>
       <doc>Outputs a string all characters in the room.</doc>
       <invoke>put</invoke>
     </method>

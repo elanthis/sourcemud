@@ -18,11 +18,11 @@
 SSettingsManager SettingsManager;
 
 #define SETTING_INT(name,short_opt,long_opt,file_opt,def) \
-	{ #name, short_opt, long_opt, file_opt, &SettingsManager.val_ ## name, NULL, NULL, def, "", false },
+	{ #name, short_opt, long_opt, file_opt, &SettingsManager.val_ ## name, NULL, NULL, def, String(), false },
 #define SETTING_STRING(name,short_opt,long_opt,file_opt,def) \
-	{ #name, short_opt, long_opt, file_opt, NULL, &SettingsManager.val_ ## name, NULL, 0, def, false },
+	{ #name, short_opt, long_opt, file_opt, NULL, &SettingsManager.val_ ## name, NULL, 0, S(def), false },
 #define SETTING_BOOL(name,short_opt,long_opt,file_opt,def) \
-	{ #name, short_opt, long_opt, file_opt, NULL, NULL, &SettingsManager.val_ ## name, 0, "", def },
+	{ #name, short_opt, long_opt, file_opt, NULL, NULL, &SettingsManager.val_ ## name, 0, String(), def },
 
 namespace {
 	struct SettingInfo {
@@ -77,7 +77,7 @@ namespace {
 		SETTING_INT(chars_per_account, 0, NULL, "acct_char_limit", 3)
 		SETTING_INT(active_per_account, 0, NULL, "acct_play_limit", 1)
 		SETTING_INT(auto_save, 0, NULL, "auto_save", 15)
-		{ NULL, 0, NULL, NULL, NULL, NULL, NULL, 0, "", false }
+		{ NULL, 0, NULL, NULL, NULL, NULL, NULL, 0, S(""), false }
 	};
 }
 

@@ -41,7 +41,7 @@ TypeInfo::TypeInfo (const TypeDef* base, const TypeInfo* s_parent) : parent(s_pa
 	else
 		constructor = base->constructor;
 
-	for (size_t i = 0; base->methods[i].name != NULL; ++i) {
+	for (size_t i = 0; !base->methods[i].name.empty(); ++i) {
 		Function* method = new Function(
 			Atom(base->methods[i].name),
 			base->methods[i].argc + 1,

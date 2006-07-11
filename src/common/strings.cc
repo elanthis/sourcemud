@@ -132,22 +132,16 @@ bool
 str_is_true (StringArg string)
 {
 	return (
-		str_eq(string, "true") ||
-		str_eq(string, "yes") ||
-		str_eq(string, "on") ||
+		str_eq(string, S("true")) ||
+		str_eq(string, S("yes")) ||
+		str_eq(string, S("on")) ||
 		(str_is_number(string) && tolong(string) != 0)
 	);
 }
 
 bool
-str_eq (const char *str_a, const char *str_b, size_t len)
+str_eq (StringArg str_a, StringArg str_b, size_t len)
 {
-	// for NULL checking -- both NULL, or same, are thus equal
-	if (str_a == str_b)
-		return true;
-	// one is NULL but other not, not same
-	if (str_a == NULL || str_b == NULL)
-		return false;
 	// do comparison
 	if (len)
 		return !strncasecmp (str_a, str_b, len);
@@ -233,38 +227,11 @@ phrase_match (StringArg match, StringArg test)
 	return matches == cchunk ? true : false;
 }
 
-const char *
+String
 get_num_suffix (unsigned int num) {
-	if (num == 11 || num == 12 || num == 13) { return "th"; }
+	if (num == 11 || num == 12 || num == 13) { return S("th"); }
 	num %= 10;
-	return num == 1 ? "st" : num == 2 ? "nd" : num == 3 ? "rd" : "th";
-}
-
-int
-get_index_of (const char **list, StringArg str, int def)
-{
-	assert (list != NULL);
-
-	if (str.empty())
-		return def;
-
-	for (int i = 0; list[i] != NULL; i ++)
-		if (str_eq (list[i], str))
-			return i;
-	return def;
-}
-
-bool
-get_true_false (StringArg string)
-{
-	if (!get_index_of (on_off, string.c_str()))
-		return true;
-	if (!get_index_of (yes_no, string.c_str()))
-		return true;
-	if (!get_index_of (true_false, string.c_str()))
-		return true;
-
-	return false;
+	return num == 1 ? S("st") : num == 2 ? S("nd") : num == 3 ? S("rd") : S("th");
 }
 
 uint
@@ -291,16 +258,19 @@ str_value (StringArg string)
 	}
 
 	// next, look for "other"
-	if (str_eq (string, "other")) {
+	if (str_eq (string, S("other"))) {
 		return 2; // second item
 	}
 
 	// ok, scan for first, second, third, fourth... ninth
-	static const char *numerics[] = { "first", "second", "third",
-		"fourth", "fifth", "sixth", "seventh", "eighth",
-		"ninth", NULL};
-	int ret = get_index_of (numerics, string);
-	if (ret >= 0) {
+	static String numerics[] = { S("first"), S("second"), S("third"),
+		S("fourth"), S("fifth"), S("sixth"), S("seventh"), S("eighth"),
+		S("ninth")};
+	int ret;
+	for (ret = 0; ret < 9; ++ret)
+		if (phrase_match(numerics[ret], string))
+			break;
+	if (ret < 9) {
 		return ret + 1; /* first is position 0,
 				   but is item 1 - add 1 */
 	}
@@ -316,13 +286,13 @@ str_value (StringArg string)
 			return 0;
 
 		// check that rest of string is 1st, 2nd, 3rd, or Xth
-		if (str_eq(end - 1, "1st"))
+		if (!strcmp(end - 1, "1st"))
 			return value;
-		else if (str_eq(end - 1, "2nd"))
+		else if (!strcmp(end - 1, "2nd"))
 			return value;
-		else if (str_eq(end - 1, "3rd"))
+		else if (!strcmp(end - 1, "3rd"))
 			return value;
-		else if (str_eq(end, "th"))
+		else if (!strcmp(end, "th"))
 			return value;
 	}
 

@@ -87,10 +87,10 @@ void TelnetModeNewCharacter::prompt ()
 // PROCESS INPUT FOR CURRENT STATE
 void TelnetModeNewCharacter::process (char* line)
 {
-	String input = strlower(line);
+	String input = strlower(S(line));
 	int numeric = tolong(input);
 
-	if (input == "quit") {
+	if (input == S("quit")) {
 		finish();
 		return;
 	}
@@ -100,13 +100,13 @@ void TelnetModeNewCharacter::process (char* line)
 		case STATE_RENAME:
 			// must be a valid name
 			if (!PlayerManager.valid_name(input)) {
-				show_error("Thy chosen name is not acceptable.");
+				show_error(S("Thy chosen name is not acceptable."));
 				break;
 			}
 
 			// not already in use
 			if (PlayerManager.exists(input)) {
-				show_error("Thy chosen name is already in use.");
+				show_error(S("Thy chosen name is already in use."));
 				break;
 			}
 
@@ -115,12 +115,12 @@ void TelnetModeNewCharacter::process (char* line)
 			enter_state(state == STATE_NAME ? STATE_NAME_CONFIRM : STATE_RENAME_CONFIRM);
 			break;
 		case STATE_NAME_CONFIRM:
-			if (!input || is_match("yes", input))
+			if (!input || is_match(S("yes"), input))
 				enter_state(state == STATE_NAME_CONFIRM ? STATE_RACE : STATE_FINAL_CONFIRM);
-			else if (is_match("no", input))
+			else if (is_match(S("no"), input))
 				enter_state(STATE_NAME);
 			else
-				show_error("I do not understand thy response.");
+				show_error(S("I do not understand thy response."));
 			break;
 		case STATE_RACE:
 		{
@@ -135,7 +135,7 @@ void TelnetModeNewCharacter::process (char* line)
 				++ index;
 			}
 			if (rptr == NULL) {
-				show_error("I do not understand thy response.");
+				show_error(S("I do not understand thy response."));
 				break;
 			}
 
@@ -145,39 +145,39 @@ void TelnetModeNewCharacter::process (char* line)
 			break;
 		}
 		case STATE_RACE_CONFIRM:
-			if (!input || is_match("yes", input))
+			if (!input || is_match(S("yes"), input))
 				enter_state(STATE_GENDER);
-			else if (is_match("no", input))
+			else if (is_match(S("no"), input))
 				enter_state(STATE_RACE);
 			else
-				show_error("I do not understand thy response.");
+				show_error(S("I do not understand thy response."));
 			break;
 		case STATE_GENDER:
-			if (numeric == 1 || is_match("female", input)) {
+			if (numeric == 1 || is_match(S("female"), input)) {
 				gender = GenderType::FEMALE;
 				enter_state(STATE_HEIGHT);
-			} else if (numeric == 2 || is_match("male", input)) {
+			} else if (numeric == 2 || is_match(S("male"), input)) {
 				gender = GenderType::MALE;
 				enter_state(STATE_HEIGHT);
 			} else {
-				show_error("I do not understand thy response.");
+				show_error(S("I do not understand thy response."));
 			}
 			break;
 		case STATE_HEIGHT:
 		{
 			// determine input
-			if (numeric == 2 || is_match("short", line)) {
+			if (numeric == 2 || is_match(S("short"), input)) {
 				height = HEIGHT_SHORT;
-			} else if (numeric == 1 || is_match("very short", line)) {
+			} else if (numeric == 1 || is_match(S("very short"), input)) {
 				height = HEIGHT_VERY_SHORT;
-			} else if (numeric == 4 || is_match("tall", line)) {
+			} else if (numeric == 4 || is_match(S("tall"), input)) {
 				height = HEIGHT_TALL;
-			} else if (numeric == 5 || is_match("very tall", line)) {
+			} else if (numeric == 5 || is_match(S("very tall"), input)) {
 				height = HEIGHT_VERY_TALL;
-			} else if (numeric == 3 || is_match("average", line)) {
+			} else if (numeric == 3 || is_match(S("average"), input)) {
 				height = HEIGHT_AVERAGE;
 			} else {
-				show_error("I do not understand they response.");
+				show_error(S("I do not understand they response."));
 				break;
 			}
 
@@ -214,17 +214,17 @@ void TelnetModeNewCharacter::process (char* line)
 	  		break;
 		}
 		case STATE_TRAITS_CONFIRM:
-			if (!input || is_match("yes", input))
+			if (!input || is_match(S("yes"), input))
 				enter_state(STATE_STATS);
-			else if (is_match("no", input))
+			else if (is_match(S("no"), input))
 				enter_state(STATE_GENDER); // redo gender and height, too
 			else
-				show_error("I do not understand thy response.");
+				show_error(S("I do not understand thy response."));
 			break;
 		case STATE_STATS:
 		{
 			// reroll?
-			if (input == "reroll" || input == "reset") {
+			if (input == S("reroll") || input == S("reset")) {
 				enter_state(STATE_STATS);
 				break;
 			}
@@ -239,14 +239,14 @@ void TelnetModeNewCharacter::process (char* line)
 						break;
 				}
 				if (stat == CharStatID::COUNT) {
-					show_error("I do not understand thy response.");
+					show_error(S("I do not understand thy response."));
 					break;
 				}
 			}
 
 			// make sure stat is under limit
 			if (stats[stat] >= STAT_MAX) {
-				show_error("Ye may not increase that attribute any further.");
+				show_error(S("Ye may not increase that attribute any further."));
 				break;
 			}
 
@@ -262,23 +262,23 @@ void TelnetModeNewCharacter::process (char* line)
 			break;
 		}
 		case STATE_STATS_CONFIRM:
-			if (!input || is_match("yes", input))
+			if (!input || is_match(S("yes"), input))
 				enter_state(STATE_FINAL_CONFIRM);
-			else if (is_match("no", input))
+			else if (is_match(S("no"), input))
 				enter_state(STATE_STATS);
 			else
-				show_error("I do not understand thy response.");
+				show_error(S("I do not understand thy response."));
 			break;
 		case STATE_FINAL_CONFIRM:
-			if (!input || is_match("yes", input)) {
+			if (!input || is_match(S("yes"), input)) {
 				if (PlayerManager.exists(name))
 					enter_state(STATE_RENAME);
 				else
 					create();
-			} else if (is_match("no", input)) {
+			} else if (is_match(S("no"), input)) {
 				enter_state(STATE_BEGIN);
 			} else {
-				show_error("I do not understand thy response.");
+				show_error(S("I do not understand thy response."));
 			}
 			break;
 		default:
@@ -290,7 +290,7 @@ void TelnetModeNewCharacter::process (char* line)
 void TelnetModeNewCharacter::display ()
 {
 	get_handler()->clear_scr();
-	*get_handler() << 	"Character Creation\n------------------\n";
+	*get_handler() << 	S("Character Creation\n------------------\n");
 	if (name)
 		*get_handler() << "Name: " << name << "\n";
 	if (race)

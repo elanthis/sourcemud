@@ -54,79 +54,79 @@
 // ---- BEGIN COLOURS ----
 
 // color names
-const char *color_value_names[] = {
-	"normal",
-	"black",
-	"red",
-	"green",
-	"brown",
-	"blue",
-	"magenta",
-	"cyan",
-	"grey",
-	"lightblack",
-	"lightred",
-	"lightgreen",
-	"yellow",
-	"lightblue",
-	"lightmagenta",
-	"lightcyan",
-	"white",
-	"darkred",
-	"darkgreen",
-	"darkyellow",
-	"darkblue",
-	"darkmagenta",
-	"darkcyan",
-	"darkgrey",
-	NULL
+String color_value_names[] = {
+	S("normal"),
+	S("black"),
+	S("red"),
+	S("green"),
+	S("brown"),
+	S("blue"),
+	S("magenta"),
+	S("cyan"),
+	S("grey"),
+	S("lightblack"),
+	S("lightred"),
+	S("lightgreen"),
+	S("yellow"),
+	S("lightblue"),
+	S("lightmagenta"),
+	S("lightcyan"),
+	S("white"),
+	S("darkred"),
+	S("darkgreen"),
+	S("darkyellow"),
+	S("darkblue"),
+	S("darkmagenta"),
+	S("darkcyan"),
+	S("darkgrey"),
+	String()
 };
 // colour ansi values
-const char *color_values[] = {
-	ANSI_NORMAL,
-	ANSI_BLACK,
-	ANSI_RED,
-	ANSI_GREEN,
-	ANSI_BROWN,
-	ANSI_BLUE,
-	ANSI_MAGENTA,
-	ANSI_CYAN,
-	ANSI_GREY,
-	ANSI_LIGHTBLACK,
-	ANSI_LIGHTRED,
-	ANSI_LIGHTGREEN,
-	ANSI_YELLOW,
-	ANSI_LIGHTBLUE,
-	ANSI_LIGHTMAGENTA,
-	ANSI_LIGHTCYAN,
-	ANSI_WHITE,
-	ANSI_DARKRED,
-	ANSI_DARKGREEN,
-	ANSI_DARKYELLOW,
-	ANSI_DARKBLUE,
-	ANSI_DARKMAGENTA,
-	ANSI_DARKCYAN,
-	ANSI_DARKGREY,
+String color_values[] = {
+	S(ANSI_NORMAL),
+	S(ANSI_BLACK),
+	S(ANSI_RED),
+	S(ANSI_GREEN),
+	S(ANSI_BROWN),
+	S(ANSI_BLUE),
+	S(ANSI_MAGENTA),
+	S(ANSI_CYAN),
+	S(ANSI_GREY),
+	S(ANSI_LIGHTBLACK),
+	S(ANSI_LIGHTRED),
+	S(ANSI_LIGHTGREEN),
+	S(ANSI_YELLOW),
+	S(ANSI_LIGHTBLUE),
+	S(ANSI_LIGHTMAGENTA),
+	S(ANSI_LIGHTCYAN),
+	S(ANSI_WHITE),
+	S(ANSI_DARKRED),
+	S(ANSI_DARKGREEN),
+	S(ANSI_DARKYELLOW),
+	S(ANSI_DARKBLUE),
+	S(ANSI_DARKMAGENTA),
+	S(ANSI_DARKCYAN),
+	S(ANSI_DARKGREY),
 };
 // colour type names
-const char *color_type_names[] = {
-	"normal",
-	"title",
-	"desc",
-	"player",
-	"npc",
-	"item",
-	"special",
-	"admin",
-	"exit",
-	"stat",
-	"statvbad",
-	"statbad",
-	"statgood",
-	"statvgood",
-	"bold",
-	"talk",
-	NULL
+String color_type_names[] = {
+	S("normal"),
+	S("title"),
+	S("desc"),
+	S("player"),
+	S("npc"),
+	S("item"),
+	S("special"),
+	S("admin"),
+	S("exit"),
+	S("stat"),
+	S("statvbad"),
+	S("statbad"),
+	S("statgood"),
+	S("statvgood"),
+	S("bold"),
+	S("talk"),
+	String()
 };
 // default colour type mappings
 const int color_type_defaults[] = {
@@ -148,23 +148,23 @@ const int color_type_defaults[] = {
 	COLOR_CYAN
 };
 // colour type RGB values
-const char* color_type_rgb[] = {
-	"",
-	"#0A0",
-	"",
-	"#A05",
-	"#A50",
-	"#0A0",
-	"#A50",
-	"#500",
-	"#0AF",
-	"",
-	"#A00",
-	"#AA5",
-	"#5AF",
-	"#5FA",
-	"#A50",
-	"#05A",
+String color_type_rgb[] = {
+	S(""),
+	S("#0A0"),
+	S(""),
+	S("#A05"),
+	S("#A50"),
+	S("#0A0"),
+	S("#A50"),
+	S("#500"),
+	S("#0AF"),
+	S(""),
+	S("#A00"),
+	S("#AA5"),
+	S("#5AF"),
+	S("#5FA"),
+	S("#A50"),
+	S("#05A"),
 };
 
 // ---- END COLOURS ----
@@ -500,7 +500,7 @@ TelnetHandler::stream_put (const char *text, size_t len)
 					case 'C':
 						// zmp color?
 						if (io_flags.zmp_color) {
-							const char* argv[2] = {"color.use", &esc_buf[1]};
+							String argv[2] = {S("color.use"), S(&esc_buf[1])};
 							add_zmp(2, argv);
 						}
 						
@@ -807,19 +807,15 @@ TelnetHandler::in_handle (char* buffer, size_t size)
 						// enable ZMP support
 						io_flags.zmp = true;
 						// send zmp.ident command
-						const char* argv[4];
-						argv[0] = "zmp.ident"; // command
-						argv[1] = "AweMUD NG"; // name
-						argv[2] = VERSION; // version
-						argv[3] = "Powerful C++ MUD server software"; // about
+						String argv[4] = {S("zmp.ident"), S("AweMUD"), S(VERSION), S("Powerful C++ MUD server software") };
 						send_zmp(4, argv);
 						// check for net.awemud package
-						argv[0] = "zmp.check";
-						argv[1] = "net.awemud.";
+						argv[0] = S("zmp.check");
+						argv[1] = S("net.awemud.");
 						send_zmp(2, argv);
 						// check for color.define command
-						argv[0] = "zmp.check";
-						argv[1] = "color.define";
+						argv[0] = S("zmp.check");
+						argv[1] = S("color.define");
 						send_zmp(2, argv);
 						break;
 					}
@@ -918,7 +914,7 @@ TelnetHandler::set_mode (ITelnetMode* new_mode)
 void
 TelnetHandler::process_telnet_command(char* data)
 {
-	StringList args = explode(data, ' ');
+	StringList args = explode(String(data), ' '); // FIXME: make more efficient
 	// enable/disable color
 	if (args.size() == 2 && args.front() == "color") {
 		if (args[1] == "on") {

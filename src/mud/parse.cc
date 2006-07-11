@@ -131,13 +131,13 @@ namespace {
 				++*in;
 			} while (*in != end && (isalnum(**in) || **in == '-'));
 			// if, elif, else, and endif are special
-			if (str_eq(sin, "if", *in - sin))
+			if (!strncasecmp(sin, S("if"), *in - sin))
 				return TOK_IF;
-			else if (str_eq(sin, "elif", *in - sin))
+			else if (!strncasecmp(sin, S("elif"), *in - sin))
 				return TOK_ELIF;
-			else if (str_eq(sin, "else", *in - sin))
+			else if (!strncasecmp(sin, S("else"), *in - sin))
 				return TOK_ELSE;
-			else if (str_eq(sin, "endif", *in - sin))
+			else if (!strncasecmp(sin, S("endif"), *in - sin))
 				return TOK_ENDIF;
 			// save name
 			namebuf << StreamChunk(sin, *in - sin);
@@ -224,7 +224,7 @@ namespace {
 			String string = self.get_string();
 
 			// LENGTH
-			if (str_eq(method, "length")) {
+			if (!strcasecmp(method, "length")) {
 				stream << string.size();
 				return 0;
 			}
@@ -250,7 +250,7 @@ namespace {
 
 		// search by name
 		for (uint i = 0; i < state.names.size(); ++i) {
-			if (str_eq(state.names[i], name))
+			if (!strcasecmp(state.names[i], name))
 				return state.argv[i];
 		}
 
@@ -437,7 +437,7 @@ namespace {
 
 		// if we have a name, then it's a method
 		if (token == TOK_NAME) {
-			method = buffer;
+			method = String(buffer);
 
 			// next token
 			if ((token = get_token(in, end, buffer)) == TOK_ERROR) {

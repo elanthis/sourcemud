@@ -81,10 +81,10 @@ Race::load (File::Reader& reader)
 			FO_TYPE_ASSERT(STRING)
 			CharacterTraitID trait = CharacterTraitID::lookup(node.get_key());
 			if (!trait.valid())
-				throw File::Error("Invalid trait");
+				throw File::Error(S("Invalid trait"));
 			CharacterTraitValue value = CharacterTraitValue::lookup(node.get_data());
 			if (!value.valid())
-				throw File::Error("Invalid trait value");
+				throw File::Error(S("Invalid trait value"));
 
 			GCType::map<CharacterTraitID, GCType::set<CharacterTraitValue> >::iterator i = traits.find(trait);
 			if (i == traits.end()) {

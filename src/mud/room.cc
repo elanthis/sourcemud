@@ -72,9 +72,9 @@ Room::load_node (File::Reader& reader, File::Node& node)
 		FO_OBJECT("exit")
 			RoomExit* exit = new RoomExit();
 			if (exit == NULL)
-				throw File::Error("new RoomExit() failed");
+				throw File::Error(S("new RoomExit() failed"));
 			if (exit->load(reader))
-				throw File::Error("Failed to load exit");
+				throw File::Error(S("Failed to load exit"));
 
 			// add
 			exit->parent_room = this;
@@ -86,12 +86,12 @@ Room::load_node (File::Reader& reader, File::Node& node)
 		FO_OBJECT("object")
 			Object *obj = new Object ();
 			if (obj->load (reader) != 0)
-				throw File::Error("Failed to load object");
+				throw File::Error(S("Failed to load object"));
 			add_object(obj);
 		FO_OBJECT("npc")
 			Npc *npc = new Npc ();
 			if (npc->load (reader) != 0)
-				throw File::Error("Failed to load npc");
+				throw File::Error(S("Failed to load npc"));
 			add_character(npc);
 		FO_PARENT(Entity)
 	FO_NODE_END
@@ -110,41 +110,41 @@ Room::load_finish (void)
 void
 Room::save (File::Writer& writer)
 {
-	writer.attr("id", id);
+	writer.attr(S("id"), id);
 
 	if (!name.empty())
-		writer.attr("name", name.get_name());
+		writer.attr(S("name"), name.get_name());
 
 	if (!desc.empty())
-		writer.attr("desc", desc);
+		writer.attr(S("desc"), desc);
 	
 	Entity::save(writer);
 
 	if (flags.outdoors)
-		writer.attr("outdoors", "yes");
+		writer.attr(S("outdoors"), true);
 	if (flags.safe)
-		writer.attr("safe", "yes");
+		writer.attr(S("safe"), true);
 	if (flags.noweather)
-		writer.attr("noweather", "yes");
+		writer.attr(S("noweather"), true);
 
 	if (coins)
-		writer.attr("coins", coins);
+		writer.attr(S("coins"), coins);
 
 	for (EList<RoomExit>::const_iterator i = exits.begin(); i != exits.end(); ++i) {
-		writer.begin("exit");
+		writer.begin(S("exit"));
 		(*i)->save(writer);
 		writer.end();
 	}
 
 	for (EList<Object>::const_iterator i = objects.begin(); i != objects.end(); ++i) {
-		writer.begin("object");
+		writer.begin(S("object"));
 		(*i)->save (writer);
 		writer.end();
 	}
 
 	for (EList<Character>::const_iterator i = chars.begin(); i != chars.end(); ++i) {
 		if (NPC(*i)) {
-			writer.begin("npc");
+			writer.begin(S("npc"));
 			(*i)->save(writer);
 			writer.end();
 		}
@@ -159,9 +159,8 @@ Room::save_hook (ScriptRestrictedWriter* writer)
 }
 
 RoomExit *
-Room::find_exit (const char *e_name, uint c, uint *matches)
+Room::find_exit (StringArg e_name, uint c, uint *matches)
 {
-	assert (e_name);
 	assert (c != 0);
 
 	if (matches)
@@ -297,7 +296,7 @@ Room::show (const StreamControl& stream, Character* viewer)
 
 	// basic info
 	stream << "[ " << StreamName(*this, NONE, true) << " ]\n";
-	stream << CDESC "  " << StreamParse(get_desc(), "room", this, "actor", viewer) << CNORMAL;
+	stream << CDESC "  " << StreamParse(get_desc(), S("room"), this, S("actor"), viewer) << CNORMAL;
 
 
 	// we're outdoors - do that stuff
@@ -477,10 +476,8 @@ Room::show_exits (const StreamControl& stream)
 
 /* broadcast a message to the Room */
 void
-Room::put (const char *msg, size_t len, GCType::vector<Character*>* ignore_list)
+Room::put (StringArg msg, size_t len, GCType::vector<Character*>* ignore_list)
 {
-	assert (msg != NULL);
-
 	// iterator
 	for (EList<Character>::iterator i = chars.begin(); i != chars.end(); ++i) {
 		// skip ignored characters
@@ -495,9 +492,8 @@ Room::put (const char *msg, size_t len, GCType::vector<Character*>* ignore_list)
 
 /* find a Character by name */
 Character *
-Room::find_character (const char *cname, uint c, uint *matches)
+Room::find_character (StringArg cname, uint c, uint *matches)
 {
-	assert (cname != NULL);
 	assert (c != 0);
 	
 	return CHARACTER(chars.match (cname, c, matches));
@@ -505,9 +501,8 @@ Room::find_character (const char *cname, uint c, uint *matches)
 
 /* find an object by name */
 Object *
-Room::find_object (const char *oname, uint c, uint *matches)
+Room::find_object (StringArg oname, uint c, uint *matches)
 {
-	assert (oname != NULL);
 	assert (c != 0);
 
 	return OBJECT(objects.match (oname, c, matches));

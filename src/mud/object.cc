@@ -24,11 +24,11 @@
 #include "mud/hooks.h"
 
 String ContainerType::names[] = {
-	"none",
-	"in",
-	"on",
-	"under",
-	"behind",
+	S("none"),
+	S("in"),
+	S("on"),
+	S("under"),
+	S("behind"),
 };
 
 ContainerType
@@ -62,7 +62,7 @@ void
 ObjectBlueprint::reset_name ()
 {
 	// clear
-	name.set_name("an object");
+	name.set_name(S("an object"));
 	set_flags.name = false;
 
 	// get parent value
@@ -233,48 +233,48 @@ void
 ObjectBlueprint::save (File::Writer& writer)
 {
 	if (id)
-		writer.attr("id", id);
+		writer.attr(S("id"), id);
 
 	if (set_flags.name)
-		writer.attr("name", name.get_name());
+		writer.attr(S("name"), name.get_name());
 
 	if (set_flags.desc)
-		writer.attr("desc", desc);
+		writer.attr(S("desc"), desc);
 
 	for (StringList::const_iterator i = keywords.begin(); i != keywords.end(); ++i)
-		writer.attr("keyword", *i);
+		writer.attr(S("keyword"), *i);
 
 	if (set_flags.equip)
-		writer.attr("equip", equip.get_name());
+		writer.attr(S("equip"), equip.get_name());
 
 	if (set_flags.cost)
-		writer.attr("cost", cost);
+		writer.attr(S("cost"), cost);
 	if (set_flags.weight)
-		writer.attr("weight", weight);
+		writer.attr(S("weight"), weight);
 
 	if (set_flags.hidden)
-		writer.attr("roomlist", !is_hidden());
+		writer.attr(S("roomlist"), !is_hidden());
 	if (set_flags.gettable)
-		writer.attr("gettable", is_gettable());
+		writer.attr(S("gettable"), is_gettable());
 	if (set_flags.touchable)
-		writer.attr("touchable", is_touchable());
+		writer.attr(S("touchable"), is_touchable());
 	if (set_flags.dropable)
-		writer.attr("dropable", is_dropable());
+		writer.attr(S("dropable"), is_dropable());
 	if (set_flags.trashable)
-		writer.attr("trashable", is_trashable());
+		writer.attr(S("trashable"), is_trashable());
 	if (set_flags.rotting)
-		writer.attr("rotting", is_rotting());
+		writer.attr(S("rotting"), is_rotting());
 
 	if (parent)
-		writer.attr("parent", parent->get_id());
+		writer.attr(S("parent"), parent->get_id());
 
 	for (ContainerList::const_iterator i = containers.begin (); i != containers.end (); i ++)
-		writer.attr("container", i->get_name());
+		writer.attr(S("container"), i->get_name());
 
 	for (ActionList::const_iterator i = actions.begin(); i != actions.end(); ++i) {
-		writer.begin("action");
-		writer.attr("id", i->first);
-		writer.block("script", i->second.get_source());
+		writer.begin(S("action"));
+		writer.attr(S("id"), i->first);
+		writer.block(S("script"), i->second.get_source());
 		writer.end();
 	}
 
@@ -334,14 +334,14 @@ ObjectBlueprint::load (File::Reader& reader)
 				FO_ATTR("id")
 					id = node.get_data();
 				FO_ATTR("script")
-					script = Scriptix::ScriptFunctionSource::compile("action", node.get_data(), "self,user,data", reader.get_filename(), node.get_line());
+					script = Scriptix::ScriptFunctionSource::compile(S("action"), node.get_data(), S("self,user,data"), reader.get_filename(), node.get_line());
 					if(!script)
-						throw File::Error("Failed to compile action script");
+						throw File::Error(S("Failed to compile action script"));
 			FO_READ_ERROR
 				return -1;
 			FO_READ_END
 			if (id.empty())
-				throw File::Error("Action has no ID");
+				throw File::Error(S("Action has no ID"));
 			actions[id] = script;
 		FO_ATTR("parent")
 			ObjectBlueprint* blueprint = ObjectBlueprintManager.lookup(node.get_data());
@@ -449,10 +449,10 @@ Object::save (File::Writer& writer)
 	if (get_blueprint()) {
 		// real blueprint
 		if (get_blueprint()->get_id()) {
-			writer.attr("blueprint", get_blueprint()->get_id());
+			writer.attr(S("blueprint"), get_blueprint()->get_id());
 		// anonymous blueprint
 		} else {
-			writer.begin("blueprint");
+			writer.begin(S("blueprint"));
 			get_blueprint()->save(writer);
 			writer.end();
 		}
@@ -462,10 +462,10 @@ Object::save (File::Writer& writer)
 	Entity::save(writer);
 
 	if (location.valid())
-		writer.attr("location", location.get_name());
+		writer.attr(S("location"), location.get_name());
 
 	for (EList<Object>::const_iterator e = children.begin (); e != children.end(); ++e) {
-		writer.begin("object");
+		writer.begin(S("object"));
 		(*e)->save (writer);
 		writer.end();
 	}
@@ -499,7 +499,7 @@ Object::load_node(File::Reader& reader, File::Node& node)
 			// creates a new anonymous blueprint
 			ObjectBlueprint* blueprint = new ObjectBlueprint();
 			if (blueprint->load(reader))
-				throw File::Error("Failed to load anonymous blueprint");
+				throw File::Error(S("Failed to load anonymous blueprint"));
 			set_blueprint(blueprint);
 		FO_ATTR("blueprint")
 			// sets a real blueprint
@@ -513,9 +513,9 @@ Object::load_node(File::Reader& reader, File::Node& node)
 		FO_OBJECT("object")
 			Object* obj = new Object ();
 			if (obj->load (reader))
-				throw File::Error("Failed to load object");
+				throw File::Error(S("Failed to load object"));
 			if (!obj->location.valid())
-				throw File::Error("child object has no valid location");
+				throw File::Error(S("child object has no valid location"));
 			obj->set_owner (this);
 			children.add (obj);
 		FO_PARENT(Entity)
@@ -705,9 +705,8 @@ Object::show_contents (Player *player, ContainerType type) const
 }
 
 Object *
-Object::find_object (const char *name, uint index, ContainerType type, uint *matches) const
+Object::find_object (StringArg name, uint index, ContainerType type, uint *matches) const
 {
-	assert (name != NULL);
 	assert (index != 0);
 
 	// clear matches
@@ -946,7 +945,7 @@ SObjectBlueprintManager::initialize ()
 	while ((d_ent = readdir(dir)) != NULL) {
 		// match file name
 		size_t len = strlen(d_ent->d_name);
-		if (len >= 6 && d_ent->d_name[0] != '.' && str_eq(".objs", &d_ent->d_name[len - 5])) {
+		if (len >= 6 && d_ent->d_name[0] != '.' && !strcmp(".objs", &d_ent->d_name[len - 5])) {
 			// load from file
 			File::Reader reader;
 			if (reader.open(path + "/" + d_ent->d_name))

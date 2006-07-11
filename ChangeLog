@@ -1,3 +1,22 @@
+2006-07-11 19:30:43  Sean Middleditch <elanthis@awesomeplay.com>
+
+  * Began the (immense) initial work to use the new String class.
+    This work requires that all static strings assigned to a
+    string put in the form S("foo") instead of just "foo" so that
+    the compiler can tell the difference between static strings
+    and non-static C-style strings.  To use a C-style string,
+    use String("foo").
+  * Various minor API updates all over the place to remove use of
+    C-style strings as arguments to functions.  This has resulted
+    in some extraneous copying which I will remove later.
+  * Various other small cleanups to the String API and other APIs
+    that handle strings.
+  * Added a new Character::cl_find_object() overload for finding
+    objects in other objects.
+  * Note: all of the Character::cl_find_* methods are empty right
+    now, as they need some heavy changes to cope with the new
+    String API.  They'll be updated soon.
+
 2006-07-10 19:37:49  Sean Middleditch <elanthis@awesomeplay.com>
 
   * Removed Race skin_type stuff from the script bindigns; oops.

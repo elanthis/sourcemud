@@ -130,14 +130,14 @@ Spawn::load (File::Reader& reader)
 void
 Spawn::save (File::Writer& writer) const
 {
-	writer.attr("tag", TagID::nameof(tag));
-	writer.attr("count", min);
-	writer.attr("delay", delay);
+	writer.attr(S("tag"), TagID::nameof(tag));
+	writer.attr(S("count"), min);
+	writer.attr(S("delay"), delay);
 	for (StringList::const_iterator i = blueprints.begin(); i != blueprints.end(); ++i) {
-		writer.attr("blueprint", *i);
+		writer.attr(S("blueprint"), *i);
 	}
 	for (StringList::const_iterator i = rooms.begin(); i != rooms.end(); ++i) {
-		writer.attr("room", *i);
+		writer.attr(S("room"), *i);
 	}
 }
 
@@ -183,14 +183,14 @@ Zone::load_node (File::Reader& reader, File::Node& node)
 		FO_OBJECT("room")
 			Room* room = new Room();
 			if (room->load (reader))
-				throw File::Error("Failed to load room");
+				throw File::Error(S("Failed to load room"));
 			add_room(room);
 		FO_OBJECT("spawn")
 			Spawn spawn;
 			if (!spawn.load (reader))
 				spawns.push_back(spawn);
 			else
-				throw File::Error("Failed to load room");
+				throw File::Error(S("Failed to load room"));
 		FO_PARENT(Entity)
 	FO_NODE_END
 }
@@ -199,36 +199,36 @@ void
 Zone::save (File::Writer& writer)
 {
 	// header
-	writer.comment("Zone: " + get_id());
+	writer.comment(S("Zone: ") + get_id());
 
 	// basics
 	writer.bl();
-	writer.comment ("--- BASICS ---");
-	writer.attr("id", id);
-	writer.attr("name", name.get_name());
-	writer.attr("desc", desc);
+	writer.comment (S("--- BASICS ---"));
+	writer.attr(S("id"), id);
+	writer.attr(S("name"), name.get_name());
+	writer.attr(S("desc"), desc);
 	Entity::save(writer);
 
 	// spawns
 	writer.bl();
-	writer.comment ("--- SPAWNS ---");
+	writer.comment (S("--- SPAWNS ---"));
 	for (SpawnList::const_iterator i = spawns.begin(); i != spawns.end(); ++i) {
-		writer.begin("spawn");
+		writer.begin(S("spawn"));
 		i->save(writer);
 		writer.end();
 	}
 
 	// rooms
 	writer.bl();
-	writer.comment("--- ROOMS ---");
+	writer.comment(S("--- ROOMS ---"));
 	for (RoomList::iterator i = rooms.begin(); i != rooms.end(); ++i) {
-		writer.begin("room");
+		writer.begin(S("room"));
 		(*i)->save(writer);
 		writer.end();
 	}
 
 	writer.bl();
-	writer.comment (" --- EOF ---");
+	writer.comment (S(" --- EOF ---"));
 }
 
 void
@@ -377,7 +377,7 @@ SZoneManager::load_world ()
 	while ((dent = readdir(dir)) != NULL) {
 		if (!fnmatch("*.zone", dent->d_name, FNM_PERIOD)) {
 			// load zone
-			String name = dent->d_name;
+			String name(dent->d_name);
 			name = name.substr(0, name.length() - 5);
 			Zone* zone = new Zone();
 			if (zone->load (name)) {

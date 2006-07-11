@@ -113,14 +113,6 @@ namespace {
 	}
 }
 
-const char *exp_names[] = {
-	"General",
-	"Warrior",
-	"Rogue",
-	"Caster",
-	NULL
-};
-
 SCRIPT_TYPE(Player);
 Player::Player (class Account* s_account, StringArg s_id) : Character (AweMUD_PlayerType), birthday()
 {
@@ -164,29 +156,31 @@ Player::save (File::Writer& writer)
 	Character::save(writer);
 
 	if (race != NULL)
-		writer.attr("race", race->get_name());
+		writer.attr(S("race"), race->get_name());
 
-	writer.attr("birthday", birthday.encode());
+	writer.attr(S("birthday"), birthday.encode());
 
-	writer.attr("alignment", alignment);
+	writer.attr(S("alignment"), alignment);
 
 	for (int i = 0; i < CharStatID::COUNT; ++i)
-		writer.keyed("stat", CharStatID(i).get_name(), base_stats[i]);
+		writer.keyed(S("stat"), CharStatID(i).get_name(), base_stats[i]);
 	
 	for (TraitMap::const_iterator i = pdesc.traits.begin(); i != pdesc.traits.end(); ++i)
-		writer.keyed("trait", CharacterTraitID::nameof(i->first), i->second.get_name());
+		writer.keyed(S("trait"), CharacterTraitID::nameof(i->first), i->second.get_name());
 
-	writer.attr("gender", pdesc.gender.get_name());
-	writer.attr("height", pdesc.height);
+	writer.attr(S("gender"), pdesc.gender.get_name());
+	writer.attr(S("height"), pdesc.height);
 
 	if (get_room()) 
-		writer.attr("location", get_room()->get_id());
+		writer.attr(S("location"), get_room()->get_id());
 
-	for (int i = 0; i < NUM_EXPS; ++ i)
-		writer.keyed("exp", exp_names[i], (int)exp[i]);
+	writer.attr(S("general_xp"), exp[EXP_GENERAL]);
+	writer.attr(S("warrior_xp"), exp[EXP_WARRIOR]);
+	writer.attr(S("rogue_xp"), exp[EXP_ROGUE]);
+	writer.attr(S("caster_xp"), exp[EXP_CASTER]);
 
 	for (SSkillManager::SkillList::const_iterator i = SkillManager.get_skills().begin(); i != SkillManager.get_skills().end(); ++i)
-		writer.keyed("skill", (*i)->get_name(), skills.get_skill((*i)->get_id()));
+		writer.keyed(S("skill"), (*i)->get_name(), skills.get_skill((*i)->get_id()));
 }
 
 void
@@ -259,15 +253,15 @@ Player::load_node (File::Reader& reader, File::Node& node)
 			}
 		FO_ATTR("birthday")
 			if (birthday.decode(node.get_data()))
-				throw File::Error ("Invalid birthday");
+				throw File::Error (S("Invalid birthday"));
 		FO_KEYED("trait")
 			FO_TYPE_ASSERT(STRING)
 			CharacterTraitID trait = CharacterTraitID::lookup(node.get_key());
 			if (!trait.valid())
-				throw File::Error ("Unknown trait");
+				throw File::Error (S("Unknown trait"));
 			CharacterTraitValue value = CharacterTraitManager.get_trait(node.get_data());
 			if (!value.valid())
-				throw File::Error ("Unknown trait value");
+				throw File::Error (S("Unknown trait value"));
 			pdesc.traits[trait] = value;
 		FO_ATTR("height")
 			FO_TYPE_ASSERT(INT);
@@ -276,6 +270,14 @@ Player::load_node (File::Reader& reader, File::Node& node)
 			location = ZoneManager.get_room(node.get_data());
 			if (location == NULL)
 				Log::Error << "Unknown room '" << node.get_data() << "' at " << reader.get_filename() << ':' << node.get_line();
+		FO_ATTR("general_xp")
+			exp[EXP_GENERAL] = node.get_int();
+		FO_ATTR("warrior_xp")
+			exp[EXP_WARRIOR] = node.get_int();
+		FO_ATTR("rogue_xp")
+			exp[EXP_ROGUE] = node.get_int();
+		FO_ATTR("caster_xp")
+			exp[EXP_CASTER] = node.get_int();
 		FO_KEYED("stat")
 			FO_TYPE_ASSERT(INT);
 			CharStatID stat = CharStatID::lookup(node.get_key());
@@ -283,16 +285,7 @@ Player::load_node (File::Reader& reader, File::Node& node)
 				base_stats[stat.get_value()] = node.get_int();
 			} else {
 				Log::Error << "Unknown stat '" << node.get_key() << "'";
-				throw File::Error("invalid value");
-			}
-		FO_KEYED("exp")
-			FO_TYPE_ASSERT(INT);
-			int e = get_index_of (exp_names, node.get_key());
-			if (e >= 0) {
-				exp[e] = node.get_int();
-			} else {
-				Log::Error << "Unknown exp pool '" << node.get_key() << "'";
-				throw File::Error("invalid value");
+				throw File::Error(S("invalid value"));
 			}
 		FO_KEYED("skill")
 			FO_TYPE_ASSERT(INT);
@@ -301,16 +294,9 @@ Player::load_node (File::Reader& reader, File::Node& node)
 				skills.set_skill(info->get_id(), node.get_int());
 			} else {
 				Log::Error << "Unknown skill '" << node.get_key() << "'";
-				throw File::Error("invalid value");
+				throw File::Error(S("invalid value"));
 			}
 	FO_NODE_END
-}
-
-int
-Player::load_finish (void)
-{
-	// chracter stuff
-	return Character::load_finish();
 }
 
 // 'startup' the player session
@@ -319,7 +305,7 @@ Player::start (void)
 {
 	// login message
 	clear_scr();
-	*this << "\n" << StreamParse (MessageManager.get("login"), "user", this) << "\n";
+	*this << "\n" << StreamParse (MessageManager.get(S("login")), S("user"), this) << "\n";
 
 	// not already active?  add to room...
 	if (!is_active()) {
@@ -353,7 +339,7 @@ Player::start (void)
 		}
 
 		// Example affect - make strong
-		CharacterAffectGroup* strong = new CharacterAffectGroup("Strength", CharacterAffectType::INNATE, 60 * 30);
+		CharacterAffectGroup* strong = new CharacterAffectGroup(S("Strength"), CharacterAffectType::INNATE, 60 * 30);
 		strong->add_affect(new CharacterAffectStat(CharStatID::STRENGTH, 10));
 		add_affect(strong);
 	// already active... just "refresh" room
@@ -552,8 +538,8 @@ Player::heartbeat(void) {
 	if (get_hp() != ninfo.last_hp || get_max_hp() != ninfo.last_max_hp) {
 		if (get_telnet()) {
 			if (get_telnet()->has_zmp_net_awemud()) {
-				ZMPPack zmp("net.awemud.status.set");
-				zmp.add("hp");
+				ZMPPack zmp(S("net.awemud.status.set"));
+				zmp.add(S("hp"));
 				zmp.add(ninfo.last_hp);
 				zmp.add(ninfo.last_max_hp);
 				zmp.send(get_telnet());
@@ -574,8 +560,8 @@ Player::heartbeat(void) {
 		if (get_telnet()) {
 			if (get_telnet()->has_zmp_net_awemud()) {
 				// send zmp
-				ZMPPack rt("net.awemud.status.set");
-				rt.add("rt");
+				ZMPPack rt(S("net.awemud.status.set"));
+				rt.add(S("rt"));
 				rt.add(ninfo.last_rt);
 				rt.add(ninfo.last_max_rt);
 				rt.send(get_telnet());
@@ -616,17 +602,6 @@ Player::deactivate (void)
 	Character::deactivate();
 }
 
-// handle input
-void
-Player::process_command (char* data)
-{
-	if (str_eq(data, "quit")) {
-		quit();
-	} else {
-		process_cmd (data);
-	}
-}
-
 void
 Player::show_prompt (void)
 {
@@ -649,29 +624,29 @@ int
 Player::parse_property (const StreamControl& stream, StringArg comm, const ParseArgs& argv) const
 {
 	// RACE
-	if (str_eq(comm, "race")) {
+	if (str_eq(comm, S("race"))) {
 		if (get_race())
 			stream << get_race()->get_name();
 		return 0;
 	}
 	// RACE ADJECTIVE
-	else if (str_eq(comm, "race-adj")) {
+	else if (str_eq(comm, S("race-adj"))) {
 		if (get_race())
 			stream << get_race()->get_adj();
 		return 0;
 	}
 	// TRAIT NAME
-	else if (str_eq(comm, "trait-name") && argv.size() == 1) {
+	else if (str_eq(comm, S("trait-name")) && argv.size() == 1) {
 		stream << get_trait(CharacterTraitID::lookup(argv[0].get_string())).get_name();
 		return 0;
 	}
 	// TRAIT DESC
-	else if (str_eq(comm, "trait") && argv.size() == 1) {
+	else if (str_eq(comm, S("trait")) && argv.size() == 1) {
 		stream << get_trait(CharacterTraitID::lookup(argv[0].get_string())).get_desc();
 		return 0;
 	}
 	// HEIGHT
-	else if (str_eq(comm, "height")) {
+	else if (str_eq(comm, S("height"))) {
 		int feet = get_height() / 12;
 		if (feet > 0)
 			stream << feet << '\'';
@@ -679,7 +654,7 @@ Player::parse_property (const StreamControl& stream, StringArg comm, const Parse
 		return 0;
 	}
 	// HEIGHT (RAW)
-	else if (str_eq(comm, "raw-height")) {
+	else if (str_eq(comm, S("raw-height"))) {
 		stream << get_height();
 		return 0;
 	}
@@ -776,7 +751,7 @@ Player::clear_scr (void)
 void
 Player::display_desc (const StreamControl& stream) const
 {
-	stream << StreamParse(get_race()->get_desc(), "player", this);
+	stream << StreamParse(get_race()->get_desc(), S("player"), this);
 }
 
 // get player trait

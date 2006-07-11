@@ -24,7 +24,7 @@ void
 NpcBlueprint::reset_name (void)
 {
 	// clear
-	name.set_name("an npc");
+	name.set_name(S("an npc"));
 	set_flags.name = false;
 
 	// get parent value
@@ -229,30 +229,30 @@ void
 NpcBlueprint::save (File::Writer& writer)
 {
 	if (set_flags.name)
-		writer.attr("name", name.get_name());
+		writer.attr(S("name"), name.get_name());
 
 	for (StringList::const_iterator i = keywords.begin(); i != keywords.end(); ++i)
-		writer.attr("keyword", *i);
+		writer.attr(S("keyword"), *i);
 
 	if (set_flags.desc)
-		writer.attr("desc", desc);
+		writer.attr(S("desc"), desc);
 
 	if (set_flags.alignment)
-		writer.attr("alignment", alignment);
+		writer.attr(S("alignment"), alignment);
 
 	if (set_flags.gender)
-		writer.attr("gender", gender.get_name());
+		writer.attr(S("gender"), gender.get_name());
 
 	if (set_flags.stats)
 		for (int i = 0; i < CharStatID::COUNT; ++i)
-			writer.keyed("stat", CharStatID(i).get_name(), base_stats[i]);
+			writer.keyed(S("stat"), CharStatID(i).get_name(), base_stats[i]);
 
 	if (set_flags.dodge)
-		writer.attr("combat.dodge", combat.dodge);
+		writer.attr(S("combat.dodge"), combat.dodge);
 	if (set_flags.attack)
-		writer.attr("combat.attack", combat.attack);
+		writer.attr(S("combat.attack"), combat.attack);
 	if (set_flags.damage)
-		writer.attr("combat.damage", combat.damage);
+		writer.attr(S("combat.damage"), combat.damage);
 }
 
 Scriptix::Value
@@ -336,19 +336,19 @@ void
 Npc::save (File::Writer& writer)
 {
 	if (get_blueprint())
-		writer.attr("blueprint", get_blueprint()->get_id());
+		writer.attr(S("blueprint"), get_blueprint()->get_id());
 
 	Character::save(writer);
 
 	if (ai != NULL)
-		writer.attr("ai", ai->get_name());
+		writer.attr(S("ai"), ai->get_name());
 
 	if (room_tag.valid())
-		writer.attr("roomtag", TagID::nameof(room_tag));
+		writer.attr(S("roomtag"), TagID::nameof(room_tag));
 	if (flags.zonelock)
-		writer.attr("zonelock", "true");
+		writer.attr(S("zonelock"), true);
 	if (flags.revroomtag)
-		writer.attr("reverse_roomtag", "true");
+		writer.attr(S("reverse_roomtag"), true);
 }
 
 void
@@ -541,7 +541,7 @@ void
 Npc::display_desc (const StreamControl& stream)
 {
 	if (get_desc ())
-		stream << StreamParse(get_desc(), "npc", this); // FIXME: re-enable 'actor'(looker)
+		stream << StreamParse(get_desc(), S("npc"), this); // FIXME: re-enable 'actor'(looker)
 	else
 		stream << StreamName(this, DEFINITE, true) << " doesn't appear very interesting.";
 }
@@ -665,7 +665,7 @@ SNpcBlueprintManager::initialize (void)
 	while ((d_ent = readdir(dir)) != NULL) {
 		// match file name
 		size_t len = strlen(d_ent->d_name);
-		if (len >= 6 && d_ent->d_name[0] != '.' && str_eq(".npcs", &d_ent->d_name[len - 5])) {
+		if (len >= 6 && d_ent->d_name[0] != '.' && !strcmp(".npcs", &d_ent->d_name[len - 5])) {
 			// load from file
 			File::Reader reader;
 			if (reader.open(path + "/" + d_ent->d_name))

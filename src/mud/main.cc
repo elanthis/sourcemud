@@ -278,7 +278,7 @@ namespace {
 			"Visit http://www.awemud.net for more details.\n";
 
 		// connect message
-		*telnet << StreamParse(MessageManager.get("connect"));
+		*telnet << StreamParse(MessageManager.get(S("connect")));
 
 		// init login
 		telnet->set_mode(new TelnetModeLogin(telnet));

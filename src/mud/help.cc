@@ -22,7 +22,7 @@
 
 SHelpManager HelpManager;
 
-void command_help (Player *ch, char** argv)
+void command_help (Player *ch, String argv[])
 {
 	HelpManager.print (ch, argv[0]);
 }
@@ -50,7 +50,7 @@ SHelpManager::print (Player* player, StringArg name)
 	if (topic) {
 		*player << CSPECIAL "Help: " CNORMAL << topic->name << "\n\n";
 		player->set_indent(2);
-		*player << StreamParse(topic->about, "player", player) << "\n";
+		*player << StreamParse(topic->about, S("player"), player) << S("\n");
 		player->set_indent(0);
 		return;
 	}

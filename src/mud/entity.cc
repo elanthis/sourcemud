@@ -127,24 +127,24 @@ Entity::name_match (StringArg match) const
 void
 Entity::display_desc (const StreamControl& stream) const
 {
-	stream << StreamParse(get_desc(), "self", this);
+	stream << StreamParse(get_desc(), S("self"), this);
 }
 
 void
 Entity::save (File::Writer& writer)
 {
-	writer.attr("uid", uid);
+	writer.attr(S("uid"), uid);
 
 	// event handler list
 	for (EventList::const_iterator i = events.begin (); i != events.end (); i ++) {
-		writer.begin("event");
+		writer.begin(S("event"));
 		(*i)->save(writer);
 		writer.end();
 	}
 
 	// save tags
 	for (TagList::const_iterator i = tags.begin(); i != tags.end(); ++i)
-		writer.attr("tag", TagID::nameof(*i));
+		writer.attr(S("tag"), TagID::nameof(*i));
 
 	// call save hook
 	ScriptRestrictedWriter* swriter = new ScriptRestrictedWriter(&writer);
@@ -173,9 +173,16 @@ Entity::load (File::Reader& reader)
 				break;
 
 			if (load_node(reader, node) != FO_SUCCESS_CODE) {
-				if (node.is_attr()) Log::Error << "Unrecognized attribute '" << node.get_name() << "' at " << reader.get_filename() << ':' << node.get_line();
-				else if (node.is_custom()) Log::Error << "Unexpected custom attribute '@" << node.get_name() << "' at " << reader.get_filename() << ':' << node.get_line();
-				else if (node.is_begin()) Log::Error << "Unrecognized object '" << node.get_name() << "' at " << reader.get_filename() << ':' << node.get_line();
+				if (node.is_attr())
+					Log::Error << "Unrecognized attribute '" << node.get_name() << "' at " << reader.get_filename() << ':' << node.get_line();
+				else if (node.is_keyed())
+					Log::Error << "Unrecognized keyed attribute '" << node.get_name () << ' ' << node.get_key() << "' at " << reader.get_filename() << ':' << node.get_line();
+				else if (node.is_custom())
+					Log::Error << "Unexpected custom attribute '@" << node.get_name() << "' at " << reader.get_filename() << ':' << node.get_line();
+				else if (node.is_begin())
+					Log::Error << "Unrecognized object '" << node.get_name() << "' at " << reader.get_filename() << ':' << node.get_line();
+				else
+					Log::Error << "Unrecognized construct '" << node.get_name() << "' at " << reader.get_filename() << ':' << node.get_line();
 				return -1;
 			}
 		}
@@ -203,11 +210,9 @@ Entity::load_node (File::Reader& reader, File::Node& node)
 			else if (node.get_datatype() == File::TYPE_STRING)
 				set_property(node.get_name(), node.get_data());
 			else if (node.get_datatype() == File::TYPE_BOOL)
-				set_property(node.get_name(), str_is_true(node.get_data()));
-			else {
-				Log::Error << "Invalid data type for script attribute at " << reader.get_filename() << ':' << node.get_line();
-				return -1;
-			}
+				set_property(node.get_name(), node.get_bool());
+			else
+				throw File::Error(S("Invalid data type for script attribute"));
 		FO_ATTR("tag")
 			add_tag(TagID::create(node.get_data()));
 		FO_OBJECT("event")
@@ -249,11 +254,11 @@ Entity::parse_property (const StreamControl& stream, StringArg comm, const Parse
 	}
 
 	// ENTITY's NAME
-	if (str_eq(comm, "name")) {
+	if (str_eq(comm, S("name"))) {
 		stream << StreamName(this);
 		return 0;
 	// ENTITY'S DESC
-	} else if (str_eq(comm, "desc")) {
+	} else if (str_eq(comm, S("desc"))) {
 		display_desc(stream);
 		return 0;
 	}

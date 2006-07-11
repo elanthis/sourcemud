@@ -19,10 +19,10 @@
 #include "mud/npc.h"
 
 void
-Character::do_emote (char const *action)
+Character::do_emote (StringArg action)
 {
 	if (get_room())
-		*get_room() << "(" << StreamName(this, DEFINITE, true) << " " << action << ")\n";
+		*get_room() << "(S(" << StreamName(this, DEFINITE, true) << ") " << action << ")\n";
 }
 
 void
@@ -49,8 +49,8 @@ Character::do_social (const SocialAdverb* social, Entity* target)
 		}
 
 		// do social
-		*this << StreamParse(social->ghost.self, "actor", this) << "\n";
-		if (get_room()) *get_room() << StreamIgnore(this) << StreamParse(social->ghost.others, "actor", this) << "\n";
+		*this << StreamParse(social->ghost.self, S("actor"), this) << "\n";
+		if (get_room()) *get_room() << StreamIgnore(this) << StreamParse(social->ghost.others, S("actor"), this) << "\n";
 		return;
 	}
 
@@ -65,25 +65,25 @@ Character::do_social (const SocialAdverb* social, Entity* target)
 	// have we a target?
 	if (target == NULL) {
 		if (social->action.self) {
-			*this << StreamParse(social->action.self, "actor", this) << "\n";
-			if (get_room()) *get_room() << StreamIgnore(this) << StreamParse(social->action.others, "actor", this) << "\n";
+			*this << StreamParse(social->action.self, S("actor"), this) << "\n";
+			if (get_room()) *get_room() << StreamIgnore(this) << StreamParse(social->action.others, S("actor"), this) << "\n";
 		} else {
 			*this << "You can't do that without a target person or object.\n";
 		}
 	// target a character?
 	} else if (social->person.self && CHARACTER(target)) {
-		*this << StreamParse(social->person.self, "actor", this, "target", target) << "\n";
+		*this << StreamParse(social->person.self, S("actor"), this, S("target"), target) << "\n";
 		if (PLAYER(target)) {
-			*PLAYER(target) << StreamParse(social->person.target, "actor", this, "target", target) << "\n";
+			*PLAYER(target) << StreamParse(social->person.target, S("actor"), this, S("target"), target) << "\n";
 		}
-		if (get_room()) *get_room() << StreamIgnore(this) << StreamIgnore(CHARACTER(target)) << StreamParse(social->person.others, "actor", this, "target", target) << "\n";
+		if (get_room()) *get_room() << StreamIgnore(this) << StreamIgnore(CHARACTER(target)) << StreamParse(social->person.others, S("actor"), this, S("target"), target) << "\n";
 	// target an object?
 	} else if (social->thing.self && OBJECT(target)) {
 		if (!((Object*)(target))->is_touchable() && social->social->need_touch()) {
 			*this << "You cannot touch " << StreamName(*target, DEFINITE, false) << ".\n";
 		} else {
-			*this << StreamParse(social->thing.self, "actor", this, "target", target) << "\n";
-			if (get_room()) *get_room() << StreamIgnore(this) << StreamParse(social->thing.others, "actor", this, "target", target) << "\n";
+			*this << StreamParse(social->thing.self, S("actor"), this, S("target"), target) << "\n";
+			if (get_room()) *get_room() << StreamIgnore(this) << StreamParse(social->thing.others, S("actor"), this, S("target"), target) << "\n";
 		}
 	// um...
 	} else {
@@ -92,16 +92,14 @@ Character::do_social (const SocialAdverb* social, Entity* target)
 }
 
 void
-Character::do_say (char const *text)
+Character::do_say (StringArg text)
 {
-	size_t len = strlen(text);
-
 	// don't say nothing
-	if (!len)
+	if (text.empty())
 		return;
 
 	// last character of text
-	char last_char = text[len - 1];
+	char last_char = text[text.size() - 1];
 
 	// you say...
 	if (last_char == '?')
@@ -132,7 +130,7 @@ Character::do_say (char const *text)
 }
 
 void
-Character::do_sing (const char* text)
+Character::do_sing (StringArg text)
 {
 	// split into lines
 	StringList lines;
@@ -240,7 +238,7 @@ Character::do_look (const Object *obj, const ContainerType& type)
 	} else {
 		// generic - description and on or in contents
 		if (obj->get_desc())
-			*this << StreamParse(obj->get_desc(), "object", obj, "actor", this) << "  ";
+			*this << StreamParse(obj->get_desc(), S("object"), obj, S("actor"), this) << "  ";
 		// on contents?
 		if (obj->has_container (ContainerType::ON))
 			obj->show_contents(PLAYER(this), ContainerType::ON);
@@ -261,7 +259,7 @@ Character::do_look (RoomExit *exit)
 
 	// basic description
 	if (exit->get_desc() && strlen(exit->get_desc()))
-		*this << StreamParse(exit->get_desc(), "exit", exit, "actor", this) << "  ";
+		*this << StreamParse(exit->get_desc(), S("exit"), exit, S("actor"), this) << "  ";
 	else if (target_room == NULL)
 		*this << "There is nothing remarkable about " << StreamName(*exit, DEFINITE) << ".  ";
 
@@ -610,27 +608,27 @@ class ActionRead : public IInstantAction
 		if (!get_actor()->check_see())
 			return;
 
-		switch (obj->do_action("read", get_actor())) {
+		switch (obj->do_action(S("read"), get_actor())) {
 			// use the object normally
 			case OBJECT_ACTION_OK_NORMAL:
 			{
 				// has plain text?
-				String text = obj->get_property("read_text").get_string();
+				String text = obj->get_property(S("read_text")).get_string();
 				if (!text) {
 					*get_actor() << StreamName(*obj, DEFINITE, true) << " cannot be read.\n";
 					return;
 				}
 
 				// show text
-				*get_actor() << StreamParse(text, "object", obj, "get_actor()", get_actor()) << "\n";
+				*get_actor() << StreamParse(text, S("object"), obj, S("get_actor()"), get_actor()) << "\n";
 					
 				// room text
 				if (get_actor()->get_room()) {
-					text = obj->get_property("read_room").get_string();
+					text = obj->get_property(S("read_room")).get_string();
 					if (!text)
 						*get_actor()->get_room() << StreamIgnore(get_actor()) << StreamName(get_actor(), INDEFINITE, true) << " reads " << StreamName(obj) << ".\n";
 					else
-						*get_actor()->get_room() << StreamIgnore(get_actor()) << StreamParse(text, "object", obj, "get_actor()", get_actor()) << "\n";
+						*get_actor()->get_room() << StreamIgnore(get_actor()) << StreamParse(text, S("object"), obj, S("get_actor()"), get_actor()) << "\n";
 				}
 
 				// event
@@ -682,27 +680,27 @@ class ActionEat : public IAction
 		if (!get_actor()->check_move())
 			return 1;
 
-		switch (obj->do_action("eat", obj)) {
+		switch (obj->do_action(S("eat"), obj)) {
 			// normal processing
 			case OBJECT_ACTION_OK_NORMAL:
 			{
 				// you eat text
-				String text = obj->get_property("eat_text").get_string();
+				String text = obj->get_property(S("eat_text")).get_string();
 				if (!text) {
 					*get_actor() << "You can't eat " << StreamName(*obj, DEFINITE) << ".\n";
 					return 1;
 				}
 
 				// show text
-				*get_actor() << StreamParse(text, "object", obj, "get_actor()", get_actor()) << "\n";
+				*get_actor() << StreamParse(text, S("object"), obj, S("get_actor()"), get_actor()) << "\n";
 					
 				// room text
 				if (get_actor()->get_room()) {
-					text = obj->get_property("eat_room").get_string();
+					text = obj->get_property(S("eat_room")).get_string();
 					if (!text)
 						*get_actor()->get_room() << StreamIgnore(get_actor()) << StreamName(get_actor(), INDEFINITE, true) << " eats " << StreamName(obj) << ".\n";
 					else
-						*get_actor()->get_room() << StreamIgnore(get_actor()) << StreamParse(text, "object", obj, "get_actor()", get_actor()) << "\n";
+						*get_actor()->get_room() << StreamIgnore(get_actor()) << StreamParse(text, S("object"), obj, S("get_actor()"), get_actor()) << "\n";
 				}
 
 				// event
@@ -759,27 +757,27 @@ class ActionDrink : public IAction
 		if (!get_actor()->check_move())
 			return 1;
 
-		switch (obj->do_action("drink", obj)) {
+		switch (obj->do_action(S("drink"), obj)) {
 			// normal processing
 			case OBJECT_ACTION_OK_NORMAL:
 			{
 				// you drink text
-				String text = obj->get_property("drink_text").get_string();
+				String text = obj->get_property(S("drink_text")).get_string();
 				if (!text) {
 					*get_actor() << "You can't drink " << StreamName(*obj, DEFINITE) << ".\n";
 					return 1;
 				}
 
 				// show text
-				*get_actor() << StreamParse(text, "object", obj, "get_actor()", get_actor()) << "\n";
+				*get_actor() << StreamParse(text, S("object"), obj, S("get_actor()"), get_actor()) << "\n";
 					
 				// room text
 				if (get_actor()->get_room()) {
-					text = obj->get_property("drink_room").get_string();
+					text = obj->get_property(S("drink_room")).get_string();
 					if (!text)
 						*get_actor()->get_room() << StreamIgnore(get_actor()) << StreamName(get_actor(), INDEFINITE, true) << " drinks " << StreamName(obj) << ".\n";
 					else
-						*get_actor()->get_room() << StreamIgnore(get_actor()) << StreamParse(text, "object", obj, "get_actor()", get_actor()) << "\n";
+						*get_actor()->get_room() << StreamIgnore(get_actor()) << StreamParse(text, S("object"), obj, S("get_actor()"), get_actor()) << "\n";
 				}
 
 				// event
@@ -842,7 +840,7 @@ class ActionRaise : public IAction
 			return 1;
 		}
 
-		switch (obj->do_action("raise", get_actor())) {
+		switch (obj->do_action(S("raise"), get_actor())) {
 			// normal processing
 			case OBJECT_ACTION_OK_NORMAL:
 				// output
@@ -903,7 +901,7 @@ class ActionTouch : public IInstantAction
 			return;
 		}
 
-		switch (obj->do_action("touch", get_actor())) {
+		switch (obj->do_action(S("touch"), get_actor())) {
 			// normal processing
 			case OBJECT_ACTION_OK_NORMAL:
 				// output
@@ -964,7 +962,7 @@ class ActionKick : public IAction
 			return 1;
 		}
 
-		switch (obj->do_action("kick", get_actor())) {
+		switch (obj->do_action(S("kick"), get_actor())) {
 			// normal processing
 			case OBJECT_ACTION_OK_NORMAL:
 				// output

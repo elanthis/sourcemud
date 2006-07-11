@@ -108,7 +108,7 @@
 		LEX_NAME("public", TPUBLIC)
 		{
 			TypeInfo* type;
-			yylval.id = Atom(yytext).value();
+			yylval.id = Atom(String(yytext)).value();
 			if ((type = compiler->get_type(Atom::create(yylval.id))) != NULL) {
 				yylval.type = type;
 				return TYPE;

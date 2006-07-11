@@ -16,7 +16,7 @@
 
 // attack command
 void
-command_attack (Character* attacker, char** argv)
+command_attack (Character* attacker, String argv[])
 {
 	// check status
 	if (!attacker->check_alive() || !attacker->check_move() || !attacker->check_rt())
