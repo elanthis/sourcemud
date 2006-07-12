@@ -48,7 +48,7 @@ class Player : public Character
 {
 	public:
 	// create
-	Player (class Account* s_account, StringArg s_id);
+	Player (class Account* s_account, String s_id);
 
 	// player's unique ID (this is identical to their name)
 	inline String get_id () const { return name.get_text(); }
@@ -58,7 +58,7 @@ class Player : public Character
 
 	// description information
 	virtual inline String get_desc () const { return String(); }
-	virtual inline void set_desc (StringArg s_desc) {}
+	virtual inline void set_desc (String s_desc) {}
 
 	// gender
 	virtual inline GenderType get_gender () const { return pdesc.gender; }
@@ -146,15 +146,15 @@ class Player : public Character
 	void clear_scr ();
 
 	// parsing
-	virtual int parse_property (const class StreamControl& stream, StringArg method, const ParseArgs& argv) const;
+	virtual int parse_property (const class StreamControl& stream, String method, const ParseArgs& argv) const;
 
 	// handling "player states"
 	int start (); // start the session
 	void quit (); // save and exit
 
 	// player-only actions
-	void do_tell (Player* who, StringArg what);
-	void do_reply (StringArg what);
+	void do_tell (Player* who, String what);
+	void do_reply (String what);
 
 	protected:
 	typedef GCType::map<CharacterTraitID, CharacterTraitValue> TraitMap;
@@ -214,16 +214,16 @@ class SPlayerManager : public IManager
 	bool valid_name (String name);
 
 	// return the path a player's file is at
-	String path (StringArg name);
+	String path (String name);
 
 	// return the logged-in player with the given name
-	Player* get (StringArg name);
+	Player* get (String name);
 
 	// load a player - from disk
-	Player* load (class Account* account, StringArg name);
+	Player* load (class Account* account, String name);
 
 	// DESTROY a player permanently (with backup)
-	int destroy (StringArg name);
+	int destroy (String name);
 
 	// does a valid player of this name exist?
 	bool exists (String name);

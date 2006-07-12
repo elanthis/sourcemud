@@ -14,7 +14,7 @@
 
 SAccountManager AccountManager;
 
-Account::Account (StringArg s_id) : id(s_id), active(0), maxchars(0), maxactive(0)
+Account::Account (String s_id) : id(s_id), active(0), maxchars(0), maxactive(0)
 {
 	flags.disabled = false;
 }
@@ -62,7 +62,7 @@ Account::save (void) const
 
 // password management
 void
-Account::set_passphrase (StringArg s_pass)
+Account::set_passphrase (String s_pass)
 {
 	// encrypt
 	char enc_pass[MD5_BUFFER_SIZE];
@@ -77,7 +77,7 @@ Account::set_passphrase (StringArg s_pass)
 
 // check password
 bool
-Account::check_passphrase (StringArg s_pass) const
+Account::check_passphrase (String s_pass) const
 {
 	// empty?  auto-fail
 	if (!s_pass)
@@ -89,7 +89,7 @@ Account::check_passphrase (StringArg s_pass) const
 
 // add a new character
 void
-Account::add_character (StringArg name)
+Account::add_character (String name)
 {
 	// not already in list?
 	if (find(chars.begin(), chars.end(), name) != chars.end())
@@ -101,7 +101,7 @@ Account::add_character (StringArg name)
 
 // remove a character
 void
-Account::del_character (StringArg name)
+Account::del_character (String name)
 {
 	// find in list
 	StringList::iterator i;
@@ -177,7 +177,7 @@ SAccountManager::shutdown (void)
 }
 
 bool
-SAccountManager::valid_name (StringArg name)
+SAccountManager::valid_name (String name)
 {
 	// length
 	if (name.size() < ACCOUNT_NAME_MIN_LEN || name.size() > ACCOUNT_NAME_MAX_LEN)
@@ -193,7 +193,7 @@ SAccountManager::valid_name (StringArg name)
 }
 
 bool
-SAccountManager::valid_passphrase (StringArg pass)
+SAccountManager::valid_passphrase (String pass)
 {
 	// length
 	if (pass.size() < ACCOUNT_PASS_MIN_LEN)
@@ -213,7 +213,7 @@ SAccountManager::valid_passphrase (StringArg pass)
 }
 
 Account*
-SAccountManager::get (StringArg in_name)
+SAccountManager::get (String in_name)
 {
 	// force lower-case
 	String name = strlower(in_name);
@@ -275,7 +275,7 @@ SAccountManager::get (StringArg in_name)
 }
 
 Account*
-SAccountManager::create (StringArg name)
+SAccountManager::create (String name)
 {
 	// check validity
 	if (!valid_name(name))
@@ -300,7 +300,7 @@ SAccountManager::create (StringArg name)
 }
 
 bool
-SAccountManager::exists (StringArg name)
+SAccountManager::exists (String name)
 {
 	// must be lower-case
 	strlower(name);

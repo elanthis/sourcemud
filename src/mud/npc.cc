@@ -506,7 +506,7 @@ Npc::set_blueprint (NpcBlueprint* s_blueprint)
 
 // load npc from a blueprint
 Npc*
-Npc::load_blueprint (StringArg name)
+Npc::load_blueprint (String name)
 {
 	// lookup the blueprint
 	NpcBlueprint* blueprint = NpcBlueprintManager.lookup(name);
@@ -590,7 +590,7 @@ Npc::can_use_exit (RoomExit* exit) const
 }
 
 bool
-Npc::is_blueprint (StringArg name) const
+Npc::is_blueprint (String name) const
 {
 	NpcBlueprint* blueprint = get_blueprint();
 
@@ -605,7 +605,7 @@ Npc::is_blueprint (StringArg name) const
 }
 
 bool
-Npc::name_match (StringArg match) const
+Npc::name_match (String match) const
 {
 	if (get_name().matches(match))
 		return true;
@@ -700,7 +700,7 @@ SNpcBlueprintManager::shutdown (void)
 }
 
 NpcBlueprint*
-SNpcBlueprintManager::lookup (StringArg id)
+SNpcBlueprintManager::lookup (String id)
 {
 	BlueprintMap::iterator iter = blueprints.find(id);
 	if (iter == blueprints.end())

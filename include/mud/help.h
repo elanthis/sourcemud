@@ -26,11 +26,11 @@ class SHelpManager : public IManager
 	virtual void shutdown (void);
 
 	// print out help to a player
-	void print (StreamControl& stream, StringArg section);
+	void print (StreamControl& stream, String section);
 
 	// get a topic; category is optional, its use limits
 	// the topic search to topics in the given category
-	HelpTopic* get_topic (StringArg name);
+	HelpTopic* get_topic (String name);
 
 	private:
 	typedef GCType::vector<HelpTopic*> TopicList;

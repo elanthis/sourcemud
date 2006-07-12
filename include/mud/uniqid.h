@@ -43,7 +43,7 @@ class SUniqueIDManager : public IManager
 	void create (UniqueID& uid);
 	inline UniqueID create () { UniqueID uid; create(uid); return uid; }
 	String encode (const UniqueID& uid);
-	UniqueID decode (StringArg string);
+	UniqueID decode (String string);
 
 	private:
 	struct timeval last_time;

@@ -29,23 +29,23 @@ class Account : public Cleanup
 {
 	public:
 	// the ID
-	inline StringArg get_id (void) const { return id; }
+	inline String get_id (void) const { return id; }
 
 	// account info
-	inline StringArg get_name (void) const { return name; }
-	inline void set_name (StringArg s_name) { name = s_name; }
+	inline String get_name (void) const { return name; }
+	inline void set_name (String s_name) { name = s_name; }
 
-	inline StringArg get_email (void) const { return email; }
-	inline void set_email (StringArg s_email) { email = s_email; }
+	inline String get_email (void) const { return email; }
+	inline void set_email (String s_email) { email = s_email; }
 
 	// pass phrases
-	bool check_passphrase (StringArg check) const;
-	void set_passphrase (StringArg s_pass);
+	bool check_passphrase (String check) const;
+	void set_passphrase (String s_pass);
 
 	// character list
 	inline const StringList& get_char_list (void) const { return chars; }
-	void add_character (StringArg name);
-	void del_character (StringArg name);
+	void add_character (String name);
+	void del_character (String name);
 
 	// save out
 	int save (void) const;
@@ -94,7 +94,7 @@ class Account : public Cleanup
 		int disabled:1; // no login allowed
 	} flags;
 
-	Account (StringArg s_id);
+	Account (String s_id);
 	~Account (void);
 
 	friend class SAccountManager;
@@ -106,14 +106,14 @@ class SAccountManager : public IManager
 	virtual int initialize (void);
 	virtual void shutdown (void);
 
-	Account* get (StringArg name); // need a copy for get
+	Account* get (String name); // need a copy for get
 
-	Account* create (StringArg id); // create a new account
+	Account* create (String id); // create a new account
 
-	bool valid_name (StringArg name); // is a name a valid account name?
-	bool valid_passphrase (StringArg check); // a valid passphrase?
+	bool valid_name (String name); // is a name a valid account name?
+	bool valid_passphrase (String check); // a valid passphrase?
 
-	bool exists (StringArg name); // account already exists
+	bool exists (String name); // account already exists
 
 	private:
 	typedef std::vector<Account*> AccountList;  // NOTE: do not GC-store

@@ -28,7 +28,7 @@ class SEntityFactoryManager : public IManager
 	int initialize ();
 	void shutdown ();
 
-	void add_factory (StringArg klass, IEntityFactory*);
+	void add_factory (String klass, IEntityFactory*);
 
 	private:
 	typedef GCType::map<String, IEntityFactory*> FactoryList;

@@ -32,7 +32,7 @@ String ContainerType::names[] = {
 };
 
 ContainerType
-ContainerType::lookup (StringArg name)
+ContainerType::lookup (String name)
 {
 	for (uint i = 0; i < COUNT; ++i)
 		if (str_eq(name, names[i]))
@@ -599,7 +599,7 @@ Object::deactivate ()
 }
 
 Scriptix::ScriptFunction
-Object::get_action (StringArg name)
+Object::get_action (String name)
 {
 	ObjectBlueprint* blueprint = get_blueprint();
 	while (blueprint) {
@@ -612,7 +612,7 @@ Object::get_action (StringArg name)
 }
 
 ObjectActionCode
-Object::do_action (StringArg name, Entity* user, Scriptix::Value data)
+Object::do_action (String name, Entity* user, Scriptix::Value data)
 {
 	// get script
 	Scriptix::ScriptFunction func = get_action(name);
@@ -705,7 +705,7 @@ Object::show_contents (Player *player, ContainerType type) const
 }
 
 Object *
-Object::find_object (StringArg name, uint index, ContainerType type, uint *matches) const
+Object::find_object (String name, uint index, ContainerType type, uint *matches) const
 {
 	assert (index != 0);
 
@@ -841,7 +841,7 @@ Object::is_rotting () const
 
 // get parsable member values
 int
-Object::parse_property (const StreamControl& stream, StringArg comm, const ParseArgs& argv) const
+Object::parse_property (const StreamControl& stream, String comm, const ParseArgs& argv) const
 {
 	// COST
 	if (!strcmp(comm, "cost")) {
@@ -865,7 +865,7 @@ Object::set_blueprint (ObjectBlueprint* s_blueprint)
 
 // load object from a blueprint
 Object*
-Object::load_blueprint (StringArg name)
+Object::load_blueprint (String name)
 {
 	ObjectBlueprint* blueprint = ObjectBlueprintManager.lookup(name);
 	if (!blueprint)
@@ -875,7 +875,7 @@ Object::load_blueprint (StringArg name)
 }
 
 bool
-Object::is_blueprint (StringArg name) const
+Object::is_blueprint (String name) const
 {
 	ObjectBlueprint* blueprint = get_blueprint();
 
@@ -890,7 +890,7 @@ Object::is_blueprint (StringArg name) const
 }
 
 bool
-Object::name_match (StringArg match) const
+Object::name_match (String match) const
 {
 	if (name.matches(match))
 		return true;
@@ -980,7 +980,7 @@ SObjectBlueprintManager::shutdown ()
 }
 
 ObjectBlueprint*
-SObjectBlueprintManager::lookup (StringArg id)
+SObjectBlueprintManager::lookup (String id)
 {
 	BlueprintMap::iterator iter = blueprints.find(id);
 	if (iter == blueprints.end())

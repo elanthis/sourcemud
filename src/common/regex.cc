@@ -7,7 +7,7 @@
 
 #include "common/regex.h"
 
-RegEx::RegEx (StringArg pattern, bool nocase)
+RegEx::RegEx (String pattern, bool nocase)
 {
 	memset(&regex, 0, sizeof(regex));
 	regcomp(&regex, pattern.c_str(), REG_EXTENDED | (nocase ? REG_ICASE : 0));
@@ -19,13 +19,13 @@ RegEx::~RegEx ()
 }
 
 bool
-RegEx::grep (StringArg string)
+RegEx::grep (String string)
 {
 	return !regexec(&regex, string.c_str(), 0, NULL, 0);
 }
 
 StringList
-RegEx::match (StringArg string)
+RegEx::match (String string)
 {
 	regmatch_t results[5];
 	const int size = sizeof(results)/sizeof(results[0]);

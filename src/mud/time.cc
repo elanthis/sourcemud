@@ -99,7 +99,7 @@ GameTime::encode () const
 }
 
 int
-GameTime::decode (StringArg str)
+GameTime::decode (String str)
 {
 	uint s_year, s_month, s_day, s_hour, s_ticks;
 	if (sscanf(str.c_str(), "%u/%u/%u %u.%u", &s_year, &s_month, &s_day, &s_hour, &s_ticks) != 5)

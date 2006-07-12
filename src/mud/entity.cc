@@ -116,7 +116,7 @@ Entity::destroy (void)
 }
 
 bool
-Entity::name_match (StringArg match) const
+Entity::name_match (String match) const
 {
 	return get_name().matches(match);
 
@@ -223,7 +223,7 @@ Entity::load_node (File::Reader& reader, File::Node& node)
 }
 
 int
-Entity::parse_property (const StreamControl& stream, StringArg comm, const ParseArgs& argv) const
+Entity::parse_property (const StreamControl& stream, String comm, const ParseArgs& argv) const
 {
 	// SPECIAL: one-letter name commands
 	if (comm.size() == 1) {

@@ -45,12 +45,12 @@ enum PollHandlerFlags {
 
 class IPDenyList {
 	public:
-	int load (StringArg file);
-	int save (StringArg file);
+	int load (String file);
+	int save (String file);
 
 	// these return -1 on invalid input, 1 on exist errors, 0 on success
-	int add (StringArg addr);
-	int remove (StringArg addr);
+	int add (String addr);
+	int remove (String addr);
 
 	bool exists (SockStorage& addr);
 
@@ -175,7 +175,7 @@ namespace Network {
 	int listen_tcp (int port, int family);
 
 	// listen on UNIX
-	int listen_unix (StringArg path);
+	int listen_unix (String path);
 
 	// get socket from a tcp listener
 	int accept_tcp (int sock, SockStorage& addr);

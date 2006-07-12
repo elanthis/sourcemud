@@ -48,7 +48,7 @@ class Social : public GC
 
 	// basic info
 	String get_name () const { return name; }
-	const SocialAdverb* get_adverb (StringArg name) const;
+	const SocialAdverb* get_adverb (String name) const;
 	const SocialAdverb* get_default () const { return adverbs; }
 
 	// flags
@@ -83,7 +83,7 @@ class SSocialManager : public IManager
 
 	void shutdown ();
 
-	const Social* find_social (StringArg name);
+	const Social* find_social (String name);
 
 	private:
 	Social* socials;

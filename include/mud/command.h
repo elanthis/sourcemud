@@ -37,11 +37,11 @@ class CommandFormat : public GC
 	inline void set_callback (Scriptix::ScriptFunction s_func) { clear_callback(); script = s_func; }
 
 	// get the basics
-	inline StringArg get_format (void) const { return format; }
+	inline String get_format (void) const { return format; }
 	inline int get_priority (void) const { return priority; }
 
 	// construct format; return non-zero on failure
-	int build (StringArg format);
+	int build (String format);
 
 	// get the command desc
 	inline Command* get_command (void) const { return command; }
@@ -67,7 +67,7 @@ class CommandFormat : public GC
 		StringList list; // text to match
 
 		// new TEXT node
-		FormatNode(int s_arg, bool s_opt, StringArg s_text) :
+		FormatNode(int s_arg, bool s_opt, String s_text) :
 			type(TEXT), arg(s_arg), opt(s_opt), list() { list.push_back(s_text); }
 		// new LIST node
 		FormatNode(int s_arg, bool s_opt, const StringList& s_list) :
@@ -105,7 +105,7 @@ class Command : public GC
 
 	public:
 	// constructor/destructor - virtual
-	inline Command (StringArg s_name, StringArg s_usage, AccessID s_access) : name(s_name), usage(s_usage), formats (), access (s_access)  {}
+	inline Command (String s_name, String s_usage, AccessID s_access) : name(s_name), usage(s_usage), formats (), access (s_access)  {}
 
 	// basics
 	const String& get_name (void) const { return name; }
@@ -138,10 +138,10 @@ class SCommandManager : public IManager
 	int add (Command* command);
 
 	// invoke a command
-	int call (class Character* character, StringArg cmd_line);
+	int call (class Character* character, String cmd_line);
 
 	// show a man page; return false if cmd_name is not found
-	bool show_man (class StreamControl& stream, StringArg cmd_name, bool quiet = false);
+	bool show_man (class StreamControl& stream, String cmd_name, bool quiet = false);
 
 	// show a command list
 	void show_list (class Player* player);

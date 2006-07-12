@@ -34,7 +34,7 @@ class SLogManager : public IManager
 
 	void reset (void);
 
-	StringArg get_path (void) const { return path; }
+	String get_path (void) const { return path; }
 
 	protected:
 	String path;

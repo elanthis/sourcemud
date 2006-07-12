@@ -24,7 +24,7 @@ class SSettingsManager : public IManager
 
 	void print_usage (void);
 	int parse_argv (int argc, char** argc);
-	int load_file (StringArg path);
+	int load_file (String path);
 
 	SETTING_STRING(log_file)
 	SETTING_STRING(pid_file)

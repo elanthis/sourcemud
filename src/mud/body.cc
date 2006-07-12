@@ -58,7 +58,7 @@ String GenderType::malefemale[GenderType::COUNT] = {
 };
 
 GenderType
-GenderType::lookup (StringArg name)
+GenderType::lookup (String name)
 {
 	for (uint i = 0; i < COUNT; ++i)
 		if (str_eq(name, names[i]))
@@ -81,7 +81,7 @@ String EquipLocation::names[] = {
 };
 
 EquipLocation
-EquipLocation::lookup (StringArg name)
+EquipLocation::lookup (String name)
 {
 	for (uint i = 0; i < COUNT; ++i)
 		if (str_eq(name, names[i]))
@@ -257,7 +257,7 @@ Character::get_equip_at (uint i) const
 }
 
 Object *
-Character::find_worn (StringArg name, uint count, uint *matches) const
+Character::find_worn (String name, uint count, uint *matches) const
 {
 	assert (count != 0);
 
@@ -288,7 +288,7 @@ Character::find_worn (StringArg name, uint count, uint *matches) const
 }
 
 Object *
-Character::find_held (StringArg name, uint count, uint *matches) const
+Character::find_held (String name, uint count, uint *matches) const
 {
 	assert (count != 0);
 
@@ -314,7 +314,7 @@ Character::find_held (StringArg name, uint count, uint *matches) const
 }
 
 Object *
-Character::find_equip (StringArg name, uint count, uint *matches) const
+Character::find_equip (String name, uint count, uint *matches) const
 {
 	assert (count != 0);
 	uint held_matches;

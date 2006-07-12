@@ -57,7 +57,7 @@ class Value : public GCType::GC {
 	inline Value (const Value& s_value) : value(s_value.value) {}
 
 	// convert
-	Value (StringArg value);
+	Value (String value);
 	Value (long value);
 
 	inline Value (int s_value) { *this = Value((long)s_value); }

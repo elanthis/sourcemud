@@ -37,7 +37,7 @@ SScriptBindings ScriptBindings;
 namespace {
 	// find a list of files matching a particular pattern in a particular directory
 	StringList
-	find_files (StringArg path, StringArg pattern)
+	find_files (String path, String pattern)
 	{
 		DIR *dir;
 		dirent *dent;

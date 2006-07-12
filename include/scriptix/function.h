@@ -92,7 +92,7 @@ class ScriptFunction : public GCType::GC
 	inline Scriptix::Function* get () const { return func; }
 	inline operator Scriptix::Function* () const { return get(); }
 
-	static ScriptFunction compile (StringArg func_name, StringArg code, StringArg args, StringArg filename, unsigned long fileline);
+	static ScriptFunction compile (String func_name, String code, String args, String filename, unsigned long fileline);
 
 	Value run() const;
 	Value run(Value a) const;
@@ -114,13 +114,13 @@ class ScriptFunctionSource : public ScriptFunction
 	public:
 	inline ScriptFunctionSource () : ScriptFunction(), source() {}
 	inline ScriptFunctionSource (const ScriptFunctionSource& s_func) : ScriptFunction(s_func), source(s_func.source) {}
-	inline ScriptFunctionSource (const ScriptFunction& s_func, StringArg s_source) : ScriptFunction(s_func), source(s_source) {}
+	inline ScriptFunctionSource (const ScriptFunction& s_func, String s_source) : ScriptFunction(s_func), source(s_source) {}
 
 	inline const String& get_source () const { return source; }
 
 	inline void clear () { ScriptFunction::clear(); source.clear(); }
 
-	static ScriptFunctionSource compile (StringArg func_name, StringArg code, StringArg args, StringArg filename, unsigned long fileline);
+	static ScriptFunctionSource compile (String func_name, String code, String args, String filename, unsigned long fileline);
 
 	private:
 	String source;

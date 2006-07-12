@@ -159,7 +159,7 @@ Room::save_hook (ScriptRestrictedWriter* writer)
 }
 
 RoomExit *
-Room::find_exit (StringArg e_name, uint c, uint *matches)
+Room::find_exit (String e_name, uint c, uint *matches)
 {
 	assert (c != 0);
 
@@ -476,7 +476,7 @@ Room::show_exits (const StreamControl& stream)
 
 /* broadcast a message to the Room */
 void
-Room::put (StringArg msg, size_t len, GCType::vector<Character*>* ignore_list)
+Room::put (String msg, size_t len, GCType::vector<Character*>* ignore_list)
 {
 	// iterator
 	for (EList<Character>::iterator i = chars.begin(); i != chars.end(); ++i) {
@@ -492,7 +492,7 @@ Room::put (StringArg msg, size_t len, GCType::vector<Character*>* ignore_list)
 
 /* find a Character by name */
 Character *
-Room::find_character (StringArg cname, uint c, uint *matches)
+Room::find_character (String cname, uint c, uint *matches)
 {
 	assert (c != 0);
 	
@@ -501,7 +501,7 @@ Room::find_character (StringArg cname, uint c, uint *matches)
 
 /* find an object by name */
 Object *
-Room::find_object (StringArg oname, uint c, uint *matches)
+Room::find_object (String oname, uint c, uint *matches)
 {
 	assert (c != 0);
 

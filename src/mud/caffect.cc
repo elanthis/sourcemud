@@ -18,7 +18,7 @@ String CharacterAffectType::names[] = {
 };
 
 CharacterAffectType
-CharacterAffectType::lookup (StringArg name)
+CharacterAffectType::lookup (String name)
 {
 	for (uint i = 0; i < COUNT; ++i)
 		if (str_eq(name, names[i]))

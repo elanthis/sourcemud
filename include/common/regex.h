@@ -16,11 +16,11 @@
 
 class RegEx : public GCType::CleanupNonVirtual {
 	public:
-	RegEx (StringArg pattern, bool nocase = false);
+	RegEx (String pattern, bool nocase = false);
 	~RegEx ();
 
-	bool grep (StringArg string);
-	StringList match (StringArg string);
+	bool grep (String string);
+	StringList match (String string);
 
 	private:
 	regex_t regex;

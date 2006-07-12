@@ -32,10 +32,10 @@ class CharacterAffectType
 	inline CharacterAffectType (void) : value(UNKNOWN) {}
 
 	inline bool valid (void) const { return value != UNKNOWN; }
-	inline StringArg get_name(void) const { return names[value]; }
+	inline String get_name(void) const { return names[value]; }
 	inline type_t get_value (void) const { return value; }
 
-	static CharacterAffectType lookup (StringArg name);
+	static CharacterAffectType lookup (String name);
 
 	inline bool operator == (const CharacterAffectType& dir) const { return dir.value == value; }
 	inline bool operator != (const CharacterAffectType& dir) const { return dir.value != value; }

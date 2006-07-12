@@ -20,7 +20,7 @@ const int STAT_TOKEN_INC = 5; // the increment by which stats are advanced durin
 const int STAT_BASE = 30; // base value of all stats, before point distribution
 const int STAT_MAX = 90; // maximum stat can be raised to in character creation
 
-bool TelnetModeNewCharacter::is_match (StringArg test, StringArg operand)
+bool TelnetModeNewCharacter::is_match (String test, String operand)
 {
 	return !operand.empty() && !strncasecmp(test.c_str(), operand.c_str(), operand.size());
 }
@@ -461,7 +461,7 @@ void TelnetModeNewCharacter::display ()
 	}
 }
 
-void TelnetModeNewCharacter::show_error (StringArg msg)
+void TelnetModeNewCharacter::show_error (String msg)
 {
 	display();
 	*get_handler() << CWARNING << msg << CNORMAL << "\n\n";

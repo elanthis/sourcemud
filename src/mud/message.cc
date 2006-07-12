@@ -43,7 +43,7 @@ SMessageManager::shutdown (void)
 }
 
 String
-SMessageManager::get (StringArg id)
+SMessageManager::get (String id)
 {
 	MessageMap::iterator i = messages.find(id);
 	return i != messages.end() ? i->second : String();

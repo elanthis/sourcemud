@@ -78,7 +78,7 @@ class SEventManager : public IManager
 	inline bool events_pending (void) { return !events.empty(); }
 
 	// compile an event handler script
-	Scriptix::ScriptFunction compile (EventID id, StringArg source, StringArg filename, unsigned long fileline);
+	Scriptix::ScriptFunction compile (EventID id, String source, String filename, unsigned long fileline);
 
 	// process events
 	void process (void);

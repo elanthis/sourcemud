@@ -43,7 +43,7 @@ class ScriptProcessor : public Scriptix::Native
 	public:
 	ScriptProcessor(const Scriptix::TypeInfo* s_type) : Scriptix::Native(s_type), s_prompt() {}
 
-	inline void set_prompt(StringArg string) { s_prompt = Scriptix::Value(string); }
+	inline void set_prompt(String string) { s_prompt = Scriptix::Value(string); }
 
 	friend class ScriptProcessorWrapper;
 };

@@ -30,7 +30,7 @@ void command_help (Player* player, String argv[])
 }
 
 HelpTopic*
-SHelpManager::get_topic (StringArg name)
+SHelpManager::get_topic (String name)
 {
 	for (TopicList::iterator i = topics.begin(); i != topics.end(); ++i)
 		if (phrase_match((*i)->name, name))
@@ -39,7 +39,7 @@ SHelpManager::get_topic (StringArg name)
 }
 
 void
-SHelpManager::print (StreamControl& stream, StringArg name)
+SHelpManager::print (StreamControl& stream, String name)
 {
 	// try a man page
 	if (CommandManager.show_man(stream, name, true))

@@ -29,8 +29,8 @@ class IDManager
 	IDManager ();
 	~IDManager ();
 	
-	const String* lookup (StringArg name);
-	const String* create (StringArg name);
+	const String* lookup (String name);
+	const String* create (String name);
 
 	const IDMap& get_all () const { return id_map; }
 
@@ -51,8 +51,8 @@ class BaseID
 
 	inline bool valid () const { return id != 0; }
 
-	inline static BaseID<tag> lookup (StringArg idname) { return BaseID<tag>(get_manager().lookup(idname)); }
-	inline static BaseID<tag> create (StringArg idname) { return BaseID<tag>(get_manager().create(idname)); }
+	inline static BaseID<tag> lookup (String idname) { return BaseID<tag>(get_manager().lookup(idname)); }
+	inline static BaseID<tag> create (String idname) { return BaseID<tag>(get_manager().create(idname)); }
 	inline String name () const { return id != NULL ? *id : String(); }
 	inline static String nameof (BaseID<tag> id) { return id.name(); }
 

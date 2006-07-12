@@ -310,7 +310,7 @@ SNetworkManager::poll (long timeout)
  **************/
 
 int
-IPDenyList::load (StringArg path)
+IPDenyList::load (String path)
 {
 	char line[512];
 	FILE* file;
@@ -348,7 +348,7 @@ IPDenyList::load (StringArg path)
 }
 
 int
-IPDenyList::save (StringArg path)
+IPDenyList::save (String path)
 {
 	FILE* file;
 
@@ -367,7 +367,7 @@ IPDenyList::save (StringArg path)
 }
 
 int
-IPDenyList::remove (StringArg line)
+IPDenyList::remove (String line)
 {
 	SockStorage addr;
 	uint mask;
@@ -385,7 +385,7 @@ IPDenyList::remove (StringArg line)
 }
 
 int
-IPDenyList::add (StringArg line)
+IPDenyList::add (String line)
 {
 	SockStorage addr;
 	uint mask;
@@ -700,7 +700,7 @@ Network::is_addr_local (const SockStorage& addr)
 
 // listen/server connection
 int
-Network::listen_unix (StringArg s_path)
+Network::listen_unix (String s_path)
 {
 	struct sockaddr_un address;
 	size_t sa_len = sizeof(address);

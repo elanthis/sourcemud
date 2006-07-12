@@ -22,7 +22,7 @@ class ScriptRestrictedWriter;
 class AI : public GC
 {
 	public:
-	AI (StringArg s_name);
+	AI (String s_name);
 
 	int load (File::Reader& reader);
 
@@ -33,7 +33,7 @@ class AI : public GC
 	void do_heartbeat (Character* self) const;
 	void do_pump (Character* self, Scriptix::Value arg) const;
 
-	StringArg get_name (void) const { return name; }
+	String get_name (void) const { return name; }
 
 	// data
 	protected:
@@ -59,7 +59,7 @@ class SAIManager : public IManager
 	virtual void shutdown (void);
 
 	void add (AI* ai);
-	AI* get (StringArg name);
+	AI* get (String name);
 
 	private:
 	typedef GCType::vector<AI*> AIList;

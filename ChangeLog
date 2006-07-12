@@ -1,3 +1,11 @@
+2006-07-12 19:42:39  Sean Middleditch <elanthis@awesomeplay.com>
+
+  * Removed the StringArg type, it's not useful anymore.
+  * Reverted phrase_match to using C-style strings, since the
+    command parser is more efficient that way.
+  * Added a prefix_match function, which is more efficient for
+    one-word matches than phrase_match.
+
 2006-07-12 16:07:05  Sean Middleditch <elanthis@awesomeplay.com>
 
   * Use streams in commands and help instead of just using Player*.

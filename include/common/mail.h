@@ -29,14 +29,14 @@ class MailMessage : public GC {
 	GCType::vector<Header> headers;
 
 	public:
-	MailMessage (StringArg s_to, StringArg s_subj, StringArg s_body) :
+	MailMessage (String s_to, String s_subj, String s_body) :
 		to(s_to), subject(s_subj), body(s_body), headers() {}
-	MailMessage (StringArg s_to, StringArg s_subj) :
+	MailMessage (String s_to, String s_subj) :
 		to(s_to), subject(s_subj), body(), headers() {}
 
-	void append (StringArg data);
+	void append (String data);
 
-	void header (StringArg name, StringArg value);
+	void header (String name, String value);
 
 	int send (void) const;
 };

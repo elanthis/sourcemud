@@ -16,7 +16,7 @@ IDManager::~IDManager ()
 }
 
 const String*
-IDManager::lookup (StringArg idname)
+IDManager::lookup (String idname)
 {
 	IDMap::iterator i = id_map.find(idname);
 	if (i != id_map.end())
@@ -25,7 +25,7 @@ IDManager::lookup (StringArg idname)
 }
 
 const String*
-IDManager::create (StringArg idname)
+IDManager::create (String idname)
 {
 	if (idname.empty())
 		return NULL;

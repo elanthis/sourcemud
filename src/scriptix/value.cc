@@ -40,7 +40,7 @@ namespace { const MethodDef Value_Methods[] = { { String(), 0, 0, } }; }
 const TypeDef Scriptix::IValue_Type = { S("Value"), NULL, Value_Methods, NULL };
 
 // CONSTRUCTORS
-Value::Value (StringArg s_value)
+Value::Value (String s_value)
 {
 	value = new ScriptString(s_value);
 }

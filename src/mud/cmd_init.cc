@@ -12,7 +12,7 @@
 namespace {
 	template <typename TYPE>
 	void
-	add_format (Command* command, StringArg format, void(*func)(TYPE*, String[]), int priority)
+	add_format (Command* command, String format, void(*func)(TYPE*, String[]), int priority)
 	{
 		CommandFormat* cformat = new CommandFormat(command, priority);
 		cformat->set_callback(func);

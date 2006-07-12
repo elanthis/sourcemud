@@ -22,7 +22,7 @@ struct WeatherChange {
 
 // a weather state, such as 'raining heavily' or 'snowing lightly'
 struct WeatherState {
-	inline WeatherState (StringArg s_id) : id(s_id), changes(), descs() {}
+	inline WeatherState (String s_id) : id(s_id), changes(), descs() {}
 		
 	int load (File::Reader& reader);
 	void save (File::Writer& writer) const;
@@ -52,7 +52,7 @@ class WeatherRegion {
 	uint state;
 	uint ticks;
 
-	int get_state (StringArg name) const;
+	int get_state (String name) const;
 };
 
 // manage all regions

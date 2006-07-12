@@ -79,7 +79,7 @@ operator+ (const char* left, String right)
 }
 
 bool
-str_is_valid_id (StringArg string)
+str_is_valid_id (String string)
 {
 	// can't be empty
 	if (string.empty())
@@ -99,7 +99,7 @@ str_is_valid_id (StringArg string)
 }
 
 bool
-str_is_number (StringArg string)
+str_is_number (String string)
 {
 	// no length?  bad
 	if (string.empty())
@@ -125,7 +125,7 @@ str_is_number (StringArg string)
 }
 
 bool
-str_is_email (StringArg string)
+str_is_email (String string)
 {
 #ifdef HAVE_REGEX
 	static RegEx regex ("^[a-z0-9._-]+@[a-z0-9_-]+(\\.[a-z0-9_-]+)+$", true);
@@ -168,7 +168,7 @@ str_is_email (StringArg string)
 }
 
 bool
-str_is_true (StringArg string)
+str_is_true (String string)
 {
 	return (
 		str_eq(string, S("true")) ||
@@ -179,7 +179,7 @@ str_is_true (StringArg string)
 }
 
 bool
-str_eq (StringArg str_a, StringArg str_b, size_t len)
+str_eq (String str_a, String str_b, size_t len)
 {
 	// do comparison
 	if (len)
@@ -189,9 +189,21 @@ str_eq (StringArg str_a, StringArg str_b, size_t len)
 }
 
 bool
-phrase_match (StringArg match, StringArg test)
+prefix_match (CString string, CString prefix)
 {
-	if (!match || !test)
+	assert(string != NULL);
+	assert(prefix != NULL);
+
+	return strncasecmp(string, prefix, strlen(prefix)) == 0;
+}
+
+bool
+phrase_match (CString match, CString test)
+{
+	assert(match != NULL);
+	assert(test != NULL);
+
+	if (match[0] == 0 || test[0] == 0)
 		return false;
 
 	struct chunk {
@@ -274,7 +286,7 @@ get_num_suffix (unsigned int num) {
 }
 
 uint
-str_value (StringArg string)
+str_value (String string)
 {
 	// empty?  none
 	if (string.empty())
@@ -340,7 +352,7 @@ str_value (StringArg string)
 }
 
 StringList&
-explode (StringList& list, StringArg str, char ch)
+explode (StringList& list, String str, char ch)
 {
 	list.clear();
 
@@ -376,7 +388,7 @@ implode (String& string, const StringList& list, char ch)
 }
 
 String&
-capwords (String& out, StringArg string)
+capwords (String& out, String string)
 {
 	bool space = true;
 	char ch;
@@ -404,7 +416,7 @@ tostr (long num)
 }
 
 long
-tolong (StringArg str)
+tolong (String str)
 {
 	return strtol(str.c_str(), NULL, 10);
 }
@@ -412,7 +424,7 @@ tolong (StringArg str)
 // ----- String class stuff -----
 
 String
-strip (StringArg string)
+strip (String string)
 {
 	if (string.empty())
 		return String();
@@ -436,7 +448,7 @@ strip (StringArg string)
 }
 
 String
-strupper (StringArg string)
+strupper (String string)
 {
 	char* ret = (char*)GC_MALLOC(string.size() + 1);
 	for (size_t i = 0; i < string.size() + 1; ++i)
@@ -445,7 +457,7 @@ strupper (StringArg string)
 }
 
 String
-strlower (StringArg string)
+strlower (String string)
 {
 	char* ret = (char*)GC_MALLOC(string.size() + 1);
 	for (size_t i = 0; i < string.size() + 1; ++i)
@@ -455,7 +467,7 @@ strlower (StringArg string)
 
 namespace {
 	struct Replace {
-		Replace (StringArg s_from, StringArg s_to) : from(s_from), to (s_to) {}
+		Replace (String s_from, String s_to) : from(s_from), to (s_to) {}
 
 		const String& from;
 		const String& to;
@@ -470,7 +482,7 @@ namespace {
 }
 
 String
-trim (StringArg source, StringArg accept)
+trim (String source, String accept)
 {
 	StringBuffer ret;
 

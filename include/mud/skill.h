@@ -76,7 +76,7 @@ class SSkillManager : public IManager
 
 	void shutdown ();
 
-	SkillInfo* get_by_name (StringArg name);
+	SkillInfo* get_by_name (String name);
 	SkillInfo* get_by_id (SkillID id);
 
 	inline size_t get_size () { return skill_list.size(); }

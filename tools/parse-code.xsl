@@ -15,7 +15,7 @@
 
     <!-- function block -->
 namespace parse {
-  int exec_command (const StreamControl&amp; stream, StringArg _cmd_name, ParseArgs&amp; _cmd_argv)
+  int exec_command (const StreamControl&amp; stream, String _cmd_name, ParseArgs&amp; _cmd_argv)
   {
 
     <!-- all commands -->

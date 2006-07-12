@@ -56,10 +56,10 @@ struct ZMPCommand {
 class ZMPPack
 {
 	public:
-	ZMPPack (StringArg command);
+	ZMPPack (String command);
 
 	// add an argument
-	ZMPPack& add (StringArg arg);
+	ZMPPack& add (String arg);
 	ZMPPack& add (long);
 	ZMPPack& add (ulong);
 	inline ZMPPack& add (int i) { return add((long)i); }
@@ -89,14 +89,14 @@ class SZMPManager : public IManager
 	virtual void shutdown ();
 
 	// find a command
-	ZMPCommand* lookup (StringArg name);
+	ZMPCommand* lookup (String name);
 
 	// add a new command
-	int add (StringArg name, ZMPFunction func);
-	int add (StringArg name, Scriptix::ScriptFunction func);
+	int add (String name, ZMPFunction func);
+	int add (String name, Scriptix::ScriptFunction func);
 
 	// see if a specific command/package is supported
-	bool match (StringArg pattern);
+	bool match (String pattern);
 
 	private:
 	// the list of commands

@@ -27,7 +27,7 @@ namespace File
 		String what;
 
 		public:
-		Error (StringArg s_what) : what(s_what) {}
+		Error (String s_what) : what(s_what) {}
 
 		inline String get_what () const { return what; }
 	};
@@ -90,7 +90,7 @@ namespace File
 		~Reader () { close(); }
 
 		const String get_filename () const { return filename; }
-		int open (StringArg file);
+		int open (String file);
 		bool is_open () const { return in; }
 		void close () { if (in) in.close(); }
 
@@ -116,56 +116,56 @@ namespace File
 	{
 		public:
 		Writer () : out(), indent(0) {}
-		Writer (StringArg file) : out(), indent(0) { open(file); }
+		Writer (String file) : out(), indent(0) { open(file); }
 		~Writer () { close(); }
 
-		int open (StringArg file);
+		int open (String file);
 		bool is_open () const { return out; }
 		void close ();
 
 		// core attributes
-		void attr (StringArg name, StringArg data);
-		void attr (StringArg name, long data);
-		void attr (StringArg name, long long data);
-		void attr (StringArg name, bool data);
-		void attr (StringArg name, const UniqueID& data);
+		void attr (String name, String data);
+		void attr (String name, long data);
+		void attr (String name, long long data);
+		void attr (String name, bool data);
+		void attr (String name, const UniqueID& data);
 
-		void keyed (StringArg name, StringArg key, StringArg data);
-		void keyed (StringArg name, StringArg key, long data);
-		void keyed (StringArg name, StringArg key, bool data);
-		void keyed (StringArg name, StringArg key, const UniqueID& data);
+		void keyed (String name, String key, String data);
+		void keyed (String name, String key, long data);
+		void keyed (String name, String key, bool data);
+		void keyed (String name, String key, const UniqueID& data);
 
 		// map int types to long
 		//   -- we only support reading longs
-		inline void attr (StringArg name, unsigned long data) { attr(name, (long)data); }
-		inline void attr (StringArg name, int data) { attr(name, (long)data); }
-		inline void attr (StringArg name, unsigned int data) { attr(name, (long)data); }
-		inline void attr (StringArg name, short data) { attr(name, (long)data); }
-		inline void attr (StringArg name, unsigned short data) { attr(name, (long)data); }
+		inline void attr (String name, unsigned long data) { attr(name, (long)data); }
+		inline void attr (String name, int data) { attr(name, (long)data); }
+		inline void attr (String name, unsigned int data) { attr(name, (long)data); }
+		inline void attr (String name, short data) { attr(name, (long)data); }
+		inline void attr (String name, unsigned short data) { attr(name, (long)data); }
 
-		inline void keyed (StringArg name, StringArg key, unsigned long data) { keyed(name, key, (long)data); }
-		inline void keyed (StringArg name, StringArg key, int data) { keyed(name, key, (long)data); }
-		inline void keyed (StringArg name, StringArg key, unsigned int data) { keyed(name, key, (long)data); }
-		inline void keyed (StringArg name, StringArg key, short data) { keyed(name, key, (long)data); }
-		inline void keyed (StringArg name, StringArg key, unsigned short data) { keyed(name, key, (long)data); }
+		inline void keyed (String name, String key, unsigned long data) { keyed(name, key, (long)data); }
+		inline void keyed (String name, String key, int data) { keyed(name, key, (long)data); }
+		inline void keyed (String name, String key, unsigned int data) { keyed(name, key, (long)data); }
+		inline void keyed (String name, String key, short data) { keyed(name, key, (long)data); }
+		inline void keyed (String name, String key, unsigned short data) { keyed(name, key, (long)data); }
 
 		// custom attributes (for scripts)
-		void custom (StringArg name, StringArg data);
-		void custom (StringArg name, long data);
-		void custom (StringArg name, bool data);
-		void custom (StringArg name, const UniqueID& data);
+		void custom (String name, String data);
+		void custom (String name, long data);
+		void custom (String name, bool data);
+		void custom (String name, const UniqueID& data);
 
 		// output a data block class:name<<< ... >>> 
-		void block (StringArg name, StringArg data);
+		void block (String name, String data);
 
 		// begin a new section
-		void begin (StringArg name);
+		void begin (String name);
 
 		// end a section
 		void end ();
 
 		// output a comment
-		void comment (StringArg text);
+		void comment (String text);
 
 		// add a blank line to output
 		inline void bl () { if(out) out << "\n"; }
@@ -178,7 +178,7 @@ namespace File
 	};
 
 	// return true if a valid attribute/object name
-	bool valid_name (StringArg name);
+	bool valid_name (String name);
 }
 
 // can only write simply attributes, all with type "attr"

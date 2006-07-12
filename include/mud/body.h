@@ -40,7 +40,7 @@ class GenderType
 
 	inline type_t get_value (void) const { return value; }
 
-	static GenderType lookup (StringArg name);
+	static GenderType lookup (String name);
 
 	inline bool operator == (const GenderType& gender) const { return gender.value == value; }
 	inline bool operator != (const GenderType& gender) const { return gender.value != value; }
@@ -82,11 +82,11 @@ class EquipLocation
 
 	bool valid (void) const { return value != NONE; }
 
-	StringArg get_name(void) const { return names[value]; }
+	String get_name(void) const { return names[value]; }
 
 	type_t get_value (void) const { return value; }
 
-	static EquipLocation lookup (StringArg name);
+	static EquipLocation lookup (String name);
 
 	inline bool operator == (const EquipLocation& dir) const { return dir.value == value; }
 	inline bool operator != (const EquipLocation& dir) const { return dir.value != value; }

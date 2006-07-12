@@ -19,7 +19,7 @@
 #include "mud/npc.h"
 
 void
-Character::do_emote (StringArg action)
+Character::do_emote (String action)
 {
 	if (get_room())
 		*get_room() << "(S(" << StreamName(this, DEFINITE, true) << ") " << action << ")\n";
@@ -92,7 +92,7 @@ Character::do_social (const SocialAdverb* social, Entity* target)
 }
 
 void
-Character::do_say (StringArg text)
+Character::do_say (String text)
 {
 	// don't say nothing
 	if (text.empty())
@@ -134,7 +134,7 @@ Character::do_say (StringArg text)
 }
 
 void
-Character::do_sing (StringArg text)
+Character::do_sing (String text)
 {
 	// split into lines
 	StringList lines;

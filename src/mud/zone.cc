@@ -145,7 +145,7 @@ SCRIPT_TYPE(Zone);
 Zone::Zone () : Entity(AweMUD_ZoneType), rooms() {}
 
 Room*
-Zone::get_room (StringArg id) const
+Zone::get_room (String id) const
 {
 	for (RoomList::const_iterator i = rooms.begin(); i != rooms.end(); ++i)
 		if (str_eq ((*i)->get_id(), id))
@@ -239,7 +239,7 @@ Zone::save_hook (ScriptRestrictedWriter* writer)
 }
 
 int
-Zone::load (StringArg name)
+Zone::load (String name)
 {
 	assert (!name.empty());
 
@@ -413,7 +413,7 @@ SZoneManager::save ()
 
 /* find a Zone */
 Zone*
-SZoneManager::get_zone (StringArg id)
+SZoneManager::get_zone (String id)
 {
 	assert (id);
 
@@ -436,7 +436,7 @@ SZoneManager::get_zone_at (size_t index)
 
 /* find a Room */
 Room *
-SZoneManager::get_room (StringArg id)
+SZoneManager::get_room (String id)
 {
 	assert (id);
 
@@ -451,7 +451,7 @@ SZoneManager::get_room (StringArg id)
 }
 
 void
-Zone::announce (StringArg str, AnnounceFlags flags) const
+Zone::announce (String str, AnnounceFlags flags) const
 {
 	for (RoomList::const_iterator i = rooms.begin(); i != rooms.end(); ++i) {
 		if (!flags ||
@@ -464,7 +464,7 @@ Zone::announce (StringArg str, AnnounceFlags flags) const
 
 /* announce to all rooms in a Room */
 void
-SZoneManager::announce (StringArg str, AnnounceFlags flags)
+SZoneManager::announce (String str, AnnounceFlags flags)
 {
 	for (ZoneList::iterator i = zones.begin(); i != zones.end(); ++i)
 		(*i)->announce (str, flags);

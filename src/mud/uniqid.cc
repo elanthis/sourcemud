@@ -109,7 +109,7 @@ SUniqueIDManager::encode (const UniqueID& uid)
 }
 
 UniqueID
-SUniqueIDManager::decode (StringArg string)
+SUniqueIDManager::decode (String string)
 {
 	UniqueID uid;
 

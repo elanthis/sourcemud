@@ -112,7 +112,7 @@ SSkillManager::shutdown (void)
 }
 
 SkillInfo*
-SSkillManager::get_by_name (StringArg name)
+SSkillManager::get_by_name (String name)
 {
 	SkillMap::iterator i = skill_map.find(name);
 	if (i != skill_map.end())

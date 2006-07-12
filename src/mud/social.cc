@@ -46,7 +46,7 @@ Social::Social (void) : name(), adverbs(NULL), next(NULL)
 
 // find an adverb in a social
 const SocialAdverb*
-Social::get_adverb (StringArg name) const
+Social::get_adverb (String name) const
 {
 	// search
 	for (SocialAdverb* adverb = adverbs; adverb != NULL; adverb = adverb->next) {
@@ -60,7 +60,7 @@ Social::get_adverb (StringArg name) const
 
 // find a social from list
 const Social*
-SSocialManager::find_social (StringArg name)
+SSocialManager::find_social (String name)
 {
 	assert (name);
 

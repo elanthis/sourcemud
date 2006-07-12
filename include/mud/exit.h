@@ -39,13 +39,13 @@ class ExitDir {
 	inline ExitDir (int s_value) : value((dir_t)s_value) {}
 	inline ExitDir () : value(NONE) {}
 
-	inline StringArg get_name() const { return names[value]; }
+	inline String get_name() const { return names[value]; }
 	inline ExitDir get_opposite() const { return opposites[value]; }
 	inline bool valid () const { return value != NONE; }
 
 	inline dir_t get_value () const { return value; }
 
-	static ExitDir lookup (StringArg name);
+	static ExitDir lookup (String name);
 
 	inline bool operator == (const ExitDir& dir) const { return dir.value == value; }
 	inline bool operator != (const ExitDir& dir) const { return dir.value != value; }
@@ -71,11 +71,11 @@ class ExitUsage {
 	inline ExitUsage (int s_value) : value((type_t)s_value) {}
 	inline ExitUsage () : value(WALK) {}
 
-	inline StringArg get_name() const { return names[value]; }
+	inline String get_name() const { return names[value]; }
 
 	inline type_t get_value () const { return value; }
 
-	static ExitUsage lookup (StringArg name);
+	static ExitUsage lookup (String name);
 
 	inline bool operator == (const ExitUsage& dir) const { return dir.value == value; }
 	inline bool operator != (const ExitUsage& dir) const { return dir.value != value; }
@@ -107,11 +107,11 @@ class ExitDetail  {
 	inline ExitDetail (int s_value) : value((type_t)s_value) {}
 	inline ExitDetail () : value(NONE) {}
 
-	inline StringArg get_name() const { return names[value]; }
+	inline String get_name() const { return names[value]; }
 
 	inline type_t get_value () const { return value; }
 
-	static ExitDetail lookup (StringArg name);
+	static ExitDetail lookup (String name);
 
 	inline bool operator == (const ExitDetail& dir) const { return dir.value == value; }
 	inline bool operator != (const ExitDetail& dir) const { return dir.value != value; }
@@ -126,19 +126,19 @@ class RoomExit : public Entity
 
 	// name information
 	virtual EntityName get_name () const;
-	bool set_name (StringArg s_name) { return name.set_name(s_name); }
-	void add_keyword (StringArg keyword);
+	bool set_name (String s_name) { return name.set_name(s_name); }
+	void add_keyword (String keyword);
 
 	// description information
 	virtual String get_desc () const { return desc; }
-	virtual void set_desc (StringArg s_desc) { desc = s_desc; }
+	virtual void set_desc (String s_desc) { desc = s_desc; }
 
 	// 'standard' exits have no custom name
 	inline bool is_standard () const { return name.get_name().empty(); }
 
 	// the taget room and exit (target exit is the exit you come out of)
-	inline StringArg get_target () const { return target; }
-	inline void set_target (StringArg t) { target = t; }
+	inline String get_target () const { return target; }
+	inline void set_target (String t) { target = t; }
 
 	// ownership - see entity.h
 	virtual void set_owner (Entity*);
@@ -152,19 +152,19 @@ class RoomExit : public Entity
 
 	// get a function to call when used
 	inline const Scriptix::ScriptFunction& get_use () const { return on_use; }
-	void set_use (StringArg script);
+	void set_use (String script);
 
 	// enter message
-	StringArg get_enters () const;
-	inline void set_enters (StringArg t) { text.enters = t; }
+	String get_enters () const;
+	inline void set_enters (String t) { text.enters = t; }
 
 	// leave message
-	StringArg get_leaves () const;
-	inline void set_leaves (StringArg t) { text.leaves = t; }
+	String get_leaves () const;
+	inline void set_leaves (String t) { text.leaves = t; }
 
 	// go message
-	StringArg get_go () const;
-	inline void set_go (StringArg t) { text.go = t; }
+	String get_go () const;
+	inline void set_go (String t) { text.go = t; }
 
 	// exit usage (climb, etc.)
 	inline ExitUsage get_usage () const { return usage; }
@@ -200,7 +200,7 @@ class RoomExit : public Entity
 	// heartbeat
 	void heartbeat ();
 
-	virtual bool name_match (StringArg name) const;
+	virtual bool name_match (String name) const;
 
 	// set flags
 	inline void set_door (bool v) { flags.door = v; }

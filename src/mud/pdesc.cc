@@ -36,7 +36,7 @@ SCharacterTraitManager::get_desc (uint id) const
 }
 
 CharacterTraitValue
-SCharacterTraitManager::get_trait (StringArg name) const
+SCharacterTraitManager::get_trait (String name) const
 {
 	CharacterTraitValue ret;
 	// search traits

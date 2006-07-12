@@ -109,7 +109,7 @@ namespace {
 }
 
 ExitDir
-ExitDir::lookup (StringArg name)
+ExitDir::lookup (String name)
 {
 	for (uint i = 0; i < COUNT; ++i)
 		if (names[i] == name)
@@ -118,7 +118,7 @@ ExitDir::lookup (StringArg name)
 }
 
 ExitUsage
-ExitUsage::lookup (StringArg name)
+ExitUsage::lookup (String name)
 {
 	for (uint i = 0; i < COUNT; ++i)
 		if (names[i] == name)
@@ -127,7 +127,7 @@ ExitUsage::lookup (StringArg name)
 }
 
 ExitDetail
-ExitDetail::lookup (StringArg name)
+ExitDetail::lookup (String name)
 {
 	for (uint i = 0; i < COUNT; ++i)
 		if (names[i] == name)
@@ -152,7 +152,7 @@ RoomExit::get_name () const
 }
 
 void
-RoomExit::add_keyword (StringArg keyword)
+RoomExit::add_keyword (String keyword)
 {
 	keywords.push_back(keyword);
 }
@@ -378,7 +378,7 @@ RoomExit::owner_release (Entity* child)
 	assert(false);
 }
 
-StringArg
+String
 RoomExit::get_go () const
 {
 	// customized?
@@ -389,7 +389,7 @@ RoomExit::get_go () const
 	return exit_go_table[detail.get_value()][usage.get_value()];
 }
 
-StringArg
+String
 RoomExit::get_leaves () const
 {
 	// customized?
@@ -400,7 +400,7 @@ RoomExit::get_leaves () const
 	return exit_leaves_table[detail.get_value()][usage.get_value()];
 }
 
-StringArg
+String
 RoomExit::get_enters () const
 {
 	// customized?
@@ -431,7 +431,7 @@ RoomExit::operator< (const RoomExit& exit) const
 }
 
 bool
-RoomExit::name_match (StringArg match) const
+RoomExit::name_match (String match) const
 {
 	if (name.matches(match))
 		return true;
@@ -446,7 +446,7 @@ RoomExit::name_match (StringArg match) const
 }
 
 void
-RoomExit::set_use (StringArg script)
+RoomExit::set_use (String script)
 {
 	if (script) {
 		on_use = Scriptix::ScriptFunctionSource::compile(S("used"), script, S("exit,user"), S("exit db"), 1);

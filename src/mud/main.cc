@@ -66,7 +66,7 @@ namespace {
 	};
 
 	void cleanup ();
-	int write_pid_file (StringArg path);
+	int write_pid_file (String path);
 	double count_ticks (timeval& start, timeval& cur);
 }
 
@@ -111,7 +111,7 @@ namespace {
 
 	// write out our pid file
 	int
-	write_pid_file (StringArg path)
+	write_pid_file (String path)
 	{
 		// open it up
 		int fd;

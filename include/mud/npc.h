@@ -35,14 +35,14 @@ NpcBlueprint : public Scriptix::Native
 
 	// name
 	inline const EntityName& get_name () const { return name; }
-	inline bool set_name (StringArg s_name) { bool ret = name.set_name(s_name); set_flags.name = true; return ret; }
+	inline bool set_name (String s_name) { bool ret = name.set_name(s_name); set_flags.name = true; return ret; }
 	void reset_name ();
 
 	inline const StringList& get_keywords () const { return keywords; }
 
 	// description
 	inline const String& get_desc () const { return desc; }
-	inline void set_desc (StringArg s_desc) { desc = s_desc; set_flags.desc = true; }
+	inline void set_desc (String s_desc) { desc = s_desc; set_flags.desc = true; }
 	void reset_desc ();
 
 	// stats
@@ -120,12 +120,12 @@ class Npc : public Character
 	// blueprints
 	virtual NpcBlueprint* get_blueprint () const { return blueprint; }
 	void set_blueprint (NpcBlueprint* s_blueprint);
-	static Npc* load_blueprint (StringArg name);
+	static Npc* load_blueprint (String name);
 
 	// name info
 	virtual EntityName get_name () const;
 
-	virtual bool name_match (StringArg name) const;
+	virtual bool name_match (String name) const;
 
 	// description
 	virtual String get_desc () const;
@@ -149,7 +149,7 @@ class Npc : public Character
 	virtual String ncolor () const { return S(CNPC); }
 
 	// return ture if we derive from the named blueprint
-	bool is_blueprint (StringArg blueprint) const;
+	bool is_blueprint (String blueprint) const;
 
 	// combat
 	virtual uint get_combat_dodge () const;
@@ -212,7 +212,7 @@ class SNpcBlueprintManager : public IManager
 
 	void shutdown ();
 
-	NpcBlueprint* lookup (StringArg id);
+	NpcBlueprint* lookup (String id);
 
 	private:
 	BlueprintMap blueprints;

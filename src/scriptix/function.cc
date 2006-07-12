@@ -162,7 +162,7 @@ Function::get_line_of (size_t op_ptr) const {
 }
 
 ScriptFunction
-ScriptFunction::compile (StringArg name, StringArg code, StringArg args, StringArg filename, unsigned long fileline)
+ScriptFunction::compile (String name, String code, String args, String filename, unsigned long fileline)
 {
 	StringBuffer cname;
 	for (String::iterator i = name.begin(); i != name.end(); ++i) {
@@ -183,7 +183,7 @@ ScriptFunction::compile (StringArg name, StringArg code, StringArg args, StringA
 }
 
 ScriptFunctionSource
-ScriptFunctionSource::compile (StringArg name, StringArg code, StringArg args, StringArg filename, unsigned long fileline)
+ScriptFunctionSource::compile (String name, String code, String args, String filename, unsigned long fileline)
 {
 	return ScriptFunctionSource(ScriptFunction::compile(name, code, args, filename, fileline), code);
 }

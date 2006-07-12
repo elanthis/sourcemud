@@ -50,7 +50,7 @@ namespace {
 #define NAME_TO_ID(name) (((intptr_t)&(name)) >> 2)
 #define ID_TO_NAME(id) (*((String*)(id << 2)))
 
-Scriptix::Atom::Atom(StringArg name)
+Scriptix::Atom::Atom(String name)
 {
 	// have it already?
 	NameMap::iterator i = names.find(name);

@@ -51,18 +51,18 @@ class Zone : public Entity
 
 	// zone ID
 	String get_id () const { return id; }
-	void set_id (StringArg new_id) { id = new_id; }
+	void set_id (String new_id) { id = new_id; }
 
 	// name information
 	virtual EntityName get_name () const { return name; }
-	virtual void set_name (StringArg s_name) { name.set_name(s_name); }
+	virtual void set_name (String s_name) { name.set_name(s_name); }
 
 	// description information
 	virtual String get_desc () const { return desc; }
-	virtual void set_desc (StringArg s_desc) { desc = s_desc; }
+	virtual void set_desc (String s_desc) { desc = s_desc; }
 
 	// find rooms
-	class Room* get_room (StringArg name) const;
+	class Room* get_room (String name) const;
 	class Room* get_room_at (size_t index) const;
 	size_t get_room_count () const;
 
@@ -73,13 +73,13 @@ class Zone : public Entity
 	using Entity::load;
 	virtual int load_node(File::Reader& reader, File::Node& node);
 	virtual int load_finish () { return 0; }
-	int load (StringArg path);
+	int load (String path);
 	virtual void save (File::Writer& writer);
 	virtual void save_hook (class ScriptRestrictedWriter* writer);
 	void save ();
 
 	// announce to all rooms
-	void announce (StringArg text, AnnounceFlags type = ANFL_NONE) const;
+	void announce (String text, AnnounceFlags type = ANFL_NONE) const;
 
 	// update zone
 	virtual void heartbeat ();
@@ -122,12 +122,12 @@ class SZoneManager : public IManager
 	int load_world ();
 
 	// lookup entries
-	Zone* get_zone (StringArg);
+	Zone* get_zone (String);
 	Zone* get_zone_at (size_t index);
-	class Room* get_room (StringArg);
+	class Room* get_room (String);
 
 	// send an announcement to all the rooms in all the zones
-	void announce (StringArg, AnnounceFlags = ANFL_NONE);
+	void announce (String, AnnounceFlags = ANFL_NONE);
 
 	// add a new zone
 	void add_zone (Zone*);

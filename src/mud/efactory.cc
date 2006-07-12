@@ -24,7 +24,7 @@ SEntityFactoryManager::shutdown (void)
 }
 
 void
-SEntityFactoryManager::add_factory (StringArg klass, IEntityFactory* factory)
+SEntityFactoryManager::add_factory (String klass, IEntityFactory* factory)
 {
 	assert(!klass.empty());
 	assert(factory != NULL);

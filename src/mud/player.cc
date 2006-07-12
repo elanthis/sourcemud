@@ -114,7 +114,7 @@ namespace {
 }
 
 SCRIPT_TYPE(Player);
-Player::Player (class Account* s_account, StringArg s_id) : Character (AweMUD_PlayerType), birthday()
+Player::Player (class Account* s_account, String s_id) : Character (AweMUD_PlayerType), birthday()
 {
 	// initialize
 	account = s_account;
@@ -621,7 +621,7 @@ Player::show_prompt (void)
 }
 
 int
-Player::parse_property (const StreamControl& stream, StringArg comm, const ParseArgs& argv) const
+Player::parse_property (const StreamControl& stream, String comm, const ParseArgs& argv) const
 {
 	// RACE
 	if (str_eq(comm, S("race"))) {

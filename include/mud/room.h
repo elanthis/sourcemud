@@ -29,11 +29,11 @@ class Room : public Entity
 
 	// name information
 	inline virtual EntityName get_name () const { return name; }
-	inline void set_name (StringArg s_name) { name.set_name(s_name); }
+	inline void set_name (String s_name) { name.set_name(s_name); }
 
 	// description information
 	inline virtual String get_desc () const { return desc; }
-	inline virtual void set_desc (StringArg s_desc) { desc = s_desc; }
+	inline virtual void set_desc (String s_desc) { desc = s_desc; }
 
 	// outdoors
 	inline bool is_outdoors () const { return flags.outdoors; }
@@ -50,13 +50,13 @@ class Room : public Entity
 	// exits
 	class RoomExit* get_exit_at (uint);
 	class RoomExit* get_exit_by_dir (ExitDir);
-	class RoomExit* find_exit (StringArg, uint c = 1, uint *matches = NULL);
+	class RoomExit* find_exit (String, uint c = 1, uint *matches = NULL);
 	class RoomExit* new_exit (); //  will pick a unique ID, return exit
 	void sort_exits (); // re-sort exits; FIXME: this is ugly to have to do manually
 
 	// identifier
-	inline StringArg get_id () const { return id; }
-	inline void set_id (StringArg new_id) { id = new_id; }
+	inline String get_id () const { return id; }
+	inline void set_id (String new_id) { id = new_id; }
 
 	// colour type
 	inline virtual String ncolor () const { return S(CTITLE); }
@@ -79,11 +79,11 @@ class Room : public Entity
 	void show_exits (const class StreamControl& stream);
 
 	// output
-	void put (StringArg text, size_t len, GCType::vector<class Character*>* ignore = NULL);
+	void put (String text, size_t len, GCType::vector<class Character*>* ignore = NULL);
 
 	// get entities
-	class Character* find_character (StringArg name, uint c = 1, uint *matches = NULL);
-	class Object* find_object (StringArg name, uint c = 1, uint *matches = NULL);
+	class Character* find_character (String name, uint c = 1, uint *matches = NULL);
+	class Object* find_object (String name, uint c = 1, uint *matches = NULL);
 
 	// count players in room
 	unsigned long count_players () const;

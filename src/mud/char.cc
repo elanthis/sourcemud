@@ -39,7 +39,7 @@ String CharStatID::names[CharStatID::COUNT] = {
 };
 
 CharStatID
-CharStatID::lookup (StringArg name)
+CharStatID::lookup (String name)
 {
 	for (uint i = 0; i < COUNT; ++i)
 		if (str_eq(name, names[i]))
@@ -123,7 +123,7 @@ String CharPosition::verbings[CharPosition::COUNT] = {
 };
 
 CharPosition
-CharPosition::lookup (StringArg name)
+CharPosition::lookup (String name)
 {
 	for (uint i = 0; i < COUNT; ++i)
 		if (str_eq(name, names[i]))
@@ -566,7 +566,7 @@ Character::deactivate (void)
 }
 
 int
-Character::parse_property (const StreamControl& stream, StringArg comm, const ParseArgs& argv) const
+Character::parse_property (const StreamControl& stream, String comm, const ParseArgs& argv) const
 {
 	// HE / SHE
 	if (str_eq(comm, S("he"))) {

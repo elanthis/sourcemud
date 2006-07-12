@@ -27,7 +27,7 @@ class CharacterTraitValue {
 	inline uint get_value (void) const { return value; }
 	inline bool valid (void) const { return value != 0; }
 
-	inline static CharacterTraitValue lookup (StringArg name);
+	inline static CharacterTraitValue lookup (String name);
 
 	inline operator bool (void) const { return valid(); }
 	inline bool operator < (const CharacterTraitValue& tv) const { return value < tv.value; }
@@ -49,7 +49,7 @@ class SCharacterTraitManager : public IManager
 	String get_desc(uint id) const;
 	String get_name(uint id) const;
 
-	CharacterTraitValue get_trait(StringArg name) const;
+	CharacterTraitValue get_trait(String name) const;
 
 	private:
 	StringList names;
@@ -71,7 +71,7 @@ CharacterTraitValue::get_desc () const
 }
 
 CharacterTraitValue
-CharacterTraitValue::lookup (StringArg name)
+CharacterTraitValue::lookup (String name)
 {
 	return CharacterTraitManager.get_trait(name);
 }

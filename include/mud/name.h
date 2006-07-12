@@ -33,9 +33,9 @@ class EntityArticleClass {
 	inline EntityArticleClass () : value(NORMAL) {}
 	inline EntityArticleClass (const EntityArticleClass& s_value) : value(s_value.value) {}
 
-	inline StringArg get_name() const { return names[value]; }
+	inline String get_name() const { return names[value]; }
 	inline type_t get_value () const { return value; }
-	static EntityArticleClass lookup (StringArg name);
+	static EntityArticleClass lookup (String name);
 
 	inline bool operator == (const EntityArticleClass& dir) const { return dir.value == value; }
 	inline bool operator != (const EntityArticleClass& dir) const { return dir.value != value; }
@@ -62,20 +62,20 @@ enum EntityArticleUsage {
 class EntityName {
 	public:
 	inline EntityName () : text(), article(EntityArticleClass::NORMAL) {}
-	inline EntityName (EntityArticleClass s_article, StringArg s_text) :
+	inline EntityName (EntityArticleClass s_article, String s_text) :
 		text(s_text), article(s_article) {}
 
 	// these handle full names with articles
 	String get_name () const;
-	bool set_name (StringArg s_name); // returns false if it had to guess at the article
+	bool set_name (String s_name); // returns false if it had to guess at the article
 
 	// compare name to string
-	bool matches (StringArg match) const; // returns true on match; uses phrase_match
+	bool matches (String match) const; // returns true on match; uses phrase_match
 
 	// these handle name components
 	inline String get_text () const { return text; }
 	inline EntityArticleClass get_article () const { return article; }
-	inline void set_text (StringArg s_text) { text = s_text; }
+	inline void set_text (String s_text) { text = s_text; }
 	inline void set_article (EntityArticleClass s_article) { article = s_article; }
 
 	inline bool empty () const { return text.empty(); }

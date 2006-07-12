@@ -122,14 +122,14 @@ TelnetModeMainMenu::process (char* line)
 	switch (state) {
 		case STATE_MENU:
 			// erm, nothing?
-			if (!strlen(input)) {
+			if (input.empty()) {
 				show_main();
 			// play?
-			} else if (str_eq(S("1"), input) || phrase_match(S("play"), input)) {
+			} else if (input == "1" || prefix_match("play", input)) {
 				state = STATE_PLAY_SELECT;
 				show_chars();
 			// create?
-			} else if (str_eq(S("2"), input) || phrase_match(S("create"), input)) {
+			} else if (input == "2" || prefix_match("create", input)) {
 				// check max
 				if (account->get_char_list().size() >= account->get_max_chars()) {
 					show_main();
@@ -141,15 +141,15 @@ TelnetModeMainMenu::process (char* line)
 						get_handler()->set_mode(new TelnetModeNewCharacter(get_handler(), account));
 				}
 			// account?
-			} else if (str_eq(S("3"), input) || phrase_match(S("account"), input)) {
+			} else if (input == "3" || prefix_match("account", input)) {
 				state = STATE_ACCOUNT;
 				show_account();
 			// delete?
-			} else if (str_eq(S("4"), input) || phrase_match(S("delete"), input)) {
+			} else if (input == "4" || prefix_match("delete", input)) {
 				state = STATE_DELETE_SELECT;
 				show_chars();
 			// exit?
-			} else if (str_eq(S("5"), input) || phrase_match(S("exit"), input)) {
+			} else if (input == "5" || prefix_match("exit", input)) {
 				*get_handler() << StreamParse(MessageManager.get(S("quit")));
 				get_handler()->disconnect();
 			// eh?
@@ -162,7 +162,7 @@ TelnetModeMainMenu::process (char* line)
 		{
 			// conver input
 			int inopt = tolong(input) - 1;
-			if (inopt == (int)account->get_char_list().size() || phrase_match(S("return"), input)) {
+			if (inopt == (int)account->get_char_list().size() || prefix_match("return", input)) {
 				state = STATE_MENU;
 				show_main();
 				break;
@@ -208,25 +208,25 @@ TelnetModeMainMenu::process (char* line)
 		}
 		case STATE_ACCOUNT:
 			// change name?
-			if (str_eq(S("1"), input) || phrase_match(S("name"), input)) {
+			if (input == "1" || prefix_match("name", input)) {
 				state = STATE_CHANGE_NAME;
 				show_banner();
 				*get_handler() << "Current name: " << account->get_name() << ".\n\n";
 				*get_handler() << "You may correct your real-life name registered with this account.  To leave your name unchanged, do not enter and text and simple press return/enter.\n\n";
 			// change email?
-			} else if (str_eq(S("2"), input) || phrase_match(S("email"), input)) {
+			} else if (input == "2" || prefix_match("email", input)) {
 				state = STATE_CHANGE_EMAIL;
 				show_banner();
 				*get_handler() << "Current email address: " << account->get_email() << ".\n\n";
 				*get_handler() << "You may correct the email address registered with this account.  To leave your email address unchanged, do not enter and text and simple press return/enter.\n\n";
 			// change password?
-			} else if (str_eq(S("3"), input) || phrase_match(S("passphrase"), input)) {
+			} else if (input == "3" || prefix_match("passphrase", input)) {
 				state = STATE_CHPASS_CHALLENGE;
 				show_banner();
 				*get_handler() << "You must enter your current passphrase before you may select a new one.\n\n";
 				get_handler()->toggle_echo(false);
 			// return?
-			} else if (!strlen(input) || str_eq(S("4"), input) || phrase_match(S("return"), input)) {
+			} else if (input.empty() || input == "4" || prefix_match("return", input)) {
 				show_main();
 				state = STATE_MENU;
 			// er?
@@ -278,7 +278,7 @@ TelnetModeMainMenu::process (char* line)
 			break;
 		case STATE_CHPASS_SELECT:
 			// must be valid
-			if (!strlen(input) || !AccountManager.valid_passphrase(input)) {
+			if (input.empty() || !AccountManager.valid_passphrase(input)) {
 				state = STATE_ACCOUNT;
 				show_account();
 				*get_handler() << "Passphrases must be at least " << ACCOUNT_PASS_MIN_LEN << " characters, and have both letters and numbers.  Passphrases may also contain symbols or punctuation characters.\n\n";
@@ -322,7 +322,7 @@ TelnetModeMainMenu::process (char* line)
 		{
 			// conver input
 			int inopt = tolong(input) - 1;
-			if (inopt == (int)account->get_char_list().size() || phrase_match(S("return"), input)) {
+			if (inopt == (int)account->get_char_list().size() || prefix_match("return", input)) {
 				state = STATE_MENU;
 				show_main();
 				break;

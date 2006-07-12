@@ -155,7 +155,7 @@ class TelnetHandler : public Scriptix::Native, public SocketUser, public IStream
 	inline bool has_zmp_net_awemud () const { return io_flags.zmp_net_awemud; } // supports the net.awemud. package?
 	inline bool has_zmp_color () const { return io_flags.zmp_color; } // supports the color.define command?
 	void send_zmp (size_t argc, const String argv[]);
-	void zmp_support (StringArg pkg, bool value);
+	void zmp_support (String pkg, bool value);
 
 	// mode
 	void set_mode (ITelnetMode* new_mode);

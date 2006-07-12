@@ -62,8 +62,8 @@ GameCalendar : public GC
 	uint16 days_in_month (const class GameTime &) const;
 	String get_holiday (const class GameTime &) const;
 
-	int find_month (StringArg name);
-	int find_weekday (StringArg name);
+	int find_month (String name);
+	int find_weekday (String name);
 
 	int load ();
 };
@@ -99,7 +99,7 @@ GameTime
 	String date_str () const;
 
 	String encode () const;
-	int decode (StringArg time);
+	int decode (String time);
 
 	bool is_day () const { return hour >= SUN_UP_HOUR && hour < SUN_DOWN_HOUR; }
 	bool is_night () const { return !is_day (); }

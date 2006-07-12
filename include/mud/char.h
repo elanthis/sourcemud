@@ -64,11 +64,11 @@ class CharStatID {
 	inline CharStatID (int s_value) : value((type_t)s_value) {}
 	inline CharStatID (void) : value(NONE) {}
 
-	inline StringArg get_name(void) const { return names[value]; }
+	inline String get_name(void) const { return names[value]; }
 
 	inline type_t get_value (void) const { return value; }
 
-	static CharStatID lookup (StringArg name);
+	static CharStatID lookup (String name);
 
 	inline bool operator == (CharStatID dir) const { return dir.value == value; }
 	inline bool operator != (CharStatID dir) const { return dir.value != value; }
@@ -104,14 +104,14 @@ class CharPosition {
 	inline CharPosition (int s_value) : value((type_t)s_value) {}
 	inline CharPosition (void) : value(STAND) {}
 
-	inline StringArg get_name(void) const { return names[value]; }
-	inline StringArg get_verb(void) const { return verbs[value]; }
-	inline StringArg get_sverb(void) const { return sverbs[value]; }
-	inline StringArg get_verbing(void) const { return verbings[value]; }
+	inline String get_name(void) const { return names[value]; }
+	inline String get_verb(void) const { return verbs[value]; }
+	inline String get_sverb(void) const { return sverbs[value]; }
+	inline String get_verbing(void) const { return verbings[value]; }
 
 	inline type_t get_value (void) const { return value; }
 
-	static CharPosition lookup (StringArg name);
+	static CharPosition lookup (String name);
 
 	inline bool operator == (CharPosition dir) const { return dir.value == value; }
 	inline bool operator != (CharPosition dir) const { return dir.value != value; }
@@ -188,9 +188,9 @@ Character : public Entity, public IStreamSink
 	class Object* get_worn_by_loc (uint loc) const;
 	class Object* get_equip_by_loc (uint loc) const;
 
-	class Object* find_held (StringArg name, uint count = 1, uint* matches = NULL) const;
-	class Object* find_worn (StringArg name, uint count = 1, uint* matches = NULL) const;
-	class Object* find_equip (StringArg name, uint count = 1, uint* matches = NULL) const;
+	class Object* find_held (String name, uint count = 1, uint* matches = NULL) const;
+	class Object* find_worn (String name, uint count = 1, uint* matches = NULL) const;
+	class Object* find_equip (String name, uint count = 1, uint* matches = NULL) const;
 
 	void release_object (class Object*); // *ONLY* for use by Object::release() !!!!
 
@@ -234,17 +234,17 @@ Character : public Entity, public IStreamSink
 
 	// input/output
 	virtual void stream_put (const char*, size_t len) {};
-	virtual void process_command (StringArg);
+	virtual void process_command (String);
 
 	// command processing utility funcs
-	class Object* cl_find_object (StringArg name, int type, bool silent = false);
-	class Object* cl_find_object (StringArg name, class Object* container, ContainerType type, bool silent = false);
+	class Object* cl_find_object (String name, int type, bool silent = false);
+	class Object* cl_find_object (String name, class Object* container, ContainerType type, bool silent = false);
 
-	class Character* cl_find_character (StringArg name, bool silent = false);
-	class RoomExit* cl_find_exit (StringArg name, bool silent = false);
+	class Character* cl_find_character (String name, bool silent = false);
+	class RoomExit* cl_find_exit (String name, bool silent = false);
 	/* cl_find_any looks for a character, then an object, then an exit.
 	 * Object searching is the same as using cl_find_object w/ GOC_ANY. */
-	class Entity* cl_find_any (StringArg name, bool silent = false);
+	class Entity* cl_find_any (String name, bool silent = false);
 
 	// heartbeat
 	virtual void heartbeat (void);
@@ -268,7 +268,7 @@ Character : public Entity, public IStreamSink
 	virtual void recalc (void);
 
 	// parsing
-	virtual int parse_property (const class StreamControl& stream, StringArg method, const ParseArgs& argv) const;
+	virtual int parse_property (const class StreamControl& stream, String method, const ParseArgs& argv) const;
 
 	// output description of character or equipment lsit
 	void display_equip (const class StreamControl& stream) const;
@@ -277,10 +277,10 @@ Character : public Entity, public IStreamSink
 	void display_affects (const class StreamControl& stream) const;
 
 	// == ACTIONS ==
-	void do_emote (StringArg text);
+	void do_emote (String text);
 	void do_social (const class SocialAdverb* social, Entity* target);
-	void do_say (StringArg text);
-	void do_sing (StringArg text);
+	void do_say (String text);
+	void do_sing (String text);
 
 	void do_look (void);
 	void do_look (Character *who);

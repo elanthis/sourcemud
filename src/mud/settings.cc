@@ -177,7 +177,7 @@ SSettingsManager::parse_argv (int argc, char** argv)
 }
 
 int
-SSettingsManager::load_file (StringArg path)
+SSettingsManager::load_file (String path)
 {
 	FILE* file;
 	char buffer[1024];

@@ -17,16 +17,16 @@
 #include "mud/object.h"
 
 void
-Character::process_command (StringArg line)
+Character::process_command (String line)
 {
 	CommandManager.call (this, line);
 }
 
-Object* Character::cl_find_object (StringArg line, int type, bool silent) { return NULL; }
-Object* Character::cl_find_object (StringArg line, Object* container, ContainerType type, bool silent) { return NULL; }
-Character* Character::cl_find_character (StringArg line, bool silent) { return NULL; }
-RoomExit* Character::cl_find_exit (StringArg line, bool silent) { return NULL; }
-Entity* Character::cl_find_any (StringArg line, bool silent) { return NULL; }
+Object* Character::cl_find_object (String line, int type, bool silent) { return NULL; }
+Object* Character::cl_find_object (String line, Object* container, ContainerType type, bool silent) { return NULL; }
+Character* Character::cl_find_character (String line, bool silent) { return NULL; }
+RoomExit* Character::cl_find_exit (String line, bool silent) { return NULL; }
+Entity* Character::cl_find_any (String line, bool silent) { return NULL; }
 
 #if 0
 
@@ -459,7 +459,7 @@ void command_look (Character* ch, String argv[]) {
 	}
 
 	// looking in/on/etc. container?
-	if (argv[0] && !phrase_match(S("at"), argv[0])) {
+	if (argv[0] && argv[0] != "at") {
 		ContainerType contain = ContainerType::lookup(argv[0]);
 		if (contain.valid()) {
 			Object* obj = ch->cl_find_object (argv[1], GOC_ANY);

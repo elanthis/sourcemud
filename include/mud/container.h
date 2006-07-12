@@ -28,11 +28,11 @@ class ContainerType {
 
 	bool valid (void) const { return value != NONE; }
 
-	StringArg get_name(void) const { return names[value]; }
+	String get_name(void) const { return names[value]; }
 
 	type_t get_value (void) const { return value; }
 
-	static ContainerType lookup (StringArg name);
+	static ContainerType lookup (String name);
 
 	inline bool operator == (const ContainerType& type) const { return type.value == value; }
 	inline bool operator != (const ContainerType& type) const { return type.value != value; }

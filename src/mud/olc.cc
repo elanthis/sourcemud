@@ -32,7 +32,7 @@ enum OLCMode {
 		type* edit = dynamic_cast<type*>(olc_entity); \
 	if (edit != NULL) {
 #define OLC_BEGIN_ATTR(attr_name) \
-	if (olc_mode == OLC_MODE_LIST || phrase_match(S(#attr_name), olc_attr)) { \
+	if (olc_mode == OLC_MODE_LIST || prefix_match(#attr_name, olc_attr)) { \
 		const char* attr = #attr_name; \
 		olc_ok = true; \
 		if (0) {
@@ -62,7 +62,7 @@ enum OLCMode {
 namespace OLC {
 	// lookup entity
 	bool 
-	lookup_editable (Player* builder, StringArg tname, StringArg name, Entity*& entity)
+	lookup_editable (Player* builder, String tname, String name, Entity*& entity)
 	{
 		// init
 		entity = NULL;
@@ -188,7 +188,7 @@ namespace OLC {
 	}
 
 	void
-	do_olc (Player* user, OLCMode olc_mode, Entity* olc_entity, StringArg olc_attr, StringArg value)
+	do_olc (Player* user, OLCMode olc_mode, Entity* olc_entity, String olc_attr, String value)
 	{
 		bool olc_ok = false;
 

@@ -157,7 +157,7 @@ SCommandManager::add (Command *command)
 }
 
 int
-SCommandManager::call (Character *ch, StringArg comm) {
+SCommandManager::call (Character *ch, String comm) {
 	Player *ply = PLAYER(ch);
 
 	// break up words
@@ -319,7 +319,7 @@ Command::show_man (StreamControl& stream)
 
 // build command
 int
-CommandFormat::build (StringArg s_format)
+CommandFormat::build (String s_format)
 {
 	int arg;
 	bool opt;
@@ -493,7 +493,7 @@ CommandFormat::trymatch (int node, char** words, String argv[]) const
 				return -1;
 			case FormatNode::TEXT:
 				// have we a word that matches
-				if (phrase_match(nodes[node].list.front(), String(words[0]))) { // FIXME: efficiency
+				if (phrase_match(nodes[node].list.front(), words[0])) {
 					// store the word
 					if (nodes[node].arg >= 0)
 						argv[nodes[node].arg] = nodes[node].list.front();
@@ -520,7 +520,7 @@ CommandFormat::trymatch (int node, char** words, String argv[]) const
 				// search list
 				cnt = 0;
 				for (StringList::const_iterator i = nodes[node].list.begin(); i != nodes[node].list.end(); ++i) {
-					if (phrase_match(*i, String(words[0]))) // FIXME: efficiency
+					if (phrase_match(*i, words[0]))
 						break;
 					++cnt;
 				}
@@ -615,7 +615,7 @@ Command::operator< (const Command& command) const
 
 // show a man page; return false if cmd_name is not found
 bool
-SCommandManager::show_man (StreamControl& stream, StringArg name, bool quiet)
+SCommandManager::show_man (StreamControl& stream, String name, bool quiet)
 {
 	// find exact match?
 	for (CommandList::iterator i = commands.begin(); i != commands.end(); ++i) {
@@ -629,7 +629,7 @@ SCommandManager::show_man (StreamControl& stream, StringArg name, bool quiet)
 	bool multiple = false;
 	Command* match = NULL;
 	for (CommandList::iterator i = commands.begin(); i != commands.end(); ++i) {
-		if (phrase_match((*i)->name, String(name))) { // FIXME: efficiency
+		if (phrase_match((*i)->name, name)) {
 			if (!multiple && match == NULL) {
 				match = *i;
 			} else if (!multiple) {

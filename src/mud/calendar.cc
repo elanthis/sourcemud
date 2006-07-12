@@ -190,7 +190,7 @@ GameCalendar::get_holiday (const GameTime &gt) const
 }
 
 int
-GameCalendar::find_month (StringArg name)
+GameCalendar::find_month (String name)
 {
 	uint ii = 0;
 	for (GCType::vector<GameCalendar::Month>::const_iterator i = months.begin(); i != months.end(); ++i, ++ii) {
@@ -201,7 +201,7 @@ GameCalendar::find_month (StringArg name)
 }
 
 int
-GameCalendar::find_weekday (StringArg name)
+GameCalendar::find_weekday (String name)
 {
 	uint ii = 0;
 	for (StringList::const_iterator i = weekdays.begin(); i != weekdays.end(); ++i, ++ii) {

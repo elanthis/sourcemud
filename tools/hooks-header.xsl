@@ -25,7 +25,7 @@ class ScriptRestrictedWriter;
 class ObjectBlueprint;
 
 namespace Hooks {
-	int add (StringArg name, Scriptix::ScriptFunction cb);
+	int add (String name, Scriptix::ScriptFunction cb);
 ]]></xsl:text>
 
 <!-- hook ids -->
@@ -39,7 +39,7 @@ namespace Hooks {
 
 		<xsl:choose>
 			<xsl:when test="@type='String'">
-				<xsl:text>StringArg </xsl:text>
+				<xsl:text>String </xsl:text>
 			</xsl:when>
 			<xsl:when test="@type='Integer'">
 				<xsl:text>long </xsl:text>

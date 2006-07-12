@@ -17,7 +17,7 @@
 
 SAIManager AIManager;
 
-AI::AI (StringArg s_name) : name(s_name) {} 
+AI::AI (String s_name) : name(s_name) {} 
 
 int
 AI::load (File::Reader& reader)
@@ -122,7 +122,7 @@ SAIManager::add (AI* new_ai)
 }
 
 AI*
-SAIManager::get (StringArg name)
+SAIManager::get (String name)
 {
 	for (AIList::iterator i = ai.begin(); i != ai.end(); ++i)
 		if ((*i)->name == name)

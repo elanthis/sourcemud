@@ -77,14 +77,14 @@ namespace {
 }
 
 // new zmp packed command
-ZMPPack::ZMPPack (StringArg command)
+ZMPPack::ZMPPack (String command)
 {
 	add(command);
 }
 
 // add a string
 ZMPPack&
-ZMPPack::add (StringArg command)
+ZMPPack::add (String command)
 {
 	args.push_back(command);
 
@@ -139,7 +139,7 @@ SZMPManager::shutdown (void)
 
 // register a new command
 int
-SZMPManager::add (StringArg name, ZMPFunction func)
+SZMPManager::add (String name, ZMPFunction func)
 {
 	// must have a name
 	if (!name)
@@ -162,7 +162,7 @@ SZMPManager::add (StringArg name, ZMPFunction func)
 
 // register a new command
 int
-SZMPManager::add (StringArg name, Scriptix::ScriptFunction func)
+SZMPManager::add (String name, Scriptix::ScriptFunction func)
 {
 	// must have a name
 	if (!name)
@@ -185,7 +185,7 @@ SZMPManager::add (StringArg name, Scriptix::ScriptFunction func)
 
 // find the request function; return NULL if not found
 ZMPCommand*
-SZMPManager::lookup(StringArg name)
+SZMPManager::lookup(String name)
 {
 	// search list - easy enough
 	for (ZMPCommandList::iterator i = commands.begin(); i != commands.end(); ++i) {
@@ -200,7 +200,7 @@ SZMPManager::lookup(StringArg name)
 
 // match a package pattern; non-zero on match
 bool
-SZMPManager::match(StringArg pattern)
+SZMPManager::match(String pattern)
 {
 	int package = 0; // are we looking for a package?
 
@@ -384,7 +384,7 @@ TelnetHandler::add_zmp(size_t argc, String argv[])
 
 // deal with ZMP support/no-support
 void
-TelnetHandler::zmp_support (StringArg pkg, bool value)
+TelnetHandler::zmp_support (String pkg, bool value)
 {
 	// color.define?
 	if (str_eq(pkg, S("color.define"))) {

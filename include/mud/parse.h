@@ -22,7 +22,7 @@ class ParseValue : public GC
 	// constructors
 	inline ParseValue () : type(T_NULL), entity(NULL), string() {}
 	inline ParseValue (const Entity* s_entity) : type(s_entity == NULL ? T_NULL : T_ENTITY), entity(s_entity), string() {}
-	inline ParseValue (StringArg s_string) : type(T_STRING), entity(NULL), string(s_string) {}
+	inline ParseValue (String s_string) : type(T_STRING), entity(NULL), string(s_string) {}
 
 	// fetch the type of the mixed value
 	inline Type get_type () const { return type; }
@@ -36,7 +36,7 @@ class ParseValue : public GC
 
 	// assign
 	inline const Entity* operator= (const Entity* entity) { type = (entity == NULL ? T_NULL : T_ENTITY); return this->entity = entity; }
-	inline const String& operator= (StringArg string) { type = T_STRING; return this->string = string; }
+	inline const String& operator= (String string) { type = T_STRING; return this->string = string; }
 
 	private:
 	Type type;
@@ -48,17 +48,17 @@ typedef StringList ParseNames;
 typedef GCType::vector<ParseValue> ParseArgs;
 
 namespace parse {
-	const StreamControl& text (const StreamControl& stream, StringArg format, const ParseArgs& argv, const ParseNames& names);
+	const StreamControl& text (const StreamControl& stream, String format, const ParseArgs& argv, const ParseNames& names);
 }
 
 // parse info
 struct StreamParse {
-	StreamParse(StringArg s_text);
-	StreamParse(StringArg s_text, StringArg s_name, ParseValue s_value);
-	StreamParse(StringArg s_text, StringArg s_name1, ParseValue s_value1, StringArg s_name2, ParseValue s_value2);
-	StreamParse(StringArg s_text, StringArg s_name1, ParseValue s_value1, StringArg s_name2, ParseValue s_value2, StringArg s_name3, ParseValue s_value3);
+	StreamParse(String s_text);
+	StreamParse(String s_text, String s_name, ParseValue s_value);
+	StreamParse(String s_text, String s_name1, ParseValue s_value1, String s_name2, ParseValue s_value2);
+	StreamParse(String s_text, String s_name1, ParseValue s_value1, String s_name2, ParseValue s_value2, String s_name3, ParseValue s_value3);
 
-	StreamParse& add (StringArg s_name, ParseValue s_value);
+	StreamParse& add (String s_name, ParseValue s_value);
 	StreamParse& add (ParseValue s_value);
 
 	friend inline

@@ -59,7 +59,7 @@ namespace {
 }
 
 int
-File::Reader::open (StringArg filename)
+File::Reader::open (String filename)
 {
 	// open
 	in.open(filename.c_str());
@@ -399,7 +399,7 @@ File::Reader::consume (void)
 }
 
 int
-File::Writer::open (StringArg filename)
+File::Writer::open (String filename)
 {
 	// open
 	out.open(filename.c_str());
@@ -428,7 +428,7 @@ File::Writer::do_indent (void)
 }
 
 void
-File::Writer::attr (StringArg name, StringArg data)
+File::Writer::attr (String name, String data)
 {
 	if (!out)
 		return;
@@ -445,7 +445,7 @@ File::Writer::attr (StringArg name, StringArg data)
 }
 
 void
-File::Writer::attr (StringArg name, long data)
+File::Writer::attr (String name, long data)
 {
 	if (!out)
 		return;
@@ -460,7 +460,7 @@ File::Writer::attr (StringArg name, long data)
 }
 
 void
-File::Writer::attr (StringArg name, long long data)
+File::Writer::attr (String name, long long data)
 {
 	if (!out)
 		return;
@@ -475,7 +475,7 @@ File::Writer::attr (StringArg name, long long data)
 }
 
 void
-File::Writer::attr (StringArg name, bool data)
+File::Writer::attr (String name, bool data)
 {
 	if (!out)
 		return;
@@ -491,7 +491,7 @@ File::Writer::attr (StringArg name, bool data)
 }
 
 void
-File::Writer::attr (StringArg name, const UniqueID& data)
+File::Writer::attr (String name, const UniqueID& data)
 {
 	if (!out)
 		return;
@@ -507,7 +507,7 @@ File::Writer::attr (StringArg name, const UniqueID& data)
 }
 
 void
-File::Writer::keyed (StringArg name, StringArg key, StringArg data)
+File::Writer::keyed (String name, String key, String data)
 {
 	if (!out)
 		return;
@@ -522,7 +522,7 @@ File::Writer::keyed (StringArg name, StringArg key, StringArg data)
 }
 
 void
-File::Writer::keyed (StringArg name, StringArg key, long data)
+File::Writer::keyed (String name, String key, long data)
 {
 	if (!out)
 		return;
@@ -537,7 +537,7 @@ File::Writer::keyed (StringArg name, StringArg key, long data)
 }
 
 void
-File::Writer::keyed (StringArg name, StringArg key, bool data)
+File::Writer::keyed (String name, String key, bool data)
 {
 	if (!out)
 		return;
@@ -552,7 +552,7 @@ File::Writer::keyed (StringArg name, StringArg key, bool data)
 }
 
 void
-File::Writer::keyed (StringArg name, StringArg key, const UniqueID& data)
+File::Writer::keyed (String name, String key, const UniqueID& data)
 {
 	if (!out)
 		return;
@@ -568,7 +568,7 @@ File::Writer::keyed (StringArg name, StringArg key, const UniqueID& data)
 }
 
 void
-File::Writer::custom (StringArg name, StringArg data)
+File::Writer::custom (String name, String data)
 {
 	if (!out)
 		return;
@@ -609,7 +609,7 @@ File::Writer::custom (StringArg name, StringArg data)
 }
 
 void
-File::Writer::custom (StringArg name, long data)
+File::Writer::custom (String name, long data)
 {
 	if (!out)
 		return;
@@ -624,7 +624,7 @@ File::Writer::custom (StringArg name, long data)
 }
 
 void
-File::Writer::custom (StringArg name, bool data)
+File::Writer::custom (String name, bool data)
 {
 	if (!out)
 		return;
@@ -640,7 +640,7 @@ File::Writer::custom (StringArg name, bool data)
 }
 
 void
-File::Writer::custom (StringArg name, const UniqueID& data)
+File::Writer::custom (String name, const UniqueID& data)
 {
 	if (!out)
 		return;
@@ -656,7 +656,7 @@ File::Writer::custom (StringArg name, const UniqueID& data)
 }
 
 void
-File::Writer::block (StringArg name, StringArg data)
+File::Writer::block (String name, String data)
 {
 	if (!out)
 		return;
@@ -680,7 +680,7 @@ File::Writer::block (StringArg name, StringArg data)
 }
 
 void
-File::Writer::begin (StringArg name)
+File::Writer::begin (String name)
 {
 	if (!out)
 		return;
@@ -708,7 +708,7 @@ File::Writer::end (void)
 }
 
 void
-File::Writer::comment (StringArg text)
+File::Writer::comment (String text)
 {
 	if (!out)
 		return;
@@ -734,7 +734,7 @@ File::Writer::comment (StringArg text)
 }
 
 bool
-File::valid_name (StringArg name)
+File::valid_name (String name)
 {
 	// not empty
 	if (name.empty())

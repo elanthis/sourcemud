@@ -67,14 +67,14 @@ ObjectBlueprint : public Scriptix::Native
 
 	// name
 	virtual EntityName get_name () const;
-	inline bool set_name (StringArg s_name) { bool ret = name.set_name(s_name); set_flags.name = true; return ret; }
+	inline bool set_name (String s_name) { bool ret = name.set_name(s_name); set_flags.name = true; return ret; }
 	void reset_name ();
 
 	inline const StringList& get_keywords () const { return keywords; }
 
 	// description
 	inline const String& get_desc () const { return desc; }
-	inline void set_desc (StringArg s_desc) { desc = s_desc; set_flags.desc = true; }
+	inline void set_desc (String s_desc) { desc = s_desc; set_flags.desc = true; }
 	void reset_desc ();
 
 	// weight
@@ -188,7 +188,7 @@ Object : public Entity
 
 	// name info
 	virtual EntityName get_name () const;
-	virtual bool name_match (StringArg name) const;
+	virtual bool name_match (String name) const;
 
 	// description
 	virtual String get_desc () const;
@@ -214,14 +214,14 @@ Object : public Entity
 	class Room* get_room () const;
 
 	// actions
-	Scriptix::ScriptFunction get_action (StringArg action);
-	ObjectActionCode do_action (StringArg action, Entity* user, Scriptix::Value data = Scriptix::Value());
+	Scriptix::ScriptFunction get_action (String action);
+	ObjectActionCode do_action (String action, Entity* user, Scriptix::Value data = Scriptix::Value());
 
 	// name color
 	virtual String ncolor () const { return S(CITEM); }
 
 	// for parsing, pull a property based on a char*
-	virtual int parse_property (const class StreamControl& stream, StringArg method, const ParseArgs& argv) const;
+	virtual int parse_property (const class StreamControl& stream, String method, const ParseArgs& argv) const;
 
 	// object properties
 	uint get_cost () const;
@@ -236,7 +236,7 @@ Object : public Entity
 	bool is_rotting () const;
 
 	// return ture if we derive from the named blueprint
-	bool is_blueprint (StringArg blueprint) const;
+	bool is_blueprint (String blueprint) const;
 
 	// (de)activate children
 	virtual void activate ();
@@ -248,13 +248,13 @@ Object : public Entity
 	// blueprint information
 	virtual ObjectBlueprint* get_blueprint () const { return blueprint; }
 	void set_blueprint (ObjectBlueprint* blueprint);
-	static Object* load_blueprint (StringArg name);
+	static Object* load_blueprint (String name);
 
 	// containers
 	bool has_container (ContainerType type) const;
 	bool add_object (Object *sub, ContainerType type);
 	void remove_object (Object *sub, ContainerType type);
-	Object *find_object (StringArg name, uint index, ContainerType type, uint *matches = NULL) const;
+	Object *find_object (String name, uint index, ContainerType type, uint *matches = NULL) const;
 	void show_contents (class Player *player, ContainerType type) const;
 
 	// data
@@ -288,7 +288,7 @@ class SObjectBlueprintManager : public IManager
 
 	void shutdown ();
 
-	ObjectBlueprint* lookup (StringArg id);
+	ObjectBlueprint* lookup (String id);
 
 	private:
 	BlueprintMap blueprints;

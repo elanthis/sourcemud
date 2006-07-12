@@ -34,7 +34,7 @@ Race : public Scriptix::Native
 	public:
 	// this is an ugly hack, but it lets us construct the linked
 	// list as we need to do
-	Race (StringArg s_name, Race* s_next);
+	Race (String s_name, Race* s_next);
 
 	int load (File::Reader&);
 
@@ -84,7 +84,7 @@ class SRaceManager : public IManager
 
 	void shutdown ();
 
-	Race* get (StringArg name);
+	Race* get (String name);
 
 	inline Race* first () { return head; }
 

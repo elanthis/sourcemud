@@ -20,7 +20,7 @@
 SRaceManager RaceManager;
 
 SCRIPT_TYPE(PlayerRace);
-Race::Race (StringArg s_name, Race *s_next) :
+Race::Race (String s_name, Race *s_next) :
 	Scriptix::Native(AweMUD_PlayerRaceType),
 	name(s_name.c_str()),
 	next(s_next) {}
@@ -118,7 +118,7 @@ Race::load (File::Reader& reader)
 }
 
 Race *
-SRaceManager::get (StringArg name)
+SRaceManager::get (String name)
 {
 	Race *race = head;
 	while (race != NULL) {

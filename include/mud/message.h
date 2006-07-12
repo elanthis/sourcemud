@@ -19,7 +19,7 @@ class SMessageManager : public IManager
 	virtual int initialize (void);
 	virtual void shutdown (void);
 
-	String get (StringArg id);
+	String get (String id);
 
 	private:
 	typedef GCType::map<String, String> MessageMap;

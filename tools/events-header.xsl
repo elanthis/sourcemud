@@ -33,7 +33,7 @@ namespace Events {
 
 		<xsl:choose>
 			<xsl:when test="type='String'">
-				<xsl:text>StringArg </xsl:text>
+				<xsl:text>String </xsl:text>
 			</xsl:when>
 			<xsl:when test="type='Integer'">
 				<xsl:text>long </xsl:text>

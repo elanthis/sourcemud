@@ -29,12 +29,12 @@ class TelnetModeNewCharacter : public ITelnetMode
 	virtual void finish ();
 
 	void display ();
-	void show_error (StringArg msg);
+	void show_error (String msg);
 	void enter_state (state_t state);
 
 	void create ();
 
-	static bool is_match (StringArg test, StringArg operand);
+	static bool is_match (String test, String operand);
 
 	private:
 	Account* account;

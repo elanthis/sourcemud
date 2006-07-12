@@ -72,15 +72,15 @@ namespace {
 	token_type get_token (const char** in, const char* end, StringBuffer& namebuf);
 	void skip (const char** in, const char* end);
 	String get_arg (ParseArgs& argv, uint index);
-	int invoke_method (const StreamControl& stream, ParseValue self, StringArg method, ParseArgs& argv);
+	int invoke_method (const StreamControl& stream, ParseValue self, String method, ParseArgs& argv);
 	ParseValue get_value (const char* name, ParseState& state);
 	int do_command (const char** in, const char* end, ParseState& state, const StreamControl& stream, int depth, bool if_allowed);
-	int do_text(const StreamControl& stream, StringArg in, ParseState& state, int depth);
+	int do_text(const StreamControl& stream, String in, ParseState& state, int depth);
 }
 
 // externally defined in parse_commands.cc, generated from gen/parse-intr.xml
 namespace parse {
-	extern int exec_command (const StreamControl& stream, StringArg command, ParseArgs& argv);
+	extern int exec_command (const StreamControl& stream, String command, ParseArgs& argv);
 }
 
 // function definitions
@@ -211,7 +211,7 @@ namespace {
 	}
 
 	// invoke a method
-	int invoke_method (const StreamControl& stream, ParseValue self, StringArg method, ParseArgs& argv)
+	int invoke_method (const StreamControl& stream, ParseValue self, String method, ParseArgs& argv)
 	{
 		// if it's an entity, invoke Entity::parse_property();
 		if (self.is_entity()) {
@@ -537,7 +537,7 @@ namespace {
 
 	// parse text
 	int
-	do_text(const StreamControl& stream, StringArg in, ParseState& state, int depth)
+	do_text(const StreamControl& stream, String in, ParseState& state, int depth)
 	{
 		// declarations
 		const char* c;
@@ -580,7 +580,7 @@ namespace {
 namespace parse {
 	// parse text
 	const StreamControl&
-	text(const StreamControl& stream, StringArg in, const ParseArgs& argv, const ParseNames& names)
+	text(const StreamControl& stream, String in, const ParseArgs& argv, const ParseNames& names)
 	{
 		ParseState state(argv, names);
 

@@ -30,7 +30,7 @@ namespace Events {
 
 		<xsl:choose>
 			<xsl:when test="type='String'">
-				<xsl:text>StringArg </xsl:text>
+				<xsl:text>String </xsl:text>
 			</xsl:when>
 			<xsl:when test="type='Integer'">
 				<xsl:text>long </xsl:text>
@@ -69,7 +69,7 @@ void SEventManager::initialize_ids () {
 } // initialize()
 
 Scriptix::ScriptFunction
-SEventManager::compile (EventID id, StringArg source, StringArg filename, unsigned long fileline)
+SEventManager::compile (EventID id, String source, String filename, unsigned long fileline)
 {
 ]]></xsl:text>
 

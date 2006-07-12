@@ -13,7 +13,7 @@
 
 // helper function to generate path names
 String
-SPlayerManager::path (StringArg name)
+SPlayerManager::path (String name)
 {
 	return SettingsManager.get_player_path() + "/" + strlower(name) + ".ply";
 }
@@ -60,7 +60,7 @@ SPlayerManager::valid_name (String name)
 
 // find a Player
 Player *
-SPlayerManager::get (StringArg name)
+SPlayerManager::get (String name)
 {
 	assert (name);
 
@@ -130,7 +130,7 @@ SPlayerManager::shutdown (void)
 }
 
 Player*
-SPlayerManager::load (Account* account, StringArg name)
+SPlayerManager::load (Account* account, String name)
 {
 	// must be valid before attempting load
 	if (!valid_name(name))
@@ -190,7 +190,7 @@ SPlayerManager::exists (String name)
 }
 
 int
-SPlayerManager::destroy (StringArg name)
+SPlayerManager::destroy (String name)
 {
 	// must be a valid name
 	if (!valid_name(name))

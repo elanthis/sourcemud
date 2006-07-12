@@ -32,7 +32,7 @@ bool </xsl:text><xsl:value-of select="@name" /><xsl:text> (</xsl:text>
 
 		<xsl:choose>
 			<xsl:when test="@type='String'">
-				<xsl:text>StringArg </xsl:text>
+				<xsl:text>String </xsl:text>
 			</xsl:when>
 			<xsl:when test="@type='Integer'">
 				<xsl:text>long </xsl:text>
@@ -67,7 +67,7 @@ bool </xsl:text><xsl:value-of select="@name" /><xsl:text> (</xsl:text>
 </xsl:for-each>
 
 <xsl:text>
-int add (StringArg name, Scriptix::ScriptFunction cb) {
+int add (String name, Scriptix::ScriptFunction cb) {
 </xsl:text>
 	<xsl:for-each select="hook">
 		<xsl:text>if (name == "</xsl:text><xsl:value-of select="@name" /><xsl:text>") { </xsl:text><xsl:value-of select="@name" /><xsl:text>_cb.push_back(cb); return 0; }</xsl:text>

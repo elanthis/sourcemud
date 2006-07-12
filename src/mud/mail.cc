@@ -21,13 +21,13 @@
 #include "mud/settings.h"
 
 void
-MailMessage::append (StringArg data)
+MailMessage::append (String data)
 {
 	body += data;
 }
 
 void
-MailMessage::header (StringArg name, StringArg value)
+MailMessage::header (String name, String value)
 {
 	Header h;
 	h.name = name;

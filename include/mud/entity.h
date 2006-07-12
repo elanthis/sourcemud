@@ -93,13 +93,13 @@ class Entity : public Scriptix::Native
 	virtual void save_hook (class ScriptRestrictedWriter* writer);
 
 	// check name
-	virtual bool name_match (StringArg name) const;
+	virtual bool name_match (String name) const;
 
 	// event triggers
 	virtual int handle_event (const Event& event);
 
 	// for parsing, pull a property based on a char
-	virtual int parse_property (const class StreamControl& stream, StringArg method, const ParseArgs& argv) const;
+	virtual int parse_property (const class StreamControl& stream, String method, const ParseArgs& argv) const;
 
 	// heartbeat
 	virtual void heartbeat () = 0;

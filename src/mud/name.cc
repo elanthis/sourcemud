@@ -19,7 +19,7 @@ String EntityArticleClass::names[] = {
 };
 
 EntityArticleClass
-EntityArticleClass::lookup (StringArg text)
+EntityArticleClass::lookup (String text)
 {
 	for (uint i = 0; i < COUNT; ++i)
 		if (str_eq(text, names[i]))
@@ -53,7 +53,7 @@ EntityName::get_name () const
 }
 
 bool
-EntityName::set_name (StringArg s_text)
+EntityName::set_name (String s_text)
 {
 	// empty text?  no article, no text
 	if (s_text.empty()) {
@@ -104,7 +104,7 @@ EntityName::set_name (StringArg s_text)
 }
 
 bool
-EntityName::matches (StringArg match) const
+EntityName::matches (String match) const
 {
 	return phrase_match(get_text(), match);
 }

@@ -63,7 +63,7 @@ void command_tell (Player* player, String argv[])
 }
 
 void
-Player::do_tell (Player* who, StringArg what)
+Player::do_tell (Player* who, String what)
 {
 	*who << "[" << StreamName(this) << "]: " CTALK << what << CNORMAL "\n";
 	who->last_tell = get_id();
@@ -76,7 +76,7 @@ void command_reply (Player* player, String argv[])
 }
 
 void
-Player::do_reply (StringArg what)
+Player::do_reply (String what)
 {
 	if (!last_tell) {
 		*this << "No one has sent you a tell yet.\n";
