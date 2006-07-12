@@ -35,6 +35,8 @@ struct SocialAdverb : public GC
 	SocialAdverb* next;
 	class Social* social; // our social
 
+	String get_name () const { return name; }
+
 	int load (File::Reader& reader);
 };
 
@@ -42,17 +44,17 @@ struct SocialAdverb : public GC
 class Social : public GC
 {
 	public:
-	Social (void);
+	Social ();
 
 	// basic info
-	StringArg get_name (void) const { return name; }
+	String get_name () const { return name; }
 	const SocialAdverb* get_adverb (StringArg name) const;
-	const SocialAdverb* get_default (void) const { return adverbs; }
+	const SocialAdverb* get_default () const { return adverbs; }
 
 	// flags
-	inline bool need_speech (void) const { return flags.speech; }
-	inline bool need_touch (void) const { return flags.touch; }
-	inline bool need_movement (void) const { return flags.move || need_touch() || need_speech(); }
+	inline bool need_speech () const { return flags.speech; }
+	inline bool need_touch () const { return flags.touch; }
+	inline bool need_movement () const { return flags.move || need_touch() || need_speech(); }
 
 	private:
 	// basic info
@@ -75,11 +77,11 @@ class Social : public GC
 class SSocialManager : public IManager
 {
 	public:
-	inline SSocialManager(void) : socials(NULL) {}
+	inline SSocialManager() : socials(NULL) {}
 
-	int initialize (void);
+	int initialize ();
 
-	void shutdown (void);
+	void shutdown ();
 
 	const Social* find_social (StringArg name);
 

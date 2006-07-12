@@ -272,5 +272,6 @@ void command_abuse (Player* player, String argv[])
 
 void command_man (Player* player, String argv[])
 {
-	CommandManager.show_man(player, argv[0]);
+	StreamControl stream(player);
+	CommandManager.show_man(stream, argv[0]);
 }

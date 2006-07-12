@@ -13,13 +13,13 @@
 #include "mud/command.h"
 #include "mud/char.h"
 #include "mud/player.h"
-#include "mud/social.h"
 #include "common/streams.h"
 #include "mud/color.h"
 #include "mud/account.h"
 #include "mud/parse.h"
 #include "mud/help.h"
 #include "scriptix/array.h"
+#include "mud/telnet.h"
 
 SCommandManager CommandManager;
 
@@ -240,41 +240,6 @@ SCommandManager::call (Character *ch, StringArg comm) {
 		}
 	}
 
-	// not found - try socials database
-	const Social* social = SocialManager.find_social(String(words[0])); // FIXME: efficiency
-	if (social != NULL) {
-		// parse
-		const SocialAdverb* sa = NULL;
-		Entity* target = NULL;
-		if (words[1]) {
-			if ((sa = social->get_adverb(String(words[1]))) != NULL) { // FIXME: efficiency
-				// find target
-				if (words[2]) {
-					target = ch->cl_find_any (String(repair(&words[2])), false); // FIXME: efficiency
-					if (!target)
-						return 1;
-				}
-			}
-		}
-		
-		// find de default
-		if (sa == NULL) {
-			sa = social->get_default();
-			// find target
-			if (words[1]) {
-				target = ch->cl_find_any (String(repair(&words[1])), false); // FIXME: efficiency
-				if (!target)
-					return 1;
-			}
-		}
-
-		// all ready?
-		if (sa) {
-			ch->do_social(sa, target);
-			return 0;
-		}
-	}
-
 	// absolutely no command
 	*ch << "I do not understand.\n";
 	return 1;
@@ -333,23 +298,23 @@ SCommandManager::show_list (Player *player)
 }
 
 void	
-Command::show_man (Player* player)
+Command::show_man (StreamControl& stream)
 {
 	HelpTopic* topic = HelpManager.get_topic(name);
 
-	*player << CSPECIAL "Help: " CNORMAL << name << "\n\n";
+	stream << CSPECIAL "Help: " CNORMAL << name << "\n\n";
 
 	if (topic != NULL) {
-		player->set_indent(2);
-		*player << CSPECIAL "About:" CNORMAL "\n";
-		player->set_indent(4);
-		*player << StreamParse(topic->about, S("player"), player) << S("\n");
+		stream << StreamIndent(2);
+		stream << CSPECIAL "About:" CNORMAL "\n";
+		stream << StreamIndent(4);
+		stream << StreamParse(topic->about) << S("\n");
 	}
-	player->set_indent(2);
-	*player << CSPECIAL "Usage:" CNORMAL "\n";
-	player->set_indent(4);
-	*player << usage << "\n";
-	player->set_indent(0);
+	stream << StreamIndent(2);
+	stream << CSPECIAL "Usage:" CNORMAL "\n";
+	stream << StreamIndent(4);
+	stream << usage << "\n";
+	stream << StreamIndent(0);
 }
 
 // build command
@@ -650,12 +615,12 @@ Command::operator< (const Command& command) const
 
 // show a man page; return false if cmd_name is not found
 bool
-SCommandManager::show_man (Player* player, StringArg name, bool quiet)
+SCommandManager::show_man (StreamControl& stream, StringArg name, bool quiet)
 {
 	// find exact match?
 	for (CommandList::iterator i = commands.begin(); i != commands.end(); ++i) {
 		if ((*i)->name == name) {
-			(*i)->show_man (player);
+			(*i)->show_man (stream);
 			return true;
 		}
 	}
@@ -669,25 +634,25 @@ SCommandManager::show_man (Player* player, StringArg name, bool quiet)
 				match = *i;
 			} else if (!multiple) {
 				if (!quiet) {
-					*player << CSPECIAL "Search:" CNORMAL;
-					player->set_indent(8);
-					*player << match->name << "\n";
-					*player << (*i)->name << "\n";
+					stream << CSPECIAL "Search:" CNORMAL;
+					stream << StreamIndent(8);
+					stream << match->name << "\n";
+					stream << (*i)->name << "\n";
 				}
 				multiple = true;
 				match = NULL;
 			} else if (!quiet) {
-				*player << (*i)->name << "\n";
+				stream << (*i)->name << "\n";
 			}
 		}
 	}
 	if (!quiet)
-		player->set_indent(0);
+		stream << StreamIndent(0);
 
 	if (match) {
-		match->show_man(player);
+		match->show_man(stream);
 	} else if (!multiple && !quiet) {
-		*player << "No manual or matching commands found for '" << name << "'.\n";
+		stream << "No manual or matching commands found for '" << name << "'.\n";
 	}
 
 	return match;

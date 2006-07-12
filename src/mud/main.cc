@@ -156,15 +156,6 @@ namespace {
 		return 0;
 	}
 
-	// in a very unsafe fashion, dump text to a socket
-	// FIXME: yuck, this is ugly - but how else to do this
-	// without shitloads of infrastructure?
-	void
-	dump_to_sock (int sock, const char* text)
-	{
-		send(sock, text, strlen(text), 0);
-	}
-
 	void
 	cleanup ()
 	{
@@ -226,7 +217,7 @@ namespace {
 
 		// deny blocked hosts
 		if (NetworkManager.denies.exists(addr)) {
-			dump_to_sock(client, "Your host or network has been banned from this server.\r\n");
+			fdprintf(client, "Your host or network has been banned from this server.\r\n");
 			Log::Network << "Telnet client rejected: " << Network::get_addr_name(addr) << ": host or network banned";
 			close(client);
 			return;
@@ -235,13 +226,13 @@ namespace {
 		// manage connection count
 		int err = NetworkManager.connections.add(addr);
 		if (err == -1) {
-			dump_to_sock(client, "Too many users connected.\r\n");
+			fdprintf(client, "Too many users connected.\r\n");
 			Log::Network << "Telnet client rejected: " << Network::get_addr_name(addr) << ": too many users";
 			close(client);
 			return;
 		}
 		if (err == -2) {
-			dump_to_sock(client, "Too many users connected from your host.\r\n");
+			fdprintf(client, "Too many users connected from your host.\r\n");
 			Log::Network << "Telnet client rejected: " << Network::get_addr_name(addr) << ": too many users from client host";
 			close(client);
 			return;
@@ -253,7 +244,7 @@ namespace {
 		// create a new telnet handler
 		TelnetHandler *telnet = new TelnetHandler(client, addr);
 		if (telnet == NULL) {
-			dump_to_sock(client, "Internal server error.\r\n");
+			fdprintf(client, "Internal server error.\r\n");
 			Log::Error << "TelnetHandler() failed, closing connection.";
 			close(client);
 			NetworkManager.connections.remove(addr);
@@ -262,7 +253,7 @@ namespace {
 
 		// add to poll manager
 		if (NetworkManager.add_socket(telnet)) {
-			dump_to_sock(client, "Internal server error.\r\n");
+			fdprintf(client, "Internal server error.\r\n");
 			Log::Error << "PollSystem::add_socket() failed, closing connection.";
 			close(client);
 			NetworkManager.connections.remove(addr);
@@ -296,7 +287,7 @@ namespace {
 
 		// deny blocked users
 		if (!ControlManager.has_user_access(uid)) {
-			dump_to_sock(client, "+NOACCESS Access Denied\n");
+			fdprintf(client, "+NOACCESS Access Denied\n");
 			Log::Network << "Control interface client rejected: " << uid << ": user not allowed";
 			close(client);
 			return;
@@ -308,7 +299,7 @@ namespace {
 		// create a new connection
 		ControlHandler* conn = new ControlHandler(client, uid);
 		if (conn == NULL) {
-			dump_to_sock(client, "+INTERNAL Internal server error.\n");
+			fdprintf(client, "+INTERNAL Internal server error.\n");
 			Log::Warning << "ControlHandler() failed, closing connection.";
 			close(client);
 			return;
@@ -316,7 +307,7 @@ namespace {
 
 		// add to poll manager
 		if (NetworkManager.add_socket(conn)) {
-			dump_to_sock(client, "Internal server error.\r\n");
+			fdprintf(client, "Internal server error.\r\n");
 			Log::Error << "PollSystem::add_socket() failed, closing connection.";
 			close(client);
 			conn = NULL;
@@ -324,7 +315,7 @@ namespace {
 		}
 
 		// banner
-		dump_to_sock(client, "+OK Welcome\n");
+		fdprintf(client, "+OK Welcome\n");
 	}
 }
 

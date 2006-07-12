@@ -19,12 +19,14 @@
 #include "mud/fileobj.h"
 #include "mud/parse.h"
 #include "mud/help.h"
+#include "mud/telnet.h"
 
 SHelpManager HelpManager;
 
-void command_help (Player *ch, String argv[])
+void command_help (Player* player, String argv[])
 {
-	HelpManager.print (ch, argv[0]);
+	StreamControl stream(player);
+	HelpManager.print (stream, argv[0]);
 }
 
 HelpTopic*
@@ -37,26 +39,22 @@ SHelpManager::get_topic (StringArg name)
 }
 
 void
-SHelpManager::print (Player* player, StringArg name)
+SHelpManager::print (StreamControl& stream, StringArg name)
 {
-	assert (player != NULL);
-
 	// try a man page
-	if (CommandManager.show_man(player, name, true))
+	if (CommandManager.show_man(stream, name, true))
 		return;
 
 	// try a help topic
 	HelpTopic* topic = get_topic(name);
 	if (topic) {
-		*player << CSPECIAL "Help: " CNORMAL << topic->name << "\n\n";
-		player->set_indent(2);
-		*player << StreamParse(topic->about, S("player"), player) << S("\n");
-		player->set_indent(0);
+		stream << CSPECIAL "Help: " CNORMAL << topic->name << "\n\n";
+		stream << StreamIndent(2) << StreamParse(topic->about) << StreamIndent(0) << "\n";
 		return;
 	}
 
 	// nope, nothin'
-	*player << CSPECIAL "No help for '" << name << "' available." CNORMAL "\n";
+	stream << CSPECIAL "No help for '" << name << "' available." CNORMAL "\n";
 }
 
 int

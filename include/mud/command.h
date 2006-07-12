@@ -116,7 +116,7 @@ class Command : public GC
 	inline void add_format (CommandFormat* format) { formats.push_back(format); }
 
 	// display help
-	void show_man (class Player* player);
+	void show_man (class StreamControl& player);
 
 	// sort
 	bool operator< (const Command& command) const;
@@ -141,7 +141,7 @@ class SCommandManager : public IManager
 	int call (class Character* character, StringArg cmd_line);
 
 	// show a man page; return false if cmd_name is not found
-	bool show_man (class Player* player, StringArg cmd_name, bool quiet = false);
+	bool show_man (class StreamControl& stream, StringArg cmd_name, bool quiet = false);
 
 	// show a command list
 	void show_list (class Player* player);

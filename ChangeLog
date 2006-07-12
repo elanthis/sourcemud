@@ -1,3 +1,9 @@
+2006-07-12 16:07:05  Sean Middleditch <elanthis@awesomeplay.com>
+
+  * Use streams in commands and help instead of just using Player*.
+  * Automatically register socials as actual commands, instead of
+    having the command lookup code treat socials specially.
+
 2006-07-12 15:06:15  Sean Middleditch <elanthis@awesomeplay.com>
 
   * Added fdprintf(), which is something libc should freakin'

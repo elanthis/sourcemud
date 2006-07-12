@@ -9,6 +9,7 @@
 #define AWEMUD_MUD_HELP_H
 
 #include "common/imanager.h"
+#include "common/streams.h"
 
 struct HelpTopic : public GC {
 	String name;
@@ -24,8 +25,8 @@ class SHelpManager : public IManager
 	// close the manager
 	virtual void shutdown (void);
 
-	// print out help to a player (FIXME: should be a stream)
-	void print (class Player*, StringArg section);
+	// print out help to a player
+	void print (StreamControl& stream, StringArg section);
 
 	// get a topic; category is optional, its use limits
 	// the topic search to topics in the given category

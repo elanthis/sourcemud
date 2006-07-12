@@ -11,8 +11,31 @@
 #include "mud/social.h"
 #include "mud/settings.h"
 #include "common/log.h"
+#include "mud/command.h"
+#include "mud/char.h"
 
 SSocialManager SocialManager;
+
+namespace {
+	void command_social (Character* ch, String args[])
+	{
+		const Social* social = SocialManager.find_social(args[0]);
+		const SocialAdverb* adverb;
+		if (args[1])
+			adverb = social->get_adverb(args[1]);
+		else
+			adverb = social->get_default();
+
+		Entity* target = NULL;
+		if (args[2]) {
+			target = ch->cl_find_any(args[2], false);
+			if (!target)
+				return;
+		}
+
+		ch->do_social(adverb, target);
+	}
+}
 
 Social::Social (void) : name(), adverbs(NULL), next(NULL)
 {
@@ -98,6 +121,8 @@ Social::load (File::Reader& reader)
 int
 SSocialManager::initialize (void)
 {
+	require(CommandManager);
+
 	Log::Info << "Loading socials";
 
 	File::Reader reader;
@@ -128,6 +153,45 @@ SSocialManager::initialize (void)
 	FO_READ_ERROR
 		return -1;
 	FO_READ_END
+
+	// register all socials as commands
+	for (Social* social = socials; social != NULL; social = social->next) {
+		StringBuffer buffer;
+
+		// make usage string
+		for (SocialAdverb* adverb = social->adverbs; adverb != NULL; adverb = adverb->next) {
+			if (adverb->get_name() != "default")
+				buffer << social->get_name() << " [" << adverb->get_name() << "] [<target>]\n";
+			else
+				buffer << social->get_name() << " [<target>]\n";
+		}
+
+		// create command
+		Command* cmd = new Command(social->get_name(), buffer.str(), AccessID());
+
+		// add formats
+		for (SocialAdverb* adverb = social->adverbs; adverb != NULL; adverb = adverb->next) {
+			CommandFormat* fmt = new CommandFormat(cmd, 200);
+			fmt->set_callback(command_social);
+
+			// build format string
+			buffer.clear();
+			buffer << ":0" << social->get_name();
+			if (adverb->get_name() != "default")
+				buffer << " :1" << adverb->get_name();
+			buffer << " :2*?";
+			if (fmt->build(buffer.str())) {
+				Log::Error << "Failed to compile social command format: " << buffer.str();
+				delete cmd;
+				delete fmt;
+				return -1;
+			}
+			cmd->add_format(fmt);
+		}
+
+		// all done
+		CommandManager.add(cmd);
+	}
 
 	return 0;
 }
