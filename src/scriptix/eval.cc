@@ -103,7 +103,7 @@ int
 SScriptManager::push_frame (const Function* func, size_t argc, Value argv[]) {
 	// check number of args
 	if (argc < func->argc)
-		return raise_error(SXE_BADARGS, "Invalid number of arguments (%u of %u) to %s at %s:%lu", argc, func->argc, func->id.name().c_str(), func->file->c_str(), func->get_line_of(0));
+		return raise_error(SXE_BADARGS, "Invalid number of arguments (%u of %u) to %s at %s:%lu", argc, func->argc, func->id.name().c_str(), func->file.c_str(), func->get_line_of(0));
 
 	// push new frame
 	frames.resize(frames.size() + 1);

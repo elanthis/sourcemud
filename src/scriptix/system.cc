@@ -72,6 +72,6 @@ SScriptManager::shutdown ()
 }
 
 void
-SScriptManager::handle_error (const BaseString& file, size_t line, const BaseString& msg) {
+SScriptManager::handle_error (String file, size_t line, String msg) {
 	std::cerr << "Scriptix: " << file << ':' << line << ": " << msg << std::endl;
 }

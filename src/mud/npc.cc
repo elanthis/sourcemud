@@ -38,7 +38,7 @@ void
 NpcBlueprint::reset_desc (void)
 {
 	// clear
-	desc = "npc";
+	desc = String("npc");
 	set_flags.desc = false;
 
 	// get parent value
@@ -668,7 +668,7 @@ SNpcBlueprintManager::initialize (void)
 		if (len >= 6 && d_ent->d_name[0] != '.' && !strcmp(".npcs", &d_ent->d_name[len - 5])) {
 			// load from file
 			File::Reader reader;
-			if (reader.open(path + "/" + d_ent->d_name))
+			if (reader.open(path + S("/") + String(d_ent->d_name)))
 				return -1;
 			FO_READ_BEGIN
 				FO_OBJECT("npc_blueprint")

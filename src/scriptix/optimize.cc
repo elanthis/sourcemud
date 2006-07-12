@@ -76,7 +76,7 @@ sxp_do_transform (CompilerNode** node_ptr)
 						break;
 					case OP_DIVIDE:
 						if (right == 0) {
-							node->info->Error("Division by zero");
+							node->info->Error(S("Division by zero"));
 						} else {
 							*node_ptr = sxp_new_data (node->info, Value (left / right));
 							node->type = SXP_MATH;

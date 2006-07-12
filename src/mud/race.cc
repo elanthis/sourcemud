@@ -30,12 +30,12 @@ Race::load (File::Reader& reader)
 {
 	// clear and/or defaults
 	adj.clear();
-	about = "AweMUD player race.";
+	about = S("AweMUD player race.");
 	desc.clear();
 	age_min = 0;
 	age_max = 0;
 	life_span = 0;
-	body = "human";
+	body = S("human");
 	traits.clear();
 	height[GenderType::NONE] = 72;
 	height[GenderType::FEMALE] = 65;

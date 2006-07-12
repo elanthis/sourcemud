@@ -54,57 +54,57 @@ class Player : public Character
 	inline String get_id () const { return name.get_text(); }
 
 	// name information (special for players)
-	inline virtual EntityName get_name (void) const { return name; }
+	inline virtual EntityName get_name () const { return name; }
 
 	// description information
-	virtual inline String get_desc (void) const { return String(); }
+	virtual inline String get_desc () const { return String(); }
 	virtual inline void set_desc (StringArg s_desc) {}
 
 	// gender
-	virtual inline GenderType get_gender (void) const { return pdesc.gender; }
+	virtual inline GenderType get_gender () const { return pdesc.gender; }
 	inline void set_gender (GenderType s_gender) { pdesc.gender = s_gender; }
 
 	// alignment
-	virtual inline CharAlign get_alignment (void) const { return alignment; }
+	virtual inline CharAlign get_alignment () const { return alignment; }
 	inline void set_alignment (CharAlign s_align) { alignment = s_align; }
 	inline CharAlign adjust_alignment (int mod) { set_alignment(CharAlign(get_alignment() + mod)); return get_alignment(); }
 
 	// save and load
 	virtual void save (File::Writer& writer);
 	virtual void save_hook (class ScriptRestrictedWriter* writer);
-	void save (void);
+	void save ();
 
 	int load_node (File::Reader& reader, File::Node& node);
 
 	// output color
-	inline const char *ncolor (void) const { return CPLAYER; }
+	inline String ncolor () const { return S(CPLAYER); }
 
 	// account
-	inline class Account* get_account (void) const { return account; }
+	inline class Account* get_account () const { return account; }
 
 	// connected?
 	//   currently in use by someone
-	inline bool is_connected (void) const { return conn != NULL; }
+	inline bool is_connected () const { return conn != NULL; }
 
 	// birthday/age
-	uint get_age (void) const;
-	inline GameTime get_birthday (void) const { return birthday; }
+	uint get_age () const;
+	inline GameTime get_birthday () const { return birthday; }
 	inline void set_birthday (const GameTime& gt) { birthday = gt; }
 
 	// misc
 	void kill (Character* killer);
-	void heartbeat (void);
+	void heartbeat ();
 
 	// manage account active counts
-	virtual void activate (void);
-	virtual void deactivate (void);
+	virtual void activate ();
+	virtual void deactivate ();
 
 	// race
-	inline class Race* get_race (void) const { return race; }
+	inline class Race* get_race () const { return race; }
 	inline class Race* set_race (class Race* race_in) { return race = race_in; }
 
 	// height in centimeters
-	inline uint8 get_height (void) const { return pdesc.height; }
+	inline uint8 get_height () const { return pdesc.height; }
 	inline void set_height (uint8 height) { pdesc.height = height; }
 
 	// character traits
@@ -112,9 +112,9 @@ class Player : public Character
 	void set_trait (CharacterTraitID, CharacterTraitValue);
 
 	// combat
-	virtual uint get_combat_dodge (void) const;
-	virtual uint get_combat_attack (void) const;
-	virtual uint get_combat_damage (void) const;
+	virtual uint get_combat_dodge () const;
+	virtual uint get_combat_attack () const;
+	virtual uint get_combat_damage () const;
 
 	// class/exp
 	inline uint get_exp (uint type) const { if (type < NUM_EXPS) return exp[type]; else return 0; }
@@ -125,32 +125,32 @@ class Player : public Character
 	inline void set_base_stat (CharStatID stat, int value) { base_stats[stat.get_value()] = value; }
 
 	// recalcuate everything
-	virtual void recalc_stats (void);
-	virtual void recalc (void);
+	virtual void recalc_stats ();
+	virtual void recalc ();
 
 	// display info
-	void display_inventory (void);
+	void display_inventory ();
 	virtual void display_desc (const class StreamControl& stream) const;
-	void display_skills (void);
+	void display_skills ();
 
 	// I/O
 	virtual void stream_put (const char* data, size_t len = 0);
-	void show_prompt (void);
+	void show_prompt ();
 	void process_command (String cmd);
 	void connect (class TelnetHandler* telnet);
-	void disconnect (void);
-	inline class TelnetHandler* get_telnet(void) const { return conn; }
+	void disconnect ();
+	inline class TelnetHandler* get_telnet() const { return conn; }
 	void toggle_echo (bool value);
 	void set_indent (uint level);
-	uint get_width (void);
-	void clear_scr (void);
+	uint get_width ();
+	void clear_scr ();
 
 	// parsing
 	virtual int parse_property (const class StreamControl& stream, StringArg method, const ParseArgs& argv) const;
 
 	// handling "player states"
-	int start (void); // start the session
-	void quit (void); // save and exit
+	int start (); // start the session
+	void quit (); // save and exit
 
 	// player-only actions
 	void do_tell (Player* who, StringArg what);
@@ -185,8 +185,8 @@ class Player : public Character
 
 #ifdef HAVE_LIBZ
 	// compression
-	bool begin_mccp (void);
-	void end_mccp (void);
+	bool begin_mccp ();
+	void end_mccp ();
 #endif // HAVE_LIBZ
 
 	E_SUBTYPE(Player,Character);
@@ -194,7 +194,7 @@ class Player : public Character
 	friend class SPlayerManager; // obvious
 
 	protected:
-	~Player (void);
+	~Player ();
 };
 
 // manage all players
@@ -205,10 +205,10 @@ class SPlayerManager : public IManager
 	typedef std::list<Player*> PlayerList;
 
 	// initialize the player manager
-	virtual int initialize (void);
+	virtual int initialize ();
 
 	// shutdown the player manager
-	virtual void shutdown (void);
+	virtual void shutdown ();
 
 	// true if 'name' is a valid player name
 	bool valid_name (String name);
@@ -229,16 +229,16 @@ class SPlayerManager : public IManager
 	bool exists (String name);
 
 	// count of connected players
-	size_t count (void);
+	size_t count ();
 
 	// list all connected players
 	void list (const StreamControl& stream);
 
 	// save all players
-	void save (void);
+	void save ();
 
 	// EEEEW - return list of all players - yuck
-	inline const PlayerList& get_player_list (void) { return player_list; }
+	inline const PlayerList& get_player_list () { return player_list; }
 
 	private:
 	PlayerList player_list;
@@ -251,6 +251,6 @@ extern SPlayerManager PlayerManager;
 #define PLAYER(ent) E_CAST((ent),Player)
 
 extern String get_stat_level (uint value);
-extern const char* get_stat_color (uint value);
+extern String get_stat_color (uint value);
 
 #endif

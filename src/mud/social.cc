@@ -149,11 +149,11 @@ SocialAction::load (File::Reader& reader)
 	// read loop
 	FO_READ_BEGIN
 		FO_ATTR("you")
-			self = node.get_data().c_str();
+			self = node.get_data();
 		FO_ATTR("others")
-			others = node.get_data().c_str();
+			others = node.get_data();
 		FO_ATTR("target")
-			target = node.get_data().c_str();
+			target = node.get_data();
 	FO_READ_ERROR
 		return -1;
 	FO_READ_END

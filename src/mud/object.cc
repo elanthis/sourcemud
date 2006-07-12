@@ -76,7 +76,7 @@ void
 ObjectBlueprint::reset_desc ()
 {
 	// clear
-	desc = "object";
+	desc = S("object");
 	set_flags.desc = false;
 
 	// get parent value
@@ -948,7 +948,7 @@ SObjectBlueprintManager::initialize ()
 		if (len >= 6 && d_ent->d_name[0] != '.' && !strcmp(".objs", &d_ent->d_name[len - 5])) {
 			// load from file
 			File::Reader reader;
-			if (reader.open(path + "/" + d_ent->d_name))
+			if (reader.open(path + S("/") + String(d_ent->d_name)))
 				return -1;
 			FO_READ_BEGIN
 				FO_OBJECT("object_blueprint")

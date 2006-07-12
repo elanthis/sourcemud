@@ -291,7 +291,7 @@ type:	TYPE { $$ = $1; }
 
 int
 yyerror (const char *str) {
-	compiler->Error(str);
+	compiler->Error(String(str));
 	return 1;
 }
 
@@ -302,7 +302,7 @@ yywrap (void) {
 }
 
 int
-Scriptix::SScriptManager::load_file(const BaseString& file, CompilerHandler* handler) {
+Scriptix::SScriptManager::load_file(String file, CompilerHandler* handler) {
 	int ret;
 
 	if (file.empty()) {
@@ -310,7 +310,7 @@ Scriptix::SScriptManager::load_file(const BaseString& file, CompilerHandler* han
 	} else {
 		yyin = fopen (file.c_str(), "rt");
 		if (yyin == NULL) {
-			std::cerr << "Could not open '" << file << "'" << std::endl;
+			std::cerr << "Could not open '" << file.c_str() << "'" << std::endl;
 			return SXE_INVALID;
 		}
 	}
@@ -325,7 +325,7 @@ Scriptix::SScriptManager::load_file(const BaseString& file, CompilerHandler* han
 	if (!file.empty())
 		compiler->set_file(file);
 	else
-		compiler->set_file("<stdin>");
+		compiler->set_file(S("<stdin>"));
 	compiler->set_handler(handler);
 
 	sxp_compiler_inbuf = NULL;
@@ -344,7 +344,7 @@ Scriptix::SScriptManager::load_file(const BaseString& file, CompilerHandler* han
 }
 
 int
-Scriptix::SScriptManager::load_string(const BaseString& buf, const BaseString& name, size_t lineno, CompilerHandler* handler) {
+Scriptix::SScriptManager::load_string(String buf, String name, size_t lineno, CompilerHandler* handler) {
 	int ret;
 
 	if (buf.empty())

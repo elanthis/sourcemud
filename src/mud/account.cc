@@ -69,7 +69,7 @@ Account::set_passphrase (StringArg s_pass)
 	MD5::encrypt (s_pass.c_str(), enc_pass);
 
 	// store
-	pass = enc_pass;
+	pass = String(enc_pass);
 
 	// force save
 	save();

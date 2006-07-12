@@ -81,18 +81,18 @@ get_stat_level (uint stat) {
 		return stat_levels[8];
 }
 
-const char *
+String
 get_stat_color (uint stat) {
 	if (stat <= 35)
-		return CSTAT_BAD2;
+		return S(CSTAT_BAD2);
 	else if (stat <= 45)
-		return CSTAT_BAD1;
+		return S(CSTAT_BAD1);
 	else if (stat <= 55)
-		return CSTAT;
+		return S(CSTAT);
 	else if (stat <= 65)
-		return CSTAT_GOOD1;
+		return S(CSTAT_GOOD1);
 	else
-		return CSTAT_GOOD2;
+		return S(CSTAT_GOOD2);
 }
 
 // ----- CharPosition -----

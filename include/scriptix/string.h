@@ -59,7 +59,7 @@ class ScriptString : public IValue {
 
 	// Query data
 	public:
-	inline size_t size (void) const { return data.length(); }
+	inline size_t size (void) const { return data.size(); }
 	inline const char* c_str (void) const { return data.c_str(); }
 	inline String str (void) const { return data; }
 

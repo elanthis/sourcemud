@@ -66,9 +66,9 @@ SScriptManager::raise_error (int err, const char *format, ...) {
 	vsnprintf (buf, sizeof(buf), format, va);
 	va_end (va);
 	if (!frames.empty())
-		handle_error(get_frame().get_file() ? get_frame().get_file()->c_str(): "n/a", get_frame().get_line(), buf);
+		handle_error(get_frame().get_file() ? get_frame().get_file() : S("n/a"), get_frame().get_line(), String(buf));
 	else
-		handle_error("(internal)", 0, buf);
+		handle_error(S("(internal)"), 0, String(buf));
 
 	push_value(Number::create(err));
 	state = STATE_FAILED;

@@ -68,22 +68,22 @@ EntityName::set_name (StringArg s_text)
 	// start with the article 'the'?
 	} else if (!strncasecmp("the ", s_text, 4)) {
 		article = EntityArticleClass::UNIQUE;
-		text = s_text.c_str() + 4;
+		text = String(s_text.c_str() + 4);
 		return true;
 	// start with the article 'some'?
 	} else if (!strncasecmp("some ", s_text, 5)) {
 		article = EntityArticleClass::PLURAL;
-		text = s_text.c_str() + 5;
+		text = String(s_text.c_str() + 5);
 		return true;
 	// start with the article 'an'?
 	} else if (!strncasecmp("an ", s_text, 3)) {
 		article = EntityArticleClass::VOWEL;
-		text = s_text.c_str() + 3;
+		text = String(s_text.c_str() + 3);
 		return true;
 	// start with the article 'a'?
 	} else if (!strncasecmp("a ", s_text, 2)) {
 		article = EntityArticleClass::NORMAL;
-		text = s_text.c_str() + 2;
+		text = String(s_text.c_str() + 2);
 		return true;
 	// no known article or rule... time to guess
 	} else {

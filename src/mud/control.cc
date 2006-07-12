@@ -90,7 +90,7 @@ ControlHandler::hangup ()
 void
 ControlHandler::stream_put (const char* str, size_t len)
 {
-	out_buffer.append(str, len);
+	out_buffer = out_buffer + String(str, len);
 }
 
 void
@@ -106,7 +106,7 @@ ControlHandler::process ()
 		// setup
 		int argc = 0;
 		String argv[MAX_CTRL_ARGS];
-		argv[0] = in_buffer;
+		argv[0] = String(in_buffer);
 		char* cptr = in_buffer;
 		char* bptr = in_buffer;
 		bool quote = false;
@@ -141,7 +141,7 @@ ControlHandler::process ()
 				if (argc == 20)
 					break;
 				// increment arg pointer
-				argv[argc] = ++bptr;
+				argv[argc] = String(++bptr);
 				// skip multiple whitespace
 				while (cptr[1] == ' ')
 					++cptr;

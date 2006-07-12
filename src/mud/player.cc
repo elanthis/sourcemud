@@ -197,7 +197,7 @@ Player::save (void)
 			time (&base_t);
 			char time_buffer[15];
 			strftime (time_buffer, sizeof (time_buffer), "%Y%m%d%H%M%S", localtime (&base_t));
-			String backup = path + "." + time_buffer + "~";
+			String backup = path + S(".") + String(time_buffer) + S("~");
 			if (rename (path, backup)) // move file
 				Log::Error << "Backup of " << path << " to " << backup << " failed: " << strerror(errno);
 		}

@@ -44,8 +44,6 @@ SX_BEGINMETHODS(ScriptString)
 	SX_DEFMETHOD(ScriptString::method_substr, "substr", 2, 0)
 	SX_DEFMETHOD(ScriptString::method_split, "split", 1, 0)
 	SX_DEFMETHOD(ScriptString::method_trim, "trim", 0, 0)
-	SX_DEFMETHOD(ScriptString::method_ltrim, "ltrim", 0, 0)
-	SX_DEFMETHOD(ScriptString::method_rtrim, "rtrim", 0, 0)
 SX_ENDMETHODS
 
 namespace Scriptix {
@@ -237,31 +235,5 @@ Value
 ScriptString::method_trim (size_t argc, Value argv[])
 {
 	ScriptString* self = (ScriptString*)argv[0].get();
-	size_t left = self->str().find_first_not_of(" \t\n");
-	if (left == BaseString::npos)
-		return new ScriptString();
-	size_t right = self->str().find_last_not_of(" \t\n");
-	if (right == BaseString::npos)
-		return new ScriptString();
-	return new ScriptString(self->str().substr(left, right - left + 1));
-}
-
-Value
-ScriptString::method_ltrim (size_t argc, Value argv[])
-{
-	ScriptString* self = (ScriptString*)argv[0].get();
-	size_t left = self->str().find_first_not_of(" \t\n");
-	if (left == BaseString::npos)
-		return new ScriptString();
-	return new ScriptString(self->str().substr(left, BaseString::npos));
-}
-
-Value
-ScriptString::method_rtrim (size_t argc, Value argv[])
-{
-	ScriptString* self = (ScriptString*)argv[0].get();
-	size_t right = self->str().find_last_not_of(" \t\n");
-	if (right == BaseString::npos)
-		return new ScriptString();
-	return new ScriptString(self->str().substr(0, right + 1));
+	return new ScriptString(strip(self->str()));
 }

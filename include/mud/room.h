@@ -25,54 +25,54 @@ class Room : public Entity
 	EList<Character> chars;
 	EList<RoomExit> exits;
 
-	Room (void);
+	Room ();
 
 	// name information
-	inline virtual EntityName get_name (void) const { return name; }
+	inline virtual EntityName get_name () const { return name; }
 	inline void set_name (StringArg s_name) { name.set_name(s_name); }
 
 	// description information
-	inline virtual String get_desc (void) const { return desc; }
+	inline virtual String get_desc () const { return desc; }
 	inline virtual void set_desc (StringArg s_desc) { desc = s_desc; }
 
 	// outdoors
-	inline bool is_outdoors (void) const { return flags.outdoors; }
+	inline bool is_outdoors () const { return flags.outdoors; }
 	inline void set_outdoors (bool v) { flags.outdoors = v; }
 
 	// safe (no combat/attacks)
-	inline bool is_safe (void) const { return flags.safe; }
+	inline bool is_safe () const { return flags.safe; }
 	inline void set_safe (bool v) { flags.safe = v; }
 
 	// no weather notices in room descriptions (but does get global weather changes)
-	inline bool is_noweather (void) const { return flags.noweather; }
+	inline bool is_noweather () const { return flags.noweather; }
 	inline void set_noweather (bool v) { flags.noweather = v; }
 
 	// exits
 	class RoomExit* get_exit_at (uint);
 	class RoomExit* get_exit_by_dir (ExitDir);
 	class RoomExit* find_exit (StringArg, uint c = 1, uint *matches = NULL);
-	class RoomExit* new_exit (void); //  will pick a unique ID, return exit
-	void sort_exits (void); // re-sort exits; FIXME: this is ugly to have to do manually
+	class RoomExit* new_exit (); //  will pick a unique ID, return exit
+	void sort_exits (); // re-sort exits; FIXME: this is ugly to have to do manually
 
 	// identifier
-	inline StringArg get_id (void) const { return id; }
+	inline StringArg get_id () const { return id; }
 	inline void set_id (StringArg new_id) { id = new_id; }
 
 	// colour type
-	inline virtual const char* ncolor (void) const { return CTITLE; }
+	inline virtual String ncolor () const { return S(CTITLE); }
 
 	// io
 	virtual void save (File::Writer& writer);
 	virtual void save_hook (class ScriptRestrictedWriter* writer);
 	virtual int load_node(File::Reader& reader, File::Node& node);
-	virtual int load_finish (void);
+	virtual int load_finish ();
 
 	// heartbeat
-	void heartbeat (void);
+	void heartbeat ();
 
 	// (de)activate children
-	virtual void activate (void);
-	virtual void deactivate (void);
+	virtual void activate ();
+	virtual void deactivate ();
 
 	// display
 	void show (const class StreamControl& stream, class Character* viewer);
@@ -86,14 +86,14 @@ class Room : public Entity
 	class Object* find_object (StringArg name, uint c = 1, uint *matches = NULL);
 
 	// count players in room
-	unsigned long count_players (void) const;
+	unsigned long count_players () const;
 
 	// add entities
 	void add_object (class Object* object);
 	void add_character (class Character* character);
 
 	// coins on the floor
-	inline uint get_coins (void) const { return coins; }
+	inline uint get_coins () const { return coins; }
 	uint take_coins (uint amount);
 	uint give_coins (uint amount);
 
@@ -103,8 +103,8 @@ class Room : public Entity
 	// owner management - see entity.h
 	virtual void set_owner (Entity* owner);
 	virtual void owner_release (Entity* child);
-	virtual class Entity* get_owner (void) const;
-	inline class Zone* get_zone (void) const { return zone; }
+	virtual class Entity* get_owner () const;
+	inline class Zone* get_zone () const { return zone; }
 
 	protected:
 	String id;
@@ -117,7 +117,7 @@ class Room : public Entity
 	} flags;
 
 	protected:
-	~Room (void);
+	~Room ();
 
 	E_TYPE(Room)
 	

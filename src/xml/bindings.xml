@@ -3205,7 +3205,7 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
       <code><![CDATA[
         char date_buf[40]; // should be big enough
         _self->data().date_str (date_buf, sizeof (date_buf));
-        _return = date_buf;
+        _return = String(date_buf);
       ]]></code>
     </method>
 
@@ -3218,7 +3218,7 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
       <code><![CDATA[
         char time_buf[40]; // should be big enough
         _self->data().time_str (time_buf, sizeof (time_buf));
-        _return = time_buf;
+        _return = String(time_buf);
       ]]></code>
     </method>
   </type>

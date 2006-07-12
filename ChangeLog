@@ -1,3 +1,12 @@
+2006-07-12 02:37:20  Sean Middleditch <elanthis@awesomeplay.com>
+
+  * Landed the new String implementation, which uses just
+    GC'd strings.  This means that, in most cases, we now have a
+    zero-copying, zero-overhead string mechanism.  Unfortunately,
+    there are a few places that still have copying, and a few places
+    we had to add it.  Some of these will be cleaned up shortly,
+    to make them more efficient.
+
 2006-07-11 19:30:43  Sean Middleditch <elanthis@awesomeplay.com>
 
   * Began the (immense) initial work to use the new String class.

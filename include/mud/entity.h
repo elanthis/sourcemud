@@ -83,7 +83,7 @@ class Entity : public Scriptix::Native
 
 	// output
 	virtual void display_desc (const class StreamControl& stream) const;
-	virtual const char* ncolor () const { return CNORMAL; }
+	virtual String ncolor () const { return S(CNORMAL); }
 
 	// save/load
 	int load (File::Reader& reader);

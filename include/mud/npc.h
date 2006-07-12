@@ -146,7 +146,7 @@ class Npc : public Character
 	virtual void save_hook (class ScriptRestrictedWriter* writer);
 
 	// display
-	virtual const char *ncolor () const { return CNPC; }
+	virtual String ncolor () const { return S(CNPC); }
 
 	// return ture if we derive from the named blueprint
 	bool is_blueprint (StringArg blueprint) const;

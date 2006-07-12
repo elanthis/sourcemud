@@ -431,12 +431,13 @@ CommandFormat::build (StringArg s_format)
 			// text?
 			else if (isalpha(*c)) {
 				// reset
-				words.resize(1);
-				words.back().clear();
+				StringBuffer buf;
 				do {
-					words.back() += *c;
+					buf << *c;
 				} while (isalpha(*++c));
 				--c;
+				words.resize(1);
+				words.back() = buf.str();
 				type = FormatNode::TEXT;
 			}
 
@@ -491,14 +492,14 @@ CommandFormat::trymatch (int node, char** words, String argv[]) const
 			case FormatNode::ONE:
 				// store the word
 				if (nodes[node].arg >= 0)
-					argv[nodes[node].arg] = words[0];
+					argv[nodes[node].arg] = String(words[0]);
 				// try next match
 				result = trymatch(node + 1, &words[1], argv);
 				// match failed?
 				if (result >= 0) {
 					// clear out store
 					if (nodes[node].arg >= 0)
-						argv[nodes[node].arg] = NULL;
+						argv[nodes[node].arg].clear();
 					// were we optional?
 					if (nodes[node].opt) {
 						// try without us then
@@ -522,7 +523,7 @@ CommandFormat::trymatch (int node, char** words, String argv[]) const
 				}
 				// store word
 				if (nodes[node].arg >= 0)
-					argv[nodes[node].arg] = repair(words[0], cnt);
+					argv[nodes[node].arg] = String(repair(words[0], cnt));
 				// not only are we now successful, but so too is everyone after us!
 				return -1;
 			case FormatNode::TEXT:
@@ -530,14 +531,14 @@ CommandFormat::trymatch (int node, char** words, String argv[]) const
 				if (phrase_match(nodes[node].list.front(), String(words[0]))) { // FIXME: efficiency
 					// store the word
 					if (nodes[node].arg >= 0)
-						argv[nodes[node].arg] = const_cast<char*>(nodes[node].list.front().c_str());
+						argv[nodes[node].arg] = nodes[node].list.front();
 					// try next match
 					result = trymatch(node + 1, &words[1], argv);
 					// match failed?
 					if (result >= 0) {
 						// clear out store
 						if (nodes[node].arg >= 0)
-							argv[nodes[node].arg] = NULL;
+							argv[nodes[node].arg].clear();
 						// were we optional?
 						if (nodes[node].opt) {
 							// try without us then
@@ -561,14 +562,14 @@ CommandFormat::trymatch (int node, char** words, String argv[]) const
 				if (cnt < (int)nodes[node].list.size()) {
 					// store the word
 					if (nodes[node].arg >= 0)
-						argv[nodes[node].arg] = const_cast<char*>(nodes[node].list[cnt].c_str());
+						argv[nodes[node].arg] = nodes[node].list[cnt];
 					// try next match
 					result = trymatch(node + 1, &words[1], argv);
 					// match failed?
 					if (result >= 0) {
 						// clear out store
 						if (nodes[node].arg >= 0)
-							argv[nodes[node].arg] = NULL;
+							argv[nodes[node].arg].clear();
 						// were we optional?
 						if (nodes[node].opt) {
 							// try without us then

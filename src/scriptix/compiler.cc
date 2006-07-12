@@ -47,7 +47,7 @@ _sxp_node_error (CompilerNode* node, const char *msg, ...)
 	vsnprintf (buffer, sizeof(buffer), msg, va);
 	va_end (va);
 
-	ScriptManager.handle_error (node->file ? ((String*)node->file)->c_str() : "<input>", node->line, buffer);
+	ScriptManager.handle_error (node->file ? node->file : S("<input>"), node->line, String(buffer));
 }
 
 static
@@ -604,7 +604,7 @@ Scriptix::Compiler::Compiler::Compile(void) {
 	for (FunctionList::iterator func = funcs.begin(); func != funcs.end(); ++func) {
 		(*func)->func = new Function ((*func)->name, ((*func)->vars).size());
 		if (!(*func)->func) {
-			Error("Failed to create function");
+			Error(S("Failed to create function"));
 			return -1;
 		}
 		(*func)->func->file = file;
@@ -614,19 +614,20 @@ Scriptix::Compiler::Compiler::Compile(void) {
 	for (ExtendList::iterator extend = extends.begin(); extend != extends.end(); ++extend) {
 		for (CompilerExtend::MethodList::iterator func = (*extend)->methods.begin(); func != (*extend)->methods.end(); ++func) {
 			if ((*extend)->type->get_method((*func)->name) != NULL) {
-				std::string errmsg = "Attempt to extend type '";
-				errmsg += (*extend)->type->get_name().name().c_str();
-				errmsg += "' with method '";
-				errmsg += (*func)->name.name().c_str();
-				errmsg += "' which already exists";
-				Error(errmsg.c_str());
+				StringBuffer errmsg;
+				errmsg << "Attempt to extend type '";
+				errmsg << (*extend)->type->get_name().name().c_str();
+				errmsg << "' with method '";
+				errmsg << (*func)->name.name().c_str();
+				errmsg << "' which already exists";
+				Error(errmsg.str());
 				return -1;
 			}
 
 			// create function
 			(*func)->func = new Function ((*func)->name, ((*func)->vars).size());
 			if (!(*func)->func) {
-				Error("Failed to create function");
+				Error(S("Failed to create function"));
 				return -1;
 			}
 			(*func)->func->file = file;
@@ -662,7 +663,7 @@ Scriptix::Compiler::Compiler::Compile(void) {
 
 		// now check if function is valid with the user handler
 		if (handler && !handler->handle_function((*func)->func, (*func)->pub)) {
-			Error(BaseString("Rejected function ") + (*func)->name.name().c_str());
+			Error(String(S("Rejected function ")) + String((*func)->name.name().c_str()));
 			return -1;
 		}
 	}

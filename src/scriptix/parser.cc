@@ -38,15 +38,15 @@ using namespace Scriptix;
 using namespace Scriptix::Compiler;
 
 void
-Scriptix::Compiler::Compiler::Error(const BaseString& msg)
+Scriptix::Compiler::Compiler::Error(String msg)
 {
-	ScriptManager.handle_error (file ? ((String*)file)->c_str(): "<input>", line, msg.c_str());
+	ScriptManager.handle_error (file ? file : S("<input>"), line, msg);
 }
 
 Scriptix::Compiler::Compiler::Compiler() : funcs(), returns(), blocks(), gnames()
 {
 	nodes = NULL;
-	file = new String("<input>");
+	file = S("<input>");
 	last_line = 0;
 	last_op = 0;
 	line = 1;
@@ -100,7 +100,7 @@ Scriptix::Compiler::Compiler::add_type(Atom name, const TypeInfo* parent)
 {
 	// lookup type
 	if (get_type(name) != NULL) {
-		Error (BaseString("Attempt to create type '") + name.name() + "' which already exists.");
+		Error (S("Attempt to create type '") + name.name() + S("' which already exists."));
 		return NULL;
 	}
 
@@ -177,7 +177,7 @@ bool
 Scriptix::Compiler::Compiler::add_break (void)
 {
 	if (blocks.empty()) {
-		Error("Break outside of loop");
+		Error(S("Break outside of loop"));
 		return false;
 	}
 	
@@ -193,7 +193,7 @@ bool
 Scriptix::Compiler::Compiler::add_breakOnTrue (void)
 {
 	if (blocks.empty()) {
-		Error("Break outside of loop");
+		Error(S("Break outside of loop"));
 		return false;
 	}
 	
@@ -209,7 +209,7 @@ bool
 Scriptix::Compiler::Compiler::add_breakOnFalse (void)
 {
 	if (blocks.empty()) {
-		Error("Break outside of loop");
+		Error(S("Break outside of loop"));
 		return false;
 	}
 	
@@ -225,7 +225,7 @@ bool
 Scriptix::Compiler::Compiler::add_continue (void)
 {
 	if (blocks.empty()) {
-		Error("Continue outside of loop");
+		Error(S("Continue outside of loop"));
 		return false;
 	}
 
@@ -262,7 +262,7 @@ void
 Scriptix::Compiler::Compiler::set_global(Atom id, Value value)
 {
 	if (get_global(id) >= 0) {
-		Error("Redefined global");
+		Error(S("Redefined global"));
 		return;
 	}
 

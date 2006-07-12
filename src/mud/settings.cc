@@ -143,7 +143,7 @@ SSettingsManager::parse_argv (int argc, char** argv)
 						Log::Error << "No argument given for option: " << argv[opt];
 						return -1;
 					}
-					*settings[i].val_string = argv[++opt];
+					*settings[i].val_string = String(argv[++opt]);
 				} else if (settings[i].val_int != NULL) {
 					if (opt == argc - 1) {
 						Log::Error << "No argument given for option: " << argv[opt];
@@ -248,7 +248,7 @@ SSettingsManager::load_file (StringArg path)
 			if (settings[i].file_opt != NULL && !strcmp(start, settings[i].file_opt)) {
 				// string?
 				if (settings[i].val_string != NULL) {
-					*settings[i].val_string = sep;
+					*settings[i].val_string = String(sep);
 				} else if (settings[i].val_int != NULL) {
 					*settings[i].val_int = strtol(sep, &end, 10);
 					if (*end != 0) {

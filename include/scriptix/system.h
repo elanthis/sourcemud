@@ -57,7 +57,7 @@ class SScriptManager : public IManager {
 	void shutdown ();
 
 	// Handle an error
-	virtual void handle_error (const BaseString& file, size_t lineno, const BaseString& msg);
+	virtual void handle_error (String file, size_t lineno, String msg);
 
 	// Add/check types
 	TypeInfo* add_type (const TypeDef* type);
@@ -92,8 +92,8 @@ class SScriptManager : public IManager {
 	int raise_arg_error (const char* func, const char* arg, const char* type);
 
 	// Load/compile scripts
-	int load_file (const BaseString& filepath, CompilerHandler* handler = NULL);
-	int load_string (const BaseString& buffer, const BaseString& name, size_t lineno = 1, CompilerHandler* handler = NULL);
+	int load_file (String filepath, CompilerHandler* handler = NULL);
+	int load_string (String buffer, String name, size_t lineno = 1, CompilerHandler* handler = NULL);
 
 	private:
 	// Fetch stack item from end (args) - INLINE for speed

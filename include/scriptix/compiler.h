@@ -49,10 +49,10 @@ class Compiler : public GCType::GC
 	Compiler ();
 
 	// building trees/input
-	inline void set_file(const BaseString& path) { file = new String(path); line = 1; }
+	inline void set_file(String path) { file = path; line = 1; }
 	inline void set_line(size_t lineno) { line = lineno; }
 	inline void LineIncr() { ++line; }
-	inline String* get_file() const { return file; }
+	inline String get_file() const { return file; }
 	inline size_t get_line() const { return line; }
 	inline void set_handler(CompilerHandler* s_handler) { handler = s_handler; }
 
@@ -60,7 +60,7 @@ class Compiler : public GCType::GC
 	int Compile();
 
 	// error function
-	void Error(const BaseString& msg);
+	void Error(String msg);
 
 	// get the index for a variable name (ret -1 on error)
 	long add_var(CompilerFunction* func, Atom id);
@@ -95,7 +95,7 @@ class Compiler : public GCType::GC
 	ReturnList returns;
 	size_t last_line;
 	size_t last_op;
-	String* file;
+	String file;
 	size_t line;
 	BlockList blocks;
 	DebugList debug;
@@ -188,7 +188,7 @@ struct CompilerNode : public GCType::GC {
 	Compiler* info;
 	CompilerNode* next;
 	CompilerNode* inext;
-	String* file;
+	String file;
 	unsigned int line;
 	struct {
 		CompilerNode* nodes[4];

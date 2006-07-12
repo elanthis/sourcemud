@@ -218,7 +218,7 @@ Object : public Entity
 	ObjectActionCode do_action (StringArg action, Entity* user, Scriptix::Value data = Scriptix::Value());
 
 	// name color
-	virtual const char *ncolor () const { return CITEM; }
+	virtual String ncolor () const { return S(CITEM); }
 
 	// for parsing, pull a property based on a char*
 	virtual int parse_property (const class StreamControl& stream, StringArg method, const ParseArgs& argv) const;

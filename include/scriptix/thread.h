@@ -50,7 +50,7 @@ class Frame {
 	public:
 	Frame(void) : func(NULL), items(NULL), op_ptr(0), top(0), argc(0), flags(0) {}
 
-	inline String* get_file () const { return func->file; }
+	inline String get_file () const { return func->file; }
 	inline size_t get_line () const { return func->get_line_of(op_ptr); }
 	
 	private:

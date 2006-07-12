@@ -265,7 +265,7 @@ Zone::save ()
 		time_t base_t;
 		time (&base_t);
 		strftime (time_buffer, sizeof (time_buffer), "%Y%m%d%H%M%S", localtime (&base_t));
-		String backup = path + "." + time_buffer + "~";
+		String backup = path + S(".") + String(time_buffer) + S("~");
 		if (rename (path, backup)) /* move file */
 			Log::Error << "Backup of zone '" << get_id() << "' to " << backup << " failed: " << strerror(errno);
 	}
@@ -378,7 +378,7 @@ SZoneManager::load_world ()
 		if (!fnmatch("*.zone", dent->d_name, FNM_PERIOD)) {
 			// load zone
 			String name(dent->d_name);
-			name = name.substr(0, name.length() - 5);
+			name = String(name.c_str(), name.size() - 5);
 			Zone* zone = new Zone();
 			if (zone->load (name)) {
 				Log::Error << "Failed to load zone '" << name << "'";

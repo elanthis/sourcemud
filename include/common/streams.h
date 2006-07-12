@@ -36,7 +36,7 @@ StringStreamSink : public IStreamSink {
 	inline virtual
 	void
 	stream_put (const char* text, size_t len) {
-		string.append(text, len);
+		string = string + String(text, len);
 	}
 
 	// yes, delete the sink
@@ -101,7 +101,7 @@ RoomStreamSink : public IStreamSink {
 	inline virtual
 	void
 	stream_put (const char* text, size_t len) {
-		buffer.append(text, len);
+		buffer = buffer + String(text, len);
 	}
 
 	// add an ignore

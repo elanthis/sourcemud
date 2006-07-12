@@ -34,10 +34,49 @@
 #define __va_copy(x, y) x = y
 #endif
 
-const char *yes_no[3] = {"yes","no",NULL};
-const char *on_off[3] = {"on","off",NULL};
-const char *true_false[3] = {"true","false",NULL};
-const char *a_an[3] = {"a","an",NULL};
+String::String (const char* src)
+{
+	assert(src != NULL);
+	char* tmp = (char*)GC_MALLOC(strlen(src) + 1);
+	strcpy(tmp, src);
+	string = tmp;
+}
+
+String::String (const char* src, size_t len)
+{
+	assert(src != NULL);
+	char* tmp = (char*)GC_MALLOC(len + 1);
+	strncpy(tmp, src, len);
+	tmp[len] = 0;
+	string = tmp;
+}
+
+String
+operator+ (String left, String right)
+{
+	char* ret = (char*)GC_MALLOC(left.size() + right.size() + 1);
+	strcpy(ret, left.c_str());
+	strcpy(ret + left.size(), right.c_str());
+	return GCString(ret);
+}
+
+String
+operator+ (String left, const char* right)
+{
+	char* ret = (char*)GC_MALLOC(left.size() + strlen(right) + 1);
+	strcpy(ret, left.c_str());
+	strcpy(ret + left.size(), right);
+	return GCString(ret);
+}
+
+String
+operator+ (const char* left, String right)
+{
+	char* ret = (char*)GC_MALLOC(strlen(left) + right.size() + 1);
+	strcpy(ret, left);
+	strcpy(ret + strlen(left), right.c_str());
+	return GCString(ret);
+}
 
 bool
 str_is_valid_id (StringArg string)
@@ -303,20 +342,20 @@ str_value (StringArg string)
 StringList&
 explode (StringList& list, StringArg str, char ch)
 {
-	size_t l, i;
-
 	list.clear();
 
 	if (str.empty())
 		return list;
 
 	// break up str by the ch
-	l = 0;
-	while ((i = str.find(ch, l)) != String::npos) {
-		list.push_back(str.substr(l, i-l));
+	const char* l;
+	const char* i;
+	l = str.c_str();
+	while ((i = strchr(l, ch)) != NULL) {
+		list.push_back(String(l, i - l));;
 		l = i + 1;
 	}
-	list.push_back(str.substr(l));
+	list.push_back(String(l));
 
 	return list;
 }
@@ -324,16 +363,16 @@ explode (StringList& list, StringArg str, char ch)
 String&
 implode (String& string, const StringList& list, char ch)
 {
-	string.clear();
+	StringBuffer buffer;
 
 	// keep adding to string
 	for (StringList::const_iterator i = list.begin(); i != list.end(); ++i) {
 		if (!string.empty())
-			string += ch;
-		string += *i;
+			buffer << ch;
+		buffer << (*i).c_str();
 	}
 
-	return string;
+	return string = buffer.str();
 }
 
 String&
@@ -341,8 +380,7 @@ capwords (String& out, StringArg string)
 {
 	bool space = true;
 	char ch;
-	BaseString temp;
-	temp.resize(string.size());
+	StringBuffer buffer;
 	for (size_t i = 0; i < string.size(); ++i) {
 		ch = string[i];
 		if (isspace(ch)) {
@@ -351,9 +389,9 @@ capwords (String& out, StringArg string)
 			ch = toupper(ch);
 			space = false;
 		}
-		temp[i] = ch;
+		buffer << ch;
 	}
-	out = temp;
+	out = buffer.str();
 	return out;
 }
 
@@ -380,29 +418,39 @@ strip (StringArg string)
 		return String();
 
 	// strip back
-	size_t back = string.find_last_not_of(" \t\n");
+	const char* back = string.c_str() + string.size() - 1;
+	while (back >= string.c_str() && isspace(*back))
+		--back;
+	if (back < string.c_str())
+		return String();
 
 	// strip front
-	size_t front = string.find_first_not_of(" \t\n");
+	const char* front = string.c_str();
+	while (front < back && isspace(*front))
+		++front;
+	if (front == back)
+		return String();
 
 	// do substr
-	return string.substr(front, back - front + 1);
+	return String(front, back - front + 1);
 }
 
 String
 strupper (StringArg string)
 {
-	String ret = string;
-	std::transform(ret.begin(), ret.end(), ret.begin(), toupper);
-	return ret;
+	char* ret = (char*)GC_MALLOC(string.size() + 1);
+	for (size_t i = 0; i < string.size() + 1; ++i)
+		ret[i] = toupper(string[i]);
+	return GCString(ret);
 }
 
 String
 strlower (StringArg string)
 {
-	String ret = string;
-	std::transform(ret.begin(), ret.end(), ret.begin(), tolower);
-	return ret;
+	char* ret = (char*)GC_MALLOC(string.size() + 1);
+	for (size_t i = 0; i < string.size() + 1; ++i)
+		ret[i] = tolower(string[i]);
+	return GCString(ret);
 }
 
 namespace {
@@ -422,23 +470,13 @@ namespace {
 }
 
 String
-str_tr (StringArg source, StringArg from, StringArg to)
-{
-	assert(from.size() == to.size());
-
-	String ret = source;
-	std::transform(ret.begin(), ret.end(), ret.begin(), Replace(from,to));
-	return ret;
-}
-
-String
 trim (StringArg source, StringArg accept)
 {
 	StringBuffer ret;
 
-	for (String::const_iterator i = source.begin(); i != source.end(); ++i)
-		if (strchr(accept.c_str(), *i))
-			ret << *i;
+	for (const char* c = source.c_str(); *c != 0; ++c)
+		if (strchr(accept.c_str(), *c))
+			ret << *c;
 
 	return ret.str();
 }

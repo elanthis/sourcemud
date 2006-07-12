@@ -61,7 +61,7 @@ class Function : public IValue {
 	Atom id; // name of function
 	intptr_t* nodes; // byte codes
 	sx_cfunc cfunc; // c function pointer (for cfuncs)
-	String* file; // file the function is implemented in
+	String file; // file the function is implemented in
 	DebugMetaData* debug; // debugging meta-data
 	size_t argc; // number of arguments to function
 	size_t varc; // number of variables in function

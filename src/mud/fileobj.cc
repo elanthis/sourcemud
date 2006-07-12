@@ -76,7 +76,6 @@ File::Reader::open (StringArg filename)
 File::Reader::Token
 File::Reader::read_token (String& outstr)
 {
-	StringBuffer data;
 	int test;
 
 	// loop until we actually have a token
@@ -117,12 +116,12 @@ File::Reader::read_token (String& outstr)
 	} else if (test == '<') {
 		// must be <<[
 		if (in.peek() != '<') {
-			outstr = "Syntax error: <?";
+			outstr = S("Syntax error: <?");
 			return TOKEN_ERROR;
 		}
 		in.get();
 		if (in.peek() != '[') {
-			outstr = "Syntax error: <<?";
+			outstr = S("Syntax error: <<?");
 			return TOKEN_ERROR;
 		}
 		in.get();
@@ -130,7 +129,7 @@ File::Reader::read_token (String& outstr)
 		// must have whitespace to end of line
 		while (in && in.peek() != '\n')
 			if (!isspace(in.get())) {
-				outstr = "Syntax error: garbage after <<[";
+				outstr = S("Syntax error: garbage after <<[");
 				return TOKEN_ERROR;
 			}
 		in.get();
@@ -139,7 +138,7 @@ File::Reader::read_token (String& outstr)
 		// get block
 		while (in) {
 			// read a line
-			data.str("");
+			StringBuffer data;
 			do {
 				char ch = in.get();
 				data << ch;
@@ -151,25 +150,22 @@ File::Reader::read_token (String& outstr)
 
 			// line end pattern?
 			String tstr = data.str();
-			size_t start = tstr.find_first_not_of(" \t\n");
-			if (start != String::npos) {
-				size_t back = tstr.find_last_not_of(" \t\n");
-				if (!strncmp("]>>", tstr.c_str() + start, back - start + 1))
-					break;
-			}
+			if (strstr(tstr, "]>>") && strip(tstr) == "]>>") // see if the string exists, if so, see if that's all there is
+				break;
 
 			// add data
-			outstr = outstr + data.str();
+			outstr = outstr + tstr;
 		}
 
 		return TOKEN_STRING;
 	// string
 	} else if (test == '"') {
+		StringBuffer data;
 		// read in string
 		while (in && (test = in.peek()) != '"') {
 			// line breaks not allowed
 			if (test == '\n') {
-				outstr = "Line break in string";
+				outstr = S("Line break in string");
 				return TOKEN_ERROR;
 
 			// escape?
@@ -185,7 +181,7 @@ File::Reader::read_token (String& outstr)
 				else if (test == '"')
 					data << '"';
 				else {
-					outstr = "Unknown escape code";
+					outstr = S("Unknown escape code");
 					return TOKEN_ERROR;
 				}
 
@@ -206,6 +202,7 @@ File::Reader::read_token (String& outstr)
 
 	// number
 	} else if (isdigit(test) || test == '-') {
+		StringBuffer data;
 		// read in name
 		data << (char)test;
 		while (in && isdigit(in.peek()))
@@ -216,6 +213,7 @@ File::Reader::read_token (String& outstr)
 
 	// name
 	} else if (isalpha(test)) {
+		StringBuffer data;
 		// read in name
 		data << (char)test;
 		while (in) {
@@ -239,6 +237,7 @@ File::Reader::read_token (String& outstr)
 
 	// unique ID
 	} else if (test == '$') {
+		StringBuffer data;
 		while (in && !isspace(in.peek()))
 			data << (char)in.get();
 
@@ -247,12 +246,13 @@ File::Reader::read_token (String& outstr)
 		return TOKEN_ID;
 	}
 
-	// errror
+	// error
+	StringBuffer data;
 	data << (char)test;
 	while (in && !isspace(in.peek()))
 		data << (char)in.get();
 
-	outstr = "Syntax error: unknown symbol: " + data.str();
+	outstr = S("Syntax error: unknown symbol: ") + data.str();
 	return TOKEN_ERROR;
 }
 
@@ -358,10 +358,10 @@ File::Reader::get (Node& node)
 			node.data = data;
 		} else if (type == TOKEN_TRUE) {
 			node.datatype = TYPE_BOOL;
-			node.data = "true";
+			node.data = S("true");
 		} else if (type == TOKEN_FALSE) {
 			node.datatype = TYPE_BOOL;
-			node.data = "false";
+			node.data = S("false");
 		} else if (type == TOKEN_STRING) {
 			node.datatype = TYPE_STRING;
 			node.data = data;

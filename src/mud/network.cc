@@ -204,7 +204,7 @@ SNetworkManager::initialize (void)
 			Log::Error << "gethostbyname() failed for " << host_buffer << ": " << strerror(errno);
 			return 1;
 		}
-		host = host_info->h_name;
+		host = String(host_info->h_name);
 	}
 	Log::Info << "Host is " << host;
 

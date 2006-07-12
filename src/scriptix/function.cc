@@ -75,13 +75,13 @@ namespace Scriptix {
 }
 
 Function::Function (Atom s_id, size_t s_argc) : IValue(),
-	id(s_id), nodes(NULL), cfunc(NULL), file(NULL), debug(NULL),
+	id(s_id), nodes(NULL), cfunc(NULL), file(), debug(NULL),
 	argc(s_argc), varc(s_argc), count(0), size(0)
 {
 }
 
 Function::Function (Atom s_id, size_t s_argc, sx_cfunc s_cfunc)
-	: IValue(), id(s_id), nodes(NULL), cfunc(s_cfunc), file(NULL), debug(NULL),
+	: IValue(), id(s_id), nodes(NULL), cfunc(s_cfunc), file(), debug(NULL),
 	argc(s_argc), varc(s_argc), count(0), size(0)
 {
 }
@@ -163,9 +163,14 @@ Function::get_line_of (size_t op_ptr) const {
 ScriptFunction
 ScriptFunction::compile (StringArg name, StringArg code, StringArg args, StringArg filename, unsigned long fileline)
 {
-	String cname = str_tr(trim(name, S("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_ ")), S(" "), S("_"));
-	String source;
-	source += "function " + cname + " (" + args + ") {\n" + code + "\n}";
+	StringBuffer cname;
+	for (String::iterator i = name.begin(); i != name.end(); ++i) {
+		if (isalnum(*i) || *i == '_')
+			cname << *i;
+		else if (isspace(*i))
+			cname << '_';
+	}
+	String source = S("function ") + cname.str() + S(" (") + args + S(") {\n") + code + S("\n}");
 
 	CatchHandler handler;
 

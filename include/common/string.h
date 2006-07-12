@@ -17,34 +17,89 @@
 
 #define isvowel (ch) ((ch) == 'a' || (ch) == 'e' || (ch) == 'i' || (ch) == 'o' || (ch) == 'u' || (ch) == 'y')
 
-#define S(str) String(str)
+#define S(str) String(StaticString(str))
 
-// GC'd base string
-typedef std::basic_string<char, std::char_traits<char>, gc_allocator<char> > BaseString;
+/* hold a static string */
+class StaticString {
+	public:
+	explicit StaticString (const char* str) : string(str) {}
+
+	const char* string;
+};
+
+/* hold GC-allocated string */
+class GCString {
+	public:
+	explicit GCString (const char* str) : string(str) {}
+
+	const char* string;
+};
 
 /* hold a C++-style string in a less braind-dead way*/
-class String : public BaseString, public GC
+class String : public GC
 {
 	public:
-	inline String (void) : BaseString() {}
-	inline String (const String& str) : BaseString(str) {}
-	inline String (const BaseString& str) : BaseString(str) {}
-	inline explicit String (const char* str) : BaseString() { if (str != NULL) BaseString::operator=(str); }
-	inline String (const BaseString& str, size_t len) : BaseString(str, len) {}
-	inline String (const char* str, size_t len) : BaseString() { append(str, len); }
+	String () : string("") {}
+	String (const String& str) : string(str.string) {}
+	explicit String (const char* str);
+	String (StaticString str) : string(str.string) {}
+	String (GCString str) : string(str.string) {}
+	String (const char* str, size_t len);
 	
 	// copy operator
-	inline String& operator = (const BaseString &str) { BaseString::operator=(str); return *this; }
-	inline String& operator = (const String &str) { BaseString::operator=(str); return *this; }
+	String& operator = (const String &str) { string = str.string; return *this; }
 
-	// test operator
-	inline operator bool (void) const { return !empty(); }
-	// auto convert to c string
-	inline operator const char * (void) const { return c_str(); }
+	// comparison operators
+	bool operator == (const String &str) const { return strcmp(string, str.string) == 0; }
+	bool operator != (const String &str) const { return strcmp(string, str.string) != 0; }
+	bool operator < (const String &str) const { return strcmp(string, str.string) < 0; }
 
-	inline const char operator[] (size_t index) const { return BaseString::operator[](index); }
-	inline const char operator[] (int index) const { return BaseString::operator[](index); }
+	// empty test
+	bool empty () const { return string[0] == 0; }
+	operator bool () const { return !empty(); }
+
+	// convert to c string
+	const char* c_str () const { return string; }
+	operator const char * () const { return c_str(); }
+
+	// size
+	size_t size () const { return strlen(string); }
+
+	// get a character
+	const char operator[] (size_t index) const { return string[index]; }
+	const char operator[] (int index) const { return string[index]; }
+
+	// iterators
+	typedef const char* iterator;
+	typedef const char* const_iterator;
+	iterator begin () const { return c_str(); }
+	iterator end () const { return c_str() + size(); }
+
+	// clear the string to zero
+	void clear () { string = ""; }
+
+	// get a substring
+	String substr (size_t begin, size_t end) const;
+
+	private:
+	const char* string;
 };
+
+// concatenation
+String operator+ (String, String);
+String operator+ (String, const char*);
+String operator+ (const char*, String);
+
+// comparison with C strings
+inline bool operator== (String left, const char* right) { return strcmp(left.c_str(), right) == 0; }
+inline bool operator== (const char* left, String right) { return strcmp(left, right.c_str()) == 0; }
+inline bool operator!= (String left, const char* right) { return strcmp(left.c_str(), right) != 0; }
+inline bool operator!= (const char* left, String right) { return strcmp(left, right.c_str()) != 0; }
+inline bool operator< (String left, const char* right) { return strcmp(left.c_str(), right) < 0; }
+inline bool operator< (const char* left, String right) { return strcmp(left, right.c_str()) < 0; }
+
+// streams
+inline std::ostream& operator << (std::ostream& stream, String str) { return stream << str.c_str(); }
 
 typedef const String& StringArg;
 
@@ -54,6 +109,8 @@ class StringBuffer : public std::basic_ostringstream<char, std::char_traits<char
 {
 	public:
 	inline StringBuffer () {}
+
+	String str () { return String(std::basic_ostringstream<char, std::char_traits<char>, gc_allocator<char> >::str().c_str()); }
 };
 
 // return suffix of number, like 1=>st, 2=>nd, etc.

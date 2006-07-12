@@ -50,7 +50,7 @@ namespace Log
 		public:
 		LogWrapper (LogClass s_klass) : klass(s_klass) {}
 
-		virtual void stream_put (const char* str, size_t len) { msg.append(str, len); }
+		virtual void stream_put (const char* str, size_t len) { msg = msg + String(str, len); }
 		virtual bool stream_end (void);
 
 		private:

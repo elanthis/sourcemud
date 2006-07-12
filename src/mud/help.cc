@@ -82,7 +82,7 @@ SHelpManager::initialize (void)
 			File::Reader reader;
 
 			// open failed?
-			if (reader.open(path + "/" + dent->d_name)) {
+			if (reader.open(path + S("/") + String(dent->d_name))) {
 				closedir(dir);
 				return -1;
 			}
