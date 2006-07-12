@@ -5,8 +5,8 @@
  * http://www.awemud.net
  */
 
-#ifndef AWE_STRING_H
-#define AWE_STRING_H
+#ifndef AWEMUD_COMMON_STRING_H
+#define AWEMUD_COMMON_STRING_H
 
 #include <string>
 #include <sstream>
@@ -104,14 +104,6 @@ inline std::ostream& operator << (std::ostream& stream, String str) { return str
 typedef const String& StringArg;
 
 typedef GCType::vector<String> StringList;
-
-class StringBuffer : public std::basic_ostringstream<char, std::char_traits<char>, gc_allocator<char> >, public GC
-{
-	public:
-	inline StringBuffer () {}
-
-	String str () { return String(std::basic_ostringstream<char, std::char_traits<char>, gc_allocator<char> >::str().c_str()); }
-};
 
 // return suffix of number, like 1=>st, 2=>nd, etc.
 String get_num_suffix (uint);

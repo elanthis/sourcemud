@@ -14,6 +14,7 @@
 #include "mud/char.h"
 #include "common/streams.h"
 #include "mud/gametime.h"
+#include "common/strbuf.h"
 
 #define PARSE_OUT_SIZE 2048
 #define PARSE_BUFFER_SIZE 4096
@@ -22,8 +23,6 @@
 #define PARSE_MAX_DEPTH 8
 
 #define CHUNK_LEN(start, end) ((end)-(start)+1)
-
-typedef BufferSink<PARSE_BUFFER_SIZE> ParseBuffer;
 
 // parse value
 namespace {
@@ -70,7 +69,7 @@ namespace {
 		inline ParseState (const ParseArgs& s_argv, const ParseNames& s_names) : if_stack(), argv(s_argv), names(s_names), disable(0) {}
 	};
 
-	token_type get_token (const char** in, const char* end, ParseBuffer& namebuf);
+	token_type get_token (const char** in, const char* end, StringBuffer& namebuf);
 	void skip (const char** in, const char* end);
 	String get_arg (ParseArgs& argv, uint index);
 	int invoke_method (const StreamControl& stream, ParseValue self, StringArg method, ParseArgs& argv);
@@ -88,10 +87,10 @@ namespace parse {
 namespace {
 	// get a token
 	// NOTE: leaves *in pointing at character following last character of token
-	token_type get_token (const char** in, const char* end, ParseBuffer& namebuf)
+	token_type get_token (const char** in, const char* end, StringBuffer& namebuf)
 	{
 		// clear buffer
-		namebuf.clear();
+		namebuf.reset();
 
 		// skip whitespace
 		while (*in != end && isspace(**in))
@@ -267,7 +266,7 @@ namespace {
 		bool is_bang = false;
 		ParseValue value;
 		String method;
-		ParseBuffer buffer;
+		StringBuffer buffer;
 		ParseArgs argv;
 
 		// save start, advance
@@ -410,7 +409,7 @@ namespace {
 			}
 
 			// get value of variable, error if no such variable
-			value = get_value(buffer.c_str(), state);
+			value = get_value(buffer.str(), state);
 			if (value.is_null()) {
 				skip(in, end);
 				stream << StreamChunk(sin, *in - sin);
@@ -437,7 +436,7 @@ namespace {
 
 		// if we have a name, then it's a method
 		if (token == TOK_NAME) {
-			method = String(buffer);
+			method = buffer.str();
 
 			// next token
 			if ((token = get_token(in, end, buffer)) == TOK_ERROR) {
@@ -509,19 +508,19 @@ namespace {
 		}
 
 		// upper-case output if method name was upper-cased
-		if (!buffer.empty() && isupper(method[0])) {
+		if (isupper(method[0])) {
 			buffer[0] = toupper(buffer[0]);
 		}
 
 		// execute if statement
 		if (is_if) {
-			state.if_stack.back() = buffer.c_str()[0] != 0 ? IF_TRUE : IF_FALSE;
+			state.if_stack.back() = buffer[0] != 0 ? IF_TRUE : IF_FALSE;
 			if (state.if_stack.back() == IF_FALSE)
 				++state.disable;
 		// or expand bang
 		} else if (is_bang) {
 			ParseState bstate(state.argv, state.names);
-			ParseBuffer bbuffer;
+			StringBuffer bbuffer;
 			if (do_text(bbuffer, buffer.str(), bstate, depth + 1)) {
 				stream << StreamChunk(sin, *in - sin);
 				return -1;

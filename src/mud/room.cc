@@ -34,7 +34,7 @@
 
 /* constructor */
 SCRIPT_TYPE(Room);
-Room::Room (void) : Entity (AweMUD_RoomType)
+Room::Room () : Entity (AweMUD_RoomType)
 {
 	/* clear de values */
 	zone = NULL;
@@ -44,7 +44,7 @@ Room::Room (void) : Entity (AweMUD_RoomType)
 	coins = 0;
 }
 
-Room::~Room (void) {
+Room::~Room () {
 }
 
 int
@@ -98,7 +98,7 @@ Room::load_node (File::Reader& reader, File::Node& node)
 }
 
 int
-Room::load_finish (void)
+Room::load_finish ()
 {
 	// ensure exits are sorted
 	sort_exits();
@@ -187,7 +187,7 @@ Room::get_exit_by_dir (ExitDir dir)
 }
 
 RoomExit *
-Room::new_exit (void)
+Room::new_exit ()
 {
 	RoomExit *exit = new RoomExit ();
 	if (exit == NULL)
@@ -212,14 +212,14 @@ Room::take_coins (uint amount)
 
 /* update: one game tick */
 void
-Room::heartbeat (void)
+Room::heartbeat ()
 {
 	// call update hook
 	Hooks::room_heartbeat(this);
 }
 
 void
-Room::activate (void)
+Room::activate ()
 {
 	Entity::activate ();
 
@@ -232,7 +232,7 @@ Room::activate (void)
 }
 
 void
-Room::deactivate (void)
+Room::deactivate ()
 {
 	for (EList<RoomExit>::const_iterator i = exits.begin(); i != exits.end(); ++i)
 		(*i)->deactivate();
@@ -253,7 +253,7 @@ Room::set_owner (Entity* s_owner)
 }
 
 Entity*
-Room::get_owner (void) const
+Room::get_owner () const
 {
 	return zone;
 }
@@ -533,7 +533,7 @@ Room::add_object (Object* object)
 }
 
 unsigned long
-Room::count_players (void) const
+Room::count_players () const
 {
 	unsigned long count = 0;
 	for (EList<Character>::const_iterator i = chars.begin(); i != chars.end(); ++i)
@@ -584,7 +584,42 @@ namespace {
 }
 
 void
-Room::sort_exits (void)
+Room::sort_exits ()
 {
 	std::sort(exits.begin(), exits.end(), DerefSort<RoomExit>());
 }
+
+// StreamSink for room buffering
+class
+RoomStreamSink : public IStreamSink {
+	public:
+	RoomStreamSink (class Room& s_room) : room(s_room), buffer(), ignores() {}
+
+	virtual void stream_put (const char* text, size_t len) { buffer.write(text, len); }
+	virtual void stream_ignore (class Character* ch) { ignores.push_back(ch); }
+	virtual bool stream_end ();
+
+	private:
+	class Room& room;
+	StringBuffer buffer;
+	typedef GCType::vector<class Character*> IgnoreList;
+	IgnoreList ignores;
+};
+
+// flush room output
+bool
+RoomStreamSink::stream_end () {
+	// send output
+	String text = buffer.str();
+	if (text) {
+		if (ignores.empty())
+			room.put(text, text.size());
+		else
+			room.put(text, text.size(), &ignores);
+		buffer.clear();
+	}
+	// yes, delete this sink
+	return true;
+}
+
+StreamControl::StreamControl (Room& rptr) : sink(new RoomStreamSink(rptr)) {}

@@ -25,6 +25,7 @@
     #include "mud/exit.h"
     #include "mud/char.h"
     #include "mud/hooks.h"
+    #include "common/strbuf.h"
 
     using namespace std;
   ]]></header>
@@ -573,7 +574,9 @@ number = roll_dice(3, 6);]]></example>
             vlist[i - 1] = _argv[i].get_string();
         }
       }
-      parse::text(_return, _arg_format, vlist, ParseNames(_argc - 1));
+      StringBuffer buffer;
+      parse::text(buffer, _arg_format, vlist, ParseNames(_argc - 1));
+      _return = buffer.str();
     ]]></code>
   </function>
   <function>
@@ -617,22 +620,21 @@ number = roll_dice(3, 6);]]></example>
     <varg/>
     <code><![CDATA[
       Scriptix::Value val;
-      String msg;
-      StreamControl stream(msg);
+      StringBuffer buffer;
   
       for (size_t i = 0; i < _argc; ++ i) {
         val = _argv[i];
         if (val.is_int()) {
-          stream << Scriptix::Number::to_int(val);
+          buffer << Scriptix::Number::to_int(val);
         } else if (val.is_string()) {
-          stream << val.get_string();
+          buffer << val.get_string();
         } else if (val.is_a(AweMUD_EntityType)) {
           Entity* entity = (Entity*)val.get();
-          stream << entity;
+          buffer << entity;
         }
       }
   
-      Log::Info << msg;
+      Log::Info << buffer.str();
     ]]></code>
     <doc>Prints out the given arguments to the log file.</doc>
   </function>
@@ -900,7 +902,11 @@ number = roll_dice(3, 6);]]></example>
         <type>Boolean</type>
         <doc>If true, the named will have forced capitalization.  (For the beginnings of sentences.)</doc>
       </arg>
-      <code><![CDATA[_return << StreamName(_self, (EntityArticleUsage)_arg_article, _arg_capitalize);]]></code>
+      <code><![CDATA[
+        StringBuffer buffer;
+        buffer << StreamName(_self, (EntityArticleUsage)_arg_article, _arg_capitalize);
+        _return = buffer.str();
+      ]]></code>
       <doc>Returns a formatted display name.  This name will have color codes embedded, optional prefixes or suffices, and an article.  This should be used for printing out names using the <link method="Room.print"/> and Player.print() methods.</doc>
       <example><![CDATA[// set 'capitalize' to true at the beginning of a sentence
 room.print(entity.get_name(EN_DEF, true), " is in the room.\n");

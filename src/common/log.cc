@@ -30,11 +30,17 @@ namespace Log {
 	LogWrapper Network(LOG_NETWORK);
 	LogWrapper Admin(LOG_ADMIN);
 
+	void
+	LogWrapper::stream_put (const char* text, size_t len)
+	{
+		msg.write(text, len);
+	}
+
 	bool
 	LogWrapper::stream_end (void)
 	{
-		LogManager.print(klass, msg.c_str());
-		msg.clear();
+		LogManager.print(klass, msg.str());
+		msg.reset();
 		return false;
 	}
 }
@@ -68,14 +74,14 @@ SLogManager::shutdown (void)
 }
 
 void
-SLogManager::print (LogClass klass, const char* msg)
+SLogManager::print (LogClass klass, String msg)
 {
 	char tbuf[41];
-	char log[2048];
 	char* prefix;
 	time_t t;
 	struct tm local;
 	time (&t);
+	FILE* out = file ? file : stderr;
 
 	switch (klass) {
 		case LOG_ERROR:
@@ -97,12 +103,7 @@ SLogManager::print (LogClass klass, const char* msg)
 	}
 
 	strftime (tbuf, sizeof(tbuf) - 1, "%Y-%m-%d %T", localtime_r (&t, &local));
-	snprintf (log, sizeof(log), "%s - %s%s\n", tbuf, prefix, msg);
-
-	if (file != NULL)
-		fputs(log, file);
-	else
-		fputs(log, stderr);
+	fprintf (out, "%s - %s%s\n", tbuf, prefix, msg.c_str());
 }
 
 void

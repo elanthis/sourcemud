@@ -111,21 +111,25 @@ Character::do_say (StringArg text)
 	*this << text << CNORMAL "\"\n";
 
 	// blah says...
-	StreamControl stream (*get_room());
-	stream << StreamIgnore(this);
-	if (is_dead())
-		stream << "The ghostly voice of " << StreamName(this, INDEFINITE, false);
-	else
-		stream << StreamName(this, INDEFINITE, true);
+	{
+		StreamControl stream (*get_room()); // ends at second bracket, sends text
+		stream << StreamIgnore(this);
+		if (is_dead())
+			stream << "The ghostly voice of " << StreamName(this, INDEFINITE, false);
+		else
+			stream << StreamName(this, INDEFINITE, true);
 
-	if (last_char == '?')
-		stream << " asks, \"";
-	else if (last_char == '!')
-		stream << " exclaims, \"";
-	else
-		stream << " says, \"";
+		if (last_char == '?')
+			stream << " asks, \"";
+		else if (last_char == '!')
+			stream << " exclaims, \"";
+		else
+			stream << " says, \"";
 
-	stream << CTALK << text << CNORMAL "\"\n";
+		stream << CTALK << text << CNORMAL "\"\n";
+	}
+
+	// send out an event
 	Events::send_say(this->get_room(), this, text);
 }
 
@@ -157,7 +161,7 @@ Character::do_sing (StringArg text)
 	}
 
 	// form output
-	String output;
+	StringBuffer output;
 	output << "  " CTALK << lines[0];
 	for (size_t i = 1; i < lines.size(); ++i) {
 		if (i % 2 == 0)
@@ -169,7 +173,7 @@ Character::do_sing (StringArg text)
 	output << CNORMAL "\n";
 
 	// you sing...
-	*this << "You sing:\n" << output;
+	*this << "You sing:\n" << output.str();
 
 	// blah sings...
 	StreamControl stream (*get_room());

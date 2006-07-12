@@ -1,3 +1,16 @@
+2006-07-12 15:06:15  Sean Middleditch <elanthis@awesomeplay.com>
+
+  * Added fdprintf(), which is something libc should freakin'
+    provide.  Stupid libc.
+  * Lots of updates to Streams.  These really need to be rewritten
+    in terms of ostream and streambuf.
+  * Added a new StringBuffer implementation, with new header
+    common/strbuf.h.  This implemenation has a 512 buffer
+    (allocated on the stack for stack copies of StringBuffer) and
+    then allocates big buffers on the heap if needed.  Theoretically
+    this will reduce allocations; adding some logging on overflow
+    so I can figure out if it is happening too often.
+
 2006-07-12 02:37:20  Sean Middleditch <elanthis@awesomeplay.com>
 
   * Landed the new String implementation, which uses just

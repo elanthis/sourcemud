@@ -93,11 +93,9 @@ GameTime::clip_time ()
 String
 GameTime::encode () const
 {
-	StringBuffer ret;
-	ret.fill('0');
-	ret.width(2);
-	ret << (uint)year << '/' << (uint)month << '/' << (uint)day << ' ' << (uint)hour << '.' << (uint)ticks_in_hour;
-	return ret.str();
+	char buffer[32];
+	snprintf(buffer, sizeof(buffer), "%04d/%02d/%02d %02d.%02d", year, month, day, hour, ticks_in_hour);
+	return String(buffer);
 }
 
 int

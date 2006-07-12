@@ -175,6 +175,7 @@ rundata_DATA =
 
 noinst_HEADERS=\
 	include/common/error.h \
+	include/common/fdprintf.h \
 	include/common/gcbase.h \
 	include/common/gclist.h \
 	include/common/gcmap.h \
@@ -187,6 +188,7 @@ noinst_HEADERS=\
 	include/common/rand.h \
 	include/common/regex.h \
 	include/common/streams.h \
+	include/common/strbuf.h \
 	include/common/string.h \
 	include/common/types.h \
 	include/scriptix/array.h \
@@ -272,11 +274,15 @@ INCLUDES=-I@top_srcdir@/include
 
 COMMON_SOURCES=\
 	src/common/error.cc \
+	src/common/fdprintf.cc \
 	src/common/gc.cc \
 	src/common/imanager.cc \
+	src/common/log.cc \
 	src/common/md5.cc \
 	src/common/rand.cc \
 	src/common/regex.cc \
+	src/common/streams.cc \
+	src/common/strbuf.cc \
 	src/common/strings.cc
 
 SCRIPTIX_SOURCES=\
@@ -344,7 +350,6 @@ awemud_bin_SOURCES=\
 	src/mud/help.cc \
 	src/mud/hooks.cc \
 	src/mud/idmap.cc \
-	src/mud/log.cc \
 	src/mud/login.cc \
 	src/mud/mail.cc \
 	src/mud/main.cc \
@@ -364,7 +369,6 @@ awemud_bin_SOURCES=\
 	src/mud/settings.cc \
 	src/mud/skill.cc \
 	src/mud/social.cc \
-	src/mud/streams.cc \
 	src/mud/parse_commands.cc \
 	src/mud/telnet.cc \
 	src/mud/time.cc \

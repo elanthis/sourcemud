@@ -9,21 +9,6 @@
 #include "mud/parse.h"
 #include "mud/room.h"
 
-// flush room output
-bool
-RoomStreamSink::stream_end (void) {
-	// send output
-	if (buffer) {
-		if (ignores.empty())
-			room.put(buffer, buffer.size());
-		else
-			room.put(buffer, buffer.size(), &ignores);
-		buffer.clear();
-	}
-	// yes, delete this sink
-	return true;
-}
-
 StreamParse::StreamParse(StringArg s_text)
 	: text(s_text), argv(), names()
 {}

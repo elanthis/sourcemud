@@ -1,5 +1,5 @@
 # Player file: Admin
-# Timestamp: Tue Jul 11 15:27:34 2006
+# Timestamp: Wed Jul 12 11:05:13 2006
 # 
 
 uid = $575a66a6-43da6-c42-00000332-0bb9fd14
@@ -18,7 +18,7 @@ equip.back {
   uid = $23d5b6a2-43de0-c42-00000335-0bb9fd14
 }
 race = "human"
-birthday = "245/6/10 9.14"
+birthday = "0245/06/10 09.14"
 alignment = 0
 stat : "Strength" = 100
 stat : "Agility" = 100
@@ -33,7 +33,7 @@ trait : "hair color" = "silver"
 trait : "eye color" = "white"
 gender = "male"
 height = 68
-location = "broken_tree"
+location = "forest_cliff"
 general_xp = 0
 warrior_xp = 0
 rogue_xp = 0

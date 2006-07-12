@@ -31,6 +31,7 @@
 #include "scriptix/system.h"
 #include "scriptix/function.h"
 #include "scriptix/vimpl.h"
+#include "common/strbuf.h"
 
 using namespace Scriptix;
 

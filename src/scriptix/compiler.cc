@@ -30,6 +30,7 @@
 
 #include "scriptix/system.h"
 #include "scriptix/compiler.h"
+#include "common/strbuf.h"
 
 using namespace Scriptix;
 using namespace Scriptix::Compiler;

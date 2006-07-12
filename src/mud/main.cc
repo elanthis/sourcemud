@@ -45,6 +45,7 @@
 #include "mud/server.h"
 #include "mud/settings.h"
 #include "mud/login.h"
+#include "common/fdprintf.h"
 
 // DECLARATIONS
 namespace {
@@ -144,9 +145,7 @@ namespace {
 		}
 
 		// write PID
-		String pidstr;
-		StreamControl(pidstr) << getpid() << "\n";
-		if (write(fd, pidstr.c_str(), pidstr.size()) != (int)pidstr.size()) {
+		if (fdprintf(fd, "%d", getpid()) <= 0) {
 			Log::Error << "Failed to write to PID file '" << path << "': " << strerror(errno);
 			unlink(path);
 			close(fd);
@@ -351,7 +350,7 @@ AweMUD::get_rounds ()
 String
 AweMUD::get_uptime ()
 {
-	BufferSink<512> uptime;
+	StringBuffer uptime;
 	uint secs = (::time (NULL) - start_time); 
 	uint seconds = secs % 60;
 	secs /= 60;

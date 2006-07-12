@@ -14,6 +14,7 @@
 #include "common/error.h"
 #include "common/streams.h"
 #include "common/imanager.h"
+#include "common/strbuf.h"
 
 enum LogClass {
 	LOG_NOTICE,
@@ -29,7 +30,7 @@ class SLogManager : public IManager
 	int initialize (void);
 	void shutdown (void);
 
-	void print (LogClass klass, const char* msg);
+	void print (LogClass klass, String msg);
 
 	void reset (void);
 
@@ -50,12 +51,12 @@ namespace Log
 		public:
 		LogWrapper (LogClass s_klass) : klass(s_klass) {}
 
-		virtual void stream_put (const char* str, size_t len) { msg = msg + String(str, len); }
+		virtual void stream_put (const char* str, size_t len);
 		virtual bool stream_end (void);
 
 		private:
 		LogClass klass;
-		String msg;
+		StringBuffer msg;
 	};
 
 	// the output
