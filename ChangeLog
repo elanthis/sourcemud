@@ -1,3 +1,7 @@
+2006-07-13 16:47:04  Sean Middleditch <elanthis@awesomeplay.com>
+
+  * Fix some incorrect data files caused by testing.
+
 2006-07-13 05:35:07  Sean Middleditch <elanthis@awesomeplay.com>
 
   * Replaced the huge disgusting 128-bit unique IDs with something

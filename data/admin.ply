@@ -1,5 +1,5 @@
 # Player file: Admin
-# Timestamp: Thu Jul 13 01:29:24 2006
+# Timestamp: Thu Jul 13 01:38:50 2006
 # 
 
 uid = $1
@@ -7,7 +7,7 @@ position = "stand"
 hp = 150
 equip.right_hand {
   blueprint = "sw_fire"
-  uid = $611
+  uid = $274
 }
 equip.body {
   blueprint = "ar_chain_shirt"
@@ -18,7 +18,7 @@ equip.back {
   uid = $23
 }
 race = "human"
-birthday = "0245/06/10 09.14"
+birthday = "1000/06/10 09.14"
 alignment = 0
 stat : "Strength" = 100
 stat : "Agility" = 100
