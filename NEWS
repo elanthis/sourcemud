@@ -3,7 +3,8 @@ Version 0.25
 
   * Portability updates: Linux, BSD, Solaris, Cygwin, OS X.
   * Better entity name handling.
-  * SQLite3 database backend.
+  * New String class.
+  * Re-written character creation process.
 
 Version 0.24
 ============

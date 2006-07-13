@@ -68,14 +68,20 @@ endif
 endif
 
 DOCS := $(DOCBOOK_HTML) $(DOCBOOK_PDF) $(DOCBOOK_TXT)
-USER_DOCS := \
-	doc/parse.txt doc/zmp-x-awemud.txt
+USER_DOCS := doc/parse.txt doc/zmp-x-awemud.txt
 
 docdir = ${datadir}/doc/@PACKAGE_TARNAME@-@VERSION@
 doc_DATA = README NEWS COPYING AUTHORS FAQ $(DOCBOOK_TXT) $(USER_DOCS)
 
 htmldir = ${datadir}/doc/@PACKAGE_TARNAME@-@VERSION@/html
-html_DATA = $(DOCBOOK_HTML)
+noinst_DATA += $(DOCBOOK_HTML)
+if BUILD_DOCS
+install-data-local:
+	$(mkdir_p) '$(DESTDIR)$(htmldir)'
+	$(INSTALL_DATA) doc/awemud-manual.html/* '$(DESTDIR)$(htmldir)'
+uninstall-local:
+	rm -fr '$(DESTDIR)$(htmldir)'
+endif
 
 pdfdir = ${datadir}/doc/@PACKAGE_TARNAME@-@VERSION@/pdf
 pdf_DATA = $(DOCBOOK_PDF)
@@ -145,7 +151,7 @@ GAMEDATA = data/messages data/races data/socials data/calendar data/skills data/
 TEMPLATES = data/animals.npcs data/undead.npcs data/armor.objs data/misc.objs data/weapons.objs data/gems.objs 
 DATAFILES = $(WORLD) $(HELP) $(GAMEDATA) $(TEMPLATES)
 
-EXTRA_DIST += $(DATAFILES) $(PLAYERS_IN) $(ACCOUNTS_IN) $(WORLD_IN) $(ZONES) $(PLAYERINFO) $(SQL)
+EXTRA_DIST += $(DATAFILES) $(PLAYERS) $(ACCOUNTS) $(WORLD_IN) $(ZONES) $(PLAYERINFO) $(SQL)
 
 worlddir=${localstatedir}/lib/@PACKAGE_TARNAME@/world
 world_DATA = $(WORLD) $(ZONES)

@@ -1,9 +1,9 @@
 # AweMUD NG
 # Configuration script
-BASE_VERSION=0.24
-VERSION=0.24.20060713
+BASE_VERSION=0.25
+VERSION=0.25
 
-AC_INIT([AweMUD], 0.24.20060713, [http://bugs.awemud.net/submit.php])
+AC_INIT([AweMUD], 0.25, [http://bugs.awemud.net/submit.php])
 AC_CONFIG_SRCDIR(src/mud/main.cc)
 AC_CONFIG_AUX_DIR(.)
 AM_INIT_AUTOMAKE([1.8])
@@ -171,11 +171,7 @@ echo "See COPYING for license details."
 echo
 echo "  Version    ... $PACKAGE_VERSION"
 echo "  Install    ... ${prefix}"
-if test -n "$DOCS" ; then
-	echo "  Documents  ... ${DOCS}"
-else
-	echo "  Documents  ... none"
-fi
+echo "  Documents  ... ${BUILD_DOCS}"
 if test "x$IPV6" = "xyes" ; then
 	echo "  IPv6       ... enabled"
 else

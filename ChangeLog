@@ -1,3 +1,7 @@
+2006-07-13 20:41:50  Sean Middleditch <elanthis@awesomeplay.com>
+
+  * Release version 0.25.
+
 2006-07-13 16:58:24  Sean Middleditch <elanthis@awesomeplay.com>
 
   * Rename Scriptix Object.setName to Object.setBaseName and
