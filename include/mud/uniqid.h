@@ -15,20 +15,19 @@
 #include "common/types.h"
 #include "common/string.h"
 
+typedef uint32 UniqueIDBase; // FIXME: should probably default to uin64
+
 class UniqueID
 {
 	public:
-	inline UniqueID () : random(0), usecs(0), clock(0), seq(0), secs(0) {}
+	UniqueID () : id(0) {}
 
-	friend bool operator< (const UniqueID& u1, const UniqueID& u2);
-	friend bool operator== (const UniqueID& u1, const UniqueID& u2);
-	inline operator bool () const { return random || usecs || clock || seq || secs; }
+	friend bool operator< (const UniqueID& u1, const UniqueID& u2) { return u1.id < u2.id; }
+	friend bool operator== (const UniqueID& u1, const UniqueID& u2) { return u1.id == u2.id; }
+	operator bool () const { return id; }
 
 	private:
-	uint32 random;
-	uint32 usecs:20, clock:12;
-	uint32 seq;
-	uint32 secs;
+	UniqueIDBase id;
 
 	friend class SUniqueIDManager;
 };
@@ -40,34 +39,15 @@ class SUniqueIDManager : public IManager
 	virtual void shutdown ();
 	virtual void save ();
 
-	void create (UniqueID& uid);
-	inline UniqueID create () { UniqueID uid; create(uid); return uid; }
-	String encode (const UniqueID& uid);
+	UniqueID create ();
+	String encode (UniqueID uid);
 	UniqueID decode (String string);
+	int reserve ();
 
 	private:
-	struct timeval last_time;
-	uint32 seq;
-	uint16 clock;
+	UniqueIDBase next;
+	UniqueIDBase limit;
 };
-
-inline bool operator< (const UniqueID& u1, const UniqueID& u2)
-{
-	return u1.seq < u2.seq ||
-	u1.usecs < u2.usecs ||
-	u1.clock < u2.clock ||
-	u1.random < u2.random ||
-	u1.secs < u2.secs;
-}
-
-inline bool operator== (const UniqueID& u1, const UniqueID& u2)
-{
-	return u1.seq == u2.seq &&
-	u1.usecs == u2.usecs &&
-	u1.clock == u2.clock &&
-	u1.random == u2.random &&
-	u1.secs == u2.secs;
-}
 
 extern SUniqueIDManager UniqueIDManager;
 

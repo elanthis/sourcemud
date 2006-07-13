@@ -7,125 +7,106 @@
 
 #include <sys/time.h>
 #include <unistd.h>
+#include <errno.h>
 
 #include "mud/settings.h"
 #include "mud/uniqid.h"
-#include "mud/fileobj.h"
+#include "common/log.h"
 
 SUniqueIDManager UniqueIDManager;
+
+const size_t LIMIT_AMOUNT = 1024;
 
 int
 SUniqueIDManager::initialize ()
 {
-	seq = 0;
-	clock = rand() % 4096;
-	gettimeofday(&last_time, NULL);
+	next = 0;
+	limit = 0;
 
-	File::Reader reader;
-	if (reader.open(SettingsManager.get_misc_path() + "/uniqid"))
+	FILE* file = fopen(SettingsManager.get_misc_path() + "/uniqid", "r");
+	if (file == NULL) {
+		Log::Error << "UniqueIDManager.initialize(): Failed to open uniqid: " << strerror(errno);
 		return -1;
+	}
 
-	FO_READ_BEGIN
-		FO_ATTR("sequence")
-			FO_TYPE_ASSERT(INT)
-			seq = strtoul(node.get_data(), NULL, 10);
+	char buffer[128];
+	fgets(buffer, sizeof(buffer), file);
 
-		FO_ATTR("clock")
-			FO_TYPE_ASSERT(INT)
-			clock = strtoul(node.get_data(), NULL, 10);
-		FO_ATTR("last_time")
-			FO_TYPE_ASSERT(STRING)
-			uint32 sec;
-			uint32 usec;
-			sscanf(node.get_data(), "%u.%u", &sec, &usec);
-			last_time.tv_sec = sec;
-			last_time.tv_usec = usec;
-	FO_READ_ERROR
-		return -1;
-	FO_READ_END
+	fclose(file);
 
-	return 0;
+	next = strtol(buffer, NULL, 10);
+
+	return reserve();
 }
 
 void
 SUniqueIDManager::shutdown ()
 {
+	FILE* file = fopen(SettingsManager.get_misc_path() + "/uniqid", "w");
+	if (file == NULL) {
+		Log::Error << "UniqueIDManager.shutdown(): Failed to open uniqid: " << strerror(errno);
+		return;
+	}
+
+	StringBuffer buffer;
+	buffer << next;
+	fprintf(file, "%s", buffer.c_str());
+
+	fclose(file);
+}
+
+int
+SUniqueIDManager::reserve ()
+{
+	Log::Info << "Reserving additional unique IDs";
+
+	limit = next + LIMIT_AMOUNT;
+
+	FILE* file = fopen(SettingsManager.get_misc_path() + "/uniqid", "w");
+	if (file == NULL) {
+		Log::Error << "UniqueIDManager.reserve(): Failed to open uniqid: " << strerror(errno);
+		return -1;
+	}
+
+	StringBuffer buffer;
+	buffer << limit;
+	fprintf(file, "%s", buffer.c_str());
+
+	fclose(file);
+
+	return 0;
 }
 
 void
 SUniqueIDManager::save ()
 {
-	File::Writer writer;
-
-	if (writer.open(SettingsManager.get_misc_path() + "/uniqid"))
-		return;
-
-	writer.attr(S("sequence"), seq);
-	writer.attr(S("clock"), clock);
-
-	StringBuffer tstr;
-	tstr << last_time.tv_sec << '.' << last_time.tv_usec;
-	writer.attr(S("last_time"), tstr.str());
 }
 
-void
-SUniqueIDManager::create (UniqueID& uid)
+UniqueID
+SUniqueIDManager::create ()
 {
-	struct timeval tv;
+	UniqueID id;
 
-	/* get time, shift for year 2000 base */
-	gettimeofday(&tv, NULL);
-	tv.tv_sec -= 946080000; /* 30 years */
+	if (next == limit)
+		reserve();
 
-	/* increment clock sequence if time moved backwards */
-	if (timercmp(&tv, &last_time, <))
-		if ((++clock) == 4096)
-			clock = 0;
-
-	/* record time */
-	last_time = tv;
-
-	/* set UUID */
-	uid.random = rand();
-	uid.usecs = tv.tv_usec;
-	uid.clock = clock;
-	uid.seq = ++seq;
-	uid.secs = tv.tv_sec;
+	id.id = next++;
+	
+	return id;
 }
 
 String
-SUniqueIDManager::encode (const UniqueID& uid)
+SUniqueIDManager::encode (UniqueID uid)
 {
-	char buffer[64];
-
-	snprintf(buffer, sizeof(buffer), "%08x-%05x-%03x-%08x-%08x",
-			uid.random,
-			uid.usecs,
-			uid.clock,
-			uid.seq,
-			uid.secs);
-
-	return String(buffer);
+	StringBuffer buffer;
+	buffer << uid.id;
+	return buffer.str();
 }
 
 UniqueID
 SUniqueIDManager::decode (String string)
 {
 	UniqueID uid;
-
-	uint32 random, usecs, clock, seq, secs;
-	sscanf(string, "%x-%x-%x-%x-%x",
-			&random,
-			&usecs,
-			&clock,
-			&seq,
-			&secs);
-
-	uid.random = random;
-	uid.usecs = usecs;
-	uid.clock = clock;
-	uid.seq = seq;
-	uid.secs = secs;
-
+	uid.id = strtol(string.c_str(), NULL, 10);
 	return uid;
 }

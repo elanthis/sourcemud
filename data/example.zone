@@ -4,7 +4,7 @@
 id = "example"
 name = "Exampe Forest and Darlet"
 desc = ""
-uid = $5e1739de-52945-c42-00000110-0a767046
+uid = $2
 
 # --- SPAWNS ---
 spawn {
@@ -30,20 +30,20 @@ room {
   id = "clear_pond"
   name = "Forest pond"
   desc = "A small pond lies between the bases of several large trees{if day-or-night = 'night'}, reflecting the moonlight in its clear, calm surface{else}.  The water is very still, and crystal clear{endif}.  The pond is not very deep, and doesn't appear to be the residence of any fish or waterlife.  The forest itself is quite dense here."
-  uid = $64a85bad-52d2f-c42-00000111-0a767046
+  uid = $3
   outdoors = true
   exit {
-    uid = $1a5f43fd-2e3b0-c42-0000046c-0c2ec4b9
+    uid = $4
     dir = "east"
     target = "forest_trail_west"
   }
   exit {
-    uid = $178f8aff-2e3b8-c42-0000046d-0c2ec4b9
+    uid = $5
     dir = "northwest"
     target = "altar"
   }
   exit {
-    uid = $1df47580-2e3c0-c42-0000046e-0c2ec4b9
+    uid = $6
     dir = "southwest"
     target = "broken_tree"
   }
@@ -58,22 +58,22 @@ room {
       @drink_text = "You cup your hands in {$object.d}, and bring the water up to your waiting lips.  The water is cool and clean, with a wonderfully pleasing taste."
       @drink_room = "{$actor.I} cups {$actor.his} hands in {$object.d}, and brings some water up to {$actor.his} waiting lips."
     }
-    uid = $21fb95fc-56dc6-c42-00000115-0a767046
+    uid = $7
   }
 }
 room {
   id = "altar"
   name = "Forest altar"
   desc = "A small clearing rests here, nestled among the ancient trees of the forest.  A simple stone altar makes this place its home.  The ancient runes inscribed on the dark rock of the altar seem fitting to the majestic forest.  The altar's presence provides life to the forest, as the trees nearest to the altar are larger and healthier than those further away."
-  uid = $19363995-56e26-c42-00000116-0a767046
+  uid = $8
   outdoors = true
   exit {
-    uid = $126e60f5-2e3cb-c42-0000046f-0c2ec4b9
+    uid = $9
     dir = "south"
     target = "broken_tree"
   }
   exit {
-    uid = $282fe6ac-2e3d2-c42-00000470-0c2ec4b9
+    uid = $10
     dir = "southeast"
     target = "clear_pond"
   }
@@ -102,15 +102,15 @@ room {
       }
       @read_text = "The runes on the altar are all gibberish to you."
     }
-    uid = $09eb4667-56f3c-c42-00000119-0a767046
+    uid = $11
     object {
       blueprint = "co_leather_backpack"
-      uid = $76603fbf-56fa1-c42-0000011a-0a767046
+      uid = $12
       location = "on"
     }
     object {
       blueprint = "ar_chain_mail"
-      uid = $748a9043-56fff-c42-0000011b-0a767046
+      uid = $13
       location = "on"
     }
   }
@@ -119,25 +119,25 @@ room {
   id = "broken_tree"
   name = "Broken tree"
   desc = "A single broken tree trunk rests here amidst the thriving forest.  The tree appears to have fallen recently.  You feel a strong wind blowing from the south, and it howls about you."
-  uid = $21d37e09-570b9-c42-0000011d-0a767046
+  uid = $14
   outdoors = true
   exit {
-    uid = $1dd93946-2e3e0-c42-00000471-0c2ec4b9
+    uid = $15
     dir = "north"
     target = "altar"
   }
   exit {
-    uid = $133ec9a6-2e3e7-c42-00000472-0c2ec4b9
+    uid = $16
     dir = "south"
     target = "forest_cliff"
   }
   exit {
-    uid = $3bcc8916-2e3ef-c42-00000473-0c2ec4b9
+    uid = $17
     dir = "west"
     target = "graveyard_gate"
   }
   exit {
-    uid = $0a48201c-2e3f6-c42-00000474-0c2ec4b9
+    uid = $18
     dir = "northeast"
     target = "clear_pond"
   }
@@ -150,27 +150,27 @@ room {
       trashable = false
       container = "under"
     }
-    uid = $0d9b4478-5bb47-c42-00000122-0a767046
+    uid = $19
   }
   object {
     blueprint = "sw_fire"
-    uid = $3afd1c69-43dc6-c42-00000333-0bb9fd14
+    uid = $20
   }
 }
 room {
   id = "forest_cliff"
   name = "Forest cliff"
   desc = "The edge of the forest reaches a steep cliff face.  Far below stretches a vast valley, shrouded in mist.  The tops of several large trees peek out from the grey abyss below.  To the east you hear sounds of a waterfall, although you cannot see it from your vantage point.  A larger tree reaches up and leans over the cliff edge.  The wind here is very loud, blowing down from the cold mountains across the valley."
-  uid = $397d1915-5bba7-c42-00000123-0a767046
+  uid = $21
   outdoors = true
   exit {
-    uid = $2b064f45-2e403-c42-00000475-0c2ec4b9
+    uid = $22
     dir = "north"
     target = "broken_tree"
   }
   exit {
     name = "a cliff"
-    uid = $5d8cd4a8-2e40b-c42-00000476-0c2ec4b9
+    uid = $23
     keyword = "down"
     usage = "climb"
     detail = "down"
@@ -180,7 +180,7 @@ room {
   exit {
     name = "a large tree"
     desc = "It looks as if the tree is often climbed.  Perhaps it offers a good vantage point."
-    uid = $63ab0c5a-2e413-c42-00000477-0c2ec4b9
+    uid = $24
     keyword = "up"
     usage = "climb"
     detail = "up"
@@ -196,26 +196,26 @@ room {
       touchable = false
       trashable = false
     }
-    uid = $3a1448e9-604b5-c42-0000012a-0a767046
+    uid = $28
   }
   object {
     blueprint = "claws_animal"
-    uid = $7febf532-6051a-c42-0000012b-0a767046
+    uid = $29
   }
   npc {
     blueprint = "wolf"
-    uid = $1f0b8188-607ad-c42-00000132-0a767046
+    uid = $25
     tag = "forest_critter"
     dead = "yes"
     position = "lay"
     hp = -14
     equip.right_hand {
       blueprint = "claws_animal"
-      uid = $46c9a75c-6081c-c42-00000133-0a767046
+      uid = $26
     }
     equip.left_hand {
       blueprint = "claws_animal"
-      uid = $20bdb85b-6087c-c42-00000134-0a767046
+      uid = $27
     }
     zonelock = true
   }
@@ -224,11 +224,11 @@ room {
   id = "cliff_ledge"
   name = "Cliff ledge"
   desc = "You are on a small ledge on the cliff face, not far below the top edge.  Below you stretches a vast, mist shrouded valley, nestled between the mountain you reside on now and the frozen cliffs you can see across from you."
-  uid = $7696e754-6057b-c42-0000012c-0a767046
+  uid = $30
   outdoors = true
   exit {
     name = "a cliff"
-    uid = $33340192-2e42f-c42-00000478-0c2ec4b9
+    uid = $31
     keyword = "up"
     usage = "climb"
     detail = "up"
@@ -237,7 +237,7 @@ room {
   exit {
     name = "a cave"
     desc = "A narrow cave leads into the cliff face, twisting off towards the northeast."
-    uid = $02224fc9-2e437-c42-00000479-0c2ec4b9
+    uid = $32
     dir = "north"
     detail = "in"
     target = "cave_entrance"
@@ -251,18 +251,18 @@ room {
       touchable = false
       trashable = false
     }
-    uid = $54ae2133-60694-c42-0000012f-0a767046
+    uid = $33
   }
 }
 room {
   id = "tree_top"
   name = "Tree Top"
   desc = "You are in the branches of a large tree leaning over the cliff edge.  A thousand feet or more below you the mist shrouded valley stretches between the mountain you are on, and the ice covered peaks you see clearly now to the south.  To the east, you hear the sounds of a waterfall, and can just make out the lip of the river over the treetops, as it spills over the cliff edge and descends into the valley below.  Just below you is a ledge potruding from the cliff face."
-  uid = $7dd8f76d-606f3-c42-00000130-0a767046
+  uid = $34
   outdoors = true
   exit {
     name = "a tree"
-    uid = $795f94d1-2e443-c42-0000047a-0c2ec4b9
+    uid = $35
     keyword = "down"
     usage = "climb"
     detail = "down"
@@ -273,16 +273,16 @@ room {
   id = "cave_entrance"
   name = "Cave entrance"
   desc = "The cave opens onto a ledge on the side of a great cliff.  Not much can be seen deeper in the cave, as it twists and turns towards the northeast.  The sound of dripping water echos from deeper in the tunnels."
-  uid = $3841bb1d-64fcb-c42-00000135-0a767046
+  uid = $36
   exit {
-    uid = $61869c04-2e44d-c42-0000047b-0c2ec4b9
+    uid = $37
     dir = "northeast"
     target = "cave_niche"
   }
   exit {
     name = "a opening"
     desc = "The cave exit here leads out onto a small ledge on the face of a cliff, towering over the valley below."
-    uid = $51910848-2e456-c42-0000047c-0c2ec4b9
+    uid = $38
     dir = "south"
     target = "cliff_ledge"
   }
@@ -291,14 +291,14 @@ room {
   id = "cave_niche"
   name = "Cave"
   desc = "The cave is very dark and damp.  You can hear the sounds of running water from the east.  The northern wall has a rectangular niche carved into it."
-  uid = $422d0184-65161-c42-00000138-0a767046
+  uid = $39
   exit {
-    uid = $724b65bc-2e460-c42-0000047d-0c2ec4b9
+    uid = $40
     dir = "east"
     target = "cave_waterfall"
   }
   exit {
-    uid = $0deb1c4b-2e468-c42-0000047e-0c2ec4b9
+    uid = $41
     dir = "southwest"
     target = "cave_entrance"
   }
@@ -311,36 +311,36 @@ room {
       trashable = false
       container = "in"
     }
-    uid = $26735cf2-6528b-c42-0000013b-0a767046
+    uid = $45
     object {
       blueprint = "sw_long"
-      uid = $75e08289-653a7-c42-0000013e-0a767046
+      uid = $46
       location = "in"
     }
     object {
       blueprint = "sw_long"
-      uid = $5db53cde-65349-c42-0000013d-0a767046
+      uid = $47
       location = "in"
     }
     object {
       blueprint = "sw_long"
-      uid = $78aca791-652ea-c42-0000013c-0a767046
+      uid = $48
       location = "in"
     }
   }
   npc {
     blueprint = "wolf_large"
-    uid = $63e52e01-6a800-c42-00000142-0a767046
+    uid = $42
     tag = "forest_critter"
     position = "stand"
     hp = 100
     equip.right_hand {
       blueprint = "claws_animal"
-      uid = $362c6a83-6a86e-c42-00000143-0a767046
+      uid = $43
     }
     equip.left_hand {
       blueprint = "claws_animal"
-      uid = $32e3fa16-6a8d1-c42-00000144-0a767046
+      uid = $44
     }
     zonelock = true
   }
@@ -349,15 +349,15 @@ room {
   id = "cave_waterfall"
   name = "Behind waterfall"
   desc = "This section of cave is just behind a wide waterfall.  The rushing water pouring past the cave mouth is near deafening in sound, and a thick mist of cold water droplets scatter about the cave, making the cave very damp and the floor quite slick.  There is a lone scone in the middle of the cave floor, with a bright flame burning in it, seemingly unaffected by the water."
-  uid = $2a6814eb-65406-c42-0000013f-0a767046
+  uid = $49
   exit {
-    uid = $0d3893dc-2e484-c42-0000047f-0c2ec4b9
+    uid = $50
     dir = "west"
     target = "cave_niche"
   }
   exit {
     name = "a glowing portal"
-    uid = $314d54d0-2e48c-c42-00000480-0c2ec4b9
+    uid = $51
     dir = "north"
     detail = "through"
     hidden = true
@@ -373,7 +373,7 @@ room {
       gettable = false
       trashable = false
     }
-    uid = $70ec295f-6a933-c42-00000145-0a767046
+    uid = $52
   }
   object {
     blueprint {
@@ -382,18 +382,18 @@ room {
       gettable = false
       trashable = false
     }
-    uid = $2ad71cde-6a992-c42-00000146-0a767046
+    uid = $53
   }
 }
 room {
   id = "city_of_dead"
   name = "City of the Dead"
   desc = "Surrounded by the cries of the tormented echoing from the towers of great walls is the City of the Dead.  It is here that those who perish in the mortal realms come to await judgement.  Those faithful to their gods are taken to paradise, while those who failed their deity are taken to the tall, red towers stretching into the darkness above.  Wandering the streets of the city are the lost souls; those who never found a god to call their own, and are left to find paradise as they will in the bleak city, just as they did in life.  The spirits all avoid the wide river flowing through the center of the city, trembling in fear of it even as they cross the wide bridges spanning the black, murky water."
-  uid = $2974e177-6a9f2-c42-00000147-0a767046
+  uid = $54
   exit {
     name = "a bridge"
     desc = "A wide bridge spanning the murky waters of a river."
-    uid = $3c0885a5-2e49d-c42-00000481-0c2ec4b9
+    uid = $55
     dir = "northeast"
     target = "cave_waterfall"
   }
@@ -413,27 +413,27 @@ room {
         ]>>
       }
     }
-    uid = $64eb65c7-6aab1-c42-00000149-0a767046
+    uid = $56
   }
 }
 room {
   id = "forest_trail_west"
   name = "Forest trail"
   desc = "A simple trail meanders through the forest under the thick canopy of leaves above.  The sounds of a waterfall can be heard off to the southeast.  This path appears well travelled, although it doesn't seem to get much real maintenance."
-  uid = $2960d6a9-6ab10-c42-0000014a-0a767046
+  uid = $57
   outdoors = true
   exit {
-    uid = $53dd61d4-2e4ab-c42-00000482-0c2ec4b9
+    uid = $58
     dir = "north"
     target = "portal"
   }
   exit {
-    uid = $358be5f6-2e4b4-c42-00000483-0c2ec4b9
+    uid = $59
     dir = "east"
     target = "forest_bridge"
   }
   exit {
-    uid = $32b68edc-2e4bc-c42-00000484-0c2ec4b9
+    uid = $60
     dir = "west"
     target = "clear_pond"
   }
@@ -442,16 +442,16 @@ room {
   id = "portal"
   name = "Strange portal"
   desc = "Hidden between the majestic oaks of the forest, a small granite portal rests here, its surface a shimmering, deep blue.  The portal doesn't seem to see much use, as the ground at its feet is mostly untrampled.  The trees seem unaffected by its obvious magically nature."
-  uid = $217423c6-6ff54-c42-0000014e-0a767046
+  uid = $61
   exit {
-    uid = $03c47636-2e4c7-c42-00000485-0c2ec4b9
+    uid = $62
     dir = "south"
     target = "forest_trail_west"
   }
   exit {
     name = "a granite portal"
     desc = "The portal is a granite frame, nestled between two tall, thick trees.  Within the stone frame, a mirror-smooth surface of rolling blue color gives off an eerie light."
-    uid = $5abd1603-2e4d0-c42-00000486-0c2ec4b9
+    uid = $63
     detail = "through"
     nolook = true
     target = "city_of_dead"
@@ -461,21 +461,21 @@ room {
   id = "forest_bridge"
   name = "River bridge"
   desc = "The tree line parts where a river rapidly flows towards the south, its water rushing over a cliff to the valley far below.  The sound is loud and roaring, as if a dragon were swooping down for the slaughter.  A wooden bridge stretches across the river to the forest on the other side."
-  uid = $407fa54e-70073-c42-00000151-0a767046
+  uid = $64
   outdoors = true
   exit {
-    uid = $58eeb977-2e4dc-c42-00000487-0c2ec4b9
+    uid = $65
     dir = "east"
     target = "forest_trail_east"
   }
   exit {
-    uid = $6f9b9f10-2e4e5-c42-00000488-0c2ec4b9
+    uid = $66
     dir = "west"
     target = "forest_trail_west"
   }
   exit {
     name = "a hidden path"
-    uid = $7062e4aa-2e4ee-c42-00000489-0c2ec4b9
+    uid = $67
     detail = "under"
     hidden = true
     target = "forest_under_bridge"
@@ -488,7 +488,7 @@ room {
       gettable = false
       trashable = false
     }
-    uid = $23378a1a-701f8-c42-00000155-0a767046
+    uid = $68
   }
   object {
     blueprint {
@@ -500,26 +500,26 @@ room {
       touchable = false
       trashable = false
     }
-    uid = $029020cd-70258-c42-00000156-0a767046
+    uid = $69
   }
 }
 room {
   id = "forest_under_bridge"
   name = "Beneath the bridge"
   desc = "Underneath the wooden bridge spanning the fast moving water is a small path, leading down to a cave entrace.  The path doesn't appear to be used often, and is a bit trecherous to travel.  The sounds of the rushing river are quite loud."
-  uid = $3aee61ef-702b8-c42-00000157-0a767046
+  uid = $70
   outdoors = true
   exit {
     name = "a cave"
     desc = "The cave opening leads downwards into the earth."
-    uid = $0322f348-2e500-c42-0000048a-0c2ec4b9
+    uid = $71
     detail = "in"
     target = "cave_waterfall"
   }
   exit {
     name = "a path"
     desc = "The path climbs back up towards the main path and the wooden bridge."
-    uid = $09fae30d-2e509-c42-0000048b-0c2ec4b9
+    uid = $72
     detail = "up"
     target = "forest_bridge"
   }
@@ -528,15 +528,15 @@ room {
   id = "forest_trail_east"
   name = "Forest trail"
   desc = "The trail stretches from the strong stone walls of a small town to the east towards the grand forest to the west.  The sound of rushing water can be heard deeper in the majestic wood."
-  uid = $6161bee2-758c4-c42-0000015a-0a767046
+  uid = $73
   outdoors = true
   exit {
-    uid = $07f26fa9-2e514-c42-0000048c-0c2ec4b9
+    uid = $74
     dir = "west"
     target = "forest_bridge"
   }
   exit {
-    uid = $211768c8-2e51d-c42-0000048d-0c2ec4b9
+    uid = $75
     dir = "northeast"
     target = "darlet_gate_west"
   }
@@ -545,15 +545,15 @@ room {
   id = "darlet_gate_west"
   name = "Darlet: West Gate"
   desc = "The western gate of the town Darlet rises a number of spans into the air, creating the only visible break in the tall stone wall of the fortified town.  The walls lie not far from the edge of the forest, and even the high reaching stone of Darlet seems small in camparison to the grand trees of the wood."
-  uid = $5742416b-759e4-c42-0000015d-0a767046
+  uid = $76
   outdoors = true
   exit {
-    uid = $1c694402-2e529-c42-0000048e-0c2ec4b9
+    uid = $77
     dir = "east"
     target = "darlet_rosewood_west"
   }
   exit {
-    uid = $30225656-2e532-c42-0000048f-0c2ec4b9
+    uid = $78
     dir = "southwest"
     target = "forest_trail_east"
   }
@@ -562,22 +562,22 @@ room {
   id = "darlet_rosewood_west"
   name = "Darlet: Rosewood Road"
   desc = "Just east of the western gate, Rosewood Road sees its end.  Shops frequented by foresters and explorers sit here closest the gate, providing them quick and easy access.  A wooden door of a shop to the north is prominent, with a large, ornate sign hanging overhead."
-  uid = $5abe086d-75b01-c42-00000160-0a767046
+  uid = $79
   outdoors = true
   exit {
-    uid = $3ef0a20f-2e53e-c42-00000490-0c2ec4b9
+    uid = $80
     dir = "east"
     target = "darlet_rosewood_east_1"
   }
   exit {
-    uid = $2fa80da8-2e546-c42-00000491-0c2ec4b9
+    uid = $81
     dir = "west"
     target = "darlet_gate_west"
   }
   exit {
     name = "a gem cutter"
     desc = "The gem cutter's door is made of a dark wood.  Its appears to be of very sturdy craftsmanship."
-    uid = $6beedf6c-2e54f-c42-00000492-0c2ec4b9
+    uid = $82
     dir = "north"
     detail = "through"
     door = true
@@ -593,18 +593,18 @@ room {
       trashable = false
       @read_text = "Cutter and Trader of Gems."
     }
-    uid = $71f6c77e-7bcdf-c42-00000164-0a767046
+    uid = $83
   }
 }
 room {
   id = "darlet_gem_cutter"
   name = "Darlet: Gem Cutter"
   desc = "The room is simple but well kept.  Cases filled with cut jewels and fine jewelry cover the dark wood of the north and east walls."
-  uid = $2c70ac94-7bdc5-c42-00000165-0a767046
+  uid = $84
   exit {
     name = "a out"
     desc = "The gem cutter's door is made of a dark wood.  Its appears to be of very sturdy craftsmanship."
-    uid = $4938c22b-2e55e-c42-00000493-0c2ec4b9
+    uid = $85
     dir = "south"
     detail = "through"
     door = true
@@ -618,7 +618,7 @@ room {
       trashable = false
       @read_text = "Jeral's Jewelry\nGem Cutting Available\nTo see our wares, use the {bold 'menu'} command."
     }
-    uid = $4825e2bd-7be8f-c42-00000167-0a767046
+    uid = $89
   }
   object {
     blueprint {
@@ -628,7 +628,7 @@ room {
       gettable = false
       trashable = false
     }
-    uid = $6077baa4-7bf50-c42-00000169-0a767046
+    uid = $90
   }
   object {
     blueprint {
@@ -638,21 +638,21 @@ room {
       gettable = false
       trashable = false
     }
-    uid = $115c125b-7beef-c42-00000168-0a767046
+    uid = $91
   }
   npc {
     blueprint = "rabbit"
-    uid = $74aab25b-5bd19-c42-00000127-0a767046
+    uid = $86
     tag = "forest_critter"
     position = "stand"
     hp = 60
     equip.right_hand {
       blueprint = "claws_animal"
-      uid = $7690e760-5bdb1-c42-00000128-0a767046
+      uid = $87
     }
     equip.left_hand {
       blueprint = "claws_animal"
-      uid = $6542f1df-603cb-c42-00000129-0a767046
+      uid = $88
     }
     zonelock = true
   }
@@ -661,11 +661,11 @@ room {
   id = "darlet_weapon_smith"
   name = "Darlet: Weapon Smith"
   desc = "Numerous weapons are stacked around the room on racks and stands.  The place has a sooty smell, and the constant hammering from forge behind the building echoes through the showroom."
-  uid = $14ebe551-7bfb0-c42-0000016a-0a767046
+  uid = $92
   exit {
     name = "a door"
     desc = "The weapon smith's door is made of a dark, hard metal."
-    uid = $5aae5cee-2e580-c42-00000494-0c2ec4b9
+    uid = $93
     keyword = "outside"
     keyword = "street"
     dir = "north"
@@ -681,27 +681,27 @@ room {
       trashable = false
       @read_text = "Welcome to the Darlet Weapon Smith!  Use the {bold 'menu'} command to see what we have available."
     }
-    uid = $4e2637e4-7c071-c42-0000016c-0a767046
+    uid = $94
   }
 }
 room {
   id = "darlet_square"
   name = "Town Square"
   desc = "Darlet's square is a crossroads of sorts, and an informal gathering place for the locals to meet.  Just north of the square, a heavy wooden gate marks the entrance to Fort Darlet.  To the south, Vine avenue makes its short run between Rosewood Road and Ashwood lane.  A stone fountain in the center of the square performs for all nearby, creating the soft sound of water gurgling over stones, accompanied by the harmony of splashing, as the water makes its short drop into the fountains basin."
-  uid = $36600917-7c0d2-c42-0000016d-0a767046
+  uid = $95
   outdoors = true
   exit {
-    uid = $497bb414-2e590-c42-00000495-0c2ec4b9
+    uid = $96
     dir = "east"
     target = "darlet_rosewood_east_5"
   }
   exit {
-    uid = $2ce3ce85-2e599-c42-00000496-0c2ec4b9
+    uid = $97
     dir = "south"
     target = "vine_1"
   }
   exit {
-    uid = $0de25e80-2e5a3-c42-00000497-0c2ec4b9
+    uid = $98
     dir = "west"
     target = "darlet_rosewood_east_4"
   }
@@ -710,15 +710,15 @@ room {
   id = "darlet_rosewood_east_1"
   name = "Darlet: Rosewood Road"
   desc = "Paved with cobblestones and well maintained, Rosewood Road is Darlet's main thruway.  The street is lined on both sides by one and two story stone houses with thatched roofs.  The whitewashed stone, dark brown timbers, and the golden thatching are a trademark of Darlet's architecture.  North of the street sits a quaint store with a prominent sign in the window, announcing to passersby the shop to be that of Tallic Tumon's Fine Jewelry."
-  uid = $4e2bad2a-80ad8-c42-00000171-0a767046
+  uid = $99
   outdoors = true
   exit {
-    uid = $4b9e03dd-2e5b0-c42-00000498-0c2ec4b9
+    uid = $100
     dir = "east"
     target = "darlet_rosewood_east_2"
   }
   exit {
-    uid = $26436356-2e5b9-c42-00000499-0c2ec4b9
+    uid = $101
     dir = "west"
     target = "darlet_rosewood_west"
   }
@@ -727,32 +727,32 @@ room {
   id = "darlet_rosewood_east_2"
   name = "Darlet: Rosewood Road"
   desc = "To the west, Rosewood Road runs in a straight line past a handful of small shops towards the town's western gate.  Just to the east the road forks, with Rosewood continuing to the northeast and Ashwood lane ambling off to the southeast.  A modest establishment on the northern side of the street promotes a sign, announcing the shop to be the local armorer."
-  uid = $71633744-80c09-c42-00000174-0a767046
+  uid = $102
   outdoors = true
   exit {
-    uid = $6f68fa84-2e5c6-c42-0000049a-0c2ec4b9
+    uid = $103
     dir = "north"
     hidden = true
     target = "darlet_armorer"
   }
   exit {
-    uid = $1d2f0c25-2e5cf-c42-0000049b-0c2ec4b9
+    uid = $104
     dir = "west"
     target = "darlet_rosewood_east_1"
   }
   exit {
-    uid = $188ec913-2e5d9-c42-0000049c-0c2ec4b9
+    uid = $105
     dir = "northeast"
     target = "darlet_rosewood_east_3"
   }
   exit {
-    uid = $7d5416cf-2e5e2-c42-0000049d-0c2ec4b9
+    uid = $106
     dir = "southeast"
     target = "darlet_ashwood_1"
   }
   exit {
     name = "a door"
-    uid = $2a67a001-2e5eb-c42-0000049e-0c2ec4b9
+    uid = $107
     hidden = true
     target = "darlet_armorer"
   }
@@ -765,22 +765,22 @@ room {
       touchable = true
       trashable = false
     }
-    uid = $5e314618-85658-c42-0000017a-0a767046
+    uid = $108
   }
 }
 room {
   id = "darlet_rosewood_east_3"
   name = "Darlet: Rosewood Road"
   desc = "The high wall which encloses and protects the village of Darlet wanders quite close to the northern side of the street, giving the town the look of a small city.  On the south side of the street the door to a shop sits comfortably in the center of a long porch with a wooden awning.  Atop the share providing tarp is a sign which reads, Darlet Out-fitter and General Store."
-  uid = $010380f1-85723-c42-0000017b-0a767046
+  uid = $109
   outdoors = true
   exit {
-    uid = $49dc1de3-2e5fc-c42-0000049f-0c2ec4b9
+    uid = $110
     dir = "east"
     target = "darlet_rosewood_east_4"
   }
   exit {
-    uid = $395c9c75-2e605-c42-000004a0-0c2ec4b9
+    uid = $111
     dir = "southwest"
     target = "darlet_rosewood_east_2"
   }
@@ -789,15 +789,15 @@ room {
   id = "darlet_ashwood_1"
   name = "Darlet: Ashwood Lane"
   desc = "The care with which Darlet maintains the cobblestone streets is exemplary.  The mostly wooden buildings also appear solidly built, and well kept.  One such structure makes its home on the north side of the lane, and a sign hung from the overhang reads, Jordic Puro, Clothier."
-  uid = $4c70a623-8584e-c42-0000017e-0a767046
+  uid = $112
   outdoors = true
   exit {
-    uid = $7e4501d6-2e613-c42-000004a1-0c2ec4b9
+    uid = $113
     dir = "east"
     target = "darlet_ashwood_2"
   }
   exit {
-    uid = $7f6803da-2e61c-c42-000004a2-0c2ec4b9
+    uid = $114
     dir = "northwest"
     target = "darlet_rosewood_east_2"
   }
@@ -806,15 +806,15 @@ room {
   id = "darlet_ashwood_2"
   name = "Darlet: Ashwood Lane"
   desc = "The tight fitting cobblestones of Ashwood Lane stretch along the straight road.  On the north side of the street is a small, gaudy shop adorned with wind chimes and brightly painted whirlygigs.  A small sign in the yard, painted in rainbow lettering, pronounces this to be the Darlet Souvenir Shoppe."
-  uid = $4e0a35d9-85979-c42-00000181-0a767046
+  uid = $115
   outdoors = true
   exit {
-    uid = $6c132b51-2e62a-c42-000004a3-0c2ec4b9
+    uid = $116
     dir = "east"
     target = "darlet_ashwood_vine"
   }
   exit {
-    uid = $0209780c-2e633-c42-000004a4-0c2ec4b9
+    uid = $117
     dir = "west"
     target = "darlet_ashwood_1"
   }
@@ -823,25 +823,25 @@ room {
   id = "darlet_ashwood_vine"
   name = "Darlet: Corner of Ashwood and Vine"
   desc = "The corner of Ash and Vine is home to the local constable's office and jail house, situated to the northeast and northwest respectivly.  The diminutive jail house suggests that the town either has little in the way of crime, or that the authorities prefer other methods of rehabilitating wrong doers.  The constable's office is both bigger and better maintained than the jail house.  To the south, Bowmans Crescent begins its slow trek about the outskirts of town."
-  uid = $7a7ae26d-85a9c-c42-00000184-0a767046
+  uid = $118
   outdoors = true
   exit {
-    uid = $5a2519dd-2e641-c42-000004a5-0c2ec4b9
+    uid = $119
     dir = "north"
     target = "vine_1"
   }
   exit {
-    uid = $4501e4c8-2e64b-c42-000004a6-0c2ec4b9
+    uid = $120
     dir = "east"
     target = "darlet_ashwood_3"
   }
   exit {
-    uid = $71a5171c-2e654-c42-000004a7-0c2ec4b9
+    uid = $121
     dir = "south"
     target = "bowmans_2"
   }
   exit {
-    uid = $4a87fe87-2e65e-c42-000004a8-0c2ec4b9
+    uid = $122
     dir = "west"
     target = "darlet_ashwood_2"
   }
@@ -850,14 +850,14 @@ room {
   id = "darlet_ashwood_3"
   name = "Darlet: Ashwood Lane"
   desc = "A short distance southward, residential housing can be seen.  The town appears to be growing if the number of newer homes is any indication.  On the north side of the street is an older building with weathered paint, displaying a sign which reads, Tillards Barter Shop."
-  uid = $4b69e3e2-8b067-c42-00000189-0a767046
+  uid = $123
   exit {
-    uid = $4824d810-2e66c-c42-000004a9-0c2ec4b9
+    uid = $124
     dir = "east"
     target = "darlet_ashwood_4"
   }
   exit {
-    uid = $7b9ffa29-2e675-c42-000004aa-0c2ec4b9
+    uid = $125
     dir = "west"
     target = "darlet_ashwood_vine"
   }
@@ -866,14 +866,14 @@ room {
   id = "darlet_ashwood_4"
   name = "Darlet: Ashwood Lane"
   desc = "A bend in the road takes Ashwood lane slightly northward as the lane travels easterly.  To the west the road runs long and straight towards a large intersection.  North of the street is an old, two story, wooden building.  The front porch is built up high in spots, and several doors set in the front of the structure appear like wide, gaping maws.  The building is surrounded by a wrought iron fence, and a sign near the gate reads, Rudan and Son, Warehouser."
-  uid = $01c9ecfa-8b18e-c42-0000018c-0a767046
+  uid = $126
   exit {
-    uid = $527a6e31-2e683-c42-000004ab-0c2ec4b9
+    uid = $127
     dir = "west"
     target = "darlet_ashwood_3"
   }
   exit {
-    uid = $693c40d9-2e68d-c42-000004ac-0c2ec4b9
+    uid = $128
     dir = "northeast"
     target = "darlet_ashwood_5"
   }
@@ -882,20 +882,20 @@ room {
   id = "darlet_ashwood_5"
   name = "Darlet: Intersection of Rosewood and Ashwood"
   desc = "Darlet's main thoroughfare, Rosewood Road, overtakes the shorter Ashwood Lane.  Most who travel through town make their way northeast towards the locally renown Wayfarers' Rest.  Ashwood Lane begins its short, and less congested, way about the southern side of the town proper.  Directly to the west, splitting the two streets like a wedge, is Darlet's auction house."
-  uid = $78a99b60-8b2b2-c42-0000018f-0a767046
+  uid = $129
   outdoors = true
   exit {
-    uid = $18093e2b-2e69b-c42-000004ad-0c2ec4b9
+    uid = $130
     dir = "east"
     target = "darlet_rosewood_east_7"
   }
   exit {
-    uid = $029cc487-2e6a5-c42-000004ae-0c2ec4b9
+    uid = $131
     dir = "northwest"
     target = "darlet_rosewood_east_6"
   }
   exit {
-    uid = $282ce2e8-2e6af-c42-000004af-0c2ec4b9
+    uid = $132
     dir = "southwest"
     target = "darlet_ashwood_4"
   }
@@ -904,22 +904,22 @@ room {
   id = "vine_1"
   name = "Darlet: Vine Avenue"
   desc = "This small avenue runs north and south between Rosewood Road and Ashwood Lane, serving as Darlet's central business district.  On the east side of the avenue stands a three story stone building; Darlet's central bank.  The building itself stands out from most of the other structures in town for its all stone-work design.  To the west of the avenue, Darlet's town hall sits nestled between the village planning commission, and the tax assessor's office."
-  uid = $664af9f4-91203-c42-00000193-0a767046
+  uid = $133
   outdoors = true
   exit {
-    uid = $47b14bd4-2e6bd-c42-000004b0-0c2ec4b9
+    uid = $134
     dir = "north"
     target = "darlet_square"
   }
   exit {
-    uid = $6e8ba3f3-2e6c7-c42-000004b1-0c2ec4b9
+    uid = $135
     dir = "south"
     target = "darlet_ashwood_vine"
   }
   exit {
     name = "a metal door"
     desc = "The weapon smith's door is made of a dark, hard metal."
-    uid = $7165a513-2e6d1-c42-000004b2-0c2ec4b9
+    uid = $136
     keyword = "weapon smith"
     dir = "south"
     detail = "through"
@@ -931,15 +931,15 @@ room {
   id = "darlet_rosewood_east_4"
   name = "Darlet: Rosewood Road"
   desc = "This stretch of Rosewood Road continues to amble its way about the northern side of Darlet's village proper.  The town square can be seen, a short way east of here, as well as Fort Darlet, which is just north of the square.  On the southern side of the street, a well kept shop boasts a sign which reads Darlet florist."
-  uid = $34cb73fb-91389-c42-00000197-0a767046
+  uid = $137
   outdoors = true
   exit {
-    uid = $225fa8c2-2e6e0-c42-000004b3-0c2ec4b9
+    uid = $138
     dir = "east"
     target = "darlet_square"
   }
   exit {
-    uid = $38075807-2e6ea-c42-000004b4-0c2ec4b9
+    uid = $139
     dir = "west"
     target = "darlet_rosewood_east_3"
   }
@@ -948,15 +948,15 @@ room {
   id = "darlet_rosewood_east_5"
   name = "Darlet: Rosewood Road"
   desc = "Just east of the town square, Rosewood Road runs in a straight line, north of the town proper.  The local buildings are solidly built, utilizing this region's most abundant resource, wood."
-  uid = $35cef4ec-914ad-c42-0000019a-0a767046
+  uid = $140
   outdoors = true
   exit {
-    uid = $1e497399-2e702-c42-000004b5-0c2ec4b9
+    uid = $141
     dir = "east"
     target = "darlet_rosewood_east_6"
   }
   exit {
-    uid = $30420742-2e70c-c42-000004b6-0c2ec4b9
+    uid = $142
     dir = "west"
     target = "darlet_square"
   }
@@ -965,15 +965,15 @@ room {
   id = "darlet_rosewood_east_6"
   name = "Darlet: Rosewood Road"
   desc = "Westward, the road stretches towards the town square.  A short distance to the east, Rosewood makes a slight turn to the southeast.  Here however is the destination for many of Darlet's welcome, if not completely trusted guests.  That being the large, three story, inn, situated on the north side of the street.  Wayfarers Rest is how the sign on the front porch reads. {if day-or-night = 'night'} From the dark street, the warm light coming from the inn's numerous windows invite the weary, and the occasional round of song invites the thirsty{else} The scent of freshly baked bread, and roasting meat, drift lightly on the air, making this stop all the more inviting{endif}."
-  uid = $023f9b10-95ec1-c42-0000019d-0a767046
+  uid = $143
   outdoors = true
   exit {
-    uid = $03a55be4-2e71b-c42-000004b7-0c2ec4b9
+    uid = $144
     dir = "west"
     target = "darlet_rosewood_east_5"
   }
   exit {
-    uid = $448cd6ef-2e725-c42-000004b8-0c2ec4b9
+    uid = $145
     dir = "southeast"
     target = "darlet_ashwood_5"
   }
@@ -982,25 +982,25 @@ room {
   id = "darlet_rosewood_east_7"
   name = "Darlet: Rosewood and Clover"
   desc = "The intersection of Rosewood Road and Clover Way marks the end of Darlets business district to the west, and the beginning of a more residential area to the east.  Though a small shop or two stands out here or there, the majority of buildings on either side of Clover Way are the homes of the local citizenry."
-  uid = $5049d0e9-95ff7-c42-000001a0-0a767046
+  uid = $146
   outdoors = true
   exit {
-    uid = $1fab01c7-2e734-c42-000004b9-0c2ec4b9
+    uid = $147
     dir = "north"
     target = "clover_1"
   }
   exit {
-    uid = $20d4680a-2e73e-c42-000004ba-0c2ec4b9
+    uid = $148
     dir = "east"
     target = "darlet_rosewood_east_8"
   }
   exit {
-    uid = $5d1ba002-2e74c-c42-000004bb-0c2ec4b9
+    uid = $149
     dir = "south"
     target = "clover_3"
   }
   exit {
-    uid = $1cff1896-2e756-c42-000004bc-0c2ec4b9
+    uid = $150
     dir = "west"
     target = "darlet_ashwood_5"
   }
@@ -1009,15 +1009,15 @@ room {
   id = "clover_1"
   name = "Darlet: Clover Lane"
   desc = "The lane is a bit narrow, with houses pressing in on both sides.  One home stands out in particular, with its iron gate just east of the street. {if day-or-night = 'night'} The lamps on either side of the gate are lit, providing a bit of security for the enterance. {else} A sign on the gate announces that this is the residence of Dallin Grayrock.{endif}"
-  uid = $4c7e4fe4-961e1-c42-000001a5-0a767046
+  uid = $151
   outdoors = true
   exit {
-    uid = $4b3c080b-2e765-c42-000004bd-0c2ec4b9
+    uid = $152
     dir = "north"
     target = "clover_2"
   }
   exit {
-    uid = $26f7bde6-2e76f-c42-000004be-0c2ec4b9
+    uid = $153
     dir = "south"
     target = "darlet_rosewood_east_7"
   }
@@ -1030,27 +1030,27 @@ room {
       touchable = false
       trashable = false
     }
-    uid = $17e833c6-9c849-c42-000001a8-0a767046
+    uid = $154
   }
 }
 room {
   id = "clover_2"
   name = "Bowmans Crescent and Clover"
   desc = "To the south, the narrow Clover Lane runs straight towards the larger Rosewood Road.  Bowmans Crescent, heading to the west and northeast, makes its way about the outskirts of Darlet. {if day-or-night = 'day'}A large willow tree stands proudly in an open field, just north of the intersection.  A small tree house has been built into its branches. {else}A large willow tree stands guarding the intersection, just north of the street.  Its long branches sway gently in the moonlight. {endif}"
-  uid = $71eab0ca-9c8bd-c42-000001a9-0a767046
+  uid = $155
   outdoors = true
   exit {
-    uid = $565bb50b-2e784-c42-000004bf-0c2ec4b9
+    uid = $156
     dir = "south"
     target = "clover_1"
   }
   exit {
-    uid = $498109e1-2e78e-c42-000004c0-0c2ec4b9
+    uid = $157
     dir = "west"
     target = "bowmans_11"
   }
   exit {
-    uid = $265fc1c0-2e798-c42-000004c1-0c2ec4b9
+    uid = $158
     dir = "northeast"
     target = "bowmans_10"
   }
@@ -1058,15 +1058,15 @@ room {
 room {
   id = "clover_3"
   name = "a clover_3"
-  uid = $0e77a844-9ca4a-c42-000001ad-0a767046
+  uid = $159
   outdoors = true
   exit {
-    uid = $426ee05c-2e7a8-c42-000004c2-0c2ec4b9
+    uid = $160
     dir = "north"
     target = "darlet_rosewood_east_7"
   }
   exit {
-    uid = $4b8a81ee-2e7b3-c42-000004c3-0c2ec4b9
+    uid = $161
     dir = "southwest"
     target = "clover_4"
   }
@@ -1074,15 +1074,15 @@ room {
 room {
   id = "clover_4"
   name = "a clover_4"
-  uid = $421c01c6-9cb70-c42-000001b0-0a767046
+  uid = $162
   outdoors = true
   exit {
-    uid = $0084db9d-2e7c2-c42-000004c4-0c2ec4b9
+    uid = $163
     dir = "south"
     target = "clover_6"
   }
   exit {
-    uid = $0770c525-2e7cd-c42-000004c5-0c2ec4b9
+    uid = $164
     dir = "northeast"
     target = "clover_3"
   }
@@ -1091,20 +1091,20 @@ room {
   id = "clover_6"
   name = "Bowmans Crescent and Clover"
   desc = "The residences in this area are not as large or expensive as those in the town proper, yet they are neat and tidy with good-sized treed lots.  A modest stone-work bridge arches gracefully over small stream which runs across the path of the lane, just east of the intersection.  To the north, Clover Lane heads back towards the town proper, and to the east and west, Bowmans Crescent continues its trek about the town."
-  uid = $4015ab93-a1439-c42-000001b3-0a767046
+  uid = $165
   outdoors = true
   exit {
-    uid = $3d2f990a-2e7dd-c42-000004c6-0c2ec4b9
+    uid = $166
     dir = "north"
     target = "clover_4"
   }
   exit {
-    uid = $4b0cda25-2e7e7-c42-000004c7-0c2ec4b9
+    uid = $167
     dir = "east"
     target = "bowmans_4"
   }
   exit {
-    uid = $4f959d35-2e7f2-c42-000004c8-0c2ec4b9
+    uid = $168
     dir = "west"
     target = "bowmans_3"
   }
@@ -1112,21 +1112,21 @@ room {
 room {
   id = "bowmans_1"
   name = "a bowmans_1"
-  uid = $2c4bcbda-a15c9-c42-000001b7-0a767046
+  uid = $169
 }
 room {
   id = "bowmans_2"
   name = "Darlet: Bowmans Crescent"
   desc = "Here Bowmans Crescent begins its amble around the outskirts of Darlet.  The road is packed earth, and the deep ruts evidence frequent use.  A quaint, whitewashed, residence takes up the east side of the street, nestled safely behind a freshly painted picket fence.  A grand oak tree in the front yard stands tall and proud, completely oblivious to all passersby"
-  uid = $758892bf-a162d-c42-000001b8-0a767046
+  uid = $170
   outdoors = true
   exit {
-    uid = $38cf9334-2e807-c42-000004c9-0c2ec4b9
+    uid = $171
     dir = "north"
     target = "darlet_ashwood_vine"
   }
   exit {
-    uid = $1d874856-2e812-c42-000004ca-0c2ec4b9
+    uid = $172
     dir = "southeast"
     target = "bowmans_3"
   }
@@ -1135,15 +1135,15 @@ room {
   id = "bowmans_3"
   name = "Darlet: Bowmans Crescent"
   desc = "The road continues about the outskirts of town.  Not far to the south, the wall of Darlet can be seen, standing silent guard over the small community.  Tall grass lines both sides of the street, as this stretch of roadway passes several vacant lots.  The lots have been cleared of brush and small trees, but the building has not yet begun."
-  uid = $20cf73e8-a176f-c42-000001bb-0a767046
+  uid = $173
   outdoors = true
   exit {
-    uid = $38d1de0e-2e822-c42-000004cb-0c2ec4b9
+    uid = $174
     dir = "east"
     target = "clover_6"
   }
   exit {
-    uid = $50d8d15f-2e82c-c42-000004cc-0c2ec4b9
+    uid = $175
     dir = "northwest"
     target = "bowmans_2"
   }
@@ -1152,15 +1152,15 @@ room {
   id = "bowmans_4"
   name = "Darlet: Bowmans Crescent"
   desc = "Deep ruts in the hard packed earth evidence the passage of countless carts and wagons over the years.  An old cottage is nestled within a small copse of trees, set back off the south side of the country lane.  The residence has seen better years, and the trees have become scraggly, and unkempt.  An ancient dog house takes shelter under one of the trees near the shack."
-  uid = $4877a967-a60f7-c42-000001be-0a767046
+  uid = $176
   outdoors = true
   exit {
-    uid = $20240cdd-2e83d-c42-000004cd-0c2ec4b9
+    uid = $177
     dir = "west"
     target = "clover_6"
   }
   exit {
-    uid = $60fec0f6-2e848-c42-000004ce-0c2ec4b9
+    uid = $178
     dir = "northeast"
     target = "bowmans_5"
   }
@@ -1169,15 +1169,15 @@ room {
   id = "darlet_rosewood_east_8"
   name = "Darlet: Rosewood Road"
   desc = "A gentle calm emanates from the south side of the street, which is the home of Darlets sanctuary.  The six story wooden structure is the tallest in town, with a spire that stretches forty feet above the roof.  The sanctuary itself is built in the shape of an octagon, with the angle of each side pointing towards one of the major compass directions.  The sanctuary grounds are considerable, taking up several blocks.  The trees and hedges within the compound are immaculate, and the flowering gardens attract tourists from all over the world."
-  uid = $5e77fab9-a622e-c42-000001c1-0a767046
+  uid = $179
   outdoors = true
   exit {
-    uid = $188a1d33-2e858-c42-000004cf-0c2ec4b9
+    uid = $180
     dir = "east"
     target = "darlet_rosewood_east_9"
   }
   exit {
-    uid = $0eafb0d0-2e863-c42-000004d0-0c2ec4b9
+    uid = $181
     dir = "west"
     target = "darlet_rosewood_east_7"
   }
@@ -1186,22 +1186,22 @@ room {
   id = "darlet_rosewood_east_9"
   name = "Darlet: Rosewood Road"
   desc = "Tranquility and repose reside along this portion of Roaswood Road.  Their presence is drawn to Darlets cemetery on the south side of the street.  Situated just east of of the sanctuary, this hallowed spot has been the final resting place of Darlets departed for hundreds of years.  A decorative wrought iron fence encompasses the grounds, ending here at the gate.  On the north side of the street, a modest shop displays a subdued sign which reads Remembrance and Monuments."
-  uid = $2af64a9d-a63a0-c42-000001c4-0a767046
+  uid = $182
   outdoors = true
   exit {
-    uid = $5264660a-2e873-c42-000004d1-0c2ec4b9
+    uid = $183
     dir = "east"
     target = "darlet_rosewood_east_10"
   }
   exit {
-    uid = $3ae9c5f5-2e87e-c42-000004d2-0c2ec4b9
+    uid = $184
     dir = "west"
     target = "darlet_rosewood_east_8"
   }
   exit {
     name = "a gate"
     desc = "The wrought iron gate is old and rusted in some places but over all it is in good repair.  Arched and topped with pointed tips, the gate is about a span high.  Tall enough to keep out all but the most daring of climbers.  A sign has been inlaid into the iron work which reads \"Sleep peacefully in the arms of Morphious\"."
-    uid = $46b708d7-2e889-c42-000004d3-0c2ec4b9
+    uid = $185
     target = "cemetery_1"
   }
   object {
@@ -1212,32 +1212,32 @@ room {
       touchable = true
       trashable = false
     }
-    uid = $10848cb2-acd24-c42-000001c8-0a767046
+    uid = $186
   }
 }
 room {
   id = "darlet_rosewood_east_10"
   name = "Rosewood and Bowmans Crescent"
   desc = "The intersection of Rosewood Road and Bowmans Crescent affords travelers direct access to Darlets town proper to the west, as well as a more scenic tour of the towns outskirts to the north and south.  Darlets eastern gate is visible a short distance east of here."
-  uid = $1bd528d1-acda6-c42-000001c9-0a767046
+  uid = $187
   outdoors = true
   exit {
-    uid = $70add9a3-2e89f-c42-000004d4-0c2ec4b9
+    uid = $188
     dir = "north"
     target = "bowmans_8"
   }
   exit {
-    uid = $6b2bcd38-2e8aa-c42-000004d5-0c2ec4b9
+    uid = $189
     dir = "east"
     target = "darlet_rosewood_east_11"
   }
   exit {
-    uid = $4a5c64bb-2e8b5-c42-000004d6-0c2ec4b9
+    uid = $190
     dir = "south"
     target = "bowmans_7"
   }
   exit {
-    uid = $353ab092-2e8c1-c42-000004d7-0c2ec4b9
+    uid = $191
     dir = "west"
     target = "darlet_rosewood_east_9"
   }
@@ -1246,10 +1246,10 @@ room {
   id = "darlet_rosewood_east_11"
   name = "Darlet: East Gate"
   desc = "The east gate of Darlet rises tall and strong, several spans upward.  The heavy timber is the only visible break in the wall that shelters this woodland village.  Just north of the street is a small customs office, while to the south, a guard shack has been built for, and maned by local militia members."
-  uid = $36b9dc01-b15bf-c42-000001ce-0a767046
+  uid = $192
   outdoors = true
   exit {
-    uid = $0ad6ceff-2e8d1-c42-000004d8-0c2ec4b9
+    uid = $193
     dir = "west"
     target = "darlet_rosewood_east_10"
   }
@@ -1258,15 +1258,15 @@ room {
   id = "bowmans_5"
   name = "Darlet: Bowmans Crescent"
   desc = "A tiny brook babbles its way across Bowmans Crescent here, and a sturdy wooden bridge affords passage across its shallow banks.  A modest cobblestone cottage stands on the northwest side of the street.  A low stone wall protects the yard from idle wandering.  Along the top of the low wall, flower boxes have been placed and lovingly planted with flowers of every sort.  The only visible break in the wall is here, at a finely wrought, iron gate."
-  uid = $6992c197-b1731-c42-000001d0-0a767046
+  uid = $194
   outdoors = true
   exit {
-    uid = $6b30ccc5-2e8e2-c42-000004d9-0c2ec4b9
+    uid = $195
     dir = "northeast"
     target = "bowmans_6"
   }
   exit {
-    uid = $12565095-2e8ed-c42-000004da-0c2ec4b9
+    uid = $196
     dir = "southwest"
     target = "bowmans_4"
   }
@@ -1275,26 +1275,26 @@ room {
   id = "bowmans_6"
   name = "Darlet: Bowmans Crescent"
   desc = "Tall trees line this stretch of Bowmans Crescent, competing with each other as they reach for the sky.  A small path leads back into the trees on the southeast side of the lane, and the top of a stone tower can be seen peeking just above the tree-line.  On the northwest side of the road, a large clearing has been cut in the midst of the trees and in its center, a small playground has been built for the local children."
-  uid = $771342db-b1867-c42-000001d3-0a767046
+  uid = $197
   outdoors = true
   exit {
-    uid = $27d5e795-2e8ff-c42-000004db-0c2ec4b9
+    uid = $198
     dir = "northeast"
     target = "bowmans_7"
   }
   exit {
-    uid = $366cd4d1-2e90a-c42-000004dc-0c2ec4b9
+    uid = $199
     dir = "southwest"
     target = "bowmans_5"
   }
   exit {
     name = "a clearing"
-    uid = $394e0e7b-2e915-c42-000004dd-0c2ec4b9
+    uid = $200
     target = "fest_1"
   }
   exit {
     name = "a path"
-    uid = $7e319ca1-2e920-c42-000004de-0c2ec4b9
+    uid = $201
     hidden = true
     target = "path_tower_1"
   }
@@ -1303,15 +1303,15 @@ room {
   id = "bowmans_7"
   name = "Darlet: Bowmans Crescent"
   desc = "A short distance north, Bowmans Crescent intersects the larger Rosewood Road.  To the southwest, the top of a stone tower can be seen just above the line of trees.  A comfortable looking cottage, made of wood, and thatch roofing, sets off a short way, on the west side of the lane.  An exceptionally large willow tree stands as a sentinel, near the road to the east, forever watching and whispering to those who pass."
-  uid = $4c0fb277-b1a5c-c42-000001d8-0a767046
+  uid = $202
   outdoors = true
   exit {
-    uid = $7feddeb2-2e932-c42-000004df-0c2ec4b9
+    uid = $203
     dir = "north"
     target = "darlet_rosewood_east_10"
   }
   exit {
-    uid = $5fadd03b-2e93d-c42-000004e0-0c2ec4b9
+    uid = $204
     dir = "southwest"
     target = "bowmans_6"
   }
@@ -1320,15 +1320,15 @@ room {
   id = "bowmans_8"
   name = "Darlet: Bowmans Crescent"
   desc = "Making its way slowly about town, Bowmans crescent passes open fields on both sides of the street.  The fields are over grown with tall grass and brush."
-  uid = $78ff6202-b6224-c42-000001db-0a767046
+  uid = $205
   outdoors = true
   exit {
-    uid = $40a07cfd-2e94f-c42-000004e1-0c2ec4b9
+    uid = $206
     dir = "south"
     target = "darlet_rosewood_east_10"
   }
   exit {
-    uid = $4b7860a0-2e95a-c42-000004e2-0c2ec4b9
+    uid = $207
     dir = "northwest"
     target = "bowmans_9"
   }
@@ -1337,15 +1337,15 @@ room {
   id = "bowmans_9"
   name = "Darlet: Bowmans Crescent"
   desc = "A short distance to the west, the gray stone wall surrounding the town of Darlet can be seen standing watch over the peaceful little hamlet.  To the east, a small copse of ashwood trees {if day-or-night = 'day'}shade a grassy field from the heat of the sun.{else} are silhouetted against the night sky, dancing gently in the moonlight.{endif}"
-  uid = $7638e275-b635f-c42-000001de-0a767046
+  uid = $208
   outdoors = true
   exit {
-    uid = $6032abd8-2e96b-c42-000004e3-0c2ec4b9
+    uid = $209
     dir = "northwest"
     target = "bowmans_10"
   }
   exit {
-    uid = $48114222-2e977-c42-000004e4-0c2ec4b9
+    uid = $210
     dir = "southeast"
     target = "bowmans_8"
   }
@@ -1353,15 +1353,15 @@ room {
 room {
   id = "bowmans_10"
   name = "Darlet: Bowmans Crescent"
-  uid = $3e37163f-b648d-c42-000001e1-0a767046
+  uid = $211
   outdoors = true
   exit {
-    uid = $08a7f9ab-2e989-c42-000004e5-0c2ec4b9
+    uid = $212
     dir = "southeast"
     target = "bowmans_9"
   }
   exit {
-    uid = $2b3f85fd-2e994-c42-000004e6-0c2ec4b9
+    uid = $213
     dir = "southwest"
     target = "clover_2"
   }
@@ -1370,15 +1370,15 @@ room {
   id = "bowmans_11"
   name = "Darlet: Bowmans Crescent"
   desc = "To the Northwest, the hard pack dirt of Bowmans Crescent dips slightly down hill, as if to duck beneath the outstretched branches of the trees that grow on either side of the road.  To the east, and slightly uphill, the road comes to a small intersection, where a large willow tree stands tall and proud, a silently swaying sentinel {if day-or-night = 'night'}in the night.{else}under the sun.{endif}"
-  uid = $5cd0f227-bac0d-c42-000001e4-0a767046
+  uid = $214
   outdoors = true
   exit {
-    uid = $17a6df58-2e9a6-c42-000004e7-0c2ec4b9
+    uid = $215
     dir = "east"
     target = "clover_2"
   }
   exit {
-    uid = $41778cdf-2e9b2-c42-000004e8-0c2ec4b9
+    uid = $216
     dir = "northwest"
     target = "bowmans_12"
   }
@@ -1387,15 +1387,15 @@ room {
   id = "bowmans_12"
   name = "Darlet: Bowmans Crescent"
   desc = "Now and then, the {if day-or-night = 'day'}sun light{else}moon light{endif} peeks through the natural canopy overhead, to fall upon the packed earth road.  The trees hedge the road on both sides protectively, as a parent shelters a child."
-  uid = $6d557ed9-badd1-c42-000001e7-0a767046
+  uid = $217
   outdoors = true
   exit {
-    uid = $48c6ce53-2e9c4-c42-000004e9-0c2ec4b9
+    uid = $218
     dir = "west"
     target = "bowmans_13"
   }
   exit {
-    uid = $5078bd66-2e9cf-c42-000004ea-0c2ec4b9
+    uid = $219
     dir = "southeast"
     target = "bowmans_11"
   }
@@ -1404,15 +1404,15 @@ room {
   id = "bowmans_13"
   name = "Darlet: Bowmans Crescent"
   desc = "The rutty packed road which is Bowmans Crescent comes to and end here where Woodmans way overtakes it from the north.  A small wood cabin sets comfortably nestled beneath a copse of trees, not far from the road, to the north."
-  uid = $1680d1db-baf02-c42-000001ea-0a767046
+  uid = $220
   outdoors = true
   exit {
-    uid = $12505e3e-2e9e1-c42-000004eb-0c2ec4b9
+    uid = $221
     dir = "north"
     target = "woodmens_way_1"
   }
   exit {
-    uid = $68eadb30-2e9ed-c42-000004ec-0c2ec4b9
+    uid = $222
     dir = "east"
     target = "bowmans_12"
   }
@@ -1420,15 +1420,15 @@ room {
 room {
   id = "bowmans_14"
   name = "Darlet: Bowmans Crescent"
-  uid = $4d3aaddc-bb030-c42-000001ed-0a767046
+  uid = $223
   outdoors = true
   exit {
-    uid = $31777e5d-2e9ff-c42-000004ed-0c2ec4b9
+    uid = $224
     dir = "north"
     target = "woodmens_way_1"
   }
   exit {
-    uid = $2ada7b72-2ea0b-c42-000004ee-0c2ec4b9
+    uid = $225
     dir = "east"
     target = "bowmans_13"
   }
@@ -1437,20 +1437,20 @@ room {
   id = "woodmens_way_1"
   name = "Darlet: Woodmans Way"
   desc = "Woodmans Way is little more that a foot path through the maple and oak trees, which surround the town of Darlet.  A short distance to the north, the path forks to the Northeast and Northwest, making its way around an exceptionally large silverwillow tree."
-  uid = $77ce0cd0-c03d9-c42-000001f0-0a767046
+  uid = $226
   outdoors = true
   exit {
-    uid = $779a8c00-2ea1d-c42-000004ef-0c2ec4b9
+    uid = $227
     dir = "south"
     target = "bowmans_13"
   }
   exit {
-    uid = $03dbe467-2ea29-c42-000004f0-0c2ec4b9
+    uid = $228
     dir = "northwest"
     target = "woodmens_way_4"
   }
   exit {
-    uid = $65c44167-2ea35-c42-000004f1-0c2ec4b9
+    uid = $229
     dir = "northeast"
     target = "woodmens_way_2"
   }
@@ -1459,15 +1459,15 @@ room {
   id = "woodmens_way_2"
   name = "Darlet: Woodmans Way"
   desc = "The path wends it way through the trees, as it makes it way around a majestic silverwillow tree to the east.  Through the gaps in the branches, a large wooden structure can be seen a short distance to the Northwest."
-  uid = $3b34d32b-c0576-c42-000001f4-0a767046
+  uid = $230
   outdoors = true
   exit {
-    uid = $3e5194d7-2ea48-c42-000004f2-0c2ec4b9
+    uid = $231
     dir = "northwest"
     target = "woodmens_way_3"
   }
   exit {
-    uid = $7489be0a-2ea54-c42-000004f3-0c2ec4b9
+    uid = $232
     dir = "southwest"
     target = "woodmens_way_1"
   }
@@ -1476,15 +1476,15 @@ room {
   id = "woodmens_way_3"
   name = "Darlet: Woodmans Way"
   desc = "The trees give way to a large clearing in the woods, making room for a long curved cabin, situated on the northern side of the trail.  Worn steps lead to the cabin's covered porch, which follows the the curve of the structure.  A hand carved plaque hangs from a heavy wooden door situated directly beyond the steps which reads Darlet Boyer and Fletching."
-  uid = $074485a2-c06af-c42-000001f7-0a767046
+  uid = $233
   outdoors = true
   exit {
-    uid = $50f00e9f-2ea66-c42-000004f4-0c2ec4b9
+    uid = $234
     dir = "southeast"
     target = "woodmens_way_1"
   }
   exit {
-    uid = $08adf993-2ea72-c42-000004f5-0c2ec4b9
+    uid = $235
     dir = "southwest"
     target = "woodmens_way_4"
   }
@@ -1492,15 +1492,15 @@ room {
 room {
   id = "woodmens_way_4"
   name = "Darlet: Woodmans Way"
-  uid = $0043e7a4-c5c64-c42-000001fa-0a767046
+  uid = $236
   outdoors = true
   exit {
-    uid = $29c46e9c-2ea84-c42-000004f6-0c2ec4b9
+    uid = $237
     dir = "northeast"
     target = "woodmens_way_3"
   }
   exit {
-    uid = $5bc6dd9e-2ea91-c42-000004f7-0c2ec4b9
+    uid = $238
     dir = "southeast"
     target = "woodmens_way_1"
   }
@@ -1508,30 +1508,30 @@ room {
 room {
   id = "path_tower_1"
   name = "a path_tower_1"
-  uid = $767cca1a-c5e26-c42-000001fd-0a767046
+  uid = $239
   outdoors = true
   exit {
-    uid = $73dec658-2eaa3-c42-000004f8-0c2ec4b9
+    uid = $240
     dir = "southeast"
     target = "path_tower_2"
   }
   exit {
     name = "a road"
-    uid = $3c1abf31-2eab0-c42-000004f9-0c2ec4b9
+    uid = $241
     target = "bowmans_6"
   }
 }
 room {
   id = "path_tower_2"
   name = "a path_tower_2"
-  uid = $34b3e059-c5f57-c42-00000200-0a767046
+  uid = $242
   exit {
-    uid = $039cc534-2eac3-c42-000004fa-0c2ec4b9
+    uid = $243
     dir = "east"
     target = "path2"
   }
   exit {
-    uid = $2a4b9b29-2eacf-c42-000004fb-0c2ec4b9
+    uid = $244
     dir = "northwest"
     target = "path_tower_1"
   }
@@ -1540,30 +1540,30 @@ room {
   id = "fest_1"
   name = "a fest_1"
   desc = "Welcome to the fest area {$actor.name}"
-  uid = $1184d280-c6090-c42-00000203-0a767046
+  uid = $245
   outdoors = true
   exit {
     name = "a road"
-    uid = $7568cdac-2eaeb-c42-000004fc-0c2ec4b9
+    uid = $246
     target = "bowmans_6"
   }
 }
 room {
   id = "cemetery_1"
   name = "a cemetery_1"
-  uid = $4452d986-cb170-c42-00000205-0a767046
+  uid = $247
   exit {
     name = "a gate"
-    uid = $01ce61d5-2eafe-c42-000004fd-0c2ec4b9
+    uid = $248
     target = "darlet_rosewood_east_9"
   }
 }
 room {
   id = "path2"
   name = "a path2"
-  uid = $08f72de3-cb2ce-c42-00000207-0a767046
+  uid = $249
   exit {
-    uid = $2a3979dc-2eb11-c42-000004fe-0c2ec4b9
+    uid = $250
     dir = "west"
     target = "path_tower_2"
   }
@@ -1572,11 +1572,11 @@ room {
   id = "darlet_armorer"
   name = "Darlet: Armor Shop"
   desc = "The smell of leather and oiled steel hangs on the air in this unassuming shop.  Shields, large and small hang on large pegs in the walls.  Chain coifs and mail hang loosely from mannequins that stand in various locations about the room.  Full suits of plate mail stand upright on their own here and there.  Hunting leathers, helms, greaves, gloves, and other protective gear, all rest neatly on display shelves in the center of the room.  The shops proprietor mills about, tidying this or that, waiting for a customer to serve."
-  uid = $155b2335-cb39f-c42-00000209-0a767046
+  uid = $251
   coins = 1000
   exit {
     name = "a door"
-    uid = $55169de7-2eb24-c42-000004ff-0c2ec4b9
+    uid = $252
     dir = "south"
     target = "darlet_rosewood_east_2"
   }
@@ -1585,14 +1585,14 @@ room {
   id = "graveyard_gate"
   name = "Graveyard Gate"
   desc = "Dark vines wind their way up an old iron gate, hanging loose from its hinges, which leads from the forest into the old graveyard.  Tombstones and mausoleums are spread haphazardly around the place, and the stench of death hangs in the air."
-  uid = $22f0e82a-cb46a-c42-0000020b-0a767046
+  uid = $253
   exit {
-    uid = $426eded2-2eb38-c42-00000500-0c2ec4b9
+    uid = $254
     dir = "east"
     target = "broken_tree"
   }
   exit {
-    uid = $75b1da7c-2eb44-c42-00000501-0c2ec4b9
+    uid = $255
     dir = "west"
     target = "graveyard_grave"
   }
@@ -1601,19 +1601,19 @@ room {
   id = "graveyard_grave"
   name = "Old Graveyard"
   desc = "Tombstones dot the landscape, littered between the simple mausoleums erected in memory of local gentry.  An open grave is here, as is a shattered wooden box."
-  uid = $7348deb6-cb59a-c42-0000020e-0a767046
+  uid = $256
   exit {
-    uid = $354949c0-2eb58-c42-00000502-0c2ec4b9
+    uid = $257
     dir = "east"
     target = "graveyard_gate"
   }
   exit {
-    uid = $0a8020f5-2eb64-c42-00000503-0c2ec4b9
+    uid = $258
     dir = "west"
     target = "graveyard_mausoleum"
   }
   exit {
-    uid = $7e59d427-2eb70-c42-00000504-0c2ec4b9
+    uid = $259
     dir = "northwest"
     target = "graveyard_tree"
   }
@@ -1625,7 +1625,7 @@ room {
       gettable = false
       trashable = false
     }
-    uid = $100bde85-d0597-c42-00000215-0a767046
+    uid = $260
   }
   object {
     blueprint {
@@ -1636,21 +1636,21 @@ room {
       trashable = false
       container = "in"
     }
-    uid = $538a5680-d05fe-c42-00000216-0a767046
+    uid = $261
   }
 }
 room {
   id = "graveyard_tree"
   name = "Old Graveyard"
   desc = "Amidst the tombstones rises a large, gnarled tree.  Little else beyond the rows of granite markers and dirt is here."
-  uid = $61f23e89-d0665-c42-00000217-0a767046
+  uid = $262
   exit {
-    uid = $6088cfbd-2eb91-c42-00000505-0c2ec4b9
+    uid = $263
     dir = "south"
     target = "graveyard_mausoleum"
   }
   exit {
-    uid = $2227004d-2eb9d-c42-00000506-0c2ec4b9
+    uid = $264
     dir = "southeast"
     target = "graveyard_grave"
   }
@@ -1662,17 +1662,17 @@ room {
       gettable = false
       trashable = false
     }
-    uid = $5e4a6fab-d0799-c42-0000021a-0a767046
+    uid = $267
   }
   npc {
     blueprint = "skeleton"
-    uid = $211612ef-74897-c42-00000237-0a7a8def
+    uid = $265
     tag = "graveyard_undead"
     position = "stand"
     hp = 60
     equip.right_hand {
       blueprint = "claws_animal"
-      uid = $429e50d7-748b3-c42-00000238-0a7a8def
+      uid = $266
     }
     zonelock = true
   }
@@ -1681,14 +1681,14 @@ room {
   id = "graveyard_mausoleum"
   name = "Old Graveyard"
   desc = "The tombstones are accompanies here by a small mausoleum, more ornate than the other crumbling structures in the grave yard."
-  uid = $076b4a4b-d57dd-c42-0000021b-0a767046
+  uid = $268
   exit {
-    uid = $3fd16106-2ebc7-c42-00000507-0c2ec4b9
+    uid = $269
     dir = "north"
     target = "graveyard_tree"
   }
   exit {
-    uid = $294f9e11-2ebd3-c42-00000508-0c2ec4b9
+    uid = $270
     dir = "east"
     target = "graveyard_grave"
   }
@@ -1700,16 +1700,16 @@ room {
       gettable = false
       trashable = false
     }
-    uid = $580c2d20-d599f-c42-0000021e-0a767046
+    uid = $273
   }
   npc {
     blueprint = "wolf"
-    uid = $6b655b94-61bdc-c42-00000234-0a7a5392
+    uid = $271
     position = "stand"
     hp = 100
     equip.right_hand {
       blueprint = "claws_animal"
-      uid = $7b3734e2-61bf4-c42-00000235-0a7a5392
+      uid = $272
     }
   }
 }

@@ -1,3 +1,17 @@
+2006-07-13 05:35:07  Sean Middleditch <elanthis@awesomeplay.com>
+
+  * Replaced the huge disgusting 128-bit unique IDs with something
+    much smaller and simpler.  Instead of generating true UUIDs,
+    we now use a simple counter.  Each new entity gets a new ID
+    in sequence.  However, in order to avoid duplicate IDs caused
+    by crashes, the system makes ID reserves.  It pre-allocates
+    1024 IDs (this number can easily be changed, probably will be
+    changed) and saves to disk this reservation.  So, if AweMUD
+    crashes between allocating an ID and updating data/uniqid,
+    data/uniqid will still indicate that the next available ID is
+    much higher than the ones actually in use.  If AweMUD shuts
+    down cleanly, the correct value is saved.
+
 2006-07-13 04:32:49  Sean Middleditch <elanthis@awesomeplay.com>
 
   * Updates to combat algorithms.  No these aren't even close to

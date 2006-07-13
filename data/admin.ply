@@ -1,21 +1,21 @@
 # Player file: Admin
-# Timestamp: Thu Jul 13 00:27:41 2006
+# Timestamp: Thu Jul 13 01:29:24 2006
 # 
 
-uid = $575a66a6-43da6-c42-00000332-0bb9fd14
+uid = $1
 position = "stand"
 hp = 150
 equip.right_hand {
   blueprint = "sw_fire"
-  uid = $611b8f26-e29c3-c42-0000028e-0b6aa879
+  uid = $611
 }
 equip.body {
   blueprint = "ar_chain_shirt"
-  uid = $7e26b1ee-43dd3-c42-00000334-0bb9fd14
+  uid = $7
 }
 equip.back {
   blueprint = "co_leather_backpack"
-  uid = $23d5b6a2-43de0-c42-00000335-0bb9fd14
+  uid = $23
 }
 race = "human"
 birthday = "0245/06/10 09.14"

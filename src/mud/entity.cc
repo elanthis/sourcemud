@@ -52,7 +52,7 @@ Entity::activate (void)
 
 	// assign unique ID if it has none
 	if (!uid)
-		UniqueIDManager.create(uid);
+		uid = UniqueIDManager.create();
 
 	// insert into unique ID table
 	EntityManager.id_map.insert(std::pair<UniqueID, Entity*>(uid, this));
