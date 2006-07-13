@@ -124,7 +124,7 @@ if [ "x$CHANGELOG" = "xyes" ] ; then
   fi
 fi
 
-if ! cg-commit -m - < .commit.tmp  ; then
+if ! cg-commit < .commit.tmp  ; then
   # failed - revert changes
   [ "x$CHANGELOG" = "xyes" ] && mv -f .ChangeLog~ ChangeLog
   exit 1

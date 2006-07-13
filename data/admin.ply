@@ -1,5 +1,5 @@
 # Player file: Admin
-# Timestamp: Wed Jul 12 15:41:16 2006
+# Timestamp: Wed Jul 12 21:23:00 2006
 # 
 
 uid = $575a66a6-43da6-c42-00000332-0bb9fd14
@@ -7,7 +7,7 @@ position = "stand"
 hp = 150
 equip.right_hand {
   blueprint = "sw_fire"
-  uid = $3afd1c69-43dc6-c42-00000333-0bb9fd14
+  uid = $611b8f26-e29c3-c42-0000028e-0b6aa879
 }
 equip.body {
   blueprint = "ar_chain_shirt"
@@ -34,8 +34,8 @@ trait : "eye color" = "white"
 gender = "male"
 height = 68
 location = "forest_cliff"
-general_xp = 0
-warrior_xp = 0
+general_xp = 4
+warrior_xp = 16
 rogue_xp = 0
 caster_xp = 0
 skill : "Agility" = 0

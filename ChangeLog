@@ -1,3 +1,15 @@
+2006-07-13 01:23:22  Sean Middleditch <elanthis@awesomeplay.com>
+
+  * Fixed bug in Object::name_match, which was ignoring parent
+    Blueprint name.
+  * Fixed ancient incorrect parse format use in NPC blueprints
+    and example.zone.
+  * Reinstated the Character::cl_find_* functions.
+  * Moved str_value into cmd_char, since that's all that used it,
+    and the new interface is suited solely to that usage.
+  * Changed the format of accepted values for str_value (and thus
+    all character commands).
+
 2006-07-12 19:42:39  Sean Middleditch <elanthis@awesomeplay.com>
 
   * Removed the StringArg type, it's not useful anymore.

@@ -22,72 +22,119 @@ Character::process_command (String line)
 	CommandManager.call (this, line);
 }
 
-Object* Character::cl_find_object (String line, int type, bool silent) { return NULL; }
-Object* Character::cl_find_object (String line, Object* container, ContainerType type, bool silent) { return NULL; }
-Character* Character::cl_find_character (String line, bool silent) { return NULL; }
-RoomExit* Character::cl_find_exit (String line, bool silent) { return NULL; }
-Entity* Character::cl_find_any (String line, bool silent) { return NULL; }
+// Helper functions for the Character::cl_find_* functions
+namespace {
+	// skip a word and following white space
+	void skip_word (CString& ptr)
+	{
+		// skip the word
+		while (*ptr != 0 && !isspace(*ptr))
+			++ptr;
 
-#if 0
+		// skip the whitespace
+		while (*ptr != 0 && isspace(*ptr))
+			++ptr;
+	}
+
+	// return true if the string matches 'test' followed by a space or NUL
+	bool word_match (CString string, CString test)
+	{
+		// if there's no match, it's false
+		if (strncasecmp(string, test, strlen(test)))
+			return false;
+
+		// byte following the match must be a space or NULL
+		return isspace(string[strlen(test)]) || string[strlen(test)] == 0;
+	}
+
+	// return true if a string has no more characters
+	inline bool str_empty (CString string)
+	{
+		return string[0] == 0;
+	}
+
+	// return a numeric value of the next word in the input
+	uint str_value (CString string)
+	{
+		// first, check for simple number
+		char* end;
+		int value = strtoul (string, &end, 10);
+		if (end != NULL) {
+			// just a number:
+			if (*end == 0 || isspace(*end))
+				return value;
+
+			// find out if it's a number followed by st, nd, rd, or th
+			if (value % 10 == 1 && value != 11 && word_match(end, "st"))
+				return value;
+			else if (value % 10 == 2 && value != 12 && word_match(end, "nd"))
+				return value;
+			else if (value % 10 == 3 && value != 13 && word_match(end, "rd"))
+				return value;
+			else if ((value % 10 > 3 || value % 10 == 0 || (value >= 10 && value <= 13)) && word_match(end, "th"))
+				return value;
+		}
+
+		// next, look for "other" or "second"
+		if (prefix_match("other", string) || prefix_match("second", string))
+			return 2;
+
+		// try third
+		if (prefix_match("third", string))
+			return 3;
+
+		// nobodies going to go higher than that with words, and if they do, fuck 'em
+		return 0;
+	}
+}
 
 // parse a command line to get an object
 Object* 
-Character::cl_find_object (char* line, int type, bool silent)
+Character::cl_find_object (String line, int type, bool silent)
 {
-	char* arg,* start,* name;
-	Object* obj = NULL;
-	uint index; // index to search at
 	uint matches;
-
-	start = line;
+	Object* object;
+	const char* text = line.c_str();
 
 	// check for arg
-	if (!commands::is_arg(line)) {
+	if (str_empty(text)) {
 		if (!silent)
 			*this << "What?\n";
 		return NULL;
 	}
 
 	// do we have a my keyword?
-	arg = commands::get_arg (&line);
-	if (str_eq (arg, "my")) {
+	if (word_match (text, "my")) {
 		type &= ~GOC_FLOOR; // clear floor flag
-	} else if (!str_eq(arg, "the")) {
-		commands::fix_arg (arg, &line);
+		skip_word(text);
+	} else if (word_match(text, "the")) {
+		skip_word(text);
 	}
 
-	// check for arg
-	if (!commands::is_arg(line)) {
-		if (!silent)
-			*this << "What?\n";
-		return NULL;
-	}
-
-	// determine our index
-	arg = commands::get_arg (&line);
-	if ((index = str_value (arg)) == 0) {
+	// get index
+	uint index = str_value(text);
+	if (index)
+		skip_word(text);
+	else
 		index = 1;
-		commands::fix_arg (arg, &line);
-	}
 
 	// check for arg
-	if (!commands::is_arg(line)) {
+	if (str_empty(text)) {
 		if (!silent)
 			*this << "What?\n";
 		return NULL;
 	}
 
-	// set name, fix up line
-	name = line;
-	commands::restore (start, &line);
+	// store name
+	String name (text);
 
 	// search room
 	if (type & GOC_FLOOR && get_room() != NULL) {
-		obj = get_room()->find_object (name, index, &matches);
-		if (obj)
-			return obj;
+		object = get_room()->find_object (name, index, &matches);
+		if (object)
+			return object;
 		if (matches >= index) {
-			*this << "You do not see '" << line << "'.\n";
+			*this << "You do not see '" << name << "'.\n";
 			return NULL;
 		}
 		index -= matches; // update count; subtract matches
@@ -98,11 +145,11 @@ Character::cl_find_object (char* line, int type, bool silent)
 		for (EList<Object>::iterator iter = get_room()->objects.begin(); iter != get_room()->objects.end(); ++iter) {
 			// have an ON container - search inside
 			if (*iter != NULL && (*iter)->has_container (ContainerType::ON)) {
-				if ((obj = (*iter)->find_object (name, index, ContainerType::ON, &matches))) {
-					return obj;
+				if ((object = (*iter)->find_object (name, index, ContainerType::ON, &matches))) {
+					return object;
 				}
 				if (matches >= index) {
-					*this << "You do not see '" << line << "'.\n";
+					*this << "You do not see '" << name << "'.\n";
 					return NULL;
 				}
 				index -= matches; // update count; subtract matches
@@ -110,20 +157,22 @@ Character::cl_find_object (char* line, int type, bool silent)
 		}
 	}
 
+	// FIXME: these aren't handling the matches/index stuff:
+
 	// try held
 	if (type & GOC_HELD)
-		if ((obj = find_held (name)) != NULL)
-			return obj;
+		if ((object = find_held (name)) != NULL)
+			return object;
 
 	// try worn
 	if (type & GOC_WORN)
-		if ((obj = find_worn (name)) != NULL)
-			return obj;
+		if ((object = find_worn (name)) != NULL)
+			return object;
 
 	// print error
 	if (!silent) {
 		if (type & GOC_ROOM)
-			*this << "You do not see '" << line << "'.\n";
+			*this << "You do not see '" << name << "'.\n";
 		else if ((type & GOC_HELD) && !(type & GOC_WORN))
 			*this << "You are not holding '" << name << "'.\n";
 		else if ((type & GOC_WORN) && !(type & GOC_HELD))
@@ -134,16 +183,58 @@ Character::cl_find_object (char* line, int type, bool silent)
 	return NULL;
 }
 
-// parse a command line to get a character
-Character* 
-Character::cl_find_character (char* line, bool silent)
+// find an object inside a particular container
+Object*
+Character::cl_find_object (String line, Object* container, ContainerType type, bool silent)
 {
-	char* arg,* name;
-	Character* ch = NULL;
-	uint index;
+	const char* text = line.c_str();
 
 	// check for arg
-	if (!commands::is_arg(line)) {
+	if (str_empty(text)) {
+		if (!silent)
+			*this << "What?\n";
+		return NULL;
+	}
+
+	// ignore both 'my' and 'the'
+	if (word_match (text, "my") || word_match(text, "the"))
+		skip_word(text);
+	
+	// get index
+	uint index = str_value(text);
+	if (index)
+		skip_word(text);
+	else
+		index = 1;
+
+	// check for arg
+	if (str_empty(text)) {
+		if (!silent)
+			*this << "What?\n";
+		return NULL;
+	}
+
+	// store name
+	String name (text);
+
+	// search room
+	Object* object = container->find_object (name, index, type);
+	if (object)
+		return object;
+
+	*this << "You do not see '" << name << "' " << type.get_name() << " " << StreamName(container, DEFINITE) << ".\n";
+	return NULL;
+}
+
+
+// parse a command line to get a character
+Character* 
+Character::cl_find_character (String line, bool silent)
+{
+	const char* text = line.c_str();
+
+	// check for arg
+	if (str_empty(text)) {
 		if (!silent)
 			*this << "What?\n";
 		return NULL;
@@ -155,41 +246,35 @@ Character::cl_find_character (char* line, bool silent)
 		return NULL;
 	}
 
-	arg = commands::get_arg (&line);
-	if (str_eq(arg, "the"))
-		arg = commands::get_arg (&line);
-	if (!arg) {
+	if (word_match(text, "the"))
+		skip_word(text);
+
+	uint index = str_value (text);
+	if (index)
+		skip_word(text);
+	else
+		index = 1;
+
+	if (str_empty(text)) {
 		if (!silent)
 			*this << "What?\n";
 		return NULL;
 	}
 
-	if ((index = str_value (arg)) == 0) {
-		commands::fix_arg (arg, &line);
-		name = line;
-		index = 1;
-	} else {
-		name = line;
-		commands::fix_arg (arg, &line);
-	}
-
-	if ((ch = get_room()->find_character (name, index)) == NULL && !silent) {
-		*this << "You do not see '" << line << "'.\n";
-	}
+	Character* ch = get_room()->find_character (String(text), index);
+	if (ch == NULL && !silent)
+		*this << "You do not see '" << text << "'.\n";
 
 	return ch;
 }
 
 /* parse a command line to get an exit*/
 RoomExit* 
-Character::cl_find_exit (char* line, bool silent)
+Character::cl_find_exit (String line, bool silent)
 {
-	char* arg,* name;
-	RoomExit* exit = NULL;
-	uint index;
+	const char* text = line.c_str();
 
-	// check for arg
-	if (!commands::is_arg(line)) {
+	if (str_empty(text)) {
 		if (!silent)
 			*this << "What?\n";
 		return NULL;
@@ -201,30 +286,29 @@ Character::cl_find_exit (char* line, bool silent)
 		return NULL;
 	}
 
-	arg = commands::get_arg (&line);
-	if (str_eq(arg, "the"))
-		arg = commands::get_arg (&line);
-	if (!arg) {
+	if (word_match(text, "the"))
+		skip_word(text);
+
+	uint index = str_value(text);
+	if (index)
+		skip_word(text);
+	else
+		index = 1;
+
+	if (str_empty(text)) {
 		if (!silent)
 			*this << "What?\n";
 		return NULL;
 	}
 
-	if ((index = str_value (arg)) == 0) {
-		commands::fix_arg (arg, &line);
-		name = line;
-		index = 1;
-	} else {
-		name = line;
-		commands::fix_arg (arg, &line);
-	}
-
+	String name(text);
+	RoomExit* exit;
 	do {
 		exit = get_room()->find_exit (name, index++);
 	} while (exit != NULL && exit->is_disabled());
 
 	if (exit == NULL && !silent) {
-		*this << "You do not see '" << line << "'.\n";
+		*this << "You do not see '" << text << "'.\n";
 	}
 
 	return exit;
@@ -232,56 +316,43 @@ Character::cl_find_exit (char* line, bool silent)
 
 // parse a command line to get a character, object, or exit
 Entity* 
-Character::cl_find_any (char* line, bool silent)
+Character::cl_find_any (String line, bool silent)
 {
-	char* arg,* start,* name;
-	uint index; // index to search at
 	uint matches;
 
-	start = line;
+	const char* text = line.c_str();
 
 	// check for arg
-	if (!commands::is_arg(line)) {
+	if (str_empty(text)) {
 		if (!silent)
 			*this << "What?\n";
 		return NULL;
 	}
 
 	// do we have a my keyword?
-	arg = commands::get_arg (&line);
-	if (str_eq (arg, "my")) {
+	if (word_match(text, "my")) {
 		// do 'my' object search
-		name = line;
-		commands::fix_arg (arg, &line);
-		return cl_find_object(name, GOC_EQUIP, silent);
-	} else if (!str_eq(arg, "the")) {
-		commands::fix_arg (arg, &line);
-	}
-
-	// check for arg
-	if (!commands::is_arg(line)) {
-		if (!silent)
-			*this << "What?\n";
-		return NULL;
+		skip_word(text);
+		return cl_find_object(String(text), GOC_EQUIP, silent);
+	} else if (word_match(text, "the")) {
+		skip_word(text);
 	}
 
 	// determine our index
-	arg = commands::get_arg (&line);
-	if ((index = str_value (arg)) == 0) {
+	uint index = str_value(text);
+	if (index)
+		skip_word(text);
+	else
 		index = 1;
-		commands::fix_arg (arg, &line);
-	}
 
 	// check for arg
-	if (!commands::is_arg(line)) {
+	if (str_empty(text)) {
 		if (!silent)
 			*this << "What?\n";
 		return NULL;
 	}
 
-	// set name, fix up line
-	name = line;
-	commands::restore (start, &line);
+	String name(text);
 
 	// look for a character
 	if (get_room()) {
@@ -290,7 +361,7 @@ Character::cl_find_any (char* line, bool silent)
 			return ch;
 		if (matches >= index) {
 			if (!silent)
-				*this << "You do not see '" << line << "'.\n";
+				*this << "You do not see '" << name << "'.\n";
 			return NULL;
 		}
 		index -= matches;
@@ -303,7 +374,7 @@ Character::cl_find_any (char* line, bool silent)
 			return obj;
 		if (matches >= index) {
 			if (!silent)
-				*this << "You do not see '" << line << "'.\n";
+				*this << "You do not see '" << name << "'.\n";
 			return NULL;
 		}
 		index -= matches; // update count; subtract matches
@@ -317,7 +388,7 @@ Character::cl_find_any (char* line, bool silent)
 						return obj;
 					}
 					if (matches >= index) {
-						*this << "You do not see '" << line << "'.\n";
+						*this << "You do not see '" << name << "'.\n";
 						return NULL;
 					}
 					index -= matches; // update count; subtract matches
@@ -365,10 +436,9 @@ Character::cl_find_any (char* line, bool silent)
 
 	// print error
 	if (!silent)
-		*this << "You do not see '" << line << "'.\n";
+		*this << "You do not see '" << name << "'.\n";
 	return NULL;
 }
-#endif
 
 void
 handle_char_move (Character* ch, ExitDir dir) {

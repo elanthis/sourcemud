@@ -892,7 +892,7 @@ Object::is_blueprint (String name) const
 bool
 Object::name_match (String match) const
 {
-	if (name.matches(match))
+	if (get_name().matches(match))
 		return true;
 
 	// blueprint keywords

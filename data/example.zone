@@ -80,7 +80,7 @@ room {
   object {
     blueprint {
       name = "a stone altar"
-      desc = "{.D} is very simple in design.  It is little more than a stone block, with runes to forest gods and spirits inscribed on all four sides.  The top of the alter is perfectly smooth."
+      desc = "{$1.D} is very simple in design.  It is little more than a stone block, with runes to forest gods and spirits inscribed on all four sides.  The top of the alter is perfectly smooth."
       weight = 140
       roomlist = false
       gettable = false
@@ -154,7 +154,7 @@ room {
   }
   object {
     blueprint = "sw_fire"
-    uid = $611b8f26-e29c3-c42-0000028e-0b6aa879
+    uid = $3afd1c69-43dc6-c42-00000333-0bb9fd14
   }
 }
 room {
@@ -207,7 +207,7 @@ room {
     uid = $1f0b8188-607ad-c42-00000132-0a767046
     tag = "forest_critter"
     position = "stand"
-    hp = 100
+    hp = 97
     equip.right_hand {
       blueprint = "claws_animal"
       uid = $46c9a75c-6081c-c42-00000133-0a767046
@@ -399,7 +399,7 @@ room {
   object {
     blueprint {
       name = "the River Styx"
-      desc = "The dark river is quite calm, and rather peaceful in appearance.  Despite this tranquil facade, supernatural fear still penetrates into the core of your soul when you look at it.  {.C} is none other than the River Styx, one of the few ways spoken of in legends to forever destroy a soul."
+      desc = "The dark river is quite calm, and rather peaceful in appearance.  Despite this tranquil facade, supernatural fear still penetrates into the core of your soul when you look at it.  {$1.C} is none other than the River Styx, one of the few ways spoken of in legends to forever destroy a soul."
       keyword = "murky river"
       roomlist = false
       gettable = false
@@ -622,7 +622,7 @@ room {
   object {
     blueprint {
       name = "a gem case"
-      desc = "The {.n} is crafted of a light stained wood, and set with thick glass.  Dozens and dozens of jewels, of all colours, lie neatly organized in the case.  Several bits of fine jewelry can also be found, fitted with fine gems."
+      desc = "The {$1.n} is crafted of a light stained wood, and set with thick glass.  Dozens and dozens of jewels, of all colours, lie neatly organized in the case.  Several bits of fine jewelry can also be found, fitted with fine gems."
       roomlist = false
       gettable = false
       trashable = false
@@ -632,7 +632,7 @@ room {
   object {
     blueprint {
       name = "a gem case"
-      desc = "The {.n} is crafted of a light stained wood, and set with thick glass.  Dozens and dozens of jewels, of all colours, lie neatly organized in the case.  Several bits of fine jewelry can also be found, fitted with fine gems."
+      desc = "The {$1.n} is crafted of a light stained wood, and set with thick glass.  Dozens and dozens of jewels, of all colours, lie neatly organized in the case.  Several bits of fine jewelry can also be found, fitted with fine gems."
       roomlist = false
       gettable = false
       trashable = false
@@ -1619,7 +1619,7 @@ room {
   object {
     blueprint {
       name = "a wooden box"
-      desc = "{.D} looks like it might have once been a coffin, though it is now nothing but broken planks of rotted wood."
+      desc = "{$1.D} looks like it might have once been a coffin, though it is now nothing but broken planks of rotted wood."
       roomlist = false
       gettable = false
       trashable = false
@@ -1656,7 +1656,7 @@ room {
   object {
     blueprint {
       name = "a gnarled tree"
-      desc = "{.D} appears dead.  Its roots and branches are twisted as if in agony, and a length of rotted rope hangs from one of its higher boughs, a sure mark of the deceased tree's grim function in past times."
+      desc = "{$1.D} appears dead.  Its roots and branches are twisted as if in agony, and a length of rotted rope hangs from one of its higher boughs, a sure mark of the deceased tree's grim function in past times."
       roomlist = false
       gettable = false
       trashable = false
@@ -1694,7 +1694,7 @@ room {
   object {
     blueprint {
       name = "a mausoleum"
-      desc = "{.D} is made of granite, and decorated with dark marble and faded inscriptions.  The building appears mostly intact, save for the front door, which appears to have been damaged by some kind of heavy force, like a battering ram.  {.D}'s only legible inscription reads, 'Ravelor Materna'."
+      desc = "{$1.D} is made of granite, and decorated with dark marble and faded inscriptions.  The building appears mostly intact, save for the front door, which appears to have been damaged by some kind of heavy force, like a battering ram.  {$1.D}'s only legible inscription reads, 'Ravelor Materna'."
       roomlist = false
       gettable = false
       trashable = false
