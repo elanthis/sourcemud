@@ -49,6 +49,14 @@ ObjectBlueprint::ObjectBlueprint () : Scriptix::Native(AweMUD_ObjectBlueprintTyp
 	cost = 0;
 }
 
+bool
+ObjectBlueprint::set_name (String s_name)
+{
+	bool ret = name.set_name(s_name);
+	set_flags.name = true;
+	return ret;
+}
+
 EntityName
 ObjectBlueprint::get_name () const
 {
@@ -760,6 +768,13 @@ Object::get_holder () const
 	while (owner != NULL && !CHARACTER(owner))
 		owner = owner->get_owner();
 	return CHARACTER(owner);
+}
+
+bool
+Object::set_name (String s_name)
+{
+	bool ret = name.set_name(s_name);
+	return ret;
 }
 
 // get object name information

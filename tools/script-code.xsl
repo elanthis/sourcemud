@@ -297,10 +297,6 @@ namespace Scriptix { extern const TypeDef Struct_Type; }
         <xsl:choose>
           <xsl:when test="parent"><xsl:value-of select="parent"/></xsl:when>
           <xsl:otherwise>Scriptix::Struct</xsl:otherwise>
-        </xsl:choose>,
-        <xsl:choose>
-          <xsl:when test="new">_New::create_<xsl:value-of select="name"/>_Type</xsl:when>
-          <xsl:otherwise>SX_TYPECREATENONE(<xsl:apply-templates select="." mode="cppname"/>)</xsl:otherwise>
         </xsl:choose>
       )
     </xsl:for-each>

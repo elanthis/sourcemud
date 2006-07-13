@@ -104,12 +104,11 @@
 		LEX_NAME("continue", TCONTINUE)
 		LEX_NAME("function", TFUNCTION)
 		LEX_NAME("yield", TYIELD)
-		LEX_NAME("new", TNEW)
 		LEX_NAME("public", TPUBLIC)
 		{
 			TypeInfo* type;
 			yylval.id = Atom(String(yytext)).value();
-			if ((type = compiler->get_type(Atom::create(yylval.id))) != NULL) {
+			if ((type = ScriptManager.get_type(Atom::create(yylval.id))) != NULL) {
 				yylval.type = type;
 				return TYPE;
 			} else {

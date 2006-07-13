@@ -43,29 +43,6 @@ bool Value::is_struct () const { return is_a(ScriptManager.get_struct_type()); }
 bool Value::is_iterator () const { return is_a(ScriptManager.get_iterator_type()); }
 bool Value::is_nil () const { return value == NULL; }
 
-template <typename CTYPE>
-inline
-Value
-_CreateNewScript (const TypeInfo* type)
-{
-	return new CTYPE(type);
-}
-
-inline
-Value
-_CreateNewNull (const TypeInfo* type)
-{
-	return Nil;
-}
-
-template <typename CTYPE>
-inline
-Value
-_CreateNew(const TypeInfo* type)
-{
-	return new CTYPE();
-}
-
 } // namespace Scriptix
 
 #endif

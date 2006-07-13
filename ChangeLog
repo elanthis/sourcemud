@@ -1,3 +1,16 @@
+2006-07-13 04:32:49  Sean Middleditch <elanthis@awesomeplay.com>
+
+  * Updates to combat algorithms.  No these aren't even close to
+    what we're going to use long-term.
+  * Reinstated Object::set_name().  Possibly needs some work on
+    the script integration side.
+  * Remove the 'new' keyword from Scriptix, and with it the ability
+    to create new types, and also to create instances of classes.
+    The former is now unused, and the latter was only used with
+    Arrays.
+  * Created a new array() function in Scriptix to create arrays,
+    similar in spirit to PHP's array() function.
+
 2006-07-13 01:23:22  Sean Middleditch <elanthis@awesomeplay.com>
 
   * Fixed bug in Object::name_match, which was ignoring parent

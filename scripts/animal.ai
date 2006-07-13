@@ -4,7 +4,7 @@
 
 # initialize after loading up
 load = <<[
-	self.ai_targets = new Array;
+	self.ai_targets = array(); 
 	self.ai_group = String(self.ai_group);
 	self.ai_flee = Int(self.ai_flee) || 30;
 	self.setState('wander');

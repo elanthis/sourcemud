@@ -50,5 +50,5 @@ SX_BEGINMETHODS(Number)
 SX_ENDMETHODS
 
 namespace Scriptix {
-	SX_TYPEIMPL(Number, "Int", IValue, SX_TYPECREATENONE(Number))
+	SX_TYPEIMPL(Number, "Int", IValue)
 }

@@ -65,5 +65,5 @@ SX_ENDMETHODS
 
 // Define type parameters
 namespace Scriptix {
-	SX_TYPEIMPL(Iterator, "Iterator", IValue, SX_TYPECREATENONE(Iterator))
+	SX_TYPEIMPL(Iterator, "Iterator", IValue)
 }

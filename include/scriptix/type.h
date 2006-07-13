@@ -37,7 +37,6 @@ namespace Scriptix {
 
 // type def for callbacks
 typedef class Value (*sx_cfunc)(size_t argc, class Value argv[]);
-typedef class Value (*sx_constructor)(const class TypeInfo* type);
 
 class MethodDef {
 	public:
@@ -52,27 +51,24 @@ class TypeDef {
 	String name;		///< Name of type.
 	const TypeDef* parent;		///< Parent type.
 	const MethodDef* methods;	///< Array of methods.
-	const sx_constructor constructor;	///< Create a new class IValue of our TypeInfo.
 };
 
 class TypeInfo : public GCType::GC {
 	public:
 	TypeInfo (const TypeDef* base, const TypeInfo* parent);
 
-	TypeInfo (Atom name, const TypeInfo* parent, sx_constructor s_construct);
+	TypeInfo (Atom name, const TypeInfo* parent);
 
 	Atom get_name (void) const { return name; }
 	const TypeInfo* get_parent (void) const { return parent; }
 	class Function* get_method (Atom id) const;
 	int add_method (Atom id, class Function* method);
-	class IValue* construct () const { return constructor(this); }
 
 	private:
 	Atom name;			///< Name of type.
 	const TypeInfo* parent;		///< Parent type.
 	typedef GCType::map<Atom, class Function*> MethodList;
 	MethodList methods;	///< List of methods.
-	sx_constructor constructor;	///< Make a new value of our TypeInfo.
 };
 
 class TypeValue : public IValue
@@ -102,19 +98,12 @@ class TypeValue : public IValue
 extern const TypeDef IValue_Type;
 
 // Creating new types
-#define SX_TYPECREATE(CPPNAME) \
-	Scriptix::_CreateNew<CPPNAME>
-#define SX_TYPECREATESCRIPT(CPPNAME) \
-	Scriptix::_CreateNewScript<CPPNAME>
-#define SX_TYPECREATENONE(CPPNAME) \
-	Scriptix::_CreateNewNull
-#define SX_TYPEIMPL(CPPNAME, SXNAME, CPPPARENT, CREATE) \
+#define SX_TYPEIMPL(CPPNAME, SXNAME, CPPPARENT) \
 	extern const Scriptix::TypeDef CPPNAME ## _Type; \
 	const Scriptix::TypeDef CPPNAME ## _Type = { \
 		S(SXNAME) , \
 		&CPPPARENT ## _Type, \
 		CPPNAME ## _Methods, \
-		CREATE \
 	}; 
 #define SX_NOMETHODS(CPPNAME) namespace { Scriptix::MethodDef CPPNAME ## _Methods[] = { { String(), 0, 0, NULL } }; }
 #define SX_BEGINMETHODS(CPPNAME) namespace { Scriptix::MethodDef CPPNAME ## _Methods[] = {

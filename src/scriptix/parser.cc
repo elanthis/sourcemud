@@ -71,66 +71,6 @@ Scriptix::Compiler::Compiler::add_func(Atom name, const NameList& args, Compiler
 	return func;
 }
 
-// add a function to a typ extension
-CompilerFunction*
-Scriptix::Compiler::Compiler::add_method(Atom name, const NameList& args, CompilerNode* body)
-{
-	if (extends.empty())
-		return NULL;
-
-	CompilerFunction* func = new CompilerFunction();
-	if (!func)
-		return NULL;
-
-	func->name = name;
-	func->vars = args; /* arguments become variables... */
-	func->body = body;
-	func->pub = false;
-
-	// append magic 'self' argument
-	func->vars.insert(func->vars.begin(), Atom(S("self")));
-
-	extends.back()->methods.push_back(func);
-	return func;
-}
-
-// add a new type
-TypeInfo*
-Scriptix::Compiler::Compiler::add_type(Atom name, const TypeInfo* parent)
-{
-	// lookup type
-	if (get_type(name) != NULL) {
-		Error (S("Attempt to create type '") + name.name() + S("' which already exists."));
-		return NULL;
-	}
-
-	// create type
-	TypeInfo* type = new TypeInfo(name, parent, NULL);
-	if (!type)
-		return NULL;
-	types.push_back(type);
-
-	// create extend
-	CompilerExtend* extend = new CompilerExtend();
-	if (extend == NULL)
-		return NULL;
-	extend->type = type;
-	extends.push_back(extend);
-
-	// success
-	return type;
-}
-
-// get a type, either in creation or system-wide
-TypeInfo*
-Scriptix::Compiler::Compiler::get_type(Atom name)
-{
-	for (TypeList::iterator i = types.begin(); i != types.end(); ++i)
-		if ((*i)->get_name() == name)
-			return *i;
-	return ScriptManager.get_type(name);
-}
-
 // add block to state
 bool
 Scriptix::Compiler::Compiler::push_block (Function* func)

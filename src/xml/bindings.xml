@@ -1969,11 +1969,6 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
 
     <doc>Defines a non-player character, such as monsters.</doc>
 
-    <!-- Helper functions -->
-    <new><![CDATA[
-      return new Npc();
-    ]]></new>
-
     <!-- Blueprints -->
     <method>
       <name>isBlueprint</name>
@@ -2136,10 +2131,16 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
     <parent>Entity</parent>
     <doc><link type="Object"/>s are the physical items that exist in the world.  <link type="Object"/>s can be anything from forks to statues, from magic wands to mundane vases, or from deadly weapons to protective armour.</doc>
 
-    <!-- Helper functions -->
-    <new><![CDATA[
-      return new Object();
-    ]]></new>
+    <!-- Change object's name -->
+    <method>
+      <name>setName</name>
+      <arg>
+        <name>name</name>
+        <type>String</type>
+        <doc>New object's name.</doc>
+      </arg>
+      <invoke>set_name</invoke>
+    </method>
 
     <!-- Misc -->
     <method>
@@ -2383,11 +2384,6 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
     <name>Room</name>
     <parent>Entity</parent>
     <doc>A room is the fundamental building block of the MUD world.</doc>
-
-    <!-- Helper functions -->
-    <new><![CDATA[
-      return new Room();
-    ]]></new>
 
     <method>
       <name>setName</name>
@@ -2680,11 +2676,6 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
     <parent>Entity</parent>
     <doc><link type="RoomExit"/>'s represent all of the various kinds of exits that may exist in a room.</doc>
 
-    <!-- Helper code -->
-    <new><![CDATA[
-      return new RoomExit();
-    ]]></new>
-
     <method>
       <name>setName</name>
       <arg>
@@ -2824,11 +2815,6 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
     <name>Zone</name>
     <parent>Entity</parent>
     <doc><link type="Zone"/>s are sub-parts of the world which hold rooms.  <link type="Zone"/>s are best thought of as logical, large-scale areas.</doc>
-
-    <!-- Helper functions -->
-    <new><![CDATA[
-      return new Zone();
-    ]]></new>
 
     <!-- Basics -->
     <method>
@@ -3350,6 +3336,18 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
   </function>
 
   <!-- BUILTIN - ARRAY -->
+  <function>
+    <name>array</name>
+    <return>
+      <type>Array</type>
+      <doc>A new Array filled with the input values.</doc>
+    </return>
+    <varg/>
+    <doc>Creates a new array populated with the function's arguments.</doc>
+    <code><![CDATA[
+      return new Scriptix::Array(_argc, _argv);
+    ]]></code>
+  </function>
   <type>
     <name>Array</name>
     <doconly/>

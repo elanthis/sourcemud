@@ -85,7 +85,7 @@ SX_ENDMETHODS
 
 // Define type parameters
 namespace Scriptix {
-	SX_TYPEIMPL(Array, "Array", IValue, SX_TYPECREATE(Array))
+	SX_TYPEIMPL(Array, "Array", IValue)
 }
 
 Array::Array () : IValue(), list() { }

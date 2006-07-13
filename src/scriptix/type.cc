@@ -36,11 +36,6 @@ TypeInfo::TypeInfo (const TypeDef* base, const TypeInfo* s_parent) : parent(s_pa
 {
 	name = Atom(base->name);
 
-	if (base->constructor == NULL && parent)
-		constructor = parent->constructor;
-	else
-		constructor = base->constructor;
-
 	for (size_t i = 0; !base->methods[i].name.empty(); ++i) {
 		Function* method = new Function(
 			Atom(base->methods[i].name),
@@ -50,15 +45,8 @@ TypeInfo::TypeInfo (const TypeDef* base, const TypeInfo* s_parent) : parent(s_pa
 	}
 }
 
-TypeInfo::TypeInfo (Atom s_name, const TypeInfo* s_parent, sx_constructor s_constructor)
+TypeInfo::TypeInfo (Atom s_name, const TypeInfo* s_parent) : name(s_name), parent(s_parent)
 {
-	name = s_name;
-	parent = s_parent;
-
-	if (s_constructor == NULL && parent)
-		constructor = parent->constructor;
-	else
-		constructor = s_constructor;
 }
 
 TypeInfo*
@@ -153,7 +141,7 @@ SX_BEGINMETHODS(TypeValue)
 SX_ENDMETHODS
 
 namespace Scriptix {
-	SX_TYPEIMPL(TypeValue, "TypeInfo", IValue, SX_TYPECREATENONE(TypeValue))
+	SX_TYPEIMPL(TypeValue, "TypeInfo", IValue)
 }
 	
 Value

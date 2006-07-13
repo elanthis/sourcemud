@@ -206,8 +206,9 @@ room {
     blueprint = "wolf"
     uid = $1f0b8188-607ad-c42-00000132-0a767046
     tag = "forest_critter"
-    position = "stand"
-    hp = 97
+    dead = "yes"
+    position = "lay"
+    hp = -14
     equip.right_hand {
       blueprint = "claws_animal"
       uid = $46c9a75c-6081c-c42-00000133-0a767046

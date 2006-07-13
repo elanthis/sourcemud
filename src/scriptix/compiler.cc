@@ -516,18 +516,6 @@ Scriptix::Compiler::Compiler::CompileNode (CompilerFunction* func, CompilerNode 
 				// set op
 				func->func->add_opcode(OP_IN);
 				break;
-			// construct a new object of the specified type
-			case SXP_NEW:
-				func->func->add_value(new TypeValue(node->parts.type));
-				func->func->add_opcode(OP_NEW);
-				if (node->parts.op) {
-					if (node->parts.nodes[0])
-						_test(CompileNode(func, node->parts.nodes[0]))
-					func->func->add_opcode(OP_METHOD);
-					func->func->add_oparg(Atom(S("new")).value());
-					func->func->add_oparg(_sxp_count (node->parts.nodes[0]));
-				}
-				break;
 			// set a Struct property
 			case SXP_SETPROPERTY:
 				// object

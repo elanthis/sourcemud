@@ -72,7 +72,7 @@ SScriptManager::get_function (Atom id)
 SX_NOMETHODS(Function)
 
 namespace Scriptix {
-	SX_TYPEIMPL(Function, "Function", IValue, SX_TYPECREATENONE(Function))
+	SX_TYPEIMPL(Function, "Function", IValue)
 }
 
 Function::Function (Atom s_id, size_t s_argc) : IValue(),

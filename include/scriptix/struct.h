@@ -55,16 +55,6 @@ class Struct : public IValue {
 	datalist data;
 };
 
-class ScriptClass : public Struct {
-	public:
-	inline ScriptClass (const TypeInfo* s_type) : Struct(), type(s_type) {}
-
-	virtual const TypeInfo* get_type () const { return type; }
-
-	private:
-	const TypeInfo* type;
-};
-
 } // namespace Scriptix
 
 #endif

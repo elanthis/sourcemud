@@ -67,7 +67,7 @@ ObjectBlueprint : public Scriptix::Native
 
 	// name
 	virtual EntityName get_name () const;
-	inline bool set_name (String s_name) { bool ret = name.set_name(s_name); set_flags.name = true; return ret; }
+	bool set_name (String s_name);
 	void reset_name ();
 
 	inline const StringList& get_keywords () const { return keywords; }
@@ -187,6 +187,7 @@ Object : public Entity
 	Object (ObjectBlueprint* s_blueprint);
 
 	// name info
+	bool set_name (String);
 	virtual EntityName get_name () const;
 	virtual bool name_match (String name) const;
 

@@ -88,7 +88,6 @@
 %token TSUBASSIGN "-="
 %token TINCREMENT "++"
 %token TDECREMENT "--"
-%token TNEW "new"
 %token TUNTIL "until"
 %token TNIL "nil"
 %token TIN "in"
@@ -116,7 +115,7 @@
 %nonassoc '!' CUNARY
 %nonassoc TINCREMENT TDECREMENT
 %left TCAST
-%left TDEREFERENCE ':' '[' TNEW
+%left TDEREFERENCE ':' '['
 %left '('
 
 %nonassoc IF
@@ -133,7 +132,6 @@ program:
 	| program function
 	| program global
 	| program error
-	| program new
 	;
 
 function: TFUNCTION name '(' arg_names ')' '{' block '}' { compiler->add_func(Atom::create($2), ($4 ? *$4 : NameList()), $7, false); }
@@ -142,18 +140,6 @@ function: TFUNCTION name '(' arg_names ')' '{' block '}' { compiler->add_func(At
 
 global: TVAR name '=' data ';' { compiler->set_global(Atom::create($2), $4); }
 	| TVAR name ';' { compiler->set_global(Atom::create($2), Nil); }
-	;
-
-method: name '(' arg_names ')' '{' block '}' { compiler->add_method(Atom::create($1), ($3 ? *$3 : NameList()), $6); }
-	| TNEW '(' arg_names ')' '{' block '}' { compiler->add_method(Atom(S("new")), ($3 ? *$3 : NameList()), $6); }
-	;
-
-methods: method
-	| methods method
-	;
-
-new: TNEW name { if (!compiler->add_type (Atom::create($2), ScriptManager.get_script_class_type())) YYERROR; } '{' methods '}'
-	| TNEW name ':' type { if (!compiler->add_type (Atom::create($2), $4)) YYERROR; } '{' methods '}'
 	;
 
 block: { $$ = NULL; }
@@ -262,8 +248,6 @@ expr: expr '+' expr { $$ = sxp_new_math (compiler, OP_ADD, $1, $3); }
 	| name '(' func_args ')' { $$ = sxp_new_invoke (compiler, sxp_new_lookup(compiler, Atom::create($1)), $3); }
 	| '(' expr ')' '(' func_args ')' { $$ = sxp_new_invoke (compiler, $2, $5); }
 
-	| TNEW type { $$ = sxp_new_new (compiler, $2, NULL, false); }
-	| TNEW type '(' func_args ')' { $$ = sxp_new_new (compiler, $2, $4, true); }
 	| expr TDEREFERENCE name '(' func_args ')' { $$ = sxp_new_method (compiler, $1, Atom::create($3), $5); }
 
 	| '[' args ']' { $$ = sxp_new_array (compiler, $2); }

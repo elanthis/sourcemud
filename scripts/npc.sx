@@ -23,7 +23,7 @@ function goRandomExit(self)
 		return false;
 
 	// get count
-	var exits = new Array;
+	var exits = array();
 	foreach(var exit in room.exits())
 		if (self.canUseExit(exit))
 			exits.append(exit);

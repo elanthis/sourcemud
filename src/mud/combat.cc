@@ -78,7 +78,7 @@ class ActionAttackCharacter : public IAction
 
 		// base skills
 		int dodge_skill = victim->get_combat_dodge();
-		int defend_strength = dodge_skill; // FIXME
+		int defend_strength = dodge_skill +  10; // FIXME
 
 		int attack_skill = 5; // FIXME
 		int attack_strength = attack_skill; // FIXME
@@ -98,16 +98,15 @@ class ActionAttackCharacter : public IAction
 				attack_speed = 3;
 
 			// roll
-			int defend_roll = roll_dice(2, 10);
 			int attack_roll = roll_dice(2, 10);
 
 			// roll for damage
-			int damage = attack_roll - defend_roll;
+			int damage = attack_roll * 2; // FIXME
 			if (damage < 1)
 				damage = 1;
 
 			// hit?
-			if (attack_roll + attack_strength >= defend_roll + defend_strength) {
+			if (attack_roll + attack_strength >= defend_strength) {
 				// message to attacker
 				*attacker << "You hit " << StreamName(victim) << " with your " << StreamName(weapon) << "!\n";
 
@@ -133,8 +132,8 @@ class ActionAttackCharacter : public IAction
 			}
 
 			// combat info
-			*attacker->get_room() << "  Atk:" << attack_strength << " + 2d10:" << attack_roll << " VS Def:" << defend_strength << " + 2d10:" << defend_roll << " = " << attack_strength + attack_roll << " VS " << defend_strength + defend_roll;
-			if (attack_roll + attack_strength >= defend_roll + defend_strength)
+			*attacker->get_room() << "  Atk:" << attack_strength << " + 2d10:" << attack_roll << " VS Def:" << defend_strength << " = " << attack_strength + attack_roll << " VS " << defend_strength;
+			if (attack_roll + attack_strength >= defend_strength)
 				*attacker->get_room() << " = HIT, Dmg:" << damage << "\n";
 			else
 				*attacker->get_room() << " = MISS\n";

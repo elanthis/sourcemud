@@ -66,8 +66,7 @@ typedef enum {
 	OP_SET_PROPERTY,
 	OP_GET_PROPERTY,
 	OP_ITER,
-	OP_NEW,
-	OP_COPY = 35,
+	OP_COPY = 34,
 } sx_op_type;
 
 // Define opcodes

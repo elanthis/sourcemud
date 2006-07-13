@@ -47,7 +47,7 @@ SX_BEGINMETHODS(ScriptString)
 SX_ENDMETHODS
 
 namespace Scriptix {
-	SX_TYPEIMPL(ScriptString, "String", IValue, SX_TYPECREATENONE(ScriptString))
+	SX_TYPEIMPL(ScriptString, "String", IValue)
 }
 
 const TypeInfo*

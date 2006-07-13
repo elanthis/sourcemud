@@ -95,7 +95,6 @@ OpCode Scriptix::OpCodeDefs[] = {
 	{ "SET_PROPERTY", 1 },
 	{ "GET_PROPERTY", 1 },
 	{ "ITER", 1 },
-	{ "NEW", 0 },
 	{ "COPY", 1 },
 };
 
@@ -527,16 +526,6 @@ run_code:
 					} else {
 						pop_value(); // remove type
 						raise_error(SXE_BADTYPE, "Value is not an iterator or an array");
-					}
-					break;
-				case OP_NEW:
-					value = get_value();
-					pop_value();
-					if (Value(value).is_type()) {
-						type = ((TypeValue*)value.get())->get_type_ptr();
-						push_value(type->construct());
-					} else {
-						raise_error(SXE_BADTYPE, "Value given to new is not a type");
 					}
 					break;
 				case OP_COPY:

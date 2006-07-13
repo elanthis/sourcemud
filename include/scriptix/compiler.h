@@ -73,16 +73,9 @@ class Compiler : public GCType::GC
 	// add functions
 	CompilerFunction* add_func(Atom name, const NameList& args, CompilerNode* body, bool pub);
 
-	// new types
-	TypeInfo* add_type(Atom name, const TypeInfo* parent);
-	CompilerFunction* add_typeFunc(Atom name, const NameList& args, CompilerNode* body);
-	CompilerFunction* add_method(Atom name, const NameList& args, CompilerNode* body);
-	TypeInfo* get_type(Atom name);
-
 	public: // FIXME
 	typedef GCType::vector<CompilerFunction*> FunctionList;
 	typedef GCType::vector<CompilerExtend*> ExtendList;
-	typedef GCType::vector<TypeInfo*> TypeList;
 	typedef GCType::vector<unsigned long> ReturnList;
 	typedef GCType::vector<CompilerBlock*> BlockList;
 	typedef GCType::vector<DebugMetaData> DebugList;
@@ -91,7 +84,6 @@ class Compiler : public GCType::GC
 	CompilerNode* nodes;
 	FunctionList funcs;
 	ExtendList extends;
-	TypeList types;
 	ReturnList returns;
 	size_t last_line;
 	size_t last_op;
@@ -143,7 +135,6 @@ enum {
 	SXP_SMETHOD,
 	SXP_YIELD,
 	SXP_IN,
-	SXP_NEW,
 	SXP_SETPROPERTY,
 	SXP_GETPROPERTY,
 	SXP_FOREACH,
@@ -238,7 +229,6 @@ extern const char* sxp_compiler_inbuf;
 #define sxp_new_yield(info) (new CompilerNode((info), SXP_YIELD, NULL, NULL, NULL, NULL, Atom(), 0, Nil, 0))
 #define sxp_new_return(info,value) (new CompilerNode((info), SXP_RETURN, (value), NULL, NULL, NULL, Atom(), 0, Nil, 0))
 #define sxp_new_lookup(info,name) (new CompilerNode((info), SXP_LOOKUP, NULL, NULL, NULL, NULL, Atom(name), 0, Nil, 0))
-#define sxp_new_new(info,type,args,call) (new CompilerNode((info), SXP_NEW, (args), NULL, NULL, NULL, Atom(), (type), Nil, (call)))
 #define sxp_new_math(info,op,left,right) (new CompilerNode((info), SXP_MATH, (left), (right), NULL, NULL, Atom(), 0, Nil, (op)))
 #define sxp_new_concat(info,left,right) (new CompilerNode((info), SXP_CONCAT, (left), (right), NULL, NULL, Atom(), 0, Nil, 0))
 #define sxp_new_data(info,data) (new CompilerNode((info), SXP_DATA, NULL, NULL, NULL, NULL, Atom(), 0, (data), 0))

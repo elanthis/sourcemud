@@ -1,5 +1,5 @@
 # Player file: Admin
-# Timestamp: Wed Jul 12 21:23:00 2006
+# Timestamp: Thu Jul 13 00:27:41 2006
 # 
 
 uid = $575a66a6-43da6-c42-00000332-0bb9fd14
@@ -34,8 +34,8 @@ trait : "eye color" = "white"
 gender = "male"
 height = 68
 location = "forest_cliff"
-general_xp = 4
-warrior_xp = 16
+general_xp = 39
+warrior_xp = 143
 rogue_xp = 0
 caster_xp = 0
 skill : "Agility" = 0

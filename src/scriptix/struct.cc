@@ -42,12 +42,9 @@ Struct::get_type () const {
 
 SX_NOMETHODS(Struct);
 
-SX_NOMETHODS(ScriptClass);
-
 // type definition
 namespace Scriptix {
-SX_TYPEIMPL(Struct, "Struct", IValue, SX_TYPECREATE(Struct));
-SX_TYPEIMPL(ScriptClass, "ScriptClass", Struct, SX_TYPECREATESCRIPT(ScriptClass));
+SX_TYPEIMPL(Struct, "Struct", IValue);
 }
 
 // Default undefinedined property operations
