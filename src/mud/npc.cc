@@ -652,8 +652,6 @@ SNpcBlueprintManager::initialize (void)
 	if (require(EventManager) != 0)
 		return 1;
 
-	Log::Info << "Loading NPC blueprints";
-
 	String path = SettingsManager.get_blueprint_path();
 	
 	dirent* d_ent;

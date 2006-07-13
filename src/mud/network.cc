@@ -206,7 +206,6 @@ SNetworkManager::initialize (void)
 		}
 		host = String(host_info->h_name);
 	}
-	Log::Info << "Host is " << host;
 
 	// load IP block list
 	if (SettingsManager.get_deny_file()) {

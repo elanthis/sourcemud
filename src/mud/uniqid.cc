@@ -58,8 +58,6 @@ SUniqueIDManager::shutdown ()
 int
 SUniqueIDManager::reserve ()
 {
-	Log::Info << "Reserving additional unique IDs";
-
 	limit = next + LIMIT_AMOUNT;
 
 	FILE* file = fopen(SettingsManager.get_misc_path() + "/uniqid", "w");

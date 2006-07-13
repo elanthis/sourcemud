@@ -123,8 +123,6 @@ SSocialManager::initialize (void)
 {
 	require(CommandManager);
 
-	Log::Info << "Loading socials";
-
 	File::Reader reader;
 	String path = SettingsManager.get_misc_path() + "/socials";
 

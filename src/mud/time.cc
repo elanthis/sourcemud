@@ -135,11 +135,8 @@ int
 STimeManager::initialize ()
 {
 	// initialize calendar
-	Log::Info << "Loading calendar";
 	if (calendar.load())
 		return 1;
-
-	Log::Info << "Loading game time";
 
 	File::Reader reader;
 

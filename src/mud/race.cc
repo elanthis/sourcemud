@@ -134,8 +134,6 @@ SRaceManager::initialize(void)
 {
 	require(CharacterTraitManager);
 
-	Log::Info << "Loading player races";
-
 	File::Reader reader;
 	String path = SettingsManager.get_misc_path() + "/races";
 

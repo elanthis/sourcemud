@@ -19,8 +19,6 @@ SWeatherManager WeatherManager;
 int
 SWeatherManager::initialize ()
 {
-	Log::Info << "Loading weather regions";
-
 	return region.load();
 }
 

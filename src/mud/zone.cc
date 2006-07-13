@@ -368,8 +368,6 @@ SZoneManager::initialize ()
 int
 SZoneManager::load_world ()
 {
-	Log::Info << "Loading zones";
-
 	// read zones dir
 	DIR* dir;
 	struct dirent* dent;

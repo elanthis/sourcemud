@@ -947,8 +947,6 @@ SObjectBlueprintManager::initialize ()
 		return 1;
 
 
-	Log::Info << "Loading object blueprints";
-
 	String path = SettingsManager.get_blueprint_path();
 	
 	dirent* d_ent;

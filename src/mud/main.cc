@@ -558,7 +558,7 @@ main (int argc, char **argv)
 	player_ipv4 = Network::listen_tcp(accept_port, AF_INET);
 	if (player_ipv4 == -1)
 		return 1;
-	Log::Info << "Listening on port " << accept_port;
+	Log::Info << "Listening on " << NetworkManager.get_host() << "." << accept_port;
 
 	// change user/group
 	if (grp) {
@@ -580,9 +580,6 @@ main (int argc, char **argv)
 
 	// run init hook
 	Hooks::ready();
-
-	// all set
-	Log::Info << "Ready";
 
 	// initialize time
 	struct timeval nexttick;

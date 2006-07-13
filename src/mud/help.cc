@@ -60,8 +60,6 @@ SHelpManager::print (StreamControl& stream, String name)
 int
 SHelpManager::initialize (void)
 {
-	Log::Info << "Loading help database";
-
 	DIR *dir;
 	dirent *dent;
 	String path = SettingsManager.get_help_path();

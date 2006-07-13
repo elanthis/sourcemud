@@ -141,8 +141,6 @@ SAIManager::initialize (void)
 	DIR *dir;
 	dirent *dent;
 
-	Log::Info << "Loading AI packs";
-
 	// read directory
 	dir = opendir (SettingsManager.get_ai_path());
 	if (dir != NULL) {

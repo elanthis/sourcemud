@@ -17,8 +17,6 @@ SMessageManager::initialize (void)
 {
 	File::Reader reader;
 
-	Log::Info << "Loading messages";
-
 	// open messages file
 	if (reader.open(SettingsManager.get_misc_path() + "/messages"))
 		return -1;
