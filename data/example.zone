@@ -199,25 +199,13 @@ room {
     uid = $28
   }
   object {
+    blueprint = "npc_corpse"
+    uid = $275
+    @npc_blueprint = "wolf"
+  }
+  object {
     blueprint = "claws_animal"
     uid = $29
-  }
-  npc {
-    blueprint = "wolf"
-    uid = $25
-    tag = "forest_critter"
-    dead = "yes"
-    position = "lay"
-    hp = -14
-    equip.right_hand {
-      blueprint = "claws_animal"
-      uid = $26
-    }
-    equip.left_hand {
-      blueprint = "claws_animal"
-      uid = $27
-    }
-    zonelock = true
   }
 }
 room {

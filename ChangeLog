@@ -1,3 +1,13 @@
+2006-07-13 16:58:24  Sean Middleditch <elanthis@awesomeplay.com>
+
+  * Rename Scriptix Object.setName to Object.setBaseName and
+    document it better.
+  * Rename Scriptix Entity.getFullName to Entity.getBaseName and
+    document it better.
+  * Fix NPC corpse generation to work properly.
+  * Added Scriptix functions warning() and error(), like message()
+    except using Log::Warning and Log::Error, respectively.
+
 2006-07-13 16:47:04  Sean Middleditch <elanthis@awesomeplay.com>
 
   * Fix some incorrect data files caused by testing.

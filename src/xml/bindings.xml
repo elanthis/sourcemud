@@ -638,6 +638,52 @@ number = roll_dice(3, 6);]]></example>
     ]]></code>
     <doc>Prints out the given arguments to the log file.</doc>
   </function>
+  <function>
+    <name>warning</name>
+    <varg/>
+    <code><![CDATA[
+      Scriptix::Value val;
+      StringBuffer buffer;
+  
+      for (size_t i = 0; i < _argc; ++ i) {
+        val = _argv[i];
+        if (val.is_int()) {
+          buffer << Scriptix::Number::to_int(val);
+        } else if (val.is_string()) {
+          buffer << val.get_string();
+        } else if (val.is_a(AweMUD_EntityType)) {
+          Entity* entity = (Entity*)val.get();
+          buffer << entity;
+        }
+      }
+  
+      Log::Warning << buffer.str();
+    ]]></code>
+    <doc>Prints out the given arguments as Warning to the log file.</doc>
+  </function>
+  <function>
+    <name>error</name>
+    <varg/>
+    <code><![CDATA[
+      Scriptix::Value val;
+      StringBuffer buffer;
+  
+      for (size_t i = 0; i < _argc; ++ i) {
+        val = _argv[i];
+        if (val.is_int()) {
+          buffer << Scriptix::Number::to_int(val);
+        } else if (val.is_string()) {
+          buffer << val.get_string();
+        } else if (val.is_a(AweMUD_EntityType)) {
+          Entity* entity = (Entity*)val.get();
+          buffer << entity;
+        }
+      }
+  
+      Log::Error << buffer.str();
+    ]]></code>
+    <doc>Prints out the given arguments as an Error to the log file.</doc>
+  </function>
 
   <!-- Player stats -->
   <function>
@@ -839,12 +885,13 @@ number = roll_dice(3, 6);]]></example>
       <code><![CDATA[_return = _self->get_name().get_text();]]></code>
     </method>
     <method>
-      <name>getFullName</name>
+      <name>getBaseName</name>
       <return>
         <type>String</type>
-        <doc>The entity's name, withthe article.</doc>
+        <doc>The entity's name including the correct article.</doc>
       </return>
       <code><![CDATA[_return = _self->get_name().get_name();]]></code>
+      <doc>An entity's base name includes an article.  For example, "an axe," "a shelf," "some glasses," and "the Heartbreaker."</doc>
     </method>
     <method>
       <name>getDesc</name>
@@ -2133,13 +2180,14 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
 
     <!-- Change object's name -->
     <method>
-      <name>setName</name>
+      <name>setBaseName</name>
       <arg>
         <name>name</name>
         <type>String</type>
-        <doc>New object's name.</doc>
+        <doc>A base name, including the correct article.</doc>
       </arg>
       <invoke>set_name</invoke>
+      <doc>The base name of an entity includes an article.  For example, "a longsword," "the Mjolnir," "an hourglass," and "some britches."  If a name with no article is passed to this function, the function will make some probably inaccurate guesses as to what the correct article should be.</doc>
     </method>
 
     <!-- Misc -->

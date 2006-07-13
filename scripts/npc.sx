@@ -56,8 +56,10 @@ function makeCorpse(npc)
 
 	// make the corpse object
 	var corpse = createObjectFromBlueprint('npc_corpse');
-	if (!corpse)
+	if (!corpse) {
+		error('Failed to find npc_corpse blueprint');
 		return;
+	}
 
 	// note npc blueprint
 	corpse.npc_blueprint = npc.getBlueprint().getId();
@@ -65,10 +67,9 @@ function makeCorpse(npc)
 	// rename corpse
 	var cname = npc.corpse_name;
 	if (cname)
-		corpse.setName(cname);
+		corpse.setBaseName(cname);
 	else
-		corpse.setName(npc.getName() :: ' corpse');
-	corpse.setArticle(npc.getArticle());
+		corpse.setBaseName(npc.getBaseName() :: ' corpse');
 
 	// move equipment over
 	while (var obj = npc.getEquipAt(0))
