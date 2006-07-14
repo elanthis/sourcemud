@@ -71,6 +71,7 @@ class SScriptManager : public IManager {
 	inline const TypeInfo* get_array_type () const { return t_array; }
 	inline const TypeInfo* get_function_type () const { return t_function; }
 	inline const TypeInfo* get_type_value_type () const { return t_type; }
+	inline const TypeInfo* get_stream_type () const { return t_stream; }
 
 	// Functions
 	int add_function (Function* function);
@@ -149,6 +150,7 @@ class SScriptManager : public IManager {
 	const TypeInfo* t_type;
 	const TypeInfo* t_struct;
 	const TypeInfo* t_iterator;
+	const TypeInfo* t_stream;
 };
 
 extern SScriptManager ScriptManager;

@@ -138,6 +138,9 @@ Character : public Entity, public IStreamSink
 	virtual void save (File::Writer& writer);
 	virtual void save_hook (class ScriptRestrictedWriter* writer);
 
+	// streaming in Scriptix
+	IStreamSink* get_stream () { return this; }
+
 	// positon
 	CharPosition get_pos (void) const { return position; }
 	CharPosition set_pos (CharPosition p) { return position = p; }

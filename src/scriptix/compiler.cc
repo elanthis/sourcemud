@@ -580,6 +580,25 @@ Scriptix::Compiler::Compiler::CompileNode (CompilerFunction* func, CompilerNode 
 				_test(CompileNode (func, node->parts.nodes[1]))
 				func->func->add_opcode(OP_CONCAT);
 				break;
+			// create a new stream
+			case SXP_STREAM:
+				_test(CompileNode (func, node->parts.nodes[0]))
+				func->func->add_opcode(OP_STREAM_NEW);
+				_test(CompileNode (func, node->parts.nodes[1]))
+				func->func->add_opcode(OP_STREAM_END);
+				break;
+			// stream an item
+			case SXP_STREAM_ITEM:
+				_test(CompileNode (func, node->parts.nodes[0]))
+				func->func->add_opcode(OP_STREAM_ITEM);
+				break;
+			// do a dream op
+			case SXP_STREAM_OP:
+				break;
+			// Internal error
+			default:
+				Error(S("Internal error: missing opcode support"));
+				break;
 		}
 		node = node->next;
 	}

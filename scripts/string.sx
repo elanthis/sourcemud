@@ -21,7 +21,7 @@ function makeSpaces(count)
 
 	// add left-overs	
 	if (count > 0)
-		string = string :: spaces.substr(0, count);
+		string = string .. spaces.substr(0, count);
 
 	return string;
 }
@@ -41,5 +41,5 @@ public function pad(string, length)
 		return string.substr(0,length);
 
 	// not long enough, so we pad and return
-	return makeSpaces(length - slen) :: string;
+	return makeSpaces(length - slen) .. string;
 }

@@ -25,62 +25,51 @@
  * DAMAGE.
  */
 
-#ifndef SCRIPTIX_OPCODES_H
-#define SCRIPTIX_OPCODES_H
+#include <string.h>
 
+#include "scriptix/type.h"
+#include "scriptix/value.h"
+#include "scriptix/stream.h"
+#include "scriptix/system.h"
+#include "scriptix/number.h"
+#include "scriptix/vimpl.h"
+#include "common/streams.h"
+
+using namespace std;
+using namespace Scriptix;
+
+// Our methods
+SX_BEGINMETHODS(Stream)
+SX_ENDMETHODS
+
+// Define type parameters
 namespace Scriptix {
+	SX_TYPEIMPL(Stream, "Stream", IValue)
+}
 
-// Byte-code ops
-typedef enum {
-	OP_PUSH = 0,
-	OP_ADD,
-	OP_SUBTRACT,
-	OP_MULTIPLY,
-	OP_DIVIDE,
-	OP_NEGATE,
-	OP_INVOKE,
-	OP_CONCAT,
-	OP_GT,
-	OP_LT,
-	OP_GTE = 10,
-	OP_LTE,
-	OP_EQUAL,
-	OP_NEQUAL,
-	OP_NOT,
-	OP_LOOKUP,
-	OP_ASSIGN,
-	OP_INDEX,
-	OP_NEWARRAY,
-	OP_TYPECAST,
-	OP_STRINGCAST = 20,
-	OP_INTCAST,
-	OP_SETINDEX,
-	OP_METHOD,
-	OP_JUMP,
-	OP_POP,
-	OP_TEST,
-	OP_TJUMP,
-	OP_FJUMP,
-	OP_YIELD,
-	OP_IN = 30,
-	OP_SET_PROPERTY,
-	OP_GET_PROPERTY,
-	OP_ITER,
-	OP_COPY,
-	OP_STREAM_NEW,
-	OP_STREAM_ITEM,
-	OP_STREAM_END
-} sx_op_type;
+Stream::Stream (IStreamSink* sink) : control (new StreamControl(sink)) {}
 
-// Define opcodes
-class OpCode {
-	public:
-	const char* name;
-	unsigned char args;
-};
+const TypeInfo*
+Stream::get_type () const
+{
+	return ScriptManager.get_stream_type();
+}
 
-extern OpCode OpCodeDefs[];
+void
+Stream::stream (Value value)
+{
+	if (!control)
+		return;
 
-}; // namespace Scriptix
+	if (value.is_int())
+		*control << value.get_int();
+	else
+		*control << value.get_string();
+}
 
-#endif
+void
+Stream::end ()
+{
+	delete control;
+	control = NULL;
+}

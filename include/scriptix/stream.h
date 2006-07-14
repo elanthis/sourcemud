@@ -25,62 +25,30 @@
  * DAMAGE.
  */
 
-#ifndef SCRIPTIX_OPCODES_H
-#define SCRIPTIX_OPCODES_H
+#include "common/gcvector.h"
+#include "scriptix/value.h"
+#include "scriptix/iterator.h"
+#include "scriptix/type.h"
+
+class IStreamSink;
+class StreamControl;
 
 namespace Scriptix {
 
-// Byte-code ops
-typedef enum {
-	OP_PUSH = 0,
-	OP_ADD,
-	OP_SUBTRACT,
-	OP_MULTIPLY,
-	OP_DIVIDE,
-	OP_NEGATE,
-	OP_INVOKE,
-	OP_CONCAT,
-	OP_GT,
-	OP_LT,
-	OP_GTE = 10,
-	OP_LTE,
-	OP_EQUAL,
-	OP_NEQUAL,
-	OP_NOT,
-	OP_LOOKUP,
-	OP_ASSIGN,
-	OP_INDEX,
-	OP_NEWARRAY,
-	OP_TYPECAST,
-	OP_STRINGCAST = 20,
-	OP_INTCAST,
-	OP_SETINDEX,
-	OP_METHOD,
-	OP_JUMP,
-	OP_POP,
-	OP_TEST,
-	OP_TJUMP,
-	OP_FJUMP,
-	OP_YIELD,
-	OP_IN = 30,
-	OP_SET_PROPERTY,
-	OP_GET_PROPERTY,
-	OP_ITER,
-	OP_COPY,
-	OP_STREAM_NEW,
-	OP_STREAM_ITEM,
-	OP_STREAM_END
-} sx_op_type;
-
-// Define opcodes
-class OpCode {
+class Stream : public IValue {
 	public:
-	const char* name;
-	unsigned char args;
+	Stream (IStreamSink* sink);
+
+	virtual const TypeInfo* get_type () const;
+
+	// Array Operations
+	public:
+	StreamControl* get_control () { return control; }
+	void stream (Value value);
+	void end ();
+
+	protected:
+	StreamControl* control;
 };
 
-extern OpCode OpCodeDefs[];
-
-}; // namespace Scriptix
-
-#endif
+} // namespace Scriptix

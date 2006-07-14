@@ -31,6 +31,8 @@
 #include "common/gcbase.h"
 #include "common/string.h"
 
+class IStreamSink;
+
 namespace Scriptix {
 
 class TypeInfo;
@@ -40,13 +42,14 @@ class IValue : public GCType::GC {
 	// Constructor/destructor
 	public:
 	inline IValue () : gc() {}
-	virtual ~IValue (void) {}
+	virtual ~IValue () {}
 
 	// Operations
 	virtual bool equal (Value other) const;
 	virtual int compare (Value other) const;
 	virtual bool is_true () const;
-	virtual const TypeInfo* get_type (void) const = 0;
+	virtual const TypeInfo* get_type () const = 0;
+	virtual IStreamSink* get_stream ();
 };
 
 class Value : public GCType::GC {
@@ -89,8 +92,11 @@ class Value : public GCType::GC {
 
 	// get value as native type
 	String get_string () const;
-	long get_int () const;
+	intptr_t get_int () const;
 	bool get_bool () const;
+
+	// streaming
+	class IStreamSink* get_stream ();
 
 	// type check
 	const TypeInfo* get_type () const;

@@ -48,7 +48,7 @@ function init ()
 {
 	registerCommand(
 		"whereis",
-		"whereis player <player>\n" ::
+		"whereis player <player>\n" ..
 		"whereis uname <uname>\n",
 		["whereis :1player :0*",
 		"whereis :1uname :0*"],

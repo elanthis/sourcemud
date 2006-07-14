@@ -52,6 +52,13 @@ Value::Value (long s_value)
 
 // FETCH NATIVE FORMAT
 
+intptr_t
+Value::get_int () const
+{
+	Value v = to_int();
+	return Number::to_int(v);
+}
+
 String
 Value::get_string () const
 {
@@ -170,6 +177,14 @@ Value::to_int() const
 	return Nil;
 }
 
+class IStreamSink*
+Value::get_stream ()
+{
+	if (value == NULL || Number::is_number(value))
+		return NULL;
+	return value->get_stream();
+}
+
 // DEFAULT IMPLEMENTATIONS
 bool
 IValue::equal (Value other) const
@@ -187,4 +202,10 @@ bool
 IValue::is_true () const
 {
 	return true;
+}
+
+class IStreamSink*
+IValue::get_stream ()
+{
+	return NULL;
 }

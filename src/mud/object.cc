@@ -466,6 +466,10 @@ Object::save (File::Writer& writer)
 		}
 	}
 
+	// save name, if set
+	if (!name.empty())
+		writer.attr(S("name"), name.get_name());
+
 	// parent data
 	Entity::save(writer);
 
@@ -516,6 +520,8 @@ Object::load_node(File::Reader& reader, File::Node& node)
 				Log::Error << "Could not find object blueprint '" << node.get_data() << "'";
 			else
 				set_blueprint(blueprint);
+		FO_ATTR("name")
+			name.set_name(node.get_data());
 		FO_ATTR("location")
 			location = ContainerType::lookup(node.get_data());
 		FO_OBJECT("object")

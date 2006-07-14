@@ -1,3 +1,17 @@
+2006-07-14 20:12:14  Sean Middleditch <elanthis@awesomeplay.com>
+
+  * Make new character's HP set to the max.
+  * Allow saving and loading of customized names on Objects.
+  * Waffle on Scriptix string concat operator yet again; it's back
+    to .. now.
+  * Fixed a bug in Scriptix eval loop that would cause it continue
+    evaluating a function even after an error.
+  * Added a new stream operator << to Scriptix and basic stream
+    support for Character and Room.  Added one example line of
+    this in player.sx.
+  * Stream support is not finished, as the special << @op(args)
+    format is not yet handled properly.
+
 2006-07-13 21:28:26  Sean Middleditch <elanthis@awesomeplay.com>
 
   * Reduce startup log messages to almost nothing.

@@ -127,7 +127,8 @@
 "/=" { return TDIVASSIGN; }
 "++" { return TINCREMENT; }
 "--" { return TDECREMENT; }
-"::" { return TCONCAT; }
+".." { return TCONCAT; }
+"<<" { return TSTREAM; }
 "||" { return OR; }
 "&&" { return AND; }
 != { return TNE; }

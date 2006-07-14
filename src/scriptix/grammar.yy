@@ -99,10 +99,11 @@
 %token TDIVASSIGN "/="
 %token TVAR "var"
 %token TDEREFERENCE "."
-%token TCONCAT "::"
+%token TCONCAT ".."
 %token TBREAK "break"
 %token TRETURN "return"
 %token TFUNCTION "function"
+%token TSTREAM "<<"
 
 %nonassoc TBREAK TRETURN 
 %right '=' TADDASSIGN TSUBASSIGN TMULASSIGN TDIVASSIGN
@@ -121,7 +122,8 @@
 %nonassoc IF
 %nonassoc ELSE
 
-%type<node> node args block stmts stmt expr func_args lval
+%type<node> args block stmts stmt expr func_args lval
+%type<node> stream stream_item
 %type<names> arg_names_list arg_names
 %type<value> data
 %type<id> name
@@ -150,12 +152,14 @@ stmts:	stmt { $$ = $1; }
 	| stmts stmt { if ($1 != NULL) { $$ = $1; $$->Append($2); } else { $$ = $2; } }
 	;
 
-stmt:	node ';' { $$ = $1; }
+stmt:	expr ';' { $$ = sxp_new_statement(compiler, $1); }
 	| TRETURN expr ';' { $$ = sxp_new_return (compiler, $2); }
 	| TRETURN ';' { $$ = sxp_new_return (compiler, NULL); }
 	| TBREAK ';' { $$ = sxp_new_break (compiler); }
 	| TCONTINUE ';' { $$ = sxp_new_continue (compiler); }
 	| TYIELD ';' { $$ = sxp_new_yield (compiler); }
+
+	| expr stream ';' { $$ = sxp_new_stream(compiler, $1, $2); }
 
 	| IF '(' expr ')' stmt %prec IF { $$ = sxp_new_if (compiler, $3, $5, NULL); }
 	| IF '(' expr ')' stmt ELSE stmt %prec ELSE { $$ = sxp_new_if (compiler, $3, $5, $7); }
@@ -165,7 +169,7 @@ stmt:	node ';' { $$ = $1; }
 	| DO stmt TUNTIL '(' expr ')' ';' { $$ = sxp_new_loop (compiler, SXP_LOOP_DOUNTIL, $5, $2); }
 	| DO stmt { $$ = sxp_new_loop (compiler, SXP_LOOP_FOREVER, NULL, $2); }
 	
-	| TFOR '(' node ';' expr ';' node ')' stmt { $$ = sxp_new_for (compiler, $3, $5, $7, $9); }
+	| TFOR '(' expr ';' expr ';' expr ')' stmt { $$ = sxp_new_for (compiler, sxp_new_statement(compiler, $3), $5, sxp_new_statement(compiler, $7), $9); }
 /*	| TFOREACH '(' name TIN expr ')' stmt { $$ = sxp_new_foreach (compiler, $3, $5, $7); } */
 	| TFOREACH '(' TVAR name TIN expr ')' stmt { $$ = sxp_new_foreach (compiler, Atom::create($4), $6, $8); }
 
@@ -174,8 +178,12 @@ stmt:	node ';' { $$ = $1; }
 	| error { $$ = NULL; }
 	;
 
-node:	{ $$ = NULL; }
-	| expr { $$ = sxp_new_statement (compiler, $1); }
+stream: stream_item { $$ = sxp_new_streamitem(compiler, $1); }
+	| stream stream_item { $$ = $1; $1->Append(sxp_new_streamitem(compiler, $2)); }
+	;
+
+stream_item: TSTREAM expr { $$ = $2; }
+	| TSTREAM '@' name '(' func_args ')' { $$ = sxp_new_streamop(compiler, $3, $5); }
 	;
 
 args:	expr { $$ = $1; }

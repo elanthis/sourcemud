@@ -7,6 +7,7 @@ function getFoodchain(self)
 	var foodchain = Int(self.ai_foodchain);
 	if (foodchain > 0)
 		return foodchain;
+
 	return 50;
 }
 
@@ -69,7 +70,7 @@ function makeCorpse(npc)
 	if (cname)
 		corpse.setBaseName(cname);
 	else
-		corpse.setBaseName(npc.getBaseName() :: ' corpse');
+		corpse.setBaseName(npc.getBaseName() .. ' corpse');
 
 	// move equipment over
 	while (var obj = npc.getEquipAt(0))

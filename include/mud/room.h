@@ -67,6 +67,9 @@ class Room : public Entity
 	virtual int load_node(File::Reader& reader, File::Node& node);
 	virtual int load_finish ();
 
+	// streaming
+	IStreamSink* get_stream ();
+
 	// heartbeat
 	void heartbeat ();
 

@@ -545,8 +545,11 @@ void TelnetModeNewCharacter::create ()
 	for (int i = 0; i < CharStatID::COUNT; ++i)
 		player->set_base_stat(i, stats[i]);
 
-	// save player
+	// setup various other bits
 	player->recalc();
+	player->set_hp(player->get_max_hp());
+
+	// save player
 	player->save();
 
 	// add to account

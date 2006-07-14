@@ -152,10 +152,6 @@ room {
     }
     uid = $19
   }
-  object {
-    blueprint = "sw_fire"
-    uid = $20
-  }
 }
 room {
   id = "forest_cliff"
@@ -316,22 +312,6 @@ room {
       location = "in"
     }
   }
-  npc {
-    blueprint = "wolf_large"
-    uid = $42
-    tag = "forest_critter"
-    position = "stand"
-    hp = 100
-    equip.right_hand {
-      blueprint = "claws_animal"
-      uid = $43
-    }
-    equip.left_hand {
-      blueprint = "claws_animal"
-      uid = $44
-    }
-    zonelock = true
-  }
 }
 room {
   id = "cave_waterfall"
@@ -371,6 +351,22 @@ room {
       trashable = false
     }
     uid = $53
+  }
+  npc {
+    blueprint = "wolf_large"
+    uid = $42
+    tag = "forest_critter"
+    position = "stand"
+    hp = 100
+    equip.right_hand {
+      blueprint = "claws_animal"
+      uid = $43
+    }
+    equip.left_hand {
+      blueprint = "claws_animal"
+      uid = $44
+    }
+    zonelock = true
   }
 }
 room {

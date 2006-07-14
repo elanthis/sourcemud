@@ -56,6 +56,8 @@ char *alloca ();
 #include "scriptix/number.h"
 #include "scriptix/array.h"
 #include "scriptix/vimpl.h"
+#include "scriptix/stream.h"
+#include "common/log.h"
 
 using namespace Scriptix;
 
@@ -89,13 +91,15 @@ OpCode Scriptix::OpCodeDefs[] = {
 	{ "TEST", 0 },
 	{ "TJUMP", 1 },
 	{ "FJUMP", 1 },
-	{ "STATIC_METHOD", 2 },
 	{ "YIELD", 0 },
 	{ "IN", 0 },
 	{ "SET_PROPERTY", 1 },
 	{ "GET_PROPERTY", 1 },
 	{ "ITER", 1 },
 	{ "COPY", 1 },
+	{ "STREAM_NEW", 1 },
+	{ "STREAM_ITEM", 2 },
+	{ "STREAM_END", 1 },
 };
 
 int
@@ -218,11 +222,25 @@ run_code:
 		}
 
 		// iterate over ops
-		while (get_frame().op_ptr < get_frame().func->count) {
+		while (state == STATE_RUNNING && get_frame().op_ptr < get_frame().func->count) {
 			op = get_oparg();
 
 			// DEBUG
-			// std::cout << get_frame().func->file->c_str() << ':' << get_frame().func->get_line_of(get_frame().op_ptr) << " [" << op << "]\t" << OpCodeDefs[op].name << "\tD:" << data_stack.size() << "\tF:" << frames.size() << std::endl;
+			/*
+			Log::Info
+				<< get_frame().func->file.c_str()
+				<< ':'
+				<< get_frame().func->get_line_of(get_frame().op_ptr)
+				<< " ["
+				<< op
+				<< "]\t"
+				<< OpCodeDefs[op].name
+				<< "\tD:"
+				<< data_stack.size()
+				<< "\tF:"
+				<< frames.size();
+			Log::Info << OP_STREAM_NEW;
+			*/
 
 			switch(op) {
 			/* ----- OPERATORS ----- */
@@ -530,6 +548,28 @@ run_code:
 					break;
 				case OP_COPY:
 					push_value(get_value(get_oparg()));
+					break;
+				case OP_STREAM_NEW:
+				{
+					value = get_value();
+					pop_value();
+					class IStreamSink* stream = value.get_stream();
+					if (stream) {
+						push_value(new Scriptix::Stream(stream));
+					} else {
+						raise_error(SXE_BADTYPE, "Value is not a stream sink");
+					}
+					break;
+				}
+				case OP_STREAM_ITEM:
+					value = get_value(2);
+					((Scriptix::Stream*)value.get())->stream(get_value());
+					pop_value();
+					break;
+				case OP_STREAM_END:
+					value = get_value();
+					((Scriptix::Stream*)value.get())->end();
+					pop_value();
 					break;
 			}
 		}

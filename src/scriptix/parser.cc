@@ -240,7 +240,7 @@ Scriptix::Compiler::CompilerNode::CompilerNode(Scriptix::Compiler::Compiler* s_i
 	info = s_info;
 	type = s_type;
 	next = NULL;
-	
+
 	file = info->file;
 	line = info->line;
 

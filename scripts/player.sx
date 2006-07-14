@@ -17,7 +17,7 @@ function playerShowExp(self)
 // show stats
 function playerShowStats(self)
 {
-	self.print("Your statistics:\n");
+	self << "Your statistics:\n";
 	for (var i = 0; i < STAT_COUNT; ++i) {
 		var stat = self.getEffectiveStat(i);
 		var mod = self.getStatModifier(i);
@@ -55,7 +55,7 @@ function playerShowInfo(self)
 		printInfo(self, "Gender", "Neuter");
 
 	// age
-	printInfo(self, "Age", self.getAge() :: " years (born on " :: self.getBirthday().getDate() :: ")");
+	printInfo(self, "Age", self.getAge() .. " years (born on " .. self.getBirthday().getDate() .. ")");
 
 	// appearance
 	printInfo(self, "Appearance", strParse("{$1.Desc}", self));

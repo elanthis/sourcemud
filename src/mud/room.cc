@@ -622,4 +622,9 @@ RoomStreamSink::stream_end () {
 	return true;
 }
 
+IStreamSink*
+Room::get_stream () {
+	return new RoomStreamSink(*this);
+}
+
 StreamControl::StreamControl (Room& rptr) : sink(new RoomStreamSink(rptr)) {}

@@ -206,6 +206,7 @@ noinst_HEADERS=\
 	include/scriptix/native.h \
 	include/scriptix/number.h \
 	include/scriptix/opcodes.h \
+	include/scriptix/stream.h \
 	include/scriptix/string.h \
 	include/scriptix/struct.h \
 	include/scriptix/system.h \
@@ -305,6 +306,7 @@ SCRIPTIX_SOURCES=\
 	src/scriptix/number.cc \
 	src/scriptix/optimize.cc \
 	src/scriptix/parser.cc \
+	src/scriptix/stream.cc \
 	src/scriptix/string.cc \
 	src/scriptix/struct.cc \
 	src/scriptix/system.cc \
