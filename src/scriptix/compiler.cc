@@ -594,6 +594,10 @@ Scriptix::Compiler::Compiler::CompileNode (CompilerFunction* func, CompilerNode 
 				break;
 			// do a dream op
 			case SXP_STREAM_OP:
+				_test(CompileNode (func, node->parts.nodes[1]))
+				_test(CompileNode (func, node->parts.nodes[0]))
+				func->func->add_opcode(OP_INVOKE);
+				func->func->add_oparg (_sxp_count (node->parts.nodes[1]) + 1);
 				break;
 			// Internal error
 			default:

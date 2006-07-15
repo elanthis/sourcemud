@@ -36,12 +36,11 @@ namespace Log {
 		msg.write(text, len);
 	}
 
-	bool
+	void
 	LogWrapper::stream_end (void)
 	{
 		LogManager.print(klass, msg.str());
 		msg.reset();
-		return false;
 	}
 }
 

@@ -47,6 +47,7 @@ namespace Scriptix {
 	extern const TypeDef Array_Type;
 	extern const TypeDef TypeValue_Type;
 	extern const TypeDef Struct_Type;
+	extern const TypeDef Stream_Type;
 }
 
 int
@@ -60,6 +61,7 @@ SScriptManager::initialize ()
 	t_array = add_type(&Array_Type);
 	t_type = add_type(&TypeValue_Type);
 	t_struct = add_type(&Scriptix::Struct_Type);
+	t_stream = add_type(&Scriptix::Stream_Type);
 
 	return 0;
 }

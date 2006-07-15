@@ -88,6 +88,10 @@
 "//"  { BEGIN LCOMMENT; }
 # { BEGIN LCOMMENT; }
 [\n] { compiler->LineIncr(); }
+@[a-zA-Z0-9_]* { 
+	yylval.id = Atom(String(yytext)).value();
+	return TSTREAMOP;
+}
 [a-zA-Z_][a-zA-Z0-9_]* { 
 		LEX_NAME("var", TVAR)
 		LEX_NAME("if", IF)

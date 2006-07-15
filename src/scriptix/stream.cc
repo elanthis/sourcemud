@@ -47,7 +47,7 @@ namespace Scriptix {
 	SX_TYPEIMPL(Stream, "Stream", IValue)
 }
 
-Stream::Stream (IStreamSink* sink) : control (new StreamControl(sink)) {}
+Stream::Stream (IStreamSink* sink) : control (sink) {}
 
 const TypeInfo*
 Stream::get_type () const
@@ -58,18 +58,14 @@ Stream::get_type () const
 void
 Stream::stream (Value value)
 {
-	if (!control)
-		return;
-
 	if (value.is_int())
-		*control << value.get_int();
+		control << value.get_int();
 	else
-		*control << value.get_string();
+		control << value.get_string();
 }
 
 void
 Stream::end ()
 {
-	delete control;
-	control = NULL;
+	control.stream_end();
 }

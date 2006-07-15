@@ -72,7 +72,7 @@
 
 %token<value> NUMBER
 %token<value> STRING
-%token<id> IDENTIFIER
+%token<id> IDENTIFIER TSTREAMOP
 %token<type> TYPE
 %token IF "if"
 %token ELSE "else"
@@ -178,12 +178,12 @@ stmt:	expr ';' { $$ = sxp_new_statement(compiler, $1); }
 	| error { $$ = NULL; }
 	;
 
-stream: stream_item { $$ = sxp_new_streamitem(compiler, $1); }
-	| stream stream_item { $$ = $1; $1->Append(sxp_new_streamitem(compiler, $2)); }
+stream: stream_item { $$ = $1; }
+	| stream stream_item { $$ = $1; $1->Append($2); }
 	;
 
-stream_item: TSTREAM expr { $$ = $2; }
-	| TSTREAM '@' name '(' func_args ')' { $$ = sxp_new_streamop(compiler, $3, $5); }
+stream_item: TSTREAM expr { $$ = sxp_new_streamitem(compiler, $2); }
+	| TSTREAM TSTREAMOP '(' func_args ')' { $$ = sxp_new_streamop(compiler, sxp_new_lookup(compiler, Atom::create($2)), $4); }
 	;
 
 args:	expr { $$ = $1; }

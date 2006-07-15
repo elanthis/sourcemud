@@ -29,6 +29,7 @@
 #include "scriptix/value.h"
 #include "scriptix/iterator.h"
 #include "scriptix/type.h"
+#include "common/streams.h"
 
 class IStreamSink;
 class StreamControl;
@@ -43,12 +44,12 @@ class Stream : public IValue {
 
 	// Array Operations
 	public:
-	StreamControl* get_control () { return control; }
+	StreamControl& get_control () { return control; }
 	void stream (Value value);
 	void end ();
 
 	protected:
-	StreamControl* control;
+	StreamControl control;
 };
 
 } // namespace Scriptix

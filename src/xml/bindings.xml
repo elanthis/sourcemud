@@ -383,6 +383,18 @@ if (value == false) { ... }</example>
     </global>
   </global-group>
 
+  <!-- Stream Operators -->
+  <streamop>
+    <name>name</name>
+    <arg>
+      <name>entity</name>
+      <type>Entity</type>
+    </arg>
+    <code><![CDATA[
+      _stream << StreamName(_arg_entity); 
+    ]]></code>
+  </streamop>
+
   <!-- Randomness -->
   <function>
     <name>rollDice</name>

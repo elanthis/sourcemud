@@ -52,7 +52,7 @@ namespace Log
 		LogWrapper (LogClass s_klass) : klass(s_klass) {}
 
 		virtual void stream_put (const char* str, size_t len);
-		virtual bool stream_end (void);
+		virtual void stream_end (void);
 
 		private:
 		LogClass klass;

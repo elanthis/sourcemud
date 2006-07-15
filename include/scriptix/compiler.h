@@ -257,7 +257,7 @@ extern const char* sxp_compiler_inbuf;
 #define sxp_new_postop(info,expr,op,value) (new CompilerNode((info), SXP_POSTOP, (expr), (value), NULL, NULL, Atom(), 0, Nil, (op)))
 #define sxp_new_negate(info,node) (new CompilerNode((info), SXP_NEGATE, (node), NULL, NULL, NULL, Atom(), 0, Nil, 0))
 #define sxp_new_copy(info,loc) (new CompilerNode((info), SXP_COPY, NULL, NULL, NULL, NULL, Atom(), 0, Nil, (loc)))
-#define sxp_new_streamop(info,name,args) (new CompilerNode((info), SXP_STREAM_OP, (args), NULL, NULL, NULL, Atom::create(name), 0, Nil, 0))
+#define sxp_new_streamop(info,lookup,args) (new CompilerNode((info), SXP_STREAM_OP, (lookup), (args), NULL, NULL, Atom(), 0, Nil, 0))
 #define sxp_new_streamitem(info,node) (new CompilerNode((info), SXP_STREAM_ITEM, (node), NULL, NULL, NULL, Atom(), 0, Nil, 0))
 #define sxp_new_stream(info,node,args) (new CompilerNode((info), SXP_STREAM, (node), (args), NULL, NULL, Atom(), 0, Nil, 0))
 

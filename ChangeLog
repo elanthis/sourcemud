@@ -1,3 +1,9 @@
+2006-07-15 13:42:19  Sean Middleditch <elanthis@awesomeplay.com>
+
+  * Added Scriptix stream operator support.
+  * Removed the boolean return on IStreamSink::end(), we no longer
+    need to delete those automatically; we have a GC, after all.
+
 2006-07-14 20:12:14  Sean Middleditch <elanthis@awesomeplay.com>
 
   * Make new character's HP set to the max.

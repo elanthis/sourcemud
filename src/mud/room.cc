@@ -597,7 +597,7 @@ RoomStreamSink : public IStreamSink {
 
 	virtual void stream_put (const char* text, size_t len) { buffer.write(text, len); }
 	virtual void stream_ignore (class Character* ch) { ignores.push_back(ch); }
-	virtual bool stream_end ();
+	virtual void stream_end ();
 
 	private:
 	class Room& room;
@@ -607,7 +607,7 @@ RoomStreamSink : public IStreamSink {
 };
 
 // flush room output
-bool
+void
 RoomStreamSink::stream_end () {
 	// send output
 	String text = buffer.str();
@@ -618,8 +618,6 @@ RoomStreamSink::stream_end () {
 			room.put(text, text.size(), &ignores);
 		buffer.clear();
 	}
-	// yes, delete this sink
-	return true;
 }
 
 IStreamSink*

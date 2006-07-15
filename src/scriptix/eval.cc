@@ -239,7 +239,6 @@ run_code:
 				<< data_stack.size()
 				<< "\tF:"
 				<< frames.size();
-			Log::Info << OP_STREAM_NEW;
 			*/
 
 			switch(op) {

@@ -23,7 +23,7 @@ class IStreamSink : public GC {
 
 	virtual void stream_put (const char* text, size_t len = 0) = 0;
 	inline virtual void stream_ignore (class Character* ch) {}
-	inline virtual bool stream_end () { return false; }
+	inline virtual void stream_end () {}
 };
 
 // base awemud stream type
@@ -35,11 +35,16 @@ StreamControl {
 	inline StreamControl (IStreamSink& sref) : sink(&sref) {}
 	StreamControl (class Room& rref); // this is in src/mud/room.cc; HACK
 
-	// finish stream
+	// automatically finish stream
 	~StreamControl () {
-		// delete sink if stream_end returns true
-		if (sink->stream_end())
-			delete sink;
+		stream_end();
+	}
+
+	// finish
+	void stream_end () {
+		if (sink != NULL)
+			sink->stream_end();
+		sink = NULL;
 	}
 
 	// send text

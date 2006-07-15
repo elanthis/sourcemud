@@ -17,24 +17,23 @@ function playerShowExp(self)
 // show stats
 function playerShowStats(self)
 {
-	self << "Your statistics:\n";
+	self << "Your statistics: \n";
 	for (var i = 0; i < STAT_COUNT; ++i) {
 		var stat = self.getEffectiveStat(i);
 		var mod = self.getStatModifier(i);
 
 		// name
-		self.print('  ', getStatName(i), ': ');
+		self << '  ' << getStatName(i) << ': ';
 
 		// descriptor
 		self.setIndent(14);
-		self.print(getStatColor(stat), getStatLevel(stat), CNORMAL);
+		self << getStatColor(stat) << getStatLevel(stat) << CNORMAL;
 
 		// value/+mod
 		self.setIndent(25);
-		self.print('(', stat, '/');
-		if (mod >= 0)
-			self.print('+');
-		self.print(mod, ")\n");
+		var plus = '';
+		if (mod >= 0) plus = '+';
+		self << '(' << stat << '/' << plus << mod << ")\n";
 
 		self.setIndent(0);
 	}

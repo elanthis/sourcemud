@@ -24,6 +24,7 @@
 #include "scriptix/system.h"
 #include "scriptix/struct.h"
 #include "scriptix/type.h"
+#include "scriptix/stream.h"
 #include "scriptix/vimpl.h"
 
 #define SCRIPTIX_MAX_ARGV 32
@@ -244,14 +245,34 @@ namespace Scriptix { extern const TypeDef Struct_Type; }
       </xsl:for-each>
     </xsl:for-each>
 
+    <!-- stream op -->
+    <xsl:for-each select="streamop">
+    Scriptix::Value
+      _inter_streamop_<xsl:value-of select="name"/> (size_t _argc, Scriptix::Value _argv[]) {
+      Scriptix::Value _stream_copy = _argv[0];
+      if (!_stream_copy.is_a(Scriptix::ScriptManager.get_stream_type())) {
+        Scriptix::ScriptManager.raise_error(Scriptix::SXE_BADTYPE, "Stream operand is not a stream");
+        return Scriptix::Nil;
+      }
+      StreamControl&amp; _stream = ((Scriptix::Stream*)_stream_copy.get())->get_control();
+      <xsl:apply-templates select="arg" mode="define"/>
+      <xsl:call-template name="args-get">
+        <xsl:with-param name="arg-offset">1</xsl:with-param>
+      </xsl:call-template>
+      <xsl:apply-templates select="." mode="invoke"/>
+      return _stream_copy;
+      }
+    </xsl:for-each>
+
     <!-- functions -->
     <xsl:for-each select="function[not(code) or string-length(code)!=0]">
     Scriptix::Value
       _inter_function_<xsl:value-of select="name"/> (size_t _argc, Scriptix::Value _argv[]) {
       <xsl:apply-templates select="arg" mode="define"/>
       <xsl:apply-templates select="." mode="define-ret"/>
-      <xsl:variable name="arg-offset">0</xsl:variable>
-      <xsl:call-template name="args-get"/>
+      <xsl:call-template name="args-get">
+        <xsl:with-param name="arg-offset">0</xsl:with-param>
+      </xsl:call-template>
       <xsl:if test="string(return/type)='Iterator'">
         typedef _Iterators::Func_<xsl:value-of select="name"/>_Iter _iterator;
       </xsl:if>
@@ -303,6 +324,9 @@ namespace Scriptix { extern const TypeDef Struct_Type; }
       
     void
     SScriptBindings::bind() {
+    <xsl:for-each select="streamop">
+      Scriptix::ScriptManager.add_function(new Scriptix::Function(Scriptix::Atom(S("@<xsl:value-of select="name"/>")), <xsl:value-of select="count(arg)+1"/>, _inter_streamop_<xsl:value-of select="name"/>));
+    </xsl:for-each>
     <xsl:for-each select="function[not(code) or string-length(code)!=0]">
       Scriptix::ScriptManager.add_function(new Scriptix::Function(Scriptix::Atom(S("<xsl:value-of select="name"/>")), <xsl:value-of select="count(arg)"/>, _inter_function_<xsl:value-of select="name"/>));
     </xsl:for-each>
@@ -410,7 +434,7 @@ namespace Scriptix { extern const TypeDef Struct_Type; }
   <xsl:template match="type" mode="cppname">
     <xsl:choose><xsl:when test="cppname"><xsl:value-of select="cppname"/></xsl:when><xsl:otherwise><xsl:value-of select="name"/></xsl:otherwise></xsl:choose>
   </xsl:template>
-  <xsl:template match="function|method" mode="cppname">
+  <xsl:template match="streamop|function|method" mode="cppname">
     <xsl:variable name="type"><xsl:value-of select="return/type"/></xsl:variable>
     <xsl:choose><xsl:when test="//type[child::name=$type and cppname]"><xsl:value-of select="//type[child::name=$type]/cppname"/></xsl:when><xsl:otherwise><xsl:value-of select="$type"/></xsl:otherwise></xsl:choose>
   </xsl:template>
@@ -482,7 +506,7 @@ namespace Scriptix { extern const TypeDef Struct_Type; }
   </xsl:template>
 
   <!-- invoke function -->
-  <xsl:template match="function" mode="invoke">
+  <xsl:template match="streamop|function" mode="invoke">
     <xsl:choose>
       <xsl:when test="code">
         <xsl:apply-templates select="code"/>
