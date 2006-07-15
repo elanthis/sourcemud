@@ -1,3 +1,9 @@
+2006-07-15 13:50:38  Sean Middleditch <elanthis@awesomeplay.com>
+
+  * Added @indent stream operator.
+  * Improved @name stream operator.
+  * Updated player.sx to use streams everywhere.
+
 2006-07-15 13:42:19  Sean Middleditch <elanthis@awesomeplay.com>
 
   * Added Scriptix stream operator support.

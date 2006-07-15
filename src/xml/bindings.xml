@@ -389,10 +389,34 @@ if (value == false) { ... }</example>
     <arg>
       <name>entity</name>
       <type>Entity</type>
+      <doc>The Entity whose name you wish to display.</doc>
+    </arg>
+    <arg>
+      <name>article</name>
+      <type>Integer</type>
+      <doc>One of EN_DEF (definite article), EN_INDEF (indefinite article), or EN_NONE (no article).</doc>
+    </arg>
+    <arg>
+      <name>capitalize</name>
+      <type>Boolean</type>
+      <doc>If true, the named will have forced capitalization.  (For the beginnings of sentences.)</doc>
     </arg>
     <code><![CDATA[
-      _stream << StreamName(_arg_entity); 
+      _stream << StreamName(_arg_entity, (EntityArticleUsage)_arg_article, _arg_capitalize); 
     ]]></code>
+    <doc>Displays the name of the given entity.</doc>
+  </streamop>
+  <streamop>
+    <name>indent</name>
+    <arg>
+      <name>indentation</name>
+      <type>Integer</type>
+      <doc>The number of spaces to indent all following output to.</doc>
+    </arg>
+    <code><![CDATA[
+      _stream << StreamIndent(_arg_indentation); 
+    ]]></code>
+    <doc>Causes all output to be indented to the given amount.  The indentation happens at final display time.</doc>
   </streamop>
 
   <!-- Randomness -->

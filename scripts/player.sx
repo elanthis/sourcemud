@@ -23,27 +23,24 @@ function playerShowStats(self)
 		var mod = self.getStatModifier(i);
 
 		// name
-		self << '  ' << getStatName(i) << ': ';
+		self << @indent(2) << getStatName(i) << ': ';
 
 		// descriptor
-		self.setIndent(14);
-		self << getStatColor(stat) << getStatLevel(stat) << CNORMAL;
+		self << @indent(14) << getStatColor(stat) << getStatLevel(stat) << CNORMAL;
 
 		// value/+mod
-		self.setIndent(25);
 		var plus = '';
 		if (mod >= 0) plus = '+';
-		self << '(' << stat << '/' << plus << mod << ")\n";
-
-		self.setIndent(0);
+		self << @indent(25) << '(' << stat << '/' << plus << mod << ")\n";
 	}
+	self.setIndent(0);
 }
 	
 // show all player info
 function playerShowInfo(self)
 {
 	// basics
-	self.print("Your status:\n");
+	self << "Your status:\n";
 	printInfo(self, "Name", self);
 	printInfo(self, "Race", capwords(self.getRace().getName()));
 	if (self.getGender() == GENDER_MALE)
@@ -75,7 +72,7 @@ function playerShowInfo(self)
 		printInfo(self, "Alignment", "Unknown");
 	}
 
-	self.print("\n");
+	self << "\n";
 	self.showExp();
 }
 
@@ -104,10 +101,7 @@ function playerHisHers(self)
 // helper function
 function printInfo(player, label, data)
 {
-	player.print('  ', label, ': ');
-	player.setIndent(14);
-	player.print(data, "\n");
-	player.setIndent(0);
+	player << '  ' << label << ': ' << @indent(14) << data << "\n" << @indent(0);
 }
 
 // player starting location

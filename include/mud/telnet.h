@@ -260,7 +260,7 @@ class StreamIndent
 	const StreamControl&
 	operator << (const StreamControl& stream, const StreamIndent& indent)
 	{
-		return stream << "\e!" << indent.len << "!";
+		return stream << "\e!I" << indent.len << "!";
 	}
 
 	private:
