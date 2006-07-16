@@ -26,7 +26,7 @@ function openPortal(room, exit)
 		room.addObject(obj);
 	}
 
-	room.print('With no announcement or great fan fare a glowing blue portal appears against the northern wall.\n');
+	room << 'With no announcement or great fan fare a glowing blue portal appears against the northern wall.\n';
 }
 
 // close the portal and destroy object
@@ -37,7 +37,7 @@ function closePortal(room, exit)
 	foreach (var entity in getEntitiesByTag(portal_tag))
 		entity.remove();
 
-	room.print('The portal collapses in on itself in a silent mockery of death and fades from sight.\n');
+	room << 'The portal collapses in on itself in a silent mockery of death and fades from sight.\n';
 }
 
 // update the portal state:

@@ -61,6 +61,17 @@
         <xsl:apply-templates select="function"><xsl:sort select="name" /></xsl:apply-templates>
       </section>
 
+      <!-- streamop appendix -->
+      <section>
+        <xsl:attribute name="id"><xsl:text>ch_streamops</xsl:text></xsl:attribute>
+        <!-- header/doc -->
+        <title>Streamops</title>
+        <xsl:element name="para">Streamops are special functions with send data to or alter the output of a stream.</xsl:element>
+
+        <!-- spit them out -->
+        <xsl:apply-templates select="streamop"><xsl:sort select="name" /></xsl:apply-templates>
+      </section>
+
       <!-- appendix of all types -->
       <section>
         <xsl:attribute name="id"><xsl:text>ch_types</xsl:text></xsl:attribute>
@@ -141,6 +152,49 @@
         <xsl:element name="blockquote">
           <xsl:apply-templates select="arg" mode="doc"/>
           <xsl:apply-templates select="return" mode="doc"/>
+        </xsl:element>
+      </xsl:if>
+      <!-- doc paragraph -->
+      <xsl:apply-templates select="doc"/>
+      <!-- example code -->
+      <xsl:if test="example">
+        <example>
+        <title>Usage of the <xsl:value-of select="name"/>() function</title>
+          <programlisting><xsl:value-of select="example" /></programlisting>
+        </example>
+      </xsl:if>
+    </xsl:element>
+  </xsl:template>
+
+  <!-- document a streamop -->
+  <xsl:template match="streamop">
+    <!-- craft section/id -->
+    <xsl:element name="section">
+      <xsl:attribute name="id"><xsl:value-of select="name"/></xsl:attribute>
+      <!-- title -->
+      <title>
+        <xsl:value-of select="name"/>
+      </title>
+      <!-- function format -->
+      <xsl:element name="para">
+        <function>
+          @<xsl:value-of select="name" />
+        </function>
+        <xsl:text> (</xsl:text>
+        <xsl:apply-templates select="arg" mode="inline" />
+        <xsl:if test="varg">
+          <xsl:if test="count(arg)">
+            <xsl:text>, </xsl:text>
+          </xsl:if>
+          <xsl:text>...</xsl:text>
+        </xsl:if>
+        <xsl:text>)</xsl:text>
+        <xsl:apply-templates select="return" mode="inline"/>
+      </xsl:element>
+      <!-- args and stuff -->
+      <xsl:if test="arg/doc">
+        <xsl:element name="blockquote">
+          <xsl:apply-templates select="arg" mode="doc"/>
         </xsl:element>
       </xsl:if>
       <!-- doc paragraph -->

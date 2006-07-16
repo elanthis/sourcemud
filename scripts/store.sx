@@ -6,14 +6,14 @@ function show_menu (player)
 	// get room
 	var room = player.room();
 	if (!room) {
-		player.print('You are not in a room.\n');
+		player << 'You are not in a room.\n';
 		return;
 	}
 
 	// is there a menu?
 	var list = room.store_list;
 	if (!String(list)) {
-		player.print('There is no store here.\n');
+		player << 'There is no store here.\n';
 		return;
 	}
 
@@ -23,21 +23,13 @@ function show_menu (player)
 		rate = 100;
 
 	// show the menu
-	player.print('Items for Sale:\n');
-	player.setIndent(2);
-	player.print('-name-');
-	player.setIndent(20);
-	player.print(' -cost-\n');
+	player << 'Items for Sale:\n' << @indent(2) << '-name-' << @indent(20) << ' -costs-\n' << @indent(0);
 	foreach (var item in list.split(',')) {
 		var blueprint = getObjectBlueprint(item);
 		if (blueprint) {
-			player.setIndent(2);
-			player.print(blueprint.getName().substr(0, 18));
-			player.setIndent(20);
-			player.print(pad(String(blueprint.getCost() * rate / 100), 7), '\n');
+			player << @ignore(2) << blueprint.getName().substr(0, 18) << @ignore(20) << pad(String(blueprint.getCost() * rate / 100), 7) << '\n' << @indent(0);
 		}
 	}
-	player.setIndent(0);
 }
 
 function buy_item (player, argv)
@@ -45,14 +37,14 @@ function buy_item (player, argv)
 	// get room
 	var room = player.room();
 	if (!room) {
-		player.print('You are not in a room.\n');
+		player << 'You are not in a room.\n';
 		return;
 	}
 
 	// is there a menu?
 	var list = room.store_list;
 	if (!String(list)) {
-		player.print('There is no store here.\n');
+		player << 'There is no store here.\n';
 		return;
 	}
 
@@ -71,20 +63,20 @@ function buy_item (player, argv)
 		}
 	}
 	if (!purchase) {
-		player.print('There is no \'', argv[0], '\' for sale here.\n');
+		player << 'There is no \'' <<  argv[0] << '\' for sale here.\n';
 		return;
 	}
 
 	// check cost
 	var cost = purchase.getCost() * rate / 100;
 	if (cost > player.getCoins()) {
-		player.print('You don\'t have enough money to purchase that.\n');
+		player << 'You don\'t have enough money to purchase that.\n';
 		return;
 	}
 
 	// have a free hand?
 	if (!player.freeHands()) {
-		player.print('Your hands are full.\n');
+		player << 'Your hands are full.\n';
 		return;
 	}
 
@@ -92,15 +84,15 @@ function buy_item (player, argv)
 	var object = purchase.create();
 	if (!object) {
 		message('Store in ', room, ' has invalid item \'', purchase.getId(), '\'');
-		player.print('The store is currently out of stock.\n');
+		player << 'The store is currently out of stock.\n';
 		return;
 	}
 
 	// do transaction
 	player.takeCoins(cost);
 	player.hold(object);
-	player.print('You pay ', cost, ' coins in exchange for ', object.getNamef(EN_INDEF, false), '.\n');
-	player.rprint(player.getNamef(EN_INDEF, true), ' exchanges some coins for a ', object.getNamef(EN_INDEF, false), '.\n');
+	player << 'You pay ' << cost << ' coins in exchange for ' << object.getNamef(EN_INDEF, false) << '.\n';
+	player.room() << @ignore(player) << @name(player, EN_INDEF, true) << ' exchanges some coins for a ' << @name(object, EN_INDEF, false) << '.\n';
 }
 
 function price_item (player, argv)
@@ -108,14 +100,14 @@ function price_item (player, argv)
 	// get room
 	var room = player.room();
 	if (!room) {
-		player.print('You are not in a room.\n');
+		player << 'You are not in a room.\n';
 		return;
 	}
 
 	// is there a store buy list?
 	var buys = room.store_buys;
 	if (!buys) {
-		player.print('You cannot sell items here.\n');
+		player << 'You cannot sell items here.\n';
 		return;
 	}
 	buys = buys.split(',');
@@ -143,7 +135,7 @@ function price_item (player, argv)
 		}
 	}
 	if (!ok) {
-		player.printf('You cannot sell {2.i} here.\n', object);
+		player << 'You cannot sell ' << @name(object, EN_DEF, false) << '.\n';
 		return;
 	}
 
@@ -151,12 +143,12 @@ function price_item (player, argv)
 	var cost = object.getCost();
 	cost = cost * rate / 100;
 	if (cost <= 0) {
-		player.print('That item is worthless here.\n');
+		player << 'That item is worthless here.\n';
 		return;
 	} else if (cost == 1) {
-		player.printf('{2.D} can be sold for one coin.\n', object);
+		player << @name(object, EN_DEF, true) << ' can be sold for one coin.\n';
 	} else if (cost > 0) {
-		player.printf('{2.D} can be sold for {3} coins.\n', object, cost);
+		player << @name(object, EN_DEF, true) << ' can be sold for ' << cost << ' coins.\n';
 	}
 }
 
@@ -165,14 +157,14 @@ function sell_item (player, argv)
 	// get room
 	var room = player.room();
 	if (!room) {
-		player.print('You are not in a room.\n');
+		player << 'You are not in a room.\n';
 		return;
 	}
 
 	// is there a store buy list?
 	var buys = room.store_buys;
 	if (!buys) {
-		player.print('You cannot sell items here.\n');
+		player << 'You cannot sell items here.\n';
 		return;
 	}
 	buys = buys.split(',');
@@ -200,7 +192,7 @@ function sell_item (player, argv)
 		}
 	}
 	if (!ok) {
-		player.printf('You cannot sell {2.i} here.\n', object);
+		player << 'You cannot sell ' << @name(object, EN_DEF, false) << '.\n';
 		return;
 	}
 
@@ -208,15 +200,15 @@ function sell_item (player, argv)
 	var cost = object.getCost();
 	cost = cost * rate / 100;
 	if (cost <= 0) {
-		player.print('That item is worthless here.\n');
+		player << 'That item is worthless here.\n';
 		return;
 	}
 
 	// do transaction
 	player.giveCoins(cost);
 	object.remove();
-	player.printf('You receive {2} coins in exchange for {3.i}.\n', cost, object);
-	player.rprint(player.getNamef(EN_INDEF, true), ' receives some coins in exchange for ', object.getNamef(EN_INDEF, false), '.\n');
+	player << 'You receive ' << cost << ' coins in exchange for ' << @name(object, EN_DEF, false) << '.\n';
+	player.room() << @ignore(player) << @name(player, EN_INDEF, true) << ' receives some coins in exchange for ' << @name(object, EN_INDEF, false) << '.\n';
 }
 
 function save_store (room, writer)

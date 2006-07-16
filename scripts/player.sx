@@ -4,7 +4,7 @@
 // show experience
 function playerShowExp(self)
 {
-	self.print ("Experience chart:\n");
+	self << "Experiance chart:\n";
 	if (self.getExp(EXP_WARRIOR))
 		printInfo(self, "Warrior", self.getExp(EXP_WARRIOR));
 	if (self.getExp(EXP_ROGUE))

@@ -25,8 +25,8 @@ function playerHeartbeat(player)
 			var city_of_dead = getRoom('city_of_dead');
 			if (city_of_dead) {
 				// take them there, heal them
-				player.print("Your vision fades to darkness...\n");
-				player.rprint(player, " decays.\n");
+				player << "Your vision fades to darknes...\n";
+				player.room() << @ignore(player) << @name(player, EN_INDEF, true) << " decays.\n";
 				player.enter(city_of_dead, nil);
 				player.heal(1 - player.getHp());
 			}

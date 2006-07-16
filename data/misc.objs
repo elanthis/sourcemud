@@ -49,8 +49,8 @@ object_blueprint {
       var room = self.getRoom();
 
       // raise messages (FIXME: dumb that we have to duplicate that here)
-      user.printf('{2.D} flashes a malevolent red as you raise it into the air.\n', self);
-      user.rprint(strParse('{1.N} raises {2.n} into the air, and {1.d} flashes an evil red.\n', user, self));
+      user << @name(self, EN_DEF, true) << ' flashes a malevolent red as you raise it into the air.\n';
+      user << @name(user, EN_INDEF, true) << ' raises ' << @name(self, EN_INDEF, false) << ' into the air, and ' << @name(self, EN_DEF, false) << ' flashes an evil red.\n';
 
       // find all corpses in the room
       foreach (var object in room.objects()) {
@@ -78,7 +78,7 @@ object_blueprint {
           }
 
           // creation message, add to room, etc
-          room.printf('{2.D} rises from the ground as {3.n}.\n', object, undead);
+          room << @name(object, EN_INDEF, true) << ' rises from the ground as ' << @name(undead, EN_INDEF, false) << '.\n';
           undead.enter(room, nil);
           object.destroy();
         }

@@ -50,7 +50,7 @@ SUniqueIDManager::shutdown ()
 
 	StringBuffer buffer;
 	buffer << next;
-	fprintf(file, "%s", buffer.c_str());
+	fprintf(file, "%s\n", buffer.c_str());
 
 	fclose(file);
 }
@@ -68,7 +68,7 @@ SUniqueIDManager::reserve ()
 
 	StringBuffer buffer;
 	buffer << limit;
-	fprintf(file, "%s", buffer.c_str());
+	fprintf(file, "%s\n", buffer.c_str());
 
 	fclose(file);
 

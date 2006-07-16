@@ -418,6 +418,19 @@ if (value == false) { ... }</example>
     ]]></code>
     <doc>Causes all output to be indented to the given amount.  The indentation happens at final display time.</doc>
   </streamop>
+  <streamop>
+    <name>ignore</name>
+    <arg>
+      <name>who</name>
+      <type>Character</type>
+      <doc>The character to not send output to.</doc>
+    </arg>
+    <doc>This streamop is only valid for streams to Rooms.  By default, all characters in the room will receive the text streamed to a room.  Any characters listed in the @ignore streamop will not receive text from that particular stream.</doc>
+    <example><![CDATA[player.room() << @ignore(player) << @name(player, EN_DEF, true) << " laughs maniacally.\n";]]></example>
+    <code><![CDATA[
+      _stream << StreamIgnore(_arg_who);
+    ]]></code>
+  </streamop>
 
   <!-- Randomness -->
   <function>

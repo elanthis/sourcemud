@@ -76,10 +76,10 @@ object_blueprint {
         // do damage
         var damage = rollDice(3, 4);
         // 'data' is the target
-        data.print(self.getNamef(EN_DEF, true), " burts into flame, burning YOU!\n");
-        data.rprint(self.getNamef(EN_DEF, true), " bursts into flame, burning ", data.getNamef(EN_DEF, false), "!\n");
-        user.print("  You deliver ", damage, " damage!\n");
-        data.print("  YOU take ", damage, " damage!\n");
+        data << @name(self, EN_DEF, true) << " burts into flame, burning YOU!\n";
+        data.room() << @ignore(data) << @name(self, EN_DEF, true) << " bursts into flame, burning " << @name(data, EN_DEF, false) << "!\n";
+        user << "  You deliver " << damage << " damage!\n";
+        data << "  YOU take " << damage << " damage!\n";
         data.damage(damage, user);
       }
     ]>>

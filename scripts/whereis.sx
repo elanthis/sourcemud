@@ -13,32 +13,32 @@ function whereis(who, argv)
 	if (argv[1] == 'player') {
 		var player = getPlayer(argv[0]);
 		if (!player) {
-			who.print ("Player '", argv[0], "' is not logged in.\n");
+			who << "Player '" << argv[0] << "' is not logged in.\n";
 			return;
 		}
 
 		if (!player.room()) {
-			who.print ("The player ", player, " isn't in any room.\n");
+			who << "The player " << player << " isn't in any room.\n";
 			return;
 		}
 
-		who.print ("The player ", player, " is in room ", player.room(), " <", player.room().getId(), ">, in zone ", player.room().zone(), " <", player.room().zone().getId(), ">.\n");
+		who << "The player " << player << " is in room " << player.room() << " <" << player.room().getId() << ">, in zone " << player.room().zone() << " <" << player.room().zone().getId() << ">.\n";
 	// uname
 	} else {
 		var elist = getEntitiesByTag(argv[0]);
 		if (!elist) {
-			who.print("No entity with tag '", argv[0], "' exists.\n");
+			who << "No entity with tag '" << argv[0] << "' exists.\n";
 			return;
 		}
 
 		foreach(var entity in elist) {
 			var room = entity.getRoom();
 			if (!room) {
-				who.print(entity.getNamef(EN_DEF, true), " is not in a room.\n");
+				who << @name(entity, EN_DEF, true) << " is not in a room.\n";
 				return;
 			}
 
-			who.print(entity.getNamef(EN_DEF, true), " is in room ", room, " <", room.getId(), "> in zone ", room.zone(), " <", room.zone().getId(), ">.\n");
+			who << @name(entity, EN_DEF, true) << " is in room " << room << " <" << room.getId() << "> in zone " << room.zone() << " <" << room.zone().getId() << ">.\n";
 		}
 	}
 }
