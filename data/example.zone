@@ -60,6 +60,12 @@ room {
     }
     uid = $7
   }
+  object {
+    blueprint = "npc_corpse"
+    name = "a large wolf corpse"
+    uid = $308
+    @npc_blueprint = "wolf_large"
+  }
 }
 room {
   id = "altar"
@@ -195,13 +201,14 @@ room {
     uid = $28
   }
   object {
-    blueprint = "npc_corpse"
-    uid = $275
-    @npc_blueprint = "wolf"
-  }
-  object {
     blueprint = "claws_animal"
     uid = $29
+  }
+  object {
+    blueprint = "npc_corpse"
+    name = "a large wolf corpse"
+    uid = $302
+    @npc_blueprint = "wolf_large"
   }
 }
 room {
