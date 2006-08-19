@@ -118,6 +118,7 @@ SEventManager::process (void)
 		--processing;
 
 		// DEBUG:
+		/*
 		Log::Info << "Event[" << event.get_name() <<
 			"] P:" << event.get_id().name() <<
 			" R:" << (event.get_room() ? event.get_room()->get_id().c_str() : "n/a") <<
@@ -127,6 +128,7 @@ SEventManager::process (void)
 			" D:" << (event.get_data(2) ? event.get_data(2).get_type()->get_name().name().c_str() : "n/a") <<
 			" D:" << (event.get_data(3) ? event.get_data(3).get_type()->get_name().name().c_str() : "n/a") <<
 			" D:" << (event.get_data(4) ? event.get_data(4).get_type()->get_name().name().c_str() : "n/a");
+		*/
 
 		// send event
 		event.get_room()->handle_event(event);

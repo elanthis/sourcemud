@@ -1,3 +1,7 @@
+2006-08-19 07:30:56  Sean Middleditch <elanthis@awesomeplay.com>
+
+  * Remove the debugging printout in event.cc.
+
 2006-07-17 01:43:44  Sean Middleditch <elanthis@awesomeplay.com>
 
   * Re-enable the attack_hit action on weapons during combat.
