@@ -399,6 +399,58 @@ File::Reader::consume (void)
 }
 
 int
+File::Object::load (File::Reader& reader)
+{
+	File::Node node;
+
+	try {
+		while (reader.get(node)) {
+			if (node.is_end()) {
+				break;
+			} else if (!node.is_attr()) {
+				throw File::Error(S("Invalid declaration in object"));
+			}
+
+			if (node.get_datatype() == TYPE_STRING)
+				strings[node.get_name()].push_back(node.get_string());
+			else if (node.get_datatype() == TYPE_INT)
+				ints[node.get_name()].push_back(node.get_int());
+			else if (node.get_datatype() == TYPE_BOOL)
+				bools[node.get_name()].push_back(node.get_bool());
+			else if (node.get_datatype() == TYPE_ID)
+				ids[node.get_name()].push_back(node.get_id());
+			else
+				throw File::Error(S("Unknown data type in object"));
+		}
+		return 0;
+	} catch (File::Error& error) {
+		Log::Error << error.get_what() << " at " << reader.get_filename() << ':' << reader.get_line();
+		return -1;
+	}
+}
+
+String
+File::Object::get_string (String name, uint index) const
+{
+	StringList::const_iterator i = strings.find(name);
+	if (i == strings.end())
+		throw KeyError(TYPE_STRING, name, index);
+	if (index > i->second.size())
+		throw KeyError(TYPE_STRING, name, index);
+	return i->second[index];
+}
+
+File::KeyError::KeyError (DataType type, String name, uint index) : File::Error(String())
+{
+	what = (type == TYPE_STRING ? S("string") :
+		type == TYPE_INT ? S("int") :
+		type == TYPE_BOOL ? S("bool") :
+		type == TYPE_ID ? S("id") :
+		S("unknown"))
+		+ " " + name + ":" + tostr(index) + " is not defined";
+}
+
+int
 File::Writer::open (String filename)
 {
 	// open
@@ -768,7 +820,31 @@ File::Node::get_int () const
 bool
 File::Node::get_bool () const
 {
+	if (datatype != TYPE_BOOL) {
+		Log::Error << "Incorrect data type for '" << get_name() << "' at :" << get_line();
+		throw(File::Error(S("data type mismatch")));
+	}
 	return data == "true" || data == "yes" || data == "on";
+}
+
+String
+File::Node::get_string () const
+{
+	if (datatype != TYPE_STRING) {
+		Log::Error << "Incorrect data type for '" << get_name() << "' at :" << get_line();
+		throw(File::Error(S("data type mismatch")));
+	}
+	return data;
+}
+
+UniqueID
+File::Node::get_id () const
+{
+	if (datatype != TYPE_ID) {
+		Log::Error << "Incorrect data type for '" << get_name() << "' at :" << get_line();
+		throw(File::Error(S("data type mismatch")));
+	}
+	return UniqueIDManager.decode(data);
 }
 
 SCRIPT_TYPE(RestrictedWriter)

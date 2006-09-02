@@ -16,11 +16,20 @@
 #include "common/gcbase.h"
 #include "common/log.h"
 #include "scriptix/native.h"
-
-class UniqueID;
+#include "common/gcmap.h"
+#include "common/gcvector.h"
+#include "mud/uniqid.h"
 
 namespace File
 {
+	enum DataType
+	{
+		TYPE_INT = 0,
+		TYPE_BOOL,
+		TYPE_STRING,
+		TYPE_ID
+	};
+
 	class Error
 	{
 		protected:
@@ -32,12 +41,10 @@ namespace File
 		inline String get_what () const { return what; }
 	};
 
-	enum DataType
+	class KeyError : public Error
 	{
-		TYPE_INT = 0,
-		TYPE_BOOL,
-		TYPE_STRING,
-		TYPE_ID
+		public:
+		KeyError (DataType type, String name, uint index);
 	};
 
 	class Node : public GC
@@ -110,6 +117,33 @@ namespace File
 		enum Token { TOKEN_ERROR, TOKEN_EOF, TOKEN_STRING, TOKEN_NUMBER, TOKEN_TRUE, TOKEN_FALSE, TOKEN_BEGIN, TOKEN_END, TOKEN_SET, TOKEN_CUSTOM, TOKEN_ID, TOKEN_KEY };
 
 		Token read_token(String& data);
+	};
+
+	class Object : public GC
+	{
+		public:
+		int load (Reader& reader);
+
+		String get_string (String name, uint index) const;
+		bool get_bool (String name, uint index) const;
+		int get_int (String name, uint index) const;
+		UniqueID get_id (String name, uint index) const;
+
+		size_t get_string_count (String name) const;
+		size_t get_bool_count (String name) const;
+		size_t get_int_count (String name) const;
+		size_t get_id_count (String name) const;
+		
+		private:
+		typedef GCType::map<String, GCType::vector<String> > StringList;
+		typedef GCType::map<String, GCType::vector<bool> > BoolList;
+		typedef GCType::map<String, GCType::vector<int> > IntList;
+		typedef GCType::map<String, GCType::vector<UniqueID> > IDList;
+
+		StringList strings;
+		BoolList bools;
+		IntList ints;
+		IDList ids;
 	};
 
 	class Writer : public Cleanup

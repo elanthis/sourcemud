@@ -31,30 +31,33 @@ SkillInfo::SkillInfo () : Scriptix::Native(AweMUD_SkillType), id(0), type(SKILL_
 int
 SkillInfo::load (File::Reader& reader)
 {
-	FO_READ_BEGIN
-		FO_ATTR("name")
-			FO_TYPE_ASSERT(STRING)
-			name = node.get_data();
-		FO_ATTR("desc")
-			FO_TYPE_ASSERT(STRING)
-			desc = node.get_data();
-		FO_ATTR("type")
-			FO_TYPE_ASSERT(STRING)
-			if (node.get_data() == "normal")
-				type = SKILL_TYPE_NORMAL;
-			else if (node.get_data() == "intrinsic")
-				type = SKILL_TYPE_INTRINSIC;
-			else if (node.get_data() == "restricted")
-				type = SKILL_TYPE_RESTRICTED;
-			else if (node.get_data() == "locked")
-				type = SKILL_TYPE_LOCKED;
-			else if (node.get_data() == "secret")
-				type = SKILL_TYPE_SECRET;
-			else
-				throw File::Error(S("Invalid skill type"));
-	FO_READ_ERROR
+	File::Object data;
+	if (data.load(reader))
 		return -1;
-	FO_READ_END
+
+	try {
+		name = data.get_string(S("name"), 0);
+		desc = data.get_string(S("desc"), 0);
+
+		String stype = data.get_string(S("type"), 0);
+		if (stype == "normal")
+			type = SKILL_TYPE_NORMAL;
+		else if (stype == "intrinsic")
+			type = SKILL_TYPE_INTRINSIC;
+		else if (stype == "restricted")
+			type = SKILL_TYPE_RESTRICTED;
+		else if (stype == "locked")
+			type = SKILL_TYPE_LOCKED;
+		else if (stype == "secret")
+			type = SKILL_TYPE_SECRET;
+		else {
+			Log::Error << "Invalid skill type: " << stype;
+			return -1;
+		}
+	} catch (File::KeyError& error) {
+		Log::Error << "Loading skill: " << error.get_what();
+		return -1;
+	}
 
 	return 0;
 }

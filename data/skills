@@ -74,26 +74,31 @@ skill {
 skill {
 	name = "Dodge"
 	desc = "Ability to dodge attacks and traps."
+	type = normal
 }
 
 skill {
 	name = "Shield"
 	desc = "Skill at blocking with a shield.."
+	type = normal
 }
 
 skill {
 	name = "Melee"
 	desc = "Ability with all close-range combat."
+	type = normal
 }
 
 skill {
 	name = "Balance"
 	desc = "Grace and skill at maintaining balance."
+	type = normal
 }
 
 skill {
 	name = "Magic Lore"
 	desc = "Knowledge of arcana."
+	type = normal
 }
 
 #######################################

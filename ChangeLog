@@ -1,3 +1,7 @@
+2006-09-02 20:34:45  Sean Middleditch <elanthis@awesomeplay.com>
+
+  * Added File::Object type to remove need for reader loops.
+
 2006-08-19 07:30:56  Sean Middleditch <elanthis@awesomeplay.com>
 
   * Remove the debugging printout in event.cc.
