@@ -51,22 +51,22 @@ int
 Room::load_node (File::Reader& reader, File::Node& node)
 {
 	FO_NODE_BEGIN
-		FO_ATTR("id")
+		FO_ATTR2("room", "id")
 			set_id(node.get_data());
-		FO_ATTR("name")
+		FO_ATTR2("room", "name")
 			set_name(node.get_data());
-		FO_ATTR("desc")
+		FO_ATTR2("room", "desc")
 			set_desc(node.get_data());
-		FO_ATTR("outdoors")
+		FO_ATTR2("room", "outdoors")
 			FO_TYPE_ASSERT(BOOL);
 			flags.outdoors = str_is_true(node.get_data());
-		FO_ATTR("safe")
+		FO_ATTR2("room", "safe")
 			FO_TYPE_ASSERT(BOOL);
 			flags.safe = str_is_true(node.get_data());
-		FO_ATTR("noweather")
+		FO_ATTR2("room", "noweather")
 			FO_TYPE_ASSERT(BOOL);
 			flags.noweather = str_is_true(node.get_data());
-		FO_ATTR("coins")
+		FO_ATTR2("room", "coins")
 			FO_TYPE_ASSERT(INT);
 			coins = tolong(node.get_data());
 		FO_OBJECT("exit")
@@ -110,25 +110,25 @@ Room::load_finish ()
 void
 Room::save (File::Writer& writer)
 {
-	writer.attr(S("id"), id);
+	writer.keyed(S("room"), S("id"), id);
 
 	if (!name.empty())
-		writer.attr(S("name"), name.get_name());
+		writer.keyed(S("room"), S("name"), name.get_name());
 
 	if (!desc.empty())
-		writer.attr(S("desc"), desc);
+		writer.keyed(S("room"), S("desc"), desc);
 	
 	Entity::save(writer);
 
 	if (flags.outdoors)
-		writer.attr(S("outdoors"), true);
+		writer.keyed(S("room"), S("outdoors"), true);
 	if (flags.safe)
-		writer.attr(S("safe"), true);
+		writer.keyed(S("room"), S("safe"), true);
 	if (flags.noweather)
-		writer.attr(S("noweather"), true);
+		writer.keyed(S("room"), S("noweather"), true);
 
 	if (coins)
-		writer.attr(S("coins"), coins);
+		writer.keyed(S("room"), S("coins"), coins);
 
 	for (EList<RoomExit>::const_iterator i = exits.begin(); i != exits.end(); ++i) {
 		writer.begin(S("exit"));

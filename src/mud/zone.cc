@@ -104,19 +104,19 @@ Spawn::load (File::Reader& reader)
 	dcount = 0;
 
 	FO_READ_BEGIN
-		FO_ATTR("count")
+		FO_ATTR2("spawn", "count")
 			FO_TYPE_ASSERT(INT)
 			min = tolong(node.get_data());
-		FO_ATTR("tag")
+		FO_ATTR2("spawn", "tag")
 			FO_TYPE_ASSERT(STRING)
 			tag = TagID::create(node.get_data());
-		FO_ATTR("delay")
+		FO_ATTR2("spawn", "delay")
 			FO_TYPE_ASSERT(INT)
 			delay = tolong(node.get_data());
-		FO_ATTR("blueprint")
+		FO_ATTR2("spawn", "blueprint")
 			FO_TYPE_ASSERT(STRING)
 			blueprints.push_back(node.get_data());
-		FO_ATTR("room")
+		FO_ATTR2("spawn", "room")
 			FO_TYPE_ASSERT(STRING)
 			rooms.push_back(node.get_data());
 	FO_READ_ERROR
@@ -130,14 +130,14 @@ Spawn::load (File::Reader& reader)
 void
 Spawn::save (File::Writer& writer) const
 {
-	writer.attr(S("tag"), TagID::nameof(tag));
-	writer.attr(S("count"), min);
-	writer.attr(S("delay"), delay);
+	writer.keyed(S("spawn"), S("tag"), TagID::nameof(tag));
+	writer.keyed(S("spawn"), S("count"), min);
+	writer.keyed(S("spawn"), S("delay"), delay);
 	for (StringList::const_iterator i = blueprints.begin(); i != blueprints.end(); ++i) {
-		writer.attr(S("blueprint"), *i);
+		writer.keyed(S("spawn"), S("blueprint"), *i);
 	}
 	for (StringList::const_iterator i = rooms.begin(); i != rooms.end(); ++i) {
-		writer.attr(S("room"), *i);
+		writer.keyed(S("spawn"), S("room"), *i);
 	}
 }
 
@@ -174,11 +174,11 @@ int
 Zone::load_node (File::Reader& reader, File::Node& node)
 {
 	FO_NODE_BEGIN
-		FO_ATTR("name")
+		FO_ATTR2("zone", "name")
 			set_name(node.get_data());
-		FO_ATTR("desc")
+		FO_ATTR2("zone", "desc")
 			set_desc(node.get_data());
-		FO_ATTR("id")
+		FO_ATTR2("zone", "id")
 			id = node.get_data();
 		FO_OBJECT("room")
 			Room* room = new Room();
@@ -204,9 +204,9 @@ Zone::save (File::Writer& writer)
 	// basics
 	writer.bl();
 	writer.comment (S("--- BASICS ---"));
-	writer.attr(S("id"), id);
-	writer.attr(S("name"), name.get_name());
-	writer.attr(S("desc"), desc);
+	writer.keyed(S("zone"), S("id"), id);
+	writer.keyed(S("zone"), S("name"), name.get_name());
+	writer.keyed(S("zone"), S("desc"), desc);
 	Entity::save(writer);
 
 	// spawns

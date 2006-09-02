@@ -1,3 +1,10 @@
+2006-09-02 22:34:38  Sean Middleditch <elanthis@awesomeplay.com>
+
+  * Minor but incompatible changes to the file object format.
+  * Most attributes stored in file object format are now keyed.
+  * Player loading is not quite right yet, due to traits and skills
+    being invalid IDs.
+
 2006-09-02 20:34:45  Sean Middleditch <elanthis@awesomeplay.com>
 
   * Added File::Object type to remove need for reader loops.

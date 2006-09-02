@@ -3,108 +3,108 @@
 # Sean Middleditch <elanthis@awemud.net>
 
 state {
-  id = clear
-  desc = "The sky is perfectly clear."
+  weather.id = clear
+  weather.desc = "The sky is perfectly clear."
   change {
-    target = rain
-    chance = 10
-    text = "Rain begins to fall."
+    weather.target = rain
+    weather.chance = 10
+    weather.text = "Rain begins to fall."
   }
 }
 state {
-  id = rain
-  desc = "Rain is pouring steadily."
+  weather.id = rain
+  weather.desc = "Rain is pouring steadily."
   change {
-    target = clear
-    chance = 20
-    text = "The rain ceases."
+    weather.target = clear
+    weather.chance = 20
+    weather.text = "The rain ceases."
   }
 }
 
 #pattern {
-#  title = raining
-#  chance = 30
+#  weather.title = raining
+#  weather.chance = 30
 #  stage {
-#    desc = "The rain is drizzling down."
+#    weather.desc = "The rain is drizzling down."
 #  }
 #  stage {
-#    up = "Rain begins falling more heavily."
-#    down = "The rain reduces to a drizzle."
-#    desc = "Rain is falling lightly."
+#    weather.up = "Rain begins falling more heavily."
+#    weather.down = "The rain reduces to a drizzle."
+#    weather.desc = "Rain is falling lightly."
 #  }
 #  stage {
-#    up = "The rain begins to downpour."
-#    down = "The rain eases up."
-#    desc = "Rain is pouring heavily."
+#    weather.up = "The rain begins to downpour."
+#    weather.down = "The rain eases up."
+#    weather.desc = "Rain is pouring heavily."
 #  }
 #  stage {
-#    up = "A storm begins to spread its wrath."
-#    down = "The storm subsides."
-#    desc = "A rainstorm is raging across the land."
+#    weather.up = "A storm begins to spread its wrath."
+#    weather.down = "The storm subsides."
+#    weather.desc = "A rainstorm is raging across the land."
 #  }
 #  change {
-#    pattern = cloudy
-#    desc = "The rain ceases falling."
+#    weather.pattern = cloudy
+#    weather.desc = "The rain ceases falling."
 #  }
 #}
 #pattern {
-#  title = snowing
-#  chance = 10
+#  weather.title = snowing
+#  weather.chance = 10
 #  stage {
-#    desc = "Snowflakes are gently floating to the ground."
+#    weather.desc = "Snowflakes are gently floating to the ground."
 #  }
 #  stage {
-#    up = "The snow begins to fall more heavily."
-#    down = "The falling snow thins up."
-#    desc = "Snowflakes are steadily falling."
+#    weather.up = "The snow begins to fall more heavily."
+#    weather.down = "The falling snow thins up."
+#    weather.desc = "Snowflakes are steadily falling."
 #  }
 #  stage {
-#    up = "The falling snow thickens."
-#    down = "The falling snow begins to thin out."
-#    desc = "Snow is quickly covering the land."
+#    weather.up = "The falling snow thickens."
+#    weather.down = "The falling snow begins to thin out."
+#    weather.desc = "Snow is quickly covering the land."
 #  }
 #  change {
-#    pattern = cloudy
-#    desc = "The snow ceases falling."
+#    weather.pattern = cloudy
+#    weather.desc = "The snow ceases falling."
 #  }
 #}
 #pattern {
-#  title = cloudy
-#  chance = 70
+#  weather.title = cloudy
+#  weather.chance = 70
 #  stage {
-#    desc = "The sky is partly cloudy."
-#  }
-#  stage {
-#    up = "The clouds thicken."
-#    down = "The clouds thin out."
-#    desc = "The sky is mostly cloudy."
+#    weather.desc = "The sky is partly cloudy."
 #  }
 #  stage {
-#    up = "The sky is covered with clouds."
-#    down = "The clouds begin to thin up."
-#    desc = "The sky is blanketed in clouds."
+#    weather.up = "The clouds thicken."
+#    weather.down = "The clouds thin out."
+#    weather.desc = "The sky is mostly cloudy."
+#  }
+#  stage {
+#    weather.up = "The sky is covered with clouds."
+#    weather.down = "The clouds begin to thin up."
+#    weather.desc = "The sky is blanketed in clouds."
 #  }
 #  change {
-#    pattern = clear
-#    desc = "The clouds clear up."
+#    weather.pattern = clear
+#    weather.desc = "The clouds clear up."
 #  }
 #  change {
-#    pattern = raining
-#    desc = "Rain begins to fall."
+#    weather.pattern = raining
+#    weather.desc = "Rain begins to fall."
 #  }
 #  change {
-#    pattern = snowing
-#    desc = "Snow begins to fall."
+#    weather.pattern = snowing
+#    weather.desc = "Snow begins to fall."
 #  }
 #}
 #pattern {
-#  title = clear
-#  chance = 100
+#  weather.title = clear
+#  weather.chance = 100
 #  stage {
-#    desc = "The sky is perfectly clear."
+#    weather.desc = "The sky is perfectly clear."
 #  }
 #  change {
-#    pattern = cloudy
-#    desc = "Clouds start moving in."
+#    weather.pattern = cloudy
+#    weather.desc = "Clouds start moving in."
 #  }
 #}

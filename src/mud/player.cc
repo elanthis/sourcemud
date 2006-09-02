@@ -156,11 +156,11 @@ Player::save (File::Writer& writer)
 	Character::save(writer);
 
 	if (race != NULL)
-		writer.attr(S("race"), race->get_name());
+		writer.keyed(S("player"), S("race"), race->get_name());
 
-	writer.attr(S("birthday"), birthday.encode());
+	writer.keyed(S("player"), S("birthday"), birthday.encode());
 
-	writer.attr(S("alignment"), alignment);
+	writer.keyed(S("player"), S("alignment"), alignment);
 
 	for (int i = 0; i < CharStatID::COUNT; ++i)
 		writer.keyed(S("stat"), CharStatID(i).get_name(), base_stats[i]);
@@ -168,16 +168,16 @@ Player::save (File::Writer& writer)
 	for (TraitMap::const_iterator i = pdesc.traits.begin(); i != pdesc.traits.end(); ++i)
 		writer.keyed(S("trait"), CharacterTraitID::nameof(i->first), i->second.get_name());
 
-	writer.attr(S("gender"), pdesc.gender.get_name());
-	writer.attr(S("height"), pdesc.height);
+	writer.keyed(S("player"), S("gender"), pdesc.gender.get_name());
+	writer.keyed(S("player"), S("height"), pdesc.height);
 
 	if (get_room()) 
-		writer.attr(S("location"), get_room()->get_id());
+		writer.keyed(S("player"), S("location"), get_room()->get_id());
 
-	writer.attr(S("general_xp"), exp[EXP_GENERAL]);
-	writer.attr(S("warrior_xp"), exp[EXP_WARRIOR]);
-	writer.attr(S("rogue_xp"), exp[EXP_ROGUE]);
-	writer.attr(S("caster_xp"), exp[EXP_CASTER]);
+	writer.keyed(S("player"), S("general_xp"), exp[EXP_GENERAL]);
+	writer.keyed(S("player"), S("warrior_xp"), exp[EXP_WARRIOR]);
+	writer.keyed(S("player"), S("rogue_xp"), exp[EXP_ROGUE]);
+	writer.keyed(S("player"), S("caster_xp"), exp[EXP_CASTER]);
 
 	for (SSkillManager::SkillList::const_iterator i = SkillManager.get_skills().begin(); i != SkillManager.get_skills().end(); ++i)
 		writer.keyed(S("skill"), (*i)->get_name(), skills.get_skill((*i)->get_id()));
@@ -234,24 +234,24 @@ Player::load_node (File::Reader& reader, File::Node& node)
 	FO_NODE_BEGIN
 		FO_PARENT(Character)
 		// our primary name
-		FO_ATTR("name")
+		FO_ATTR2("player", "name")
 			name.set_text(node.get_data());
 			name.set_article(EntityArticleClass::PROPER);
 		// description
-		FO_ATTR("desc")
+		FO_ATTR2("player", "desc")
 			set_desc(node.get_data());
-		FO_ATTR("gender")
+		FO_ATTR2("player", "gender")
 			set_gender(GenderType::lookup(node.get_data()));
-		FO_ATTR("alignment")
+		FO_ATTR2("player", "alignment")
 			FO_TYPE_ASSERT(INT);
 			set_alignment(tolong(node.get_data()));
-		FO_ATTR("race")
+		FO_ATTR2("player", "race")
 			race = RaceManager.get (node.get_data());
 			if (race == NULL) {
 				Log::Error << "Player has invalid race '" << node.get_data() << "' at " << reader.get_filename() << ':' << node.get_line();
 				return -1;
 			}
-		FO_ATTR("birthday")
+		FO_ATTR2("player", "birthday")
 			if (birthday.decode(node.get_data()))
 				throw File::Error (S("Invalid birthday"));
 		FO_KEYED("trait")
@@ -263,20 +263,20 @@ Player::load_node (File::Reader& reader, File::Node& node)
 			if (!value.valid())
 				throw File::Error (S("Unknown trait value"));
 			pdesc.traits[trait] = value;
-		FO_ATTR("height")
+		FO_ATTR2("player", "height")
 			FO_TYPE_ASSERT(INT);
 			pdesc.height = tolong(node.get_data());
-		FO_ATTR("location")
+		FO_ATTR2("player", "location")
 			location = ZoneManager.get_room(node.get_data());
 			if (location == NULL)
 				Log::Error << "Unknown room '" << node.get_data() << "' at " << reader.get_filename() << ':' << node.get_line();
-		FO_ATTR("general_xp")
+		FO_ATTR2("player", "general_xp")
 			exp[EXP_GENERAL] = node.get_int();
-		FO_ATTR("warrior_xp")
+		FO_ATTR2("player", "warrior_xp")
 			exp[EXP_WARRIOR] = node.get_int();
-		FO_ATTR("rogue_xp")
+		FO_ATTR2("player", "rogue_xp")
 			exp[EXP_ROGUE] = node.get_int();
-		FO_ATTR("caster_xp")
+		FO_ATTR2("player", "caster_xp")
 			exp[EXP_CASTER] = node.get_int();
 		FO_KEYED("stat")
 			FO_TYPE_ASSERT(INT);

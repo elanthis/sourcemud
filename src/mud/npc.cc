@@ -164,51 +164,51 @@ int
 NpcBlueprint::load (File::Reader& reader)
 {
 	FO_READ_BEGIN
-		FO_ATTR("id")
+		FO_ATTR2("blueprint", "id")
 			id = node.get_data();
-		FO_ATTR("ai")
+		FO_ATTR2("blueprint", "ai")
 			ai = AIManager.get(node.get_data());
 			if (ai == NULL)
 				Log::Warning << "Unknown AI system '" << node.get_data() << "' at " << reader.get_filename() << ':' << node.get_line();
-		FO_ATTR("parent")
+		FO_ATTR2("blueprint", "parent")
 			NpcBlueprint* blueprint = NpcBlueprintManager.lookup(node.get_data());
 			if (blueprint)
 				set_parent(blueprint);
 			else
 				Log::Warning << "Undefined parent npc blueprint '" << node.get_data() << "' at " << reader.get_filename() << ':' << node.get_line();
-		FO_ATTR("equip")
+		FO_ATTR2("blueprint", "equip")
 			equip_list.push_back(node.get_data());
-		FO_CUSTOM
+		FO_KEYED("user")
 			if (node.get_datatype() == File::TYPE_INT)
-				set_property(node.get_name(), tolong(node.get_data()));
+				set_property(node.get_key(), tolong(node.get_data()));
 			else if (node.get_datatype() == File::TYPE_STRING)
-				set_property(node.get_name(), node.get_data());
+				set_property(node.get_key(), node.get_data());
 			else if (node.get_datatype() == File::TYPE_BOOL)
-				set_property(node.get_name(), str_is_true(node.get_data()));
+				set_property(node.get_key(), str_is_true(node.get_data()));
 			else {
 				Log::Error << "Invalid data type for script attribute at " << reader.get_filename() << ':' << node.get_line();
 				return -1;
 			}
-		FO_ATTR("name")
+		FO_ATTR2("blueprint", "name")
 			set_name(node.get_data());
-		FO_ATTR("keyword")
+		FO_ATTR2("blueprint", "keyword")
 			keywords.push_back(node.get_data());
-		FO_ATTR("desc")
+		FO_ATTR2("blueprint", "desc")
 			set_desc(node.get_data());
-		FO_ATTR("gender")
+		FO_ATTR2("blueprint", "gender")
 			set_gender(GenderType::lookup(node.get_data()));
-		FO_ATTR("alignment")
+		FO_ATTR2("blueprint", "alignment")
 			FO_TYPE_ASSERT(INT);
 			set_alignment(tolong(node.get_data()));
-		FO_ATTR("combat.dodge")
+		FO_ATTR2("combat", "dodge")
 			FO_TYPE_ASSERT(INT);
 			combat.dodge = tolong(node.get_data());
 			set_flags.dodge = true;
-		FO_ATTR("combat.attack")
+		FO_ATTR2("combat", "attack")
 			FO_TYPE_ASSERT(INT);
 			combat.attack = tolong(node.get_data());
 			set_flags.attack = true;
-		FO_ATTR("combat.damage")
+		FO_ATTR2("combat", "damage")
 			FO_TYPE_ASSERT(INT);
 			combat.damage = tolong(node.get_data());
 			set_flags.damage = true;
@@ -229,30 +229,30 @@ void
 NpcBlueprint::save (File::Writer& writer)
 {
 	if (set_flags.name)
-		writer.attr(S("name"), name.get_name());
+		writer.keyed(S("blueprint"), S("name"), name.get_name());
 
 	for (StringList::const_iterator i = keywords.begin(); i != keywords.end(); ++i)
-		writer.attr(S("keyword"), *i);
+		writer.keyed(S("blueprint"), S("keyword"), *i);
 
 	if (set_flags.desc)
-		writer.attr(S("desc"), desc);
+		writer.keyed(S("blueprint"), S("desc"), desc);
 
 	if (set_flags.alignment)
-		writer.attr(S("alignment"), alignment);
+		writer.keyed(S("blueprint"), S("alignment"), alignment);
 
 	if (set_flags.gender)
-		writer.attr(S("gender"), gender.get_name());
+		writer.keyed(S("blueprint"), S("gender"), gender.get_name());
 
 	if (set_flags.stats)
 		for (int i = 0; i < CharStatID::COUNT; ++i)
 			writer.keyed(S("stat"), CharStatID(i).get_name(), base_stats[i]);
 
 	if (set_flags.dodge)
-		writer.attr(S("combat.dodge"), combat.dodge);
+		writer.keyed(S("combat"), S("dodge"), combat.dodge);
 	if (set_flags.attack)
-		writer.attr(S("combat.attack"), combat.attack);
+		writer.keyed(S("combat"), S("attack"), combat.attack);
 	if (set_flags.damage)
-		writer.attr(S("combat.damage"), combat.damage);
+		writer.keyed(S("combat"), S("damage"), combat.damage);
 }
 
 Scriptix::Value
@@ -310,22 +310,22 @@ int
 Npc::load_node (File::Reader& reader, File::Node& node)
 {
 	FO_NODE_BEGIN
-		FO_ATTR("blueprint")
+		FO_ATTR2("npc", "blueprint")
 			NpcBlueprint* blueprint;
 			if ((blueprint = NpcBlueprintManager.lookup(node.get_data())) == NULL)
 				Log::Error << "Could not find npc blueprint '" << node.get_data() << "'";
 			else
 				set_blueprint(blueprint);
-		FO_ATTR("ai.module")
+		FO_ATTR2("npc", "ai")
 			ai = AIManager.get(node.get_data());
 			if (ai == NULL)
 				Log::Error << "Unknown AI system '" << node.get_data() << "' at " << reader.get_filename() << ':' << node.get_line();
-		FO_ATTR("roomtag")
+		FO_ATTR2("npc", "roomtag")
 			room_tag = TagID::create(node.get_data());
-		FO_ATTR("zonelock")
+		FO_ATTR2("npc", "zonelock")
 			FO_TYPE_ASSERT(BOOL);
 			flags.zonelock = str_is_true(node.get_data());
-		FO_ATTR("reverse_roomtag")
+		FO_ATTR2("npc", "reverse_roomtag")
 			FO_TYPE_ASSERT(BOOL);
 			flags.revroomtag = str_is_true(node.get_data());
 		FO_PARENT(Character)
@@ -336,19 +336,19 @@ void
 Npc::save (File::Writer& writer)
 {
 	if (get_blueprint())
-		writer.attr(S("blueprint"), get_blueprint()->get_id());
+		writer.keyed(S("npc"), S("blueprint"), get_blueprint()->get_id());
 
 	Character::save(writer);
 
 	if (ai != NULL)
-		writer.attr(S("ai"), ai->get_name());
+		writer.keyed(S("npc"), S("ai"), ai->get_name());
 
 	if (room_tag.valid())
-		writer.attr(S("roomtag"), TagID::nameof(room_tag));
+		writer.keyed(S("npc"), S("roomtag"), TagID::nameof(room_tag));
 	if (flags.zonelock)
-		writer.attr(S("zonelock"), true);
+		writer.keyed(S("npc"), S("zonelock"), true);
 	if (flags.revroomtag)
-		writer.attr(S("reverse_roomtag"), true);
+		writer.keyed(S("npc"), S("reverse_roomtag"), true);
 }
 
 void

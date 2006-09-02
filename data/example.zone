@@ -1,100 +1,100 @@
 # Zone: example
 
 # --- BASICS ---
-id = "example"
-name = "Exampe Forest and Darlet"
-desc = ""
-uid = $2
+zone.id = "example"
+zone.name = "Exampe Forest and Darlet"
+zone.desc = ""
+entity.uid = <2>
 
 # --- SPAWNS ---
 spawn {
-  tag = "forest_critter"
-  count = 3
-  delay = 300
-  blueprint = "wolf"
-  blueprint = "fox"
-  blueprint = "rabbit"
-  blueprint = "wolf_large"
-  room = "broken_tree"
+  spawn.tag = "forest_critter"
+  spawn.count = 3
+  spawn.delay = 300
+  spawn.blueprint = "wolf"
+  spawn.blueprint = "fox"
+  spawn.blueprint = "rabbit"
+  spawn.blueprint = "wolf_large"
+  spawn.room = "broken_tree"
 }
 spawn {
-  tag = "graveyard_undead"
-  count = 2
-  delay = 700
-  blueprint = "skeleton"
-  room = "graveyard_tree"
+  spawn.tag = "graveyard_undead"
+  spawn.count = 2
+  spawn.delay = 700
+  spawn.blueprint = "skeleton"
+  spawn.room = "graveyard_tree"
 }
 
 # --- ROOMS ---
 room {
-  id = "clear_pond"
-  name = "Forest pond"
-  desc = "A small pond lies between the bases of several large trees{if day-or-night = 'night'}, reflecting the moonlight in its clear, calm surface{else}.  The water is very still, and crystal clear{endif}.  The pond is not very deep, and doesn't appear to be the residence of any fish or waterlife.  The forest itself is quite dense here."
-  uid = $3
-  outdoors = true
+  room.id = "clear_pond"
+  room.name = "Forest pond"
+  room.desc = "A small pond lies between the bases of several large trees{if day-or-night = 'night'}, reflecting the moonlight in its clear, calm surface{else}.  The water is very still, and crystal clear{endif}.  The pond is not very deep, and doesn't appear to be the residence of any fish or waterlife.  The forest itself is quite dense here."
+  entity.uid = <3>
+  room.outdoors = true
   exit {
-    uid = $4
-    dir = "east"
-    target = "forest_trail_west"
+    entity.uid = <4>
+    portal.dir = "east"
+    portal.target = "forest_trail_west"
   }
   exit {
-    uid = $5
-    dir = "northwest"
-    target = "altar"
+    entity.uid = <5>
+    portal.dir = "northwest"
+    portal.target = "altar"
   }
   exit {
-    uid = $6
-    dir = "southwest"
-    target = "broken_tree"
+    entity.uid = <6>
+    portal.dir = "southwest"
+    portal.target = "broken_tree"
   }
   object {
     blueprint {
-      name = "a clear pond"
-      desc = "The clear waters of the pond do not appear to house any waterlife.  The water is very still, and doesn't seem to be disturbed often."
-      roomlist = false
-      gettable = false
-      trashable = false
-      container = "in"
-      @drink_text = "You cup your hands in {$object.d}, and bring the water up to your waiting lips.  The water is cool and clean, with a wonderfully pleasing taste."
-      @drink_room = "{$actor.I} cups {$actor.his} hands in {$object.d}, and brings some water up to {$actor.his} waiting lips."
+      blueprint.name = "a clear pond"
+      blueprint.desc = "The clear waters of the pond do not appear to house any waterlife.  The water is very still, and doesn't seem to be disturbed often."
+      blueprint.roomlist = false
+      blueprint.gettable = false
+      blueprint.trashable = false
+      blueprint.container = "in"
+      user.drink_text = "You cup your hands in {$object.d}, and bring the water up to your waiting lips.  The water is cool and clean, with a wonderfully pleasing taste."
+      user.drink_room = "{$actor.I} cups {$actor.his} hands in {$object.d}, and brings some water up to {$actor.his} waiting lips."
     }
-    uid = $7
+    entity.uid = <7>
   }
   object {
-    blueprint = "npc_corpse"
-    name = "a large wolf corpse"
-    uid = $308
-    @npc_blueprint = "wolf_large"
+    object.blueprint = "npc_corpse"
+    object.name = "a large wolf corpse"
+    entity.uid = <308>
+    user.npc_blueprint = "wolf_large"
   }
 }
 room {
-  id = "altar"
-  name = "Forest altar"
-  desc = "A small clearing rests here, nestled among the ancient trees of the forest.  A simple stone altar makes this place its home.  The ancient runes inscribed on the dark rock of the altar seem fitting to the majestic forest.  The altar's presence provides life to the forest, as the trees nearest to the altar are larger and healthier than those further away."
-  uid = $8
-  outdoors = true
+  room.id = "altar"
+  room.name = "Forest altar"
+  room.desc = "A small clearing rests here, nestled among the ancient trees of the forest.  A simple stone altar makes this place its home.  The ancient runes inscribed on the dark rock of the altar seem fitting to the majestic forest.  The altar's presence provides life to the forest, as the trees nearest to the altar are larger and healthier than those further away."
+  entity.uid = <8>
+  room.outdoors = true
   exit {
-    uid = $9
-    dir = "south"
-    target = "broken_tree"
+    entity.uid = <9>
+    portal.dir = "south"
+    portal.target = "broken_tree"
   }
   exit {
-    uid = $10
-    dir = "southeast"
-    target = "clear_pond"
+    entity.uid = <10>
+    portal.dir = "southeast"
+    portal.target = "clear_pond"
   }
   object {
     blueprint {
-      name = "a stone altar"
-      desc = "{$1.D} is very simple in design.  It is little more than a stone block, with runes to forest gods and spirits inscribed on all four sides.  The top of the alter is perfectly smooth."
-      weight = 140
-      roomlist = false
-      gettable = false
-      trashable = false
-      container = "on"
+      blueprint.name = "a stone altar"
+      blueprint.desc = "{<1>.D} is very simple in design.  It is little more than a stone block, with runes to forest gods and spirits inscribed on all four sides.  The top of the alter is perfectly smooth."
+      blueprint.weight = 140
+      blueprint.roomlist = false
+      blueprint.gettable = false
+      blueprint.trashable = false
+      blueprint.container = "on"
       action {
         id = "touch"
-        script = <<[
+        script = begin
           // user kneeling?
           if (user.position() == POS_KNEEL) {
             // messages
@@ -104,1603 +104,1603 @@ room {
             var amount = user.getMaxhp() - user.getHp();
             user.heal(amount);
           }
-        ]>>
+        end
       }
-      @read_text = "The runes on the altar are all gibberish to you."
+      user.read_text = "The runes on the altar are all gibberish to you."
     }
-    uid = $11
+    entity.uid = <11>
     object {
-      blueprint = "co_leather_backpack"
-      uid = $12
-      location = "on"
-    }
-    object {
-      blueprint = "ar_chain_mail"
-      uid = $13
-      location = "on"
-    }
-  }
-}
-room {
-  id = "broken_tree"
-  name = "Broken tree"
-  desc = "A single broken tree trunk rests here amidst the thriving forest.  The tree appears to have fallen recently.  You feel a strong wind blowing from the south, and it howls about you."
-  uid = $14
-  outdoors = true
-  exit {
-    uid = $15
-    dir = "north"
-    target = "altar"
-  }
-  exit {
-    uid = $16
-    dir = "south"
-    target = "forest_cliff"
-  }
-  exit {
-    uid = $17
-    dir = "west"
-    target = "graveyard_gate"
-  }
-  exit {
-    uid = $18
-    dir = "northeast"
-    target = "clear_pond"
-  }
-  object {
-    blueprint {
-      name = "a tree"
-      desc = "The broken tree trunk appears to have fallen recently.  The marks on its separated ends look to be the result of cutting, perhaps by a saw or axe."
-      roomlist = false
-      gettable = false
-      trashable = false
-      container = "under"
-    }
-    uid = $19
-  }
-}
-room {
-  id = "forest_cliff"
-  name = "Forest cliff"
-  desc = "The edge of the forest reaches a steep cliff face.  Far below stretches a vast valley, shrouded in mist.  The tops of several large trees peek out from the grey abyss below.  To the east you hear sounds of a waterfall, although you cannot see it from your vantage point.  A larger tree reaches up and leans over the cliff edge.  The wind here is very loud, blowing down from the cold mountains across the valley."
-  uid = $21
-  outdoors = true
-  exit {
-    uid = $22
-    dir = "north"
-    target = "broken_tree"
-  }
-  exit {
-    name = "a cliff"
-    uid = $23
-    keyword = "down"
-    usage = "climb"
-    detail = "down"
-    hidden = true
-    target = "cliff_ledge"
-  }
-  exit {
-    name = "a large tree"
-    desc = "It looks as if the tree is often climbed.  Perhaps it offers a good vantage point."
-    uid = $24
-    keyword = "up"
-    usage = "climb"
-    detail = "up"
-    hidden = true
-    target = "tree_top"
-  }
-  object {
-    blueprint {
-      name = "a valley"
-      desc = "Deep below is a mist shrouded valley.  Poking up through the white mist are the tops of tall trees, indicating the valley is as forested as the mountain's higher areas."
-      roomlist = false
-      gettable = false
-      touchable = false
-      trashable = false
-    }
-    uid = $28
-  }
-  object {
-    blueprint = "claws_animal"
-    uid = $29
-  }
-  object {
-    blueprint = "npc_corpse"
-    name = "a large wolf corpse"
-    uid = $302
-    @npc_blueprint = "wolf_large"
-  }
-}
-room {
-  id = "cliff_ledge"
-  name = "Cliff ledge"
-  desc = "You are on a small ledge on the cliff face, not far below the top edge.  Below you stretches a vast, mist shrouded valley, nestled between the mountain you reside on now and the frozen cliffs you can see across from you."
-  uid = $30
-  outdoors = true
-  exit {
-    name = "a cliff"
-    uid = $31
-    keyword = "up"
-    usage = "climb"
-    detail = "up"
-    target = "forest_cliff"
-  }
-  exit {
-    name = "a cave"
-    desc = "A narrow cave leads into the cliff face, twisting off towards the northeast."
-    uid = $32
-    dir = "north"
-    detail = "in"
-    target = "cave_entrance"
-  }
-  object {
-    blueprint {
-      name = "a valley"
-      desc = "Deep below is a mist shrouded valley.  Poking up through the white mist are the tops of tall trees, indicating the valley is as forested as the mountain's higher areas."
-      roomlist = false
-      gettable = false
-      touchable = false
-      trashable = false
-    }
-    uid = $33
-  }
-}
-room {
-  id = "tree_top"
-  name = "Tree Top"
-  desc = "You are in the branches of a large tree leaning over the cliff edge.  A thousand feet or more below you the mist shrouded valley stretches between the mountain you are on, and the ice covered peaks you see clearly now to the south.  To the east, you hear the sounds of a waterfall, and can just make out the lip of the river over the treetops, as it spills over the cliff edge and descends into the valley below.  Just below you is a ledge potruding from the cliff face."
-  uid = $34
-  outdoors = true
-  exit {
-    name = "a tree"
-    uid = $35
-    keyword = "down"
-    usage = "climb"
-    detail = "down"
-    target = "forest_cliff"
-  }
-}
-room {
-  id = "cave_entrance"
-  name = "Cave entrance"
-  desc = "The cave opens onto a ledge on the side of a great cliff.  Not much can be seen deeper in the cave, as it twists and turns towards the northeast.  The sound of dripping water echos from deeper in the tunnels."
-  uid = $36
-  exit {
-    uid = $37
-    dir = "northeast"
-    target = "cave_niche"
-  }
-  exit {
-    name = "a opening"
-    desc = "The cave exit here leads out onto a small ledge on the face of a cliff, towering over the valley below."
-    uid = $38
-    dir = "south"
-    target = "cliff_ledge"
-  }
-}
-room {
-  id = "cave_niche"
-  name = "Cave"
-  desc = "The cave is very dark and damp.  You can hear the sounds of running water from the east.  The northern wall has a rectangular niche carved into it."
-  uid = $39
-  exit {
-    uid = $40
-    dir = "east"
-    target = "cave_waterfall"
-  }
-  exit {
-    uid = $41
-    dir = "southwest"
-    target = "cave_entrance"
-  }
-  object {
-    blueprint {
-      name = "a niche"
-      desc = "The niche is about three feet tall, four feet wide, and two feet deep.  It begins nearly three feet above the cave floor.  The niche is smooth and precisely carved into the wall of the cave."
-      roomlist = false
-      gettable = false
-      trashable = false
-      container = "in"
-    }
-    uid = $45
-    object {
-      blueprint = "sw_long"
-      uid = $46
-      location = "in"
+      object.blueprint = "co_leather_backpack"
+      entity.uid = <12>
+      object.location = "on"
     }
     object {
-      blueprint = "sw_long"
-      uid = $47
-      location = "in"
-    }
-    object {
-      blueprint = "sw_long"
-      uid = $48
-      location = "in"
+      object.blueprint = "ar_chain_mail"
+      entity.uid = <13>
+      object.location = "on"
     }
   }
 }
 room {
-  id = "cave_waterfall"
-  name = "Behind waterfall"
-  desc = "This section of cave is just behind a wide waterfall.  The rushing water pouring past the cave mouth is near deafening in sound, and a thick mist of cold water droplets scatter about the cave, making the cave very damp and the floor quite slick.  There is a lone scone in the middle of the cave floor, with a bright flame burning in it, seemingly unaffected by the water."
-  uid = $49
+  room.id = "broken_tree"
+  room.name = "Broken tree"
+  room.desc = "A single broken tree trunk rests here amidst the thriving forest.  The tree appears to have fallen recently.  You feel a strong wind blowing from the south, and it howls about you."
+  entity.uid = <14>
+  room.outdoors = true
   exit {
-    uid = $50
-    dir = "west"
-    target = "cave_niche"
+    entity.uid = <15>
+    portal.dir = "north"
+    portal.target = "altar"
   }
   exit {
-    name = "a glowing portal"
-    uid = $51
-    dir = "north"
-    detail = "through"
-    hidden = true
-    nolook = true
-    disabled = true
-    target = "altar"
+    entity.uid = <16>
+    portal.dir = "south"
+    portal.target = "forest_cliff"
+  }
+  exit {
+    entity.uid = <17>
+    portal.dir = "west"
+    portal.target = "graveyard_gate"
+  }
+  exit {
+    entity.uid = <18>
+    portal.dir = "northeast"
+    portal.target = "clear_pond"
   }
   object {
     blueprint {
-      name = "a waterfall"
-      desc = "The water pouring past the cave entrance is very loud, and very fierce.  You cannot see past the water, as too much is coming down."
-      roomlist = false
-      gettable = false
-      trashable = false
+      blueprint.name = "a tree"
+      blueprint.desc = "The broken tree trunk appears to have fallen recently.  The marks on its separated ends look to be the result of cutting, perhaps by a saw or axe."
+      blueprint.roomlist = false
+      blueprint.gettable = false
+      blueprint.trashable = false
+      blueprint.container = "under"
     }
-    uid = $52
+    entity.uid = <19>
+  }
+}
+room {
+  room.id = "forest_cliff"
+  room.name = "Forest cliff"
+  room.desc = "The edge of the forest reaches a steep cliff face.  Far below stretches a vast valley, shrouded in mist.  The tops of several large trees peek out from the grey abyss below.  To the east you hear sounds of a waterfall, although you cannot see it from your vantage point.  A larger tree reaches up and leans over the cliff edge.  The wind here is very loud, blowing down from the cold mountains across the valley."
+  entity.uid = <21>
+  room.outdoors = true
+  exit {
+    entity.uid = <22>
+    portal.dir = "north"
+    portal.target = "broken_tree"
+  }
+  exit {
+    portal.name = "a cliff"
+    entity.uid = <23>
+    portal.keyword = "down"
+    portal.usage = "climb"
+    portal.detail = "down"
+    portal.hidden = true
+    portal.target = "cliff_ledge"
+  }
+  exit {
+    portal.name = "a large tree"
+    portal.desc = "It looks as if the tree is often climbed.  Perhaps it offers a good vantage point."
+    entity.uid = <24>
+    portal.keyword = "up"
+    portal.usage = "climb"
+    portal.detail = "up"
+    portal.hidden = true
+    portal.target = "tree_top"
   }
   object {
     blueprint {
-      name = "a scone"
-      desc = "The scone is a very simple rock pedestal.  A bright flame reaches up from it, trying to touch the ceiling.  The flame doesn't seem to be bothered by the water and general dampness by the waterfall."
-      gettable = false
-      trashable = false
+      blueprint.name = "a valley"
+      blueprint.desc = "Deep below is a mist shrouded valley.  Poking up through the white mist are the tops of tall trees, indicating the valley is as forested as the mountain's higher areas."
+      blueprint.roomlist = false
+      blueprint.gettable = false
+      blueprint.touchable = false
+      blueprint.trashable = false
     }
-    uid = $53
+    entity.uid = <28>
+  }
+  object {
+    object.blueprint = "claws_animal"
+    entity.uid = <29>
+  }
+  object {
+    object.blueprint = "npc_corpse"
+    object.name = "a large wolf corpse"
+    entity.uid = <302>
+    user.npc_blueprint = "wolf_large"
+  }
+}
+room {
+  room.id = "cliff_ledge"
+  room.name = "Cliff ledge"
+  room.desc = "You are on a small ledge on the cliff face, not far below the top edge.  Below you stretches a vast, mist shrouded valley, nestled between the mountain you reside on now and the frozen cliffs you can see across from you."
+  entity.uid = <30>
+  room.outdoors = true
+  exit {
+    portal.name = "a cliff"
+    entity.uid = <31>
+    portal.keyword = "up"
+    portal.usage = "climb"
+    portal.detail = "up"
+    portal.target = "forest_cliff"
+  }
+  exit {
+    portal.name = "a cave"
+    portal.desc = "A narrow cave leads into the cliff face, twisting off towards the northeast."
+    entity.uid = <32>
+    portal.dir = "north"
+    portal.detail = "in"
+    portal.target = "cave_entrance"
+  }
+  object {
+    blueprint {
+      blueprint.name = "a valley"
+      blueprint.desc = "Deep below is a mist shrouded valley.  Poking up through the white mist are the tops of tall trees, indicating the valley is as forested as the mountain's higher areas."
+      blueprint.roomlist = false
+      blueprint.gettable = false
+      blueprint.touchable = false
+      blueprint.trashable = false
+    }
+    entity.uid = <33>
+  }
+}
+room {
+  room.id = "tree_top"
+  room.name = "Tree Top"
+  room.desc = "You are in the branches of a large tree leaning over the cliff edge.  A thousand feet or more below you the mist shrouded valley stretches between the mountain you are on, and the ice covered peaks you see clearly now to the south.  To the east, you hear the sounds of a waterfall, and can just make out the lip of the river over the treetops, as it spills over the cliff edge and descends into the valley below.  Just below you is a ledge potruding from the cliff face."
+  entity.uid = <34>
+  room.outdoors = true
+  exit {
+    portal.name = "a tree"
+    entity.uid = <35>
+    portal.keyword = "down"
+    portal.usage = "climb"
+    portal.detail = "down"
+    portal.target = "forest_cliff"
+  }
+}
+room {
+  room.id = "cave_entrance"
+  room.name = "Cave entrance"
+  room.desc = "The cave opens onto a ledge on the side of a great cliff.  Not much can be seen deeper in the cave, as it twists and turns towards the northeast.  The sound of dripping water echos from deeper in the tunnels."
+  entity.uid = <36>
+  exit {
+    entity.uid = <37>
+    portal.dir = "northeast"
+    portal.target = "cave_niche"
+  }
+  exit {
+    portal.name = "a opening"
+    portal.desc = "The cave exit here leads out onto a small ledge on the face of a cliff, towering over the valley below."
+    entity.uid = <38>
+    portal.dir = "south"
+    portal.target = "cliff_ledge"
+  }
+}
+room {
+  room.id = "cave_niche"
+  room.name = "Cave"
+  room.desc = "The cave is very dark and damp.  You can hear the sounds of running water from the east.  The northern wall has a rectangular niche carved into it."
+  entity.uid = <39>
+  exit {
+    entity.uid = <40>
+    portal.dir = "east"
+    portal.target = "cave_waterfall"
+  }
+  exit {
+    entity.uid = <41>
+    portal.dir = "southwest"
+    portal.target = "cave_entrance"
+  }
+  object {
+    blueprint {
+      blueprint.name = "a niche"
+      blueprint.desc = "The niche is about three feet tall, four feet wide, and two feet deep.  It begins nearly three feet above the cave floor.  The niche is smooth and precisely carved into the wall of the cave."
+      blueprint.roomlist = false
+      blueprint.gettable = false
+      blueprint.trashable = false
+      blueprint.container = "in"
+    }
+    entity.uid = <45>
+    object {
+      object.blueprint = "sw_long"
+      entity.uid = <46>
+      object.location = "in"
+    }
+    object {
+      object.blueprint = "sw_long"
+      entity.uid = <47>
+      object.location = "in"
+    }
+    object {
+      object.blueprint = "sw_long"
+      entity.uid = <48>
+      object.location = "in"
+    }
+  }
+}
+room {
+  room.id = "cave_waterfall"
+  room.name = "Behind waterfall"
+  room.desc = "This section of cave is just behind a wide waterfall.  The rushing water pouring past the cave mouth is near deafening in sound, and a thick mist of cold water droplets scatter about the cave, making the cave very damp and the floor quite slick.  There is a lone scone in the middle of the cave floor, with a bright flame burning in it, seemingly unaffected by the water."
+  entity.uid = <49>
+  exit {
+    entity.uid = <50>
+    portal.dir = "west"
+    portal.target = "cave_niche"
+  }
+  exit {
+    portal.name = "a glowing portal"
+    entity.uid = <51>
+    portal.dir = "north"
+    portal.detail = "through"
+    portal.hidden = true
+    portal.nolook = true
+    portal.disabled = true
+    portal.target = "altar"
+  }
+  object {
+    blueprint {
+      blueprint.name = "a waterfall"
+      blueprint.desc = "The water pouring past the cave entrance is very loud, and very fierce.  You cannot see past the water, as too much is coming down."
+      blueprint.roomlist = false
+      blueprint.gettable = false
+      blueprint.trashable = false
+    }
+    entity.uid = <52>
+  }
+  object {
+    blueprint {
+      blueprint.name = "a scone"
+      blueprint.desc = "The scone is a very simple rock pedestal.  A bright flame reaches up from it, trying to touch the ceiling.  The flame doesn't seem to be bothered by the water and general dampness by the waterfall."
+      blueprint.gettable = false
+      blueprint.trashable = false
+    }
+    entity.uid = <53>
   }
   npc {
-    blueprint = "wolf_large"
-    uid = $42
-    tag = "forest_critter"
-    position = "stand"
-    hp = 100
-    equip.right_hand {
-      blueprint = "claws_animal"
-      uid = $43
+    npc.blueprint = "wolf_large"
+    entity.uid = <42>
+    entity.tag = "forest_critter"
+    char.position = "stand"
+    char.hp = 100
+    equip_right_hand {
+      object.blueprint = "claws_animal"
+      entity.uid = <43>
     }
-    equip.left_hand {
-      blueprint = "claws_animal"
-      uid = $44
+    equip_left_hand {
+      object.blueprint = "claws_animal"
+      entity.uid = <44>
     }
-    zonelock = true
+    npc.zonelock = true
   }
 }
 room {
-  id = "city_of_dead"
-  name = "City of the Dead"
-  desc = "Surrounded by the cries of the tormented echoing from the towers of great walls is the City of the Dead.  It is here that those who perish in the mortal realms come to await judgement.  Those faithful to their gods are taken to paradise, while those who failed their deity are taken to the tall, red towers stretching into the darkness above.  Wandering the streets of the city are the lost souls; those who never found a god to call their own, and are left to find paradise as they will in the bleak city, just as they did in life.  The spirits all avoid the wide river flowing through the center of the city, trembling in fear of it even as they cross the wide bridges spanning the black, murky water."
-  uid = $54
+  room.id = "city_of_dead"
+  room.name = "City of the Dead"
+  room.desc = "Surrounded by the cries of the tormented echoing from the towers of great walls is the City of the Dead.  It is here that those who perish in the mortal realms come to await judgement.  Those faithful to their gods are taken to paradise, while those who failed their deity are taken to the tall, red towers stretching into the darkness above.  Wandering the streets of the city are the lost souls; those who never found a god to call their own, and are left to find paradise as they will in the bleak city, just as they did in life.  The spirits all avoid the wide river flowing through the center of the city, trembling in fear of it even as they cross the wide bridges spanning the black, murky water."
+  entity.uid = <54>
   exit {
-    name = "a bridge"
-    desc = "A wide bridge spanning the murky waters of a river."
-    uid = $55
-    dir = "northeast"
-    target = "cave_waterfall"
+    portal.name = "a bridge"
+    portal.desc = "A wide bridge spanning the murky waters of a river."
+    entity.uid = <55>
+    portal.dir = "northeast"
+    portal.target = "cave_waterfall"
   }
   object {
     blueprint {
-      name = "the River Styx"
-      desc = "The dark river is quite calm, and rather peaceful in appearance.  Despite this tranquil facade, supernatural fear still penetrates into the core of your soul when you look at it.  {$1.C} is none other than the River Styx, one of the few ways spoken of in legends to forever destroy a soul."
-      keyword = "murky river"
-      roomlist = false
-      gettable = false
-      trashable = false
+      blueprint.name = "the River Styx"
+      blueprint.desc = "The dark river is quite calm, and rather peaceful in appearance.  Despite this tranquil facade, supernatural fear still penetrates into the core of your soul when you look at it.  {<1>.C} is none other than the River Styx, one of the few ways spoken of in legends to forever destroy a soul."
+      blueprint.keyword = "murky river"
+      blueprint.roomlist = false
+      blueprint.gettable = false
+      blueprint.trashable = false
       action {
         id = "touch"
-        script = <<[
+        script = begin
           user << "Dear " << @name(user, EN_NONE, false) << ",\n  Look, do you even know what this river is?  Don't touch it, alright?\n  -- The Management\n";
           return 0;
-        ]>>
+        end
       }
     }
-    uid = $56
+    entity.uid = <56>
   }
 }
 room {
-  id = "forest_trail_west"
-  name = "Forest trail"
-  desc = "A simple trail meanders through the forest under the thick canopy of leaves above.  The sounds of a waterfall can be heard off to the southeast.  This path appears well travelled, although it doesn't seem to get much real maintenance."
-  uid = $57
-  outdoors = true
+  room.id = "forest_trail_west"
+  room.name = "Forest trail"
+  room.desc = "A simple trail meanders through the forest under the thick canopy of leaves above.  The sounds of a waterfall can be heard off to the southeast.  This path appears well travelled, although it doesn't seem to get much real maintenance."
+  entity.uid = <57>
+  room.outdoors = true
   exit {
-    uid = $58
-    dir = "north"
-    target = "portal"
+    entity.uid = <58>
+    portal.dir = "north"
+    portal.target = "portal"
   }
   exit {
-    uid = $59
-    dir = "east"
-    target = "forest_bridge"
+    entity.uid = <59>
+    portal.dir = "east"
+    portal.target = "forest_bridge"
   }
   exit {
-    uid = $60
-    dir = "west"
-    target = "clear_pond"
-  }
-}
-room {
-  id = "portal"
-  name = "Strange portal"
-  desc = "Hidden between the majestic oaks of the forest, a small granite portal rests here, its surface a shimmering, deep blue.  The portal doesn't seem to see much use, as the ground at its feet is mostly untrampled.  The trees seem unaffected by its obvious magically nature."
-  uid = $61
-  exit {
-    uid = $62
-    dir = "south"
-    target = "forest_trail_west"
-  }
-  exit {
-    name = "a granite portal"
-    desc = "The portal is a granite frame, nestled between two tall, thick trees.  Within the stone frame, a mirror-smooth surface of rolling blue color gives off an eerie light."
-    uid = $63
-    detail = "through"
-    nolook = true
-    target = "city_of_dead"
+    entity.uid = <60>
+    portal.dir = "west"
+    portal.target = "clear_pond"
   }
 }
 room {
-  id = "forest_bridge"
-  name = "River bridge"
-  desc = "The tree line parts where a river rapidly flows towards the south, its water rushing over a cliff to the valley far below.  The sound is loud and roaring, as if a dragon were swooping down for the slaughter.  A wooden bridge stretches across the river to the forest on the other side."
-  uid = $64
-  outdoors = true
+  room.id = "portal"
+  room.name = "Strange portal"
+  room.desc = "Hidden between the majestic oaks of the forest, a small granite portal rests here, its surface a shimmering, deep blue.  The portal doesn't seem to see much use, as the ground at its feet is mostly untrampled.  The trees seem unaffected by its obvious magically nature."
+  entity.uid = <61>
   exit {
-    uid = $65
-    dir = "east"
-    target = "forest_trail_east"
+    entity.uid = <62>
+    portal.dir = "south"
+    portal.target = "forest_trail_west"
   }
   exit {
-    uid = $66
-    dir = "west"
-    target = "forest_trail_west"
+    portal.name = "a granite portal"
+    portal.desc = "The portal is a granite frame, nestled between two tall, thick trees.  Within the stone frame, a mirror-smooth surface of rolling blue color gives off an eerie light."
+    entity.uid = <63>
+    portal.detail = "through"
+    portal.nolook = true
+    portal.target = "city_of_dead"
+  }
+}
+room {
+  room.id = "forest_bridge"
+  room.name = "River bridge"
+  room.desc = "The tree line parts where a river rapidly flows towards the south, its water rushing over a cliff to the valley far below.  The sound is loud and roaring, as if a dragon were swooping down for the slaughter.  A wooden bridge stretches across the river to the forest on the other side."
+  entity.uid = <64>
+  room.outdoors = true
+  exit {
+    entity.uid = <65>
+    portal.dir = "east"
+    portal.target = "forest_trail_east"
   }
   exit {
-    name = "a hidden path"
-    uid = $67
-    detail = "under"
-    hidden = true
-    target = "forest_under_bridge"
+    entity.uid = <66>
+    portal.dir = "west"
+    portal.target = "forest_trail_west"
+  }
+  exit {
+    portal.name = "a hidden path"
+    entity.uid = <67>
+    portal.detail = "under"
+    portal.hidden = true
+    portal.target = "forest_under_bridge"
   }
   object {
     blueprint {
-      name = "a wooden bridge"
-      desc = "The bridge is simple, yet stout.  The wooden beams supporting the walking planks rise a few spans above the rapids below, providing safe and dry passage across."
-      roomlist = false
-      gettable = false
-      trashable = false
+      blueprint.name = "a wooden bridge"
+      blueprint.desc = "The bridge is simple, yet stout.  The wooden beams supporting the walking planks rise a few spans above the rapids below, providing safe and dry passage across."
+      blueprint.roomlist = false
+      blueprint.gettable = false
+      blueprint.trashable = false
     }
-    uid = $68
+    entity.uid = <68>
   }
   object {
     blueprint {
-      name = "a river"
-      desc = "The river is not very wide, yet still too far to leap across.  The water of the river is moving swiftly, rushing over the edge of the mountain, deep into the mist shrouded valley below."
-      keyword = "waterfall"
-      roomlist = false
-      gettable = false
-      touchable = false
-      trashable = false
+      blueprint.name = "a river"
+      blueprint.desc = "The river is not very wide, yet still too far to leap across.  The water of the river is moving swiftly, rushing over the edge of the mountain, deep into the mist shrouded valley below."
+      blueprint.keyword = "waterfall"
+      blueprint.roomlist = false
+      blueprint.gettable = false
+      blueprint.touchable = false
+      blueprint.trashable = false
     }
-    uid = $69
+    entity.uid = <69>
   }
 }
 room {
-  id = "forest_under_bridge"
-  name = "Beneath the bridge"
-  desc = "Underneath the wooden bridge spanning the fast moving water is a small path, leading down to a cave entrace.  The path doesn't appear to be used often, and is a bit trecherous to travel.  The sounds of the rushing river are quite loud."
-  uid = $70
-  outdoors = true
+  room.id = "forest_under_bridge"
+  room.name = "Beneath the bridge"
+  room.desc = "Underneath the wooden bridge spanning the fast moving water is a small path, leading down to a cave entrace.  The path doesn't appear to be used often, and is a bit trecherous to travel.  The sounds of the rushing river are quite loud."
+  entity.uid = <70>
+  room.outdoors = true
   exit {
-    name = "a cave"
-    desc = "The cave opening leads downwards into the earth."
-    uid = $71
-    detail = "in"
-    target = "cave_waterfall"
+    portal.name = "a cave"
+    portal.desc = "The cave opening leads downwards into the earth."
+    entity.uid = <71>
+    portal.detail = "in"
+    portal.target = "cave_waterfall"
   }
   exit {
-    name = "a path"
-    desc = "The path climbs back up towards the main path and the wooden bridge."
-    uid = $72
-    detail = "up"
-    target = "forest_bridge"
-  }
-}
-room {
-  id = "forest_trail_east"
-  name = "Forest trail"
-  desc = "The trail stretches from the strong stone walls of a small town to the east towards the grand forest to the west.  The sound of rushing water can be heard deeper in the majestic wood."
-  uid = $73
-  outdoors = true
-  exit {
-    uid = $74
-    dir = "west"
-    target = "forest_bridge"
-  }
-  exit {
-    uid = $75
-    dir = "northeast"
-    target = "darlet_gate_west"
+    portal.name = "a path"
+    portal.desc = "The path climbs back up towards the main path and the wooden bridge."
+    entity.uid = <72>
+    portal.detail = "up"
+    portal.target = "forest_bridge"
   }
 }
 room {
-  id = "darlet_gate_west"
-  name = "Darlet: West Gate"
-  desc = "The western gate of the town Darlet rises a number of spans into the air, creating the only visible break in the tall stone wall of the fortified town.  The walls lie not far from the edge of the forest, and even the high reaching stone of Darlet seems small in camparison to the grand trees of the wood."
-  uid = $76
-  outdoors = true
+  room.id = "forest_trail_east"
+  room.name = "Forest trail"
+  room.desc = "The trail stretches from the strong stone walls of a small town to the east towards the grand forest to the west.  The sound of rushing water can be heard deeper in the majestic wood."
+  entity.uid = <73>
+  room.outdoors = true
   exit {
-    uid = $77
-    dir = "east"
-    target = "darlet_rosewood_west"
+    entity.uid = <74>
+    portal.dir = "west"
+    portal.target = "forest_bridge"
   }
   exit {
-    uid = $78
-    dir = "southwest"
-    target = "forest_trail_east"
+    entity.uid = <75>
+    portal.dir = "northeast"
+    portal.target = "darlet_gate_west"
   }
 }
 room {
-  id = "darlet_rosewood_west"
-  name = "Darlet: Rosewood Road"
-  desc = "Just east of the western gate, Rosewood Road sees its end.  Shops frequented by foresters and explorers sit here closest the gate, providing them quick and easy access.  A wooden door of a shop to the north is prominent, with a large, ornate sign hanging overhead."
-  uid = $79
-  outdoors = true
+  room.id = "darlet_gate_west"
+  room.name = "Darlet: West Gate"
+  room.desc = "The western gate of the town Darlet rises a number of spans into the air, creating the only visible break in the tall stone wall of the fortified town.  The walls lie not far from the edge of the forest, and even the high reaching stone of Darlet seems small in camparison to the grand trees of the wood."
+  entity.uid = <76>
+  room.outdoors = true
   exit {
-    uid = $80
-    dir = "east"
-    target = "darlet_rosewood_east_1"
+    entity.uid = <77>
+    portal.dir = "east"
+    portal.target = "darlet_rosewood_west"
   }
   exit {
-    uid = $81
-    dir = "west"
-    target = "darlet_gate_west"
+    entity.uid = <78>
+    portal.dir = "southwest"
+    portal.target = "forest_trail_east"
+  }
+}
+room {
+  room.id = "darlet_rosewood_west"
+  room.name = "Darlet: Rosewood Road"
+  room.desc = "Just east of the western gate, Rosewood Road sees its end.  Shops frequented by foresters and explorers sit here closest the gate, providing them quick and easy access.  A wooden door of a shop to the north is prominent, with a large, ornate sign hanging overhead."
+  entity.uid = <79>
+  room.outdoors = true
+  exit {
+    entity.uid = <80>
+    portal.dir = "east"
+    portal.target = "darlet_rosewood_east_1"
   }
   exit {
-    name = "a gem cutter"
-    desc = "The gem cutter's door is made of a dark wood.  Its appears to be of very sturdy craftsmanship."
-    uid = $82
-    dir = "north"
-    detail = "through"
-    door = true
-    target = "darlet_gem_cutter"
+    entity.uid = <81>
+    portal.dir = "west"
+    portal.target = "darlet_gate_west"
+  }
+  exit {
+    portal.name = "a gem cutter"
+    portal.desc = "The gem cutter's door is made of a dark wood.  Its appears to be of very sturdy craftsmanship."
+    entity.uid = <82>
+    portal.dir = "north"
+    portal.detail = "through"
+    portal.door = true
+    portal.target = "darlet_gem_cutter"
   }
   object {
     blueprint {
-      name = "a ornate sign"
-      desc = "The sign reads, Cutter and Trader of Gems."
-      roomlist = false
-      gettable = false
-      touchable = false
-      trashable = false
-      @read_text = "Cutter and Trader of Gems."
+      blueprint.name = "a ornate sign"
+      blueprint.desc = "The sign reads, Cutter and Trader of Gems."
+      blueprint.roomlist = false
+      blueprint.gettable = false
+      blueprint.touchable = false
+      blueprint.trashable = false
+      user.read_text = "Cutter and Trader of Gems."
     }
-    uid = $83
+    entity.uid = <83>
   }
 }
 room {
-  id = "darlet_gem_cutter"
-  name = "Darlet: Gem Cutter"
-  desc = "The room is simple but well kept.  Cases filled with cut jewels and fine jewelry cover the dark wood of the north and east walls."
-  uid = $84
+  room.id = "darlet_gem_cutter"
+  room.name = "Darlet: Gem Cutter"
+  room.desc = "The room is simple but well kept.  Cases filled with cut jewels and fine jewelry cover the dark wood of the north and east walls."
+  entity.uid = <84>
   exit {
-    name = "a out"
-    desc = "The gem cutter's door is made of a dark wood.  Its appears to be of very sturdy craftsmanship."
-    uid = $85
-    dir = "south"
-    detail = "through"
-    door = true
-    target = "darlet_rosewood_west"
+    portal.name = "a out"
+    portal.desc = "The gem cutter's door is made of a dark wood.  Its appears to be of very sturdy craftsmanship."
+    entity.uid = <85>
+    portal.dir = "south"
+    portal.detail = "through"
+    portal.door = true
+    portal.target = "darlet_rosewood_west"
   }
   object {
     blueprint {
-      name = "a ivory plaque"
-      desc = "The plaque is made of ivory, with golden script covering its white surface."
-      gettable = false
-      trashable = false
-      @read_text = "Jeral's Jewelry\nGem Cutting Available\nTo see our wares, use the {bold 'menu'} command."
+      blueprint.name = "a ivory plaque"
+      blueprint.desc = "The plaque is made of ivory, with golden script covering its white surface."
+      blueprint.gettable = false
+      blueprint.trashable = false
+      user.read_text = "Jeral's Jewelry\nGem Cutting Available\nTo see our wares, use the {bold 'menu'} command."
     }
-    uid = $89
+    entity.uid = <89>
   }
   object {
     blueprint {
-      name = "a gem case"
-      desc = "The {$1.n} is crafted of a light stained wood, and set with thick glass.  Dozens and dozens of jewels, of all colours, lie neatly organized in the case.  Several bits of fine jewelry can also be found, fitted with fine gems."
-      roomlist = false
-      gettable = false
-      trashable = false
+      blueprint.name = "a gem case"
+      blueprint.desc = "The {<1>.n} is crafted of a light stained wood, and set with thick glass.  Dozens and dozens of jewels, of all colours, lie neatly organized in the case.  Several bits of fine jewelry can also be found, fitted with fine gems."
+      blueprint.roomlist = false
+      blueprint.gettable = false
+      blueprint.trashable = false
     }
-    uid = $90
+    entity.uid = <90>
   }
   object {
     blueprint {
-      name = "a gem case"
-      desc = "The {$1.n} is crafted of a light stained wood, and set with thick glass.  Dozens and dozens of jewels, of all colours, lie neatly organized in the case.  Several bits of fine jewelry can also be found, fitted with fine gems."
-      roomlist = false
-      gettable = false
-      trashable = false
+      blueprint.name = "a gem case"
+      blueprint.desc = "The {<1>.n} is crafted of a light stained wood, and set with thick glass.  Dozens and dozens of jewels, of all colours, lie neatly organized in the case.  Several bits of fine jewelry can also be found, fitted with fine gems."
+      blueprint.roomlist = false
+      blueprint.gettable = false
+      blueprint.trashable = false
     }
-    uid = $91
+    entity.uid = <91>
   }
   npc {
-    blueprint = "rabbit"
-    uid = $86
-    tag = "forest_critter"
-    position = "stand"
-    hp = 60
-    equip.right_hand {
-      blueprint = "claws_animal"
-      uid = $87
+    npc.blueprint = "rabbit"
+    entity.uid = <86>
+    entity.tag = "forest_critter"
+    char.position = "stand"
+    char.hp = 60
+    equip_right_hand {
+      object.blueprint = "claws_animal"
+      entity.uid = <87>
     }
-    equip.left_hand {
-      blueprint = "claws_animal"
-      uid = $88
+    equip_left_hand {
+      object.blueprint = "claws_animal"
+      entity.uid = <88>
     }
-    zonelock = true
+    npc.zonelock = true
   }
 }
 room {
-  id = "darlet_weapon_smith"
-  name = "Darlet: Weapon Smith"
-  desc = "Numerous weapons are stacked around the room on racks and stands.  The place has a sooty smell, and the constant hammering from forge behind the building echoes through the showroom."
-  uid = $92
+  room.id = "darlet_weapon_smith"
+  room.name = "Darlet: Weapon Smith"
+  room.desc = "Numerous weapons are stacked around the room on racks and stands.  The place has a sooty smell, and the constant hammering from forge behind the building echoes through the showroom."
+  entity.uid = <92>
   exit {
-    name = "a door"
-    desc = "The weapon smith's door is made of a dark, hard metal."
-    uid = $93
-    keyword = "outside"
-    keyword = "street"
-    dir = "north"
-    detail = "through"
-    door = true
-    target = "vine_1"
+    portal.name = "a door"
+    portal.desc = "The weapon smith's door is made of a dark, hard metal."
+    entity.uid = <93>
+    portal.keyword = "outside"
+    portal.keyword = "street"
+    portal.dir = "north"
+    portal.detail = "through"
+    portal.door = true
+    portal.target = "vine_1"
   }
   object {
     blueprint {
-      name = "a wooden sign"
-      desc = "The wooden sign looks to be fairly new.  It is contructed of a dark wood, and has writing on it in large, white colored letters."
-      gettable = false
-      trashable = false
-      @read_text = "Welcome to the Darlet Weapon Smith!  Use the {bold 'menu'} command to see what we have available."
+      blueprint.name = "a wooden sign"
+      blueprint.desc = "The wooden sign looks to be fairly new.  It is contructed of a dark wood, and has writing on it in large, white colored letters."
+      blueprint.gettable = false
+      blueprint.trashable = false
+      user.read_text = "Welcome to the Darlet Weapon Smith!  Use the {bold 'menu'} command to see what we have available."
     }
-    uid = $94
+    entity.uid = <94>
   }
 }
 room {
-  id = "darlet_square"
-  name = "Town Square"
-  desc = "Darlet's square is a crossroads of sorts, and an informal gathering place for the locals to meet.  Just north of the square, a heavy wooden gate marks the entrance to Fort Darlet.  To the south, Vine avenue makes its short run between Rosewood Road and Ashwood lane.  A stone fountain in the center of the square performs for all nearby, creating the soft sound of water gurgling over stones, accompanied by the harmony of splashing, as the water makes its short drop into the fountains basin."
-  uid = $95
-  outdoors = true
+  room.id = "darlet_square"
+  room.name = "Town Square"
+  room.desc = "Darlet's square is a crossroads of sorts, and an informal gathering place for the locals to meet.  Just north of the square, a heavy wooden gate marks the entrance to Fort Darlet.  To the south, Vine avenue makes its short run between Rosewood Road and Ashwood lane.  A stone fountain in the center of the square performs for all nearby, creating the soft sound of water gurgling over stones, accompanied by the harmony of splashing, as the water makes its short drop into the fountains basin."
+  entity.uid = <95>
+  room.outdoors = true
   exit {
-    uid = $96
-    dir = "east"
-    target = "darlet_rosewood_east_5"
+    entity.uid = <96>
+    portal.dir = "east"
+    portal.target = "darlet_rosewood_east_5"
   }
   exit {
-    uid = $97
-    dir = "south"
-    target = "vine_1"
+    entity.uid = <97>
+    portal.dir = "south"
+    portal.target = "vine_1"
   }
   exit {
-    uid = $98
-    dir = "west"
-    target = "darlet_rosewood_east_4"
-  }
-}
-room {
-  id = "darlet_rosewood_east_1"
-  name = "Darlet: Rosewood Road"
-  desc = "Paved with cobblestones and well maintained, Rosewood Road is Darlet's main thruway.  The street is lined on both sides by one and two story stone houses with thatched roofs.  The whitewashed stone, dark brown timbers, and the golden thatching are a trademark of Darlet's architecture.  North of the street sits a quaint store with a prominent sign in the window, announcing to passersby the shop to be that of Tallic Tumon's Fine Jewelry."
-  uid = $99
-  outdoors = true
-  exit {
-    uid = $100
-    dir = "east"
-    target = "darlet_rosewood_east_2"
-  }
-  exit {
-    uid = $101
-    dir = "west"
-    target = "darlet_rosewood_west"
+    entity.uid = <98>
+    portal.dir = "west"
+    portal.target = "darlet_rosewood_east_4"
   }
 }
 room {
-  id = "darlet_rosewood_east_2"
-  name = "Darlet: Rosewood Road"
-  desc = "To the west, Rosewood Road runs in a straight line past a handful of small shops towards the town's western gate.  Just to the east the road forks, with Rosewood continuing to the northeast and Ashwood lane ambling off to the southeast.  A modest establishment on the northern side of the street promotes a sign, announcing the shop to be the local armorer."
-  uid = $102
-  outdoors = true
+  room.id = "darlet_rosewood_east_1"
+  room.name = "Darlet: Rosewood Road"
+  room.desc = "Paved with cobblestones and well maintained, Rosewood Road is Darlet's main thruway.  The street is lined on both sides by one and two story stone houses with thatched roofs.  The whitewashed stone, dark brown timbers, and the golden thatching are a trademark of Darlet's architecture.  North of the street sits a quaint store with a prominent sign in the window, announcing to passersby the shop to be that of Tallic Tumon's Fine Jewelry."
+  entity.uid = <99>
+  room.outdoors = true
   exit {
-    uid = $103
-    dir = "north"
-    hidden = true
-    target = "darlet_armorer"
+    entity.uid = <100>
+    portal.dir = "east"
+    portal.target = "darlet_rosewood_east_2"
   }
   exit {
-    uid = $104
-    dir = "west"
-    target = "darlet_rosewood_east_1"
+    entity.uid = <101>
+    portal.dir = "west"
+    portal.target = "darlet_rosewood_west"
+  }
+}
+room {
+  room.id = "darlet_rosewood_east_2"
+  room.name = "Darlet: Rosewood Road"
+  room.desc = "To the west, Rosewood Road runs in a straight line past a handful of small shops towards the town's western gate.  Just to the east the road forks, with Rosewood continuing to the northeast and Ashwood lane ambling off to the southeast.  A modest establishment on the northern side of the street promotes a sign, announcing the shop to be the local armorer."
+  entity.uid = <102>
+  room.outdoors = true
+  exit {
+    entity.uid = <103>
+    portal.dir = "north"
+    portal.hidden = true
+    portal.target = "darlet_armorer"
   }
   exit {
-    uid = $105
-    dir = "northeast"
-    target = "darlet_rosewood_east_3"
+    entity.uid = <104>
+    portal.dir = "west"
+    portal.target = "darlet_rosewood_east_1"
   }
   exit {
-    uid = $106
-    dir = "southeast"
-    target = "darlet_ashwood_1"
+    entity.uid = <105>
+    portal.dir = "northeast"
+    portal.target = "darlet_rosewood_east_3"
   }
   exit {
-    name = "a door"
-    uid = $107
-    hidden = true
-    target = "darlet_armorer"
+    entity.uid = <106>
+    portal.dir = "southeast"
+    portal.target = "darlet_ashwood_1"
+  }
+  exit {
+    portal.name = "a door"
+    entity.uid = <107>
+    portal.hidden = true
+    portal.target = "darlet_armorer"
   }
   object {
     blueprint {
-      name = "a large stone clock"
-      desc = "The tall clock is a granite obelisk reaching some ten feet above the cobblestones.  A clock face resides on each of the monument's four sides, almost at the top, staring out in the cardinal directions.  The time reads {time}."
-      roomlist = true
-      gettable = false
-      touchable = true
-      trashable = false
+      blueprint.name = "a large stone clock"
+      blueprint.desc = "The tall clock is a granite obelisk reaching some ten feet above the cobblestones.  A clock face resides on each of the monument's four sides, almost at the top, staring out in the cardinal directions.  The time reads {time}."
+      blueprint.roomlist = true
+      blueprint.gettable = false
+      blueprint.touchable = true
+      blueprint.trashable = false
     }
-    uid = $108
+    entity.uid = <108>
   }
 }
 room {
-  id = "darlet_rosewood_east_3"
-  name = "Darlet: Rosewood Road"
-  desc = "The high wall which encloses and protects the village of Darlet wanders quite close to the northern side of the street, giving the town the look of a small city.  On the south side of the street the door to a shop sits comfortably in the center of a long porch with a wooden awning.  Atop the share providing tarp is a sign which reads, Darlet Out-fitter and General Store."
-  uid = $109
-  outdoors = true
+  room.id = "darlet_rosewood_east_3"
+  room.name = "Darlet: Rosewood Road"
+  room.desc = "The high wall which encloses and protects the village of Darlet wanders quite close to the northern side of the street, giving the town the look of a small city.  On the south side of the street the door to a shop sits comfortably in the center of a long porch with a wooden awning.  Atop the share providing tarp is a sign which reads, Darlet Out-fitter and General Store."
+  entity.uid = <109>
+  room.outdoors = true
   exit {
-    uid = $110
-    dir = "east"
-    target = "darlet_rosewood_east_4"
+    entity.uid = <110>
+    portal.dir = "east"
+    portal.target = "darlet_rosewood_east_4"
   }
   exit {
-    uid = $111
-    dir = "southwest"
-    target = "darlet_rosewood_east_2"
-  }
-}
-room {
-  id = "darlet_ashwood_1"
-  name = "Darlet: Ashwood Lane"
-  desc = "The care with which Darlet maintains the cobblestone streets is exemplary.  The mostly wooden buildings also appear solidly built, and well kept.  One such structure makes its home on the north side of the lane, and a sign hung from the overhang reads, Jordic Puro, Clothier."
-  uid = $112
-  outdoors = true
-  exit {
-    uid = $113
-    dir = "east"
-    target = "darlet_ashwood_2"
-  }
-  exit {
-    uid = $114
-    dir = "northwest"
-    target = "darlet_rosewood_east_2"
+    entity.uid = <111>
+    portal.dir = "southwest"
+    portal.target = "darlet_rosewood_east_2"
   }
 }
 room {
-  id = "darlet_ashwood_2"
-  name = "Darlet: Ashwood Lane"
-  desc = "The tight fitting cobblestones of Ashwood Lane stretch along the straight road.  On the north side of the street is a small, gaudy shop adorned with wind chimes and brightly painted whirlygigs.  A small sign in the yard, painted in rainbow lettering, pronounces this to be the Darlet Souvenir Shoppe."
-  uid = $115
-  outdoors = true
+  room.id = "darlet_ashwood_1"
+  room.name = "Darlet: Ashwood Lane"
+  room.desc = "The care with which Darlet maintains the cobblestone streets is exemplary.  The mostly wooden buildings also appear solidly built, and well kept.  One such structure makes its home on the north side of the lane, and a sign hung from the overhang reads, Jordic Puro, Clothier."
+  entity.uid = <112>
+  room.outdoors = true
   exit {
-    uid = $116
-    dir = "east"
-    target = "darlet_ashwood_vine"
+    entity.uid = <113>
+    portal.dir = "east"
+    portal.target = "darlet_ashwood_2"
   }
   exit {
-    uid = $117
-    dir = "west"
-    target = "darlet_ashwood_1"
-  }
-}
-room {
-  id = "darlet_ashwood_vine"
-  name = "Darlet: Corner of Ashwood and Vine"
-  desc = "The corner of Ash and Vine is home to the local constable's office and jail house, situated to the northeast and northwest respectivly.  The diminutive jail house suggests that the town either has little in the way of crime, or that the authorities prefer other methods of rehabilitating wrong doers.  The constable's office is both bigger and better maintained than the jail house.  To the south, Bowmans Crescent begins its slow trek about the outskirts of town."
-  uid = $118
-  outdoors = true
-  exit {
-    uid = $119
-    dir = "north"
-    target = "vine_1"
-  }
-  exit {
-    uid = $120
-    dir = "east"
-    target = "darlet_ashwood_3"
-  }
-  exit {
-    uid = $121
-    dir = "south"
-    target = "bowmans_2"
-  }
-  exit {
-    uid = $122
-    dir = "west"
-    target = "darlet_ashwood_2"
+    entity.uid = <114>
+    portal.dir = "northwest"
+    portal.target = "darlet_rosewood_east_2"
   }
 }
 room {
-  id = "darlet_ashwood_3"
-  name = "Darlet: Ashwood Lane"
-  desc = "A short distance southward, residential housing can be seen.  The town appears to be growing if the number of newer homes is any indication.  On the north side of the street is an older building with weathered paint, displaying a sign which reads, Tillards Barter Shop."
-  uid = $123
+  room.id = "darlet_ashwood_2"
+  room.name = "Darlet: Ashwood Lane"
+  room.desc = "The tight fitting cobblestones of Ashwood Lane stretch along the straight road.  On the north side of the street is a small, gaudy shop adorned with wind chimes and brightly painted whirlygigs.  A small sign in the yard, painted in rainbow lettering, pronounces this to be the Darlet Souvenir Shoppe."
+  entity.uid = <115>
+  room.outdoors = true
   exit {
-    uid = $124
-    dir = "east"
-    target = "darlet_ashwood_4"
+    entity.uid = <116>
+    portal.dir = "east"
+    portal.target = "darlet_ashwood_vine"
   }
   exit {
-    uid = $125
-    dir = "west"
-    target = "darlet_ashwood_vine"
-  }
-}
-room {
-  id = "darlet_ashwood_4"
-  name = "Darlet: Ashwood Lane"
-  desc = "A bend in the road takes Ashwood lane slightly northward as the lane travels easterly.  To the west the road runs long and straight towards a large intersection.  North of the street is an old, two story, wooden building.  The front porch is built up high in spots, and several doors set in the front of the structure appear like wide, gaping maws.  The building is surrounded by a wrought iron fence, and a sign near the gate reads, Rudan and Son, Warehouser."
-  uid = $126
-  exit {
-    uid = $127
-    dir = "west"
-    target = "darlet_ashwood_3"
-  }
-  exit {
-    uid = $128
-    dir = "northeast"
-    target = "darlet_ashwood_5"
+    entity.uid = <117>
+    portal.dir = "west"
+    portal.target = "darlet_ashwood_1"
   }
 }
 room {
-  id = "darlet_ashwood_5"
-  name = "Darlet: Intersection of Rosewood and Ashwood"
-  desc = "Darlet's main thoroughfare, Rosewood Road, overtakes the shorter Ashwood Lane.  Most who travel through town make their way northeast towards the locally renown Wayfarers' Rest.  Ashwood Lane begins its short, and less congested, way about the southern side of the town proper.  Directly to the west, splitting the two streets like a wedge, is Darlet's auction house."
-  uid = $129
-  outdoors = true
+  room.id = "darlet_ashwood_vine"
+  room.name = "Darlet: Corner of Ashwood and Vine"
+  room.desc = "The corner of Ash and Vine is home to the local constable's office and jail house, situated to the northeast and northwest respectivly.  The diminutive jail house suggests that the town either has little in the way of crime, or that the authorities prefer other methods of rehabilitating wrong doers.  The constable's office is both bigger and better maintained than the jail house.  To the south, Bowmans Crescent begins its slow trek about the outskirts of town."
+  entity.uid = <118>
+  room.outdoors = true
   exit {
-    uid = $130
-    dir = "east"
-    target = "darlet_rosewood_east_7"
+    entity.uid = <119>
+    portal.dir = "north"
+    portal.target = "vine_1"
   }
   exit {
-    uid = $131
-    dir = "northwest"
-    target = "darlet_rosewood_east_6"
+    entity.uid = <120>
+    portal.dir = "east"
+    portal.target = "darlet_ashwood_3"
   }
   exit {
-    uid = $132
-    dir = "southwest"
-    target = "darlet_ashwood_4"
-  }
-}
-room {
-  id = "vine_1"
-  name = "Darlet: Vine Avenue"
-  desc = "This small avenue runs north and south between Rosewood Road and Ashwood Lane, serving as Darlet's central business district.  On the east side of the avenue stands a three story stone building; Darlet's central bank.  The building itself stands out from most of the other structures in town for its all stone-work design.  To the west of the avenue, Darlet's town hall sits nestled between the village planning commission, and the tax assessor's office."
-  uid = $133
-  outdoors = true
-  exit {
-    uid = $134
-    dir = "north"
-    target = "darlet_square"
+    entity.uid = <121>
+    portal.dir = "south"
+    portal.target = "bowmans_2"
   }
   exit {
-    uid = $135
-    dir = "south"
-    target = "darlet_ashwood_vine"
-  }
-  exit {
-    name = "a metal door"
-    desc = "The weapon smith's door is made of a dark, hard metal."
-    uid = $136
-    keyword = "weapon smith"
-    dir = "south"
-    detail = "through"
-    door = true
-    target = "darlet_weapon_smith"
+    entity.uid = <122>
+    portal.dir = "west"
+    portal.target = "darlet_ashwood_2"
   }
 }
 room {
-  id = "darlet_rosewood_east_4"
-  name = "Darlet: Rosewood Road"
-  desc = "This stretch of Rosewood Road continues to amble its way about the northern side of Darlet's village proper.  The town square can be seen, a short way east of here, as well as Fort Darlet, which is just north of the square.  On the southern side of the street, a well kept shop boasts a sign which reads Darlet florist."
-  uid = $137
-  outdoors = true
+  room.id = "darlet_ashwood_3"
+  room.name = "Darlet: Ashwood Lane"
+  room.desc = "A short distance southward, residential housing can be seen.  The town appears to be growing if the number of newer homes is any indication.  On the north side of the street is an older building with weathered paint, displaying a sign which reads, Tillards Barter Shop."
+  entity.uid = <123>
   exit {
-    uid = $138
-    dir = "east"
-    target = "darlet_square"
+    entity.uid = <124>
+    portal.dir = "east"
+    portal.target = "darlet_ashwood_4"
   }
   exit {
-    uid = $139
-    dir = "west"
-    target = "darlet_rosewood_east_3"
-  }
-}
-room {
-  id = "darlet_rosewood_east_5"
-  name = "Darlet: Rosewood Road"
-  desc = "Just east of the town square, Rosewood Road runs in a straight line, north of the town proper.  The local buildings are solidly built, utilizing this region's most abundant resource, wood."
-  uid = $140
-  outdoors = true
-  exit {
-    uid = $141
-    dir = "east"
-    target = "darlet_rosewood_east_6"
-  }
-  exit {
-    uid = $142
-    dir = "west"
-    target = "darlet_square"
+    entity.uid = <125>
+    portal.dir = "west"
+    portal.target = "darlet_ashwood_vine"
   }
 }
 room {
-  id = "darlet_rosewood_east_6"
-  name = "Darlet: Rosewood Road"
-  desc = "Westward, the road stretches towards the town square.  A short distance to the east, Rosewood makes a slight turn to the southeast.  Here however is the destination for many of Darlet's welcome, if not completely trusted guests.  That being the large, three story, inn, situated on the north side of the street.  Wayfarers Rest is how the sign on the front porch reads. {if day-or-night = 'night'} From the dark street, the warm light coming from the inn's numerous windows invite the weary, and the occasional round of song invites the thirsty{else} The scent of freshly baked bread, and roasting meat, drift lightly on the air, making this stop all the more inviting{endif}."
-  uid = $143
-  outdoors = true
+  room.id = "darlet_ashwood_4"
+  room.name = "Darlet: Ashwood Lane"
+  room.desc = "A bend in the road takes Ashwood lane slightly northward as the lane travels easterly.  To the west the road runs long and straight towards a large intersection.  North of the street is an old, two story, wooden building.  The front porch is built up high in spots, and several doors set in the front of the structure appear like wide, gaping maws.  The building is surrounded by a wrought iron fence, and a sign near the gate reads, Rudan and Son, Warehouser."
+  entity.uid = <126>
   exit {
-    uid = $144
-    dir = "west"
-    target = "darlet_rosewood_east_5"
+    entity.uid = <127>
+    portal.dir = "west"
+    portal.target = "darlet_ashwood_3"
   }
   exit {
-    uid = $145
-    dir = "southeast"
-    target = "darlet_ashwood_5"
-  }
-}
-room {
-  id = "darlet_rosewood_east_7"
-  name = "Darlet: Rosewood and Clover"
-  desc = "The intersection of Rosewood Road and Clover Way marks the end of Darlets business district to the west, and the beginning of a more residential area to the east.  Though a small shop or two stands out here or there, the majority of buildings on either side of Clover Way are the homes of the local citizenry."
-  uid = $146
-  outdoors = true
-  exit {
-    uid = $147
-    dir = "north"
-    target = "clover_1"
-  }
-  exit {
-    uid = $148
-    dir = "east"
-    target = "darlet_rosewood_east_8"
-  }
-  exit {
-    uid = $149
-    dir = "south"
-    target = "clover_3"
-  }
-  exit {
-    uid = $150
-    dir = "west"
-    target = "darlet_ashwood_5"
+    entity.uid = <128>
+    portal.dir = "northeast"
+    portal.target = "darlet_ashwood_5"
   }
 }
 room {
-  id = "clover_1"
-  name = "Darlet: Clover Lane"
-  desc = "The lane is a bit narrow, with houses pressing in on both sides.  One home stands out in particular, with its iron gate just east of the street. {if day-or-night = 'night'} The lamps on either side of the gate are lit, providing a bit of security for the enterance. {else} A sign on the gate announces that this is the residence of Dallin Grayrock.{endif}"
-  uid = $151
-  outdoors = true
+  room.id = "darlet_ashwood_5"
+  room.name = "Darlet: Intersection of Rosewood and Ashwood"
+  room.desc = "Darlet's main thoroughfare, Rosewood Road, overtakes the shorter Ashwood Lane.  Most who travel through town make their way northeast towards the locally renown Wayfarers' Rest.  Ashwood Lane begins its short, and less congested, way about the southern side of the town proper.  Directly to the west, splitting the two streets like a wedge, is Darlet's auction house."
+  entity.uid = <129>
+  room.outdoors = true
   exit {
-    uid = $152
-    dir = "north"
-    target = "clover_2"
+    entity.uid = <130>
+    portal.dir = "east"
+    portal.target = "darlet_rosewood_east_7"
   }
   exit {
-    uid = $153
-    dir = "south"
-    target = "darlet_rosewood_east_7"
+    entity.uid = <131>
+    portal.dir = "northwest"
+    portal.target = "darlet_rosewood_east_6"
+  }
+  exit {
+    entity.uid = <132>
+    portal.dir = "southwest"
+    portal.target = "darlet_ashwood_4"
+  }
+}
+room {
+  room.id = "vine_1"
+  room.name = "Darlet: Vine Avenue"
+  room.desc = "This small avenue runs north and south between Rosewood Road and Ashwood Lane, serving as Darlet's central business district.  On the east side of the avenue stands a three story stone building; Darlet's central bank.  The building itself stands out from most of the other structures in town for its all stone-work design.  To the west of the avenue, Darlet's town hall sits nestled between the village planning commission, and the tax assessor's office."
+  entity.uid = <133>
+  room.outdoors = true
+  exit {
+    entity.uid = <134>
+    portal.dir = "north"
+    portal.target = "darlet_square"
+  }
+  exit {
+    entity.uid = <135>
+    portal.dir = "south"
+    portal.target = "darlet_ashwood_vine"
+  }
+  exit {
+    portal.name = "a metal door"
+    portal.desc = "The weapon smith's door is made of a dark, hard metal."
+    entity.uid = <136>
+    portal.keyword = "weapon smith"
+    portal.dir = "south"
+    portal.detail = "through"
+    portal.door = true
+    portal.target = "darlet_weapon_smith"
+  }
+}
+room {
+  room.id = "darlet_rosewood_east_4"
+  room.name = "Darlet: Rosewood Road"
+  room.desc = "This stretch of Rosewood Road continues to amble its way about the northern side of Darlet's village proper.  The town square can be seen, a short way east of here, as well as Fort Darlet, which is just north of the square.  On the southern side of the street, a well kept shop boasts a sign which reads Darlet florist."
+  entity.uid = <137>
+  room.outdoors = true
+  exit {
+    entity.uid = <138>
+    portal.dir = "east"
+    portal.target = "darlet_square"
+  }
+  exit {
+    entity.uid = <139>
+    portal.dir = "west"
+    portal.target = "darlet_rosewood_east_3"
+  }
+}
+room {
+  room.id = "darlet_rosewood_east_5"
+  room.name = "Darlet: Rosewood Road"
+  room.desc = "Just east of the town square, Rosewood Road runs in a straight line, north of the town proper.  The local buildings are solidly built, utilizing this region's most abundant resource, wood."
+  entity.uid = <140>
+  room.outdoors = true
+  exit {
+    entity.uid = <141>
+    portal.dir = "east"
+    portal.target = "darlet_rosewood_east_6"
+  }
+  exit {
+    entity.uid = <142>
+    portal.dir = "west"
+    portal.target = "darlet_square"
+  }
+}
+room {
+  room.id = "darlet_rosewood_east_6"
+  room.name = "Darlet: Rosewood Road"
+  room.desc = "Westward, the road stretches towards the town square.  A short distance to the east, Rosewood makes a slight turn to the southeast.  Here however is the destination for many of Darlet's welcome, if not completely trusted guests.  That being the large, three story, inn, situated on the north side of the street.  Wayfarers Rest is how the sign on the front porch reads. {if day-or-night = 'night'} From the dark street, the warm light coming from the inn's numerous windows invite the weary, and the occasional round of song invites the thirsty{else} The scent of freshly baked bread, and roasting meat, drift lightly on the air, making this stop all the more inviting{endif}."
+  entity.uid = <143>
+  room.outdoors = true
+  exit {
+    entity.uid = <144>
+    portal.dir = "west"
+    portal.target = "darlet_rosewood_east_5"
+  }
+  exit {
+    entity.uid = <145>
+    portal.dir = "southeast"
+    portal.target = "darlet_ashwood_5"
+  }
+}
+room {
+  room.id = "darlet_rosewood_east_7"
+  room.name = "Darlet: Rosewood and Clover"
+  room.desc = "The intersection of Rosewood Road and Clover Way marks the end of Darlets business district to the west, and the beginning of a more residential area to the east.  Though a small shop or two stands out here or there, the majority of buildings on either side of Clover Way are the homes of the local citizenry."
+  entity.uid = <146>
+  room.outdoors = true
+  exit {
+    entity.uid = <147>
+    portal.dir = "north"
+    portal.target = "clover_1"
+  }
+  exit {
+    entity.uid = <148>
+    portal.dir = "east"
+    portal.target = "darlet_rosewood_east_8"
+  }
+  exit {
+    entity.uid = <149>
+    portal.dir = "south"
+    portal.target = "clover_3"
+  }
+  exit {
+    entity.uid = <150>
+    portal.dir = "west"
+    portal.target = "darlet_ashwood_5"
+  }
+}
+room {
+  room.id = "clover_1"
+  room.name = "Darlet: Clover Lane"
+  room.desc = "The lane is a bit narrow, with houses pressing in on both sides.  One home stands out in particular, with its iron gate just east of the street. {if day-or-night = 'night'} The lamps on either side of the gate are lit, providing a bit of security for the enterance. {else} A sign on the gate announces that this is the residence of Dallin Grayrock.{endif}"
+  entity.uid = <151>
+  room.outdoors = true
+  exit {
+    entity.uid = <152>
+    portal.dir = "north"
+    portal.target = "clover_2"
+  }
+  exit {
+    entity.uid = <153>
+    portal.dir = "south"
+    portal.target = "darlet_rosewood_east_7"
   }
   object {
     blueprint {
-      name = "a home"
-      desc = "The manor house of Dallin Grayrock is quit large, compared to most of the homes in Darlet.  Made of stone, the main living area is three stories tall, and topped with a gray slate roof.  The northern and southern ends of the home rise another span and a half higher than the main portion of the house, making the structure look like a small castle.  A long paved walkway leads from the front gate, past a small stable, and up to the front porch of the home.  It's quite apparent the owner is one of Darlets more affluent citizens."
-      roomlist = false
-      gettable = false
-      touchable = false
-      trashable = false
+      blueprint.name = "a home"
+      blueprint.desc = "The manor house of Dallin Grayrock is quit large, compared to most of the homes in Darlet.  Made of stone, the main living area is three stories tall, and topped with a gray slate roof.  The northern and southern ends of the home rise another span and a half higher than the main portion of the house, making the structure look like a small castle.  A long paved walkway leads from the front gate, past a small stable, and up to the front porch of the home.  It's quite apparent the owner is one of Darlets more affluent citizens."
+      blueprint.roomlist = false
+      blueprint.gettable = false
+      blueprint.touchable = false
+      blueprint.trashable = false
     }
-    uid = $154
+    entity.uid = <154>
   }
 }
 room {
-  id = "clover_2"
-  name = "Bowmans Crescent and Clover"
-  desc = "To the south, the narrow Clover Lane runs straight towards the larger Rosewood Road.  Bowmans Crescent, heading to the west and northeast, makes its way about the outskirts of Darlet. {if day-or-night = 'day'}A large willow tree stands proudly in an open field, just north of the intersection.  A small tree house has been built into its branches. {else}A large willow tree stands guarding the intersection, just north of the street.  Its long branches sway gently in the moonlight. {endif}"
-  uid = $155
-  outdoors = true
+  room.id = "clover_2"
+  room.name = "Bowmans Crescent and Clover"
+  room.desc = "To the south, the narrow Clover Lane runs straight towards the larger Rosewood Road.  Bowmans Crescent, heading to the west and northeast, makes its way about the outskirts of Darlet. {if day-or-night = 'day'}A large willow tree stands proudly in an open field, just north of the intersection.  A small tree house has been built into its branches. {else}A large willow tree stands guarding the intersection, just north of the street.  Its long branches sway gently in the moonlight. {endif}"
+  entity.uid = <155>
+  room.outdoors = true
   exit {
-    uid = $156
-    dir = "south"
-    target = "clover_1"
+    entity.uid = <156>
+    portal.dir = "south"
+    portal.target = "clover_1"
   }
   exit {
-    uid = $157
-    dir = "west"
-    target = "bowmans_11"
+    entity.uid = <157>
+    portal.dir = "west"
+    portal.target = "bowmans_11"
   }
   exit {
-    uid = $158
-    dir = "northeast"
-    target = "bowmans_10"
-  }
-}
-room {
-  id = "clover_3"
-  name = "a clover_3"
-  uid = $159
-  outdoors = true
-  exit {
-    uid = $160
-    dir = "north"
-    target = "darlet_rosewood_east_7"
-  }
-  exit {
-    uid = $161
-    dir = "southwest"
-    target = "clover_4"
+    entity.uid = <158>
+    portal.dir = "northeast"
+    portal.target = "bowmans_10"
   }
 }
 room {
-  id = "clover_4"
-  name = "a clover_4"
-  uid = $162
-  outdoors = true
+  room.id = "clover_3"
+  room.name = "a clover_3"
+  entity.uid = <159>
+  room.outdoors = true
   exit {
-    uid = $163
-    dir = "south"
-    target = "clover_6"
+    entity.uid = <160>
+    portal.dir = "north"
+    portal.target = "darlet_rosewood_east_7"
   }
   exit {
-    uid = $164
-    dir = "northeast"
-    target = "clover_3"
-  }
-}
-room {
-  id = "clover_6"
-  name = "Bowmans Crescent and Clover"
-  desc = "The residences in this area are not as large or expensive as those in the town proper, yet they are neat and tidy with good-sized treed lots.  A modest stone-work bridge arches gracefully over small stream which runs across the path of the lane, just east of the intersection.  To the north, Clover Lane heads back towards the town proper, and to the east and west, Bowmans Crescent continues its trek about the town."
-  uid = $165
-  outdoors = true
-  exit {
-    uid = $166
-    dir = "north"
-    target = "clover_4"
-  }
-  exit {
-    uid = $167
-    dir = "east"
-    target = "bowmans_4"
-  }
-  exit {
-    uid = $168
-    dir = "west"
-    target = "bowmans_3"
+    entity.uid = <161>
+    portal.dir = "southwest"
+    portal.target = "clover_4"
   }
 }
 room {
-  id = "bowmans_1"
-  name = "a bowmans_1"
-  uid = $169
-}
-room {
-  id = "bowmans_2"
-  name = "Darlet: Bowmans Crescent"
-  desc = "Here Bowmans Crescent begins its amble around the outskirts of Darlet.  The road is packed earth, and the deep ruts evidence frequent use.  A quaint, whitewashed, residence takes up the east side of the street, nestled safely behind a freshly painted picket fence.  A grand oak tree in the front yard stands tall and proud, completely oblivious to all passersby"
-  uid = $170
-  outdoors = true
+  room.id = "clover_4"
+  room.name = "a clover_4"
+  entity.uid = <162>
+  room.outdoors = true
   exit {
-    uid = $171
-    dir = "north"
-    target = "darlet_ashwood_vine"
+    entity.uid = <163>
+    portal.dir = "south"
+    portal.target = "clover_6"
   }
   exit {
-    uid = $172
-    dir = "southeast"
-    target = "bowmans_3"
+    entity.uid = <164>
+    portal.dir = "northeast"
+    portal.target = "clover_3"
   }
 }
 room {
-  id = "bowmans_3"
-  name = "Darlet: Bowmans Crescent"
-  desc = "The road continues about the outskirts of town.  Not far to the south, the wall of Darlet can be seen, standing silent guard over the small community.  Tall grass lines both sides of the street, as this stretch of roadway passes several vacant lots.  The lots have been cleared of brush and small trees, but the building has not yet begun."
-  uid = $173
-  outdoors = true
+  room.id = "clover_6"
+  room.name = "Bowmans Crescent and Clover"
+  room.desc = "The residences in this area are not as large or expensive as those in the town proper, yet they are neat and tidy with good-sized treed lots.  A modest stone-work bridge arches gracefully over small stream which runs across the path of the lane, just east of the intersection.  To the north, Clover Lane heads back towards the town proper, and to the east and west, Bowmans Crescent continues its trek about the town."
+  entity.uid = <165>
+  room.outdoors = true
   exit {
-    uid = $174
-    dir = "east"
-    target = "clover_6"
+    entity.uid = <166>
+    portal.dir = "north"
+    portal.target = "clover_4"
   }
   exit {
-    uid = $175
-    dir = "northwest"
-    target = "bowmans_2"
-  }
-}
-room {
-  id = "bowmans_4"
-  name = "Darlet: Bowmans Crescent"
-  desc = "Deep ruts in the hard packed earth evidence the passage of countless carts and wagons over the years.  An old cottage is nestled within a small copse of trees, set back off the south side of the country lane.  The residence has seen better years, and the trees have become scraggly, and unkempt.  An ancient dog house takes shelter under one of the trees near the shack."
-  uid = $176
-  outdoors = true
-  exit {
-    uid = $177
-    dir = "west"
-    target = "clover_6"
+    entity.uid = <167>
+    portal.dir = "east"
+    portal.target = "bowmans_4"
   }
   exit {
-    uid = $178
-    dir = "northeast"
-    target = "bowmans_5"
+    entity.uid = <168>
+    portal.dir = "west"
+    portal.target = "bowmans_3"
   }
 }
 room {
-  id = "darlet_rosewood_east_8"
-  name = "Darlet: Rosewood Road"
-  desc = "A gentle calm emanates from the south side of the street, which is the home of Darlets sanctuary.  The six story wooden structure is the tallest in town, with a spire that stretches forty feet above the roof.  The sanctuary itself is built in the shape of an octagon, with the angle of each side pointing towards one of the major compass directions.  The sanctuary grounds are considerable, taking up several blocks.  The trees and hedges within the compound are immaculate, and the flowering gardens attract tourists from all over the world."
-  uid = $179
-  outdoors = true
+  room.id = "bowmans_1"
+  room.name = "a bowmans_1"
+  entity.uid = <169>
+}
+room {
+  room.id = "bowmans_2"
+  room.name = "Darlet: Bowmans Crescent"
+  room.desc = "Here Bowmans Crescent begins its amble around the outskirts of Darlet.  The road is packed earth, and the deep ruts evidence frequent use.  A quaint, whitewashed, residence takes up the east side of the street, nestled safely behind a freshly painted picket fence.  A grand oak tree in the front yard stands tall and proud, completely oblivious to all passersby"
+  entity.uid = <170>
+  room.outdoors = true
   exit {
-    uid = $180
-    dir = "east"
-    target = "darlet_rosewood_east_9"
+    entity.uid = <171>
+    portal.dir = "north"
+    portal.target = "darlet_ashwood_vine"
   }
   exit {
-    uid = $181
-    dir = "west"
-    target = "darlet_rosewood_east_7"
+    entity.uid = <172>
+    portal.dir = "southeast"
+    portal.target = "bowmans_3"
   }
 }
 room {
-  id = "darlet_rosewood_east_9"
-  name = "Darlet: Rosewood Road"
-  desc = "Tranquility and repose reside along this portion of Roaswood Road.  Their presence is drawn to Darlets cemetery on the south side of the street.  Situated just east of of the sanctuary, this hallowed spot has been the final resting place of Darlets departed for hundreds of years.  A decorative wrought iron fence encompasses the grounds, ending here at the gate.  On the north side of the street, a modest shop displays a subdued sign which reads Remembrance and Monuments."
-  uid = $182
-  outdoors = true
+  room.id = "bowmans_3"
+  room.name = "Darlet: Bowmans Crescent"
+  room.desc = "The road continues about the outskirts of town.  Not far to the south, the wall of Darlet can be seen, standing silent guard over the small community.  Tall grass lines both sides of the street, as this stretch of roadway passes several vacant lots.  The lots have been cleared of brush and small trees, but the building has not yet begun."
+  entity.uid = <173>
+  room.outdoors = true
   exit {
-    uid = $183
-    dir = "east"
-    target = "darlet_rosewood_east_10"
+    entity.uid = <174>
+    portal.dir = "east"
+    portal.target = "clover_6"
   }
   exit {
-    uid = $184
-    dir = "west"
-    target = "darlet_rosewood_east_8"
+    entity.uid = <175>
+    portal.dir = "northwest"
+    portal.target = "bowmans_2"
+  }
+}
+room {
+  room.id = "bowmans_4"
+  room.name = "Darlet: Bowmans Crescent"
+  room.desc = "Deep ruts in the hard packed earth evidence the passage of countless carts and wagons over the years.  An old cottage is nestled within a small copse of trees, set back off the south side of the country lane.  The residence has seen better years, and the trees have become scraggly, and unkempt.  An ancient dog house takes shelter under one of the trees near the shack."
+  entity.uid = <176>
+  room.outdoors = true
+  exit {
+    entity.uid = <177>
+    portal.dir = "west"
+    portal.target = "clover_6"
   }
   exit {
-    name = "a gate"
-    desc = "The wrought iron gate is old and rusted in some places but over all it is in good repair.  Arched and topped with pointed tips, the gate is about a span high.  Tall enough to keep out all but the most daring of climbers.  A sign has been inlaid into the iron work which reads \"Sleep peacefully in the arms of Morphious\"."
-    uid = $185
-    target = "cemetery_1"
+    entity.uid = <178>
+    portal.dir = "northeast"
+    portal.target = "bowmans_5"
+  }
+}
+room {
+  room.id = "darlet_rosewood_east_8"
+  room.name = "Darlet: Rosewood Road"
+  room.desc = "A gentle calm emanates from the south side of the street, which is the home of Darlets sanctuary.  The six story wooden structure is the tallest in town, with a spire that stretches forty feet above the roof.  The sanctuary itself is built in the shape of an octagon, with the angle of each side pointing towards one of the major compass directions.  The sanctuary grounds are considerable, taking up several blocks.  The trees and hedges within the compound are immaculate, and the flowering gardens attract tourists from all over the world."
+  entity.uid = <179>
+  room.outdoors = true
+  exit {
+    entity.uid = <180>
+    portal.dir = "east"
+    portal.target = "darlet_rosewood_east_9"
+  }
+  exit {
+    entity.uid = <181>
+    portal.dir = "west"
+    portal.target = "darlet_rosewood_east_7"
+  }
+}
+room {
+  room.id = "darlet_rosewood_east_9"
+  room.name = "Darlet: Rosewood Road"
+  room.desc = "Tranquility and repose reside along this portion of Roaswood Road.  Their presence is drawn to Darlets cemetery on the south side of the street.  Situated just east of of the sanctuary, this hallowed spot has been the final resting place of Darlets departed for hundreds of years.  A decorative wrought iron fence encompasses the grounds, ending here at the gate.  On the north side of the street, a modest shop displays a subdued sign which reads Remembrance and Monuments."
+  entity.uid = <182>
+  room.outdoors = true
+  exit {
+    entity.uid = <183>
+    portal.dir = "east"
+    portal.target = "darlet_rosewood_east_10"
+  }
+  exit {
+    entity.uid = <184>
+    portal.dir = "west"
+    portal.target = "darlet_rosewood_east_8"
+  }
+  exit {
+    portal.name = "a gate"
+    portal.desc = "The wrought iron gate is old and rusted in some places but over all it is in good repair.  Arched and topped with pointed tips, the gate is about a span high.  Tall enough to keep out all but the most daring of climbers.  A sign has been inlaid into the iron work which reads \"Sleep peacefully in the arms of Morphious\"."
+    entity.uid = <185>
+    portal.target = "cemetery_1"
   }
   object {
     blueprint {
-      name = "a gate"
-      roomlist = false
-      gettable = false
-      touchable = true
-      trashable = false
+      blueprint.name = "a gate"
+      blueprint.roomlist = false
+      blueprint.gettable = false
+      blueprint.touchable = true
+      blueprint.trashable = false
     }
-    uid = $186
+    entity.uid = <186>
   }
 }
 room {
-  id = "darlet_rosewood_east_10"
-  name = "Rosewood and Bowmans Crescent"
-  desc = "The intersection of Rosewood Road and Bowmans Crescent affords travelers direct access to Darlets town proper to the west, as well as a more scenic tour of the towns outskirts to the north and south.  Darlets eastern gate is visible a short distance east of here."
-  uid = $187
-  outdoors = true
+  room.id = "darlet_rosewood_east_10"
+  room.name = "Rosewood and Bowmans Crescent"
+  room.desc = "The intersection of Rosewood Road and Bowmans Crescent affords travelers direct access to Darlets town proper to the west, as well as a more scenic tour of the towns outskirts to the north and south.  Darlets eastern gate is visible a short distance east of here."
+  entity.uid = <187>
+  room.outdoors = true
   exit {
-    uid = $188
-    dir = "north"
-    target = "bowmans_8"
+    entity.uid = <188>
+    portal.dir = "north"
+    portal.target = "bowmans_8"
   }
   exit {
-    uid = $189
-    dir = "east"
-    target = "darlet_rosewood_east_11"
+    entity.uid = <189>
+    portal.dir = "east"
+    portal.target = "darlet_rosewood_east_11"
   }
   exit {
-    uid = $190
-    dir = "south"
-    target = "bowmans_7"
+    entity.uid = <190>
+    portal.dir = "south"
+    portal.target = "bowmans_7"
   }
   exit {
-    uid = $191
-    dir = "west"
-    target = "darlet_rosewood_east_9"
-  }
-}
-room {
-  id = "darlet_rosewood_east_11"
-  name = "Darlet: East Gate"
-  desc = "The east gate of Darlet rises tall and strong, several spans upward.  The heavy timber is the only visible break in the wall that shelters this woodland village.  Just north of the street is a small customs office, while to the south, a guard shack has been built for, and maned by local militia members."
-  uid = $192
-  outdoors = true
-  exit {
-    uid = $193
-    dir = "west"
-    target = "darlet_rosewood_east_10"
+    entity.uid = <191>
+    portal.dir = "west"
+    portal.target = "darlet_rosewood_east_9"
   }
 }
 room {
-  id = "bowmans_5"
-  name = "Darlet: Bowmans Crescent"
-  desc = "A tiny brook babbles its way across Bowmans Crescent here, and a sturdy wooden bridge affords passage across its shallow banks.  A modest cobblestone cottage stands on the northwest side of the street.  A low stone wall protects the yard from idle wandering.  Along the top of the low wall, flower boxes have been placed and lovingly planted with flowers of every sort.  The only visible break in the wall is here, at a finely wrought, iron gate."
-  uid = $194
-  outdoors = true
+  room.id = "darlet_rosewood_east_11"
+  room.name = "Darlet: East Gate"
+  room.desc = "The east gate of Darlet rises tall and strong, several spans upward.  The heavy timber is the only visible break in the wall that shelters this woodland village.  Just north of the street is a small customs office, while to the south, a guard shack has been built for, and maned by local militia members."
+  entity.uid = <192>
+  room.outdoors = true
   exit {
-    uid = $195
-    dir = "northeast"
-    target = "bowmans_6"
-  }
-  exit {
-    uid = $196
-    dir = "southwest"
-    target = "bowmans_4"
+    entity.uid = <193>
+    portal.dir = "west"
+    portal.target = "darlet_rosewood_east_10"
   }
 }
 room {
-  id = "bowmans_6"
-  name = "Darlet: Bowmans Crescent"
-  desc = "Tall trees line this stretch of Bowmans Crescent, competing with each other as they reach for the sky.  A small path leads back into the trees on the southeast side of the lane, and the top of a stone tower can be seen peeking just above the tree-line.  On the northwest side of the road, a large clearing has been cut in the midst of the trees and in its center, a small playground has been built for the local children."
-  uid = $197
-  outdoors = true
+  room.id = "bowmans_5"
+  room.name = "Darlet: Bowmans Crescent"
+  room.desc = "A tiny brook babbles its way across Bowmans Crescent here, and a sturdy wooden bridge affords passage across its shallow banks.  A modest cobblestone cottage stands on the northwest side of the street.  A low stone wall protects the yard from idle wandering.  Along the top of the low wall, flower boxes have been placed and lovingly planted with flowers of every sort.  The only visible break in the wall is here, at a finely wrought, iron gate."
+  entity.uid = <194>
+  room.outdoors = true
   exit {
-    uid = $198
-    dir = "northeast"
-    target = "bowmans_7"
+    entity.uid = <195>
+    portal.dir = "northeast"
+    portal.target = "bowmans_6"
   }
   exit {
-    uid = $199
-    dir = "southwest"
-    target = "bowmans_5"
-  }
-  exit {
-    name = "a clearing"
-    uid = $200
-    target = "fest_1"
-  }
-  exit {
-    name = "a path"
-    uid = $201
-    hidden = true
-    target = "path_tower_1"
+    entity.uid = <196>
+    portal.dir = "southwest"
+    portal.target = "bowmans_4"
   }
 }
 room {
-  id = "bowmans_7"
-  name = "Darlet: Bowmans Crescent"
-  desc = "A short distance north, Bowmans Crescent intersects the larger Rosewood Road.  To the southwest, the top of a stone tower can be seen just above the line of trees.  A comfortable looking cottage, made of wood, and thatch roofing, sets off a short way, on the west side of the lane.  An exceptionally large willow tree stands as a sentinel, near the road to the east, forever watching and whispering to those who pass."
-  uid = $202
-  outdoors = true
+  room.id = "bowmans_6"
+  room.name = "Darlet: Bowmans Crescent"
+  room.desc = "Tall trees line this stretch of Bowmans Crescent, competing with each other as they reach for the sky.  A small path leads back into the trees on the southeast side of the lane, and the top of a stone tower can be seen peeking just above the tree-line.  On the northwest side of the road, a large clearing has been cut in the midst of the trees and in its center, a small playground has been built for the local children."
+  entity.uid = <197>
+  room.outdoors = true
   exit {
-    uid = $203
-    dir = "north"
-    target = "darlet_rosewood_east_10"
+    entity.uid = <198>
+    portal.dir = "northeast"
+    portal.target = "bowmans_7"
   }
   exit {
-    uid = $204
-    dir = "southwest"
-    target = "bowmans_6"
-  }
-}
-room {
-  id = "bowmans_8"
-  name = "Darlet: Bowmans Crescent"
-  desc = "Making its way slowly about town, Bowmans crescent passes open fields on both sides of the street.  The fields are over grown with tall grass and brush."
-  uid = $205
-  outdoors = true
-  exit {
-    uid = $206
-    dir = "south"
-    target = "darlet_rosewood_east_10"
+    entity.uid = <199>
+    portal.dir = "southwest"
+    portal.target = "bowmans_5"
   }
   exit {
-    uid = $207
-    dir = "northwest"
-    target = "bowmans_9"
+    portal.name = "a clearing"
+    entity.uid = <200>
+    portal.target = "fest_1"
+  }
+  exit {
+    portal.name = "a path"
+    entity.uid = <201>
+    portal.hidden = true
+    portal.target = "path_tower_1"
   }
 }
 room {
-  id = "bowmans_9"
-  name = "Darlet: Bowmans Crescent"
-  desc = "A short distance to the west, the gray stone wall surrounding the town of Darlet can be seen standing watch over the peaceful little hamlet.  To the east, a small copse of ashwood trees {if day-or-night = 'day'}shade a grassy field from the heat of the sun.{else} are silhouetted against the night sky, dancing gently in the moonlight.{endif}"
-  uid = $208
-  outdoors = true
+  room.id = "bowmans_7"
+  room.name = "Darlet: Bowmans Crescent"
+  room.desc = "A short distance north, Bowmans Crescent intersects the larger Rosewood Road.  To the southwest, the top of a stone tower can be seen just above the line of trees.  A comfortable looking cottage, made of wood, and thatch roofing, sets off a short way, on the west side of the lane.  An exceptionally large willow tree stands as a sentinel, near the road to the east, forever watching and whispering to those who pass."
+  entity.uid = <202>
+  room.outdoors = true
   exit {
-    uid = $209
-    dir = "northwest"
-    target = "bowmans_10"
+    entity.uid = <203>
+    portal.dir = "north"
+    portal.target = "darlet_rosewood_east_10"
   }
   exit {
-    uid = $210
-    dir = "southeast"
-    target = "bowmans_8"
-  }
-}
-room {
-  id = "bowmans_10"
-  name = "Darlet: Bowmans Crescent"
-  uid = $211
-  outdoors = true
-  exit {
-    uid = $212
-    dir = "southeast"
-    target = "bowmans_9"
-  }
-  exit {
-    uid = $213
-    dir = "southwest"
-    target = "clover_2"
+    entity.uid = <204>
+    portal.dir = "southwest"
+    portal.target = "bowmans_6"
   }
 }
 room {
-  id = "bowmans_11"
-  name = "Darlet: Bowmans Crescent"
-  desc = "To the Northwest, the hard pack dirt of Bowmans Crescent dips slightly down hill, as if to duck beneath the outstretched branches of the trees that grow on either side of the road.  To the east, and slightly uphill, the road comes to a small intersection, where a large willow tree stands tall and proud, a silently swaying sentinel {if day-or-night = 'night'}in the night.{else}under the sun.{endif}"
-  uid = $214
-  outdoors = true
+  room.id = "bowmans_8"
+  room.name = "Darlet: Bowmans Crescent"
+  room.desc = "Making its way slowly about town, Bowmans crescent passes open fields on both sides of the street.  The fields are over grown with tall grass and brush."
+  entity.uid = <205>
+  room.outdoors = true
   exit {
-    uid = $215
-    dir = "east"
-    target = "clover_2"
+    entity.uid = <206>
+    portal.dir = "south"
+    portal.target = "darlet_rosewood_east_10"
   }
   exit {
-    uid = $216
-    dir = "northwest"
-    target = "bowmans_12"
-  }
-}
-room {
-  id = "bowmans_12"
-  name = "Darlet: Bowmans Crescent"
-  desc = "Now and then, the {if day-or-night = 'day'}sun light{else}moon light{endif} peeks through the natural canopy overhead, to fall upon the packed earth road.  The trees hedge the road on both sides protectively, as a parent shelters a child."
-  uid = $217
-  outdoors = true
-  exit {
-    uid = $218
-    dir = "west"
-    target = "bowmans_13"
-  }
-  exit {
-    uid = $219
-    dir = "southeast"
-    target = "bowmans_11"
+    entity.uid = <207>
+    portal.dir = "northwest"
+    portal.target = "bowmans_9"
   }
 }
 room {
-  id = "bowmans_13"
-  name = "Darlet: Bowmans Crescent"
-  desc = "The rutty packed road which is Bowmans Crescent comes to and end here where Woodmans way overtakes it from the north.  A small wood cabin sets comfortably nestled beneath a copse of trees, not far from the road, to the north."
-  uid = $220
-  outdoors = true
+  room.id = "bowmans_9"
+  room.name = "Darlet: Bowmans Crescent"
+  room.desc = "A short distance to the west, the gray stone wall surrounding the town of Darlet can be seen standing watch over the peaceful little hamlet.  To the east, a small copse of ashwood trees {if day-or-night = 'day'}shade a grassy field from the heat of the sun.{else} are silhouetted against the night sky, dancing gently in the moonlight.{endif}"
+  entity.uid = <208>
+  room.outdoors = true
   exit {
-    uid = $221
-    dir = "north"
-    target = "woodmens_way_1"
+    entity.uid = <209>
+    portal.dir = "northwest"
+    portal.target = "bowmans_10"
   }
   exit {
-    uid = $222
-    dir = "east"
-    target = "bowmans_12"
-  }
-}
-room {
-  id = "bowmans_14"
-  name = "Darlet: Bowmans Crescent"
-  uid = $223
-  outdoors = true
-  exit {
-    uid = $224
-    dir = "north"
-    target = "woodmens_way_1"
-  }
-  exit {
-    uid = $225
-    dir = "east"
-    target = "bowmans_13"
+    entity.uid = <210>
+    portal.dir = "southeast"
+    portal.target = "bowmans_8"
   }
 }
 room {
-  id = "woodmens_way_1"
-  name = "Darlet: Woodmans Way"
-  desc = "Woodmans Way is little more that a foot path through the maple and oak trees, which surround the town of Darlet.  A short distance to the north, the path forks to the Northeast and Northwest, making its way around an exceptionally large silverwillow tree."
-  uid = $226
-  outdoors = true
+  room.id = "bowmans_10"
+  room.name = "Darlet: Bowmans Crescent"
+  entity.uid = <211>
+  room.outdoors = true
   exit {
-    uid = $227
-    dir = "south"
-    target = "bowmans_13"
+    entity.uid = <212>
+    portal.dir = "southeast"
+    portal.target = "bowmans_9"
   }
   exit {
-    uid = $228
-    dir = "northwest"
-    target = "woodmens_way_4"
-  }
-  exit {
-    uid = $229
-    dir = "northeast"
-    target = "woodmens_way_2"
+    entity.uid = <213>
+    portal.dir = "southwest"
+    portal.target = "clover_2"
   }
 }
 room {
-  id = "woodmens_way_2"
-  name = "Darlet: Woodmans Way"
-  desc = "The path wends it way through the trees, as it makes it way around a majestic silverwillow tree to the east.  Through the gaps in the branches, a large wooden structure can be seen a short distance to the Northwest."
-  uid = $230
-  outdoors = true
+  room.id = "bowmans_11"
+  room.name = "Darlet: Bowmans Crescent"
+  room.desc = "To the Northwest, the hard pack dirt of Bowmans Crescent dips slightly down hill, as if to duck beneath the outstretched branches of the trees that grow on either side of the road.  To the east, and slightly uphill, the road comes to a small intersection, where a large willow tree stands tall and proud, a silently swaying sentinel {if day-or-night = 'night'}in the night.{else}under the sun.{endif}"
+  entity.uid = <214>
+  room.outdoors = true
   exit {
-    uid = $231
-    dir = "northwest"
-    target = "woodmens_way_3"
+    entity.uid = <215>
+    portal.dir = "east"
+    portal.target = "clover_2"
   }
   exit {
-    uid = $232
-    dir = "southwest"
-    target = "woodmens_way_1"
-  }
-}
-room {
-  id = "woodmens_way_3"
-  name = "Darlet: Woodmans Way"
-  desc = "The trees give way to a large clearing in the woods, making room for a long curved cabin, situated on the northern side of the trail.  Worn steps lead to the cabin's covered porch, which follows the the curve of the structure.  A hand carved plaque hangs from a heavy wooden door situated directly beyond the steps which reads Darlet Boyer and Fletching."
-  uid = $233
-  outdoors = true
-  exit {
-    uid = $234
-    dir = "southeast"
-    target = "woodmens_way_1"
-  }
-  exit {
-    uid = $235
-    dir = "southwest"
-    target = "woodmens_way_4"
+    entity.uid = <216>
+    portal.dir = "northwest"
+    portal.target = "bowmans_12"
   }
 }
 room {
-  id = "woodmens_way_4"
-  name = "Darlet: Woodmans Way"
-  uid = $236
-  outdoors = true
+  room.id = "bowmans_12"
+  room.name = "Darlet: Bowmans Crescent"
+  room.desc = "Now and then, the {if day-or-night = 'day'}sun light{else}moon light{endif} peeks through the natural canopy overhead, to fall upon the packed earth road.  The trees hedge the road on both sides protectively, as a parent shelters a child."
+  entity.uid = <217>
+  room.outdoors = true
   exit {
-    uid = $237
-    dir = "northeast"
-    target = "woodmens_way_3"
+    entity.uid = <218>
+    portal.dir = "west"
+    portal.target = "bowmans_13"
   }
   exit {
-    uid = $238
-    dir = "southeast"
-    target = "woodmens_way_1"
-  }
-}
-room {
-  id = "path_tower_1"
-  name = "a path_tower_1"
-  uid = $239
-  outdoors = true
-  exit {
-    uid = $240
-    dir = "southeast"
-    target = "path_tower_2"
-  }
-  exit {
-    name = "a road"
-    uid = $241
-    target = "bowmans_6"
+    entity.uid = <219>
+    portal.dir = "southeast"
+    portal.target = "bowmans_11"
   }
 }
 room {
-  id = "path_tower_2"
-  name = "a path_tower_2"
-  uid = $242
+  room.id = "bowmans_13"
+  room.name = "Darlet: Bowmans Crescent"
+  room.desc = "The rutty packed road which is Bowmans Crescent comes to and end here where Woodmans way overtakes it from the north.  A small wood cabin sets comfortably nestled beneath a copse of trees, not far from the road, to the north."
+  entity.uid = <220>
+  room.outdoors = true
   exit {
-    uid = $243
-    dir = "east"
-    target = "path2"
+    entity.uid = <221>
+    portal.dir = "north"
+    portal.target = "woodmens_way_1"
   }
   exit {
-    uid = $244
-    dir = "northwest"
-    target = "path_tower_1"
-  }
-}
-room {
-  id = "fest_1"
-  name = "a fest_1"
-  desc = "Welcome to the fest area {$actor.name}"
-  uid = $245
-  outdoors = true
-  exit {
-    name = "a road"
-    uid = $246
-    target = "bowmans_6"
+    entity.uid = <222>
+    portal.dir = "east"
+    portal.target = "bowmans_12"
   }
 }
 room {
-  id = "cemetery_1"
-  name = "a cemetery_1"
-  uid = $247
+  room.id = "bowmans_14"
+  room.name = "Darlet: Bowmans Crescent"
+  entity.uid = <223>
+  room.outdoors = true
   exit {
-    name = "a gate"
-    uid = $248
-    target = "darlet_rosewood_east_9"
+    entity.uid = <224>
+    portal.dir = "north"
+    portal.target = "woodmens_way_1"
+  }
+  exit {
+    entity.uid = <225>
+    portal.dir = "east"
+    portal.target = "bowmans_13"
   }
 }
 room {
-  id = "path2"
-  name = "a path2"
-  uid = $249
+  room.id = "woodmens_way_1"
+  room.name = "Darlet: Woodmans Way"
+  room.desc = "Woodmans Way is little more that a foot path through the maple and oak trees, which surround the town of Darlet.  A short distance to the north, the path forks to the Northeast and Northwest, making its way around an exceptionally large silverwillow tree."
+  entity.uid = <226>
+  room.outdoors = true
   exit {
-    uid = $250
-    dir = "west"
-    target = "path_tower_2"
+    entity.uid = <227>
+    portal.dir = "south"
+    portal.target = "bowmans_13"
+  }
+  exit {
+    entity.uid = <228>
+    portal.dir = "northwest"
+    portal.target = "woodmens_way_4"
+  }
+  exit {
+    entity.uid = <229>
+    portal.dir = "northeast"
+    portal.target = "woodmens_way_2"
   }
 }
 room {
-  id = "darlet_armorer"
-  name = "Darlet: Armor Shop"
-  desc = "The smell of leather and oiled steel hangs on the air in this unassuming shop.  Shields, large and small hang on large pegs in the walls.  Chain coifs and mail hang loosely from mannequins that stand in various locations about the room.  Full suits of plate mail stand upright on their own here and there.  Hunting leathers, helms, greaves, gloves, and other protective gear, all rest neatly on display shelves in the center of the room.  The shops proprietor mills about, tidying this or that, waiting for a customer to serve."
-  uid = $251
-  coins = 1000
+  room.id = "woodmens_way_2"
+  room.name = "Darlet: Woodmans Way"
+  room.desc = "The path wends it way through the trees, as it makes it way around a majestic silverwillow tree to the east.  Through the gaps in the branches, a large wooden structure can be seen a short distance to the Northwest."
+  entity.uid = <230>
+  room.outdoors = true
   exit {
-    name = "a door"
-    uid = $252
-    dir = "south"
-    target = "darlet_rosewood_east_2"
+    entity.uid = <231>
+    portal.dir = "northwest"
+    portal.target = "woodmens_way_3"
+  }
+  exit {
+    entity.uid = <232>
+    portal.dir = "southwest"
+    portal.target = "woodmens_way_1"
   }
 }
 room {
-  id = "graveyard_gate"
-  name = "Graveyard Gate"
-  desc = "Dark vines wind their way up an old iron gate, hanging loose from its hinges, which leads from the forest into the old graveyard.  Tombstones and mausoleums are spread haphazardly around the place, and the stench of death hangs in the air."
-  uid = $253
+  room.id = "woodmens_way_3"
+  room.name = "Darlet: Woodmans Way"
+  room.desc = "The trees give way to a large clearing in the woods, making room for a long curved cabin, situated on the northern side of the trail.  Worn steps lead to the cabin's covered porch, which follows the the curve of the structure.  A hand carved plaque hangs from a heavy wooden door situated directly beyond the steps which reads Darlet Boyer and Fletching."
+  entity.uid = <233>
+  room.outdoors = true
   exit {
-    uid = $254
-    dir = "east"
-    target = "broken_tree"
+    entity.uid = <234>
+    portal.dir = "southeast"
+    portal.target = "woodmens_way_1"
   }
   exit {
-    uid = $255
-    dir = "west"
-    target = "graveyard_grave"
+    entity.uid = <235>
+    portal.dir = "southwest"
+    portal.target = "woodmens_way_4"
   }
 }
 room {
-  id = "graveyard_grave"
-  name = "Old Graveyard"
-  desc = "Tombstones dot the landscape, littered between the simple mausoleums erected in memory of local gentry.  An open grave is here, as is a shattered wooden box."
-  uid = $256
+  room.id = "woodmens_way_4"
+  room.name = "Darlet: Woodmans Way"
+  entity.uid = <236>
+  room.outdoors = true
   exit {
-    uid = $257
-    dir = "east"
-    target = "graveyard_gate"
+    entity.uid = <237>
+    portal.dir = "northeast"
+    portal.target = "woodmens_way_3"
   }
   exit {
-    uid = $258
-    dir = "west"
-    target = "graveyard_mausoleum"
+    entity.uid = <238>
+    portal.dir = "southeast"
+    portal.target = "woodmens_way_1"
+  }
+}
+room {
+  room.id = "path_tower_1"
+  room.name = "a path_tower_1"
+  entity.uid = <239>
+  room.outdoors = true
+  exit {
+    entity.uid = <240>
+    portal.dir = "southeast"
+    portal.target = "path_tower_2"
   }
   exit {
-    uid = $259
-    dir = "northwest"
-    target = "graveyard_tree"
+    portal.name = "a road"
+    entity.uid = <241>
+    portal.target = "bowmans_6"
+  }
+}
+room {
+  room.id = "path_tower_2"
+  room.name = "a path_tower_2"
+  entity.uid = <242>
+  exit {
+    entity.uid = <243>
+    portal.dir = "east"
+    portal.target = "path2"
+  }
+  exit {
+    entity.uid = <244>
+    portal.dir = "northwest"
+    portal.target = "path_tower_1"
+  }
+}
+room {
+  room.id = "fest_1"
+  room.name = "a fest_1"
+  room.desc = "Welcome to the fest area {$actor.name}"
+  entity.uid = <245>
+  room.outdoors = true
+  exit {
+    portal.name = "a road"
+    entity.uid = <246>
+    portal.target = "bowmans_6"
+  }
+}
+room {
+  room.id = "cemetery_1"
+  room.name = "a cemetery_1"
+  entity.uid = <247>
+  exit {
+    portal.name = "a gate"
+    entity.uid = <248>
+    portal.target = "darlet_rosewood_east_9"
+  }
+}
+room {
+  room.id = "path2"
+  room.name = "a path2"
+  entity.uid = <249>
+  exit {
+    entity.uid = <250>
+    portal.dir = "west"
+    portal.target = "path_tower_2"
+  }
+}
+room {
+  room.id = "darlet_armorer"
+  room.name = "Darlet: Armor Shop"
+  room.desc = "The smell of leather and oiled steel hangs on the air in this unassuming shop.  Shields, large and small hang on large pegs in the walls.  Chain coifs and mail hang loosely from mannequins that stand in various locations about the room.  Full suits of plate mail stand upright on their own here and there.  Hunting leathers, helms, greaves, gloves, and other protective gear, all rest neatly on display shelves in the center of the room.  The shops proprietor mills about, tidying this or that, waiting for a customer to serve."
+  entity.uid = <251>
+  room.coins = 1000
+  exit {
+    portal.name = "a door"
+    entity.uid = <252>
+    portal.dir = "south"
+    portal.target = "darlet_rosewood_east_2"
+  }
+}
+room {
+  room.id = "graveyard_gate"
+  room.name = "Graveyard Gate"
+  room.desc = "Dark vines wind their way up an old iron gate, hanging loose from its hinges, which leads from the forest into the old graveyard.  Tombstones and mausoleums are spread haphazardly around the place, and the stench of death hangs in the air."
+  entity.uid = <253>
+  exit {
+    entity.uid = <254>
+    portal.dir = "east"
+    portal.target = "broken_tree"
+  }
+  exit {
+    entity.uid = <255>
+    portal.dir = "west"
+    portal.target = "graveyard_grave"
+  }
+}
+room {
+  room.id = "graveyard_grave"
+  room.name = "Old Graveyard"
+  room.desc = "Tombstones dot the landscape, littered between the simple mausoleums erected in memory of local gentry.  An open grave is here, as is a shattered wooden box."
+  entity.uid = <256>
+  exit {
+    entity.uid = <257>
+    portal.dir = "east"
+    portal.target = "graveyard_gate"
+  }
+  exit {
+    entity.uid = <258>
+    portal.dir = "west"
+    portal.target = "graveyard_mausoleum"
+  }
+  exit {
+    entity.uid = <259>
+    portal.dir = "northwest"
+    portal.target = "graveyard_tree"
   }
   object {
     blueprint {
-      name = "a wooden box"
-      desc = "{$1.D} looks like it might have once been a coffin, though it is now nothing but broken planks of rotted wood."
-      roomlist = false
-      gettable = false
-      trashable = false
+      blueprint.name = "a wooden box"
+      blueprint.desc = "{<1>.D} looks like it might have once been a coffin, though it is now nothing but broken planks of rotted wood."
+      blueprint.roomlist = false
+      blueprint.gettable = false
+      blueprint.trashable = false
     }
-    uid = $260
+    entity.uid = <260>
   }
   object {
     blueprint {
-      name = "an open grave"
-      desc = "The grave looks to have been dug long ago, but never filled in."
-      roomlist = false
-      gettable = false
-      trashable = false
-      container = "in"
+      blueprint.name = "an open grave"
+      blueprint.desc = "The grave looks to have been dug long ago, but never filled in."
+      blueprint.roomlist = false
+      blueprint.gettable = false
+      blueprint.trashable = false
+      blueprint.container = "in"
     }
-    uid = $261
+    entity.uid = <261>
   }
 }
 room {
-  id = "graveyard_tree"
-  name = "Old Graveyard"
-  desc = "Amidst the tombstones rises a large, gnarled tree.  Little else beyond the rows of granite markers and dirt is here."
-  uid = $262
+  room.id = "graveyard_tree"
+  room.name = "Old Graveyard"
+  room.desc = "Amidst the tombstones rises a large, gnarled tree.  Little else beyond the rows of granite markers and dirt is here."
+  entity.uid = <262>
   exit {
-    uid = $263
-    dir = "south"
-    target = "graveyard_mausoleum"
+    entity.uid = <263>
+    portal.dir = "south"
+    portal.target = "graveyard_mausoleum"
   }
   exit {
-    uid = $264
-    dir = "southeast"
-    target = "graveyard_grave"
+    entity.uid = <264>
+    portal.dir = "southeast"
+    portal.target = "graveyard_grave"
   }
   object {
     blueprint {
-      name = "a gnarled tree"
-      desc = "{$1.D} appears dead.  Its roots and branches are twisted as if in agony, and a length of rotted rope hangs from one of its higher boughs, a sure mark of the deceased tree's grim function in past times."
-      roomlist = false
-      gettable = false
-      trashable = false
+      blueprint.name = "a gnarled tree"
+      blueprint.desc = "{<1>.D} appears dead.  Its roots and branches are twisted as if in agony, and a length of rotted rope hangs from one of its higher boughs, a sure mark of the deceased tree's grim function in past times."
+      blueprint.roomlist = false
+      blueprint.gettable = false
+      blueprint.trashable = false
     }
-    uid = $267
+    entity.uid = <267>
   }
   npc {
-    blueprint = "skeleton"
-    uid = $265
-    tag = "graveyard_undead"
-    position = "stand"
-    hp = 60
-    equip.right_hand {
-      blueprint = "claws_animal"
-      uid = $266
+    npc.blueprint = "skeleton"
+    entity.uid = <265>
+    entity.tag = "graveyard_undead"
+    char.position = "stand"
+    char.hp = 60
+    equip_right_hand {
+      object.blueprint = "claws_animal"
+      entity.uid = <266>
     }
-    zonelock = true
+    npc.zonelock = true
   }
 }
 room {
-  id = "graveyard_mausoleum"
-  name = "Old Graveyard"
-  desc = "The tombstones are accompanies here by a small mausoleum, more ornate than the other crumbling structures in the grave yard."
-  uid = $268
+  room.id = "graveyard_mausoleum"
+  room.name = "Old Graveyard"
+  room.desc = "The tombstones are accompanies here by a small mausoleum, more ornate than the other crumbling structures in the grave yard."
+  entity.uid = <268>
   exit {
-    uid = $269
-    dir = "north"
-    target = "graveyard_tree"
+    entity.uid = <269>
+    portal.dir = "north"
+    portal.target = "graveyard_tree"
   }
   exit {
-    uid = $270
-    dir = "east"
-    target = "graveyard_grave"
+    entity.uid = <270>
+    portal.dir = "east"
+    portal.target = "graveyard_grave"
   }
   object {
     blueprint {
-      name = "a mausoleum"
-      desc = "{$1.D} is made of granite, and decorated with dark marble and faded inscriptions.  The building appears mostly intact, save for the front door, which appears to have been damaged by some kind of heavy force, like a battering ram.  {$1.D}'s only legible inscription reads, 'Ravelor Materna'."
-      roomlist = false
-      gettable = false
-      trashable = false
+      blueprint.name = "a mausoleum"
+      blueprint.desc = "{<1>.D} is made of granite, and decorated with dark marble and faded inscriptions.  The building appears mostly intact, save for the front door, which appears to have been damaged by some kind of heavy force, like a battering ram.  {<1>.D}'s only legible inscription reads, 'Ravelor Materna'."
+      blueprint.roomlist = false
+      blueprint.gettable = false
+      blueprint.trashable = false
     }
-    uid = $273
+    entity.uid = <273>
   }
   npc {
-    blueprint = "wolf"
-    uid = $271
-    position = "stand"
-    hp = 100
-    equip.right_hand {
-      blueprint = "claws_animal"
-      uid = $272
+    npc.blueprint = "wolf"
+    entity.uid = <271>
+    char.position = "stand"
+    char.hp = 100
+    equip_right_hand {
+      object.blueprint = "claws_animal"
+      entity.uid = <272>
     }
   }
 }

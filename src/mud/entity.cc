@@ -133,7 +133,7 @@ Entity::display_desc (const StreamControl& stream) const
 void
 Entity::save (File::Writer& writer)
 {
-	writer.attr(S("uid"), uid);
+	writer.keyed(S("entity"), S("uid"), uid);
 
 	// event handler list
 	for (EventList::const_iterator i = events.begin (); i != events.end (); i ++) {
@@ -144,7 +144,7 @@ Entity::save (File::Writer& writer)
 
 	// save tags
 	for (TagList::const_iterator i = tags.begin(); i != tags.end(); ++i)
-		writer.attr(S("tag"), TagID::nameof(*i));
+		writer.keyed(S("entity"), S("tag"), TagID::nameof(*i));
 
 	// call save hook
 	ScriptRestrictedWriter* swriter = new ScriptRestrictedWriter(&writer);
@@ -177,8 +177,6 @@ Entity::load (File::Reader& reader)
 					Log::Error << "Unrecognized attribute '" << node.get_name() << "' at " << reader.get_filename() << ':' << node.get_line();
 				else if (node.is_keyed())
 					Log::Error << "Unrecognized keyed attribute '" << node.get_name () << ' ' << node.get_key() << "' at " << reader.get_filename() << ':' << node.get_line();
-				else if (node.is_custom())
-					Log::Error << "Unexpected custom attribute '@" << node.get_name() << "' at " << reader.get_filename() << ':' << node.get_line();
 				else if (node.is_begin())
 					Log::Error << "Unrecognized object '" << node.get_name() << "' at " << reader.get_filename() << ':' << node.get_line();
 				else
@@ -201,19 +199,19 @@ int
 Entity::load_node (File::Reader& reader, File::Node& node)
 {
 	FO_NODE_BEGIN
-		FO_ATTR("uid")
+		FO_ATTR2("entity", "uid")
 			FO_TYPE_ASSERT(ID);
 			uid = UniqueIDManager.decode(node.get_data());
-		FO_CUSTOM
+		FO_KEYED("user")
 			if (node.get_datatype() == File::TYPE_INT)
-				set_property(node.get_name(), tolong(node.get_data()));
+				set_property(node.get_key(), tolong(node.get_data()));
 			else if (node.get_datatype() == File::TYPE_STRING)
-				set_property(node.get_name(), node.get_data());
+				set_property(node.get_key(), node.get_data());
 			else if (node.get_datatype() == File::TYPE_BOOL)
-				set_property(node.get_name(), node.get_bool());
+				set_property(node.get_key(), node.get_bool());
 			else
 				throw File::Error(S("Invalid data type for script attribute"));
-		FO_ATTR("tag")
+		FO_ATTR2("entity", "tag")
 			add_tag(TagID::create(node.get_data()));
 		FO_OBJECT("event")
 			EventHandler* event = new EventHandler();

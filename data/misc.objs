@@ -3,49 +3,49 @@
 # Sean Middleditch <elanthis@awemud.net>
 
 object_blueprint {
-  id = "currency"
+  blueprint.id = "currency"
 }
 
 object_blueprint {
-  id = "co_leather_backpack"
-  equip = "back"
-  name = "a leather backpack"
-  desc = "The leather backpack is very simple in design.  Intended for rugged travel, it is both sturdy and large."
-  weight = 8
-  container = "in"
+  blueprint.id = "co_leather_backpack"
+  blueprint.equip = "back"
+  blueprint.name = "a leather backpack"
+  blueprint.desc = "The leather backpack is very simple in design.  Intended for rugged travel, it is both sturdy and large."
+  blueprint.weight = 8
+  blueprint.container = "in"
 }
 object_blueprint {
-  id = "bank_note"
-  name = "a bank note"
-  parent = "currency"
-  desc = "The bank note is signed by the First Bank of the Lands, and is worth {1.cost} coins with any merchant who accepts bank notes."
-  weight = 1
-  cost = 1000
+  blueprint.id = "bank_note"
+  blueprint.name = "a bank note"
+  blueprint.parent = "currency"
+  blueprint.desc = "The bank note is signed by the First Bank of the Lands, and is worth {1.cost} coins with any merchant who accepts bank notes."
+  blueprint.weight = 1
+  blueprint.cost = 1000
 }
 object_blueprint {
-  id = "npc_corpse"
-  name = "a corpse"
-  desc = "The {$1.name} appears fresh.  It is laying motionless on the ground, as every good corpse should."
-  weight = 10
-  cost = 0
-  container = "on"
-  rotting = true
-}
-
-object_blueprint {
-  id = "cave_waterfall_portal"
-  name = "a glowing portal"
-  desc = "The glowing portal's ovoid, smooth surface gives off a faint blue light as it rests against the northern cavern wall.  The various hues of blue that make up the swirling pattern on the portal's face seem almost at battle, with tides of darker blue giving way to hordes of pale blue, only to resurge and drive back the onslaught."
+  blueprint.id = "npc_corpse"
+  blueprint.name = "a corpse"
+  blueprint.desc = "The {$1.name} appears fresh.  It is laying motionless on the ground, as every good corpse should."
+  blueprint.weight = 10
+  blueprint.cost = 0
+  blueprint.container = "on"
+  blueprint.rotting = true
 }
 
 object_blueprint {
-  id = "raise_undead_talisman"
-  name = "a skull talisman"
-  desc = "The talisman is a small golden amulet in the shape of a skull.  Though hard to tell, the eyes appear to faintly glow red."
+  blueprint.id = "cave_waterfall_portal"
+  blueprint.name = "a glowing portal"
+  blueprint.desc = "The glowing portal's ovoid, smooth surface gives off a faint blue light as it rests against the northern cavern wall.  The various hues of blue that make up the swirling pattern on the portal's face seem almost at battle, with tides of darker blue giving way to hordes of pale blue, only to resurge and drive back the onslaught."
+}
+
+object_blueprint {
+  blueprint.id = "raise_undead_talisman"
+  blueprint.name = "a skull talisman"
+  blueprint.desc = "The talisman is a small golden amulet in the shape of a skull.  Though hard to tell, the eyes appear to faintly glow red."
 
   action {
     id = raise
-    script = <<[
+    script = begin
       var room = self.getRoom();
 
       // raise messages (FIXME: dumb that we have to duplicate that here)
@@ -86,7 +86,7 @@ object_blueprint {
 
       // don't print default message
       return OBJACT_OK_QUIET;
-    ]>>
+    end
   }
 }
 

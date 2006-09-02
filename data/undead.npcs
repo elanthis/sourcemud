@@ -4,48 +4,48 @@
 
 # --- BASE ---
 npc_blueprint {
-  id = "base_undead"
+  blueprint.id = "base_undead"
 
-  ai = animal
-  @ai_flee = -1
-  @ai_foodchain = 100
+  blueprint.ai = animal
+  user.ai_flee = -1
+  user.ai_foodchain = 100
 
-  equip = "claws_animal"
+  blueprint.equip = "claws_animal"
   
-  stat : Strength = 10
-  stat : Agility = 20
-  stat : Fortitude = 10
-  stat : Intellect = 0
-  stat : Spirit = 10
-  stat : Willpower = 0
+  stat.Strength = 10
+  stat.Agility = 20
+  stat.Fortitude = 10
+  stat.Intellect = 0
+  stat.Spirit = 10
+  stat.Willpower = 0
 }
 
 # --- ANIMALS ---
 npc_blueprint {
-  id = "rabbit_skeleton"
-  parent = "base_undead"
-  name = "a rabbit skeleton"
-  desc = "Bits of fur and sinew hang off the tiny bones of {$1.D}."
-  @corpse_name = "rabbit skeleton"
+  blueprint.id = "rabbit_skeleton"
+  blueprint.parent = "base_undead"
+  blueprint.name = "a rabbit skeleton"
+  blueprint.desc = "Bits of fur and sinew hang off the tiny bones of {$1.D}."
+  user.corpse_name = "rabbit skeleton"
 }
 npc_blueprint {
-  id = "fox_skeleton"
-  parent = "base_undead"
-  name = "a fox skeleton"
-  desc = "{$1.D} shambles around with none of the grace of a living fox."
-  @corpse_name = "fox skeleton"
+  blueprint.id = "fox_skeleton"
+  blueprint.parent = "base_undead"
+  blueprint.name = "a fox skeleton"
+  blueprint.desc = "{$1.D} shambles around with none of the grace of a living fox."
+  user.corpse_name = "fox skeleton"
 }
 npc_blueprint {
-  id = "wolf_skeleton"
-  parent = "base_undead"
-  name = "a wolf skeleton"
-  desc = "The eyes of {$1.d} glow a malevolent red."
-  @corpse_name = "wolf skeleton"
+  blueprint.id = "wolf_skeleton"
+  blueprint.parent = "base_undead"
+  blueprint.name = "a wolf skeleton"
+  blueprint.desc = "The eyes of {$1.d} glow a malevolent red."
+  user.corpse_name = "wolf skeleton"
 }
 npc_blueprint {
-  id = "skeleton"
-  parent = "base_undead"
-  name = "a skeleton"
-  desc = "Bleached bones and glowing red eyes shamble around seeking for the living."
-  @corpse_name = "skeleton"
+  blueprint.id = "skeleton"
+  blueprint.parent = "base_undead"
+  blueprint.name = "a skeleton"
+  blueprint.desc = "Bleached bones and glowing red eyes shamble around seeking for the living."
+  user.corpse_name = "skeleton"
 }

@@ -2,7 +2,7 @@
 # Copyright (C) 2003-2005  AwesomePlay Productions Inc.
 # Sean Middleditch <elanthis@awemud.net>
 
-text : connect = <<[
+text.connect = begin
 
           .  [31m/=-=\\[0m           [31m/\\ /\\[0m [31m\\   /[0m [31m\\==\\[0m
    .     /|__[31m[   ][0m___________[31m[ " ][0m_[31m[   ][0m_[31m[   ][0m___
@@ -17,9 +17,9 @@ text : connect = <<[
 
 Enter your account name and password to login.  To create a new account, simply type {bold 'new'}.
 
-]>>
+end
 
-text : menu_banner = <<[
+text.menu_banner = begin
 
           .  [31m/=-=\\[0m           [31m/\\ /\\[0m [31m\\   /[0m [31m\\==\\[0m
    .     /|__[31m[   ][0m___________[31m[ " ][0m_[31m[   ][0m_[31m[   ][0m___
@@ -27,23 +27,23 @@ text : menu_banner = <<[
    '     \\|  [31m[   ][0m [31m[  ][0m [31m[--'[0m [31m[   ][0m [31m[   ][0m [31m[   ][0m  
           '  [31m/   \\[0m [31m\\/\\/[0m [31m\\==/[0m [31m/   \\[0m [31m\\=-=/[0m [31m/==/[0m
 
-]>>
+end
 
-text : login = <<[
+text.login = begin
 Welcome, {$1.n}!
 
 If you find yourself in need of assistance, try using the {bold 'help'} command.
-]>>
+end
 
-text : quit = <<[
+text.quit = begin
 
  ,-----------------,
  | [31mFare thee well.[0m |
  `-----------------`
 
-]>>
+end
 
-text : other_banner = <<[
+text.other_banner = begin
 
 [33m   __  __                                   __  __ 
   \\  /\\  /[37m=================================[33m\\  /\\  /
@@ -51,4 +51,4 @@ text : other_banner = <<[
     \\  /[37m=====================================[33m\\  /
      \\/                                       \\/[0m
 
-]>>
+end

@@ -3,161 +3,161 @@
 # Sean Middleditch <elanthis@awemud.net>
 
 # Help for topic 'quit'
-topic : quit = <<[
+topic.quit = begin
 Returns you to the main menu.
-]>>
+end
 
 # Help for topic 'help'
-topic : help = <<[
+topic.help = begin
 The {bold 'help'} command will display help information on a requested topic.
-]>>
+end
 
 # Help for topic 'inventory'
-topic : inventory = <<[
+topic.inventory = begin
 Shows the items that your character has equiped.
-]>>
+end
 
 # Help for topic 'equip'
-topic : equip = <<[
+topic.equip = begin
 {bold 'equip'} will add a held item to your person, depending on the type of item.
-]>>
+end
 
 # Help for topic 'look'
-topic : look = <<[
+topic.look = begin
 The look command displays information about a room, character, or object.  Simply typing {bold 'look'} will display the current room, its title, its obvious exits, the characters in the room, and the object in the room.
 
 Supplying the name of a character after look (i.e. {bold 'look Bob'}) will display some information about the character, mainly their appearance and equipment.
 
 Entering the name of an item after look (i.e. {bold 'look shoe'}) will display the item's description.
-]>>
+end
 
 # Help for topic 'get'
-topic : get = <<[
+topic.get = begin
 The {bold 'get'} command will pickup and items laying on the floor of the current room.  You must have an empty hand with which to pick up the item in.
-]>>
+end
 
 # Help for topic 'stats'
-topic : stats = <<[
+topic.stats = begin
 The {bold 'stats'} command will display your character's attributes, such his/her strength and health.
-]>>
+end
 
 # Help for topic 'remove'
-topic : remove = <<[
+topic.remove = begin
 The {bold 'remove'} command will unequip and item your character is wearing. You must have a free hand in which to hold the item.
-]>>
+end
 
 # Help for topic 'quit'
-topic : quit = <<[
+topic.quit = begin
 Quitting the game requires a special command, {bold 'quit'}.  This command cannot be abbreviated, you must type out the whole word. You will then be asked if you truly wish to leave. Enter {bold 'yes'} to quit, or {bold 'no'} to stay.
-]>>
+end
 
 # Help for topic 'drop'
-topic : drop = <<[
+topic.drop = begin
 The {bold 'drop'} command will put any item your are holding (is in one of your hands) onto the floor.
-]>>
+end
 
 # Help for topic 'info'
-topic : info = <<[
+topic.info = begin
 The {bold 'info'} command displays information about your character that doesn't belong with any other command, such as appearance.
-]>>
+end
 
 # Help for topic 'sit'
-topic : sit = <<[
+topic.sit = begin
 Sitting on the ground is required for certain activies.  You can sit down by typing {bold 'sit'}.
-]>>
+end
 
 # Help for topic 'stand'
-topic : stand = <<[
+topic.stand = begin
 In order to fight, walk, or climb, you must be standing up.  This can be done with the {bold 'stand'} command.
-]>>
+end
 
 # Help for topic 'lay'
-topic : lay = <<[
+topic.lay = begin
 Laying may be necessary at times, or perhaps just fun to do for role-playing purposes.  You can lay down with the {bold 'lay'} command.
-]>>
+end
 
 # Help for topic 'dance'
-topic : dance = <<[
+topic.dance = begin
 Nothing is as much fun as making a fool out of yourself by doing a strange dance in front of total strangers.  You can easily humiliate yourself with the {bold 'dance'} command.  If you're of the mind to do so, you could also irritate someone by dancing around them.  This can be done by supplying their name after dance (i.e. dance Sean).
-]>>
+end
 
 # Help for topic 'laugh'
-topic : laugh = <<[
+topic.laugh = begin
 A good joke deserves a good laugh.  Compliment the dancing fool with a hearty laugh, using the {bold 'laugh'} command.  To really embarass someone, trying laughing at them (i.e. {bold 'laugh Fool'}).
-]>>
+end
 
 # Help for topic 'skills'
-topic : skills = <<[
+topic.skills = begin
 The {bold 'skills'} command will display your skills, their levels, and how close you are to incrementing the skill's level (this is displayed as a percentage).
-]>>
+end
 
 # Help for topic 'tell'
-topic : tell = <<[
+topic.tell = begin
 The {bold 'tell'} command will send a message to another player, much as if you were speaking in a room.  Simply type {bold 'tell'}, followed by the player's name, and then the message.
-]>>
+end
 
 # Help for topic 'server'
-topic : server = <<[
+topic.server = begin
 Give general information about the AweMUD server.
-]>>
+end
 
 # Help for topic 'open'
-topic : open = <<[
+topic.open = begin
 Open a door or container.
-]>>
+end
 
 # Help for topic 'close'
-topic : close = <<[
+topic.close = begin
 Close a door or container.
-]>>
+end
 
 # Help for topic 'lock'
-topic : lock = <<[
+topic.lock = begin
 Lock a door or container (you must have the key).
-]>>
+end
 
 # Help for topic 'unlock'
-topic : unlock = <<[
+topic.unlock = begin
 Unlock a door or container (you must have the key).
-]>>
+end
 
 # Help for topic 'go'
-topic : go = <<[
+topic.go = begin
 {bold 'Go'} to an exit, such as a door.
-]>>
+end
 
 # Help for topic 'climb'
-topic : climb = <<[
+topic.climb = begin
 Climb over, up, or down an exit.
-]>>
+end
 
 # Help for topic 'crawl'
-topic : crawl = <<[
+topic.crawl = begin
 Crawl through or under an exit.
-]>>
+end
 
 # Help for topic 'stand'
-topic : stand = <<[
+topic.stand = begin
 Stand up.  Many activities require you to be standing, such as walking.
-]>>
+end
 
 # Help for topic 'sit'
-topic : sit = <<[
+topic.sit = begin
 Sit down.  Some actitivies require you to be sitting, or work better if you are sitting.
-]>>
+end
 
 # Help for topic 'lay'
-topic : lay = <<[
+topic.lay = begin
 Lay down.  You will heal faster if laying down.
-]>>
+end
 
 # Help for topic 'kneel'
-topic : kneel = <<[
+topic.kneel = begin
 Kneel.  Some people like it better if you kneel while speaking to them.
-]>>
+end
 
 # Help for topic 'setcolor'
-topic : setcolor = <<[
+topic.setcolor = begin
 Use this command to change the colors used by various parts of the engine.  For example, to change the color of speech to cyan, type:
 
   setcolor talk cyan
@@ -169,10 +169,10 @@ The format is {bold 'setcolor <type> <color>'}.  Valid types include:
 Valid colors include:
 
   grey black blue cyan green red brown magenta
-]>>
+end
 
 # Help for topic 'prompt'
-topic : prompt = <<[
+topic.prompt = begin
 The {bold 'prompt'} command lets you change your prompt.  Simply type {bold 'prompt'} followed by the prompt you wish to use.  There are several special sequences you can use for insertin current health and other information into your prompt.  Sequences allowed include:
 
   %h - current health
@@ -182,15 +182,15 @@ The {bold 'prompt'} command lets you change your prompt.  Simply type {bold 'pro
 Example:
 
   prompt %h/%H HP (%n) >
-]>>
+end
 
 # Help for topic 'say'
-topic : say = <<[
+topic.say = begin
 Anything following this command will be shown to the room as speech.
-]>>
+end
 
 # Help for topic 'sing'
-topic : sing = <<[
+topic.sing = begin
 Similar to the {bold 'say'} command, the {bold 'sing'} command will provide vocal output to the room.  Anything sung however will be presented in a different format.  Each chunk of text separated by a semi-colon (;) will be put on its own line, presenting more interesting output.
 
 For example:
@@ -201,10 +201,10 @@ For example:
        the greatest of all
      yet he is the cause
        of his own students' fall."
-]>>
+end
 
 # Help for topic 'emote'
-topic : emote = <<[
+topic.emote = begin
 Anything following this command will be shown to the room as a social action (also called an emote).  The text is appended to your name, and wrapped in paranthesis.  Example:
 
   emote dances happily.
@@ -214,32 +214,32 @@ Will display:
   (Player dances happily.)
 
 to everyone in the room.
-]>>
+end
 
 # movement
-topic : north = <<[
+topic.north = begin
 Travel to the north if an exit in that direction exists.
-]>>
-topic : south = <<[
+end
+topic.south = begin
 Travel to the south if an exit in that direction exists.
-]>>
-topic : west = <<[
+end
+topic.west = begin
 Travel to the west if an exit in that direction exists.
-]>>
-topic : east = <<[
+end
+topic.east = begin
 Travel to the east if an exit in that direction exists.
-]>>
-topic : northeast = <<[
+end
+topic.northeast = begin
 Travel to the northeast if an exit in that direction exists.
-]>>
-topic : northwest = <<[
+end
+topic.northwest = begin
 Travel to the northwest if an exit in that direction exists.
-]>>
-topic : southeast = <<[
+end
+topic.southeast = begin
 Travel to the southeast if an exit in that direction exists.
-]>>
-topic : southwest = <<[
+end
+topic.southwest = begin
 Travel to the southwest if an exit in that direction exists.
-]>>
+end
 
 # vim: set shiftwidth=2 tabstop=2 expandtab :

@@ -4,118 +4,118 @@
 
 # --- ANIMALS ---
 npc_blueprint {
-  id = "rabbit"
-  name = "a rabbit"
+  blueprint.id = "rabbit"
+  blueprint.name = "a rabbit"
 
-  desc = "{$1.D} is small and covered in brown fur.  Its nose twitches occasionally as it searches for food."
+  blueprint.desc = "{$1.D} is small and covered in brown fur.  Its nose twitches occasionally as it searches for food."
 
-  ai = animal
-  @ai_flee = 95
-  @ai_foodchain = 5
+  blueprint.ai = animal
+  user.ai_flee = 95
+  user.ai_foodchain = 5
 
-  @raise_as = "rabbit_skeleton"
-
-  combat.dodge = 10
-
-  equip = "claws_animal"
-  
-  stat : Strength = 10
-  stat : Agility = 90
-  stat : Fortitude = 10
-  stat : Intellect = 10
-  stat : Spirit = 35
-  stat : Willpower = 30
-}
-npc_blueprint {
-  id = "fox"
-  name = "a fox"
-
-  desc = "The red {$1.n} scurries about, looking for danger."
-
-  ai = animal
-  @ai_flee = 95
-  @ai_foodchain = 15
-
-  @raise_as = "fox_skeleton"
+  user.raise_as = "rabbit_skeleton"
 
   combat.dodge = 10
 
-  equip = "claws_animal"
+  blueprint.equip = "claws_animal"
   
-  stat : Strength = 30
-  stat : Agility = 85
-  stat : Fortitude = 40
-  stat : Intellect = 10
-  stat : Spirit = 30
-  stat : Willpower = 30
+  stat.Strength = 10
+  stat.Agility = 90
+  stat.Fortitude = 10
+  stat.Intellect = 10
+  stat.Spirit = 35
+  stat.Willpower = 30
 }
 npc_blueprint {
-  id = "wolf"
-  name = "a wolf"
+  blueprint.id = "fox"
+  blueprint.name = "a fox"
 
-  desc = "{$1.D} doesn't appear to be afraid of much."
+  blueprint.desc = "The red {$1.n} scurries about, looking for danger."
 
-  ai = animal
-  @ai_flee = 60
-  @ai_foodchain = 45
+  blueprint.ai = animal
+  user.ai_flee = 95
+  user.ai_foodchain = 15
 
-  @raise_as = "wolf_skeleton"
+  user.raise_as = "fox_skeleton"
+
+  combat.dodge = 10
+
+  blueprint.equip = "claws_animal"
+  
+  stat.Strength = 30
+  stat.Agility = 85
+  stat.Fortitude = 40
+  stat.Intellect = 10
+  stat.Spirit = 30
+  stat.Willpower = 30
+}
+npc_blueprint {
+  blueprint.id = "wolf"
+  blueprint.name = "a wolf"
+
+  blueprint.desc = "{$1.D} doesn't appear to be afraid of much."
+
+  blueprint.ai = animal
+  user.ai_flee = 60
+  user.ai_foodchain = 45
+
+  user.raise_as = "wolf_skeleton"
 
   combat.dodge = 5
 
-  equip = "claws_animal"
+  blueprint.equip = "claws_animal"
   
-  stat : Strength = 60
-  stat : Agility = 80
-  stat : Fortitude = 50
-  stat : Intellect = 10
-  stat : Spirit = 30
-  stat : Willpower = 40
+  stat.Strength = 60
+  stat.Agility = 80
+  stat.Fortitude = 50
+  stat.Intellect = 10
+  stat.Spirit = 30
+  stat.Willpower = 40
 }
 npc_blueprint {
-  id = "wolf_large"
-  name = "a large wolf"
+  blueprint.id = "wolf_large"
+  blueprint.name = "a large wolf"
 
-  desc = "{$1.D} is huge, larger than most other wolves by far.  Its gray fur is rough and coarse.  The wolf doesn't look friendly."
+  blueprint.desc = "{$1.D} is huge, larger than most other wolves by far.  Its gray fur is rough and coarse.  The wolf doesn't look friendly."
 
-  ai = animal
-  @ai_flee = 60
-  @ai_foodchain = 55
+  blueprint.ai = animal
+  user.ai_flee = 60
+  user.ai_foodchain = 55
 
-  @raise_as = "wolf_skeleton"
+  user.raise_as = "wolf_skeleton"
 
   combat.dodge = 4
 
-  equip = "claws_animal"
+  blueprint.equip = "claws_animal"
   
-  stat : Strength = 90
-  stat : Agility = 75
-  stat : Fortitude = 55
-  stat : Intellect = 10
-  stat : Spirit = 30
-  stat : Willpower = 40
+  stat.Strength = 90
+  stat.Agility = 75
+  stat.Fortitude = 55
+  stat.Intellect = 10
+  stat.Spirit = 30
+  stat.Willpower = 40
 }
 npc_blueprint {
-  id = "wolf_dire"
-  name = "a dire wolf"
-  alignment = -700
+  blueprint.id = "wolf_dire"
+  blueprint.name = "a dire wolf"
+  blueprint.alignment = -700
 
-  desc = "Demonic in appearnace, {$1.D} is larger than any wolf could be through natural means.  Its eyes glow red, and its near-black fur is broken in places, where spiked ridges run along its body.  {$1.D} has as sinister a nature as any animal could have."
+  blueprint.desc = "Demonic in appearnace, {$1.D} is larger than any wolf could be through natural means.  Its eyes glow red, and its near-black fur is broken in places, where spiked ridges run along its body.  {$1.D} has as sinister a nature as any animal could have."
 
-  ai = animal
-  @ai_flee = 10
-  @ai_foodchain = 70
+  blueprint.ai = animal
+  user.ai_flee = 10
+  user.ai_foodchain = 70
 
-  @raise_as = "wolf_skeleton"
+  user.raise_as = "wolf_skeleton"
 
   combat.dodge = 7
 
-  equip = "claws_animal"
+  blueprint.equip = "claws_animal"
   
-  stat : Strength = 120
-  stat : Agility = 100
-  stat : Fortitude = 110
-  stat : Intellect = 30
-  stat : Spirit = 10
-  stat : Willpower = 50
+  stat.Strength = 120
+  stat.Agility = 100
+  stat.Fortitude = 110
+  stat.Intellect = 30
+  stat.Spirit = 10
+  stat.Willpower = 50
 }

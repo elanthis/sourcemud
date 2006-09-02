@@ -69,7 +69,6 @@ namespace File
 		// type of node
 		inline bool is_attr () const { return type == ATTR; }
 		inline bool is_keyed () const { return type == KEYED; }
-		inline bool is_custom () const { return type == CUSTOM; }
 		inline bool is_end () const { return type == END; }
 		inline bool is_begin () const { return type == BEGIN; }
 
@@ -77,7 +76,6 @@ namespace File
 		enum {
 			ATTR,  // normal name = data
 			KEYED, // attribute in name:key = data
-			CUSTOM,  // for scripts, @name = data
 			BEGIN, // object form name { data }
 			END,   // } after a BEGIN
 		} type;
@@ -114,7 +112,7 @@ namespace File
 		String filename;
 		size_t line;
 
-		enum Token { TOKEN_ERROR, TOKEN_EOF, TOKEN_STRING, TOKEN_NUMBER, TOKEN_TRUE, TOKEN_FALSE, TOKEN_BEGIN, TOKEN_END, TOKEN_SET, TOKEN_CUSTOM, TOKEN_ID, TOKEN_KEY };
+		enum Token { TOKEN_ERROR, TOKEN_EOF, TOKEN_STRING, TOKEN_NUMBER, TOKEN_TRUE, TOKEN_FALSE, TOKEN_BEGIN, TOKEN_END, TOKEN_SET, TOKEN_ID, TOKEN_KEY };
 
 		Token read_token(String& data);
 	};
@@ -183,12 +181,6 @@ namespace File
 		inline void keyed (String name, String key, short data) { keyed(name, key, (long)data); }
 		inline void keyed (String name, String key, unsigned short data) { keyed(name, key, (long)data); }
 
-		// custom attributes (for scripts)
-		void custom (String name, String data);
-		void custom (String name, long data);
-		void custom (String name, bool data);
-		void custom (String name, const UniqueID& data);
-
 		// output a data block class:name<<< ... >>> 
 		void block (String name, String data);
 
@@ -246,10 +238,10 @@ class ScriptRestrictedWriter : public Scriptix::Native
 	if (false && _x_is_read) {
 #define FO_ATTR(name) \
 		} else if (node.is_attr() && node.get_name() == name) {
+#define FO_ATTR2(name,key) \
+		} else if (node.is_keyed() && node.get_name() == name && node.get_key() == key) {
 #define FO_KEYED(name) \
 		} else if (node.is_keyed() && node.get_name() == name) {
-#define FO_CUSTOM \
-		} else if (node.is_custom()) {
 #define FO_ATTR_BEGIN \
 		} else if (node.is_attr()) { \
 			do { \
@@ -275,7 +267,6 @@ class ScriptRestrictedWriter : public Scriptix::Native
 				reader.consume(); \
 			if (node.is_attr()) Log::Error << "Unrecognized attribute '" << node.get_name() << "' at " << reader.get_filename() << ':' << node.get_line(); \
 			else if (node.is_keyed()) Log::Error << "Unrecognized keyed attribute '" << node.get_name() << "' at " << reader.get_filename() << ':' << node.get_line(); \
-			else if (node.is_custom()) Log::Error << "Unexpected custom attribute '@" << node.get_name() << "' at " << reader.get_filename() << ':' << node.get_line(); \
 			else if (node.is_begin()) Log::Error << "Unrecognized object '" << node.get_name() << "' at " << reader.get_filename() << ':' << node.get_line(); \
 			throw(File::Error(S("unexpected value"))); \
 		} \

@@ -5,153 +5,153 @@
 # See COPYING for details
 
 object_blueprint {
-  id = "armor"
+  blueprint.id = "armor"
 }
 
 object_blueprint {
-  id = "ar_chain_mail"
-  parent = "armor"
-  equip = "torso"
-  name = "some chain mail"
-  desc = "The chain mail is a set of armor, crafted of interlocked rings of iron."
-  weight = 20
-  cost = 250
-  @defend = 14
+  blueprint.id = "ar_chain_mail"
+  blueprint.parent = "armor"
+  blueprint.equip = "torso"
+  blueprint.name = "some chain mail"
+  blueprint.desc = "The chain mail is a set of armor, crafted of interlocked rings of iron."
+  blueprint.weight = 20
+  blueprint.cost = 250
+  user.defend = 14
 }
 object_blueprint {
-  id = "ar_chain_shirt"
-  parent = "armor"
-  equip = "torso"
-  name = "a chain shirt"
-  desc = "The chain shirt is a set of armor covering the upper torso, crafted of interlocked rings of iron."
-  weight = 15
-  cost = 175
-  @defend = 10
+  blueprint.id = "ar_chain_shirt"
+  blueprint.parent = "armor"
+  blueprint.equip = "torso"
+  blueprint.name = "a chain shirt"
+  blueprint.desc = "The chain shirt is a set of armor covering the upper torso, crafted of interlocked rings of iron."
+  blueprint.weight = 15
+  blueprint.cost = 175
+  user.defend = 10
 }
 object_blueprint {
-  id = "ar_leather_armor"
-  parent = "armor"
-  name = "some leather armor"
-  desc = "The leather armor is a full set of protective wear, crafted of leather."
-  weight = 10
-  cost = 140
-  @defend = 7
+  blueprint.id = "ar_leather_armor"
+  blueprint.parent = "armor"
+  blueprint.name = "some leather armor"
+  blueprint.desc = "The leather armor is a full set of protective wear, crafted of leather."
+  blueprint.weight = 10
+  blueprint.cost = 140
+  user.defend = 7
 }
 object_blueprint {
-  id = "ar_leather_tunic"
-  parent = "armor"
-  equip = "torso"
-  name = "a leather tunic"
-  desc = "The leather tunic is a simple shirt, made of some kind of cured hide."
-  weight = 8
-  cost = 79
-  @defend = 3
+  blueprint.id = "ar_leather_tunic"
+  blueprint.parent = "armor"
+  blueprint.equip = "torso"
+  blueprint.name = "a leather tunic"
+  blueprint.desc = "The leather tunic is a simple shirt, made of some kind of cured hide."
+  blueprint.weight = 8
+  blueprint.cost = 79
+  user.defend = 3
 }
 object_blueprint {
-  id = "ar_helm"
-  parent = "armor"
-  equip = "head"
-  name = "a helm"
-  desc = "The helm is made of iron and is slightly dented in places."
-  weight = 5
-  cost = 30
-  @defend = 5
+  blueprint.id = "ar_helm"
+  blueprint.parent = "armor"
+  blueprint.equip = "head"
+  blueprint.name = "a helm"
+  blueprint.desc = "The helm is made of iron and is slightly dented in places."
+  blueprint.weight = 5
+  blueprint.cost = 30
+  user.defend = 5
 }
 object_blueprint {
-  id = "ar_chain_leggings"
-  parent = "armor"
-  equip = "legs"
-  name = "some chain leggings"
-  desc = "The chain leggings are armor for covering the legs, crafted of interlocked rings of iron."
-  weight = 5
-  cost = 89
-  @defend = 6
+  blueprint.id = "ar_chain_leggings"
+  blueprint.parent = "armor"
+  blueprint.equip = "legs"
+  blueprint.name = "some chain leggings"
+  blueprint.desc = "The chain leggings are armor for covering the legs, crafted of interlocked rings of iron."
+  blueprint.weight = 5
+  blueprint.cost = 89
+  user.defend = 6
 }
 object_blueprint {
-  id = "ar_leather_bracer"
-  parent = "armor"
-  equip = "wrist"
-  name = "a leather bracer"
-  desc = "The leather bracer is made from boiled leather and give protection to one's wrist during combat."
-  weight = 3
-  cost = 15
-  @defend = 2
+  blueprint.id = "ar_leather_bracer"
+  blueprint.parent = "armor"
+  blueprint.equip = "wrist"
+  blueprint.name = "a leather bracer"
+  blueprint.desc = "The leather bracer is made from boiled leather and give protection to one's wrist during combat."
+  blueprint.weight = 3
+  blueprint.cost = 15
+  user.defend = 2
 }
 object_blueprint {
-  id = "ar_casting_robe"
-  parent = "armor"
-  equip = "torso"
-  name = "some casting robes"
-  desc = "These comfortable robes are lose fitting, and are lined with pockets. Colorful, but not gaudy, they speak of functional simplicity."
-  weight = 3
-  cost = 129
-  @defend = 6
+  blueprint.id = "ar_casting_robe"
+  blueprint.parent = "armor"
+  blueprint.equip = "torso"
+  blueprint.name = "some casting robes"
+  blueprint.desc = "These comfortable robes are lose fitting, and are lined with pockets. Colorful, but not gaudy, they speak of functional simplicity."
+  blueprint.weight = 3
+  blueprint.cost = 129
+  user.defend = 6
 }
 object_blueprint {
-  id = "ar_leather_choker"
-  parent = "armor"
-  equip = "neck"
-  name = "a leather chocker"
-  desc = "This black leather choker has twelve half inch spikes tooled into the soft grain, which encompass the entire length."
-  weight = 1
-  cost = 9
-  @defend = 2
+  blueprint.id = "ar_leather_choker"
+  blueprint.parent = "armor"
+  blueprint.equip = "neck"
+  blueprint.name = "a leather chocker"
+  blueprint.desc = "This black leather choker has twelve half inch spikes tooled into the soft grain, which encompass the entire length."
+  blueprint.weight = 1
+  blueprint.cost = 9
+  user.defend = 2
 }
 object_blueprint {
-  id = "ar_hunting_boots"
-  parent = "armor"
-  equip = "feet"
-  name = "some hunting boots"
-  desc = "These side lace hunting boots are custom made of gray wolf skin leather, and have reinforced soles."
-  weight = 3
-  cost = 79
-  @defend = 4
+  blueprint.id = "ar_hunting_boots"
+  blueprint.parent = "armor"
+  blueprint.equip = "feet"
+  blueprint.name = "some hunting boots"
+  blueprint.desc = "These side lace hunting boots are custom made of gray wolf skin leather, and have reinforced soles."
+  blueprint.weight = 3
+  blueprint.cost = 79
+  user.defend = 4
 }
 object_blueprint {
-  id = "ar_hunting_gloves"
-  parent = "armor"
-  equip = "hands"
-  name = "some hunting gloves"
-  desc = "Basic leather gloves"
-  weight = 1
-  cost = 25
-  @defend = 3
+  blueprint.id = "ar_hunting_gloves"
+  blueprint.parent = "armor"
+  blueprint.equip = "hands"
+  blueprint.name = "some hunting gloves"
+  blueprint.desc = "Basic leather gloves"
+  blueprint.weight = 1
+  blueprint.cost = 25
+  user.defend = 3
 }
 object_blueprint {
-  id = "ar_ruby_earring"
-  parent = "armor"
-  equip = "ear"
-  name = "a ruby earring"
-  desc = "This earring has a beautiful ruby gemstone, affixed to a golden stud."
-  weight = 1
-  @defend = 0
+  blueprint.id = "ar_ruby_earring"
+  blueprint.parent = "armor"
+  blueprint.equip = "ear"
+  blueprint.name = "a ruby earring"
+  blueprint.desc = "This earring has a beautiful ruby gemstone, affixed to a golden stud."
+  blueprint.weight = 1
+  user.defend = 0
 }
 object_blueprint {
-  id = "ar_diamond_earring"
-  parent = "armor"
-  equip = "ear"
-  name = "a diamond earring"
-  desc = "This earring has a beautiful diamond gemstone, affixed to a golden stud."
-  weight = 1
-  @defend = 0
+  blueprint.id = "ar_diamond_earring"
+  blueprint.parent = "armor"
+  blueprint.equip = "ear"
+  blueprint.name = "a diamond earring"
+  blueprint.desc = "This earring has a beautiful diamond gemstone, affixed to a golden stud."
+  blueprint.weight = 1
+  user.defend = 0
 }
 object_blueprint {
-  id = "ar_turquoise_anklet"
-  parent = "armor"
-  equip = "ankle"
-  name = "a turquoise anklet"
-  desc = "A shiny turquoise anklet."
-  weight = 1
-  @defend = 0
+  blueprint.id = "ar_turquoise_anklet"
+  blueprint.parent = "armor"
+  blueprint.equip = "ankle"
+  blueprint.name = "a turquoise anklet"
+  blueprint.desc = "A shiny turquoise anklet."
+  blueprint.weight = 1
+  user.defend = 0
 }
 object_blueprint {
-  id = "ar_gold_anklet"
-  parent = "armor"
-  equip = "ankle"
-  name = "a gold anklet"
-  desc = "A shiny gold anklet."
-  weight = 1
-  @defend = 0
+  blueprint.id = "ar_gold_anklet"
+  blueprint.parent = "armor"
+  blueprint.equip = "ankle"
+  blueprint.name = "a gold anklet"
+  blueprint.desc = "A shiny gold anklet."
+  blueprint.weight = 1
+  user.defend = 0
 }
 
 # vim: set shiftwidth=2 tabstop=2 expandtab:

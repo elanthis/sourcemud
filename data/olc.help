@@ -3,7 +3,7 @@
 # Sean Middleditch <elanthis@awemud.net>
 
 # Help for topic 'building'
-topic : building = <<[
+topic.building = begin
 AweMUD currently has very limited building support.  Much of the information in AweMUD can only be modified by editing the data files.
 
 There are no plans to support on-line editing of things such as races, classes, help files, blueprints, or server settings.  These will have to be changed by modifying their respective files.  Races and classes will not be able to be changed without an AweMUD reboot.  The help data is read on the fly, so a change to the help file will take affect immediately.  Templates are occasionally re-read as well (there are plans to support a forces flush of in-memory blueprints).
@@ -13,10 +13,10 @@ The {bold 'create'} command allows you to make a new object or npc from a bluepr
 You can jump to any room by using the {bold 'toroom'} command.  To list all exits in the room, use the {bold 'exitlist'} command.
 
 For editing tags on entities, use the {bold 'tags'} command.
-]>>
+end
 
 # Help for topic 'create'
-topic : create = <<[
+topic.create = begin
 The {bold 'create'} command allows you to construct new entities.  Using {bold 'create'}, you may construct a new object, npc, room, zone, or exit.
 
 If you wish to create a new npc or object, you must specify the blueprint name to use for the new entity.  Example:
@@ -40,20 +40,20 @@ When creating a new exit, you may optionally provide a name for the exit.  If th
   create exit northeast
 
 Once you have created a new entity, you should use the {bold 'modify'} command to futher modify it.
-]>>
+end
 
 # Help for topic 'destroy'
-topic : destroy = <<[
+topic.destroy = begin
 The {bold 'destroy'} command will permanantly remove the named entity.  You should be _very_ careful with this command; it will not ask for confirmation.
 
 You may optionally specify the type of entity before the name.  You _must_ specify the type for rooms and zones that you wish to destroy.  Example:
 
   destroy room my_room
   destroy zone my_zone
-]>>
+end
 
 # Help for topic 'tags'
-topic : tags = <<[
+topic.tags = begin
 The {bold 'tags'} command allows you to add, remove, or display tags on an entity.  A tag is similar to a flag; an entity either has a given tag, or it does not.  Tags cannot store additional information.
 
 To display the tags on an entity, use the command form {bold 'tags list <entity>'}.  This will list out all the tags on the entity, along with a count.
@@ -61,24 +61,24 @@ To display the tags on an entity, use the command form {bold 'tags list <entity>
 To add a tag, use the command form {bold 'tags add <tag> <entity>'}.  Tags must be a one-word arguments; thus, they cannot contain spaces or other whitespace.
 
 To remove a tag, use the command form {bold 'tags remove <tag> <entity>'}.
-]>>
+end
 
 # Help for topic 'toroom'
-topic : toroom = <<[
+topic.toroom = begin
 The {bold 'toroom'} command will transport you to the room you specify by giving a name (not title).
-]>>
+end
 
 # Help for topic 'description'
-topic : description = <<[
+topic.description = begin
 The {bold 'description'} command lets you change the long description of an entity.  The input is rather special.
 
 When you run the command, you are put in a special description input mode.  You keep entering the lines of the description, until you have the whole thing entered.  You then must put a single @ (at sign) on a line all by itself; this signifies the end of your input.
 
 Remember that AweMUD doesn't allow lines that are very long (usually around 100 to 200 characters), so you must break up your description.  AweMUD will automatically reform the lines into a single paragraph with proper spacing.  (Two spaces after a ., !, or ?, and one space after anything else.)
-]>>
+end
 
 # Help for the OLC editing interface
-topic : olc-edit-commands = <<[
+topic.olc_edit_commands = begin
 You can enter a specialized editing interface by typing {bold 'edit [<type>] <entity>'}; for example,
 
   edit room forest_stream
@@ -93,15 +93,15 @@ For help on the various kinds of entities (i.e., Player, NPC, Room, etc.) type {
 
   help modify character
 
-]>>
+end
 
 # Help for topic 'display'
-topic : display = <<[
+topic.display = begin
 The {bold 'display'} command shows the attributes of a specified entity.  Its syntax is, simply, {bold 'display [<type>] <entity>'}.  The <type> is optional, except for rooms and zones.
-]>>
+end
 
 # Help for topic 'modify'
-topic : modify = <<[
+topic.modify = begin
 The {bold 'modify'} command allows you to change the attributes of an entity in the room you are currently in.
 
 The syntax is {bold 'modify [<type>] <entity> set <attribute> <value>'}.  <entity> is any entity in the room; any character, npc, player, object, or exit.  (All players and npcs and also characters.)  <type> specifies the type of entity you want to edit; if you specify {bold 'player'}, you can edit players not in the current room.  You _must_ specify the type for rooms or zones.
@@ -118,9 +118,9 @@ The following attributes are common to all entities:
   - untag = "this meta-attribute allows you to remove a tag from an entity."
 
 For information and attributes available to other entities, type {bold 'help modify <entity>'}, where <entity> is the entity type you wish to view information on.  To modify a long description, you should use the {bold 'description'} command.
-]>>
+end
 
-topic : "modify exit" = <<[
+topic."modify exit" = begin
 The attributes of an exit are:
 
   - direction = "direction the exit leads to.  (north, east, etc.)"
@@ -135,9 +135,9 @@ The attributes of an exit are:
   - type = "sets the exit type.  (i.e. door, stairs, etc.)"
 
 Also see the standard {bold 'modify'} attributes.
-]>>
+end
 
-topic : "modify object" = <<[
+topic."modify object" = begin
 The attributes of an object are:
 
   - weight = "the base weight of the object, excluding things in/on the object."
@@ -147,9 +147,9 @@ The attributes of an object are:
   - container = "given a container type (in, under, etc.) and {bold 'yes'} or {bold 'no'}, sets whether the given container type exists on the object."
 
 Also see the standard {bold 'modify'} attributes.
-]>>
+end
 
-topic : "modify character" = <<[
+topic."modify character" = begin
 The attributes of a character are:
 
   - FIXME = "attrs"
@@ -160,25 +160,25 @@ The attributes of a character are:
   - position = "{bold 'standing'}, {bold 'sitting'}, {bold 'laying'}, or {bold 'kneeling'}."
 
 Also see the standard {bold 'modify'} attributes.
-]>>
+end
 
-topic : "modify npc" = <<[
+topic."modify npc" = begin
 The attributes of an NPC are:
 
   - N/A
 
 Also see the standard {bold 'modify'} attributes, and the {bold 'modify character'} attributes.
-]>>
+end
 
-topic : "modify player" = <<[
+topic."modify player" = begin
 The attributes of an player are:
 
   - N/A
 
 Also see the standard {bold 'modify'} attributes, and the {bold 'modify character'} attributes.
-]>>
+end
 
-topic : "modify room" = <<[
+topic."modify room" = begin
 The attributes of a room are:
 
   - title = "the display name of the room."
@@ -186,15 +186,15 @@ The attributes of a room are:
   - outdoors = "either {bold 'yes'} or {bold 'no'}, sets whether the room is outside or not."
 
 Also see the standard {bold 'modify'} attributes.  Note that you cannot edit the name of a room.  Also note that you must specify the type {bold 'room'} to modify when editing rooms.
-]>>
+end
 
-topic : "modify zone" = <<[
+topic."modify zone" = begin
 Zones do not have any attributes aside from the standard {bold 'modify'} attributes.
-]>>
+end
 
 # Help for topic 'exitlist'
-topic : exitlist = <<[
+topic.exitlist = begin
 This command merely lists all exits in the room, including their ID number.
-]>>
+end
 
 # vim: set shiftwidth=2 tabstop=2 expandtab :

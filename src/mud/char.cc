@@ -139,37 +139,37 @@ Character::save (File::Writer& writer)
 	Entity::save(writer);
 
 	if (dead)
-		writer.attr(S("dead"), S("yes"));
+		writer.keyed(S("char"), S("dead"), S("yes"));
 
-	writer.attr(S("position"), position.get_name());
+	writer.keyed(S("char"), S("position"), position.get_name());
 
 	if (coins)
-		writer.attr(S("coins"), coins);
+		writer.keyed(S("char"), S("coins"), coins);
 
-	writer.attr(S("hp"), health.cur);
+	writer.keyed(S("char"), S("hp"), health.cur);
 
 	if (equipment.right_held) {
-		writer.begin(S("equip.right_hand"));
+		writer.begin(S("equip_right_hand"));
 		equipment.right_held->save(writer);
 		writer.end();
 	}
 	if (equipment.left_held) {
-		writer.begin(S(S("equip.left_hand")));
+		writer.begin(S(S("equip_left_hand")));
 		equipment.left_held->save(writer);
 		writer.end();
 	}
 	if (equipment.body_worn) {
-		writer.begin(S("equip.body"));
+		writer.begin(S("equip_body"));
 		equipment.body_worn->save(writer);
 		writer.end();
 	}
 	if (equipment.back_worn) {
-		writer.begin(S("equip.back"));
+		writer.begin(S("equip_back"));
 		equipment.back_worn->save(writer);
 		writer.end();
 	}
 	if (equipment.waist_worn) {
-		writer.begin(S("equip.waist"));
+		writer.begin(S("equip_waist"));
 		equipment.waist_worn->save(writer);
 		writer.end();
 	}
@@ -187,40 +187,40 @@ Character::load_node (File::Reader& reader, File::Node& node)
 {
 	FO_NODE_BEGIN
 		FO_PARENT(Entity)
-		FO_ATTR("dead")
+		FO_ATTR2("char", "dead")
 			dead = node.get_data();
-		FO_ATTR("position")
+		FO_ATTR2("char", "position")
 			position = CharPosition::lookup(node.get_data());
-		FO_ATTR("coins")
+		FO_ATTR2("char", "coins")
 			FO_TYPE_ASSERT(INT);
 			coins = tolong(node.get_data());
-		FO_ATTR("hp")
+		FO_ATTR2("char", "hp")
 			FO_TYPE_ASSERT(INT);
 			health.cur = tolong(node.get_data());
-		FO_OBJECT("equip.right_hand")
+		FO_OBJECT("equip_right_hand")
 			equipment.right_held = new Object();
 			if (equipment.right_held->load (reader))
-				throw "Failed to load object";
+				throw File::Error(S("failed to load object"));
 			equipment.right_held->set_owner(this);
-		FO_OBJECT("equip.left_hand")
+		FO_OBJECT("equip_left_hand")
 			equipment.left_held = new Object();
 			if (equipment.left_held->load (reader))
-				throw "Failed to load object";
+				throw File::Error(S("failed to load object"));
 			equipment.left_held->set_owner(this);
-		FO_OBJECT("equip.body")
+		FO_OBJECT("equip_body")
 			equipment.body_worn = new Object();
 			if (equipment.body_worn->load (reader))
-				throw "Failed to load object";
+				throw File::Error(S("failed to load object"));
 			equipment.body_worn->set_owner(this);
-		FO_OBJECT("equip.back")
+		FO_OBJECT("equip_back")
 			equipment.back_worn = new Object();
 			if (equipment.back_worn->load (reader))
-				throw "Failed to load object";
+				throw File::Error(S("failed to load object"));
 			equipment.back_worn->set_owner(this);
-		FO_OBJECT("equip.waist")
+		FO_OBJECT("equip_waist")
 			equipment.waist_worn = new Object();
 			if (equipment.waist_worn->load (reader))
-				throw "Failed to load object";
+				throw File::Error(S("failed to load object"));
 			equipment.waist_worn->set_owner(this);
 	FO_NODE_END
 }

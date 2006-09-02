@@ -1,55 +1,48 @@
 # Player file: Admin
-# Timestamp: Sat Jul 15 09:41:12 2006
+# Timestamp: Sat Sep  2 18:20:52 2006
 # 
 
-uid = $1
-position = "stand"
-hp = 150
-equip.right_hand {
-  blueprint = "sw_fire"
-  uid = $274
+entity.uid = <1>
+char.position = "stand"
+char.hp = 150
+equip_right_hand {
+  object.blueprint = "sw_fire"
+  entity.uid = <274>
 }
-equip.body {
-  blueprint = "ar_chain_shirt"
-  uid = $7
+equip_body {
+  object.blueprint = "ar_chain_shirt"
+  entity.uid = <7>
 }
-equip.back {
-  blueprint = "co_leather_backpack"
-  uid = $23
+equip_back {
+  object.blueprint = "co_leather_backpack"
+  entity.uid = <23>
 }
-race = "human"
-birthday = "1000/06/10 09.14"
-alignment = 0
-stat : "Strength" = 100
-stat : "Agility" = 100
-stat : "Fortitude" = 100
-stat : "Intellect" = 100
-stat : "Spirit" = 100
-stat : "Willpower" = 100
-trait : "build" = "lean"
-trait : "skin color" = "fair"
-trait : "hair style" = "long"
-trait : "hair color" = "silver"
-trait : "eye color" = "white"
-gender = "male"
-height = 68
-location = "forest_cliff"
-general_xp = 65
-warrior_xp = 227
-rogue_xp = 0
-caster_xp = 0
-skill : "Agility" = 0
-skill : "Arcane Barrier" = 0
-skill : "Balance" = 0
-skill : "Dodge" = 0
-skill : "Health" = 0
-skill : "Intellect" = 0
-skill : "Light" = 0
-skill : "Luck" = 0
-skill : "Magic Lore" = 0
-skill : "Melee" = 0
-skill : "Shield" = 0
-skill : "Spirit" = 0
-skill : "Strength" = 0
-skill : "Will Power" = 0
+player.race = "human"
+player.birthday = "1000/06/10 09.14"
+player.alignment = 0
+stat.Strength = 100
+stat.Agility = 100
+stat.Fortitude = 100
+stat.Intellect = 100
+stat.Spirit = 100
+stat.Willpower = 100
+trait.build = "lean"
+player.gender = "male"
+player.height = 68
+player.location = "clear_pond"
+player.general_xp = 65
+player.warrior_xp = 227
+player.rogue_xp = 0
+player.caster_xp = 0
+skill.Agility = 0
+skill.Balance = 0
+skill.Dodge = 0
+skill.Health = 0
+skill.Intellect = 0
+skill.Light = 0
+skill.Luck = 0
+skill.Melee = 0
+skill.Shield = 0
+skill.Spirit = 0
+skill.Strength = 0
 # vim: set shiftwidth=2 tabstop=2 expandtab:

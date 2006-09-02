@@ -19,7 +19,7 @@
 
 using namespace std;
 
-#define VALID_NAME_CHAR(c) (isalpha(c) || isdigit(c) || (c) == '_' || (c) == '-' || (c) == '.')
+#define VALID_NAME_CHAR(c) (isalnum(c) || (c) == '_')
 
 namespace {
 	struct EscapeString
@@ -50,6 +50,24 @@ namespace {
 				}
 			}
 			os << '"';
+
+			return os;
+		}
+
+		const String& string;
+	};
+
+	struct ScrubString
+	{
+		inline ScrubString (const String& s_string) : string(s_string) {}
+
+		inline friend ostream& operator << (ostream& os, const ScrubString& esc)
+		{
+			os << '"';
+			for (String::const_iterator i = esc.string.begin(); i != esc.string.end(); ++i) {
+				if (isalpha(*i) || (isdigit(*i) && i != esc.string.begin()) || *i == '_')
+					os << *i;
+			}
 
 			return os;
 		}
@@ -107,57 +125,9 @@ File::Reader::read_token (String& outstr)
 		return TOKEN_END;
 	} else if (test == '=') {
 		return TOKEN_SET;
-	} else if (test == '@') {
-		return TOKEN_CUSTOM;
-	} else if (test == ':') {
+	} else if (test == '.') {
 		return TOKEN_KEY;
 
-	// block symbol
-	} else if (test == '<') {
-		// must be <<[
-		if (in.peek() != '<') {
-			outstr = S("Syntax error: <?");
-			return TOKEN_ERROR;
-		}
-		in.get();
-		if (in.peek() != '[') {
-			outstr = S("Syntax error: <<?");
-			return TOKEN_ERROR;
-		}
-		in.get();
-
-		// must have whitespace to end of line
-		while (in && in.peek() != '\n')
-			if (!isspace(in.get())) {
-				outstr = S("Syntax error: garbage after <<[");
-				return TOKEN_ERROR;
-			}
-		in.get();
-		++line;
-
-		// get block
-		while (in) {
-			// read a line
-			StringBuffer data;
-			do {
-				char ch = in.get();
-				data << ch;
-				if (ch == '\n') {
-					++ line;
-					break;
-				}
-			} while (in);
-
-			// line end pattern?
-			String tstr = data.str();
-			if (strstr(tstr, "]>>") && strip(tstr) == "]>>") // see if the string exists, if so, see if that's all there is
-				break;
-
-			// add data
-			outstr = outstr + tstr;
-		}
-
-		return TOKEN_STRING;
 	// string
 	} else if (test == '"') {
 		StringBuffer data;
@@ -211,14 +181,28 @@ File::Reader::read_token (String& outstr)
 		outstr = data.str();
 		return TOKEN_NUMBER;
 
+	// ID
+	} else if (test == '<') {
+		StringBuffer data;
+		while (in && isdigit(in.peek()))
+			data << (char)in.get();
+		if (in.get() != '>') {
+			outstr = S("Invalid ID");
+			return TOKEN_ERROR;
+		}
+
+		outstr = data.str();
+
+		return TOKEN_ID;
+
 	// name
-	} else if (isalpha(test)) {
+	} else if (isalpha(test) || test == '_') {
 		StringBuffer data;
 		// read in name
 		data << (char)test;
 		while (in) {
 			test = in.peek();
-			if (!VALID_NAME_CHAR(test))
+			if (!isalnum(test) && test != '_')
 				break;
 			data << (char)in.get();
 		}
@@ -231,19 +215,44 @@ File::Reader::read_token (String& outstr)
 		if (outstr == "false")
 			return TOKEN_FALSE;
 
+		// begin?  we're a block
+		if (outstr == "begin") {
+			// must have whitespace to end of line
+			while (in && in.peek() != '\n')
+				if (!isspace(in.get())) {
+					outstr = S("Syntax error: garbage after <<[");
+					return TOKEN_ERROR;
+				}
+			in.get();
+			++line;
+
+			// get block
+			outstr.clear();
+			while (in) {
+				// read a line
+				StringBuffer data;
+				do {
+					char ch = in.get();
+					data << ch;
+					if (ch == '\n') {
+						++ line;
+						break;
+					}
+				} while (in);
+
+				// line end pattern?
+				String tstr = data.str();
+				if (strstr(tstr, "end") && strip(tstr) == "end") // see if the string exists, if so, see if that's all there is
+					break;
+
+				// add data
+				outstr = outstr + tstr;
+			}
+		}
+
 		// outstr = strlower(outstr);
 
 		return TOKEN_STRING;
-
-	// unique ID
-	} else if (test == '$') {
-		StringBuffer data;
-		while (in && !isspace(in.peek()))
-			data << (char)in.get();
-
-		outstr = data.str();
-
-		return TOKEN_ID;
 	}
 
 	// error
@@ -261,7 +270,6 @@ File::Reader::get (Node& node)
 {
 	Token op;
 	String opstr;
-	bool custom;
 
 	// clear node
 	node.name.clear();
@@ -289,13 +297,6 @@ File::Reader::get (Node& node)
 	// set line
 	node.line = line;
 
-	// get a custom (@) operator?
-	custom = false;
-	if (op == TOKEN_CUSTOM) {
-		custom = true;
-		op = read_token(opstr);
-	}
-
 	// expect a name
 	if (op != TOKEN_STRING)
 		throw File::Error(S("Parse error: name expected"));
@@ -310,10 +311,6 @@ File::Reader::get (Node& node)
 
 	// keyed attr?
 	if (op == TOKEN_KEY) {
-		// custom attrs don't have keys
-		if (custom)
-			throw File::Error(S("Parse error: unexpected :"));
-
 		// read key
 		op = read_token(opstr);
 		if (op != TOKEN_STRING)
@@ -330,8 +327,8 @@ File::Reader::get (Node& node)
 
 	// object?
 	if (op == TOKEN_BEGIN) {
-		// if we had a custom marker or key, we can't be an object
-		if (custom || node.key)
+		// if we had a key, we can't be an object
+		if (node.key)
 			throw File::Error(S("Parse error: unexpected object"));
 
 		// return as object type
@@ -342,7 +339,7 @@ File::Reader::get (Node& node)
 	// attribute?
 	else if (op == TOKEN_SET) {
 		// read
-		node.type = custom ? Node::CUSTOM : (node.key ? Node::KEYED : Node::ATTR);
+		node.type = node.key ? Node::KEYED : Node::ATTR;
 		String data;
 		Token type = read_token(data);
 
@@ -447,7 +444,7 @@ File::KeyError::KeyError (DataType type, String name, uint index) : File::Error(
 		type == TYPE_BOOL ? S("bool") :
 		type == TYPE_ID ? S("id") :
 		S("unknown"))
-		+ " " + name + ":" + tostr(index) + " is not defined";
+		+ " " + name + "." + tostr(index) + " is not defined";
 }
 
 int
@@ -485,7 +482,7 @@ File::Writer::attr (String name, String data)
 	if (!out)
 		return;
 
-	if (!str_is_valid_id(name)) {
+	if (!File::valid_name(name)) {
 		Log::Error << "Attempted to write id '" << name << "'";
 		return;
 	}
@@ -502,7 +499,7 @@ File::Writer::attr (String name, long data)
 	if (!out)
 		return;
 
-	if (!str_is_valid_id(name)) {
+	if (!File::valid_name(name)) {
 		Log::Error << "Attempted to write id '" << name << "'";
 		return;
 	}
@@ -517,7 +514,7 @@ File::Writer::attr (String name, long long data)
 	if (!out)
 		return;
 
-	if (!str_is_valid_id(name)) {
+	if (!File::valid_name(name)) {
 		Log::Error << "Attempted to write id '" << name << "'";
 		return;
 	}
@@ -532,7 +529,7 @@ File::Writer::attr (String name, bool data)
 	if (!out)
 		return;
 
-	if (!str_is_valid_id(name)) {
+	if (!File::valid_name(name)) {
 		Log::Error << "Attempted to write id '" << name << "'";
 		return;
 	}
@@ -548,14 +545,14 @@ File::Writer::attr (String name, const UniqueID& data)
 	if (!out)
 		return;
 
-	if (!str_is_valid_id(name)) {
+	if (!File::valid_name(name)) {
 		Log::Error << "Attempted to write id '" << name << "'";
 		return;
 	}
 
 	do_indent();
 
-	out << name << " = $" << UniqueIDManager.encode(data) << "\n";
+	out << name << " = <" << UniqueIDManager.encode(data) << ">\n";
 }
 
 void
@@ -564,13 +561,13 @@ File::Writer::keyed (String name, String key, String data)
 	if (!out)
 		return;
 
-	if (!str_is_valid_id(name)) {
-		Log::Error << "Attempted to write id '" << name << "'";
+	if (!File::valid_name(name) || !File::valid_name(key)) {
+		Log::Error << "Attempted to write id '" << name << "." << key << "'";
 		return;
 	}
 
 	do_indent();
-	out << name << " : " << EscapeString(key) << " = " << EscapeString(data) << "\n";
+	out << name << "." << key << " = " << EscapeString(data) << "\n";
 }
 
 void
@@ -579,13 +576,13 @@ File::Writer::keyed (String name, String key, long data)
 	if (!out)
 		return;
 
-	if (!str_is_valid_id(name)) {
-		Log::Error << "Attempted to write id '" << name << "'";
+	if (!File::valid_name(name) || !File::valid_name(key)) {
+		Log::Error << "Attempted to write id '" << name << "." << key << "'";
 		return;
 	}
 
 	do_indent();
-	out << name << " : " << EscapeString(key) << " = " << data << "\n";
+	out << name << "." << key << " = " << data << "\n";
 }
 
 void
@@ -594,13 +591,13 @@ File::Writer::keyed (String name, String key, bool data)
 	if (!out)
 		return;
 
-	if (!str_is_valid_id(name)) {
-		Log::Error << "Attempted to write id '" << name << "'";
+	if (!File::valid_name(name) || !File::valid_name(key)) {
+		Log::Error << "Attempted to write id '" << name << "." << key << "'";
 		return;
 	}
 
 	do_indent();
-	out << name << " : " << EscapeString(key) << " = " << (data ? "true" : "false") << "\n";
+	out << name << "." << key << " = " << (data ? "true" : "false") << "\n";
 }
 
 void
@@ -609,102 +606,14 @@ File::Writer::keyed (String name, String key, const UniqueID& data)
 	if (!out)
 		return;
 
-	if (!str_is_valid_id(name)) {
-		Log::Error << "Attempted to write id '" << name << "'";
+	if (!File::valid_name(name) || !File::valid_name(key)) {
+		Log::Error << "Attempted to write id '" << name << "." << key << "'";
 		return;
 	}
 
 	do_indent();
 
-	out << name << " : " << EscapeString(key) << " = $" << UniqueIDManager.encode(data) << "\n";
-}
-
-void
-File::Writer::custom (String name, String data)
-{
-	if (!out)
-		return;
-
-	if (!str_is_valid_id(name)) {
-		Log::Error << "Attempted to write id '" << name << "'";
-		return;
-	}
-
-	do_indent();
-
-	// name
-	out << '@' << name << " = \"";
-
-	for (String::const_iterator i = data.begin(); i != data.end(); ++i) {
-		switch (*i) {
-			case '\t':
-				out << "\\t";
-				break;
-			case '\n':
-				out << "\\n";
-				break;
-			case '\\':
-				out << "\\\\";
-				break;
-			case '"':
-				out << "\\\"";
-				break;
-			case '\0':
-				break;
-			default:
-				out << *i;
-		}
-	}
-
-	// newline
-	out << "\"\n";
-}
-
-void
-File::Writer::custom (String name, long data)
-{
-	if (!out)
-		return;
-
-	if (!str_is_valid_id(name)) {
-		Log::Error << "Attempted to write id '" << name << "'";
-		return;
-	}
-
-	do_indent();
-	out << '@' << name << " = " << data << "\n";
-}
-
-void
-File::Writer::custom (String name, bool data)
-{
-	if (!out)
-		return;
-
-	if (!str_is_valid_id(name)) {
-		Log::Error << "Attempted to write id '" << name << "'";
-		return;
-	}
-
-	do_indent();
-
-	out << '@' << name << " = " << (data ? "true" : "false") << "\n";
-}
-
-void
-File::Writer::custom (String name, const UniqueID& data)
-{
-	if (!out)
-		return;
-
-	if (!str_is_valid_id(name)) {
-		Log::Error << "Attempted to write id '" << name << "'";
-		return;
-	}
-
-	do_indent();
-
-	out << '@' << name << " = &" << UniqueIDManager.encode(data) << "\n";
+	out << name << "." << key << " = <" << UniqueIDManager.encode(data) << ">\n";
 }
 
 void
@@ -713,7 +622,7 @@ File::Writer::block (String name, String data)
 	if (!out)
 		return;
 
-	if (!str_is_valid_id(name)) {
+	if (!File::valid_name(name)) {
 		Log::Error << "Attempted to write id '" << name << "'";
 		return;
 	}
@@ -721,14 +630,14 @@ File::Writer::block (String name, String data)
 	do_indent();
 
 	// beginning
-	out << name << " = <<[\n" << data;
+	out << name << " = begin\n" << data;
 	// we need to add a newline if we don't have one on end already
-	// FIXME: escape ]>> if it's in the data
+	// FIXME: escape if data includes end line
 	if (data.empty() || data[data.size()-1] != '\n')
 		out << '\n';
 	// ending
 	do_indent();
-	out << "]>>\n";
+	out << "end\n";
 }
 
 void
@@ -737,7 +646,7 @@ File::Writer::begin (String name)
 	if (!out)
 		return;
 
-	if (!str_is_valid_id(name)) {
+	if (!File::valid_name(name)) {
 		Log::Error << "Attempted to write id '" << name << "'";
 		return;
 	}
@@ -792,13 +701,13 @@ File::valid_name (String name)
 	if (name.empty())
 		return false;
 
-	// must start with a letter
-	if (!isalpha(name[0]))
+	// must start with a letter or _
+	if (!isalpha(name[0]) && name[0] != '_')
 		return false;
 
-	// must be alpha, digit, _, or .
+	// must be alpha, digit, _
 	for (String::const_iterator i = name.begin(); i != name.end(); ++i)
-		if (!VALID_NAME_CHAR(*i))
+		if (!isalnum(*i) && *i != '_')
 			return false;
 
 	// all good
@@ -809,7 +718,6 @@ int
 File::Node::get_int () const
 {
 	if (datatype != TYPE_INT) {
-		// FIXME: Log::Error << "Incorrect data type for '" << get_name() << "' at " << get_filename() << ':' << get_line();
 		Log::Error << "Incorrect data type for '" << get_name() << "' at :" << get_line();
 		throw(File::Error(S("data type mismatch")));
 	}

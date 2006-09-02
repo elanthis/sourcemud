@@ -241,43 +241,43 @@ void
 ObjectBlueprint::save (File::Writer& writer)
 {
 	if (id)
-		writer.attr(S("id"), id);
+		writer.keyed(S("blueprint"), S("id"), id);
 
 	if (set_flags.name)
-		writer.attr(S("name"), name.get_name());
+		writer.keyed(S("blueprint"), S("name"), name.get_name());
 
 	if (set_flags.desc)
-		writer.attr(S("desc"), desc);
+		writer.keyed(S("blueprint"), S("desc"), desc);
 
 	for (StringList::const_iterator i = keywords.begin(); i != keywords.end(); ++i)
-		writer.attr(S("keyword"), *i);
+		writer.keyed(S("blueprint"), S("keyword"), *i);
 
 	if (set_flags.equip)
-		writer.attr(S("equip"), equip.get_name());
+		writer.keyed(S("blueprint"), S("equip"), equip.get_name());
 
 	if (set_flags.cost)
-		writer.attr(S("cost"), cost);
+		writer.keyed(S("blueprint"), S("cost"), cost);
 	if (set_flags.weight)
-		writer.attr(S("weight"), weight);
+		writer.keyed(S("blueprint"), S("weight"), weight);
 
 	if (set_flags.hidden)
-		writer.attr(S("roomlist"), !is_hidden());
+		writer.keyed(S("blueprint"), S("roomlist"), !is_hidden());
 	if (set_flags.gettable)
-		writer.attr(S("gettable"), is_gettable());
+		writer.keyed(S("blueprint"), S("gettable"), is_gettable());
 	if (set_flags.touchable)
-		writer.attr(S("touchable"), is_touchable());
+		writer.keyed(S("blueprint"), S("touchable"), is_touchable());
 	if (set_flags.dropable)
-		writer.attr(S("dropable"), is_dropable());
+		writer.keyed(S("blueprint"), S("dropable"), is_dropable());
 	if (set_flags.trashable)
-		writer.attr(S("trashable"), is_trashable());
+		writer.keyed(S("blueprint"), S("trashable"), is_trashable());
 	if (set_flags.rotting)
-		writer.attr(S("rotting"), is_rotting());
+		writer.keyed(S("blueprint"), S("rotting"), is_rotting());
 
 	if (parent)
-		writer.attr(S("parent"), parent->get_id());
+		writer.keyed(S("blueprint"), S("parent"), parent->get_id());
 
 	for (ContainerList::const_iterator i = containers.begin (); i != containers.end (); i ++)
-		writer.attr(S("container"), i->get_name());
+		writer.keyed(S("blueprint"), S("container"), i->get_name());
 
 	for (ActionList::const_iterator i = actions.begin(); i != actions.end(); ++i) {
 		writer.begin(S("action"));
@@ -297,41 +297,41 @@ int
 ObjectBlueprint::load (File::Reader& reader)
 {
 	FO_READ_BEGIN
-		FO_ATTR("id")
+		FO_ATTR2("blueprint", "id")
 			id = node.get_data();
-		FO_ATTR("name")
+		FO_ATTR2("blueprint", "name")
 			set_name(node.get_data());
-		FO_ATTR("keyword")
+		FO_ATTR2("blueprint", "keyword")
 			keywords.push_back(node.get_data());
-		FO_ATTR("desc")
+		FO_ATTR2("blueprint", "desc")
 			set_desc(node.get_data());
-		FO_ATTR("weight")
+		FO_ATTR2("blueprint", "weight")
 			FO_TYPE_ASSERT(INT);
 			set_weight(tolong(node.get_data()));
-		FO_ATTR("cost")
+		FO_ATTR2("blueprint", "cost")
 			FO_TYPE_ASSERT(INT);
 			set_cost(tolong(node.get_data()));
-		FO_ATTR("equip")
+		FO_ATTR2("blueprint", "equip")
 			set_equip(EquipLocation::lookup(node.get_data()));
-		FO_ATTR("gettable")
+		FO_ATTR2("blueprint", "gettable")
 			FO_TYPE_ASSERT(BOOL);
 			set_gettable(str_is_true(node.get_data()));
-		FO_ATTR("touchable")
+		FO_ATTR2("blueprint", "touchable")
 			FO_TYPE_ASSERT(BOOL);
 			set_touchable(str_is_true(node.get_data()));
-		FO_ATTR("roomlist")
+		FO_ATTR2("blueprint", "roomlist")
 			FO_TYPE_ASSERT(BOOL);
 			set_hidden(!str_is_true(node.get_data()));
-		FO_ATTR("dropable")
+		FO_ATTR2("blueprint", "dropable")
 			FO_TYPE_ASSERT(BOOL);
 			set_dropable(str_is_true(node.get_data()));
-		FO_ATTR("trashable")
+		FO_ATTR2("blueprint", "trashable")
 			FO_TYPE_ASSERT(BOOL);
 			set_trashable(str_is_true(node.get_data()));
-		FO_ATTR("rotting")
+		FO_ATTR2("blueprint", "rotting")
 			FO_TYPE_ASSERT(BOOL);
 			set_rotting(str_is_true(node.get_data()));
-		FO_ATTR("container")
+		FO_ATTR2("blueprint", "container")
 			ContainerType type = ContainerType::lookup(node.get_data());
 			if (type.valid())
 				containers.insert(type);
@@ -351,19 +351,19 @@ ObjectBlueprint::load (File::Reader& reader)
 			if (id.empty())
 				throw File::Error(S("Action has no ID"));
 			actions[id] = script;
-		FO_ATTR("parent")
+		FO_ATTR2("blueprint", "parent")
 			ObjectBlueprint* blueprint = ObjectBlueprintManager.lookup(node.get_data());
 			if (blueprint)
 				set_parent(blueprint);
 			else
 				Log::Warning << "Undefined parent object blueprint '" << node.get_data() << "' at " << reader.get_filename() << ':' << node.get_line();
-		FO_CUSTOM
+		FO_KEYED("user")
 			if (node.get_datatype() == File::TYPE_INT)
-				set_property(node.get_name(), tolong(node.get_data()));
+				set_property(node.get_key(), tolong(node.get_data()));
 			else if (node.get_datatype() == File::TYPE_STRING)
-				set_property(node.get_name(), node.get_data());
+				set_property(node.get_key(), node.get_data());
 			else if (node.get_datatype() == File::TYPE_BOOL)
-				set_property(node.get_name(), str_is_true(node.get_data()));
+				set_property(node.get_key(), str_is_true(node.get_data()));
 			else {
 				Log::Error << "Invalid data type for script attribute at " << reader.get_filename() << ':' << node.get_line();
 				return -1;
@@ -457,7 +457,7 @@ Object::save (File::Writer& writer)
 	if (get_blueprint()) {
 		// real blueprint
 		if (get_blueprint()->get_id()) {
-			writer.attr(S("blueprint"), get_blueprint()->get_id());
+			writer.keyed(S("object"), S("blueprint"), get_blueprint()->get_id());
 		// anonymous blueprint
 		} else {
 			writer.begin(S("blueprint"));
@@ -468,13 +468,13 @@ Object::save (File::Writer& writer)
 
 	// save name, if set
 	if (!name.empty())
-		writer.attr(S("name"), name.get_name());
+		writer.keyed(S("object"), S("name"), name.get_name());
 
 	// parent data
 	Entity::save(writer);
 
 	if (location.valid())
-		writer.attr(S("location"), location.get_name());
+		writer.keyed(S("object"), S("location"), location.get_name());
 
 	for (EList<Object>::const_iterator e = children.begin (); e != children.end(); ++e) {
 		writer.begin(S("object"));
@@ -513,16 +513,16 @@ Object::load_node(File::Reader& reader, File::Node& node)
 			if (blueprint->load(reader))
 				throw File::Error(S("Failed to load anonymous blueprint"));
 			set_blueprint(blueprint);
-		FO_ATTR("blueprint")
+		FO_ATTR2("object", "blueprint")
 			// sets a real blueprint
 			ObjectBlueprint* blueprint = NULL;
 			if ((blueprint = ObjectBlueprintManager.lookup(node.get_data())) == NULL)
 				Log::Error << "Could not find object blueprint '" << node.get_data() << "'";
 			else
 				set_blueprint(blueprint);
-		FO_ATTR("name")
+		FO_ATTR2("object", "name")
 			name.set_name(node.get_data());
-		FO_ATTR("location")
+		FO_ATTR2("object", "location")
 			location = ContainerType::lookup(node.get_data());
 		FO_OBJECT("object")
 			Object* obj = new Object ();

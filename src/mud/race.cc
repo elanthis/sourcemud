@@ -44,37 +44,37 @@ Race::load (File::Reader& reader)
 		stats[i] = 0;
 
 	FO_READ_BEGIN
-		FO_ATTR("name")
+		FO_ATTR2("race", "name")
 			FO_TYPE_ASSERT(STRING)
 			name = node.get_data();
-		FO_ATTR("adj")
+		FO_ATTR2("race", "adj")
 			FO_TYPE_ASSERT(STRING)
 			adj = node.get_data();
-		FO_ATTR("body")
+		FO_ATTR2("race", "body")
 			FO_TYPE_ASSERT(STRING)
 			body = node.get_data();
-		FO_ATTR("desc")
+		FO_ATTR2("race", "desc")
 			FO_TYPE_ASSERT(STRING)
 			desc = node.get_data();
-		FO_ATTR("about")
+		FO_ATTR2("race", "about")
 			FO_TYPE_ASSERT(STRING)
 			about = node.get_data();
-		FO_ATTR("min_age")
+		FO_ATTR2("race", "min_age")
 			FO_TYPE_ASSERT(INT)
 			age_min = tolong(node.get_data());
-		FO_ATTR("max_age")
+		FO_ATTR2("race", "max_age")
 			FO_TYPE_ASSERT(INT)
 			age_max = tolong(node.get_data());
-		FO_ATTR("lifespan")
+		FO_ATTR2("race", "lifespan")
 			FO_TYPE_ASSERT(INT)
 			life_span = tolong(node.get_data());
-		FO_ATTR("neuter_height")
+		FO_ATTR2("race", "neuter_height")
 			FO_TYPE_ASSERT(INT)
 			height[GenderType::NONE] = tolong(node.get_data());
-		FO_ATTR("female_height")
+		FO_ATTR2("race", "female_height")
 			FO_TYPE_ASSERT(INT)
 			height[GenderType::FEMALE] = tolong(node.get_data());
-		FO_ATTR("male_height")
+		FO_ATTR2("race", "male_height")
 			FO_TYPE_ASSERT(INT)
 			height[GenderType::MALE] = tolong(node.get_data());
 		FO_KEYED("trait")

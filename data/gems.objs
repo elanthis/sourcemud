@@ -3,25 +3,25 @@
 # Sean Middleditch <elanthis@awemud.net>
 
 object_blueprint {
-  id = "gem"
+  blueprint.id = "gem"
 }
 
 object_blueprint {
-  id = "gem_ruby"
-  name = "a ruby"
-  parent = "gem"
-  desc = "A small, red gem."
-  weight = 1
-  cost = 200
+  blueprint.id = "gem_ruby"
+  blueprint.name = "a ruby"
+  blueprint.parent = "gem"
+  blueprint.desc = "A small, red gem."
+  blueprint.weight = 1
+  blueprint.cost = 200
 }
 
 object_blueprint {
-  id = "gem_emerald"
-  name = "an emerald"
-  parent = "gem"
-  desc = "A small, green gem."
-  weight = 1
-  cost = 250
+  blueprint.id = "gem_emerald"
+  blueprint.name = "an emerald"
+  blueprint.parent = "gem"
+  blueprint.desc = "A small, green gem."
+  blueprint.weight = 1
+  blueprint.cost = 250
 }
 
 # vim: set shiftwidth=2 tabstop=2 expandtab:

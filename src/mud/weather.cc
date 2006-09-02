@@ -43,18 +43,18 @@ WeatherRegion::load (File::Reader& reader)
 		FO_OBJECT("state")
 			WeatherState state(node.get_name());
 			FO_READ_BEGIN
-				FO_ATTR("id")
+				FO_ATTR2("weather", "id")
 					state.id = node.get_data();
-				FO_ATTR("desc")
+				FO_ATTR2("weather", "desc")
 					state.descs.push_back(node.get_data());
 				FO_OBJECT("change")
 					WeatherChange change;
 					FO_READ_BEGIN
-						FO_ATTR("target")
+						FO_ATTR2("weather", "target")
 							change.to = node.get_data();
-						FO_ATTR("chance")
+						FO_ATTR2("weather", "chance")
 							change.chance = tolong(node.get_data());
-						FO_ATTR("text")
+						FO_ATTR2("weather", "text")
 							change.desc = node.get_data();
 					FO_READ_ERROR
 						throw error;
@@ -64,11 +64,11 @@ WeatherRegion::load (File::Reader& reader)
 				throw error;
 			FO_READ_END
 			states.push_back(state);
-		FO_ATTR("state")
+		FO_ATTR2("weather", "state")
 			state = get_state(node.get_data());
 			if (state < 0)
 				throw File::Error(S("Current state out of range"));
-		FO_ATTR("ticks")
+		FO_ATTR2("weather", "ticks")
 			FO_TYPE_ASSERT(INT);
 			ticks = tolong(node.get_data());
 			if (ticks > 500) // ludicrous
@@ -100,21 +100,21 @@ WeatherRegion::save (File::Writer& writer) const
 {
 	for (GCType::vector<WeatherState>::const_iterator si = states.begin(); si != states.end(); ++si) {
 		writer.begin(S("state"));
-		writer.attr(S("id"), si->id);
+		writer.keyed(S("weather"), S("id"), si->id);
 		for (StringList::const_iterator di = si->descs.begin(); di != si->descs.end(); ++di)
-			writer.attr(S("desc"), *di);
+			writer.keyed(S("weather"), S("desc"), *di);
 		for (GCType::vector<WeatherChange>::const_iterator ci = si->changes.begin(); ci != si->changes.end(); ++ci) {
 			writer.begin(S("change"));
-			writer.attr(S("target"), ci->to);
-			writer.attr(S("chance"), ci->chance);
-			writer.attr(S("text"), ci->desc);
+			writer.keyed(S("weather"), S("target"), ci->to);
+			writer.keyed(S("weather"), S("chance"), ci->chance);
+			writer.keyed(S("weather"), S("text"), ci->desc);
 			writer.end();
 		}
 		writer.end();
 	}
 
-	writer.attr(S("state"), states[state].id);
-	writer.attr(S("ticks"), ticks);
+	writer.keyed(S("weather"), S("state"), states[state].id);
+	writer.keyed(S("weather"), S("ticks"), ticks);
 }
 
 int

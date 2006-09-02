@@ -3,16 +3,16 @@
 # Sean Middleditch <elanthis@awemud.net>
 
 # initialize after loading up
-load = <<[
+load = begin
 	self.ai_targets = array(); 
 	self.ai_group = String(self.ai_group);
 	self.ai_flee = Int(self.ai_flee) || 30;
 	self.setState('wander');
 	self.ai_wander = 120 + getRandom(300);
-]>>
+end
 
 # save data
-save = <<[
+save = begin
 	if (String(self.ai_group))
 		writer.setString('ai_group', self.ai_group);
 	if (String(self.ai_state))
@@ -21,20 +21,20 @@ save = <<[
 		writer.setInt('ai_flee', self.ai_flee);
 	if (Int(self.ai_foodchain))
 		writer.setInt('ai_foodchain', self.ai_foodchain);
-]>>
+end
 
 # attacked!?
-event : attack = <<[
+event.attack = begin
 	// is it ourself?
 	if (actor == self)
 		return;
 
 	// set new target
 	self.ai_target = actor;
-]>>
+end
 
 # heartbeat
-heartbeat = <<[
+heartbeat = begin
 	// wander
 	if (self.ai_state == 'wander') {
 		if (self.getRoundTime() > 0)
@@ -46,10 +46,10 @@ heartbeat = <<[
 			self.goRandomExit();
 		}
 	}
-]>>
+end
 
 # someone new to toy with
-event : enter = <<[
+event.enter = begin
 	// automatically flee if we're injured
 	if (actor != self && self.getHpPercent() < 20) {
 		self.setState('flee');
@@ -79,10 +79,10 @@ event : enter = <<[
 		self.ai_target = actor;
 		self.setState('attack');
 	}
-]>>
+end
 
 # ready to act
-ready = <<[
+ready = begin
 	if (self.ai_state == 'attack') {
 		// attacker still here?
 		if (!self.ai_target.isDead() && self.ai_target.room() == self.room()) {
@@ -127,16 +127,16 @@ ready = <<[
 			self.setState('wander');
 		}
 	}
-]>>
+end
 
 # state changes
-pump = <<[
+pump = begin
 	if (data == 'state') {
 		if (self.ai_state == 'attack')
 			self.attack(self.ai_target);
 		else if (self.ai_state == 'flee')
 			self.goRandomExit();
 	}
-]>>
+end
 
 # vim: set filetype=scriptix :

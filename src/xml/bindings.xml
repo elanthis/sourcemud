@@ -866,7 +866,7 @@ number = roll_dice(3, 6);]]></example>
           return Scriptix::Nil;
         }
 
-        _self->get_writer()->custom(_arg_name, (long)_arg_value);
+        _self->get_writer()->keyed(S("user"), _arg_name, (long)_arg_value);
       ]]></code>
     </method>
     <method>
@@ -890,7 +890,7 @@ number = roll_dice(3, 6);]]></example>
           return Scriptix::Nil;
         }
 
-        _self->get_writer()->custom(_arg_name, _arg_value);
+        _self->get_writer()->keyed(S("user"), _arg_name, _arg_value);
       ]]></code>
     </method>
     <method>
@@ -914,7 +914,7 @@ number = roll_dice(3, 6);]]></example>
           return Scriptix::Nil;
         }
 
-        _self->get_writer()->custom(_arg_name, (long)_arg_value);
+        _self->get_writer()->keyed(S("user"), _arg_name, (long)_arg_value);
       ]]></code>
     </method>
   </type>
