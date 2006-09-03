@@ -3,7 +3,7 @@
 	<event>
 		<name>look</name>
 		<actor>
-			<type>Character</type>
+			<type>Creature</type>
 			<doc>The character that performed the look.</doc>
 		</actor>
 		<arg>
@@ -17,7 +17,7 @@
 		<name>death</name>
 		<actor>
 			<type>Entity</type>
-			<doc>The <link type="Object" /> or <link type="Character" /> that was destroyed.</doc>
+			<doc>The <link type="Object" /> or <link type="Creature" /> that was destroyed.</doc>
 		</actor>
 		<arg>
 			<name>killer</name>
@@ -29,7 +29,7 @@
 	<event>
 		<name>enter</name>
 		<actor>
-			<type>Character</type>
+			<type>Creature</type>
 			<doc>The character who entered the room.</doc>
 		</actor>
 		<arg>
@@ -40,7 +40,7 @@
 		<room>
 			<doc>The room which was entered by the actor.</doc>
 		</room>
-		<doc>The enter event is called whenever a <link type="Character"/> enters the <link type="Room"/>.</doc>
+		<doc>The enter event is called whenever a <link type="Creature"/> enters the <link type="Room"/>.</doc>
         <example><![CDATA[// note: use 'creaky_floor' in an enter event handler action for a room
 // note 2: this example is bit-rot'd, please update me!
   public
@@ -55,7 +55,7 @@
 	<event>
 		<name>leave</name>
 		<actor>
-			<type>Character</type>
+			<type>Creature</type>
 			<doc>The character who left the room.</doc>
 		</actor>
 		<arg>
@@ -70,7 +70,7 @@
 	<event>
 		<name>get</name>
 		<actor>
-			<type>Character</type>
+			<type>Creature</type>
 			<doc>Who picked the item up.</doc>
 		</actor>
 		<arg>
@@ -83,12 +83,12 @@
 			<type>Entity</type>
 			<doc>The <link linkend="Object"/> where the target was retrieved from, or the <link linkend="Room"/> in which the target was laying.</doc>
 		</arg>
-        <doc>When an <link linkend="Object"/> is picked up, retrieved from a container, or otherwise enters a <link linkend="Character"/>'s hands, the get event will be triggered.</doc>
+        <doc>When an <link linkend="Object"/> is picked up, retrieved from a container, or otherwise enters a <link linkend="Creature"/>'s hands, the get event will be triggered.</doc>
 	</event>
 	<event>
 		<name>read</name>
 		<actor>
-			<type>Character</type>
+			<type>Creature</type>
 		</actor>
 		<arg>
 			<name>target</name>
@@ -99,7 +99,7 @@
 	<event>
 		<name>raise</name>
 		<actor>
-			<type>Character</type>
+			<type>Creature</type>
 		</actor>
 		<arg>
 			<name>target</name>
@@ -110,7 +110,7 @@
 	<event>
 		<name>eat</name>
 		<actor>
-			<type>Character</type>
+			<type>Creature</type>
 		</actor>
 		<arg>
 			<name>target</name>
@@ -120,7 +120,7 @@
 	<event>
 		<name>drink</name>
 		<actor>
-			<type>Character</type>
+			<type>Creature</type>
 		</actor>
 		<arg>
 			<name>target</name>
@@ -130,7 +130,7 @@
 	<event>
 		<name>say</name>
 		<actor>
-			<type>Character</type>
+			<type>Creature</type>
 		</actor>
 		<arg>
 			<name>text</name>
@@ -141,7 +141,7 @@
 	<event>
 		<name>drop</name>
 		<actor>
-			<type>Character</type>
+			<type>Creature</type>
 		</actor>
 		<arg>
 			<name>object</name>
@@ -151,7 +151,7 @@
 	<event>
 		<name>touch</name>
 		<actor>
-			<type>Character</type>
+			<type>Creature</type>
 		</actor>
 		<arg>
 			<name>target</name>
@@ -161,7 +161,7 @@
 	<event>
 		<name>kick</name>
 		<actor>
-			<type>Character</type>
+			<type>Creature</type>
 		</actor>
 		<arg>
 			<name>target</name>
@@ -171,7 +171,7 @@
 	<event>
 		<name>open</name>
 		<actor>
-			<type>Character</type>
+			<type>Creature</type>
 		</actor>
 		<arg>
 			<name>target</name>
@@ -181,7 +181,7 @@
 	<event>
 		<name>close</name>
 		<actor>
-			<type>Character</type>
+			<type>Creature</type>
 		</actor>
 		<arg>
 			<name>target</name>
@@ -191,7 +191,7 @@
 	<event>
 		<name>lock</name>
 		<actor>
-			<type>Character</type>
+			<type>Creature</type>
 		</actor>
 		<arg>
 			<name>target</name>
@@ -201,7 +201,7 @@
 	<event>
 		<name>unlock</name>
 		<actor>
-			<type>Character</type>
+			<type>Creature</type>
 		</actor>
 		<arg>
 			<name>target</name>
@@ -211,7 +211,7 @@
 	<event>
 		<name>resurrect</name>
 		<actor>
-			<type>Character</type>
+			<type>Creature</type>
 			<doc>The character that was resurrected.</doc>
 		</actor>
 	</event>
@@ -219,12 +219,12 @@
 		<name>damage</name>
 		<actor>
 			<type>Entity</type>
-			<doc>The attacking <link class="Character"/> or <link class="Object"/> which caused the damage.</doc>
+			<doc>The attacking <link class="Creature"/> or <link class="Object"/> which caused the damage.</doc>
 		</actor>
 		<arg>
 			<name>victim</name>
 			<type>Entity</type>
-			<doc>The <link class="Character"/> or <link class="Object"/> which received the damage.</doc>
+			<doc>The <link class="Creature"/> or <link class="Object"/> which received the damage.</doc>
 		</arg>
 		<arg>
 			<name>amount</name>
@@ -236,13 +236,13 @@
 	<event>
 		<name>attack</name>
 		<actor>
-			<type>Character</type>
+			<type>Creature</type>
 			<doc>The attacker.</doc>
 		</actor>
 		<arg>
 			<name>victim</name>
 			<type>Entity</type>
-			<doc>The <link class="Character"/> or <link class="Object"/> which was attacked.</doc>
+			<doc>The <link class="Creature"/> or <link class="Object"/> which was attacked.</doc>
 		</arg>
 		<arg>
 			<name>weapon</name>

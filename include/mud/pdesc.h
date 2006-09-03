@@ -13,13 +13,13 @@
 #include "common/imanager.h"
 #include "mud/idmap.h"
 
-DECLARE_IDMAP(CharacterTrait)
+DECLARE_IDMAP(CreatureTrait)
 
 // Trait values; not just an IDMap because we have to store the desc, too
-class CharacterTraitValue {
+class CreatureTraitValue {
 	public:
-	inline CharacterTraitValue (void) : value(0) {}
-	inline CharacterTraitValue (const CharacterTraitValue& ct) : value(ct.value) {}
+	inline CreatureTraitValue (void) : value(0) {}
+	inline CreatureTraitValue (const CreatureTraitValue& ct) : value(ct.value) {}
 
 	inline String get_name(void) const;
 	inline String get_desc(void) const;
@@ -27,20 +27,20 @@ class CharacterTraitValue {
 	inline uint get_value (void) const { return value; }
 	inline bool valid (void) const { return value != 0; }
 
-	inline static CharacterTraitValue lookup (String name);
+	inline static CreatureTraitValue lookup (String name);
 
 	inline operator bool (void) const { return valid(); }
-	inline bool operator < (const CharacterTraitValue& tv) const { return value < tv.value; }
-	inline bool operator == (const CharacterTraitValue& tv) const { return value == tv.value; }
+	inline bool operator < (const CreatureTraitValue& tv) const { return value < tv.value; }
+	inline bool operator == (const CreatureTraitValue& tv) const { return value == tv.value; }
 
 	private:
 	uint value;
 
-	friend class SCharacterTraitManager;
+	friend class SCreatureTraitManager;
 };
 
 // Loads all known traits
-class SCharacterTraitManager : public IManager
+class SCreatureTraitManager : public IManager
 {
 	public:
 	int initialize ();
@@ -49,31 +49,31 @@ class SCharacterTraitManager : public IManager
 	String get_desc(uint id) const;
 	String get_name(uint id) const;
 
-	CharacterTraitValue get_trait(String name) const;
+	CreatureTraitValue get_trait(String name) const;
 
 	private:
 	StringList names;
 	StringList descs;
 };
-extern SCharacterTraitManager CharacterTraitManager;
+extern SCreatureTraitManager CreatureTraitManager;
 
 // Implementstions
 String
-CharacterTraitValue::get_name () const
+CreatureTraitValue::get_name () const
 {
-	return CharacterTraitManager.get_name(value);
+	return CreatureTraitManager.get_name(value);
 }
 
 String
-CharacterTraitValue::get_desc () const
+CreatureTraitValue::get_desc () const
 {
-	return CharacterTraitManager.get_desc(value);
+	return CreatureTraitManager.get_desc(value);
 }
 
-CharacterTraitValue
-CharacterTraitValue::lookup (String name)
+CreatureTraitValue
+CreatureTraitValue::lookup (String name)
 {
-	return CharacterTraitManager.get_trait(name);
+	return CreatureTraitManager.get_trait(name);
 }
 
 #endif

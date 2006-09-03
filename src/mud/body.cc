@@ -15,7 +15,7 @@
 #include "mud/object.h"
 #include "common/error.h"
 #include "common/string.h"
-#include "mud/char.h"
+#include "mud/creature.h"
 #include "mud/server.h"
 #include "mud/room.h"
 #include "common/streams.h"
@@ -90,7 +90,7 @@ EquipLocation::lookup (String name)
 }
 
 bool
-Character::is_held (Object *obj) const
+Creature::is_held (Object *obj) const
 {
 	assert (obj != NULL);
 
@@ -102,7 +102,7 @@ Character::is_held (Object *obj) const
 }
 
 bool
-Character::is_worn (Object *obj) const
+Creature::is_worn (Object *obj) const
 {
 	assert (obj != NULL);
 
@@ -117,14 +117,14 @@ Character::is_worn (Object *obj) const
 }
 
 bool
-Character::is_equipped (Object *obj) const
+Creature::is_equipped (Object *obj) const
 {
 	assert (obj != NULL);
 	return is_held (obj) || is_worn (obj);
 }
 
 int
-Character::hold (Object *obj)
+Creature::hold (Object *obj)
 {
 	assert (obj != NULL);
 
@@ -142,7 +142,7 @@ Character::hold (Object *obj)
 }
 
 int
-Character::wear (Object *obj) {
+Creature::wear (Object *obj) {
 	assert (obj != NULL);
 
 	if (equipment.body_worn == NULL && obj->get_equip () == EquipLocation::TORSO) {
@@ -165,7 +165,7 @@ Character::wear (Object *obj) {
 }
 
 int
-Character::equip (Object *obj) {
+Creature::equip (Object *obj) {
 	assert (obj != NULL);
 
 	int ret = wear (obj);
@@ -176,7 +176,7 @@ Character::equip (Object *obj) {
 }
 
 void
-Character::release_object (Object *obj)
+Creature::release_object (Object *obj)
 {
 	assert (obj != NULL);
 
@@ -193,7 +193,7 @@ Character::release_object (Object *obj)
 }
 
 int
-Character::free_hands (void) const
+Creature::free_hands (void) const
 {
 	int hands = 0;
 	if (equipment.right_held == NULL)
@@ -204,7 +204,7 @@ Character::free_hands (void) const
 }
 
 Object *
-Character::get_held_at (uint i) const
+Creature::get_held_at (uint i) const
 {
 	if (equipment.right_held) {
 		if (!i)
@@ -222,7 +222,7 @@ Character::get_held_at (uint i) const
 }
 
 Object *
-Character::get_worn_at (uint i) const
+Creature::get_worn_at (uint i) const
 {
 	if (equipment.body_worn) {
 		if (!i)
@@ -244,7 +244,7 @@ Character::get_worn_at (uint i) const
 }
 
 Object *
-Character::get_equip_at (uint i) const
+Creature::get_equip_at (uint i) const
 {
 	Object *ret;
 	ret = get_held_at (i);
@@ -257,7 +257,7 @@ Character::get_equip_at (uint i) const
 }
 
 Object *
-Character::find_worn (String name, uint count, uint *matches) const
+Creature::find_worn (String name, uint count, uint *matches) const
 {
 	assert (count != 0);
 
@@ -288,7 +288,7 @@ Character::find_worn (String name, uint count, uint *matches) const
 }
 
 Object *
-Character::find_held (String name, uint count, uint *matches) const
+Creature::find_held (String name, uint count, uint *matches) const
 {
 	assert (count != 0);
 
@@ -314,7 +314,7 @@ Character::find_held (String name, uint count, uint *matches) const
 }
 
 Object *
-Character::find_equip (String name, uint count, uint *matches) const
+Creature::find_equip (String name, uint count, uint *matches) const
 {
 	assert (count != 0);
 	uint held_matches;
@@ -345,14 +345,14 @@ Character::find_equip (String name, uint count, uint *matches) const
 }
 
 void
-Character::swap_hands (void) {
+Creature::swap_hands (void) {
 	Object *temp = equipment.right_held;
 	equipment.right_held = equipment.left_held;
 	equipment.left_held = temp;
 }
 
 void
-Character::drop_held (Room *r) {
+Creature::drop_held (Room *r) {
 	assert (r != NULL);
 
 	if (equipment.right_held && equipment.right_held->is_dropable()) {
@@ -366,7 +366,7 @@ Character::drop_held (Room *r) {
 }
 
 void
-Character::drop_all (Room *r) {
+Creature::drop_all (Room *r) {
 	assert (r != NULL);
 
 	drop_held (r);
@@ -386,7 +386,7 @@ Character::drop_all (Room *r) {
 }
 
 void
-Character::owner_release (Entity* child)
+Creature::owner_release (Entity* child)
 {
 	// we only hold objects
 	Object* obj = OBJECT(child);

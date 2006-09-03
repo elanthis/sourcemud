@@ -43,28 +43,28 @@ SCommandManager::initialize (void)
 			"north\n",
 			north,
 			ACCESS_ALL,
-			Character)
+			Creature)
 		FORMAT(10, "north")
 	END_COMM
 	COMMAND("south",
 			"south\n",
 			south,
 			ACCESS_ALL,
-			Character)
+			Creature)
 		FORMAT(10, "south")
 	END_COMM
 	COMMAND("east",
 			"east\n",
 			east,
 			ACCESS_ALL,
-			Character)
+			Creature)
 		FORMAT(10, "east")
 	END_COMM
 	COMMAND("west",
 			"west\n",
 			west,
 			ACCESS_ALL,
-			Character)
+			Creature)
 		FORMAT(10, "west")
 	END_COMM
 	
@@ -73,7 +73,7 @@ SCommandManager::initialize (void)
 			"northeast\n",
 			northeast,
 			ACCESS_ALL,
-			Character)
+			Creature)
 		FORMAT(12, "ne")
 		FORMAT(12, "northeast")
 	END_COMM
@@ -82,7 +82,7 @@ SCommandManager::initialize (void)
 			"southeast\n",
 			southeast,
 			ACCESS_ALL,
-			Character)
+			Creature)
 		FORMAT(12, "se")
 		FORMAT(12, "southeast")
 	END_COMM
@@ -91,7 +91,7 @@ SCommandManager::initialize (void)
 			"southwest\n",
 			southwest,
 			ACCESS_ALL,
-			Character)
+			Creature)
 		FORMAT(12, "sw")
 		FORMAT(12, "southwest")
 	END_COMM
@@ -100,7 +100,7 @@ SCommandManager::initialize (void)
 			"northwest\n",
 			northwest,
 			ACCESS_ALL,
-			Character)
+			Creature)
 		FORMAT(12, "nw")
 		FORMAT(12, "northwest")
 	END_COMM
@@ -109,21 +109,21 @@ SCommandManager::initialize (void)
 			"go <exit>\n",
 			go,
 			ACCESS_ALL,
-			Character)
+			Creature)
 		FORMAT(10, "go :0*")
 	END_COMM
 	COMMAND("climb",
 			"climb <exit>\n",
 			climb,
 			ACCESS_ALL,
-			Character)
+			Creature)
 		FORMAT(10, "climb :0*")
 	END_COMM
 	COMMAND("crawl",
 			"crawl <exit>\n",
 			crawl,
 			ACCESS_ALL,
-			Character)
+			Creature)
 		FORMAT(10, "crawl :0*")
 	END_COMM
 
@@ -133,7 +133,7 @@ SCommandManager::initialize (void)
 			"look [at|in|on|under|behind] <object|person>\n",
 			look,
 			ACCESS_ALL,
-			Character)
+			Creature)
 		FORMAT(15, "look")
 		FORMAT(15, "look :0(in,on,under,behind,at)? :1*")
 	END_COMM
@@ -143,7 +143,7 @@ SCommandManager::initialize (void)
 			"say <text>\n",
 			say,
 			ACCESS_ALL,
-			Character)
+			Creature)
 		FORMAT(50, "say :0*")
 	END_COMM
 	COMMAND("sing",
@@ -151,14 +151,14 @@ SCommandManager::initialize (void)
 			"  ex: sing once upon a time; in a land far away; there lived three grand knights; and dragons to slay!\n",
 			sing,
 			ACCESS_ALL,
-			Character)
+			Creature)
 		FORMAT(50, "sing :0*")
 	END_COMM
 	COMMAND("emote",
 			"emote <action>\n",
 			emote,
 			ACCESS_ALL,
-			Character)
+			Creature)
 		FORMAT(50, "emote :0*")
 	END_COMM
 
@@ -167,28 +167,28 @@ SCommandManager::initialize (void)
 			"stand\n",
 			stand,
 			ACCESS_ALL,
-			Character)
+			Creature)
 		FORMAT(50, "stand")
 	END_COMM
 	COMMAND("sit",
 			"sit\n",
 			sit,
 			ACCESS_ALL,
-			Character)
+			Creature)
 		FORMAT(50, "sit")
 	END_COMM
 	COMMAND("lay",
 			"lay\n",
 			lay,
 			ACCESS_ALL,
-			Character)
+			Creature)
 		FORMAT(50, "lay")
 	END_COMM
 	COMMAND("kneel",
 			"kneel\n",
 			kneel,
 			ACCESS_ALL,
-			Character)
+			Creature)
 		FORMAT(50, "kneel")
 	END_COMM
 
@@ -197,28 +197,28 @@ SCommandManager::initialize (void)
 			"open <door>\n",
 			open,
 			ACCESS_ALL,
-			Character)
+			Creature)
 		FORMAT(50, "open :0*")
 	END_COMM
 	COMMAND("close",
 			"close <door>\n",
 			close,
 			ACCESS_ALL,
-			Character)
+			Creature)
 		FORMAT(50, "close :0*")
 	END_COMM
 	COMMAND("lock",
 			"lock <door>\n",
 			lock,
 			ACCESS_ALL,
-			Character)
+			Creature)
 		FORMAT(50, "lock :0*")
 	END_COMM
 	COMMAND("unlock",
 			"unlock <door>\n",
 			unlock,
 			ACCESS_ALL,
-			Character)
+			Creature)
 		FORMAT(50, "unlock :0*")
 	END_COMM
 	COMMAND("get",
@@ -226,7 +226,7 @@ SCommandManager::initialize (void)
 			"get <amount> coins\n",
 			get,
 			ACCESS_ALL,
-			Character)
+			Creature)
 		FORMAT(50, "get :0* from :1(in,on,under,behind)? :2*")
 		FORMAT(50, "get :3%? coins")
 		FORMAT(50, "get :0*")
@@ -235,14 +235,14 @@ SCommandManager::initialize (void)
 			"put <object> [in|on|under|behind] <location>\n",
 			put,
 			ACCESS_ALL,
-			Character)
+			Creature)
 		FORMAT(50, "put :0* :1(in,on,under,behind) :2*")
 	END_COMM
 	COMMAND("give",
 			"give <amount> coins [to] <player>\n",
 			give,
 			ACCESS_ALL,
-			Character)
+			Creature)
 		FORMAT(50, "give :0% coins to? :1*")
 	END_COMM
 	COMMAND("drop",
@@ -250,7 +250,7 @@ SCommandManager::initialize (void)
 			"drop <amount> coins\n",
 			drop,
 			ACCESS_ALL,
-			Character)
+			Creature)
 		FORMAT(50, "drop :1% coins")
 		FORMAT(50, "drop :0*")
 	END_COMM
@@ -258,56 +258,56 @@ SCommandManager::initialize (void)
 			"remove <object>\n",
 			remove,
 			ACCESS_ALL,
-			Character)
+			Creature)
 		FORMAT(50, "remove :0*")
 	END_COMM
 	COMMAND("wear",
 			"wear <object>\n",
 			wear,
 			ACCESS_ALL,
-			Character)
+			Creature)
 		FORMAT(50, "wear :0*")
 	END_COMM
 	COMMAND("equip",
 			"equip <object>\n",
 			equip,
 			ACCESS_ALL,
-			Character)
+			Creature)
 		FORMAT(50, "equip :0*")
 	END_COMM
 	COMMAND("raise",
 			"raise <object>\n",
 			raise,
 			ACCESS_ALL,
-			Character)
+			Creature)
 		FORMAT(50, "raise :0*")
 	END_COMM
 	COMMAND("eat",
 			"eat <object>\n",
 			eat,
 			ACCESS_ALL,
-			Character)
+			Creature)
 		FORMAT(50, "eat :0*")
 	END_COMM
 	COMMAND("drink",
 			"drink <object>\n",
 			drink,
 			ACCESS_ALL,
-			Character)
+			Creature)
 		FORMAT(50, "drink :0*")
 	END_COMM
 	COMMAND("touch",
 			"touch <object>\n",
 			touch,
 			ACCESS_ALL,
-			Character)
+			Creature)
 		FORMAT(50, "touch :0*")
 	END_COMM
 	COMMAND("read",
 			"read <object>\n",
 			read,
 			ACCESS_ALL,
-			Character)
+			Creature)
 		FORMAT(50, "read :0*")
 	END_COMM
 	COMMAND("kick",
@@ -315,28 +315,28 @@ SCommandManager::initialize (void)
 			"kick <door>\n",
 			kick,
 			ACCESS_ALL,
-			Character)
+			Creature)
 		FORMAT(50, "kick :0*")
 	END_COMM
 	COMMAND("swap",
 			"swap\n",
 			swap,
 			ACCESS_ALL,
-			Character)
+			Creature)
 		FORMAT(50, "swap")
 	END_COMM
 	COMMAND("attack",
 			"attack <target>\n",
 			attack,
 			ACCESS_ALL,
-			Character)
+			Creature)
 		FORMAT(50, ":0attack :1*")
 	END_COMM
 	COMMAND("kill",
 			"kill <target>\n",
 			attack,
 			ACCESS_ALL,
-			Character)
+			Creature)
 		FORMAT(50, ":0kill :1*")
 	END_COMM
 
@@ -373,7 +373,7 @@ SCommandManager::initialize (void)
 			"affects\n",
 			affects,
 			ACCESS_ALL,
-			Character)
+			Creature)
 		FORMAT(50, "affects")
 	END_COMM
 	COMMAND("set color",
@@ -387,7 +387,7 @@ SCommandManager::initialize (void)
 			"stop\n",
 			stop,
 			ACCESS_ALL,
-			Character)
+			Creature)
 		FORMAT(50, "stop");
 	END_COMM
 

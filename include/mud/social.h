@@ -38,7 +38,7 @@ class Social : public GC
 	String get_name () const { return name; }
 
 	// perform the social
-	int perform (class Character* actor, class Entity* target, String adverb) const;
+	int perform (class Creature* actor, class Entity* target, String adverb) const;
 
 	private:
 	// basic info

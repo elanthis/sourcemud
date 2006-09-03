@@ -11,10 +11,10 @@
 #include "mud/settings.h"
 #include "mud/fileobj.h"
 
-SCharacterTraitManager CharacterTraitManager;
+SCreatureTraitManager CreatureTraitManager;
 
 String
-SCharacterTraitManager::get_name (uint id) const
+SCreatureTraitManager::get_name (uint id) const
 {
 	// check that id is valid; no assert, as this is not an error
 	if (id == 0 || id > names.size())
@@ -25,7 +25,7 @@ SCharacterTraitManager::get_name (uint id) const
 }
 
 String
-SCharacterTraitManager::get_desc (uint id) const
+SCreatureTraitManager::get_desc (uint id) const
 {
 	// check that id is valid; no assert, as this is not an error
 	if (id == 0 || id > descs.size())
@@ -35,10 +35,10 @@ SCharacterTraitManager::get_desc (uint id) const
 	return descs[id - 1];
 }
 
-CharacterTraitValue
-SCharacterTraitManager::get_trait (String name) const
+CreatureTraitValue
+SCreatureTraitManager::get_trait (String name) const
 {
-	CharacterTraitValue ret;
+	CreatureTraitValue ret;
 	// search traits
 	for (uint i = 0; i < names.size(); ++i)
 		if (str_eq(name, names[i])) {
@@ -49,7 +49,7 @@ SCharacterTraitManager::get_trait (String name) const
 }
 
 int
-SCharacterTraitManager::initialize ()
+SCreatureTraitManager::initialize ()
 {
 	// open the file
 	String path = SettingsManager.get_misc_path() + "/traits";
@@ -61,7 +61,7 @@ SCharacterTraitManager::initialize ()
 		// this is one of the available traits
 		FO_ATTR2("trait", "class")
 			FO_TYPE_ASSERT(STRING)
-			CharacterTraitID::create(node.get_data());
+			CreatureTraitID::create(node.get_data());
 		// this is one of the available trait values
 		FO_KEYED("value")
 			FO_TYPE_ASSERT(STRING)
@@ -74,6 +74,6 @@ SCharacterTraitManager::initialize ()
 }
 
 void
-SCharacterTraitManager::shutdown ()
+SCreatureTraitManager::shutdown ()
 {
 }

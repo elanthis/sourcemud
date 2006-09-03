@@ -220,7 +220,7 @@ noinst_HEADERS=\
 	include/mud/bindings.h \
 	include/mud/body.h \
 	include/mud/caffect.h \
-	include/mud/char.h \
+	include/mud/creature.h \
 	include/mud/clock.h \
 	include/mud/color.h \
 	include/mud/command.h \
@@ -338,11 +338,11 @@ awemud_bin_SOURCES=\
 	src/mud/body.cc \
 	src/mud/caffect.cc \
 	src/mud/calendar.cc \
-	src/mud/char.cc \
+	src/mud/creature.cc \
 	src/mud/char_do.cc \
 	src/mud/cmd_admin.cc \
 	src/mud/cmd_builder.cc \
-	src/mud/cmd_char.cc \
+	src/mud/cmd_creature.cc \
 	src/mud/cmd_gm.cc \
 	src/mud/cmd_init.cc \
 	src/mud/cmd_player.cc \

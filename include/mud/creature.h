@@ -5,8 +5,8 @@
  * http://www.awemud.net
  */
 
-#ifndef AWEMUD_MUD_CHAR_H
-#define AWEMUD_MUD_CHAR_H
+#ifndef AWEMUD_MUD_CREATURE_H
+#define AWEMUD_MUD_CREATURE_H
 
 #include "mud/entity.h"
 #include "common/types.h"
@@ -30,14 +30,14 @@ class IAction;
 #define ALIGN_BOUND 200
 #define ALIGN_NEUTRAL 300
 
-// Character alignment
-class CharAlign {
+// Creature alignment
+class CreatureAlign {
 	private:
 	int align;
 
 	public:
-	inline CharAlign (int s_value) : align(s_value) {}
-	inline CharAlign (void) : align(0) {}
+	inline CreatureAlign (int s_value) : align(s_value) {}
+	inline CreatureAlign (void) : align(0) {}
 
 	inline int get_value (void) const { return align; }
 
@@ -47,8 +47,8 @@ class CharAlign {
 	inline operator int (void) const { return align; }
 };
 
-// Character statistic ID
-class CharStatID {
+// Creature statistic ID
+class CreatureStatID {
 	public:
 	typedef enum {
 		NONE = -1,
@@ -61,17 +61,17 @@ class CharStatID {
 		COUNT,
 	} type_t;
 	
-	inline CharStatID (int s_value) : value((type_t)s_value) {}
-	inline CharStatID (void) : value(NONE) {}
+	inline CreatureStatID (int s_value) : value((type_t)s_value) {}
+	inline CreatureStatID (void) : value(NONE) {}
 
 	inline String get_name(void) const { return names[value]; }
 
 	inline type_t get_value (void) const { return value; }
 
-	static CharStatID lookup (String name);
+	static CreatureStatID lookup (String name);
 
-	inline bool operator == (CharStatID dir) const { return dir.value == value; }
-	inline bool operator != (CharStatID dir) const { return dir.value != value; }
+	inline bool operator == (CreatureStatID dir) const { return dir.value == value; }
+	inline bool operator != (CreatureStatID dir) const { return dir.value != value; }
 	inline operator bool (void) const { return value != NONE; }
 
 	private:
@@ -81,17 +81,17 @@ class CharStatID {
 };
 
 // character stat array
-class CharStatArray {
+class CreatureStatArray {
 	public:
-	inline const uint16 operator[] (CharStatID stat) const { return stat ? stats[stat.get_value()] : 0; }
-	inline uint16& operator[] (CharStatID stat) { return stats[stat ? stat.get_value() : 0]; }
+	inline const uint16 operator[] (CreatureStatID stat) const { return stat ? stats[stat.get_value()] : 0; }
+	inline uint16& operator[] (CreatureStatID stat) { return stats[stat ? stat.get_value() : 0]; }
 
 	private:
-	uint16 stats[CharStatID::COUNT];
+	uint16 stats[CreatureStatID::COUNT];
 };
 
-// Character Position object
-class CharPosition {
+// Creature Position object
+class CreaturePosition {
 	public:
 	typedef enum {
 		STAND = 0,
@@ -101,8 +101,8 @@ class CharPosition {
 		COUNT
 	} type_t;
 	
-	inline CharPosition (int s_value) : value((type_t)s_value) {}
-	inline CharPosition (void) : value(STAND) {}
+	inline CreaturePosition (int s_value) : value((type_t)s_value) {}
+	inline CreaturePosition (void) : value(STAND) {}
 
 	inline String get_name(void) const { return names[value]; }
 	inline String get_verb(void) const { return verbs[value]; }
@@ -111,10 +111,10 @@ class CharPosition {
 
 	inline type_t get_value (void) const { return value; }
 
-	static CharPosition lookup (String name);
+	static CreaturePosition lookup (String name);
 
-	inline bool operator == (CharPosition dir) const { return dir.value == value; }
-	inline bool operator != (CharPosition dir) const { return dir.value != value; }
+	inline bool operator == (CreaturePosition dir) const { return dir.value == value; }
+	inline bool operator != (CreaturePosition dir) const { return dir.value != value; }
 
 	private:
 	type_t value;
@@ -125,12 +125,12 @@ class CharPosition {
 	static String verbings[]; // sitting vs. sit, etc.
 };
 
-// Character control
+// Creature control
 class
-Character : public Entity, public IStreamSink
+Creature : public Entity, public IStreamSink
 {
 	public:
-	Character (const Scriptix::TypeInfo* type);
+	Creature (const Scriptix::TypeInfo* type);
 
 	// save/load
 	virtual int load_node (File::Reader& reader, File::Node& node);
@@ -142,8 +142,8 @@ Character : public Entity, public IStreamSink
 	IStreamSink* get_stream () { return this; }
 
 	// positon
-	CharPosition get_pos (void) const { return position; }
-	CharPosition set_pos (CharPosition p) { return position = p; }
+	CreaturePosition get_pos (void) const { return position; }
+	CreaturePosition set_pos (CreaturePosition p) { return position = p; }
 
 	// health
 	inline int get_hp (void) const { return health.cur; }
@@ -158,13 +158,13 @@ Character : public Entity, public IStreamSink
 	virtual GenderType get_gender (void) const = 0;
 
 	// alignment
-	virtual CharAlign get_alignment (void) const = 0;
+	virtual CreatureAlign get_alignment (void) const = 0;
 
 	// stats
-	virtual int get_base_stat (CharStatID stat) const = 0;
-	inline int get_effective_stat (CharStatID stat) const { assert (stat); return effective_stats[stat.get_value()]; }
-	inline void set_effective_stat (CharStatID stat, int val) { assert (stat); effective_stats[stat.get_value()] = val; }
-	int get_stat_modifier (CharStatID stat) const;
+	virtual int get_base_stat (CreatureStatID stat) const = 0;
+	inline int get_effective_stat (CreatureStatID stat) const { assert (stat); return effective_stats[stat.get_value()]; }
+	inline void set_effective_stat (CreatureStatID stat, int val) { assert (stat); effective_stats[stat.get_value()] = val; }
+	int get_stat_modifier (CreatureStatID stat) const;
 
 	// combat
 	virtual uint get_combat_dodge (void) const = 0; // dodge skill
@@ -209,17 +209,17 @@ Character : public Entity, public IStreamSink
 
 	// health
 	void heal (uint amount);
-	bool damage (uint amount, Character *attacker); // returns true if damage killed
-	virtual void kill (Character *killer) = 0;
+	bool damage (uint amount, Creature *attacker); // returns true if damage killed
+	virtual void kill (Creature *killer) = 0;
 
-	// Character abilities
+	// Creature abilities
 	inline bool can_move (void) const { return !is_dead(); }
 	inline bool can_see (void) const { return true; }
 	inline bool can_talk (void) const { return true; }
 	inline bool can_act (void) const { return !is_dead(); }
 
 	// affects
-	int add_affect (class CharacterAffectGroup* affect);
+	int add_affect (class CreatureAffectGroup* affect);
 
 	// actions
 	void add_action (IAction* action);
@@ -243,7 +243,7 @@ Character : public Entity, public IStreamSink
 	class Object* cl_find_object (String name, int type, bool silent = false);
 	class Object* cl_find_object (String name, class Object* container, ContainerType type, bool silent = false);
 
-	class Character* cl_find_character (String name, bool silent = false);
+	class Creature* cl_find_character (String name, bool silent = false);
 	class RoomExit* cl_find_exit (String name, bool silent = false);
 	/* cl_find_any looks for a character, then an object, then an exit.
 	 * Object searching is the same as using cl_find_object w/ GOC_ANY. */
@@ -286,17 +286,17 @@ Character : public Entity, public IStreamSink
 	void do_sing (String text);
 
 	void do_look (void);
-	void do_look (Character *who);
+	void do_look (Creature *who);
 	void do_look (const class Object *what, const class ContainerType& how);
 	void do_look (class RoomExit *what);
 
 	void do_move (int dir);
 
-	void do_position (CharPosition);
+	void do_position (CreaturePosition);
 
 	void do_get (class Object*, class Object*, const class ContainerType&);
 	void do_put (class Object*, class Object*, const class ContainerType&);
-	void do_give_coins (class Character* target, uint amount);
+	void do_give_coins (class Creature* target, uint amount);
 	void do_drop (class Object*);
 
 	void do_wear (class Object*);
@@ -315,15 +315,15 @@ Character : public Entity, public IStreamSink
 	void do_lock (class RoomExit*);
 	void do_kick (class RoomExit*);
 
-	void do_attack (class Character*);
-	void do_kill (class Character*);
+	void do_attack (class Creature*);
+	void do_kill (class Creature*);
 
 	void do_go (class RoomExit*);
 
 	// == DATA ITEMS ==
 	protected:
 	typedef GCType::vector<IAction*> ActionList;
-	typedef GCType::vector<CharacterAffectGroup*> AffectStatusList;
+	typedef GCType::vector<CreatureAffectGroup*> AffectStatusList;
 
 	struct {
 		class Object* left_held;
@@ -337,8 +337,8 @@ Character : public Entity, public IStreamSink
 		uint16 max;
 	} health; // hit points
 	bool dead;
-	CharPosition position;
-	CharStatArray effective_stats;
+	CreaturePosition position;
+	CreatureStatArray effective_stats;
 	uint round_time; // round time
 	uint coins;
 	class Room* location;
@@ -346,28 +346,28 @@ Character : public Entity, public IStreamSink
 	AffectStatusList affects;
 
 	protected:
-	E_TYPE(Character)
+	E_TYPE(Creature)
 };
 
 // stream out character descriptions
-class StreamCharDesc {
+class StreamCreatureDesc {
 	public:
-	inline StreamCharDesc (Character* s_ch) : ch(s_ch) {}
+	inline StreamCreatureDesc (Creature* s_ch) : ch(s_ch) {}
 
 	inline friend const StreamControl&
-	operator << (const StreamControl& stream, const StreamCharDesc& desc)
+	operator << (const StreamControl& stream, const StreamCreatureDesc& desc)
 	{
 		desc.ch->display_desc(stream);
 		return stream;
 	}
 
 	private:
-	Character* ch;
+	Creature* ch;
 };
 
 
 String get_stat_level (uint);
 
-#define CHARACTER(ent) E_CAST(ent,Character)
+#define CHARACTER(ent) E_CAST(ent,Creature)
 
 #endif

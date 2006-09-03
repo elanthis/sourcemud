@@ -12,7 +12,7 @@
 #include "common/streams.h"
 
 class Entity;
-class Character;
+class Creature;
 
 class ParseValue : public GC
 {

@@ -16,7 +16,7 @@
 #include "scriptix/function.h"
 
 class Event;
-class Character;
+class Creature;
 class ScriptRestrictedWriter;
 
 class AI : public GC
@@ -26,12 +26,12 @@ class AI : public GC
 
 	int load (File::Reader& reader);
 
-	void do_load (Character* self) const;
-	void do_save (Character* self, ScriptRestrictedWriter* writer) const;
-	void do_event (Character* self, const Event& event) const;
-	void do_ready (Character* self) const;
-	void do_heartbeat (Character* self) const;
-	void do_pump (Character* self, Scriptix::Value arg) const;
+	void do_load (Creature* self) const;
+	void do_save (Creature* self, ScriptRestrictedWriter* writer) const;
+	void do_event (Creature* self, const Event& event) const;
+	void do_ready (Creature* self) const;
+	void do_heartbeat (Creature* self) const;
+	void do_pump (Creature* self, Scriptix::Value arg) const;
 
 	String get_name (void) const { return name; }
 

@@ -14,7 +14,7 @@
 #include "mud/object.h"
 #include "common/string.h"
 #include "common/error.h"
-#include "mud/char.h"
+#include "mud/creature.h"
 #include "mud/room.h"
 #include "mud/server.h"
 #include "mud/body.h"
@@ -767,7 +767,7 @@ Object::get_room () const
 }
 
 // find parent owner
-Character* 
+Creature* 
 Object::get_holder () const
 {
 	Entity* owner = get_owner();

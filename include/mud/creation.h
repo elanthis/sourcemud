@@ -13,14 +13,14 @@
 #include "mud/player.h"
 #include "mud/race.h"
 
-class TelnetModeNewCharacter : public ITelnetMode
+class TelnetModeNewCreature : public ITelnetMode
 {
 	public:
 	enum state_t { STATE_BEGIN = 0, STATE_NAME = 0, STATE_NAME_CONFIRM, STATE_RACE, STATE_RACE_CONFIRM, STATE_GENDER, STATE_HEIGHT, STATE_TRAITS, STATE_TRAITS_CONFIRM, STATE_STATS, STATE_STATS_CONFIRM, STATE_FINAL_CONFIRM, STATE_CONTINUE, STATE_RENAME, STATE_RENAME_CONFIRM
 	};
 	enum height_t { HEIGHT_VERY_SHORT, HEIGHT_SHORT, HEIGHT_AVERAGE, HEIGHT_TALL, HEIGHT_VERY_TALL };
 
-	TelnetModeNewCharacter (TelnetHandler* s_handler, Account* s_account) : ITelnetMode (s_handler), account(s_account), state(STATE_BEGIN) {}
+	TelnetModeNewCreature (TelnetHandler* s_handler, Account* s_account) : ITelnetMode (s_handler), account(s_account), state(STATE_BEGIN) {}
 
 	virtual int initialize ();
 	virtual void prompt ();
@@ -42,10 +42,10 @@ class TelnetModeNewCharacter : public ITelnetMode
 	state_t state;
 	height_t height;
 	int tokens;
-	int stats[CharStatID::COUNT];
+	int stats[CreatureStatID::COUNT];
 	Race* race;
 	GenderType gender;
-	typedef GCType::map<CharacterTraitID, CharacterTraitValue> TraitMap;
+	typedef GCType::map<CreatureTraitID, CreatureTraitValue> TraitMap;
 	TraitMap traits;
 };
 

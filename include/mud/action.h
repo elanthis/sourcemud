@@ -11,7 +11,7 @@
 #include "common/types.h"
 #include "common/gcbase.h"
 
-class Character;
+class Creature;
 class StreamControl;
 
 // A pending action.  All actions should derive from this action.
@@ -34,11 +34,11 @@ class StreamControl;
 class IAction : public GC
 {
 	public:
-	inline IAction (Character* s_actor) : actor(s_actor) {}
+	inline IAction (Creature* s_actor) : actor(s_actor) {}
 	inline virtual ~IAction (void) {}
 
 	// returns the character performing the action
-	inline Character* get_actor (void) const { return actor; }
+	inline Creature* get_actor (void) const { return actor; }
 
 	// called when the user wishes to cancel; return 1 to abort the cancel
 	inline virtual int cancel (void) { return 1; }
@@ -61,7 +61,7 @@ class IAction : public GC
 	virtual int update (uint rounds) { return 0; }
 
 	private:
-	Character* actor;
+	Creature* actor;
 };
 
 // An instant pending action.
@@ -69,7 +69,7 @@ class IAction : public GC
 class IInstantAction : public IAction
 {
 	public:
-	inline IInstantAction (Character* s_actor) : IAction(s_actor) {}
+	inline IInstantAction (Creature* s_actor) : IAction(s_actor) {}
 
 	// always zero rounds
 	inline virtual uint get_rounds (void) const { return 0; }

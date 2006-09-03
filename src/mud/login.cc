@@ -7,7 +7,7 @@
 
 #include <ctype.h>
 
-#include "mud/char.h"
+#include "mud/creature.h"
 #include "mud/server.h"
 #include "mud/player.h"
 #include "mud/parse.h"

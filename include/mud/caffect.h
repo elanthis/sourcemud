@@ -11,9 +11,9 @@
 #include "common/gcbase.h"
 #include "common/string.h"
 #include "common/gcvector.h"
-#include "mud/char.h"
+#include "mud/creature.h"
 
-class CharacterAffectType
+class CreatureAffectType
 {
 	public:
 	typedef enum {
@@ -28,17 +28,17 @@ class CharacterAffectType
 	} type_t;
 	
 	public:
-	inline CharacterAffectType (int s_value) : value((type_t)s_value) {}
-	inline CharacterAffectType (void) : value(UNKNOWN) {}
+	inline CreatureAffectType (int s_value) : value((type_t)s_value) {}
+	inline CreatureAffectType (void) : value(UNKNOWN) {}
 
 	inline bool valid (void) const { return value != UNKNOWN; }
 	inline String get_name(void) const { return names[value]; }
 	inline type_t get_value (void) const { return value; }
 
-	static CharacterAffectType lookup (String name);
+	static CreatureAffectType lookup (String name);
 
-	inline bool operator == (const CharacterAffectType& dir) const { return dir.value == value; }
-	inline bool operator != (const CharacterAffectType& dir) const { return dir.value != value; }
+	inline bool operator == (const CreatureAffectType& dir) const { return dir.value == value; }
+	inline bool operator != (const CreatureAffectType& dir) const { return dir.value != value; }
 
 	private:
 	type_t value;
@@ -46,57 +46,57 @@ class CharacterAffectType
 	static String names[];
 };
 
-class ICharacterAffect : public GC
+class ICreatureAffect : public GC
 {
 	public:
-	virtual int apply (Character* character) const = 0;
-	virtual void remove (Character* character) const = 0;
+	virtual int apply (Creature* character) const = 0;
+	virtual void remove (Creature* character) const = 0;
 
-	virtual void update (Character* character) const = 0;
+	virtual void update (Creature* character) const = 0;
 
-	virtual ~ICharacterAffect () {}
+	virtual ~ICreatureAffect () {}
 };
 
-class CharacterAffectGroup : public GC
+class CreatureAffectGroup : public GC
 {
 	public:
-	CharacterAffectGroup (String s_title, CharacterAffectType s_type, uint s_duration);
+	CreatureAffectGroup (String s_title, CreatureAffectType s_type, uint s_duration);
 
-	int add_affect (ICharacterAffect* affect);
+	int add_affect (ICreatureAffect* affect);
 
-	int apply (Character* character) const;
-	void remove (Character* character) const;
+	int apply (Creature* character) const;
+	void remove (Creature* character) const;
 
-	void update (Character* character);
+	void update (Creature* character);
 
 	inline String get_title (void) const { return title; }
-	inline CharacterAffectType get_type (void) const { return type; }
+	inline CreatureAffectType get_type (void) const { return type; }
 	inline uint get_time_left (void) const { return duration; }
 
 	private:
-	typedef GCType::vector<ICharacterAffect*> AffectList;
+	typedef GCType::vector<ICreatureAffect*> AffectList;
 
 	String title;
 	AffectList affects;
-	CharacterAffectType type;
+	CreatureAffectType type;
 	uint duration;
 };
 
 /* ACTUAL AFFECTS */
 
-class CharacterAffectStat : public ICharacterAffect
+class CreatureAffectStat : public ICreatureAffect
 {
 	public:
-	inline CharacterAffectStat (CharStatID s_stat, int s_mod) :
+	inline CreatureAffectStat (CreatureStatID s_stat, int s_mod) :
 		stat(s_stat), mod(s_mod) {}
 
-	inline virtual int apply (Character* character) const {character->set_effective_stat(stat, character->get_base_stat(stat) + mod); return 0; }
-	inline virtual void remove (Character* character) const {character->set_effective_stat(stat, character->get_base_stat(stat) - mod); }
+	inline virtual int apply (Creature* character) const {character->set_effective_stat(stat, character->get_base_stat(stat) + mod); return 0; }
+	inline virtual void remove (Creature* character) const {character->set_effective_stat(stat, character->get_base_stat(stat) - mod); }
 
-	inline virtual void update (Character* character) const {};
+	inline virtual void update (Creature* character) const {};
 
 	private:
-	CharStatID stat;
+	CreatureStatID stat;
 	int mod;
 };
 

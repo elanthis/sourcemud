@@ -12,7 +12,7 @@
 #include "mud/settings.h"
 #include "common/log.h"
 #include "mud/command.h"
-#include "mud/char.h"
+#include "mud/creature.h"
 #include "mud/room.h"
 #include "mud/filetab.h"
 #include "mud/object.h"
@@ -20,7 +20,7 @@
 SSocialManager SocialManager;
 
 namespace {
-	void command_social (Character* ch, String args[])
+	void command_social (Creature* ch, String args[])
 	{
 		const Social* social = SocialManager.find_social(args[0]);
 
@@ -192,7 +192,7 @@ SSocialManager::shutdown ()
 }
 
 int
-Social::perform (Character* actor, Entity* target, String adverb) const
+Social::perform (Creature* actor, Entity* target, String adverb) const
 {
 	for (GCType::vector<SocialDetails>::const_iterator i = details.begin(); i != details.end(); ++i) {
 		// find a match?  has right target parameters?

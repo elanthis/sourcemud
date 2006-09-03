@@ -9,7 +9,7 @@
 #include <fnmatch.h>
 
 #include "mud/settings.h"
-#include "mud/char.h"
+#include "mud/creature.h"
 #include "mud/ai.h"
 #include "mud/room.h"
 #include "mud/eventids.h"
@@ -66,7 +66,7 @@ AI::load (File::Reader& reader)
 }
 
 void
-AI::do_event (Character* self, const Event& event) const
+AI::do_event (Creature* self, const Event& event) const
 {
 	// get handler
 	EventList::const_iterator i = event_cb.find(event.get_id());
@@ -75,7 +75,7 @@ AI::do_event (Character* self, const Event& event) const
 }
 
 void
-AI::do_ready (Character* self) const
+AI::do_ready (Creature* self) const
 {
 	// call handler
 	if (!ready_cb.empty())
@@ -83,7 +83,7 @@ AI::do_ready (Character* self) const
 }
 
 void
-AI::do_heartbeat (Character* self) const
+AI::do_heartbeat (Creature* self) const
 {
 	// call handler
 	if (!heartbeat_cb.empty())
@@ -91,7 +91,7 @@ AI::do_heartbeat (Character* self) const
 }
 
 void
-AI::do_load (Character* self) const
+AI::do_load (Creature* self) const
 {
 	// call handler
 	if (!load_cb.empty())
@@ -99,7 +99,7 @@ AI::do_load (Character* self) const
 }
 
 void
-AI::do_pump (Character* self, Scriptix::Value data) const
+AI::do_pump (Creature* self, Scriptix::Value data) const
 {
 	// call handler
 	if (!pump_cb.empty())
@@ -107,7 +107,7 @@ AI::do_pump (Character* self, Scriptix::Value data) const
 }
 
 void
-AI::do_save (Character* self, ScriptRestrictedWriter* writer) const
+AI::do_save (Creature* self, ScriptRestrictedWriter* writer) const
 {
 	// call handler
 	if (!save_cb.empty())

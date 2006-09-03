@@ -5,7 +5,7 @@
  * http://www.awemud.net
  */
 
-#include "mud/char.h"
+#include "mud/creature.h"
 #include "common/error.h"
 #include "mud/server.h"
 #include "mud/room.h"

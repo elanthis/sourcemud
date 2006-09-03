@@ -5,7 +5,7 @@
  * http://www.awemud.net
  */
 
-#include "mud/char.h"
+#include "mud/creature.h"
 #include "mud/server.h"
 #include "mud/room.h"
 #include "mud/command.h"
@@ -66,7 +66,7 @@ namespace OLC {
 	{
 		// init
 		entity = NULL;
-		enum { tNone, tPlayer, tChar, tNPC, tObject, tRoom, tExit, tZone } type = tNone;
+		enum { tNone, tPlayer, tCreature, tNPC, tObject, tRoom, tExit, tZone } type = tNone;
 
 		// is name comprised of 'room' or 'zone' or whatever?
 		if (str_eq(tname, S("room")))
@@ -88,8 +88,8 @@ namespace OLC {
 		}
 
 		// find character?
-		if (type == tNone || type == tChar) {
-			Character* character = builder->cl_find_character (name, true);
+		if (type == tNone || type == tCreature) {
+			Creature* character = builder->cl_find_character (name, true);
 			if (character != NULL) {
 				entity = character;
 				return true;
@@ -97,12 +97,12 @@ namespace OLC {
 		}
 		// limit to NPCs?
 		if (type == tNPC) {
-			Character* character = builder->cl_find_character (name);
+			Creature* character = builder->cl_find_character (name);
 			if (NPC(character)) {
 				entity = character;
 				return true;
 			} else if (character != NULL) {
-				*builder << "Character " << StreamName(character) << " is not an NPC.\n";
+				*builder << "Creature " << StreamName(character) << " is not an NPC.\n";
 				return false;
 			}
 		}
@@ -209,7 +209,7 @@ OLC_BEGIN_TYPE(Entity)
 	OLC_END_ATTR
 OLC_END_TYPE
 
-OLC_BEGIN_TYPE(Character)
+OLC_BEGIN_TYPE(Creature)
 	OLC_BEGIN_ATTR(hp)
 		OLC_GET
 			OLC_DISPLAY(edit->get_hp())

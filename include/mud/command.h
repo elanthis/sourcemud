@@ -18,10 +18,10 @@
 #define MAX_COMMAND_ARGS 10
 #define MAX_COMMAND_WORDS 25
 
-class Character;
+class Creature;
 class Player;
 
-typedef void (*CharCommandFunc) (class Character*, String argv[]); // can manipulate argv
+typedef void (*CreatureCommandFunc) (class Creature*, String argv[]); // can manipulate argv
 typedef void (*PlayerCommandFunc) (class Player*, String argv[]); // can manipulate argv
 
 // a parsable command format string
@@ -32,7 +32,7 @@ class CommandFormat : public GC
 
 	// set command callback
 	inline void clear_callback (void) { ch_func = NULL; ply_func = NULL; script = Scriptix::ScriptFunction(); }
-	inline void set_callback (CharCommandFunc s_func) { clear_callback(); ch_func = s_func; }
+	inline void set_callback (CreatureCommandFunc s_func) { clear_callback(); ch_func = s_func; }
 	inline void set_callback (PlayerCommandFunc s_func) { clear_callback(); ply_func = s_func; }
 	inline void set_callback (Scriptix::ScriptFunction s_func) { clear_callback(); script = s_func; }
 
@@ -82,7 +82,7 @@ class CommandFormat : public GC
 	typedef GCType::vector<FormatNode> NodeList;
 	NodeList nodes;
 	Scriptix::ScriptFunction script;
-	CharCommandFunc ch_func;
+	CreatureCommandFunc ch_func;
 	PlayerCommandFunc ply_func;
 	int priority;
 
@@ -138,7 +138,7 @@ class SCommandManager : public IManager
 	int add (Command* command);
 
 	// invoke a command
-	int call (class Character* character, String cmd_line);
+	int call (class Creature* character, String cmd_line);
 
 	// show a man page; return false if cmd_name is not found
 	bool show_man (class StreamControl& stream, String cmd_name, bool quiet = false);

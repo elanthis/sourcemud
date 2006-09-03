@@ -19,13 +19,13 @@
 #include "common/gcset.h"
 #include "common/string.h"
 #include "mud/fileobj.h"
-#include "mud/char.h"
+#include "mud/creature.h"
 #include "mud/pdesc.h"
 #include "mud/server.h"
 #include "common/imanager.h"
 #include "scriptix/native.h"
 
-typedef GCType::map<CharacterTraitID, GCType::set<CharacterTraitValue> > RaceTraitMap;
+typedef GCType::map<CreatureTraitID, GCType::set<CreatureTraitValue> > RaceTraitMap;
 
 /* store information about a race */
 class
@@ -42,7 +42,7 @@ Race : public Scriptix::Native
 	inline int get_age_min () const { return age_min; }
 	inline int get_age_max () const { return age_max; }
 
-	inline int get_stat (int i) const { if (i >= 0 && i < CharStatID::COUNT) return stats[i] ; else return 0; }
+	inline int get_stat (int i) const { if (i >= 0 && i < CreatureStatID::COUNT) return stats[i] ; else return 0; }
 
 	inline int get_average_height (GenderType gender) const { return height[gender.get_value()]; }
 
@@ -70,7 +70,7 @@ Race : public Scriptix::Native
 
 	int height[GenderType::COUNT];
 
-	int stats[CharStatID::COUNT];
+	int stats[CreatureStatID::COUNT];
 
 	Race* next;
 };

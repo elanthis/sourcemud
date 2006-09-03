@@ -14,7 +14,7 @@
 
 class Object;
 class RoomExit;
-class Character;
+class Creature;
 
 // Room, the general type
 class Room : public Entity
@@ -22,7 +22,7 @@ class Room : public Entity
 	public:
 	// nasty public stuff
 	EList<Object> objects;
-	EList<Character> chars;
+	EList<Creature> chars;
 	EList<RoomExit> exits;
 
 	Room ();
@@ -78,14 +78,14 @@ class Room : public Entity
 	virtual void deactivate ();
 
 	// display
-	void show (const class StreamControl& stream, class Character* viewer);
+	void show (const class StreamControl& stream, class Creature* viewer);
 	void show_exits (const class StreamControl& stream);
 
 	// output
-	void put (String text, size_t len, GCType::vector<class Character*>* ignore = NULL);
+	void put (String text, size_t len, GCType::vector<class Creature*>* ignore = NULL);
 
 	// get entities
-	class Character* find_character (String name, uint c = 1, uint *matches = NULL);
+	class Creature* find_character (String name, uint c = 1, uint *matches = NULL);
 	class Object* find_object (String name, uint c = 1, uint *matches = NULL);
 
 	// count players in room
@@ -93,7 +93,7 @@ class Room : public Entity
 
 	// add entities
 	void add_object (class Object* object);
-	void add_character (class Character* character);
+	void add_character (class Creature* character);
 
 	// coins on the floor
 	inline uint get_coins () const { return coins; }

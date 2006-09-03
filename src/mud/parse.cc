@@ -11,7 +11,7 @@
 
 #include "mud/entity.h"
 #include "mud/parse.h"
-#include "mud/char.h"
+#include "mud/creature.h"
 #include "common/streams.h"
 #include "mud/gametime.h"
 #include "common/strbuf.h"

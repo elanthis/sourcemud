@@ -14,7 +14,7 @@
 #include <time.h>
 #include <sys/stat.h>
 
-#include "mud/char.h"
+#include "mud/creature.h"
 #include "mud/player.h"
 #include "common/string.h"
 #include "mud/body.h"
@@ -114,7 +114,7 @@ namespace {
 }
 
 SCRIPT_TYPE(Player);
-Player::Player (class Account* s_account, String s_id) : Character (AweMUD_PlayerType), birthday()
+Player::Player (class Account* s_account, String s_id) : Creature (AweMUD_PlayerType), birthday()
 {
 	// initialize
 	account = s_account;
@@ -153,7 +153,7 @@ Player::~Player (void)
 void
 Player::save (File::Writer& writer)
 {
-	Character::save(writer);
+	Creature::save(writer);
 
 	if (race != NULL)
 		writer.keyed(S("player"), S("race"), race->get_name());
@@ -162,11 +162,11 @@ Player::save (File::Writer& writer)
 
 	writer.keyed(S("player"), S("alignment"), alignment);
 
-	for (int i = 0; i < CharStatID::COUNT; ++i)
-		writer.keyed(S("stat"), CharStatID(i).get_name(), base_stats[i]);
+	for (int i = 0; i < CreatureStatID::COUNT; ++i)
+		writer.keyed(S("stat"), CreatureStatID(i).get_name(), base_stats[i]);
 	
 	for (TraitMap::const_iterator i = pdesc.traits.begin(); i != pdesc.traits.end(); ++i)
-		writer.keyed(S("trait"), str_tr(CharacterTraitID::nameof(i->first), S(" "), S("_")), i->second.get_name());
+		writer.keyed(S("trait"), str_tr(CreatureTraitID::nameof(i->first), S(" "), S("_")), i->second.get_name());
 
 	writer.keyed(S("player"), S("gender"), pdesc.gender.get_name());
 	writer.keyed(S("player"), S("height"), pdesc.height);
@@ -224,7 +224,7 @@ Player::save (void)
 void
 Player::save_hook (ScriptRestrictedWriter* writer)
 {
-	Character::save_hook(writer);
+	Creature::save_hook(writer);
 	Hooks::save_player(this, writer);
 }
 
@@ -232,7 +232,7 @@ int
 Player::load_node (File::Reader& reader, File::Node& node)
 {
 	FO_NODE_BEGIN
-		FO_PARENT(Character)
+		FO_PARENT(Creature)
 		// our primary name
 		FO_ATTR2("player", "name")
 			name.set_text(node.get_data());
@@ -256,10 +256,10 @@ Player::load_node (File::Reader& reader, File::Node& node)
 				throw File::Error (S("Invalid birthday"));
 		FO_KEYED("trait")
 			FO_TYPE_ASSERT(STRING)
-			CharacterTraitID trait = CharacterTraitID::lookup(str_tr(node.get_key(), S("_"), S(" ")));
+			CreatureTraitID trait = CreatureTraitID::lookup(str_tr(node.get_key(), S("_"), S(" ")));
 			if (!trait.valid())
 				throw File::Error (S("Unknown trait"));
-			CharacterTraitValue value = CharacterTraitManager.get_trait(node.get_data());
+			CreatureTraitValue value = CreatureTraitManager.get_trait(node.get_data());
 			if (!value.valid())
 				throw File::Error (S("Unknown trait value"));
 			pdesc.traits[trait] = value;
@@ -280,7 +280,7 @@ Player::load_node (File::Reader& reader, File::Node& node)
 			exp[EXP_CASTER] = node.get_int();
 		FO_KEYED("stat")
 			FO_TYPE_ASSERT(INT);
-			CharStatID stat = CharStatID::lookup(node.get_key());
+			CreatureStatID stat = CreatureStatID::lookup(node.get_key());
 			if (stat) {
 				base_stats[stat.get_value()] = node.get_int();
 			} else {
@@ -339,8 +339,8 @@ Player::start (void)
 		}
 
 		// Example affect - make strong
-		CharacterAffectGroup* strong = new CharacterAffectGroup(S("Strength"), CharacterAffectType::INNATE, 60 * 30);
-		strong->add_affect(new CharacterAffectStat(CharStatID::STRENGTH, 10));
+		CreatureAffectGroup* strong = new CreatureAffectGroup(S("Strength"), CreatureAffectType::INNATE, 60 * 30);
+		strong->add_affect(new CreatureAffectStat(CreatureStatID::STRENGTH, 10));
 		add_affect(strong);
 	// already active... just "refresh" room
 	} else {
@@ -384,7 +384,7 @@ Player::get_age (void) const
 }
 
 void
-Player::kill (Character *killer)
+Player::kill (Creature *killer)
 {
 	// death message
 	if (get_room())
@@ -392,7 +392,7 @@ Player::kill (Character *killer)
 	*this << "You have been slain!\n";
 
 	// now laying down
-	position = CharPosition::LAY;
+	position = CreaturePosition::LAY;
 
 	// event/hook
 	Events::send_death(get_room(), this, killer);
@@ -504,11 +504,11 @@ Player::grant_exp (uint type, uint amount) {
 void
 Player::recalc_stats (void)
 {
-	Character::recalc_stats();
+	Creature::recalc_stats();
 
 	// apply racial stat modifications
 	if (race) {
-		for (int i = 0; i < CharStatID::COUNT; ++i)
+		for (int i = 0; i < CreatureStatID::COUNT; ++i)
 			set_effective_stat(i, get_base_stat(i) + race->get_stat(i));
 	}
 }
@@ -516,13 +516,13 @@ Player::recalc_stats (void)
 void
 Player::recalc (void)
 {
-	Character::recalc();
+	Creature::recalc();
 }
 
 void
 Player::heartbeat(void) {
 	// do character update
-	Character::heartbeat();
+	Creature::heartbeat();
 
 	// timeout?  then die
 	if (ninfo.timeout_ticks == 1) {
@@ -587,7 +587,7 @@ Player::heartbeat(void) {
 void
 Player::activate (void)
 {
-	Character::activate();
+	Creature::activate();
 
 	if (account != NULL)
 		account->inc_active();
@@ -599,7 +599,7 @@ Player::deactivate (void)
 	if (account != NULL)
 			account->dec_active();
 
-	Character::deactivate();
+	Creature::deactivate();
 }
 
 void
@@ -637,12 +637,12 @@ Player::parse_property (const StreamControl& stream, String comm, const ParseArg
 	}
 	// TRAIT NAME
 	else if (str_eq(comm, S("trait-name")) && argv.size() == 1) {
-		stream << get_trait(CharacterTraitID::lookup(argv[0].get_string())).get_name();
+		stream << get_trait(CreatureTraitID::lookup(argv[0].get_string())).get_name();
 		return 0;
 	}
 	// TRAIT DESC
 	else if (str_eq(comm, S("trait")) && argv.size() == 1) {
-		stream << get_trait(CharacterTraitID::lookup(argv[0].get_string())).get_desc();
+		stream << get_trait(CreatureTraitID::lookup(argv[0].get_string())).get_desc();
 		return 0;
 	}
 	// HEIGHT
@@ -660,7 +660,7 @@ Player::parse_property (const StreamControl& stream, String comm, const ParseArg
 	}
 	// default...
 	else {
-		return Character::parse_property(stream, comm, argv);
+		return Creature::parse_property(stream, comm, argv);
 	}
 }
 
@@ -755,18 +755,18 @@ Player::display_desc (const StreamControl& stream) const
 }
 
 // get player trait
-CharacterTraitValue
-Player::get_trait (CharacterTraitID id) const
+CreatureTraitValue
+Player::get_trait (CreatureTraitID id) const
 {
 	TraitMap::const_iterator i = pdesc.traits.find(id);
 	if (i != pdesc.traits.end())
 		return i->second;
-	return CharacterTraitValue();
+	return CreatureTraitValue();
 }
 
 // set player trait
 void
-Player::set_trait (CharacterTraitID id, CharacterTraitValue value)
+Player::set_trait (CreatureTraitID id, CreatureTraitValue value)
 {
 	pdesc.traits[id] = value;
 }

@@ -12,7 +12,7 @@
 #include "common/string.h"
 
 // pre-defines
-class Character;
+class Creature;
 class Room;
 class StreamControl;
 
@@ -22,7 +22,7 @@ class IStreamSink : public GC {
 	virtual ~IStreamSink () {}
 
 	virtual void stream_put (const char* text, size_t len = 0) = 0;
-	inline virtual void stream_ignore (class Character* ch) {}
+	inline virtual void stream_ignore (class Creature* ch) {}
 	inline virtual void stream_end () {}
 };
 
@@ -54,7 +54,7 @@ StreamControl {
 	}
 
 	// basically just for rooms - yes, an evil hack
-	const StreamControl& stream_ignore (class Character* ch) const {
+	const StreamControl& stream_ignore (class Creature* ch) const {
 		sink->stream_ignore(ch);
 		return *this;
 	}
@@ -65,14 +65,14 @@ StreamControl {
 
 // ignore holder
 struct StreamIgnore {
-	explicit StreamIgnore(class Character* s_ch) : ch(s_ch) {}
+	explicit StreamIgnore(class Creature* s_ch) : ch(s_ch) {}
 
 	friend const StreamControl& operator << (const StreamControl& stream, const StreamIgnore& ignore)
 	{
 		return stream.stream_ignore (ignore.ch);
 	}
 
-	class Character* ch;
+	class Creature* ch;
 };
 
 // stream a chunk of a string

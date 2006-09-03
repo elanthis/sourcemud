@@ -211,7 +211,7 @@ Object : public Entity
 
 	// returns the room the object is in (tracing through parents) or the
 	// character holding the object (again, tracing through parenst)
-	class Character* get_holder () const;
+	class Creature* get_holder () const;
 	class Room* get_room () const;
 
 	// actions

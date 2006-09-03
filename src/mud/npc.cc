@@ -116,14 +116,14 @@ void
 NpcBlueprint::reset_stats (void)
 {
 	// reset
-	for (int i = 0; i < CharStatID::COUNT; ++i)
+	for (int i = 0; i < CreatureStatID::COUNT; ++i)
 		base_stats[i] = 0;
 	set_flags.stats = false;
 
 	// get parent
 	const NpcBlueprint* data = get_parent ();
 	if (data != NULL)
-		for (int i = 0; i < CharStatID::COUNT; ++i)
+		for (int i = 0; i < CreatureStatID::COUNT; ++i)
 			base_stats[i] = data->get_stat(i);
 }
 
@@ -213,7 +213,7 @@ NpcBlueprint::load (File::Reader& reader)
 			combat.damage = tolong(node.get_data());
 			set_flags.damage = true;
 		FO_KEYED("stat")
-			CharStatID stat = CharStatID::lookup(node.get_key());
+			CreatureStatID stat = CreatureStatID::lookup(node.get_key());
 			if (stat) {
 				FO_TYPE_ASSERT(INT);
 				base_stats[stat.get_value()] = tolong(node.get_data());
@@ -244,8 +244,8 @@ NpcBlueprint::save (File::Writer& writer)
 		writer.keyed(S("blueprint"), S("gender"), gender.get_name());
 
 	if (set_flags.stats)
-		for (int i = 0; i < CharStatID::COUNT; ++i)
-			writer.keyed(S("stat"), CharStatID(i).get_name(), base_stats[i]);
+		for (int i = 0; i < CreatureStatID::COUNT; ++i)
+			writer.keyed(S("stat"), CreatureStatID(i).get_name(), base_stats[i]);
 
 	if (set_flags.dodge)
 		writer.keyed(S("combat"), S("dodge"), combat.dodge);
@@ -266,12 +266,12 @@ NpcBlueprint::get_undefined_property (Scriptix::Atom id) const
 // ----- Npc -----
 
 SCRIPT_TYPE(NPC);
-Npc::Npc (void) : Character (AweMUD_NPCType)
+Npc::Npc (void) : Creature (AweMUD_NPCType)
 {
 	initialize();
 }
 
-Npc::Npc (NpcBlueprint* s_blueprint) : Character (AweMUD_NPCType)
+Npc::Npc (NpcBlueprint* s_blueprint) : Creature (AweMUD_NPCType)
 {
 	initialize();
 	blueprint = NULL;
@@ -295,7 +295,7 @@ Npc::~Npc (void)
 int
 Npc::load_finish (void)
 {
-	if (Character::load_finish())
+	if (Creature::load_finish())
 		return -1;
 	
 	if (blueprint == NULL) {
@@ -328,7 +328,7 @@ Npc::load_node (File::Reader& reader, File::Node& node)
 		FO_ATTR2("npc", "reverse_roomtag")
 			FO_TYPE_ASSERT(BOOL);
 			flags.revroomtag = str_is_true(node.get_data());
-		FO_PARENT(Character)
+		FO_PARENT(Creature)
 	FO_NODE_END
 }
 
@@ -338,7 +338,7 @@ Npc::save (File::Writer& writer)
 	if (get_blueprint())
 		writer.keyed(S("npc"), S("blueprint"), get_blueprint()->get_id());
 
-	Character::save(writer);
+	Creature::save(writer);
 
 	if (ai != NULL)
 		writer.keyed(S("npc"), S("ai"), ai->get_name());
@@ -354,7 +354,7 @@ Npc::save (File::Writer& writer)
 void
 Npc::save_hook (ScriptRestrictedWriter* writer)
 {
-	Character::save_hook(writer);
+	Creature::save_hook(writer);
 	Hooks::save_npc(this, writer);
 
 	if (ai != NULL)
@@ -383,13 +383,13 @@ Npc::get_gender (void) const
 }
 
 int
-Npc::get_base_stat (CharStatID stat) const
+Npc::get_base_stat (CreatureStatID stat) const
 {
 	assert(blueprint != NULL);
 	return blueprint->get_stat(stat);
 }
 
-CharAlign
+CreatureAlign
 Npc::get_alignment (void) const
 {
 	assert(blueprint != NULL);
@@ -444,14 +444,14 @@ Npc::pump (Scriptix::Value data)
 }
 
 void
-Npc::kill (Character *killer)
+Npc::kill (Creature *killer)
 {
 	// death message
 	if (get_room())
 		*get_room() << StreamName(this, DEFINITE, true) << " has been slain!\n";
 
 	// lay down, drop crap
-	position = CharPosition::LAY;
+	position = CreaturePosition::LAY;
 
 	// hook/event
 	Events::send_death(get_room(), this, killer);
@@ -480,7 +480,7 @@ Npc::heartbeat (void)
 	bool have_rt = get_round_time() > 0;
 
 	// do character update
-	Character::heartbeat();
+	Creature::heartbeat();
 
 	// ai heartbeart
 	AI* ai = get_ai();
@@ -499,9 +499,9 @@ void
 Npc::set_blueprint (NpcBlueprint* s_blueprint)
 {
 	blueprint = s_blueprint;
-	for (int i = 0; i < CharStatID::COUNT; ++i)
-		Character::set_effective_stat(CharStatID(i), get_base_stat(CharStatID(i)));
-	Character::recalc();
+	for (int i = 0; i < CreatureStatID::COUNT; ++i)
+		Creature::set_effective_stat(CreatureStatID(i), get_base_stat(CreatureStatID(i)));
+	Creature::recalc();
 }
 
 // load npc from a blueprint

@@ -16,7 +16,7 @@
 #include <algorithm>
 
 #include "common/string.h"
-#include "mud/char.h"
+#include "mud/creature.h"
 #include "mud/color.h"
 #include "mud/network.h"
 #include "mud/pdesc.h"
@@ -44,7 +44,7 @@ enum exp_spec {
 	NUM_EXPS
 };
 
-class Player : public Character
+class Player : public Creature
 {
 	public:
 	// create
@@ -65,9 +65,9 @@ class Player : public Character
 	inline void set_gender (GenderType s_gender) { pdesc.gender = s_gender; }
 
 	// alignment
-	virtual inline CharAlign get_alignment () const { return alignment; }
-	inline void set_alignment (CharAlign s_align) { alignment = s_align; }
-	inline CharAlign adjust_alignment (int mod) { set_alignment(CharAlign(get_alignment() + mod)); return get_alignment(); }
+	virtual inline CreatureAlign get_alignment () const { return alignment; }
+	inline void set_alignment (CreatureAlign s_align) { alignment = s_align; }
+	inline CreatureAlign adjust_alignment (int mod) { set_alignment(CreatureAlign(get_alignment() + mod)); return get_alignment(); }
 
 	// save and load
 	virtual void save (File::Writer& writer);
@@ -92,7 +92,7 @@ class Player : public Character
 	inline void set_birthday (const GameTime& gt) { birthday = gt; }
 
 	// misc
-	void kill (Character* killer);
+	void kill (Creature* killer);
 	void heartbeat ();
 
 	// manage account active counts
@@ -108,8 +108,8 @@ class Player : public Character
 	inline void set_height (uint8 height) { pdesc.height = height; }
 
 	// character traits
-	CharacterTraitValue get_trait(CharacterTraitID) const;
-	void set_trait (CharacterTraitID, CharacterTraitValue);
+	CreatureTraitValue get_trait(CreatureTraitID) const;
+	void set_trait (CreatureTraitID, CreatureTraitValue);
 
 	// combat
 	virtual uint get_combat_dodge () const;
@@ -121,8 +121,8 @@ class Player : public Character
 	void grant_exp (uint type, uint amount);
 
 	// stats
-	virtual inline int get_base_stat (CharStatID stat) const { return base_stats[stat.get_value()]; }
-	inline void set_base_stat (CharStatID stat, int value) { base_stats[stat.get_value()] = value; }
+	virtual inline int get_base_stat (CreatureStatID stat) const { return base_stats[stat.get_value()]; }
+	inline void set_base_stat (CreatureStatID stat, int value) { base_stats[stat.get_value()] = value; }
 
 	// recalcuate everything
 	virtual void recalc_stats ();
@@ -157,7 +157,7 @@ class Player : public Character
 	void do_reply (String what);
 
 	protected:
-	typedef GCType::map<CharacterTraitID, CharacterTraitValue> TraitMap;
+	typedef GCType::map<CreatureTraitID, CreatureTraitValue> TraitMap;
 
 	EntityName name;
 	class TelnetHandler* conn;
@@ -169,9 +169,9 @@ class Player : public Character
 		uint8 height; // centimeters;
 		TraitMap traits;
 	} pdesc;
-	CharStatArray base_stats;
+	CreatureStatArray base_stats;
 	class Race *race;
-	CharAlign alignment;
+	CreatureAlign alignment;
 	uint exp[NUM_EXPS];
 	GameTime birthday;
 	SkillSet skills;
@@ -189,7 +189,7 @@ class Player : public Character
 	void end_mccp ();
 #endif // HAVE_LIBZ
 
-	E_SUBTYPE(Player,Character);
+	E_SUBTYPE(Player,Creature);
 
 	friend class SPlayerManager; // obvious
 

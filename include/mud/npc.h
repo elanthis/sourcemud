@@ -8,7 +8,7 @@
 #ifndef AWEMUD_MUD_NPC_H
 #define AWEMUD_MUD_NPC_H
 
-#include "mud/char.h"
+#include "mud/creature.h"
 #include "mud/ai.h"
 #include "common/imanager.h"
 
@@ -46,8 +46,8 @@ NpcBlueprint : public Scriptix::Native
 	void reset_desc ();
 
 	// stats
-	inline int get_stat (CharStatID stat) const { return base_stats[stat]; }
-	inline void set_stat (CharStatID stat, int value) { base_stats[stat] = value; }
+	inline int get_stat (CreatureStatID stat) const { return base_stats[stat]; }
+	inline void set_stat (CreatureStatID stat, int value) { base_stats[stat] = value; }
 	void reset_stats ();
 
 	// gender
@@ -56,8 +56,8 @@ NpcBlueprint : public Scriptix::Native
 	void reset_gender ();
 
 	// alignment
-	inline CharAlign get_alignment () const { return alignment; }
-	inline void set_alignment (CharAlign s_align) { alignment = s_align; set_flags.alignment = true; }
+	inline CreatureAlign get_alignment () const { return alignment; }
+	inline void set_alignment (CreatureAlign s_align) { alignment = s_align; set_flags.alignment = true; }
 	void reset_alignment ();
 
 	// combat
@@ -80,8 +80,8 @@ NpcBlueprint : public Scriptix::Native
 	String desc;
 	StringList keywords;
 	GenderType gender;
-	CharAlign alignment;
-	CharStatArray base_stats;
+	CreatureAlign alignment;
+	CreatureStatArray base_stats;
 	NpcBlueprint* parent;
 	StringList equip_list;
 	AI* ai;
@@ -111,7 +111,7 @@ NpcBlueprint : public Scriptix::Native
 	void set_parent (NpcBlueprint* blueprint);
 };
 
-class Npc : public Character
+class Npc : public Creature
 {
 	public:
 	Npc ();
@@ -134,10 +134,10 @@ class Npc : public Character
 	virtual GenderType get_gender () const;
 
 	// stats
-	virtual int get_base_stat (CharStatID stat) const;
+	virtual int get_base_stat (CreatureStatID stat) const;
 
 	// alignment
-	virtual CharAlign get_alignment () const;
+	virtual CreatureAlign get_alignment () const;
 
 	// save and load
 	virtual int load_node (File::Reader& reader, File::Node& node);
@@ -170,7 +170,7 @@ class Npc : public Character
 	void pump (Scriptix::Value arg = NULL); // call a generic 'pump' event in the AI
 
 	// dead
-	void kill (Character* killer);
+	void kill (Creature* killer);
 
 	// heartbeat
 	void heartbeat ();
@@ -200,7 +200,7 @@ class Npc : public Character
 	protected:
 	virtual Scriptix::Value get_undefined_property (Scriptix::Atom id) const;
 
-	E_SUBTYPE(Npc, Character);
+	E_SUBTYPE(Npc, Creature);
 };
 
 class SNpcBlueprintManager : public IManager

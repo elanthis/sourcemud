@@ -20,8 +20,8 @@ namespace OLC {
 	void show_entity (Player* builder, Entity* entity);
 
 	// -- CHARACTER -- 
-	bool modify_character (Player* builder, Character* ch, const char* attr, char* value);
-	void show_character (Player* builder, Character* ch);
+	bool modify_character (Player* builder, Creature* ch, const char* attr, char* value);
+	void show_character (Player* builder, Creature* ch);
 
 	// -- NPC --
 	bool modify_npc (Player* builder, Npc* npc, const char* attr, char* value);

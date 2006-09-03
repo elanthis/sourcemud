@@ -11,7 +11,7 @@
 
 #include "common/error.h"
 #include "mud/command.h"
-#include "mud/char.h"
+#include "mud/creature.h"
 #include "mud/player.h"
 #include "common/streams.h"
 #include "mud/color.h"
@@ -157,7 +157,7 @@ SCommandManager::add (Command *command)
 }
 
 int
-SCommandManager::call (Character *ch, String comm) {
+SCommandManager::call (Creature *ch, String comm) {
 	Player *ply = PLAYER(ch);
 
 	// break up words

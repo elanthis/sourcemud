@@ -16,7 +16,7 @@
 
 // attack command
 void
-command_attack (Character* attacker, String argv[])
+command_attack (Creature* attacker, String argv[])
 {
 	// check status
 	if (!attacker->check_alive() || !attacker->check_move() || !attacker->check_rt())
@@ -26,7 +26,7 @@ command_attack (Character* attacker, String argv[])
 	Entity* evictim = attacker->cl_find_any(argv[1]);
 	if (!evictim)
 		return;
-	Character* victim = CHARACTER(evictim);
+	Creature* victim = CHARACTER(evictim);
 	if (!victim) {
 		*attacker << "You can't attack " << StreamName(evictim, DEFINITE) << ".\n";
 		return;
@@ -39,17 +39,17 @@ command_attack (Character* attacker, String argv[])
 		attacker->do_attack (victim);
 }
 
-class ActionAttackCharacter : public IAction
+class ActionAttackCreature : public IAction
 {
 	public:
-	ActionAttackCharacter (Character* s_ch, Character* s_victim, bool s_repeat) : IAction(s_ch), victim(s_victim), rounds(5), repeat(s_repeat) {}
+	ActionAttackCreature (Creature* s_ch, Creature* s_victim, bool s_repeat) : IAction(s_ch), victim(s_victim), rounds(5), repeat(s_repeat) {}
 
 	virtual uint get_rounds (void) const { return rounds; }
 	virtual void describe (const StreamControl& stream) const { stream << "attacking " << StreamName(victim, INDEFINITE); }
 
 	virtual int start (void)
 	{
-		Character* attacker = get_actor();
+		Creature* attacker = get_actor();
 
 		// checks
 		if (!attacker->check_move())
@@ -193,29 +193,29 @@ class ActionAttackCharacter : public IAction
 	}
 
 	private:
-	Character* victim;
+	Creature* victim;
 	int rounds;
 	bool repeat;
 };
 
 // attack a character
 void
-Character::do_attack (Character* victim)
+Creature::do_attack (Creature* victim)
 {
 	// no NULL
 	assert(victim != NULL);
 
-	add_action(new ActionAttackCharacter(this, victim, false));
+	add_action(new ActionAttackCreature(this, victim, false));
 }
 
 // attack a character until dead
 void
-Character::do_kill (Character* victim)
+Creature::do_kill (Creature* victim)
 {
 	// no NULL
 	assert(victim != NULL);
 
-	add_action(new ActionAttackCharacter(this, victim, true));
+	add_action(new ActionAttackCreature(this, victim, true));
 }
 
 // handle player combat abilities

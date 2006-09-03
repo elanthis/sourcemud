@@ -5,7 +5,7 @@
  * http://www.awemud.net
  */
 
-#include "mud/char.h"
+#include "mud/creature.h"
 #include "common/error.h"
 #include "mud/server.h"
 #include "mud/room.h"
@@ -17,12 +17,12 @@
 #include "mud/object.h"
 
 void
-Character::process_command (String line)
+Creature::process_command (String line)
 {
 	CommandManager.call (this, line);
 }
 
-// Helper functions for the Character::cl_find_* functions
+// Helper functions for the Creature::cl_find_* functions
 namespace {
 	// skip a word and following white space
 	void skip_word (CString& ptr)
@@ -90,7 +90,7 @@ namespace {
 
 // parse a command line to get an object
 Object* 
-Character::cl_find_object (String line, int type, bool silent)
+Creature::cl_find_object (String line, int type, bool silent)
 {
 	uint matches;
 	Object* object;
@@ -185,7 +185,7 @@ Character::cl_find_object (String line, int type, bool silent)
 
 // find an object inside a particular container
 Object*
-Character::cl_find_object (String line, Object* container, ContainerType type, bool silent)
+Creature::cl_find_object (String line, Object* container, ContainerType type, bool silent)
 {
 	const char* text = line.c_str();
 
@@ -228,8 +228,8 @@ Character::cl_find_object (String line, Object* container, ContainerType type, b
 
 
 // parse a command line to get a character
-Character* 
-Character::cl_find_character (String line, bool silent)
+Creature* 
+Creature::cl_find_character (String line, bool silent)
 {
 	const char* text = line.c_str();
 
@@ -261,7 +261,7 @@ Character::cl_find_character (String line, bool silent)
 		return NULL;
 	}
 
-	Character* ch = get_room()->find_character (String(text), index);
+	Creature* ch = get_room()->find_character (String(text), index);
 	if (ch == NULL && !silent)
 		*this << "You do not see '" << text << "'.\n";
 
@@ -270,7 +270,7 @@ Character::cl_find_character (String line, bool silent)
 
 /* parse a command line to get an exit*/
 RoomExit* 
-Character::cl_find_exit (String line, bool silent)
+Creature::cl_find_exit (String line, bool silent)
 {
 	const char* text = line.c_str();
 
@@ -316,7 +316,7 @@ Character::cl_find_exit (String line, bool silent)
 
 // parse a command line to get a character, object, or exit
 Entity* 
-Character::cl_find_any (String line, bool silent)
+Creature::cl_find_any (String line, bool silent)
 {
 	uint matches;
 
@@ -356,7 +356,7 @@ Character::cl_find_any (String line, bool silent)
 
 	// look for a character
 	if (get_room()) {
-		Character* ch = get_room()->find_character (name, index, &matches);
+		Creature* ch = get_room()->find_character (name, index, &matches);
 		if (ch != NULL)
 			return ch;
 		if (matches >= index) {
@@ -441,7 +441,7 @@ Character::cl_find_any (String line, bool silent)
 }
 
 void
-handle_char_move (Character* ch, ExitDir dir) {
+handle_char_move (Creature* ch, ExitDir dir) {
 	// must be in a room
 	if (!ch->get_room()) {
 		*ch << "You are not in a room.\n";
@@ -460,18 +460,18 @@ handle_char_move (Character* ch, ExitDir dir) {
 }
 
 // movement commands
-void command_north (Character* ch, String[]) { handle_char_move (ch, ExitDir::NORTH); }
-void command_east (Character* ch, String[]) { handle_char_move (ch, ExitDir::EAST); }
-void command_south (Character* ch, String[]) { handle_char_move (ch, ExitDir::SOUTH); }
-void command_west (Character* ch, String[]) { handle_char_move (ch, ExitDir::WEST); }
-void command_northwest (Character* ch, String[]) { handle_char_move (ch, ExitDir::NORTHWEST); }
-void command_northeast (Character* ch, String[]) { handle_char_move (ch, ExitDir::NORTHEAST); }
-void command_southwest (Character* ch, String[]) { handle_char_move (ch, ExitDir::SOUTHWEST); }
-void command_southeast (Character* ch, String[]) { handle_char_move (ch, ExitDir::SOUTHEAST); }
+void command_north (Creature* ch, String[]) { handle_char_move (ch, ExitDir::NORTH); }
+void command_east (Creature* ch, String[]) { handle_char_move (ch, ExitDir::EAST); }
+void command_south (Creature* ch, String[]) { handle_char_move (ch, ExitDir::SOUTH); }
+void command_west (Creature* ch, String[]) { handle_char_move (ch, ExitDir::WEST); }
+void command_northwest (Creature* ch, String[]) { handle_char_move (ch, ExitDir::NORTHWEST); }
+void command_northeast (Creature* ch, String[]) { handle_char_move (ch, ExitDir::NORTHEAST); }
+void command_southwest (Creature* ch, String[]) { handle_char_move (ch, ExitDir::SOUTHWEST); }
+void command_southeast (Creature* ch, String[]) { handle_char_move (ch, ExitDir::SOUTHEAST); }
 
-void command_go (Character* ch, String argv[])
+void command_go (Creature* ch, String argv[])
 {
-	if (ch->get_pos() != CharPosition::STAND) {
+	if (ch->get_pos() != CreaturePosition::STAND) {
 		*ch << "You cannot climb while " << ch->get_pos().get_verbing() << ".\n";
 		return;
 	}
@@ -486,9 +486,9 @@ void command_go (Character* ch, String argv[])
 	}
 }
 
-void command_climb (Character* ch, String argv[])
+void command_climb (Creature* ch, String argv[])
 {
-	if (ch->get_pos() != CharPosition::STAND) {
+	if (ch->get_pos() != CreaturePosition::STAND) {
 		*ch << "You cannot climb while " << ch->get_pos().get_verbing() << ".\n";
 		return;
 	}
@@ -503,9 +503,9 @@ void command_climb (Character* ch, String argv[])
 	}
 }
 
-void command_crawl (Character* ch, String argv[])
+void command_crawl (Creature* ch, String argv[])
 {
-	if (ch->get_pos() != CharPosition::KNEEL && ch->get_pos() != CharPosition::SIT) {
+	if (ch->get_pos() != CreaturePosition::KNEEL && ch->get_pos() != CreaturePosition::SIT) {
 		*ch << "You cannot crawl while " << ch->get_pos().get_verbing() << ".\n";
 		return;
 	}
@@ -521,7 +521,7 @@ void command_crawl (Character* ch, String argv[])
 }
 
 // basics
-void command_look (Character* ch, String argv[]) {
+void command_look (Creature* ch, String argv[]) {
 	// have we a target (argv[1])
 	if (!argv[1]) {
 		ch->do_look ();
@@ -544,7 +544,7 @@ void command_look (Character* ch, String argv[]) {
 	if (entity != NULL) {
 		// character?
 		if (CHARACTER(entity))
-			ch->do_look((Character*)(entity));
+			ch->do_look((Creature*)(entity));
 		// object?
 		else if (OBJECT(entity))
 			ch->do_look((Object*)(entity), ContainerType::NONE);
@@ -554,26 +554,26 @@ void command_look (Character* ch, String argv[]) {
 	}
 }
 
-void command_say (Character* ch, String argv[])
+void command_say (Creature* ch, String argv[])
 {
 	ch->do_say (argv[0]);
 }
 
-void command_emote (Character* ch, String argv[])
+void command_emote (Creature* ch, String argv[])
 {
 	ch->do_emote (argv[0]);
 }
 
 // position
 
-void command_stand (Character* ch, String[]) { ch->do_position (CharPosition::STAND); }
-void command_sit (Character* ch, String[]) { ch->do_position (CharPosition::SIT); }
-void command_lay (Character* ch, String[]) { ch->do_position (CharPosition::LAY); }
-void command_kneel (Character* ch, String[]) { ch->do_position (CharPosition::KNEEL); }
+void command_stand (Creature* ch, String[]) { ch->do_position (CreaturePosition::STAND); }
+void command_sit (Creature* ch, String[]) { ch->do_position (CreaturePosition::SIT); }
+void command_lay (Creature* ch, String[]) { ch->do_position (CreaturePosition::LAY); }
+void command_kneel (Creature* ch, String[]) { ch->do_position (CreaturePosition::KNEEL); }
 
 // interact
 
-void command_open (Character* ch, String argv[]) {
+void command_open (Creature* ch, String argv[]) {
 	RoomExit* exit;
 	if ((exit = ch->cl_find_exit (argv[0])) != NULL) {
 		if (exit->is_door ())
@@ -583,7 +583,7 @@ void command_open (Character* ch, String argv[]) {
 	}
 }
 
-void command_close (Character* ch, String argv[]) {
+void command_close (Creature* ch, String argv[]) {
 	RoomExit* exit;
 	if ((exit = ch->cl_find_exit (argv[0])) != NULL) {
 		if (exit->is_door ())
@@ -593,7 +593,7 @@ void command_close (Character* ch, String argv[]) {
 	}
 }
 
-void command_lock (Character* ch, String argv[]) {
+void command_lock (Creature* ch, String argv[]) {
 	RoomExit* exit;
 	if ((exit = ch->cl_find_exit (argv[0])) != NULL) {
 		if (exit->is_door ())
@@ -603,7 +603,7 @@ void command_lock (Character* ch, String argv[]) {
 	}
 }
 
-void command_unlock (Character* ch, String argv[]) {
+void command_unlock (Creature* ch, String argv[]) {
 	RoomExit* exit;
 	if ((exit = ch->cl_find_exit (argv[0])) != NULL) {
 		if (exit->is_door ())
@@ -613,7 +613,7 @@ void command_unlock (Character* ch, String argv[]) {
 	}
 }
 
-void command_get (Character* ch, String argv[]) {
+void command_get (Creature* ch, String argv[]) {
 	if (!argv[2].empty()) { // in, on, etc.
 		ContainerType type = argv[1] ? ContainerType::lookup(argv[1]) : ContainerType::NONE;
 
@@ -699,7 +699,7 @@ void command_get (Character* ch, String argv[]) {
 	}
 }
 
-void command_put (Character* ch, String argv[]) {
+void command_put (Creature* ch, String argv[]) {
 	ContainerType type = ContainerType::lookup(argv[1]);
 
 	Object* obj = ch->cl_find_object (argv[0], GOC_HELD);
@@ -713,7 +713,7 @@ void command_put (Character* ch, String argv[]) {
 	ch->do_put (obj, cobj, type);
 }
 
-void command_give (Character* ch, String argv[])
+void command_give (Creature* ch, String argv[])
 {
 	static const char* usage = "You must supply a positive number of coins to give.\n";
 
@@ -729,7 +729,7 @@ void command_give (Character* ch, String argv[])
 	}
 
 	// get target
-	Character* target = ch->cl_find_character(argv[1]);
+	Creature* target = ch->cl_find_character(argv[1]);
 	if (!target)
 		return;
 
@@ -737,7 +737,7 @@ void command_give (Character* ch, String argv[])
 	ch->do_give_coins (target, amount);
 }
 
-void command_drop (Character* ch, String argv[])
+void command_drop (Creature* ch, String argv[])
 {
 	// object?
 	if (argv[0]) {
@@ -785,35 +785,35 @@ void command_drop (Character* ch, String argv[])
 	}
 }
 
-void command_wear (Character* ch, String argv[])
+void command_wear (Creature* ch, String argv[])
 {
 	Object* obj = ch->cl_find_object (argv[0], GOC_HELD);
 	if (obj)
 		ch->do_wear (obj);
 }
 
-void command_equip (Character* ch, String argv[])
+void command_equip (Creature* ch, String argv[])
 {
 	Object* obj = ch->cl_find_object (argv[0], GOC_HELD);
 	if (obj)
 		ch->do_wear (obj);
 }
 
-void command_remove (Character* ch, String argv[]) 
+void command_remove (Creature* ch, String argv[]) 
 {
 	Object* obj = ch->cl_find_object (argv[0], GOC_WORN);
 	if (obj)
 		ch->do_remove (obj);
 }
 
-void command_read (Character* ch, String argv[])
+void command_read (Creature* ch, String argv[])
 {
 	Object* obj = ch->cl_find_object (argv[0], GOC_ANY);
 	if (obj)
 		ch->do_read (obj);
 }
 
-void command_kick (Character* ch, String argv[])
+void command_kick (Creature* ch, String argv[])
 {
 	Object* obj = ch->cl_find_object (argv[0], GOC_ANY, true);
 	if (obj) {
@@ -827,51 +827,51 @@ void command_kick (Character* ch, String argv[])
 	}
 }
 
-void command_raise (Character* ch, String argv[])
+void command_raise (Creature* ch, String argv[])
 {
 	Object* obj = ch->cl_find_object (argv[0], GOC_HELD);
 	if (obj)
 		ch->do_raise (obj);
 }
 
-void command_eat (Character* ch, String argv[])
+void command_eat (Creature* ch, String argv[])
 {
 	Object* obj = ch->cl_find_object (argv[0], GOC_HELD);
 	if (obj)
 		ch->do_eat (obj);
 }
 
-void command_drink (Character* ch, String argv[])
+void command_drink (Creature* ch, String argv[])
 {
 	Object* obj = ch->cl_find_object (argv[0], GOC_ANY);
 	if (obj)
 		ch->do_drink (obj);
 }
 
-void command_swap (Character* ch, String[])
+void command_swap (Creature* ch, String[])
 {
 	ch->swap_hands ();
 	*ch << "You swap the contents of your hands.\n";
 }
 
-void command_touch (Character* ch, String argv[])
+void command_touch (Creature* ch, String argv[])
 {
 	Object* obj = ch->cl_find_object (argv[0], GOC_ANY);
 	if (obj)
 		ch->do_touch (obj);
 }
 
-void command_sing (Character* ch, String argv[])
+void command_sing (Creature* ch, String argv[])
 {
 	ch->do_sing(argv[0]);
 }
 
-void command_affects (Character* ch, String argv[])
+void command_affects (Creature* ch, String argv[])
 {
 	ch->display_affects(*ch);
 }
 
-void command_stop (Character* ch, String argv[])
+void command_stop (Creature* ch, String argv[])
 {
 	ch->cancel_action();
 }

@@ -1,7 +1,7 @@
 // NPC extensions
 // Copyright (C) 2002  AwesomePlay Productions, Inc.
 
-// Character's foodchain value controls some AI
+// Creature's foodchain value controls some AI
 function getFoodchain(self)
 {
 	var foodchain = Int(self.ai_foodchain);
@@ -97,7 +97,7 @@ function init() {
 	registerHook('save_object', saveCorpseBlueprint);
 	registerHook('npc_death', makeCorpse);
 
-	Character.addMethod('foodchain', getFoodchain);
+	Creature.addMethod('foodchain', getFoodchain);
 	NPC.addMethod('goRandomExit', goRandomExit);
 	NPC.addMethod('setState', setState);
 }

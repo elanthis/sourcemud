@@ -27,7 +27,7 @@
 #include "common/rand.h"
 #include "mud/zone.h"
 #include "mud/object.h"
-#include "mud/char.h"
+#include "mud/creature.h"
 #include "mud/exit.h"
 #include "mud/hooks.h"
 #include "mud/efactory.h"
@@ -142,7 +142,7 @@ Room::save (File::Writer& writer)
 		writer.end();
 	}
 
-	for (EList<Character>::const_iterator i = chars.begin(); i != chars.end(); ++i) {
+	for (EList<Creature>::const_iterator i = chars.begin(); i != chars.end(); ++i) {
 		if (NPC(*i)) {
 			writer.begin(S("npc"));
 			(*i)->save(writer);
@@ -225,7 +225,7 @@ Room::activate ()
 
 	for (EList<RoomExit>::const_iterator i = exits.begin(); i != exits.end(); ++i)
 		(*i)->activate();
-	for (EList<Character>::const_iterator i = chars.begin(); i != chars.end(); ++i)
+	for (EList<Creature>::const_iterator i = chars.begin(); i != chars.end(); ++i)
 		(*i)->activate();
 	for (EList<Object>::const_iterator i = objects.begin(); i != objects.end(); ++i)
 		(*i)->activate();
@@ -236,7 +236,7 @@ Room::deactivate ()
 {
 	for (EList<RoomExit>::const_iterator i = exits.begin(); i != exits.end(); ++i)
 		(*i)->deactivate();
-	for (EList<Character>::const_iterator i = chars.begin(); i != chars.end(); ++i)
+	for (EList<Creature>::const_iterator i = chars.begin(); i != chars.end(); ++i)
 		(*i)->deactivate();
 	for (EList<Object>::const_iterator i = objects.begin(); i != objects.end(); ++i)
 		(*i)->deactivate();
@@ -261,8 +261,8 @@ Room::get_owner () const
 void
 Room::owner_release (Entity* child)
 {
-	// Character?
-	Character* ch = CHARACTER(child);
+	// Creature?
+	Creature* ch = CHARACTER(child);
 	if (ch != NULL) {
 		chars.remove(ch);
 		return;
@@ -288,7 +288,7 @@ Room::owner_release (Entity* child)
 
 /* print out Room */
 void
-Room::show (const StreamControl& stream, Character* viewer)
+Room::show (const StreamControl& stream, Creature* viewer)
 {
 	// if there's a hook for this, don't do our version
 	if (Hooks::show_room(this, viewer))
@@ -376,9 +376,9 @@ Room::show (const StreamControl& stream, Character* viewer)
 	// show players and NPCs
 	if (!chars.empty()) {
 		// iterator
-		for (EList<Character>::const_iterator i = chars.begin(); i != chars.end(); ++i) {
+		for (EList<Creature>::const_iterator i = chars.begin(); i != chars.end(); ++i) {
 			// not ourselves
-			if ((Character*)(*i) != viewer) {
+			if ((Creature*)(*i) != viewer) {
 				// have we a last entry?
 				if (last) {
 					// pre-text
@@ -476,10 +476,10 @@ Room::show_exits (const StreamControl& stream)
 
 /* broadcast a message to the Room */
 void
-Room::put (String msg, size_t len, GCType::vector<Character*>* ignore_list)
+Room::put (String msg, size_t len, GCType::vector<Creature*>* ignore_list)
 {
 	// iterator
-	for (EList<Character>::iterator i = chars.begin(); i != chars.end(); ++i) {
+	for (EList<Creature>::iterator i = chars.begin(); i != chars.end(); ++i) {
 		// skip ignored characters
 		if (ignore_list != NULL) {
 			if (std::find(ignore_list->begin(), ignore_list->end(), (*i)) != ignore_list->end())
@@ -490,8 +490,8 @@ Room::put (String msg, size_t len, GCType::vector<Character*>* ignore_list)
 	}
 }
 
-/* find a Character by name */
-Character *
+/* find a Creature by name */
+Creature *
 Room::find_character (String cname, uint c, uint *matches)
 {
 	assert (c != 0);
@@ -509,7 +509,7 @@ Room::find_object (String oname, uint c, uint *matches)
 }
 
 void
-Room::add_character (Character* character)
+Room::add_character (Creature* character)
 {
 	assert(character != NULL);
 
@@ -536,7 +536,7 @@ unsigned long
 Room::count_players () const
 {
 	unsigned long count = 0;
-	for (EList<Character>::const_iterator i = chars.begin(); i != chars.end(); ++i)
+	for (EList<Creature>::const_iterator i = chars.begin(); i != chars.end(); ++i)
 		if (PLAYER(*i))
 			++count;
 	return count;
@@ -557,7 +557,7 @@ Room::handle_event (const Event& event)
 		children[index++] = *i;
 
 	// propogate to characters
-	for (EList<Character>::const_iterator i = chars.begin(); i != chars.end(); ++i)
+	for (EList<Creature>::const_iterator i = chars.begin(); i != chars.end(); ++i)
 		children[index++] = *i;
 
 	// propogate to exits
@@ -596,13 +596,13 @@ RoomStreamSink : public IStreamSink {
 	RoomStreamSink (class Room& s_room) : room(s_room), buffer(), ignores() {}
 
 	virtual void stream_put (const char* text, size_t len) { buffer.write(text, len); }
-	virtual void stream_ignore (class Character* ch) { ignores.push_back(ch); }
+	virtual void stream_ignore (class Creature* ch) { ignores.push_back(ch); }
 	virtual void stream_end ();
 
 	private:
 	class Room& room;
 	StringBuffer buffer;
-	typedef GCType::vector<class Character*> IgnoreList;
+	typedef GCType::vector<class Creature*> IgnoreList;
 	IgnoreList ignores;
 };
 

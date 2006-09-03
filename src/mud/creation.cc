@@ -13,19 +13,19 @@
 #include "common/rand.h"
 
 // STAT ROLLING CONFIGURATION
-const int STAT_TOKENS = CharStatID::COUNT; // how many 'tokens' the player can spend on stats
+const int STAT_TOKENS = CreatureStatID::COUNT; // how many 'tokens' the player can spend on stats
 const int STAT_POINTS = STAT_TOKENS * 25; // how many stat points the player gets randomly assigned
 const int STAT_RAND_INC = 5; // the increment by which stats are advanced during random phase
 const int STAT_TOKEN_INC = 5; // the increment by which stats are advanced during token phase
 const int STAT_BASE = 30; // base value of all stats, before point distribution
 const int STAT_MAX = 90; // maximum stat can be raised to in character creation
 
-bool TelnetModeNewCharacter::is_match (String test, String operand)
+bool TelnetModeNewCreature::is_match (String test, String operand)
 {
 	return !operand.empty() && !strncasecmp(test.c_str(), operand.c_str(), operand.size());
 }
 
-int TelnetModeNewCharacter::initialize ()
+int TelnetModeNewCreature::initialize ()
 {
 	// clear all variables
 	name.clear();
@@ -35,12 +35,12 @@ int TelnetModeNewCharacter::initialize ()
 	return 0;
 }
 
-void TelnetModeNewCharacter::shutdown ()
+void TelnetModeNewCreature::shutdown ()
 {
 }
 
 // DISPLAY CURRENT STATE'S PROMPT
-void TelnetModeNewCharacter::prompt ()
+void TelnetModeNewCreature::prompt ()
 {
 	switch (state) {
 		case STATE_NAME:
@@ -85,7 +85,7 @@ void TelnetModeNewCharacter::prompt ()
 }
 
 // PROCESS INPUT FOR CURRENT STATE
-void TelnetModeNewCharacter::process (char* line)
+void TelnetModeNewCreature::process (char* line)
 {
 	String input = strlower(S(line));
 	int numeric = tolong(input);
@@ -198,9 +198,9 @@ void TelnetModeNewCharacter::process (char* line)
 
 			// set trait
 			int index = 1;
-			for (GCType::set<CharacterTraitValue>::const_iterator i = trait->second.begin(); i != trait->second.end(); ++i, ++index) {
+			for (GCType::set<CreatureTraitValue>::const_iterator i = trait->second.begin(); i != trait->second.end(); ++i, ++index) {
 				if (numeric == index || is_match(i->get_name(), input)) {
-					traits.insert(std::pair<CharacterTraitID,CharacterTraitValue>(trait->first, *i));
+					traits.insert(std::pair<CreatureTraitID,CreatureTraitValue>(trait->first, *i));
 					++trait; // now we need the next trait
 					break;
 				}
@@ -231,14 +231,14 @@ void TelnetModeNewCharacter::process (char* line)
 
 			// determine chosen stat
 			int stat;
-			if (numeric >= 1 && numeric <= CharStatID::COUNT) {
+			if (numeric >= 1 && numeric <= CreatureStatID::COUNT) {
 				stat = numeric - 1;
 			} else {
-				for (stat = 0; stat < CharStatID::COUNT; ++stat) {
-					if (is_match(CharStatID(stat).get_name(), input))
+				for (stat = 0; stat < CreatureStatID::COUNT; ++stat) {
+					if (is_match(CreatureStatID(stat).get_name(), input))
 						break;
 				}
-				if (stat == CharStatID::COUNT) {
+				if (stat == CreatureStatID::COUNT) {
 					show_error(S("I do not understand thy response."));
 					break;
 				}
@@ -287,10 +287,10 @@ void TelnetModeNewCharacter::process (char* line)
 	}
 }
 
-void TelnetModeNewCharacter::display ()
+void TelnetModeNewCreature::display ()
 {
 	get_handler()->clear_scr();
-	*get_handler() << 	S("Character Creation\n------------------\n");
+	*get_handler() << 	S("Creature Creation\n------------------\n");
 	if (name)
 		*get_handler() << "Name: " << name << "\n";
 	if (race)
@@ -321,9 +321,9 @@ void TelnetModeNewCharacter::display ()
 		case STATE_RACE_CONFIRM:
 		{
 			get_handler()->set_indent(2);
-			for (int i = 0; i < CharStatID::COUNT; ++i) {
+			for (int i = 0; i < CreatureStatID::COUNT; ++i) {
 				if (race->get_stat(i) != 0) {
-					*get_handler() << CharStatID(i).get_name() << ':';
+					*get_handler() << CreatureStatID(i).get_name() << ':';
 					get_handler()->set_indent(16);
 					if (race->get_stat(i) > 0)
 						*get_handler() << '+';
@@ -356,7 +356,7 @@ void TelnetModeNewCharacter::display ()
 				if (traits.find(i->first) == traits.end()) {
 					int index = 1;
 					*get_handler() << capwords(i->first.name()) << ":\n";
-					for (GCType::set<CharacterTraitValue>::const_iterator ii = i->second.begin(); ii != i->second.end(); ++ii, ++index) {
+					for (GCType::set<CreatureTraitValue>::const_iterator ii = i->second.begin(); ii != i->second.end(); ++ii, ++index) {
 						*get_handler() << index << ") " << capwords(ii->get_name()) << "\n";
 					}
 					*get_handler() << "\n";
@@ -381,11 +381,11 @@ void TelnetModeNewCharacter::display ()
 				"of attribute points, however.  You may at any time reroll "
 				"your stats by typing 'reroll'.\n\n";
 
-			for (int i = 0; i < CharStatID::COUNT; ++i) {
+			for (int i = 0; i < CreatureStatID::COUNT; ++i) {
 				int mod = (stats[i] - 50) / 10;
 
 				// name
-				*get_handler() << "  " << (i + 1) << ") " << CharStatID(i).get_name() << ": ";
+				*get_handler() << "  " << (i + 1) << ") " << CreatureStatID(i).get_name() << ": ";
 
 				// descriptor
 				get_handler()->set_indent(14);
@@ -443,10 +443,10 @@ void TelnetModeNewCharacter::display ()
 			}
 			if (state > STATE_STATS_CONFIRM) {
 				*get_handler() << "Attributes: ";
-				for (int i = 0; i < CharStatID::COUNT; ++i) {
+				for (int i = 0; i < CreatureStatID::COUNT; ++i) {
 					if (i > 0)
 						*get_handler() << ", ";
-					*get_handler() << CharStatID(i).get_name() << '(' << stats[i] << ')';
+					*get_handler() << CreatureStatID(i).get_name() << '(' << stats[i] << ')';
 				}
 				*get_handler() << '\n';
 			}
@@ -454,20 +454,20 @@ void TelnetModeNewCharacter::display ()
 			*get_handler() << "Is it thy wish for me to create this profile?\n\n";
 			break;
 		case STATE_CONTINUE:
-			*get_handler() << " " CADMIN "** Character Created **" CNORMAL "\n\n";
+			*get_handler() << " " CADMIN "** Creature Created **" CNORMAL "\n\n";
 			break;
 		default:
 			break;
 	}
 }
 
-void TelnetModeNewCharacter::show_error (String msg)
+void TelnetModeNewCreature::show_error (String msg)
 {
 	display();
 	*get_handler() << CWARNING << msg << CNORMAL << "\n\n";
 }
 
-void TelnetModeNewCharacter::enter_state (state_t new_state)
+void TelnetModeNewCreature::enter_state (state_t new_state)
 {
 	state = new_state;
 
@@ -487,7 +487,7 @@ void TelnetModeNewCharacter::enter_state (state_t new_state)
 			const RaceTraitMap& all = race->get_traits();
 			for (RaceTraitMap::const_iterator i = all.begin(); i != all.end(); ++i) {
 				if (i->second.size() == 1) {
-					traits.insert(std::pair<CharacterTraitID,CharacterTraitValue>(i->first, *i->second.begin()));
+					traits.insert(std::pair<CreatureTraitID,CreatureTraitValue>(i->first, *i->second.begin()));
 				}
 			}
 			break;
@@ -495,10 +495,10 @@ void TelnetModeNewCharacter::enter_state (state_t new_state)
 		case STATE_STATS:
 		{
 			tokens = STAT_TOKENS;
-			for (int i = 0; i < CharStatID::COUNT; ++i)
+			for (int i = 0; i < CreatureStatID::COUNT; ++i)
 				stats[i] = STAT_BASE;
 			for (int i = STAT_POINTS; i > 0; i -= STAT_RAND_INC)
-				stats[get_random(CharStatID::COUNT)] += STAT_RAND_INC;
+				stats[get_random(CreatureStatID::COUNT)] += STAT_RAND_INC;
 			break;
 		}
 		default:
@@ -508,7 +508,7 @@ void TelnetModeNewCharacter::enter_state (state_t new_state)
 	display();
 }
 
-void TelnetModeNewCharacter::create ()
+void TelnetModeNewCreature::create ()
 {
 	Player* player;
 
@@ -542,7 +542,7 @@ void TelnetModeNewCharacter::create ()
 	}
 
 	// set stats
-	for (int i = 0; i < CharStatID::COUNT; ++i)
+	for (int i = 0; i < CreatureStatID::COUNT; ++i)
 		player->set_base_stat(i, stats[i]);
 
 	// setup various other bits
@@ -555,14 +555,14 @@ void TelnetModeNewCharacter::create ()
 	// add to account
 	account->add_character(player->get_id());
 	account->save();
-	Log::Info << "Character '" << player->get_id() << "' added to account '" << account->get_id() << "'";
+	Log::Info << "Creature '" << player->get_id() << "' added to account '" << account->get_id() << "'";
 
 	// go to continue state
 	enter_state(STATE_CONTINUE);
 }
 
 // RETURN TO THE MAIN MENU
-void TelnetModeNewCharacter::finish ()
+void TelnetModeNewCreature::finish ()
 {
 	get_handler()->set_mode(new TelnetModeMainMenu(get_handler(), account));
 }

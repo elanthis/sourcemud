@@ -7,7 +7,7 @@
 
 #include "mud/caffect.h"
 
-String CharacterAffectType::names[] = {
+String CreatureAffectType::names[] = {
 	S("unknown"),
 	S("toxin"),
 	S("disease"),
@@ -17,8 +17,8 @@ String CharacterAffectType::names[] = {
 	S("tech"),
 };
 
-CharacterAffectType
-CharacterAffectType::lookup (String name)
+CreatureAffectType
+CreatureAffectType::lookup (String name)
 {
 	for (uint i = 0; i < COUNT; ++i)
 		if (str_eq(name, names[i]))
@@ -26,19 +26,19 @@ CharacterAffectType::lookup (String name)
 	return UNKNOWN;
 }
 
-CharacterAffectGroup::CharacterAffectGroup (String s_title, CharacterAffectType s_type, uint s_duration) : title(s_title), type(s_type), duration(s_duration)
+CreatureAffectGroup::CreatureAffectGroup (String s_title, CreatureAffectType s_type, uint s_duration) : title(s_title), type(s_type), duration(s_duration)
 {
 }
 
 int
-CharacterAffectGroup::add_affect (ICharacterAffect* affect)
+CreatureAffectGroup::add_affect (ICreatureAffect* affect)
 {
 	affects.push_back(affect);
 	return 0;
 }
 
 int
-CharacterAffectGroup::apply (Character* character) const
+CreatureAffectGroup::apply (Creature* character) const
 {
 	for (AffectList::const_iterator i = affects.begin(); i != affects.end(); ++i)
 		if ((*i)->apply(character))
@@ -47,14 +47,14 @@ CharacterAffectGroup::apply (Character* character) const
 }
 
 void
-CharacterAffectGroup::remove (Character* character) const
+CreatureAffectGroup::remove (Creature* character) const
 {
 	for (AffectList::const_iterator i = affects.begin(); i != affects.end(); ++i)
 		(*i)->remove(character);
 }
 
 void
-CharacterAffectGroup::update (Character* character)
+CreatureAffectGroup::update (Creature* character)
 {
 	if (duration > 0)
 		--duration;

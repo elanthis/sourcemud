@@ -23,7 +23,7 @@
     #include "common/rand.h"
     #include "mud/object.h"
     #include "mud/exit.h"
-    #include "mud/char.h"
+    #include "mud/creature.h"
     #include "mud/hooks.h"
     #include "common/strbuf.h"
 
@@ -154,79 +154,79 @@ if (value == false) { ... }</example>
 
   <!-- Global constants - STATS -->
   <global-group>
-    <name>Character Stats</name>
+    <name>Creature Stats</name>
 
     <global>
       <name>STAT_STRENGTH</name>
       <type>Integer</type>
-      <expr>CharStatID::STRENGTH</expr>
+      <expr>CreatureStatID::STRENGTH</expr>
       <doc>Strength character statistic.</doc>
     </global>
     <global>
       <name>STAT_FORTITUDE</name>
       <type>Integer</type>
-      <expr>CharStatID::FORTITUDE</expr>
+      <expr>CreatureStatID::FORTITUDE</expr>
       <doc>Endurance character statistic.</doc>
     </global>
     <global>
       <name>STAT_AGILITY</name>
       <type>Integer</type>
-      <expr>CharStatID::AGILITY</expr>
+      <expr>CreatureStatID::AGILITY</expr>
       <doc>Agility character statistic.</doc>
     </global>
     <global>
       <name>STAT_INTELLECT</name>
       <type>Integer</type>
-      <expr>CharStatID::INTELLECT</expr>
+      <expr>CreatureStatID::INTELLECT</expr>
       <doc>Intelligence character statistic.</doc>
     </global>
     <global>
       <name>STAT_SPIRIT</name>
       <type>Integer</type>
-      <expr>CharStatID::SPIRIT</expr>
+      <expr>CreatureStatID::SPIRIT</expr>
       <doc>Spirit character statistic.</doc>
     </global>
     <global>
       <name>STAT_WILLPOWER</name>
       <type>Integer</type>
-      <expr>CharStatID::WILLPOWER</expr>
-      <doc>Charisma character statistic.</doc>
+      <expr>CreatureStatID::WILLPOWER</expr>
+      <doc>Creatureisma character statistic.</doc>
     </global>
     <global>
       <name>STAT_COUNT</name>
       <type>Integer</type>
-      <expr>CharStatID::COUNT</expr>
+      <expr>CreatureStatID::COUNT</expr>
       <doc>The number of stats that exist.  (Useful in loops.)</doc>
     </global>
   </global-group>
 
   <!-- Positions -->
   <global-group>
-    <name>Character Positions</name>
-    <doc>These are for use with the <link method="Character.position"/> and <link method="Character.setPosition"/> methods.</doc>
+    <name>Creature Positions</name>
+    <doc>These are for use with the <link method="Creature.position"/> and <link method="Creature.setPosition"/> methods.</doc>
 
     <global>
       <name>POS_STAND</name>
       <type>Integer</type>
-      <expr>CharPosition::STAND</expr>
+      <expr>CreaturePosition::STAND</expr>
       <doc>Standing position.</doc>
     </global>
     <global>
       <name>POS_SIT</name>
       <type>Integer</type>
-      <expr>CharPosition::SIT</expr>
+      <expr>CreaturePosition::SIT</expr>
       <doc>Sitting position.</doc>
     </global>
     <global>
       <name>POS_LAY</name>
       <type>Integer</type>
-      <expr>CharPosition::LAY</expr>
+      <expr>CreaturePosition::LAY</expr>
       <doc>Laying down position.</doc>
     </global>
     <global>
       <name>POS_KNEEL</name>
       <type>Integer</type>
-      <expr>CharPosition::KNEEL</expr>
+      <expr>CreaturePosition::KNEEL</expr>
       <doc>Kneeling position.</doc>
     </global>
   </global-group>
@@ -280,10 +280,10 @@ if (value == false) { ... }</example>
     </global>
   </global-group>
 
-  <!-- For Character.cl_find_object -->
+  <!-- For Creature.cl_find_object -->
   <global-group>
     <name>Object Search Ranges</name>
-    <doc>The <link method="Character.clFindObject"/> method can be configured to look in different places for the named object.  For example, you may search only the ground, only the character's inventory, or every reachable location.</doc>
+    <doc>The <link method="Creature.clFindObject"/> method can be configured to look in different places for the named object.  For example, you may search only the ground, only the character's inventory, or every reachable location.</doc>
 
     <global>
       <name>GOC_HELD</name>
@@ -325,7 +325,7 @@ if (value == false) { ... }</example>
   <!-- Object Actions -->
   <global-group>
     <name>Object Actions</name>
-    <doc><link type="Object"/>s can have various actions attached to them.  An action is simply a script with a specific name that is invoked when a <link type="Character"/> tries to use the object in a specific way.  The scripts used in object actions must return one of these return values telling the engine what sorts of further processing should be done for the action.</doc>
+    <doc><link type="Object"/>s can have various actions attached to them.  An action is simply a script with a specific name that is invoked when a <link type="Creature"/> tries to use the object in a specific way.  The scripts used in object actions must return one of these return values telling the engine what sorts of further processing should be done for the action.</doc>
     <global>
       <name>OBJACT_OK</name>
       <type>Integer</type>
@@ -422,7 +422,7 @@ if (value == false) { ... }</example>
     <name>ignore</name>
     <arg>
       <name>who</name>
-      <type>Character</type>
+      <type>Creature</type>
       <doc>The character to not send output to.</doc>
     </arg>
     <doc>This streamop is only valid for streams to Rooms.  By default, all characters in the room will receive the text streamed to a room.  Any characters listed in the @ignore streamop will not receive text from that particular stream.</doc>
@@ -747,8 +747,8 @@ number = roll_dice(3, 6);]]></example>
       <doc>Index to lookup.  Must be greater than or equal to 0, and less than STAT_COUNT.</doc>
     </arg>
     <code><![CDATA[
-      if (_arg_stat >= 0 && _arg_stat < CharStatID::COUNT)
-        _return = CharStatID(_arg_stat).get_name();
+      if (_arg_stat >= 0 && _arg_stat < CreatureStatID::COUNT)
+        _return = CreatureStatID(_arg_stat).get_name();
     ]]></code>
     <doc>Returns the name for the given stat, or nil if given an invalid stat.</doc>
   </function>
@@ -771,7 +771,7 @@ number = roll_dice(3, 6);]]></example>
     <invoke>get_stat_level</invoke>
     <return>
       <type>String</type>
-      <doc><link type="Character"/> stat level description.</doc>
+      <doc><link type="Creature"/> stat level description.</doc>
     </return>
     <arg>
       <name>value</name>
@@ -814,7 +814,7 @@ number = roll_dice(3, 6);]]></example>
       <doc>Array of all valid trait names.</doc>
     </return>
     <code><![CDATA[
-      const IDManager::IDMap& traits = CharacterTraitID::get_all();
+      const IDManager::IDMap& traits = CreatureTraitID::get_all();
       _return = new Scriptix::Array(traits.size(), NULL);
       for (IDManager::IDMap::const_iterator i = traits.begin(); i != traits.end(); ++i)
         _return->append(Scriptix::Value(*i));
@@ -1087,7 +1087,7 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
 
   <!-- Generic characters -->
   <type>
-    <name>Character</name>
+    <name>Creature</name>
     <parent>Entity</parent>
     <doc>The character class represents the shared information between the <link type="NPC"/> and player classes.  There are also a few methods and attributes which are only useful to either the npc or player class; however, since the methods are more convenient to use without casting between this class and the true class, making them virtual methods here simplifies things.</doc>
 
@@ -1103,7 +1103,7 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
       </arg>
       <doc>Return the curren tvalue of the specified stat.</doc>
       <code><![CDATA[
-        if (_arg_stat >= 0 && _arg_stat < CharStatID::COUNT)
+        if (_arg_stat >= 0 && _arg_stat < CreatureStatID::COUNT)
           _return = _self->get_effective_stat(_arg_stat);
       ]]></code>
     </method>
@@ -1118,7 +1118,7 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
       </arg>
       <doc>Get the base value of the specified stat.</doc>
       <code><![CDATA[
-        if (_arg_stat >= 0 && _arg_stat < CharStatID::COUNT)
+        if (_arg_stat >= 0 && _arg_stat < CreatureStatID::COUNT)
           _return = _self->get_base_stat(_arg_stat);
       ]]></code>
     </method>
@@ -1133,7 +1133,7 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
       </arg>
       <doc>Get the modifier value of the specified stat.</doc>
       <code><![CDATA[
-        if (_arg_stat >= 0 && _arg_stat < CharStatID::COUNT)
+        if (_arg_stat >= 0 && _arg_stat < CreatureStatID::COUNT)
           _return = _self->get_stat_modifier(_arg_stat);
       ]]></code>
     </method>
@@ -1269,10 +1269,10 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
       <name>attack</name>
       <arg>
         <name>victim</name>
-        <type>Character</type>
-        <doc>Character to attack.</doc>
+        <type>Creature</type>
+        <doc>Creature to attack.</doc>
       </arg>
-      <doc>This action causes an attack to be made.  Characters must have a weapon to attack.</doc>
+      <doc>This action causes an attack to be made.  Creatures must have a weapon to attack.</doc>
       <code><![CDATA[_self->do_attack(_arg_victim);]]></code>
     </method>
 
@@ -1311,7 +1311,7 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
         <type>Integer</type>
         <doc>Number of coins the character now has.</doc>
       </return>
-      <doc>Gives a number of coins to the character.  Characters have a limit on how many coins they can carry.  You must be very careful during transactions and check the return value of this method; if the character has less coins than you anticipated after the method, they can't carry any more coins.  You should return the left over to the source they came from.</doc>
+      <doc>Gives a number of coins to the character.  Creatures have a limit on how many coins they can carry.  You must be very careful during transactions and check the return value of this method; if the character has less coins than you anticipated after the method, they can't carry any more coins.  You should return the left over to the source they came from.</doc>
     </method>
 
     <!-- Searching -->
@@ -1340,10 +1340,10 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
       <doc>Search the character's room (or inventory) for the named object.  The name should generally be player input.  This call can resolve arbitrary names, like "the sword" or "my other pouch."</doc>
     </method>
     <method>
-      <name>clFindChar</name>
+      <name>clFindCreature</name>
       <invoke>cl_find_character</invoke>
       <return>
-        <type>Character</type>
+        <type>Creature</type>
         <doc>The found player or <link type="NPC"/>, or nil if not found.</doc>
       </return>
       <arg>
@@ -1382,7 +1382,7 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
       <invoke>cl_find_any</invoke>
       <return>
         <type>Entity</type>
-        <doc>The found <link type="Object"/>, <link type="Character"/>, or Exit, or nil if not found.</doc>
+        <doc>The found <link type="Object"/>, <link type="Creature"/>, or Exit, or nil if not found.</doc>
       </return>
       <arg>
         <name>name</name>
@@ -1467,7 +1467,7 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
         }
         parse::text(*_self, _arg_format, vlist, ParseNames(_argc - 1));
       ]]></code>
-      <doc>This is a convenience function that calls <link function="strParse"/> on the arguments and <link method="Character.put"/> on the result.  Additional arguments to the function are given as argument to the strParse call.  The first argument given to strParse is automatically the Character instance itself.</doc>
+      <doc>This is a convenience function that calls <link function="strParse"/> on the arguments and <link method="Creature.put"/> on the result.  Additional arguments to the function are given as argument to the strParse call.  The first argument given to strParse is automatically the Creature instance itself.</doc>
     </method>
     <method>
       <name>rprint</name>
@@ -1497,7 +1497,7 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
       <arg>
         <name>ignore</name>
         <type>Array</type>
-        <doc>An array of <link type="Character"/>s to ignore on output.</doc>
+        <doc>An array of <link type="Creature"/>s to ignore on output.</doc>
       </arg>
       <varg/>
       <code><![CDATA[
@@ -1507,11 +1507,11 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
 
           for (size_t i = 0; i < _arg_ignore->get_count(); ++i) {
             Scriptix::Value val = _arg_ignore->get_index(i);
-            if (!val.is_a(AweMUD_CharacterType)) {
-              Scriptix::ScriptManager.raise_error(Scriptix::SXE_BADARGS, "Value in ignore list to Character.riprint() is not a Character");
+            if (!val.is_a(AweMUD_CreatureType)) {
+              Scriptix::ScriptManager.raise_error(Scriptix::SXE_BADARGS, "Value in ignore list to Creature.riprint() is not a Creature");
               return Scriptix::Nil;
             }
-            stream << StreamIgnore((Character*)val.get());
+            stream << StreamIgnore((Creature*)val.get());
           }
 
           for (size_t i = 1; i < _argc; ++ i) {
@@ -1527,7 +1527,7 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
           }
         }
       ]]></code>
-      <doc>The same as rprint(), except output is not shown to any characters in the ignore array.  The <link type="Character"/> object the riprint method is called on is automatically added to the ignore list.</doc>
+      <doc>The same as rprint(), except output is not shown to any characters in the ignore array.  The <link type="Creature"/> object the riprint method is called on is automatically added to the ignore list.</doc>
     </method>
 
     <!-- Status query -->
@@ -1612,7 +1612,7 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
       </arg>
       <doc>Sets character's position (sitting, standing, etc.).</doc>
       <code><![CDATA[
-        _self->set_pos(CharPosition(_arg_position));
+        _self->set_pos(CreaturePosition(_arg_position));
       ]]></code>
     </method>
     <method>
@@ -1673,7 +1673,7 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
       </arg>
       <arg>
         <name>damager</name>
-        <type>Character</type>
+        <type>Creature</type>
         <nullok/>
       </arg>
       <doc>Subtracts the specified amount of damage from current HP.  Will trigger death if appropriate.  Also takes the entity that caused the damage, if appropriate.</doc>
@@ -1693,7 +1693,7 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
         <type>Integer</type>
         <doc>Percent of remaining HP.</doc>
       </return>
-      <doc>Returns a 0-100 percent indicating how much of the <link type="Character"/>'s health is remaining.</doc>
+      <doc>Returns a 0-100 percent indicating how much of the <link type="Creature"/>'s health is remaining.</doc>
       <code><![CDATA[
         if (_self->get_hp() <= 0 || _self->get_max_hp() <= 0)
           _return = 0;
@@ -1742,7 +1742,7 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
   <!-- Player -->
   <type>
     <name>Player</name>
-    <parent>Character</parent>
+    <parent>Creature</parent>
     <doc>The <link type="Player"/> class represents a character that is controlled by a human.  <link type="Player"/> classes also encompass the connection data.</doc>
 
     <!-- Experience -->
@@ -1842,7 +1842,7 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
         <type>String</type>
         <doc>The trait's description, normally processed with the text parsing engine before displaying.</doc>
       </return>
-      <code><![CDATA[_return = _self->get_trait(CharacterTraitID::lookup(_arg_trait)).get_desc();]]></code>
+      <code><![CDATA[_return = _self->get_trait(CreatureTraitID::lookup(_arg_trait)).get_desc();]]></code>
     </method>
     <method>
       <name>setTrait</name>
@@ -1856,7 +1856,7 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
         <type>String</type>
         <doc>Name of a specific trait value to set the trait to.</doc>
       </arg>
-      <code><![CDATA[_self->set_trait(CharacterTraitID::lookup(_arg_trait), CharacterTraitValue::lookup(_arg_value));]]></code>
+      <code><![CDATA[_self->set_trait(CreatureTraitID::lookup(_arg_trait), CreatureTraitValue::lookup(_arg_value));]]></code>
     </method>
     <method>
       <name>hisHer</name>
@@ -1991,7 +1991,7 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
       </arg>
       <doc>Set the base value of the specified stat.</doc>
       <code><![CDATA[
-        if (_arg_stat >= 0 && _arg_stat < CharStatID::COUNT)
+        if (_arg_stat >= 0 && _arg_stat < CreatureStatID::COUNT)
           _self->set_base_stat(_arg_stat, _arg_value);
       ]]></code>
     </method>
@@ -2060,7 +2060,7 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
   <!-- NPC -->
   <type>
     <name>NPC</name>
-    <parent>Character</parent>
+    <parent>Creature</parent>
     <cppname>Npc</cppname>
 
     <doc>Defines a non-player character, such as monsters.</doc>
@@ -2348,10 +2348,10 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
       <name>getHolder</name>
       <invoke>get_holder</invoke>
       <return>
-        <type>Character</type>
-        <doc>Character carrying the object, or nil.</doc>
+        <type>Creature</type>
+        <doc>Creature carrying the object, or nil.</doc>
       </return>
-      <doc>If the object is being carried by a Character, return that character.</doc>
+      <doc>If the object is being carried by a Creature, return that character.</doc>
     </method>
 
     <!-- flags -->
@@ -2501,11 +2501,11 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
       <invoke>set_desc</invoke>
     </method>
 
-    <!-- Character management -->
+    <!-- Creature management -->
     <method>
-      <name>findCharacter</name>
+      <name>findCreature</name>
       <return>
-        <type>Character</type>
+        <type>Creature</type>
       </return>
       <arg>
         <name>name</name>
@@ -2537,10 +2537,10 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
       <doc>Returns an iterator for all the characters in the room.</doc>
     </method>
     <method>
-      <name>addCharacter</name>
+      <name>addCreature</name>
       <arg>
         <name>object</name>
-        <type>Character</type>
+        <type>Creature</type>
       </arg>
       <doc>Adds the given character to the room's floor.</doc>
       <invoke>add_character</invoke>
@@ -3530,7 +3530,7 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
       <arg>
         <type>Integer</type>
         <name>start</name>
-        <doc>Character index on which the susbtring shall begin.</doc>
+        <doc>Creature index on which the susbtring shall begin.</doc>
       </arg>
       <arg>
         <type>Integer</type>

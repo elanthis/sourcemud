@@ -5,7 +5,7 @@
  * http://www.awemud.net
  */
 
-#include "mud/char.h"
+#include "mud/creature.h"
 #include "mud/server.h"
 #include "mud/room.h"
 #include "mud/body.h"
@@ -19,14 +19,14 @@
 #include "mud/npc.h"
 
 void
-Character::do_emote (String action)
+Creature::do_emote (String action)
 {
 	if (get_room())
 		*get_room() << "(S(" << StreamName(this, DEFINITE, true) << ") " << action << ")\n";
 }
 
 void
-Character::do_social (const Social* social, Entity* target, String adverb)
+Creature::do_social (const Social* social, Entity* target, String adverb)
 {
 	// yourself?  you ijit
 	if (target == this) {
@@ -97,7 +97,7 @@ Character::do_social (const Social* social, Entity* target, String adverb)
 }
 
 void
-Character::do_say (String text)
+Creature::do_say (String text)
 {
 	// don't say nothing
 	if (text.empty())
@@ -139,7 +139,7 @@ Character::do_say (String text)
 }
 
 void
-Character::do_sing (String text)
+Creature::do_sing (String text)
 {
 	// split into lines
 	StringList lines;
@@ -191,7 +191,7 @@ Character::do_sing (String text)
 }
 
 void
-Character::do_look (void)
+Creature::do_look (void)
 {
 	// check
 	if (!check_see()) return;
@@ -205,7 +205,7 @@ Character::do_look (void)
 }
 
 void
-Character::do_look (Character *ch)
+Creature::do_look (Creature *ch)
 {
 	assert (ch != NULL);
 
@@ -217,7 +217,7 @@ Character::do_look (Character *ch)
 		*PLAYER(ch) << StreamName(*this, NONE, true) << " glances at you.\n";
 
 	// description
-	*this << StreamCharDesc(ch);
+	*this << StreamCreatureDesc(ch);
 
 	// inventory
 	ch->display_equip(StreamControl(this));
@@ -231,7 +231,7 @@ Character::do_look (Character *ch)
 }
 
 void
-Character::do_look (const Object *obj, const ContainerType& type)
+Creature::do_look (const Object *obj, const ContainerType& type)
 {
 	assert (obj != NULL);
 
@@ -257,7 +257,7 @@ Character::do_look (const Object *obj, const ContainerType& type)
 }
 
 void
-Character::do_look (RoomExit *exit)
+Creature::do_look (RoomExit *exit)
 {
 	assert (exit != NULL);
 
@@ -297,7 +297,7 @@ Character::do_look (RoomExit *exit)
 class ActionChangePosition : public IAction
 {
 	public:
-	ActionChangePosition (Character* s_ch, CharPosition s_position) : IAction(s_ch), position(s_position) {}
+	ActionChangePosition (Creature* s_ch, CreaturePosition s_position) : IAction(s_ch), position(s_position) {}
 
 	virtual uint get_rounds (void) const { return 1; }
 	virtual void describe (const StreamControl& stream) const { stream << position.get_verbing(); }
@@ -323,11 +323,11 @@ class ActionChangePosition : public IAction
 	}
 
 	private:
-	CharPosition position;
+	CreaturePosition position;
 };
 
 void
-Character::do_position (CharPosition position)
+Creature::do_position (CreaturePosition position)
 {
 	add_action(new ActionChangePosition(this, position));
 }
@@ -335,7 +335,7 @@ Character::do_position (CharPosition position)
 class ActionGet : public IAction
 {
 	public:
-	ActionGet (Character* s_ch, Object* s_obj, Object* s_container, const ContainerType& s_type) :
+	ActionGet (Creature* s_ch, Object* s_obj, Object* s_container, const ContainerType& s_type) :
 		IAction(s_ch), obj(s_obj), container(s_container), type(s_type) {}
 
 	virtual uint get_rounds (void) const { return 2; }
@@ -378,7 +378,7 @@ class ActionGet : public IAction
 };
 
 void
-Character::do_get (Object *obj, Object *contain, const ContainerType& type)
+Creature::do_get (Object *obj, Object *contain, const ContainerType& type)
 {
 	assert (obj != NULL);
 
@@ -388,7 +388,7 @@ Character::do_get (Object *obj, Object *contain, const ContainerType& type)
 class ActionPut : public IAction
 {
 	public:
-	ActionPut (Character* s_ch, Object* s_obj, Object* s_container, const ContainerType& s_type) :
+	ActionPut (Creature* s_ch, Object* s_obj, Object* s_container, const ContainerType& s_type) :
 		IAction(s_ch), obj(s_obj), container(s_container), type(s_type) {}
 
 	virtual uint get_rounds (void) const { return 2; }
@@ -419,7 +419,7 @@ class ActionPut : public IAction
 };
 
 void
-Character::do_put (Object *obj, Object *contain, const ContainerType& type)
+Creature::do_put (Object *obj, Object *contain, const ContainerType& type)
 {
 	assert (obj != NULL);
 	assert (contain != NULL);
@@ -431,7 +431,7 @@ Character::do_put (Object *obj, Object *contain, const ContainerType& type)
 class ActionGiveCoins : public IAction
 {
 	public:
-	ActionGiveCoins (Character* s_ch, Character* s_target, uint s_amount) :
+	ActionGiveCoins (Creature* s_ch, Creature* s_target, uint s_amount) :
 		IAction(s_ch), target(s_target), amount(s_amount) {}
 
 	virtual uint get_rounds (void) const { return 2; }
@@ -466,12 +466,12 @@ class ActionGiveCoins : public IAction
 	}
 
 	private:
-	Character* target;
+	Creature* target;
 	uint amount;
 };
 
 void
-Character::do_give_coins (Character* target, uint amount)
+Creature::do_give_coins (Creature* target, uint amount)
 {
 	assert (target != NULL);
 	assert (amount != 0);
@@ -482,7 +482,7 @@ Character::do_give_coins (Character* target, uint amount)
 class ActionWear : public IAction
 {
 	public:
-	ActionWear (Character* s_ch, Object* s_obj) :
+	ActionWear (Creature* s_ch, Object* s_obj) :
 		IAction(s_ch), obj(s_obj) {}
 
 	virtual uint get_rounds (void) const { return 5; }
@@ -514,7 +514,7 @@ class ActionWear : public IAction
 };
 
 void
-Character::do_wear (Object *obj)
+Creature::do_wear (Object *obj)
 {
 	assert (obj != NULL);
 
@@ -524,7 +524,7 @@ Character::do_wear (Object *obj)
 class ActionRemove : public IAction
 {
 	public:
-	ActionRemove (Character* s_ch, Object* s_obj) :
+	ActionRemove (Creature* s_ch, Object* s_obj) :
 		IAction(s_ch), obj(s_obj) {}
 
 	virtual uint get_rounds (void) const { return 5; }
@@ -556,7 +556,7 @@ class ActionRemove : public IAction
 };
 
 void
-Character::do_remove (Object *obj)
+Creature::do_remove (Object *obj)
 {
 	assert (obj != NULL);
 
@@ -566,7 +566,7 @@ Character::do_remove (Object *obj)
 class ActionDrop : public IInstantAction
 {
 	public:
-	ActionDrop (Character* s_ch, Object* s_obj) : IInstantAction(s_ch), obj(s_obj) {}
+	ActionDrop (Creature* s_ch, Object* s_obj) : IInstantAction(s_ch), obj(s_obj) {}
 
 	virtual void perform (void)
 	{
@@ -599,7 +599,7 @@ class ActionDrop : public IInstantAction
 };
 
 void
-Character::do_drop (Object *obj)
+Creature::do_drop (Object *obj)
 {
 	assert (obj != NULL);
 
@@ -609,7 +609,7 @@ Character::do_drop (Object *obj)
 class ActionRead : public IInstantAction
 {
 	public:
-	ActionRead (Character* s_ch, Object* s_obj) : IInstantAction(s_ch), obj(s_obj) {}
+	ActionRead (Creature* s_ch, Object* s_obj) : IInstantAction(s_ch), obj(s_obj) {}
 
 	virtual void perform (void)
 	{
@@ -667,7 +667,7 @@ class ActionRead : public IInstantAction
 };
 
 void
-Character::do_read (Object *obj)
+Creature::do_read (Object *obj)
 {
 	assert (obj != NULL);
 
@@ -677,7 +677,7 @@ Character::do_read (Object *obj)
 class ActionEat : public IAction
 {
 	public:
-	ActionEat (Character* s_ch, Object* s_obj) : IAction(s_ch), obj(s_obj) {}
+	ActionEat (Creature* s_ch, Object* s_obj) : IAction(s_ch), obj(s_obj) {}
 
 	virtual uint get_rounds (void) const { return 4; }
 	virtual void describe (const StreamControl& stream) const { stream << "eating " << StreamName(obj, INDEFINITE); }
@@ -744,7 +744,7 @@ class ActionEat : public IAction
 };
 
 void
-Character::do_eat (Object *obj)
+Creature::do_eat (Object *obj)
 {
 	assert (obj != NULL);
 
@@ -754,7 +754,7 @@ Character::do_eat (Object *obj)
 class ActionDrink : public IAction
 {
 	public:
-	ActionDrink (Character* s_ch, Object* s_obj) : IAction(s_ch), obj(s_obj) {}
+	ActionDrink (Creature* s_ch, Object* s_obj) : IAction(s_ch), obj(s_obj) {}
 
 	virtual uint get_rounds (void) const { return 4; }
 	virtual void describe (const StreamControl& stream) const { stream << "drinking " << StreamName(obj, INDEFINITE); }
@@ -821,7 +821,7 @@ class ActionDrink : public IAction
 };
 
 void
-Character::do_drink (Object *obj)
+Creature::do_drink (Object *obj)
 {
 	assert (obj != NULL);
 
@@ -831,7 +831,7 @@ Character::do_drink (Object *obj)
 class ActionRaise : public IAction
 {
 	public:
-	ActionRaise (Character* s_ch, Object* s_obj) : IAction(s_ch), obj(s_obj) {}
+	ActionRaise (Creature* s_ch, Object* s_obj) : IAction(s_ch), obj(s_obj) {}
 
 	virtual uint get_rounds (void) const { return 2; }
 	virtual void describe (const StreamControl& stream) const { stream << "drinking " << StreamName(obj, INDEFINITE); }
@@ -886,7 +886,7 @@ class ActionRaise : public IAction
 };
 
 void
-Character::do_raise (Object *obj)
+Creature::do_raise (Object *obj)
 {
 	assert (obj != NULL);
 
@@ -896,7 +896,7 @@ Character::do_raise (Object *obj)
 class ActionTouch : public IInstantAction
 {
 	public:
-	ActionTouch (Character* s_ch, Object* s_obj) : IInstantAction(s_ch), obj(s_obj) {}
+	ActionTouch (Creature* s_ch, Object* s_obj) : IInstantAction(s_ch), obj(s_obj) {}
 
 	virtual void perform (void)
 	{
@@ -944,7 +944,7 @@ class ActionTouch : public IInstantAction
 };
 
 void
-Character::do_touch (Object *obj)
+Creature::do_touch (Object *obj)
 {
 	assert (obj != NULL);
 
@@ -954,7 +954,7 @@ Character::do_touch (Object *obj)
 class ActionKick : public IAction
 {
 	public:
-	ActionKick (Character* s_ch, Object* s_obj) : IAction(s_ch), obj(s_obj) {}
+	ActionKick (Creature* s_ch, Object* s_obj) : IAction(s_ch), obj(s_obj) {}
 
 	virtual uint get_rounds (void) const { return 1; }
 	virtual void describe (const StreamControl& stream) const { stream << "drinking " << StreamName(obj, INDEFINITE); }
@@ -1007,7 +1007,7 @@ class ActionKick : public IAction
 };
 
 void
-Character::do_kick (Object *obj)
+Creature::do_kick (Object *obj)
 {
 	assert (obj != NULL);
 
@@ -1017,7 +1017,7 @@ Character::do_kick (Object *obj)
 class ActionOpenExit : public IAction
 {
 	public:
-	ActionOpenExit (Character* s_ch, RoomExit* s_exit) : IAction(s_ch), exit(s_exit) {}
+	ActionOpenExit (Creature* s_ch, RoomExit* s_exit) : IAction(s_ch), exit(s_exit) {}
 
 	virtual uint get_rounds (void) const { return 1; }
 	virtual void describe (const StreamControl& stream) const { stream << "opening " << StreamName(exit, INDEFINITE); }
@@ -1068,7 +1068,7 @@ class ActionOpenExit : public IAction
 };
 
 void
-Character::do_open (RoomExit *exit)
+Creature::do_open (RoomExit *exit)
 {
 	assert (exit != NULL);
 
@@ -1078,7 +1078,7 @@ Character::do_open (RoomExit *exit)
 class ActionCloseExit : public IAction
 {
 	public:
-	ActionCloseExit (Character* s_ch, RoomExit* s_exit) : IAction(s_ch), exit(s_exit) {}
+	ActionCloseExit (Creature* s_ch, RoomExit* s_exit) : IAction(s_ch), exit(s_exit) {}
 
 	virtual uint get_rounds (void) const { return 1; }
 	virtual void describe (const StreamControl& stream) const { stream << "closing " << StreamName(exit, INDEFINITE); }
@@ -1118,7 +1118,7 @@ class ActionCloseExit : public IAction
 };
 
 void
-Character::do_close (RoomExit *exit)
+Creature::do_close (RoomExit *exit)
 {
 	assert (exit != NULL);
 
@@ -1128,7 +1128,7 @@ Character::do_close (RoomExit *exit)
 class ActionLockExit : public IAction
 {
 	public:
-	ActionLockExit (Character* s_ch, RoomExit* s_exit) : IAction(s_ch), exit(s_exit) {}
+	ActionLockExit (Creature* s_ch, RoomExit* s_exit) : IAction(s_ch), exit(s_exit) {}
 
 	virtual uint get_rounds (void) const { return 1; }
 	virtual void describe (const StreamControl& stream) const { stream << "locking " << StreamName(exit, INDEFINITE); }
@@ -1170,7 +1170,7 @@ class ActionLockExit : public IAction
 };
 
 void
-Character::do_lock (RoomExit *exit)
+Creature::do_lock (RoomExit *exit)
 {
 	assert (exit != NULL);
 
@@ -1180,7 +1180,7 @@ Character::do_lock (RoomExit *exit)
 class ActionUnlockExit : public IAction
 {
 	public:
-	ActionUnlockExit (Character* s_ch, RoomExit* s_exit) : IAction(s_ch), exit(s_exit) {}
+	ActionUnlockExit (Creature* s_ch, RoomExit* s_exit) : IAction(s_ch), exit(s_exit) {}
 
 	virtual uint get_rounds (void) const { return 1; }
 	virtual void describe (const StreamControl& stream) const { stream << "unlocking " << StreamName(exit, INDEFINITE); }
@@ -1222,7 +1222,7 @@ class ActionUnlockExit : public IAction
 };
 
 void
-Character::do_unlock (RoomExit *exit)
+Creature::do_unlock (RoomExit *exit)
 {
 	assert (exit != NULL);
 
@@ -1232,7 +1232,7 @@ Character::do_unlock (RoomExit *exit)
 class ActionUseExit : public IAction
 {
 	public:
-	ActionUseExit (Character* s_ch, RoomExit* s_exit) : IAction(s_ch), exit(s_exit), rounds(0) {}
+	ActionUseExit (Creature* s_ch, RoomExit* s_exit) : IAction(s_ch), exit(s_exit), rounds(0) {}
 
 	virtual uint get_rounds (void) const { return rounds; }
 	virtual void describe (const StreamControl& stream) const { stream << "kicking " << StreamName(exit, INDEFINITE); }
@@ -1285,7 +1285,7 @@ class ActionUseExit : public IAction
 };
 
 void
-Character::do_go (RoomExit *exit)
+Creature::do_go (RoomExit *exit)
 {
 	assert (exit != NULL);
 
@@ -1295,7 +1295,7 @@ Character::do_go (RoomExit *exit)
 class ActionKickExit : public IAction
 {
 	public:
-	ActionKickExit (Character* s_ch, RoomExit* s_exit) : IAction(s_ch), exit(s_exit) {}
+	ActionKickExit (Creature* s_ch, RoomExit* s_exit) : IAction(s_ch), exit(s_exit) {}
 
 	virtual uint get_rounds (void) const { return 3; }
 	virtual void describe (const StreamControl& stream) const { stream << "kicking " << StreamName(exit, INDEFINITE); }
@@ -1337,7 +1337,7 @@ class ActionKickExit : public IAction
 };
 
 void
-Character::do_kick (RoomExit *exit)
+Creature::do_kick (RoomExit *exit)
 {
 	assert (exit != NULL);
 
