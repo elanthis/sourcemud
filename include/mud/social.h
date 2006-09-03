@@ -14,30 +14,19 @@
 #include "mud/server.h"
 #include "common/imanager.h"
 
-// actions performed by socials
-struct SocialAction : public GC
+// details of a particular social action
+struct SocialDetails : public GC
 {
-	String self;
-	String others;
-	String target;
+	SocialDetails ();
 
-	int load (File::Reader& reader);
-};
+	String adverb; // empty for no adverb
+	String self; // display to the actor
+	String room; // displayed to the room
+	String target; // displayed to the target if one given
 
-// socials have special adverb commands
-struct SocialAdverb : public GC
-{
-	String name;
-	SocialAction action; // normal
-	SocialAction person; // blah at PERSON
-	SocialAction thing;  // blah at OBJECT
-	SocialAction ghost;  // normal when dead
-	SocialAdverb* next;
-	class Social* social; // our social
-
-	String get_name () const { return name; }
-
-	int load (File::Reader& reader);
+	struct SocialFlags {
+		int speech:1, move:1, touch:1, target:1;
+	} flags;
 };
 
 // hold a social
@@ -48,24 +37,15 @@ class Social : public GC
 
 	// basic info
 	String get_name () const { return name; }
-	const SocialAdverb* get_adverb (String name) const;
-	const SocialAdverb* get_default () const { return adverbs; }
 
-	// flags
-	inline bool need_speech () const { return flags.speech; }
-	inline bool need_touch () const { return flags.touch; }
-	inline bool need_movement () const { return flags.move || need_touch() || need_speech(); }
+	// perform the social
+	int perform (class Character* actor, class Entity* target, String adverb) const;
 
 	private:
 	// basic info
 	String name;
-	SocialAdverb* adverbs;
+	GCType::vector<SocialDetails> details;
 	Social* next;
-
-	// flags
-	struct SocialFlags {
-		int speech:1, move:1, touch:1;
-	} flags;
 
 	// do load
 	int load (File::Reader& reader);
@@ -83,7 +63,7 @@ class SSocialManager : public IManager
 
 	void shutdown ();
 
-	const Social* find_social (String name);
+	Social* find_social (String name);
 
 	private:
 	Social* socials;

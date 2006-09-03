@@ -13,6 +13,9 @@
 #include "common/log.h"
 #include "mud/command.h"
 #include "mud/char.h"
+#include "mud/room.h"
+#include "mud/filetab.h"
+#include "mud/object.h"
 
 SSocialManager SocialManager;
 
@@ -20,11 +23,6 @@ namespace {
 	void command_social (Character* ch, String args[])
 	{
 		const Social* social = SocialManager.find_social(args[0]);
-		const SocialAdverb* adverb;
-		if (args[1])
-			adverb = social->get_adverb(args[1]);
-		else
-			adverb = social->get_default();
 
 		Entity* target = NULL;
 		if (args[2]) {
@@ -33,33 +31,24 @@ namespace {
 				return;
 		}
 
-		ch->do_social(adverb, target);
+		ch->do_social(social, target, args[1]);
 	}
 }
 
-Social::Social (void) : name(), adverbs(NULL), next(NULL)
+Social::Social () : name(), details(), next(NULL)
+{
+}
+
+SocialDetails::SocialDetails ()
 {
 	flags.speech = false;
 	flags.move = false;
 	flags.touch = false;
-}
-
-// find an adverb in a social
-const SocialAdverb*
-Social::get_adverb (String name) const
-{
-	// search
-	for (SocialAdverb* adverb = adverbs; adverb != NULL; adverb = adverb->next) {
-		if (phrase_match(adverb->name, name))
-			return adverb;
-	}
-
-	// no match
-	return NULL;
+	flags.target = false;
 }
 
 // find a social from list
-const Social*
+Social*
 SSocialManager::find_social (String name)
 {
 	assert (name);
@@ -73,57 +62,13 @@ SSocialManager::find_social (String name)
 	return NULL;
 }
 
-// load a social
-int
-Social::load (File::Reader& reader)
-{
-	SocialAdverb* last = NULL;
-
-	FO_READ_BEGIN
-		FO_ATTR("name")
-			name = node.get_data();
-		FO_ATTR("speech")
-			flags.speech = str_is_true(node.get_data());
-		FO_ATTR("move")
-			flags.move = str_is_true(node.get_data());
-		FO_ATTR("touch")
-			flags.touch = str_is_true(node.get_data());
-		FO_OBJECT("adverb")
-			// allocate
-			SocialAdverb* adverb = new SocialAdverb();
-			if (adverb == NULL) {
-				Log::Error << "Out of memory for adverb";
-				return -1;
-			}
-			adverb->social = this;
-
-			// do load
-			if (adverb->load(reader))
-				return -1;
-
-			if (last != NULL)
-				last->next = adverb;
-			else
-				adverbs = adverb;
-			adverb->next = NULL;
-			last = adverb;
-	FO_READ_ERROR
-		return -1;
-	FO_READ_END
-
-	if (!name)
-		throw File::Error(S("Social has no name"));
-
-	return 0;
-}
-
 // load all socials
 int
-SSocialManager::initialize (void)
+SSocialManager::initialize ()
 {
 	require(CommandManager);
 
-	File::Reader reader;
+	File::TabReader reader;
 	String path = SettingsManager.get_misc_path() + "/socials";
 
 	// load document
@@ -131,53 +76,95 @@ SSocialManager::initialize (void)
 		Log::Error << "Failed to open " << path << ": " << strerror(errno);
 		return -1;
 	}
+	if (reader.load()) {
+		Log::Error << "Failed to parse " << path << ": " << strerror(errno);
+		return -1;
+	}
 
-	// reader loop
-	FO_READ_BEGIN
-		// is a social?
-		FO_OBJECT("social")
-			// allocate
-			Social* social = new Social();
-			if (social == NULL) {
-				Log::Error << "Out of memory for social";
-				return -1;
-			}
+	// loop over entries
+	for (size_t i = 0; i < reader.size(); ++i) {
+		String name = reader.get(i, 0);
+		if (name.empty()) {
+			Log::Error << "Social has empty name at " << path << ":" << reader.get_line(i);
+			continue;
+		}
 
-			// do load
-			if (social->load(reader))
-				return -1;
+		SocialDetails detail;
+		detail.adverb = reader.get(i, 1);
+		StringList flags = explode(reader.get(i, 2), '|');
+		detail.self = reader.get(i, 3);
+		detail.room = reader.get(i, 4);
+		detail.target = reader.get(i, 5);
+
+		if (detail.self.empty()) {
+			Log::Error << "Social has empty self text at " << path << ":" << reader.get_line(i);
+			continue;
+		}
+		if (detail.room.empty()) {
+			Log::Error << "Social has empty self text at " << path << ":" << reader.get_line(i);
+			continue;
+		}
+
+		if (!detail.target.empty())
+			detail.flags.target = true;
+
+		for (StringList::iterator f = flags.begin(); f != flags.end(); ++f) {
+			if (*f == "speech")
+				detail.flags.speech = true;
+			else if (*f == "move")
+				detail.flags.move = true;
+			else if (*f == "touch") {
+				detail.flags.move = true;
+				detail.flags.touch = true;
+			} else
+				Log::Warning << "Social has unknown flag '" << *f << "' at " << path << ":" << reader.get_line(i);
+		}
+
+		Social* social = find_social(name);
+		if (!social) {
+			social = new Social();
+			social->name = name;
 			social->next = socials;
 			socials = social;
-	FO_READ_ERROR
-		return -1;
-	FO_READ_END
+		}
+
+		social->details.push_back(detail);
+	}
 
 	// register all socials as commands
 	for (Social* social = socials; social != NULL; social = social->next) {
 		StringBuffer buffer;
 
 		// make usage string
-		for (SocialAdverb* adverb = social->adverbs; adverb != NULL; adverb = adverb->next) {
-			if (adverb->get_name() != "default")
-				buffer << social->get_name() << " [" << adverb->get_name() << "] [<target>]\n";
-			else
-				buffer << social->get_name() << " [<target>]\n";
+		for (GCType::vector<SocialDetails>::iterator i = social->details.begin(); i != social->details.end(); ++i) {
+			if (i->adverb.empty()) {
+				if (i->flags.target)
+					buffer << social->get_name() << " <target>\n";
+				else
+					buffer << social->get_name() << "\n";
+			} else {
+				if (i->flags.target)
+					buffer << social->get_name() << " " << i->adverb << " <target>\n";
+				else
+					buffer << social->get_name() << " " << i->adverb << "\n";
+			}
 		}
 
 		// create command
 		Command* cmd = new Command(social->get_name(), buffer.str(), AccessID());
 
 		// add formats
-		for (SocialAdverb* adverb = social->adverbs; adverb != NULL; adverb = adverb->next) {
+		for (GCType::vector<SocialDetails>::iterator i = social->details.begin(); i != social->details.end(); ++i) {
 			CommandFormat* fmt = new CommandFormat(cmd, 200);
 			fmt->set_callback(command_social);
 
 			// build format string
 			buffer.clear();
 			buffer << ":0" << social->get_name();
-			if (adverb->get_name() != "default")
-				buffer << " :1" << adverb->get_name();
-			buffer << " :2*?";
+			if (!i->adverb.empty())
+				buffer << " :1" << i->adverb;
+			if (i->flags.target)
+				buffer << " :2*";
 			if (fmt->build(buffer.str())) {
 				Log::Error << "Failed to compile social command format: " << buffer.str();
 				delete cmd;
@@ -195,7 +182,7 @@ SSocialManager::initialize (void)
 }
 
 void
-SSocialManager::shutdown (void)
+SSocialManager::shutdown ()
 {
 	while (socials != NULL) {
 		Social* temp = socials;
@@ -204,47 +191,39 @@ SSocialManager::shutdown (void)
 	}
 }
 
-// load action
 int
-SocialAction::load (File::Reader& reader)
+Social::perform (Character* actor, Entity* target, String adverb) const
 {
-	// read loop
-	FO_READ_BEGIN
-		FO_ATTR("you")
-			self = node.get_data();
-		FO_ATTR("others")
-			others = node.get_data();
-		FO_ATTR("target")
-			target = node.get_data();
-	FO_READ_ERROR
-		return -1;
-	FO_READ_END
+	for (GCType::vector<SocialDetails>::const_iterator i = details.begin(); i != details.end(); ++i) {
+		// find a match?  has right target parameters?
+		if (adverb == i->adverb && ((target == NULL && !i->flags.target) || (target != NULL && i->flags.target))) {
+			// check if we can perform this action
+			if (i->flags.speech && !actor->can_talk()) {
+				*actor << "You cannot talk.\n";
+				return 1;
+			}
+			if (i->flags.move && !actor->can_act()) {
+				*actor << "You cannot move.\n";
+				return 1;
+			}
+			if (i->flags.touch && !actor->can_act() || (OBJECT(target) && !OBJECT(target)->is_touchable())) {
+				*actor << "You cannot touch " << StreamName(target, DEFINITE, false) << ".\n";
+				return 1;
+			}
 
-	return 0;
-}
+			// do the action
+			*actor << StreamParse(i->self, S("actor"), actor, S("target"), target, S("room"), actor->get_room()) << "\n";
+			if (CHARACTER(target))
+				*CHARACTER(target) << StreamParse(i->self, S("actor"), actor, S("target"), target, S("room"), actor->get_room()) << "\n";
+			*actor->get_room() << StreamIgnore(actor) << StreamIgnore(CHARACTER(target)) << StreamParse(i->self, S("actor"), actor, S("target"), target, S("room"), actor->get_room()) << "\n";
+			return 0;
+		}
+	}
 
-// load adverb
-int
-SocialAdverb::load (File::Reader& reader)
-{
-	// reader loop
-	FO_READ_BEGIN
-		FO_ATTR("name")
-			name = node.get_data();
-		FO_OBJECT("action")
-			action.load(reader);
-		FO_OBJECT("person")
-			person.load(reader);
-		FO_OBJECT("thing")
-			thing.load(reader);
-		FO_OBJECT("ghost")
-			ghost.load(reader);
-	FO_READ_ERROR
-		return -1;
-	FO_READ_END
-
-	if (!name)
-		throw File::Error(S("Adverb has no name"));
-
-	return 0;
+	// no match; guaranteed to be because of presence/lack-of target */
+	if (target == NULL)
+		*actor << "You must supply a target to do that.\n";
+	else
+		*actor << "You cannot do that to " << StreamName(target, DEFINITE, false) << ".\n";
+	return -1;
 }

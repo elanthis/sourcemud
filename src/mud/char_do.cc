@@ -26,7 +26,7 @@ Character::do_emote (String action)
 }
 
 void
-Character::do_social (const SocialAdverb* social, Entity* target)
+Character::do_social (const Social* social, Entity* target, String adverb)
 {
 	// yourself?  you ijit
 	if (target == this) {
@@ -34,6 +34,10 @@ Character::do_social (const SocialAdverb* social, Entity* target)
 		return;
 	}
 
+	// and do the social
+	social->perform(this, target, adverb);
+
+/*
 	// is a ghost?
 	if (PLAYER(this) && is_dead()) {
 		// no target?
@@ -89,6 +93,7 @@ Character::do_social (const SocialAdverb* social, Entity* target)
 	} else {
 		*this << "You can't do that with " << StreamName(*target, DEFINITE) << ".\n";
 	}
+*/
 }
 
 void

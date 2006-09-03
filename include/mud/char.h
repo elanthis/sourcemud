@@ -281,7 +281,7 @@ Character : public Entity, public IStreamSink
 
 	// == ACTIONS ==
 	void do_emote (String text);
-	void do_social (const class SocialAdverb* social, Entity* target);
+	void do_social (const class Social* social, Entity* target, String adverb);
 	void do_say (String text);
 	void do_sing (String text);
 

@@ -1,3 +1,8 @@
+2006-09-03 21:21:26  Sean Middleditch <elanthis@awesomeplay.com>
+
+  * Implemented a new tab-delimated file format parser.
+  * Changed socials to use a tab-delimated file format.
+
 2006-09-02 22:34:38  Sean Middleditch <elanthis@awesomeplay.com>
 
   * Minor but incompatible changes to the file object format.

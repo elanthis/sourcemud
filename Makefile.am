@@ -233,6 +233,7 @@ noinst_HEADERS=\
 	include/mud/event.h \
 	include/mud/exit.h \
 	include/mud/fileobj.h \
+	include/mud/filetab.h \
 	include/mud/gametime.h \
 	include/mud/help.h \
 	include/mud/idmap.h \
@@ -355,6 +356,7 @@ awemud_bin_SOURCES=\
 	src/mud/eventids.cc \
 	src/mud/exit.cc \
 	src/mud/fileobj.cc \
+	src/mud/filetab.cc \
 	src/mud/help.cc \
 	src/mud/hooks.cc \
 	src/mud/idmap.cc \

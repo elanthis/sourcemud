@@ -59,7 +59,7 @@ SCharacterTraitManager::initialize ()
 
 	FO_READ_BEGIN
 		// this is one of the available traits
-		FO_ATTR("trait")
+		FO_ATTR2("trait", "class")
 			FO_TYPE_ASSERT(STRING)
 			CharacterTraitID::create(node.get_data());
 		// this is one of the available trait values
