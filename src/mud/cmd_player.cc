@@ -226,7 +226,7 @@ void command_bug (Player* player, String argv[])
 	body << argv[0] << "\n";
 	body << "# -- END --\n";
 	body << '\0';
-	MailMessage msg (rcpt, "Bug Report", body.str());
+	MailMessage msg (rcpt, S("Bug Report"), body.str());
 	msg.send();
 
 	// send message 
@@ -259,7 +259,7 @@ void command_abuse (Player* player, String argv[])
 	body << argv[1] << "\n";
 	body << "# -- END --\n";
 	body << '\0';
-	MailMessage msg (rcpt, "Abuse Report", body.str());
+	MailMessage msg (rcpt, S("Abuse Report"), body.str());
 	msg.send();
 
 	// send message 

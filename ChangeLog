@@ -1,3 +1,7 @@
+2006-09-03 23:02:07  Sean Middleditch <elanthis@awesomeplay.com>
+
+  * Fix compilation of MailMessage calls in cmd_player.cc.
+
 2006-09-03 22:03:16  Sean Middleditch <elanthis@awesomeplay.com>
 
   * Updated the skills file to use the tab file format.
