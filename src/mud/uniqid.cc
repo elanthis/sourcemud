@@ -34,14 +34,15 @@ SUniqueIDManager::initialize ()
 
 	fclose(file);
 
-	next = strtol(buffer, NULL, 10);
+	next = limit = strtol(buffer, NULL, 10);
 
-	return reserve();
+	return 0;
 }
 
 void
 SUniqueIDManager::shutdown ()
 {
+	Log::Info << "Saving unique ID state";
 	FILE* file = fopen(SettingsManager.get_misc_path() + "/uniqid", "w");
 	if (file == NULL) {
 		Log::Error << "UniqueIDManager.shutdown(): Failed to open uniqid: " << strerror(errno);

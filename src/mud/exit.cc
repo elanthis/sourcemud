@@ -188,50 +188,50 @@ void
 RoomExit::save (File::Writer& writer)
 {
 	if (!name.empty())
-		writer.keyed(S("portal"), S("name"), name.get_name());
+		writer.attr(S("portal"), S("name"), name.get_name());
 
 	if (!desc.empty())
-		writer.keyed(S("portal"), S("desc"), desc);
+		writer.attr(S("portal"), S("desc"), desc);
 	
 	Entity::save (writer);
 
 	for (StringList::const_iterator i = keywords.begin(); i != keywords.end(); ++i)
-		writer.keyed(S("portal"), S("keyword"), *i);
+		writer.attr(S("portal"), S("keyword"), *i);
 
 	if (dir.valid())
-		writer.keyed(S("portal"), S("dir"), dir.get_name());
+		writer.attr(S("portal"), S("dir"), dir.get_name());
 	if (usage != ExitUsage::WALK)
-		writer.keyed(S("portal"), S("usage"), usage.get_name());
+		writer.attr(S("portal"), S("usage"), usage.get_name());
 	if (detail != ExitDetail::NONE)
-		writer.keyed(S("portal"), S("detail"), detail.get_name());
+		writer.attr(S("portal"), S("detail"), detail.get_name());
 	if (is_hidden ())
-		writer.keyed(S("portal"), S("hidden"), true);
+		writer.attr(S("portal"), S("hidden"), true);
 	if (is_door ()) {
-		writer.keyed(S("portal"), S("door"), true);
+		writer.attr(S("portal"), S("door"), true);
 		if (is_closed ())
-			writer.keyed(S("portal"), S("closed"), true);
+			writer.attr(S("portal"), S("closed"), true);
 		if (is_locked ())
-			writer.keyed(S("portal"), S("locked"), true);
+			writer.attr(S("portal"), S("locked"), true);
 		if (!is_synced ())
-			writer.keyed(S("portal"), S("nosync"), true);
+			writer.attr(S("portal"), S("nosync"), true);
 	}
 	if (is_nolook())
-		writer.keyed(S("portal"), S("nolook"), true);
+		writer.attr(S("portal"), S("nolook"), true);
 	if (is_disabled())
-		writer.keyed(S("portal"), S("disabled"), true);
+		writer.attr(S("portal"), S("disabled"), true);
 
 	if (!target.empty())
-		writer.keyed(S("portal"), S("target"), target);
+		writer.attr(S("portal"), S("target"), target);
 
 	if (text.enters)
-		writer.keyed(S("portal"), S("enters"), text.enters);
+		writer.attr(S("portal"), S("enters"), text.enters);
 	if (text.leaves)
-		writer.keyed(S("portal"), S("leaves"), text.leaves);
+		writer.attr(S("portal"), S("leaves"), text.leaves);
 	if (text.go)
-		writer.keyed(S("portal"), S("go"), text.go);
+		writer.attr(S("portal"), S("go"), text.go);
 
 	if (!on_use.empty())
-		writer.block (S("used"), on_use.get_source());
+		writer.block (S("portal"), S("on_use"), on_use.get_source());
 }
 
 void
@@ -245,51 +245,51 @@ int
 RoomExit::load_node (File::Reader& reader, File::Node& node)
 {
 	FO_NODE_BEGIN
-		FO_ATTR2("portal", "name")
+		FO_ATTR("portal", "name")
 			set_name(node.get_data());
-		FO_ATTR2("portal", "keyword")
+		FO_ATTR("portal", "keyword")
 			keywords.push_back(node.get_data());
-		FO_ATTR2("portal", "desc")
+		FO_ATTR("portal", "desc")
 			set_desc(node.get_data());
-		FO_ATTR2("portal", "usage")
+		FO_ATTR("portal", "usage")
 			usage = ExitUsage::lookup(node.get_data());
-		FO_ATTR2("portal", "dir")
+		FO_ATTR("portal", "dir")
 			dir = ExitDir::lookup(node.get_data());
-		FO_ATTR2("portal", "direction") // duplicate of above - should we keep this?
+		FO_ATTR("portal", "direction") // duplicate of above - should we keep this?
 			dir = ExitDir::lookup(node.get_data());
-		FO_ATTR2("portal", "detail")
+		FO_ATTR("portal", "detail")
 			detail = ExitDetail::lookup(node.get_data());
-		FO_ATTR2("portal", "hidden")
+		FO_ATTR("portal", "hidden")
 			FO_TYPE_ASSERT(BOOL);
 			set_hidden(str_is_true(node.get_data()));
-		FO_ATTR2("portal", "door")
+		FO_ATTR("portal", "door")
 			FO_TYPE_ASSERT(BOOL);
 			set_door(str_is_true(node.get_data()));
-		FO_ATTR2("portal", "closed")
+		FO_ATTR("portal", "closed")
 			FO_TYPE_ASSERT(BOOL);
 			set_closed(str_is_true(node.get_data()));
-		FO_ATTR2("portal", "locked")
+		FO_ATTR("portal", "locked")
 			FO_TYPE_ASSERT(BOOL);
 			set_locked(str_is_true(node.get_data()));
-		FO_ATTR2("portal", "nosync")
+		FO_ATTR("portal", "nosync")
 			FO_TYPE_ASSERT(BOOL);
 			set_synced(str_is_true(node.get_data()));
-		FO_ATTR2("portal", "nolook")
+		FO_ATTR("portal", "nolook")
 			FO_TYPE_ASSERT(BOOL);
 			set_nolook(str_is_true(node.get_data()));
-		FO_ATTR2("portal", "disabled")
+		FO_ATTR("portal", "disabled")
 			FO_TYPE_ASSERT(BOOL);
 			set_disabled(str_is_true(node.get_data()));
-		FO_ATTR2("portal", "target")
+		FO_ATTR("portal", "target")
 			target = node.get_data();
-		FO_ATTR2("portal", "enters")
+		FO_ATTR("portal", "enters")
 			text.enters = node.get_data();
-		FO_ATTR2("portal", "leaves")
+		FO_ATTR("portal", "leaves")
 			text.leaves = node.get_data();
-		FO_ATTR2("portal", "go")
+		FO_ATTR("portal", "go")
 			text.go = node.get_data();
-		FO_ATTR("used")
-			on_use = Scriptix::ScriptFunctionSource::compile(S("used"), node.get_data(), S("exit,user"), reader.get_filename(), node.get_line());
+		FO_ATTR("portal", "on_use")
+			on_use = Scriptix::ScriptFunctionSource::compile(S("on_use"), node.get_data(), S("exit,user"), reader.get_filename(), node.get_line());
 		FO_PARENT(Entity)
 	FO_NODE_END
 }
@@ -449,7 +449,7 @@ void
 RoomExit::set_use (String script)
 {
 	if (script) {
-		on_use = Scriptix::ScriptFunctionSource::compile(S("used"), script, S("exit,user"), S("exit db"), 1);
+		on_use = Scriptix::ScriptFunctionSource::compile(S("on_use"), script, S("exit,user"), S("exit db"), 1);
 	} else {
 		on_use.clear();
 	}

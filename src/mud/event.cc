@@ -25,9 +25,9 @@ EventHandler::EventHandler (EventID s_event) : Scriptix::Native(AweMUD_EventHand
 int
 EventHandler::load (File::Reader& reader) {
 	FO_READ_BEGIN
-		FO_ATTR("id")
+		FO_ATTR("event", "id")
 			event = EventID::create(node.get_name());
-		FO_ATTR("script")
+		FO_ATTR("event", "script")
 			sxfunc = NULL;
 			if (node.get_data())
 				sxfunc = EventManager.compile(event, node.get_data(), reader.get_filename(), node.get_line());
@@ -40,9 +40,9 @@ EventHandler::load (File::Reader& reader) {
 
 void
 EventHandler::save (File::Writer& writer) const {
-	writer.attr(S("id"), EventID::nameof(event));
+	writer.attr(S("event"), S("id"), EventID::nameof(event));
 	if (script)
-		writer.block(S("script"), script);
+		writer.block(S("event"), S("script"), script);
 }
 
 int

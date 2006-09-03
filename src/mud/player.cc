@@ -156,31 +156,31 @@ Player::save (File::Writer& writer)
 	Creature::save(writer);
 
 	if (race != NULL)
-		writer.keyed(S("player"), S("race"), race->get_name());
+		writer.attr(S("player"), S("race"), race->get_name());
 
-	writer.keyed(S("player"), S("birthday"), birthday.encode());
+	writer.attr(S("player"), S("birthday"), birthday.encode());
 
-	writer.keyed(S("player"), S("alignment"), alignment);
+	writer.attr(S("player"), S("alignment"), alignment);
 
 	for (int i = 0; i < CreatureStatID::COUNT; ++i)
-		writer.keyed(S("stat"), CreatureStatID(i).get_name(), base_stats[i]);
+		writer.attr(S("stat"), CreatureStatID(i).get_name(), base_stats[i]);
 	
 	for (TraitMap::const_iterator i = pdesc.traits.begin(); i != pdesc.traits.end(); ++i)
-		writer.keyed(S("trait"), str_tr(CreatureTraitID::nameof(i->first), S(" "), S("_")), i->second.get_name());
+		writer.attr(S("trait"), str_tr(CreatureTraitID::nameof(i->first), S(" "), S("_")), i->second.get_name());
 
-	writer.keyed(S("player"), S("gender"), pdesc.gender.get_name());
-	writer.keyed(S("player"), S("height"), pdesc.height);
+	writer.attr(S("player"), S("gender"), pdesc.gender.get_name());
+	writer.attr(S("player"), S("height"), pdesc.height);
 
 	if (get_room()) 
-		writer.keyed(S("player"), S("location"), get_room()->get_id());
+		writer.attr(S("player"), S("location"), get_room()->get_id());
 
-	writer.keyed(S("player"), S("general_xp"), exp[EXP_GENERAL]);
-	writer.keyed(S("player"), S("warrior_xp"), exp[EXP_WARRIOR]);
-	writer.keyed(S("player"), S("rogue_xp"), exp[EXP_ROGUE]);
-	writer.keyed(S("player"), S("caster_xp"), exp[EXP_CASTER]);
+	writer.attr(S("player"), S("general_xp"), exp[EXP_GENERAL]);
+	writer.attr(S("player"), S("warrior_xp"), exp[EXP_WARRIOR]);
+	writer.attr(S("player"), S("rogue_xp"), exp[EXP_ROGUE]);
+	writer.attr(S("player"), S("caster_xp"), exp[EXP_CASTER]);
 
 	for (SSkillManager::SkillList::const_iterator i = SkillManager.get_skills().begin(); i != SkillManager.get_skills().end(); ++i)
-		writer.keyed(S("skill"), (*i)->get_short_name(), skills.get_skill((*i)->get_id()));
+		writer.attr(S("skill"), (*i)->get_short_name(), skills.get_skill((*i)->get_id()));
 }
 
 void
@@ -234,27 +234,27 @@ Player::load_node (File::Reader& reader, File::Node& node)
 	FO_NODE_BEGIN
 		FO_PARENT(Creature)
 		// our primary name
-		FO_ATTR2("player", "name")
+		FO_ATTR("player", "name")
 			name.set_text(node.get_data());
 			name.set_article(EntityArticleClass::PROPER);
 		// description
-		FO_ATTR2("player", "desc")
+		FO_ATTR("player", "desc")
 			set_desc(node.get_data());
-		FO_ATTR2("player", "gender")
+		FO_ATTR("player", "gender")
 			set_gender(GenderType::lookup(node.get_data()));
-		FO_ATTR2("player", "alignment")
+		FO_ATTR("player", "alignment")
 			FO_TYPE_ASSERT(INT);
 			set_alignment(tolong(node.get_data()));
-		FO_ATTR2("player", "race")
+		FO_ATTR("player", "race")
 			race = RaceManager.get (node.get_data());
 			if (race == NULL) {
 				Log::Error << "Player has invalid race '" << node.get_data() << "' at " << reader.get_filename() << ':' << node.get_line();
 				return -1;
 			}
-		FO_ATTR2("player", "birthday")
+		FO_ATTR("player", "birthday")
 			if (birthday.decode(node.get_data()))
 				throw File::Error (S("Invalid birthday"));
-		FO_KEYED("trait")
+		FO_WILD("trait")
 			FO_TYPE_ASSERT(STRING)
 			CreatureTraitID trait = CreatureTraitID::lookup(str_tr(node.get_key(), S("_"), S(" ")));
 			if (!trait.valid())
@@ -263,22 +263,22 @@ Player::load_node (File::Reader& reader, File::Node& node)
 			if (!value.valid())
 				throw File::Error (S("Unknown trait value"));
 			pdesc.traits[trait] = value;
-		FO_ATTR2("player", "height")
+		FO_ATTR("player", "height")
 			FO_TYPE_ASSERT(INT);
 			pdesc.height = tolong(node.get_data());
-		FO_ATTR2("player", "location")
+		FO_ATTR("player", "location")
 			location = ZoneManager.get_room(node.get_data());
 			if (location == NULL)
 				Log::Error << "Unknown room '" << node.get_data() << "' at " << reader.get_filename() << ':' << node.get_line();
-		FO_ATTR2("player", "general_xp")
+		FO_ATTR("player", "general_xp")
 			exp[EXP_GENERAL] = node.get_int();
-		FO_ATTR2("player", "warrior_xp")
+		FO_ATTR("player", "warrior_xp")
 			exp[EXP_WARRIOR] = node.get_int();
-		FO_ATTR2("player", "rogue_xp")
+		FO_ATTR("player", "rogue_xp")
 			exp[EXP_ROGUE] = node.get_int();
-		FO_ATTR2("player", "caster_xp")
+		FO_ATTR("player", "caster_xp")
 			exp[EXP_CASTER] = node.get_int();
-		FO_KEYED("stat")
+		FO_WILD("stat")
 			FO_TYPE_ASSERT(INT);
 			CreatureStatID stat = CreatureStatID::lookup(node.get_key());
 			if (stat) {
@@ -287,7 +287,7 @@ Player::load_node (File::Reader& reader, File::Node& node)
 				Log::Error << "Unknown stat '" << node.get_key() << "'";
 				throw File::Error(S("invalid value"));
 			}
-		FO_KEYED("skill")
+		FO_WILD("skill")
 			FO_TYPE_ASSERT(INT);
 			SkillInfo* info = SkillManager.get_by_short_name(node.get_key());
 			if (info != NULL) {

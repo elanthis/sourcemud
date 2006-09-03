@@ -44,8 +44,8 @@ object_blueprint {
   blueprint.desc = "The talisman is a small golden amulet in the shape of a skull.  Though hard to tell, the eyes appear to faintly glow red."
 
   action {
-    id = raise
-    script = begin
+    action.id = raise
+    action.script = begin
       var room = self.getRoom();
 
       // raise messages (FIXME: dumb that we have to duplicate that here)

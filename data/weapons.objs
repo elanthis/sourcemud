@@ -68,8 +68,8 @@ object_blueprint {
 
   # 1 in 3 change of causing 3d4 damage
   action {
-    id = attack_hit
-    script = begin
+    action.id = attack_hit
+    action.script = begin
       // 1 in 3 change
       var roll = rollDice(1,3);
       if (roll == 1) {

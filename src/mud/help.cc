@@ -85,7 +85,7 @@ SHelpManager::initialize (void)
 
 			// read file
 			FO_READ_BEGIN
-				FO_KEYED("topic")
+				FO_WILD("topic")
 					HelpTopic* topic = new HelpTopic();
 					topic->name = node.get_key();
 					topic->about = node.get_data();

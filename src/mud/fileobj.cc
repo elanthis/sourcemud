@@ -314,7 +314,7 @@ File::Reader::get (Node& node)
 		// read key
 		op = read_token(opstr);
 		if (op != TOKEN_STRING)
-			throw File::Error(S("Parse error: name expected after :"));
+			throw File::Error(S("Parse error: name expected after ."));
 		node.key = opstr;
 
 		// next token
@@ -338,8 +338,12 @@ File::Reader::get (Node& node)
 
 	// attribute?
 	else if (op == TOKEN_SET) {
+		// attributes must have a key
+		if (!node.key)
+			throw File::Error(S("Parse error: key name expected before ="));
+
 		// read
-		node.type = node.key ? Node::KEYED : Node::ATTR;
+		node.type = Node::ATTR;
 		String data;
 		Token type = read_token(data);
 
@@ -477,86 +481,7 @@ File::Writer::do_indent (void)
 }
 
 void
-File::Writer::attr (String name, String data)
-{
-	if (!out)
-		return;
-
-	if (!File::valid_name(name)) {
-		Log::Error << "Attempted to write id '" << name << "'";
-		return;
-	}
-
-	do_indent();
-
-	// output
-	out << name << " = " << EscapeString(data) << "\n";
-}
-
-void
-File::Writer::attr (String name, long data)
-{
-	if (!out)
-		return;
-
-	if (!File::valid_name(name)) {
-		Log::Error << "Attempted to write id '" << name << "'";
-		return;
-	}
-
-	do_indent();
-	out << name << " = " << data << "\n";
-}
-
-void
-File::Writer::attr (String name, long long data)
-{
-	if (!out)
-		return;
-
-	if (!File::valid_name(name)) {
-		Log::Error << "Attempted to write id '" << name << "'";
-		return;
-	}
-
-	do_indent();
-	out << name << " = " << data << "\n";
-}
-
-void
-File::Writer::attr (String name, bool data)
-{
-	if (!out)
-		return;
-
-	if (!File::valid_name(name)) {
-		Log::Error << "Attempted to write id '" << name << "'";
-		return;
-	}
-
-	do_indent();
-
-	out << name << " = " << (data ? "true" : "false") << "\n";
-}
-
-void
-File::Writer::attr (String name, const UniqueID& data)
-{
-	if (!out)
-		return;
-
-	if (!File::valid_name(name)) {
-		Log::Error << "Attempted to write id '" << name << "'";
-		return;
-	}
-
-	do_indent();
-
-	out << name << " = <" << UniqueIDManager.encode(data) << ">\n";
-}
-
-void
-File::Writer::keyed (String name, String key, String data)
+File::Writer::attr (String name, String key, String data)
 {
 	if (!out)
 		return;
@@ -571,7 +496,7 @@ File::Writer::keyed (String name, String key, String data)
 }
 
 void
-File::Writer::keyed (String name, String key, long data)
+File::Writer::attr (String name, String key, long data)
 {
 	if (!out)
 		return;
@@ -586,7 +511,7 @@ File::Writer::keyed (String name, String key, long data)
 }
 
 void
-File::Writer::keyed (String name, String key, bool data)
+File::Writer::attr (String name, String key, bool data)
 {
 	if (!out)
 		return;
@@ -601,7 +526,7 @@ File::Writer::keyed (String name, String key, bool data)
 }
 
 void
-File::Writer::keyed (String name, String key, const UniqueID& data)
+File::Writer::attr (String name, String key, const UniqueID& data)
 {
 	if (!out)
 		return;
@@ -617,20 +542,20 @@ File::Writer::keyed (String name, String key, const UniqueID& data)
 }
 
 void
-File::Writer::block (String name, String data)
+File::Writer::block (String name, String key, String data)
 {
 	if (!out)
 		return;
 
-	if (!File::valid_name(name)) {
-		Log::Error << "Attempted to write id '" << name << "'";
+	if (!File::valid_name(name) || !File::valid_name(key)) {
+		Log::Error << "Attempted to write id '" << name << "." << key << "'";
 		return;
 	}
 
 	do_indent();
 
 	// beginning
-	out << name << " = begin\n" << data;
+	out << name << "." << key << " = begin\n" << data;
 	// we need to add a newline if we don't have one on end already
 	// FIXME: escape if data includes end line
 	if (data.empty() || data[data.size()-1] != '\n')

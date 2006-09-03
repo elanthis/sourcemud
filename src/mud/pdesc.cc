@@ -59,11 +59,11 @@ SCreatureTraitManager::initialize ()
 
 	FO_READ_BEGIN
 		// this is one of the available traits
-		FO_ATTR2("trait", "class")
+		FO_ATTR("trait", "class")
 			FO_TYPE_ASSERT(STRING)
 			CreatureTraitID::create(node.get_data());
 		// this is one of the available trait values
-		FO_KEYED("value")
+		FO_WILD("value")
 			FO_TYPE_ASSERT(STRING)
 			names.push_back(node.get_key());
 			descs.push_back(node.get_data());

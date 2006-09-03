@@ -93,8 +93,8 @@ room {
       blueprint.trashable = false
       blueprint.container = "on"
       action {
-        id = "touch"
-        script = begin
+        action.id = "touch"
+        action.script = begin
           // user kneeling?
           if (user.position() == POS_KNEEL) {
             // messages
@@ -397,8 +397,8 @@ room {
       blueprint.gettable = false
       blueprint.trashable = false
       action {
-        id = "touch"
-        script = begin
+        action.id = "touch"
+        action.script = begin
           user << "Dear " << @name(user, EN_NONE, false) << ",\n  Look, do you even know what this river is?  Don't touch it, alright?\n  -- The Management\n";
           return 0;
         end

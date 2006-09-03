@@ -144,7 +144,7 @@ STimeManager::initialize ()
 		return 1;
 
 	FO_READ_BEGIN
-		FO_ATTR2("time", "current")
+		FO_ATTR("time", "current")
 			FO_TYPE_ASSERT(STRING)
 			time.decode(node.get_data());
 	FO_READ_ERROR
@@ -164,7 +164,7 @@ STimeManager::save ()
 		return;
 
 	// save
-	writer.keyed(S("time"), S("current"), time.encode());
+	writer.attr(S("time"), S("current"), time.encode());
 
 	writer.close();
 }

@@ -116,9 +116,9 @@ SScriptBindings::initialize()
 	}
 
 	FO_READ_BEGIN
-		FO_ATTR("script")
+		FO_ATTR("load", "script")
 			scripts.push_back(path + "/" + node.get_data());
-		FO_ATTR("pattern")
+		FO_ATTR("load", "pattern")
 			append_unique(scripts, find_files(path, node.get_data()));
 	FO_READ_ERROR
 		return -1;

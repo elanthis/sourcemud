@@ -30,14 +30,14 @@ GameCalendar::load (void)
 
 			// read month attribute
 			FO_READ_BEGIN
-				FO_ATTR2("month", "name")
+				FO_ATTR("month", "name")
 					month.name = node.get_data();
 				// days in month
-				FO_ATTR2("month", "days")
+				FO_ATTR("month", "days")
 					FO_TYPE_ASSERT(INT);
 					month.day_count = tolong(node.get_data());
 				// leap year count
-				FO_ATTR2("month", "leap")
+				FO_ATTR("month", "leap")
 					FO_TYPE_ASSERT(INT);
 					month.leap_years = tolong(node.get_data());
 			FO_READ_ERROR
@@ -59,14 +59,14 @@ GameCalendar::load (void)
 
 			// read holiday attrs
 			FO_READ_BEGIN
-				FO_ATTR2("holiday", "name")
+				FO_ATTR("holiday", "name")
 					holiday.name = node.get_name();
 				// day of month
-				FO_ATTR2("holiday", "day")
+				FO_ATTR("holiday", "day")
 					FO_TYPE_ASSERT(INT)
 					holiday.day = tolong(node.get_data());
 				// month?
-				FO_ATTR2("holiday", "month")
+				FO_ATTR("holiday", "month")
 					holiday.month = find_month(node.get_data());
 					if (holiday.month < 0) {
 						holiday.month = 0;
@@ -74,11 +74,11 @@ GameCalendar::load (void)
 						return -1;
 					}
 				// years repeat?
-				FO_ATTR2("holiday", "years")
+				FO_ATTR("holiday", "years")
 					FO_TYPE_ASSERT(INT)
 					holiday.year = tolong(node.get_data());
 				// day of week?
-				FO_ATTR2("holiday", "weekday")
+				FO_ATTR("holiday", "weekday")
 					holiday.weekday = find_weekday(node.get_data());
 					if (holiday.weekday < 0) {
 						holiday.weekday = 0;
@@ -86,7 +86,7 @@ GameCalendar::load (void)
 						return -1;
 					}
 				// weekday index?  (like 2nd tuesday)
-				FO_ATTR2("holiday", "wdindex")
+				FO_ATTR("holiday", "wdindex")
 					FO_TYPE_ASSERT(INT)
 					holiday.wdindex = tolong(node.get_data());
 			FO_READ_ERROR
@@ -103,19 +103,19 @@ GameCalendar::load (void)
 			holidays.push_back (holiday);
 		
 		// weekday?
-		FO_ATTR2("calendar", "weekday")
+		FO_ATTR("calendar", "weekday")
 			weekdays.push_back(node.get_data());
 		// daytyime desc text?
-		FO_ATTR2("calendar", "day")
+		FO_ATTR("calendar", "day")
 			day_text.push_back(node.get_data());
 		// nighttime desc text?
-		FO_ATTR2("calendar", "night")
+		FO_ATTR("calendar", "night")
 			night_text.push_back(node.get_data());
 		// sun-rising text?
-		FO_ATTR2("calendar", "sunrise")
+		FO_ATTR("calendar", "sunrise")
 			sunrise_text.push_back(node.get_data());
 		// sun-setting text?
-		FO_ATTR2("calendar", "sunset")
+		FO_ATTR("calendar", "sunset")
 			sunset_text.push_back(node.get_data());
 	FO_READ_ERROR
 		return -1;

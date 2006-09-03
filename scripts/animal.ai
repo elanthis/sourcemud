@@ -3,7 +3,7 @@
 # Sean Middleditch <elanthis@awemud.net>
 
 # initialize after loading up
-load = begin
+event.load = begin
 	self.ai_targets = array(); 
 	self.ai_group = String(self.ai_group);
 	self.ai_flee = Int(self.ai_flee) || 30;
@@ -12,7 +12,7 @@ load = begin
 end
 
 # save data
-save = begin
+event.save = begin
 	if (String(self.ai_group))
 		writer.setString('ai_group', self.ai_group);
 	if (String(self.ai_state))
@@ -34,7 +34,7 @@ event.attack = begin
 end
 
 # heartbeat
-heartbeat = begin
+event.heartbeat = begin
 	// wander
 	if (self.ai_state == 'wander') {
 		if (self.getRoundTime() > 0)
@@ -82,7 +82,7 @@ event.enter = begin
 end
 
 # ready to act
-ready = begin
+event.ready = begin
 	if (self.ai_state == 'attack') {
 		// attacker still here?
 		if (!self.ai_target.isDead() && self.ai_target.room() == self.room()) {
@@ -130,7 +130,7 @@ ready = begin
 end
 
 # state changes
-pump = begin
+event.pump = begin
 	if (data == 'state') {
 		if (self.ai_state == 'attack')
 			self.attack(self.ai_target);

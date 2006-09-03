@@ -1,3 +1,9 @@
+2006-09-03 23:45:53  Sean Middleditch <elanthis@awesomeplay.com>
+
+  * Remove differentiation between attributes and keyed attributes
+    in file object format; all attributes are now keyed.
+  * Clean up file obj API calls.
+
 2006-09-03 23:22:05  Sean Middleditch <elanthis@awesomeplay.com>
 
   * Renamed Character to Creature.

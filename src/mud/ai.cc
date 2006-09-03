@@ -23,32 +23,32 @@ int
 AI::load (File::Reader& reader)
 {
 	FO_READ_BEGIN
-		FO_ATTR("load")
+		FO_ATTR("event", "load")
 			load_cb = Scriptix::ScriptFunction::compile(S("load"), node.get_data(), S("self"), reader.get_filename(), node.get_line());
 			
 			if (load_cb.empty())
 				throw File::Error(S("Script compile failed"));
-		FO_ATTR("save")
+		FO_ATTR("event", "save")
 			save_cb = Scriptix::ScriptFunction::compile(S("save"), node.get_data(), S("self,writer"), reader.get_filename(), node.get_line());
 			
 			if (save_cb.empty())
 				throw File::Error(S("Script compile failed"));
-		FO_ATTR("heartbeat")
+		FO_ATTR("event", "heartbeat")
 			heartbeat_cb = Scriptix::ScriptFunction::compile(S("heartbeat"), node.get_data(), S("self"), reader.get_filename(), node.get_line());
 			
 			if (heartbeat_cb.empty())
 				throw File::Error(S("Script compile failed"));
-		FO_ATTR("ready")
+		FO_ATTR("event", "ready")
 			ready_cb = Scriptix::ScriptFunction::compile(S("ready"), node.get_data(), S("self"), reader.get_filename(), node.get_line());
 			
 			if (ready_cb.empty())
 				throw File::Error(S("Script compile failed"));
-		FO_ATTR("pump")
+		FO_ATTR("event", "pump")
 			pump_cb = Scriptix::ScriptFunction::compile(S("pump"), node.get_data(), S("self,data"), reader.get_filename(), node.get_line());
 			
 			if (pump_cb.empty())
 				throw File::Error(S("Script compile failed"));
-		FO_KEYED("event")
+		FO_WILD("event")
 			EventID event = EventID::lookup(node.get_key());
 			if (event.valid()) {
 				Scriptix::ScriptFunction handler = EventManager.compile(event, node.get_data(), reader.get_filename(), node.get_line());

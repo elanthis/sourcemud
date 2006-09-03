@@ -44,40 +44,40 @@ Race::load (File::Reader& reader)
 		stats[i] = 0;
 
 	FO_READ_BEGIN
-		FO_ATTR2("race", "name")
+		FO_ATTR("race", "name")
 			FO_TYPE_ASSERT(STRING)
 			name = node.get_data();
-		FO_ATTR2("race", "adj")
+		FO_ATTR("race", "adj")
 			FO_TYPE_ASSERT(STRING)
 			adj = node.get_data();
-		FO_ATTR2("race", "body")
+		FO_ATTR("race", "body")
 			FO_TYPE_ASSERT(STRING)
 			body = node.get_data();
-		FO_ATTR2("race", "desc")
+		FO_ATTR("race", "desc")
 			FO_TYPE_ASSERT(STRING)
 			desc = node.get_data();
-		FO_ATTR2("race", "about")
+		FO_ATTR("race", "about")
 			FO_TYPE_ASSERT(STRING)
 			about = node.get_data();
-		FO_ATTR2("race", "min_age")
+		FO_ATTR("race", "min_age")
 			FO_TYPE_ASSERT(INT)
 			age_min = tolong(node.get_data());
-		FO_ATTR2("race", "max_age")
+		FO_ATTR("race", "max_age")
 			FO_TYPE_ASSERT(INT)
 			age_max = tolong(node.get_data());
-		FO_ATTR2("race", "lifespan")
+		FO_ATTR("race", "lifespan")
 			FO_TYPE_ASSERT(INT)
 			life_span = tolong(node.get_data());
-		FO_ATTR2("race", "neuter_height")
+		FO_ATTR("race", "neuter_height")
 			FO_TYPE_ASSERT(INT)
 			height[GenderType::NONE] = tolong(node.get_data());
-		FO_ATTR2("race", "female_height")
+		FO_ATTR("race", "female_height")
 			FO_TYPE_ASSERT(INT)
 			height[GenderType::FEMALE] = tolong(node.get_data());
-		FO_ATTR2("race", "male_height")
+		FO_ATTR("race", "male_height")
 			FO_TYPE_ASSERT(INT)
 			height[GenderType::MALE] = tolong(node.get_data());
-		FO_KEYED("trait")
+		FO_WILD("trait")
 			FO_TYPE_ASSERT(STRING)
 			CreatureTraitID trait = CreatureTraitID::lookup(node.get_key());
 			if (!trait.valid())
@@ -95,7 +95,7 @@ Race::load (File::Reader& reader)
 			} else {
 				std::pair<GCType::set<CreatureTraitValue>::iterator, bool> ret = i->second.insert(value);
 			}
-		FO_KEYED("stat")
+		FO_WILD("stat")
 			CreatureStatID stat = CreatureStatID::lookup(node.get_key());
 			if (stat)
 				stats[stat.get_value()] = tolong(node.get_data());

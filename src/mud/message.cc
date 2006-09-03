@@ -23,7 +23,7 @@ SMessageManager::initialize (void)
 
 	// read said file
 	FO_READ_BEGIN
-		FO_KEYED("text")
+		FO_WILD("text")
 			messages[node.get_key()] = node.get_data();
 	FO_READ_ERROR
 		// damnable errors!

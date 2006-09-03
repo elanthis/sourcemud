@@ -39,21 +39,21 @@ Account::save (void) const
 		return -1;
 
 	// save it out
-	writer.keyed(S("account"), S("name"), name);
-	writer.keyed(S("account"), S("email"), email);
-	writer.keyed(S("account"), S("passphrase"), pass);
+	writer.attr(S("account"), S("name"), name);
+	writer.attr(S("account"), S("email"), email);
+	writer.attr(S("account"), S("passphrase"), pass);
 	for (StringList::const_iterator i = chars.begin(); i != chars.end(); ++i)
-		writer.keyed(S("account"), S("character"), *i);
+		writer.attr(S("account"), S("character"), *i);
 	if (flags.disabled)
-		writer.keyed(S("account"), S("disabled"), "yes");
+		writer.attr(S("account"), S("disabled"), "yes");
 	if (maxchars > 0)
-		writer.keyed(S("account"), S("maxchars"), maxchars);
+		writer.attr(S("account"), S("maxchars"), maxchars);
 	if (maxactive > 0)
-		writer.keyed(S("account"), S("maxactive"), maxactive);
+		writer.attr(S("account"), S("maxactive"), maxactive);
 	if (timeout > 0)
-		writer.keyed(S("account"), S("maxactive"), timeout);
+		writer.attr(S("account"), S("maxactive"), timeout);
 	for (AccessList::const_iterator i = access.begin(); i != access.end(); ++i)
-		writer.keyed(S("account"), S("access"), AccessID::nameof(*i));
+		writer.attr(S("account"), S("access"), AccessID::nameof(*i));
 
 	// done
 	writer.close();
@@ -241,27 +241,27 @@ SAccountManager::get (String in_name)
 
 	// read it in
 	FO_READ_BEGIN
-		FO_ATTR2("account", S("name"))
+		FO_ATTR("account", S("name"))
 			account->name = node.get_data();
-		FO_ATTR2("account", S("email"))
+		FO_ATTR("account", S("email"))
 			account->email = node.get_data();
-		FO_ATTR2("account", S("passphrase"))
+		FO_ATTR("account", S("passphrase"))
 			account->pass = node.get_data();
-		FO_ATTR2("account", S("character"))
+		FO_ATTR("account", S("character"))
 			account->chars.push_back(node.get_data());
-		FO_ATTR2("account", S("maxchars"))
+		FO_ATTR("account", S("maxchars"))
 			FO_TYPE_ASSERT(INT);
 			account->maxchars = tolong(node.get_data());
-		FO_ATTR2("account", S("maxactive"))
+		FO_ATTR("account", S("maxactive"))
 			FO_TYPE_ASSERT(INT);
 			account->maxactive = tolong(node.get_data());
-		FO_ATTR2("account", S("timeout"))
+		FO_ATTR("account", S("timeout"))
 			FO_TYPE_ASSERT(INT);
 			account->timeout = tolong(node.get_data());
-		FO_ATTR2("account", S("disabled"))
+		FO_ATTR("account", S("disabled"))
 			FO_TYPE_ASSERT(BOOL);
 			account->flags.disabled = str_is_true(node.get_data());
-		FO_ATTR2("account", S("access"))
+		FO_ATTR("account", S("access"))
 			account->access.insert(AccessID::create(node.get_data()));
 	FO_READ_ERROR
 		account = NULL;

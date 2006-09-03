@@ -68,7 +68,6 @@ namespace File
 
 		// type of node
 		inline bool is_attr () const { return type == ATTR; }
-		inline bool is_keyed () const { return type == KEYED; }
 		inline bool is_end () const { return type == END; }
 		inline bool is_begin () const { return type == BEGIN; }
 
@@ -79,8 +78,8 @@ namespace File
 			BEGIN, // object form name { data }
 			END,   // } after a BEGIN
 		} type;
-		String name; // only in data or begin
-		String key; // for keyed attributes
+		String name; // basic name
+		String key; // attribute key
 		String data; // our data
 		DataType datatype; // type of data
 		size_t line; // line node came from
@@ -155,34 +154,20 @@ namespace File
 		bool is_open () const { return out; }
 		void close ();
 
-		// core attributes
-		void attr (String name, String data);
-		void attr (String name, long data);
-		void attr (String name, long long data);
-		void attr (String name, bool data);
-		void attr (String name, const UniqueID& data);
+		// attributes
+		void attr (String name, String key, String data);
+		void attr (String name, String key, long data);
+		void attr (String name, String key, bool data);
+		void attr (String name, String key, const UniqueID& data);
 
-		void keyed (String name, String key, String data);
-		void keyed (String name, String key, long data);
-		void keyed (String name, String key, bool data);
-		void keyed (String name, String key, const UniqueID& data);
+		inline void attr (String name, String key, unsigned long data) { attr(name, key, (long)data); }
+		inline void attr (String name, String key, int data) { attr(name, key, (long)data); }
+		inline void attr (String name, String key, unsigned int data) { attr(name, key, (long)data); }
+		inline void attr (String name, String key, short data) { attr(name, key, (long)data); }
+		inline void attr (String name, String key, unsigned short data) { attr(name, key, (long)data); }
 
-		// map int types to long
-		//   -- we only support reading longs
-		inline void attr (String name, unsigned long data) { attr(name, (long)data); }
-		inline void attr (String name, int data) { attr(name, (long)data); }
-		inline void attr (String name, unsigned int data) { attr(name, (long)data); }
-		inline void attr (String name, short data) { attr(name, (long)data); }
-		inline void attr (String name, unsigned short data) { attr(name, (long)data); }
-
-		inline void keyed (String name, String key, unsigned long data) { keyed(name, key, (long)data); }
-		inline void keyed (String name, String key, int data) { keyed(name, key, (long)data); }
-		inline void keyed (String name, String key, unsigned int data) { keyed(name, key, (long)data); }
-		inline void keyed (String name, String key, short data) { keyed(name, key, (long)data); }
-		inline void keyed (String name, String key, unsigned short data) { keyed(name, key, (long)data); }
-
-		// output a data block class:name<<< ... >>> 
-		void block (String name, String data);
+		// output a data block
+		void block (String name, String key, String data);
 
 		// begin a new section
 		void begin (String name);
@@ -236,28 +221,12 @@ class ScriptRestrictedWriter : public Scriptix::Native
 	do { \
 	const bool _x_is_read = false; \
 	if (false && _x_is_read) {
-#define FO_ATTR(name) \
+#define FO_ATTR(name,key) \
+		} else if (node.is_attr() && node.get_name() == name && node.get_key() == key) {
+#define FO_WILD(name) \
 		} else if (node.is_attr() && node.get_name() == name) {
-#define FO_ATTR2(name,key) \
-		} else if (node.is_keyed() && node.get_name() == name && node.get_key() == key) {
-#define FO_KEYED(name) \
-		} else if (node.is_keyed() && node.get_name() == name) {
-#define FO_ATTR_BEGIN \
-		} else if (node.is_attr()) { \
-			do { \
-				/* custom parsing code */
-#define FO_ATTR_END \
-				if (_x_is_read) { \
-					Log::Error << "Unrecognized " << (node.is_attr() ? "attribute" : "object") << " '" << node.get_name() << "' at " << reader.get_filename() << ':' << node.get_line() << " in " << __FILE__ <<  ':' << __LINE__; \
-					throw(File::Error(S("unexpected value"))); \
-				} else { \
-					return FO_NOTFOUND_CODE; \
-				} \
-			} while(false); 
 #define FO_OBJECT(name) \
 		} else if (node.is_begin() && node.get_name() == name) {
-#define FO_OBJECT_ANY \
-		} else if (node.is_begin()) {
 #define FO_PARENT(klass) \
 		} else if (klass::load_node(reader, node) == FO_SUCCESS_CODE) { \
 			/* no-op */
@@ -265,8 +234,7 @@ class ScriptRestrictedWriter : public Scriptix::Native
 		} else { \
 			if (node.is_begin()) \
 				reader.consume(); \
-			if (node.is_attr()) Log::Error << "Unrecognized attribute '" << node.get_name() << "' at " << reader.get_filename() << ':' << node.get_line(); \
-			else if (node.is_keyed()) Log::Error << "Unrecognized keyed attribute '" << node.get_name() << "' at " << reader.get_filename() << ':' << node.get_line(); \
+			else if (node.is_attr()) Log::Error << "Unrecognized attribute '" << node.get_name() << "' at " << reader.get_filename() << ':' << node.get_line(); \
 			else if (node.is_begin()) Log::Error << "Unrecognized object '" << node.get_name() << "' at " << reader.get_filename() << ':' << node.get_line(); \
 			throw(File::Error(S("unexpected value"))); \
 		} \
