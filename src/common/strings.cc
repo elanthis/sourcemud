@@ -426,3 +426,19 @@ trim (String source, String accept)
 
 	return ret.str();
 }
+
+String
+str_tr (String source, String from, String to)
+{
+	StringBuffer result;
+
+	for (const char* c = source.c_str(); *c != 0; ++c) {
+		const char* l = strchr(from, *c);
+		if (l != NULL)
+			result << to[l - from.c_str()];
+		else
+			result << *c;
+	}
+
+	return result.str();
+}

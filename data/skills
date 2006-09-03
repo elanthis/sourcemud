@@ -25,94 +25,27 @@
 #         PRIMARY STATISTICS          #
 #######################################
 
-skill {
-	name = "Strength"
-	desc = "Physical power and raw muscle."
-	type = intrinsic
-}
-
-skill {
-	name = "Agility"
-	desc = "Physical speed and reflexes."
-	type = intrinsic
-}
-
-skill {
-	name = "Health"
-	desc = "Physical resilience and resistance to illness."
-	type = intrinsic
-}
-
-skill {
-	name = "Intellect"
-	desc = "Comprehension and critical thinking ability."
-	type = intrinsic
-}
-
-skill {
-	name = "Will Power"
-	desc = "Character and determination."
-	type = intrinsic
-}
-
-skill {
-	name = "Spirit"
-	desc = "Bond to the Ether."
-	type = intrinsic
-}
-
-skill {
-	name = "Luck"
-	desc = "Favor of the Fates."
-	type = secret
-}
+str intrinsic "Strength" "Physical power and raw muscle."
+agi intrinsic "Agility" "Physical speed and reflexes."
+hel intrinsic "Health" "Physical resilience and resistance to illness."
+int intrinsic "Intellect" "Comprehension and critical thinking ability."
+wil intrinsic "Will Power" "Character and determination."
+spi intrinsic "Spirit" "Bond to the Ether."
+lck intrinsic "Luck" "Favor of the Fates."
 
 #######################################
 #           GENERAL SKILLS            #
 #######################################
 
-skill {
-	name = "Dodge"
-	desc = "Ability to dodge attacks and traps."
-	type = normal
-}
-
-skill {
-	name = "Shield"
-	desc = "Skill at blocking with a shield.."
-	type = normal
-}
-
-skill {
-	name = "Melee"
-	desc = "Ability with all close-range combat."
-	type = normal
-}
-
-skill {
-	name = "Balance"
-	desc = "Grace and skill at maintaining balance."
-	type = normal
-}
-
-skill {
-	name = "Magic Lore"
-	desc = "Knowledge of arcana."
-	type = normal
-}
+dodge normal "Dodge" "Ability to dodge attacks and traps."
+shield normal "Shield" "Skill at blocking with a shield.."
+melee normal "Melee" "Ability with all close-range combat."
+balance normal "Balance" "Grace and skill at maintaining balance."
+lore_magic normal "Magic Lore" "Knowledge of arcana."
 
 #######################################
 #     SPELLS AND MAGIC ABILITIES      #
 #######################################
 
-skill {
-	name = "Light"
-	desc = "Creates a glowing ball that illumates the area."
-	type = restricted
-}
-
-skill {
-	name = "Arcane Barrier"
-	desc = "Defensive barrier that protects against direct spell attacks."
-	type = restricted
-}
+magic_light restricted "Light" "Creates a glowing ball that illumates the area."
+magic_arcane_barrier restricted "Arcane Barrier" "Defensive barrier that protects against direct spell attacks."

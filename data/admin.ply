@@ -1,5 +1,5 @@
 # Player file: Admin
-# Timestamp: Sun Sep  3 17:20:16 2006
+# Timestamp: Sun Sep  3 18:02:25 2006
 # 
 
 entity.uid = <1>
@@ -26,23 +26,30 @@ stat.Fortitude = 100
 stat.Intellect = 100
 stat.Spirit = 100
 stat.Willpower = 100
+trait.hair_style = "long"
+trait.skin_color = "fair"
 trait.build = "lean"
+trait.hair_color = "silver"
+trait.eye_color = "gold"
 player.gender = "male"
-player.height = 68
+player.height = 74
 player.location = "clear_pond"
 player.general_xp = 65
 player.warrior_xp = 227
 player.rogue_xp = 0
 player.caster_xp = 0
-skill.Agility = 0
-skill.Balance = 0
-skill.Dodge = 0
-skill.Health = 0
-skill.Intellect = 0
-skill.Light = 0
-skill.Luck = 0
-skill.Melee = 0
-skill.Shield = 0
-skill.Spirit = 0
-skill.Strength = 0
+skill.agi = 0
+skill.magic_arcane_barrier = 0
+skill.balance = 0
+skill.dodge = 0
+skill.hel = 0
+skill.int = 0
+skill.magic_light = 0
+skill.lck = 0
+skill.lore_magic = 0
+skill.melee = 0
+skill.shield = 0
+skill.spi = 0
+skill.str = 0
+skill.wil = 0
 # vim: set shiftwidth=2 tabstop=2 expandtab:

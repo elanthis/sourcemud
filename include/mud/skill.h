@@ -15,7 +15,6 @@
 #include "common/gcbase.h"
 #include "common/gcmap.h"
 #include "common/gcvector.h"
-#include "mud/fileobj.h"
 #include "scriptix/native.h"
 
 typedef unsigned int SkillID;
@@ -34,6 +33,7 @@ class SkillInfo : public Scriptix::Native
 	SkillInfo ();
 
 	inline SkillID get_id () const { return id; }
+	inline const String& get_short_name () const { return short_name; }
 	inline const String& get_name () const { return name; }
 	inline const String& get_desc () const { return desc; }
 
@@ -42,10 +42,9 @@ class SkillInfo : public Scriptix::Native
 	inline bool is_secret () const { return type & SKILL_TYPE_SECRET; }
 	inline bool is_locked () const { return type & SKILL_TYPE_LOCKED; }
 
-	int load (File::Reader& reader);
-
 	private:
 	SkillID id;
+	String short_name;
 	String name;
 	String desc;
 	SkillType type;
@@ -77,6 +76,7 @@ class SSkillManager : public IManager
 	void shutdown ();
 
 	SkillInfo* get_by_name (String name);
+	SkillInfo* get_by_short_name (String short_name);
 	SkillInfo* get_by_id (SkillID id);
 
 	inline size_t get_size () { return skill_list.size(); }
@@ -84,7 +84,8 @@ class SSkillManager : public IManager
 	const SkillList& get_skills () const { return skill_list; }
 
 	private:
-	SkillMap skill_map;
+	SkillMap skill_name_map;
+	SkillMap skill_short_name_map;
 	SkillList skill_list;
 };
 

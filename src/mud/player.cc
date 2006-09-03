@@ -166,7 +166,7 @@ Player::save (File::Writer& writer)
 		writer.keyed(S("stat"), CharStatID(i).get_name(), base_stats[i]);
 	
 	for (TraitMap::const_iterator i = pdesc.traits.begin(); i != pdesc.traits.end(); ++i)
-		writer.keyed(S("trait"), CharacterTraitID::nameof(i->first), i->second.get_name());
+		writer.keyed(S("trait"), str_tr(CharacterTraitID::nameof(i->first), S(" "), S("_")), i->second.get_name());
 
 	writer.keyed(S("player"), S("gender"), pdesc.gender.get_name());
 	writer.keyed(S("player"), S("height"), pdesc.height);
@@ -180,7 +180,7 @@ Player::save (File::Writer& writer)
 	writer.keyed(S("player"), S("caster_xp"), exp[EXP_CASTER]);
 
 	for (SSkillManager::SkillList::const_iterator i = SkillManager.get_skills().begin(); i != SkillManager.get_skills().end(); ++i)
-		writer.keyed(S("skill"), (*i)->get_name(), skills.get_skill((*i)->get_id()));
+		writer.keyed(S("skill"), (*i)->get_short_name(), skills.get_skill((*i)->get_id()));
 }
 
 void
@@ -256,7 +256,7 @@ Player::load_node (File::Reader& reader, File::Node& node)
 				throw File::Error (S("Invalid birthday"));
 		FO_KEYED("trait")
 			FO_TYPE_ASSERT(STRING)
-			CharacterTraitID trait = CharacterTraitID::lookup(node.get_key());
+			CharacterTraitID trait = CharacterTraitID::lookup(str_tr(node.get_key(), S("_"), S(" ")));
 			if (!trait.valid())
 				throw File::Error (S("Unknown trait"));
 			CharacterTraitValue value = CharacterTraitManager.get_trait(node.get_data());
@@ -289,7 +289,7 @@ Player::load_node (File::Reader& reader, File::Node& node)
 			}
 		FO_KEYED("skill")
 			FO_TYPE_ASSERT(INT);
-			SkillInfo* info = SkillManager.get_by_name(node.get_key());
+			SkillInfo* info = SkillManager.get_by_short_name(node.get_key());
 			if (info != NULL) {
 				skills.set_skill(info->get_id(), node.get_int());
 			} else {

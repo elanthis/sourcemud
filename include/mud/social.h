@@ -9,7 +9,6 @@
 #define AWEMUD_MUD_SOCIAL_H
 
 #include "common/string.h"
-#include "mud/fileobj.h"
 #include "common/types.h"
 #include "mud/server.h"
 #include "common/imanager.h"
@@ -46,9 +45,6 @@ class Social : public GC
 	String name;
 	GCType::vector<SocialDetails> details;
 	Social* next;
-
-	// do load
-	int load (File::Reader& reader);
 
 	// for list management...
 	friend class SSocialManager;

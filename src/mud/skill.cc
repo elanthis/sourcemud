@@ -8,9 +8,10 @@
 #include <stdlib.h>
 
 #include "mud/skill.h"
-#include "mud/fileobj.h"
+#include "mud/filetab.h"
 #include "mud/settings.h"
 #include "mud/skill.h"
+#include "common/log.h"
 
 #include <algorithm>
 
@@ -29,43 +30,9 @@ SCRIPT_TYPE(Skill);
 SkillInfo::SkillInfo () : Scriptix::Native(AweMUD_SkillType), id(0), type(SKILL_TYPE_NORMAL) { }
 
 int
-SkillInfo::load (File::Reader& reader)
-{
-	File::Object data;
-	if (data.load(reader))
-		return -1;
-
-	try {
-		name = data.get_string(S("name"), 0);
-		desc = data.get_string(S("desc"), 0);
-
-		String stype = data.get_string(S("type"), 0);
-		if (stype == "normal")
-			type = SKILL_TYPE_NORMAL;
-		else if (stype == "intrinsic")
-			type = SKILL_TYPE_INTRINSIC;
-		else if (stype == "restricted")
-			type = SKILL_TYPE_RESTRICTED;
-		else if (stype == "locked")
-			type = SKILL_TYPE_LOCKED;
-		else if (stype == "secret")
-			type = SKILL_TYPE_SECRET;
-		else {
-			Log::Error << "Invalid skill type: " << stype;
-			return -1;
-		}
-	} catch (File::KeyError& error) {
-		Log::Error << "Loading skill: " << error.get_what();
-		return -1;
-	}
-
-	return 0;
-}
-
-int
 SSkillManager::initialize (void)
 {
-	File::Reader reader;
+	File::TabReader reader;
 
 	// Open skills file
 	String path = SettingsManager.get_misc_path() + "/skills";
@@ -73,24 +40,42 @@ SSkillManager::initialize (void)
 		Log::Error << "Failed to open " << path;
 		return 1;
 	}
+	if (reader.load()) {
+		Log::Error << "Failed to parse" << path;
+		return 1;
+	}
 
-	// Load skills file
-	FO_READ_BEGIN
-		FO_OBJECT("skill")
-			SkillInfo* skill = new SkillInfo();
+	// process all skills
+	for (size_t i = 0; i < reader.size(); ++i) {
+		SkillInfo* skill = new SkillInfo();
+		skill->short_name = reader.get(i, 0);
+		String type = reader.get(i, 1);
+		skill->name = reader.get(i, 2);
+		skill->desc = reader.get(i, 3);
 
-			if (skill->load(reader))
-				return -1;
+		if (skill->short_name.empty() || skill->name.empty() || skill->desc.empty()) {
+			Log::Info << "Incomplete skill at " << path << ":" << reader.get_line(i);
+			continue;
+		}
 
-			// Warn on duplicates
-			if (get_by_name(skill->get_name()))
-				Log::Warning << "Duplicate skill with name '" << skill->get_name() << "' in " << reader.get_filename() << ':' << node.get_line();
+		if (type == "normal")
+			skill->type = SKILL_TYPE_NORMAL;
+		else if (type == "intrinsic")
+			skill->type = SKILL_TYPE_INTRINSIC;
+		else if (type == "restricted")
+			skill->type = SKILL_TYPE_RESTRICTED;
+		else if (type == "locked")
+			skill->type = SKILL_TYPE_LOCKED;
+		else if (type == "secret")
+			skill->type = SKILL_TYPE_SECRET;
+		else {
+			Log::Info << "Invalid skill type '" << type << "' at " << path << ":" << reader.get_line(i);
+			continue;
+		}
 
-			// Add skill
-			skill_list.push_back(skill);
-	FO_READ_ERROR
-		return 2;
-	FO_READ_END
+		// add skill
+		skill_list.push_back(skill);
+	}
 
 	reader.close();
 
@@ -101,7 +86,8 @@ SSkillManager::initialize (void)
 	SkillID id = 0;
 	for (SkillList::iterator i = skill_list.begin(); i != skill_list.end(); ++i) {
 		(*i)->id = ++id;
-		skill_map[(*i)->get_name()] = *i;
+		skill_name_map[(*i)->get_name()] = *i;
+		skill_short_name_map[(*i)->get_short_name()] = *i;
 	}
 
 	return 0;
@@ -110,15 +96,25 @@ SSkillManager::initialize (void)
 void
 SSkillManager::shutdown (void)
 {
-	skill_map.clear();
+	skill_name_map.clear();
+	skill_short_name_map.clear();
 	skill_list.clear();
 }
 
 SkillInfo*
 SSkillManager::get_by_name (String name)
 {
-	SkillMap::iterator i = skill_map.find(name);
-	if (i != skill_map.end())
+	SkillMap::iterator i = skill_name_map.find(name);
+	if (i != skill_name_map.end())
+		return i->second;
+	return NULL;
+}
+
+SkillInfo*
+SSkillManager::get_by_short_name (String name)
+{
+	SkillMap::iterator i = skill_short_name_map.find(name);
+	if (i != skill_short_name_map.end())
 		return i->second;
 	return NULL;
 }

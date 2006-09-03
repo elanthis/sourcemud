@@ -1,3 +1,10 @@
+2006-09-03 22:03:16  Sean Middleditch <elanthis@awesomeplay.com>
+
+  * Updated the skills file to use the tab file format.
+  * Re-implemented str_tr().
+  * Used str_tr as a quick hack to make player file saving of
+    traits work again.
+
 2006-09-03 21:21:26  Sean Middleditch <elanthis@awesomeplay.com>
 
   * Implemented a new tab-delimated file format parser.
