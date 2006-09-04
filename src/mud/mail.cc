@@ -23,7 +23,7 @@
 void
 MailMessage::append (String data)
 {
-	body += data;
+	body << data;
 }
 
 void

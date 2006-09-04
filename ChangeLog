@@ -1,3 +1,7 @@
+2006-09-04 01:42:19  Sean Middleditch <elanthis@awesomeplay.com>
+
+  * Fix mail compilation for systems with sendmail support.
+
 2006-09-04 01:23:46  Sean Middleditch <elanthis@awesomeplay.com>
 
   * Changed object actions from a file object to an attribute.

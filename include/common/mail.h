@@ -14,14 +14,15 @@
 
 #ifdef HAVE_SENDMAIL
 
-#include <vector>
+#include "common/gcvector.h"
 #include "common/string.h"
+#include "common/strbuf.h"
 
 class MailMessage : public GC {
 	private:
 	String to;
 	String subject;
-	String body;
+	StringBuffer body;
 	struct Header {
 		String name;
 		String value;
@@ -30,7 +31,7 @@ class MailMessage : public GC {
 
 	public:
 	MailMessage (String s_to, String s_subj, String s_body) :
-		to(s_to), subject(s_subj), body(s_body), headers() {}
+		to(s_to), subject(s_subj), body(), headers() { body << s_body; }
 	MailMessage (String s_to, String s_subj) :
 		to(s_to), subject(s_subj), body(), headers() {}
 
