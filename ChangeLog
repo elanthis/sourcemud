@@ -1,3 +1,8 @@
+2006-09-04 10:13:22  Sean Middleditch <elanthis@awesomeplay.com>
+
+  * The function is called exit(), not portal(); yay for
+    search-and-replace.
+
 2006-09-04 09:46:09  Sean Middleditch <elanthis@awesomeplay.com>
 
   * Fixed telnet timeout not working.

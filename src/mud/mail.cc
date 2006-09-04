@@ -69,7 +69,7 @@ MailMessage::send (void) const
 		dup2(files[0], 0);
 		// exec sendmail
 		if (execl(sendmail.c_str(), sendmail.c_str(), "-oi", "-t", "-FAweMUD", NULL))
-			portal (1);
+			exit(1);
 	}
 	close(files[0]);
 
