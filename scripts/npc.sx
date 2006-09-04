@@ -11,8 +11,8 @@ function getFoodchain(self)
 	return 50;
 }
 
-// random exit walking for NPCs
-function goRandomExit(self)
+// random portal walking for NPCs
+function goRandomPortal(self)
 {
 	// round time?
 	if (self.getRoundTime() > 0)
@@ -24,16 +24,16 @@ function goRandomExit(self)
 		return false;
 
 	// get count
-	var exits = array();
-	foreach(var exit in room.exits())
-		if (self.canUseExit(exit))
-			exits.append(exit);
-	if (!exits)
+	var portals = array();
+	foreach(var portal in room.portals())
+		if (self.canUsePortal(portal))
+			portals.append(portal);
+	if (!portals)
 		return false;
 
 	// random selection
-	var rand = getRandom(exits.length());
-	self.doGo(exits[rand]);
+	var rand = getRandom(portals.length());
+	self.doGo(portals[rand]);
 	return true;
 }
 
@@ -98,6 +98,6 @@ function init() {
 	registerHook('npc_death', makeCorpse);
 
 	Creature.addMethod('foodchain', getFoodchain);
-	NPC.addMethod('goRandomExit', goRandomExit);
+	NPC.addMethod('goRandomPortal', goRandomPortal);
 	NPC.addMethod('setState', setState);
 }

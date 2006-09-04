@@ -28,7 +28,7 @@
 #include "mud/zone.h"
 #include "mud/object.h"
 #include "mud/creature.h"
-#include "mud/exit.h"
+#include "mud/portal.h"
 #include "mud/hooks.h"
 #include "mud/efactory.h"
 
@@ -69,20 +69,20 @@ Room::load_node (File::Reader& reader, File::Node& node)
 		FO_ATTR("room", "coins")
 			FO_TYPE_ASSERT(INT);
 			coins = tolong(node.get_data());
-		FO_OBJECT("exit")
-			RoomExit* exit = new RoomExit();
-			if (exit == NULL)
-				throw File::Error(S("new RoomExit() failed"));
-			if (exit->load(reader))
-				throw File::Error(S("Failed to load exit"));
+		FO_OBJECT("portal")
+			Portal* portal = new Portal();
+			if (portal == NULL)
+				throw File::Error(S("new Portal() failed"));
+			if (portal->load(reader))
+				throw File::Error(S("Failed to load portal"));
 
 			// add
-			exit->parent_room = this;
-			exits.add(exit);
+			portal->parent_room = this;
+			portals.add(portal);
 
 			// activate if necessary
 			if (is_active())
-				exit->activate();
+				portal->activate();
 		FO_OBJECT("object")
 			Object *obj = new Object ();
 			if (obj->load (reader) != 0)
@@ -92,7 +92,7 @@ Room::load_node (File::Reader& reader, File::Node& node)
 			Npc *npc = new Npc ();
 			if (npc->load (reader) != 0)
 				throw File::Error(S("Failed to load npc"));
-			add_character(npc);
+			add_creature(npc);
 		FO_PARENT(Entity)
 	FO_NODE_END
 }
@@ -100,8 +100,8 @@ Room::load_node (File::Reader& reader, File::Node& node)
 int
 Room::load_finish ()
 {
-	// ensure exits are sorted
-	sort_exits();
+	// ensure portals are sorted
+	sort_portals();
 	
 	return 0;
 }
@@ -130,8 +130,8 @@ Room::save (File::Writer& writer)
 	if (coins)
 		writer.attr(S("room"), S("coins"), coins);
 
-	for (EList<RoomExit>::const_iterator i = exits.begin(); i != exits.end(); ++i) {
-		writer.begin(S("exit"));
+	for (EList<Portal>::const_iterator i = portals.begin(); i != portals.end(); ++i) {
+		writer.begin(S("portal"));
 		(*i)->save(writer);
 		writer.end();
 	}
@@ -142,7 +142,7 @@ Room::save (File::Writer& writer)
 		writer.end();
 	}
 
-	for (EList<Creature>::const_iterator i = chars.begin(); i != chars.end(); ++i) {
+	for (EList<Creature>::const_iterator i = creatures.begin(); i != creatures.end(); ++i) {
 		if (NPC(*i)) {
 			writer.begin(S("npc"));
 			(*i)->save(writer);
@@ -158,15 +158,15 @@ Room::save_hook (ScriptRestrictedWriter* writer)
 	Hooks::save_room(this, writer);
 }
 
-RoomExit *
-Room::find_exit (String e_name, uint c, uint *matches)
+Portal *
+Room::find_portal (String e_name, uint c, uint *matches)
 {
 	assert (c != 0);
 
 	if (matches)
 		*matches = 0;
 
-	for (EList<RoomExit>::const_iterator i = exits.begin(); i != exits.end(); ++i) {
+	for (EList<Portal>::const_iterator i = portals.begin(); i != portals.end(); ++i) {
 		if ((*i)->name_match (e_name)) {
 			if (matches)
 				++ *matches;
@@ -177,25 +177,25 @@ Room::find_exit (String e_name, uint c, uint *matches)
 	return NULL;
 }
 
-RoomExit *
-Room::get_exit_by_dir (ExitDir dir)
+Portal *
+Room::get_portal_by_dir (PortalDir dir)
 {
-	for (EList<RoomExit>::const_iterator i = exits.begin(); i != exits.end(); ++i)
+	for (EList<Portal>::const_iterator i = portals.begin(); i != portals.end(); ++i)
 		if ((*i)->get_dir () == dir)
 			return (*i);
 	return NULL;
 }
 
-RoomExit *
-Room::new_exit ()
+Portal *
+Room::new_portal ()
 {
-	RoomExit *exit = new RoomExit ();
-	if (exit == NULL)
+	Portal *portal = new Portal ();
+	if (portal == NULL)
 		return NULL;
-	exit->parent_room = this;
-	exit->activate();
-	exits.add(exit);
-	return exit;
+	portal->parent_room = this;
+	portal->activate();
+	portals.add(portal);
+	return portal;
 }
 
 // coins
@@ -223,9 +223,9 @@ Room::activate ()
 {
 	Entity::activate ();
 
-	for (EList<RoomExit>::const_iterator i = exits.begin(); i != exits.end(); ++i)
+	for (EList<Portal>::const_iterator i = portals.begin(); i != portals.end(); ++i)
 		(*i)->activate();
-	for (EList<Creature>::const_iterator i = chars.begin(); i != chars.end(); ++i)
+	for (EList<Creature>::const_iterator i = creatures.begin(); i != creatures.end(); ++i)
 		(*i)->activate();
 	for (EList<Object>::const_iterator i = objects.begin(); i != objects.end(); ++i)
 		(*i)->activate();
@@ -234,9 +234,9 @@ Room::activate ()
 void
 Room::deactivate ()
 {
-	for (EList<RoomExit>::const_iterator i = exits.begin(); i != exits.end(); ++i)
+	for (EList<Portal>::const_iterator i = portals.begin(); i != portals.end(); ++i)
 		(*i)->deactivate();
-	for (EList<Creature>::const_iterator i = chars.begin(); i != chars.end(); ++i)
+	for (EList<Creature>::const_iterator i = creatures.begin(); i != creatures.end(); ++i)
 		(*i)->deactivate();
 	for (EList<Object>::const_iterator i = objects.begin(); i != objects.end(); ++i)
 		(*i)->deactivate();
@@ -264,7 +264,7 @@ Room::owner_release (Entity* child)
 	// Creature?
 	Creature* ch = CHARACTER(child);
 	if (ch != NULL) {
-		chars.remove(ch);
+		creatures.remove(ch);
 		return;
 	}
 
@@ -275,10 +275,10 @@ Room::owner_release (Entity* child)
 		return;
 	}
 
-	// Exit?
-	RoomExit* exit = ROOMEXIT(child);
-	if (exit != NULL) {
-		exits.remove(exit);
+	// Portal?
+	Portal* portal = PORTAL(child);
+	if (portal != NULL) {
+		portals.remove(portal);
 		return;
 	}
 
@@ -315,21 +315,21 @@ Room::show (const StreamControl& stream, Creature* viewer)
 	}
 	stream << "\n";
 
-	// exit list
-	if (!exits.empty()) {
+	// portal list
+	if (!portals.empty()) {
 		// setup
 		int displayed = 0;
-		RoomExit* last = NULL;
+		Portal* last = NULL;
 		
 		// iterator
-		for (EList<RoomExit>::const_iterator i = exits.begin(); i != exits.end(); ++i) {
+		for (EList<Portal>::const_iterator i = portals.begin(); i != portals.end(); ++i) {
 			// room not hidden?
 			if (!(*i)->is_hidden() && !(*i)->is_disabled()) {
 				// had a previous entry?  output it
 				if (last) {
 					// first item?
 					if (!displayed)
-						stream << "Obvious exits are ";
+						stream << "Obvious portals are ";
 					else
 						stream << ", ";
 
@@ -352,7 +352,7 @@ Room::show (const StreamControl& stream, Creature* viewer)
 		if (last) {
 			// pre-text
 			if (!displayed)
-				stream << "Obvious exits are ";
+				stream << "Obvious portals are ";
 			else if (displayed > 1)
 				stream << ", and ";
 			else
@@ -369,14 +369,14 @@ Room::show (const StreamControl& stream, Creature* viewer)
 			stream << ".\n";
 	}
 
-	// displaying characters and objects
+	// displaying creatures and objects
 	int displayed = 0;
 	Entity* last = NULL;
 
 	// show players and NPCs
-	if (!chars.empty()) {
+	if (!creatures.empty()) {
 		// iterator
-		for (EList<Creature>::const_iterator i = chars.begin(); i != chars.end(); ++i) {
+		for (EList<Creature>::const_iterator i = creatures.begin(); i != creatures.end(); ++i) {
 			// not ourselves
 			if ((Creature*)(*i) != viewer) {
 				// have we a last entry?
@@ -466,11 +466,11 @@ Room::show (const StreamControl& stream, Creature* viewer)
 		stream << ".\n";
 }
 
-/* print all exits */
+/* print all portals */
 void
-Room::show_exits (const StreamControl& stream)
+Room::show_portals (const StreamControl& stream)
 {
-	for (EList<RoomExit>::const_iterator i = exits.begin(); i != exits.end(); ++i)
+	for (EList<Portal>::const_iterator i = portals.begin(); i != portals.end(); ++i)
 		stream << StreamName(*(*i)) << " <" << (*i)->get_target() << ">\n";
 }
 
@@ -479,8 +479,8 @@ void
 Room::put (String msg, size_t len, GCType::vector<Creature*>* ignore_list)
 {
 	// iterator
-	for (EList<Creature>::iterator i = chars.begin(); i != chars.end(); ++i) {
-		// skip ignored characters
+	for (EList<Creature>::iterator i = creatures.begin(); i != creatures.end(); ++i) {
+		// skip ignored creatures
 		if (ignore_list != NULL) {
 			if (std::find(ignore_list->begin(), ignore_list->end(), (*i)) != ignore_list->end())
 				continue;
@@ -492,11 +492,11 @@ Room::put (String msg, size_t len, GCType::vector<Creature*>* ignore_list)
 
 /* find a Creature by name */
 Creature *
-Room::find_character (String cname, uint c, uint *matches)
+Room::find_creature (String cname, uint c, uint *matches)
 {
 	assert (c != 0);
 	
-	return CHARACTER(chars.match (cname, c, matches));
+	return CHARACTER(creatures.match (cname, c, matches));
 }
 
 /* find an object by name */
@@ -509,17 +509,17 @@ Room::find_object (String oname, uint c, uint *matches)
 }
 
 void
-Room::add_character (Creature* character)
+Room::add_creature (Creature* creature)
 {
-	assert(character != NULL);
+	assert(creature != NULL);
 
-	character->set_owner(this);
-	chars.add (character);
+	creature->set_owner(this);
+	creatures.add (creature);
 
 	// initialize NPC AI for new NPCs
-	if (NPC(character)) {
-		if (((Npc*)character)->get_ai())
-			((Npc*)character)->get_ai()->do_load(character);
+	if (NPC(creature)) {
+		if (((Npc*)creature)->get_ai())
+			((Npc*)creature)->get_ai()->do_load(creature);
 	}
 }
 
@@ -536,7 +536,7 @@ unsigned long
 Room::count_players () const
 {
 	unsigned long count = 0;
-	for (EList<Creature>::const_iterator i = chars.begin(); i != chars.end(); ++i)
+	for (EList<Creature>::const_iterator i = creatures.begin(); i != creatures.end(); ++i)
 		if (PLAYER(*i))
 			++count;
 	return count;
@@ -549,19 +549,19 @@ Room::handle_event (const Event& event)
 	Entity::handle_event (event);
 
 	// temporary, stable vector of children
-	EList<Entity> children(objects.size() + chars.size() + exits.size());
+	EList<Entity> children(objects.size() + creatures.size() + portals.size());
 	size_t index = 0;
 
 	// propogate to objects
 	for (EList<Object>::const_iterator i = objects.begin(); i != objects.end(); ++i)
 		children[index++] = *i;
 
-	// propogate to characters
-	for (EList<Creature>::const_iterator i = chars.begin(); i != chars.end(); ++i)
+	// propogate to creatures
+	for (EList<Creature>::const_iterator i = creatures.begin(); i != creatures.end(); ++i)
 		children[index++] = *i;
 
-	// propogate to exits
-	for (EList<RoomExit>::const_iterator i = exits.begin(); i != exits.end(); ++i)
+	// propogate to portals
+	for (EList<Portal>::const_iterator i = portals.begin(); i != portals.end(); ++i)
 		children[index++] = *i;
 
 	// do event sending
@@ -584,9 +584,9 @@ namespace {
 }
 
 void
-Room::sort_exits ()
+Room::sort_portals ()
 {
-	std::sort(exits.begin(), exits.end(), DerefSort<RoomExit>());
+	std::sort(portals.begin(), portals.end(), DerefSort<Portal>());
 }
 
 // StreamSink for room buffering

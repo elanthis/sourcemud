@@ -163,7 +163,7 @@ class Npc : public Creature
 	inline void set_room_tag_reversed (bool value) { flags.revroomtag = value; }
 	inline TagID get_room_tag () const { return room_tag; }
 	inline void set_room_tag (TagID s_room_tag) { room_tag = s_room_tag; }
-	bool can_use_exit (class RoomExit* exit) const;
+	bool can_use_portal (class Portal* portal) const;
 
 	// Manage AI
 	AI* get_ai () const;

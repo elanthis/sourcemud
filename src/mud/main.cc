@@ -416,7 +416,7 @@ main (int argc, char **argv)
 	// fork daemon
 	if (SettingsManager.get_daemon()) {
 		if (fork ())
-			_exit (0);
+			_exit(0);
 
 		// close controlling TTY
 #ifdef TIOCNOTTY

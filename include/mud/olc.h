@@ -40,8 +40,8 @@ namespace OLC {
 	void show_room (Player* builder, Room* room);
 
 	// -- EXIT --
-	bool modify_exit (Player* builder, RoomExit* exit, const char* attr, char* value);
-	void show_exit (Player* builder, RoomExit* exit);
+	bool modify_portal (Player* builder, Portal* portal, const char* attr, char* value);
+	void show_portal (Player* builder, Portal* portal);
 
 	// -- ZONE --
 	bool modify_zone (Player* builder, Zone* zone, const char* attr, char* value);

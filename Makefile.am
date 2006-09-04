@@ -220,18 +220,17 @@ noinst_HEADERS=\
 	include/mud/bindings.h \
 	include/mud/body.h \
 	include/mud/caffect.h \
-	include/mud/creature.h \
 	include/mud/clock.h \
 	include/mud/color.h \
 	include/mud/command.h \
 	include/mud/container.h \
 	include/mud/control.h \
 	include/mud/creation.h \
+	include/mud/creature.h \
 	include/mud/efactory.h \
 	include/mud/elist.h \
 	include/mud/entity.h \
 	include/mud/event.h \
-	include/mud/exit.h \
 	include/mud/fileobj.h \
 	include/mud/filetab.h \
 	include/mud/gametime.h \
@@ -247,6 +246,7 @@ noinst_HEADERS=\
 	include/mud/parse.h \
 	include/mud/pdesc.h \
 	include/mud/player.h \
+	include/mud/portal.h \
 	include/mud/race.h \
 	include/mud/room.h \
 	include/mud/server.h \
@@ -338,7 +338,6 @@ awemud_bin_SOURCES=\
 	src/mud/body.cc \
 	src/mud/caffect.cc \
 	src/mud/calendar.cc \
-	src/mud/creature.cc \
 	src/mud/char_do.cc \
 	src/mud/cmd_admin.cc \
 	src/mud/cmd_builder.cc \
@@ -350,11 +349,11 @@ awemud_bin_SOURCES=\
 	src/mud/command.cc \
 	src/mud/control.cc \
 	src/mud/creation.cc \
+	src/mud/creature.cc \
 	src/mud/efactory.cc \
 	src/mud/entity.cc \
 	src/mud/event.cc \
 	src/mud/eventids.cc \
-	src/mud/exit.cc \
 	src/mud/fileobj.cc \
 	src/mud/filetab.cc \
 	src/mud/help.cc \
@@ -374,6 +373,7 @@ awemud_bin_SOURCES=\
 	src/mud/pdesc.cc \
 	src/mud/player.cc \
 	src/mud/pmanager.cc \
+	src/mud/portal.cc \
 	src/mud/race.cc \
 	src/mud/room.cc \
 	src/mud/settings.cc \

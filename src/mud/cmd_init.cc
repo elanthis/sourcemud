@@ -106,21 +106,21 @@ SCommandManager::initialize (void)
 	END_COMM
 
 	COMMAND("go",
-			"go <exit>\n",
+			"go <portal>\n",
 			go,
 			ACCESS_ALL,
 			Creature)
 		FORMAT(10, "go :0*")
 	END_COMM
 	COMMAND("climb",
-			"climb <exit>\n",
+			"climb <portal>\n",
 			climb,
 			ACCESS_ALL,
 			Creature)
 		FORMAT(10, "climb :0*")
 	END_COMM
 	COMMAND("crawl",
-			"crawl <exit>\n",
+			"crawl <portal>\n",
 			crawl,
 			ACCESS_ALL,
 			Creature)
@@ -456,7 +456,7 @@ SCommandManager::initialize (void)
 			"create [npc|object] [<template>]\n"
 			"create room <name> [<zone>]\n"
 			"create zone <name>\n"
-			"crate exit [<name/dir> [to <target>]]\n",
+			"crate portal [<name/dir> [to <target>]]\n",
 			create,
 			ACCESS_BUILDER,
 			Player)
@@ -464,22 +464,22 @@ SCommandManager::initialize (void)
 		FORMAT(80, "create :0object :1%?")
 		FORMAT(80, "create :0room :1% :2%?")
 		FORMAT(80, "create :0zone :1%")
-		FORMAT(80, "create :0exit :1%?")
-		FORMAT(80, "create :0exit :1% to :2%")
+		FORMAT(80, "create :0portal :1%?")
+		FORMAT(80, "create :0portal :1% to :2%")
 	END_COMM
 	COMMAND("destroy",
 			"destroy [<type>] <entity>\n",
 			destroy,
 			ACCESS_BUILDER,
 			Player)
-		FORMAT(80, "destroy :0(npc,object,room,exit)? :1*")
+		FORMAT(80, "destroy :0(npc,object,room,portal)? :1*")
 	END_COMM
-	COMMAND("exitlist",
-			"exitlist [<room>]\n",
-			exitlist,
+	COMMAND("portallist",
+			"portallist [<room>]\n",
+			portallist,
 			ACCESS_BUILDER,
 			Player)
-		FORMAT(80, "exitlist :0%?")
+		FORMAT(80, "portallist :0%?")
 	END_COMM
 
 	// GM commands

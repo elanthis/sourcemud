@@ -158,7 +158,7 @@ File::Reader::read_token (String& outstr)
 				// consume the op
 				in.get();
 
-			// normal character
+			// normal creature
 			} else {
 				data << (char)in.get();
 			}

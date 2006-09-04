@@ -69,7 +69,7 @@ TelnetModeNewAccount::process (char* data)
 		case STATE_ID:
 			// valid name?
 			if (!AccountManager.valid_name(line)) {
-				*get_handler() << "\n" CADMIN "Account names must be between " << ACCOUNT_NAME_MIN_LEN << " and " << ACCOUNT_NAME_MAX_LEN << " characters, and consist of only letters and numbers." CNORMAL "\n";
+				*get_handler() << "\n" CADMIN "Account names must be between " << ACCOUNT_NAME_MIN_LEN << " and " << ACCOUNT_NAME_MAX_LEN << " creatures, and consist of only letters and numbers." CNORMAL "\n";
 				break;
 			}
 
@@ -114,7 +114,7 @@ TelnetModeNewAccount::process (char* data)
 		case STATE_PASS:
 			// legal?
 			if (!strlen(line) || !AccountManager.valid_passphrase(line)) {
-				*get_handler() << "\n" CADMIN "Passphrases must be at least " << ACCOUNT_PASS_MIN_LEN << " characters, and have both letters and numbers.  Passphrases may also contain symbols or punctuation characters." CNORMAL "\n";
+				*get_handler() << "\n" CADMIN "Passphrases must be at least " << ACCOUNT_PASS_MIN_LEN << " creatures, and have both letters and numbers.  Passphrases may also contain symbols or punctuation creatures." CNORMAL "\n";
 				break;
 			}
 
@@ -217,7 +217,7 @@ TelnetModeLogin::process (char* line)
 
 		// invalid name?
 		if (!AccountManager.valid_name (data)) {
-			*get_handler() << "\nAccount names must be between " << ACCOUNT_NAME_MIN_LEN << " and " << ACCOUNT_NAME_MAX_LEN << " characters, and consist of only letters and numbers.\n\n";
+			*get_handler() << "\nAccount names must be between " << ACCOUNT_NAME_MIN_LEN << " and " << ACCOUNT_NAME_MAX_LEN << " creatures, and consist of only letters and numbers.\n\n";
 			return;
 		}
 

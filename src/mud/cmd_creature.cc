@@ -47,7 +47,7 @@ namespace {
 		return isspace(string[strlen(test)]) || string[strlen(test)] == 0;
 	}
 
-	// return true if a string has no more characters
+	// return true if a string has no more creatures
 	inline bool str_empty (CString string)
 	{
 		return string[0] == 0;
@@ -227,9 +227,9 @@ Creature::cl_find_object (String line, Object* container, ContainerType type, bo
 }
 
 
-// parse a command line to get a character
+// parse a command line to get a creature
 Creature* 
-Creature::cl_find_character (String line, bool silent)
+Creature::cl_find_creature (String line, bool silent)
 {
 	const char* text = line.c_str();
 
@@ -261,16 +261,16 @@ Creature::cl_find_character (String line, bool silent)
 		return NULL;
 	}
 
-	Creature* ch = get_room()->find_character (String(text), index);
+	Creature* ch = get_room()->find_creature (String(text), index);
 	if (ch == NULL && !silent)
 		*this << "You do not see '" << text << "'.\n";
 
 	return ch;
 }
 
-/* parse a command line to get an exit*/
-RoomExit* 
-Creature::cl_find_exit (String line, bool silent)
+/* parse a command line to get an portal*/
+Portal* 
+Creature::cl_find_portal (String line, bool silent)
 {
 	const char* text = line.c_str();
 
@@ -302,19 +302,19 @@ Creature::cl_find_exit (String line, bool silent)
 	}
 
 	String name(text);
-	RoomExit* exit;
+	Portal* portal;
 	do {
-		exit = get_room()->find_exit (name, index++);
-	} while (exit != NULL && exit->is_disabled());
+		portal = get_room()->find_portal (name, index++);
+	} while (portal != NULL && portal->is_disabled());
 
-	if (exit == NULL && !silent) {
+	if (portal == NULL && !silent) {
 		*this << "You do not see '" << text << "'.\n";
 	}
 
-	return exit;
+	return portal;
 }
 
-// parse a command line to get a character, object, or exit
+// parse a command line to get a creature, object, or portal
 Entity* 
 Creature::cl_find_any (String line, bool silent)
 {
@@ -354,9 +354,9 @@ Creature::cl_find_any (String line, bool silent)
 
 	String name(text);
 
-	// look for a character
+	// look for a creature
 	if (get_room()) {
-		Creature* ch = get_room()->find_character (name, index, &matches);
+		Creature* ch = get_room()->find_creature (name, index, &matches);
 		if (ch != NULL)
 			return ch;
 		if (matches >= index) {
@@ -423,15 +423,15 @@ Creature::cl_find_any (String line, bool silent)
 		}
 	}
 
-	// try an exit
+	// try an portal
 	if (get_room()) {
-		RoomExit* exit = NULL;
+		Portal* portal = NULL;
 		do {
-			exit = get_room()->find_exit (name, index++);
-		} while (exit != NULL && exit->is_disabled());
+			portal = get_room()->find_portal (name, index++);
+		} while (portal != NULL && portal->is_disabled());
 
-		if (exit != NULL)
-			return exit;
+		if (portal != NULL)
+			return portal;
 	}
 
 	// print error
@@ -441,33 +441,33 @@ Creature::cl_find_any (String line, bool silent)
 }
 
 void
-handle_char_move (Creature* ch, ExitDir dir) {
+handle_char_move (Creature* ch, PortalDir dir) {
 	// must be in a room
 	if (!ch->get_room()) {
 		*ch << "You are not in a room.\n";
 		return;
 	}
 
-	// get exit
-	RoomExit* exit = ch->get_room()->get_exit_by_dir (dir);
-	if (!exit) {
-		*ch << "You do not see an exit in that direction.\n";
+	// get portal
+	Portal* portal = ch->get_room()->get_portal_by_dir (dir);
+	if (!portal) {
+		*ch << "You do not see an portal in that direction.\n";
 		return;
 	}
 
 	// go
-	ch->do_go(exit);
+	ch->do_go(portal);
 }
 
 // movement commands
-void command_north (Creature* ch, String[]) { handle_char_move (ch, ExitDir::NORTH); }
-void command_east (Creature* ch, String[]) { handle_char_move (ch, ExitDir::EAST); }
-void command_south (Creature* ch, String[]) { handle_char_move (ch, ExitDir::SOUTH); }
-void command_west (Creature* ch, String[]) { handle_char_move (ch, ExitDir::WEST); }
-void command_northwest (Creature* ch, String[]) { handle_char_move (ch, ExitDir::NORTHWEST); }
-void command_northeast (Creature* ch, String[]) { handle_char_move (ch, ExitDir::NORTHEAST); }
-void command_southwest (Creature* ch, String[]) { handle_char_move (ch, ExitDir::SOUTHWEST); }
-void command_southeast (Creature* ch, String[]) { handle_char_move (ch, ExitDir::SOUTHEAST); }
+void command_north (Creature* ch, String[]) { handle_char_move (ch, PortalDir::NORTH); }
+void command_east (Creature* ch, String[]) { handle_char_move (ch, PortalDir::EAST); }
+void command_south (Creature* ch, String[]) { handle_char_move (ch, PortalDir::SOUTH); }
+void command_west (Creature* ch, String[]) { handle_char_move (ch, PortalDir::WEST); }
+void command_northwest (Creature* ch, String[]) { handle_char_move (ch, PortalDir::NORTHWEST); }
+void command_northeast (Creature* ch, String[]) { handle_char_move (ch, PortalDir::NORTHEAST); }
+void command_southwest (Creature* ch, String[]) { handle_char_move (ch, PortalDir::SOUTHWEST); }
+void command_southeast (Creature* ch, String[]) { handle_char_move (ch, PortalDir::SOUTHEAST); }
 
 void command_go (Creature* ch, String argv[])
 {
@@ -476,12 +476,12 @@ void command_go (Creature* ch, String argv[])
 		return;
 	}
 
-	RoomExit* exit;
-	if ((exit = ch->cl_find_exit (argv[0])) != NULL) {
-		if (exit->get_usage() == ExitUsage::WALK) {
-			ch->do_go (exit);
+	Portal* portal;
+	if ((portal = ch->cl_find_portal (argv[0])) != NULL) {
+		if (portal->get_usage() == PortalUsage::WALK) {
+			ch->do_go (portal);
 		} else {
-			*ch << "You cannot do that with " << StreamName(*exit, DEFINITE) << ".\n";
+			*ch << "You cannot do that with " << StreamName(*portal, DEFINITE) << ".\n";
 		}
 	}
 }
@@ -493,12 +493,12 @@ void command_climb (Creature* ch, String argv[])
 		return;
 	}
 
-	RoomExit* exit;
-	if ((exit = ch->cl_find_exit (argv[0])) != NULL) {
-		if (exit->get_usage() == ExitUsage::CLIMB) {
-			ch->do_go (exit);
+	Portal* portal;
+	if ((portal = ch->cl_find_portal (argv[0])) != NULL) {
+		if (portal->get_usage() == PortalUsage::CLIMB) {
+			ch->do_go (portal);
 		} else {
-			*ch << "You cannot climb " << StreamName(*exit, DEFINITE) << ".\n";
+			*ch << "You cannot climb " << StreamName(*portal, DEFINITE) << ".\n";
 		}
 	}
 }
@@ -510,12 +510,12 @@ void command_crawl (Creature* ch, String argv[])
 		return;
 	}
 
-	RoomExit* exit;
-	if ((exit = ch->cl_find_exit (argv[0])) != NULL) {
-		if (exit->get_usage() == ExitUsage::CRAWL) {
-			ch->do_go (exit);
+	Portal* portal;
+	if ((portal = ch->cl_find_portal (argv[0])) != NULL) {
+		if (portal->get_usage() == PortalUsage::CRAWL) {
+			ch->do_go (portal);
 		} else {
-			*ch << "You cannot crawl on " << StreamName(*exit, DEFINITE) << ".\n";
+			*ch << "You cannot crawl on " << StreamName(*portal, DEFINITE) << ".\n";
 		}
 	}
 }
@@ -542,15 +542,15 @@ void command_look (Creature* ch, String argv[]) {
 	// generic find
 	Entity* entity = ch->cl_find_any(argv[1]);
 	if (entity != NULL) {
-		// character?
+		// creature?
 		if (CHARACTER(entity))
 			ch->do_look((Creature*)(entity));
 		// object?
 		else if (OBJECT(entity))
 			ch->do_look((Object*)(entity), ContainerType::NONE);
 		// eixt?
-		else if (ROOMEXIT(entity))
-			ch->do_look((RoomExit*)(entity));
+		else if (PORTAL(entity))
+			ch->do_look((Portal*)(entity));
 	}
 }
 
@@ -574,42 +574,42 @@ void command_kneel (Creature* ch, String[]) { ch->do_position (CreaturePosition:
 // interact
 
 void command_open (Creature* ch, String argv[]) {
-	RoomExit* exit;
-	if ((exit = ch->cl_find_exit (argv[0])) != NULL) {
-		if (exit->is_door ())
-			ch->do_open (exit);
+	Portal* portal;
+	if ((portal = ch->cl_find_portal (argv[0])) != NULL) {
+		if (portal->is_door ())
+			ch->do_open (portal);
 		else
-			*ch << StreamName(exit, DEFINITE, true) << " is not a door.\n";
+			*ch << StreamName(portal, DEFINITE, true) << " is not a door.\n";
 	}
 }
 
 void command_close (Creature* ch, String argv[]) {
-	RoomExit* exit;
-	if ((exit = ch->cl_find_exit (argv[0])) != NULL) {
-		if (exit->is_door ())
-			ch->do_close (exit);
+	Portal* portal;
+	if ((portal = ch->cl_find_portal (argv[0])) != NULL) {
+		if (portal->is_door ())
+			ch->do_close (portal);
 		else
-			*ch << StreamName(exit, DEFINITE, true) << " is not a door.\n";
+			*ch << StreamName(portal, DEFINITE, true) << " is not a door.\n";
 	}
 }
 
 void command_lock (Creature* ch, String argv[]) {
-	RoomExit* exit;
-	if ((exit = ch->cl_find_exit (argv[0])) != NULL) {
-		if (exit->is_door ())
-			ch->do_lock (exit);
+	Portal* portal;
+	if ((portal = ch->cl_find_portal (argv[0])) != NULL) {
+		if (portal->is_door ())
+			ch->do_lock (portal);
 		else
-			*ch << StreamName(exit, DEFINITE, true) << " is not a door.\n";
+			*ch << StreamName(portal, DEFINITE, true) << " is not a door.\n";
 	}
 }
 
 void command_unlock (Creature* ch, String argv[]) {
-	RoomExit* exit;
-	if ((exit = ch->cl_find_exit (argv[0])) != NULL) {
-		if (exit->is_door ())
-			ch->do_unlock (exit);
+	Portal* portal;
+	if ((portal = ch->cl_find_portal (argv[0])) != NULL) {
+		if (portal->is_door ())
+			ch->do_unlock (portal);
 		else
-			*ch << StreamName(exit, DEFINITE, true) << " is not a door.\n";
+			*ch << StreamName(portal, DEFINITE, true) << " is not a door.\n";
 	}
 }
 
@@ -729,7 +729,7 @@ void command_give (Creature* ch, String argv[])
 	}
 
 	// get target
-	Creature* target = ch->cl_find_character(argv[1]);
+	Creature* target = ch->cl_find_creature(argv[1]);
 	if (!target)
 		return;
 
@@ -820,9 +820,9 @@ void command_kick (Creature* ch, String argv[])
 		ch->do_kick (obj);
 		return;
 	}
-	RoomExit* exit = ch->cl_find_exit (argv[0]);
-	if (exit) {
-		ch->do_kick (exit);
+	Portal* portal = ch->cl_find_portal (argv[0]);
+	if (portal) {
+		ch->do_kick (portal);
 		return;
 	}
 }

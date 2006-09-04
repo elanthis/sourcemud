@@ -55,7 +55,7 @@ class SSettingsManager : public IManager
 	SETTING_INT(port)
 	SETTING_INT(max_per_host)
 	SETTING_INT(max_clients)
-	SETTING_INT(chars_per_account)
+	SETTING_INT(characters_per_account)
 	SETTING_INT(active_per_account)
 	SETTING_INT(auto_save)
 	SETTING_INT(activity_timeout)

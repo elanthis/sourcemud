@@ -54,7 +54,7 @@ namespace commands {
 		while (isspace (**c))
 			++ (*c);
 
-		// exit if blank
+		// portal if blank
 		if (**c == '\0') {
 			return NULL;
 		}

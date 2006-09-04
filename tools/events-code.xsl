@@ -11,7 +11,7 @@
 #include "mud/eventids.h"
 #include "mud/event.h"
 #include "mud/room.h"
-#include "mud/exit.h"
+#include "mud/portal.h"
 #include "mud/object.h"
 #include "mud/zone.h"
 #include "scriptix/function.h"

@@ -555,7 +555,7 @@ void TelnetModeNewCreature::create ()
 	// add to account
 	account->add_character(player->get_id());
 	account->save();
-	Log::Info << "Creature '" << player->get_id() << "' added to account '" << account->get_id() << "'";
+	Log::Info << "Character '" << player->get_id() << "' added to account '" << account->get_id() << "'";
 
 	// go to continue state
 	enter_state(STATE_CONTINUE);

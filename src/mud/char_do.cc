@@ -74,7 +74,7 @@ Creature::do_social (const Social* social, Entity* target, String adverb)
 		} else {
 			*this << "You can't do that without a target person or object.\n";
 		}
-	// target a character?
+	// target a creature?
 	} else if (social->person.self && CHARACTER(target)) {
 		*this << StreamParse(social->person.self, S("actor"), this, S("target"), target) << "\n";
 		if (PLAYER(target)) {
@@ -103,7 +103,7 @@ Creature::do_say (String text)
 	if (text.empty())
 		return;
 
-	// last character of text
+	// last creature of text
 	char last_char = text[text.size() - 1];
 
 	// you say...
@@ -257,31 +257,31 @@ Creature::do_look (const Object *obj, const ContainerType& type)
 }
 
 void
-Creature::do_look (RoomExit *exit)
+Creature::do_look (Portal *portal)
 {
-	assert (exit != NULL);
+	assert (portal != NULL);
 
 	// get target room
 	Room* target_room = NULL;
-	if (!exit->is_closed() && !exit->is_nolook())
-		target_room = exit->get_target_room();
+	if (!portal->is_closed() && !portal->is_nolook())
+		target_room = portal->get_target_room();
 
 	// basic description
-	if (exit->get_desc() && strlen(exit->get_desc()))
-		*this << StreamParse(exit->get_desc(), S("exit"), exit, S("actor"), this) << "  ";
+	if (portal->get_desc() && strlen(portal->get_desc()))
+		*this << StreamParse(portal->get_desc(), S("portal"), portal, S("actor"), this) << "  ";
 	else if (target_room == NULL)
-		*this << "There is nothing remarkable about " << StreamName(*exit, DEFINITE) << ".  ";
+		*this << "There is nothing remarkable about " << StreamName(*portal, DEFINITE) << ".  ";
 
 	// show direction
-	if (exit->get_dir().valid() && exit->get_name().get_text() != exit->get_dir().get_name())
-		*this << StreamName(*exit, DEFINITE, true) << " heads " << exit->get_dir().get_name() << ".  ";
+	if (portal->get_dir().valid() && portal->get_name().get_text() != portal->get_dir().get_name())
+		*this << StreamName(*portal, DEFINITE, true) << " heads " << portal->get_dir().get_name() << ".  ";
 
-	// closed exit?
-	if (exit->is_closed())
-		*this << StreamName(*exit, DEFINITE, true) << " is closed.";
+	// closed portal?
+	if (portal->is_closed())
+		*this << StreamName(*portal, DEFINITE, true) << " is closed.";
 	// open and is a door?
-	else if (exit->is_door())
-		*this << StreamName(*exit, DEFINITE, true) << " is open.";
+	else if (portal->is_door())
+		*this << StreamName(*portal, DEFINITE, true) << " is open.";
 
 	// finish off line
 	*this << "\n";
@@ -291,7 +291,7 @@ Creature::do_look (RoomExit *exit)
 		target_room->show(*this, this);
 
 	// send look event
-	Events::send_look(this->get_room(), this, exit);
+	Events::send_look(this->get_room(), this, portal);
 }
 
 class ActionChangePosition : public IAction
@@ -1014,13 +1014,13 @@ Creature::do_kick (Object *obj)
 	add_action(new ActionKick(this, obj));
 }
 
-class ActionOpenExit : public IAction
+class ActionOpenPortal : public IAction
 {
 	public:
-	ActionOpenExit (Creature* s_ch, RoomExit* s_exit) : IAction(s_ch), exit(s_exit) {}
+	ActionOpenPortal (Creature* s_ch, Portal* s_portal) : IAction(s_ch), portal(s_portal) {}
 
 	virtual uint get_rounds (void) const { return 1; }
-	virtual void describe (const StreamControl& stream) const { stream << "opening " << StreamName(exit, INDEFINITE); }
+	virtual void describe (const StreamControl& stream) const { stream << "opening " << StreamName(portal, INDEFINITE); }
 	virtual void finish (void) {}
 
 	virtual int start (void)
@@ -1028,60 +1028,60 @@ class ActionOpenExit : public IAction
 		// checks
 		if (!get_actor()->check_move())
 			return 1;
-		if (!exit->is_closed ()) {
-			*get_actor() << StreamName(*exit, DEFINITE, true) << " is already open.\n";
+		if (!portal->is_closed ()) {
+			*get_actor() << StreamName(*portal, DEFINITE, true) << " is already open.\n";
 			return 1;
 		}
 
 		// door?
-		if (!exit->is_door()) {
-			*get_actor() << StreamName(*exit, DEFINITE, true) << " is not a door.\n";
+		if (!portal->is_door()) {
+			*get_actor() << StreamName(*portal, DEFINITE, true) << " is not a door.\n";
 			return 1;
 		}
 
 		// locked?
-		if (exit->is_locked ()) {
-			*get_actor() << "You try to open " << StreamName(*exit, DEFINITE, true) << ", but it is locked.\n";
+		if (portal->is_locked ()) {
+			*get_actor() << "You try to open " << StreamName(*portal, DEFINITE, true) << ", but it is locked.\n";
 			if (get_actor()->get_room())
-				*get_actor()->get_room() << StreamIgnore(get_actor()) << StreamName(get_actor(), INDEFINITE, true) << " tries to open " << StreamName(exit, DEFINITE) << ", but it appears to be locked.\n";
+				*get_actor()->get_room() << StreamIgnore(get_actor()) << StreamName(get_actor(), INDEFINITE, true) << " tries to open " << StreamName(portal, DEFINITE) << ", but it appears to be locked.\n";
 
 			// event (you touch the door to see if its locked
-			Events::send_touch(get_actor()->get_room(), get_actor(), exit);
+			Events::send_touch(get_actor()->get_room(), get_actor(), portal);
 			return 0;
 		}
 
 		// open it
-		exit->open ();
-		*get_actor() << "You open " << StreamName(*exit, DEFINITE) << ".\n";
+		portal->open ();
+		*get_actor() << "You open " << StreamName(*portal, DEFINITE) << ".\n";
 		if (get_actor()->get_room())
-			*get_actor()->get_room() << StreamIgnore(get_actor()) << StreamName(get_actor(), INDEFINITE, true) << " opens " << StreamName(exit, DEFINITE) << ".\n";
+			*get_actor()->get_room() << StreamIgnore(get_actor()) << StreamName(get_actor(), INDEFINITE, true) << " opens " << StreamName(portal, DEFINITE) << ".\n";
 
 		// events
-		Events::send_touch(get_actor()->get_room(), get_actor(), exit);
-		Events::send_open(get_actor()->get_room(), get_actor(), exit);
+		Events::send_touch(get_actor()->get_room(), get_actor(), portal);
+		Events::send_open(get_actor()->get_room(), get_actor(), portal);
 
 		return 0;
 	}
 
 	private:
-	RoomExit* exit;
+	Portal* portal;
 };
 
 void
-Creature::do_open (RoomExit *exit)
+Creature::do_open (Portal *portal)
 {
-	assert (exit != NULL);
+	assert (portal != NULL);
 
-	add_action(new ActionOpenExit(this, exit));
+	add_action(new ActionOpenPortal(this, portal));
 }
 
-class ActionCloseExit : public IAction
+class ActionClosePortal : public IAction
 {
 	public:
-	ActionCloseExit (Creature* s_ch, RoomExit* s_exit) : IAction(s_ch), exit(s_exit) {}
+	ActionClosePortal (Creature* s_ch, Portal* s_portal) : IAction(s_ch), portal(s_portal) {}
 
 	virtual uint get_rounds (void) const { return 1; }
-	virtual void describe (const StreamControl& stream) const { stream << "closing " << StreamName(exit, INDEFINITE); }
+	virtual void describe (const StreamControl& stream) const { stream << "closing " << StreamName(portal, INDEFINITE); }
 	virtual void finish (void) {}
 
 	virtual int start (void)
@@ -1089,49 +1089,49 @@ class ActionCloseExit : public IAction
 		// checks
 		if (!get_actor()->check_move())
 			return 1;
-		if (!exit->is_closed()) {
-			*get_actor() << StreamName(*exit, DEFINITE, true) << " is already closed.\n";
+		if (!portal->is_closed()) {
+			*get_actor() << StreamName(*portal, DEFINITE, true) << " is already closed.\n";
 			return 1;
 		}
 
 		// door?
-		if (!exit->is_door()) {
-			*get_actor() << StreamName(*exit, DEFINITE, true) << " is not a door.\n";
+		if (!portal->is_door()) {
+			*get_actor() << StreamName(*portal, DEFINITE, true) << " is not a door.\n";
 			return 1;
 		}
 
 		// close it
-		exit->close ();
-		*get_actor() << "You close " << StreamName(*exit, DEFINITE) << ".\n";
+		portal->close ();
+		*get_actor() << "You close " << StreamName(*portal, DEFINITE) << ".\n";
 		if (get_actor()->get_room())
-			*get_actor()->get_room() << StreamIgnore(get_actor()) << StreamName(get_actor(), INDEFINITE, true) << " closes " << StreamName(exit, DEFINITE) << ".\n";
+			*get_actor()->get_room() << StreamIgnore(get_actor()) << StreamName(get_actor(), INDEFINITE, true) << " closes " << StreamName(portal, DEFINITE) << ".\n";
 
 		// events
-		Events::send_touch(get_actor()->get_room(), get_actor(), exit);
-		Events::send_close(get_actor()->get_room(), get_actor(), exit);
+		Events::send_touch(get_actor()->get_room(), get_actor(), portal);
+		Events::send_close(get_actor()->get_room(), get_actor(), portal);
 
 		return 0;
 	}
 
 	private:
-	RoomExit* exit;
+	Portal* portal;
 };
 
 void
-Creature::do_close (RoomExit *exit)
+Creature::do_close (Portal *portal)
 {
-	assert (exit != NULL);
+	assert (portal != NULL);
 
-	add_action(new ActionCloseExit(this, exit));
+	add_action(new ActionClosePortal(this, portal));
 }
 
-class ActionLockExit : public IAction
+class ActionLockPortal : public IAction
 {
 	public:
-	ActionLockExit (Creature* s_ch, RoomExit* s_exit) : IAction(s_ch), exit(s_exit) {}
+	ActionLockPortal (Creature* s_ch, Portal* s_portal) : IAction(s_ch), portal(s_portal) {}
 
 	virtual uint get_rounds (void) const { return 1; }
-	virtual void describe (const StreamControl& stream) const { stream << "locking " << StreamName(exit, INDEFINITE); }
+	virtual void describe (const StreamControl& stream) const { stream << "locking " << StreamName(portal, INDEFINITE); }
 	virtual void finish (void) {}
 
 	virtual int start (void)
@@ -1141,49 +1141,49 @@ class ActionLockExit : public IAction
 			return 1;
 
 		// door?
-		if (!exit->is_door()) {
-			*get_actor() << StreamName(*exit, DEFINITE, true) << " is not a door.\n";
+		if (!portal->is_door()) {
+			*get_actor() << StreamName(*portal, DEFINITE, true) << " is not a door.\n";
 			return 1;
 		}
 
 		// open?
-		if (!exit->is_closed()) {
-			*get_actor() << "You cannot lock " << StreamName(*exit, DEFINITE) << " while it's open.\n";
+		if (!portal->is_closed()) {
+			*get_actor() << "You cannot lock " << StreamName(*portal, DEFINITE) << " while it's open.\n";
 			return 1;
 		}
 
 		// lock it
-		exit->lock ();
-		*get_actor() << "You lock " << StreamName(*exit, DEFINITE) << ".\n";
+		portal->lock ();
+		*get_actor() << "You lock " << StreamName(*portal, DEFINITE) << ".\n";
 		if (get_actor()->get_room())
-			*get_actor()->get_room() << StreamIgnore(get_actor()) << StreamName(get_actor(), INDEFINITE, true) << " locks " << StreamName(exit, DEFINITE) << ".\n";
+			*get_actor()->get_room() << StreamIgnore(get_actor()) << StreamName(get_actor(), INDEFINITE, true) << " locks " << StreamName(portal, DEFINITE) << ".\n";
 
 		// events
-		Events::send_touch(get_actor()->get_room(), get_actor(), exit);
-		Events::send_lock(get_actor()->get_room(), get_actor(), exit);
+		Events::send_touch(get_actor()->get_room(), get_actor(), portal);
+		Events::send_lock(get_actor()->get_room(), get_actor(), portal);
 
 		return 0;
 	}
 
 	private:
-	RoomExit* exit;
+	Portal* portal;
 };
 
 void
-Creature::do_lock (RoomExit *exit)
+Creature::do_lock (Portal *portal)
 {
-	assert (exit != NULL);
+	assert (portal != NULL);
 
-	add_action(new ActionLockExit(this, exit));
+	add_action(new ActionLockPortal(this, portal));
 }
 
-class ActionUnlockExit : public IAction
+class ActionUnlockPortal : public IAction
 {
 	public:
-	ActionUnlockExit (Creature* s_ch, RoomExit* s_exit) : IAction(s_ch), exit(s_exit) {}
+	ActionUnlockPortal (Creature* s_ch, Portal* s_portal) : IAction(s_ch), portal(s_portal) {}
 
 	virtual uint get_rounds (void) const { return 1; }
-	virtual void describe (const StreamControl& stream) const { stream << "unlocking " << StreamName(exit, INDEFINITE); }
+	virtual void describe (const StreamControl& stream) const { stream << "unlocking " << StreamName(portal, INDEFINITE); }
 	virtual void finish (void) {}
 
 	virtual int start (void)
@@ -1193,55 +1193,55 @@ class ActionUnlockExit : public IAction
 			return 1;
 
 		// door?
-		if (!exit->is_door()) {
-			*get_actor() << StreamName(*exit, DEFINITE, true) << " is not a door.\n";
+		if (!portal->is_door()) {
+			*get_actor() << StreamName(*portal, DEFINITE, true) << " is not a door.\n";
 			return 1;
 		}
 
 		// open?
-		if (!exit->is_closed()) {
-			*get_actor() << "You cannot unlock " << StreamName(*exit, DEFINITE) << " while it's open.\n";
+		if (!portal->is_closed()) {
+			*get_actor() << "You cannot unlock " << StreamName(*portal, DEFINITE) << " while it's open.\n";
 			return 1;
 		}
 
 		// unlock it
-		exit->unlock ();
-		*get_actor() << "You unlock " << StreamName(*exit, DEFINITE) << ".\n";
+		portal->unlock ();
+		*get_actor() << "You unlock " << StreamName(*portal, DEFINITE) << ".\n";
 		if (get_actor()->get_room())
-			*get_actor()->get_room() << StreamIgnore(get_actor()) << StreamName(get_actor(), INDEFINITE, true) << " unlocks " << StreamName(exit, DEFINITE) << ".\n";
+			*get_actor()->get_room() << StreamIgnore(get_actor()) << StreamName(get_actor(), INDEFINITE, true) << " unlocks " << StreamName(portal, DEFINITE) << ".\n";
 
 		// events
-		Events::send_touch(get_actor()->get_room(), get_actor(), exit);
-		Events::send_unlock(get_actor()->get_room(), get_actor(), exit);
+		Events::send_touch(get_actor()->get_room(), get_actor(), portal);
+		Events::send_unlock(get_actor()->get_room(), get_actor(), portal);
 
 		return 0;
 	}
 
 	private:
-	RoomExit* exit;
+	Portal* portal;
 };
 
 void
-Creature::do_unlock (RoomExit *exit)
+Creature::do_unlock (Portal *portal)
 {
-	assert (exit != NULL);
+	assert (portal != NULL);
 
-	add_action(new ActionUnlockExit(this, exit));
+	add_action(new ActionUnlockPortal(this, portal));
 }
 
-class ActionUseExit : public IAction
+class ActionUsePortal : public IAction
 {
 	public:
-	ActionUseExit (Creature* s_ch, RoomExit* s_exit) : IAction(s_ch), exit(s_exit), rounds(0) {}
+	ActionUsePortal (Creature* s_ch, Portal* s_portal) : IAction(s_ch), portal(s_portal), rounds(0) {}
 
 	virtual uint get_rounds (void) const { return rounds; }
-	virtual void describe (const StreamControl& stream) const { stream << "kicking " << StreamName(exit, INDEFINITE); }
+	virtual void describe (const StreamControl& stream) const { stream << "kicking " << StreamName(portal, INDEFINITE); }
 	virtual void finish (void) {}
 
 	virtual int start (void)
 	{
-		// exit must be in same room
-		if (exit->get_room() != get_actor()->get_room())
+		// portal must be in same room
+		if (portal->get_room() != get_actor()->get_room())
 			return 1;
 
 		// set rounds 
@@ -1254,51 +1254,51 @@ class ActionUseExit : public IAction
 			return 1;
 
 		// closed?  drat
-		if (exit->is_closed()) {
-			*get_actor() << StreamName(*exit, DEFINITE, true) << " is closed.\n";
+		if (portal->is_closed()) {
+			*get_actor() << StreamName(*portal, DEFINITE, true) << " is closed.\n";
 			return 1;
 		}
 
 		// try the use script - if it returns false, don't do normal stuff below
-		if (!exit->get_use().empty()) {
-			Scriptix::Value result = exit->get_use().run(exit, get_actor());
+		if (!portal->get_use().empty()) {
+			Scriptix::Value result = portal->get_use().run(portal, get_actor());
 			if (result.is_false())
 				return 1;
 		}
 
 		// get target room
-		Room *new_room = exit->get_target_room ();
+		Room *new_room = portal->get_target_room ();
 		if (new_room == NULL) {
-			*get_actor() << StreamName(*exit, DEFINITE, true) << " does not lead anywhere.\n";
+			*get_actor() << StreamName(*portal, DEFINITE, true) << " does not lead anywhere.\n";
 			return 1;
 		}
 
 		// do go
-		get_actor()->enter (new_room, exit);
+		get_actor()->enter (new_room, portal);
 
 		return 0;
 	}
 
 	private:
-	RoomExit* exit;
+	Portal* portal;
 	uint rounds;
 };
 
 void
-Creature::do_go (RoomExit *exit)
+Creature::do_go (Portal *portal)
 {
-	assert (exit != NULL);
+	assert (portal != NULL);
 
-	add_action(new ActionUseExit(this, exit));
+	add_action(new ActionUsePortal(this, portal));
 }
 
-class ActionKickExit : public IAction
+class ActionKickPortal : public IAction
 {
 	public:
-	ActionKickExit (Creature* s_ch, RoomExit* s_exit) : IAction(s_ch), exit(s_exit) {}
+	ActionKickPortal (Creature* s_ch, Portal* s_portal) : IAction(s_ch), portal(s_portal) {}
 
 	virtual uint get_rounds (void) const { return 3; }
-	virtual void describe (const StreamControl& stream) const { stream << "kicking " << StreamName(exit, INDEFINITE); }
+	virtual void describe (const StreamControl& stream) const { stream << "kicking " << StreamName(portal, INDEFINITE); }
 	virtual void finish (void) {}
 
 	virtual int start (void)
@@ -1308,38 +1308,38 @@ class ActionKickExit : public IAction
 			return 1;
 
 		// door?
-		if (!exit->is_door()) {
-			*get_actor() << StreamName(*exit, DEFINITE, true) << " is not a door.\n";
+		if (!portal->is_door()) {
+			*get_actor() << StreamName(*portal, DEFINITE, true) << " is not a door.\n";
 			return 1;
 		}
 
 		// open?
-		if (!exit->is_closed()) {
-			*get_actor() << "You cannot kick " << StreamName(*exit, DEFINITE) << " while it's open.\n";
+		if (!portal->is_closed()) {
+			*get_actor() << "You cannot kick " << StreamName(*portal, DEFINITE) << " while it's open.\n";
 			return 1;
 		}
 
 		// kick it
-		exit->open();
-		*get_actor() << "You kick " << StreamName(*exit, DEFINITE) << " open.\n";
+		portal->open();
+		*get_actor() << "You kick " << StreamName(*portal, DEFINITE) << " open.\n";
 		if (get_actor()->get_room())
-			*get_actor()->get_room() << StreamIgnore(get_actor()) << StreamName(get_actor(), INDEFINITE, true) << " kicks " << StreamName(exit, DEFINITE) << " open.\n";
+			*get_actor()->get_room() << StreamIgnore(get_actor()) << StreamName(get_actor(), INDEFINITE, true) << " kicks " << StreamName(portal, DEFINITE) << " open.\n";
 
 		// events
-		Events::send_touch(get_actor()->get_room(), get_actor(), exit);
-		Events::send_kick(get_actor()->get_room(), get_actor(), exit);
+		Events::send_touch(get_actor()->get_room(), get_actor(), portal);
+		Events::send_kick(get_actor()->get_room(), get_actor(), portal);
 
 		return 0;
 	}
 
 	private:
-	RoomExit* exit;
+	Portal* portal;
 };
 
 void
-Creature::do_kick (RoomExit *exit)
+Creature::do_kick (Portal *portal)
 {
-	assert (exit != NULL);
+	assert (portal != NULL);
 
-	add_action(new ActionKickExit(this, exit));
+	add_action(new ActionKickPortal(this, portal));
 }

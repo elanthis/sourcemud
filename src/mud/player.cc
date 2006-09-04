@@ -521,7 +521,7 @@ Player::recalc (void)
 
 void
 Player::heartbeat(void) {
-	// do character update
+	// do creature update
 	Creature::heartbeat();
 
 	// timeout?  then die

@@ -243,9 +243,9 @@ Creature : public Entity, public IStreamSink
 	class Object* cl_find_object (String name, int type, bool silent = false);
 	class Object* cl_find_object (String name, class Object* container, ContainerType type, bool silent = false);
 
-	class Creature* cl_find_character (String name, bool silent = false);
-	class RoomExit* cl_find_exit (String name, bool silent = false);
-	/* cl_find_any looks for a character, then an object, then an exit.
+	class Creature* cl_find_creature (String name, bool silent = false);
+	class Portal* cl_find_portal (String name, bool silent = false);
+	/* cl_find_any looks for a creature, then an object, then an portal.
 	 * Object searching is the same as using cl_find_object w/ GOC_ANY. */
 	class Entity* cl_find_any (String name, bool silent = false);
 
@@ -263,7 +263,7 @@ Creature : public Entity, public IStreamSink
 	inline class Room* get_room (void) const { return location; }
 
 	// enter a room
-	bool enter (class Room*, class RoomExit *in_exit);
+	bool enter (class Room*, class Portal *in_portal);
 
 	// recalculate stuff
 	virtual void recalc_stats (void);
@@ -288,7 +288,7 @@ Creature : public Entity, public IStreamSink
 	void do_look (void);
 	void do_look (Creature *who);
 	void do_look (const class Object *what, const class ContainerType& how);
-	void do_look (class RoomExit *what);
+	void do_look (class Portal *what);
 
 	void do_move (int dir);
 
@@ -309,16 +309,16 @@ Creature : public Entity, public IStreamSink
 	void do_raise (class Object*);
 	void do_touch (class Object*);
 
-	void do_open (class RoomExit*);
-	void do_close (class RoomExit*);
-	void do_unlock (class RoomExit*);
-	void do_lock (class RoomExit*);
-	void do_kick (class RoomExit*);
+	void do_open (class Portal*);
+	void do_close (class Portal*);
+	void do_unlock (class Portal*);
+	void do_lock (class Portal*);
+	void do_kick (class Portal*);
 
 	void do_attack (class Creature*);
 	void do_kill (class Creature*);
 
-	void do_go (class RoomExit*);
+	void do_go (class Portal*);
 
 	// == DATA ITEMS ==
 	protected:

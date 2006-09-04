@@ -179,7 +179,7 @@ void
 Creature::save_hook (ScriptRestrictedWriter* writer)
 {
 	Entity::save_hook(writer);
-	Hooks::save_character(this, writer);
+	Hooks::save_creature(this, writer);
 }
 
 int
@@ -398,41 +398,41 @@ Creature::check_rt (void) {
 
 // move into a new room
 bool
-Creature::enter (Room *new_room, RoomExit *old_exit)
+Creature::enter (Room *new_room, Portal *old_portal)
 {
 	assert (new_room != NULL);
 
 	// already here
-	if (new_room->chars.has(this))
+	if (new_room->creatures.has(this))
 		return false;
 
-	// entering exit
-	RoomExit* enter_exit = NULL;
+	// entering portal
+	Portal* enter_portal = NULL;
 
-	// did we go thru an exit?
-	if (old_exit) {
+	// did we go thru an portal?
+	if (old_portal) {
 		// "You go..." message
-		*this << StreamParse(old_exit->get_go()).add(S("actor"), this).add(S("exit"), old_exit) << "\n";
+		*this << StreamParse(old_portal->get_go()).add(S("actor"), this).add(S("portal"), old_portal) << "\n";
 
 		// "So-and-so leaves thru..." message
 		if (get_room())
-			*get_room() << StreamIgnore(this) << StreamParse(old_exit->get_leaves()).add(S("actor"), this).add( S("exit"), old_exit) << "\n";
+			*get_room() << StreamIgnore(this) << StreamParse(old_portal->get_leaves()).add(S("actor"), this).add( S("portal"), old_portal) << "\n";
 
-		// opposite exit is our entrance
-		enter_exit = new_room->get_exit_by_dir(old_exit->get_dir().get_opposite());
+		// opposite portal is our entrance
+		enter_portal = new_room->get_portal_by_dir(old_portal->get_dir().get_opposite());
 	}
 
-	// valid exit?
-	if (enter_exit)
-		*new_room << StreamParse(enter_exit->get_enters()).add(S("actor"), this).add(S("exit"), enter_exit) << "\n";
+	// valid portal?
+	if (enter_portal)
+		*new_room << StreamParse(enter_portal->get_enters()).add(S("actor"), this).add(S("portal"), enter_portal) << "\n";
 	else
 		*new_room << StreamName(this, INDEFINITE, true) << " arrives.\n";
 
 	// move, look, event
-	Events::send_leave(get_room(), this, old_exit);
-	new_room->add_character (this);
+	Events::send_leave(get_room(), this, old_portal);
+	new_room->add_creature (this);
 	do_look();
-	Events::send_enter(get_room(), this, enter_exit);
+	Events::send_enter(get_room(), this, enter_portal);
 
 	return true;
 }
@@ -542,7 +542,7 @@ Creature::heartbeat (void)
 	}
 
 	// update handler
-	Hooks::character_heartbeat(this);
+	Hooks::creature_heartbeat(this);
 }
 
 void

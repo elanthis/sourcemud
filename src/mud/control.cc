@@ -324,10 +324,10 @@ ControlHandler::handle (int argc, String argv[])
 
 		Log::Info << "Account '" << account->get_id() << "' enabled over control interface";
 		*this << "+OK Account enabled\n";
-	// set max chars for an account
-	} else if (str_eq(argv[0], S("setmaxchars"))) {
+	// set max characters for an account
+	} else if (str_eq(argv[0], S("setmaxcharacters"))) {
 		if (argc < 3) {
-			*this << "+BADPARAM setmaxchars <account> <amount>\n";
+			*this << "+BADPARAM setmaxcharacters <account> <amount>\n";
 			return;
 		}
 
@@ -345,10 +345,10 @@ ControlHandler::handle (int argc, String argv[])
 			return;
 		}
 
-		account->set_max_chars(amount);
+		account->set_max_characters(amount);
 		account->save();
 
-		Log::Info << "Account '" << account->get_id() << "' has max chars set to " << amount << " over control interface";
+		Log::Info << "Account '" << account->get_id() << "' has max characters set to " << amount << " over control interface";
 		*this << "+OK Account updated\n";
 	// set max active for an account
 	} else if (str_eq(argv[0], S("setmaxactive"))) {
@@ -392,7 +392,7 @@ ControlHandler::handle (int argc, String argv[])
 		*this << "-ID=" << account->get_id() << "\n";
 		*this << "-NAME=" << account->get_name() << "\n";
 		*this << "-EMAIL=" << account->get_email() << "\n";
-		*this << "-MAXCHARS=" << account->get_max_chars() << "\n";
+		*this << "-MAXCHARS=" << account->get_max_characters() << "\n";
 		*this << "-MAXACTIVE=" << account->get_max_active() << "\n";
 		*this << "-DISABLED=" << (account->is_disabled() ? S("YES") : S("NO")) << "\n";
 		*this << "-CHARACTERS=" << implode(account->get_char_list(), ',') << "\n";

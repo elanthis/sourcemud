@@ -34,8 +34,8 @@
 		</actor>
 		<arg>
 			<name>target</name>
-			<type>RoomExit</type>
-			<doc>The exit the character entered from.</doc>
+			<type>Portal</type>
+			<doc>The portal the character entered from.</doc>
 		</arg>
 		<room>
 			<doc>The room which was entered by the actor.</doc>
@@ -60,8 +60,8 @@
 		</actor>
 		<arg>
 			<name>target</name>
-			<type>RoomExit</type>
-			<doc>The exit the character left through.</doc>
+			<type>Portal</type>
+			<doc>The portal the character left through.</doc>
 		</arg>
 		<room>
 			<doc>The room which was left by the actor.</doc>

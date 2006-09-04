@@ -74,7 +74,7 @@ namespace {
 		SETTING_INT(port, 'P', "port", "port", 4545)
 		SETTING_INT(max_per_host, 0, NULL, "max_per_host", 5)
 		SETTING_INT(max_clients, 0, NULL, "max_clients", 1000)
-		SETTING_INT(chars_per_account, 0, NULL, "acct_char_limit", 3)
+		SETTING_INT(characters_per_account, 0, NULL, "acct_char_limit", 3)
 		SETTING_INT(active_per_account, 0, NULL, "acct_play_limit", 1)
 		SETTING_INT(auto_save, 0, NULL, "auto_save", 15)
 		{ NULL, 0, NULL, NULL, NULL, NULL, NULL, 0, S(""), false }

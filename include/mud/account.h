@@ -43,7 +43,7 @@ class Account : public Cleanup
 	void set_passphrase (String s_pass);
 
 	// character list
-	inline const StringList& get_char_list (void) const { return chars; }
+	inline const StringList& get_char_list (void) const { return characters; }
 	void add_character (String name);
 	void del_character (String name);
 
@@ -57,10 +57,10 @@ class Account : public Cleanup
 	inline void dec_active (void) { --active; }
 
 	// limits
-	uint get_max_chars (void) const;
+	uint get_max_characters (void) const;
 	uint get_max_active (void) const;
 	inline uint get_timeout (void) const { return timeout; }
-	inline void set_max_chars (uint value) { maxchars = value; }
+	inline void set_max_characters (uint value) { maxcharacters = value; }
 	inline void set_max_active (uint value) { maxactive = value; }
 	inline void set_timeout (uint value) { timeout = value; }
 	inline bool is_disabled (void) const { return flags.disabled; }
@@ -84,10 +84,10 @@ class Account : public Cleanup
 	String email;
 	String pass;
 	uint active;
-	uint maxchars; // 0 means default
+	uint maxcharacters; // 0 means default
 	uint maxactive; // 0 means default
 	uint timeout; // 0 means default
-	StringList chars;
+	StringList characters;
 	AccessList access;
 
 	struct AccountFlags {

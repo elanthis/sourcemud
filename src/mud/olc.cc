@@ -66,7 +66,7 @@ namespace OLC {
 	{
 		// init
 		entity = NULL;
-		enum { tNone, tPlayer, tCreature, tNPC, tObject, tRoom, tExit, tZone } type = tNone;
+		enum { tNone, tPlayer, tCreature, tNPC, tObject, tRoom, tPortal, tZone } type = tNone;
 
 		// is name comprised of 'room' or 'zone' or whatever?
 		if (str_eq(tname, S("room")))
@@ -77,8 +77,8 @@ namespace OLC {
 			type = tPlayer;
 		else if (str_eq(tname, S("npc")))
 			type = tNPC;
-		else if (str_eq(tname, S("exit")))
-			type = tExit;
+		else if (str_eq(tname, S("portal")))
+			type = tPortal;
 		else if (str_eq(tname, S("object")))
 			type = tObject;
 
@@ -87,22 +87,22 @@ namespace OLC {
 				return false;
 		}
 
-		// find character?
+		// find creature?
 		if (type == tNone || type == tCreature) {
-			Creature* character = builder->cl_find_character (name, true);
-			if (character != NULL) {
-				entity = character;
+			Creature* creature = builder->cl_find_creature (name, true);
+			if (creature != NULL) {
+				entity = creature;
 				return true;
 			}
 		}
 		// limit to NPCs?
 		if (type == tNPC) {
-			Creature* character = builder->cl_find_character (name);
-			if (NPC(character)) {
-				entity = character;
+			Creature* creature = builder->cl_find_creature (name);
+			if (NPC(creature)) {
+				entity = creature;
 				return true;
-			} else if (character != NULL) {
-				*builder << "Creature " << StreamName(character) << " is not an NPC.\n";
+			} else if (creature != NULL) {
+				*builder << "Creature " << StreamName(creature) << " is not an NPC.\n";
 				return false;
 			}
 		}
@@ -127,26 +127,26 @@ namespace OLC {
 			}
 		}
 
-		// find exit?
+		// find portal?
 		if (type == tNone) {
-			RoomExit* exit = builder->cl_find_exit (name, true);
-			if (exit != NULL) {
-				entity = exit;
+			Portal* portal = builder->cl_find_portal (name, true);
+			if (portal != NULL) {
+				entity = portal;
 				return true;
 			}
 		}
-		if (type == tExit) {
+		if (type == tPortal) {
 			Room* room = builder->get_room();
 			if (!room) {
 				*builder << "You are not in a room.\n";
 				return false;
 			}
-			RoomExit* exit = builder->cl_find_exit (name, true);
-			if (exit == NULL) {
-				*builder << "Cannot find exit '" << name << "'.\n";
+			Portal* portal = builder->cl_find_portal (name, true);
+			if (portal == NULL) {
+				*builder << "Cannot find portal '" << name << "'.\n";
 				return false;
 			}
-			entity = exit;
+			entity = portal;
 			return true;
 		}
 
@@ -244,7 +244,7 @@ OLC_BEGIN_TYPE(Npc)
 	OLC_END_ATTR
 OLC_END_TYPE
 
-OLC_BEGIN_TYPE(RoomExit)
+OLC_BEGIN_TYPE(Portal)
 OLC_END_TYPE
 		
 		// ----- END OLC BLOCK -----

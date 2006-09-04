@@ -14,7 +14,7 @@
 
 SAccountManager AccountManager;
 
-Account::Account (String s_id) : id(s_id), active(0), maxchars(0), maxactive(0)
+Account::Account (String s_id) : id(s_id), active(0), maxcharacters(0), maxactive(0)
 {
 	flags.disabled = false;
 }
@@ -42,12 +42,12 @@ Account::save (void) const
 	writer.attr(S("account"), S("name"), name);
 	writer.attr(S("account"), S("email"), email);
 	writer.attr(S("account"), S("passphrase"), pass);
-	for (StringList::const_iterator i = chars.begin(); i != chars.end(); ++i)
+	for (StringList::const_iterator i = characters.begin(); i != characters.end(); ++i)
 		writer.attr(S("account"), S("character"), *i);
 	if (flags.disabled)
 		writer.attr(S("account"), S("disabled"), "yes");
-	if (maxchars > 0)
-		writer.attr(S("account"), S("maxchars"), maxchars);
+	if (maxcharacters > 0)
+		writer.attr(S("account"), S("maxcharacters"), maxcharacters);
 	if (maxactive > 0)
 		writer.attr(S("account"), S("maxactive"), maxactive);
 	if (timeout > 0)
@@ -92,11 +92,11 @@ void
 Account::add_character (String name)
 {
 	// not already in list?
-	if (find(chars.begin(), chars.end(), name) != chars.end())
+	if (find(characters.begin(), characters.end(), name) != characters.end())
 		return;
 
 	// ok then, add it
-	chars.push_back(name);
+	characters.push_back(name);
 }
 
 // remove a character
@@ -105,26 +105,26 @@ Account::del_character (String name)
 {
 	// find in list
 	StringList::iterator i;
-	if ((i = find(chars.begin(), chars.end(), name)) == chars.end())
+	if ((i = find(characters.begin(), characters.end(), name)) == characters.end())
 		return;
 
 	// ok then, remove it
-	chars.erase(i);
+	characters.erase(i);
 }
 
-// get max chars allowed
+// get max characters allowed
 uint
-Account::get_max_chars (void) const
+Account::get_max_characters (void) const
 {
 	// explicit?
-	if (maxchars > 0)
-		return maxchars;
+	if (maxcharacters > 0)
+		return maxcharacters;
 
 	// default
-	return SettingsManager.get_chars_per_account();
+	return SettingsManager.get_characters_per_account();
 }
 
-// get max active chars allowed
+// get max active characters allowed
 uint
 Account::get_max_active (void) const
 {
@@ -248,10 +248,10 @@ SAccountManager::get (String in_name)
 		FO_ATTR("account", S("passphrase"))
 			account->pass = node.get_data();
 		FO_ATTR("account", S("character"))
-			account->chars.push_back(node.get_data());
-		FO_ATTR("account", S("maxchars"))
+			account->characters.push_back(node.get_data());
+		FO_ATTR("account", S("maxcharacters"))
 			FO_TYPE_ASSERT(INT);
-			account->maxchars = tolong(node.get_data());
+			account->maxcharacters = tolong(node.get_data());
 		FO_ATTR("account", S("maxactive"))
 			FO_TYPE_ASSERT(INT);
 			account->maxactive = tolong(node.get_data());

@@ -22,7 +22,7 @@
     #include "mud/race.h"
     #include "common/rand.h"
     #include "mud/object.h"
-    #include "mud/exit.h"
+    #include "mud/portal.h"
     #include "mud/creature.h"
     #include "mud/hooks.h"
     #include "common/strbuf.h"
@@ -92,7 +92,7 @@ if (value == false) { ... }</example>
       <name>CEXIT</name>
 			<expr>S(CEXIT)</expr>
       <type>String</type>
-      <doc>Color code for exits.</doc>
+      <doc>Color code for portals.</doc>
     </global>
     <global>
       <name>CTALK</name>
@@ -1259,11 +1259,11 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
       <name>doGo</name>
       <invoke>do_go</invoke>
       <arg>
-        <name>exit</name>
-        <type>RoomExit</type>
-        <doc>Exit to use.</doc>
+        <name>portal</name>
+        <type>Portal</type>
+        <doc>Portal to use.</doc>
       </arg>
-      <doc>The character will attempt to use the given exit.</doc>
+      <doc>The character will attempt to use the given portal.</doc>
     </method>
     <method>
       <name>attack</name>
@@ -1341,7 +1341,7 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
     </method>
     <method>
       <name>clFindCreature</name>
-      <invoke>cl_find_character</invoke>
+      <invoke>cl_find_creature</invoke>
       <return>
         <type>Creature</type>
         <doc>The found player or <link type="NPC"/>, or nil if not found.</doc>
@@ -1359,30 +1359,30 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
       <doc>This function searched for the named character (<link type="NPC"/> or <link type="Player"/>) in the current room.  The function can handle arbitrary names, like "the wolf" or "second thug."</doc>
     </method>
     <method>
-      <name>clFindExit</name>
-      <invoke>cl_find_exit</invoke>
+      <name>clFindPortal</name>
+      <invoke>cl_find_portal</invoke>
       <return>
-        <type>RoomExit</type>
-        <doc>The found exit, or nil if not found.</doc>
+        <type>Portal</type>
+        <doc>The found portal, or nil if not found.</doc>
       </return>
       <arg>
         <name>name</name>
         <type>String</type>
-        <doc>Name of exit to look for.  Can include flavour text and numeric indexes.</doc>
+        <doc>Name of portal to look for.  Can include flavour text and numeric indexes.</doc>
       </arg>
       <arg>
         <name>silent</name>
         <type>Boolean</type>
         <doc>Set to true if not "cannot find" message should be printed to the player.</doc>
       </arg>
-      <doc>Searches the room for the named exit.</doc>
+      <doc>Searches the room for the named portal.</doc>
     </method>
     <method>
       <name>clFindAny</name>
       <invoke>cl_find_any</invoke>
       <return>
         <type>Entity</type>
-        <doc>The found <link type="Object"/>, <link type="Creature"/>, or Exit, or nil if not found.</doc>
+        <doc>The found <link type="Object"/>, <link type="Creature"/>, or Portal, or nil if not found.</doc>
       </return>
       <arg>
         <name>name</name>
@@ -1711,11 +1711,11 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
         <type>Room</type>
       </arg>
       <arg>
-        <name>exit</name>
-        <type>RoomExit</type>
+        <name>portal</name>
+        <type>Portal</type>
         <nullok/>
       </arg>
-      <doc>Moves the character to the specified room.  The exit they enter in from will be the given exit.</doc>
+      <doc>Moves the character to the specified room.  The portal they enter in from will be the given portal.</doc>
     </method>
     <method>
       <name>room</name>
@@ -2099,23 +2099,23 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
       </return>
     </method>
     <method>
-      <name>canUseExit</name>
-      <invoke>can_use_exit</invoke>
+      <name>canUsePortal</name>
+      <invoke>can_use_portal</invoke>
       <arg>
-        <name>exit</name>
-        <type>RoomExit</type>
+        <name>portal</name>
+        <type>Portal</type>
       </arg>
       <return>
         <type>Boolean</type>
-        <doc>Returns <link global="true"/> if the exit is usable by the NPC, or <link global="false"/> otherwise.</doc>
+        <doc>Returns <link global="true"/> if the portal is usable by the NPC, or <link global="false"/> otherwise.</doc>
       </return>
     </method>
     <method>
-      <name>goRandomExit</name>
-      <invoke>go_random_exit</invoke>
+      <name>goRandomPortal</name>
+      <invoke>go_random_portal</invoke>
       <return>
         <type>Boolean</type>
-        <doc>Returns <link global="false"/> if no exit could be followed, otherwise <link global="true"/>.</doc>
+        <doc>Returns <link global="false"/> if no portal could be followed, otherwise <link global="true"/>.</doc>
       </return>
       <code/>
     </method>
@@ -2512,7 +2512,7 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
         <type>String</type>
       </arg>
       <doc>Locate a character, searching for a match against name.</doc>
-      <invoke>find_character</invoke>
+      <invoke>find_creature</invoke>
     </method>
     <method>
       <name>characters</name>
@@ -2524,8 +2524,8 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
         Room* room;
       </iterdata>
       <iternext><![CDATA[
-        if (index < room->chars.size()) {
-          _iterval = room->chars[index];
+        if (index < room->creatures.size()) {
+          _iterval = room->creatures[index];
           ++index;
           return true;
         } else {
@@ -2543,7 +2543,7 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
         <type>Creature</type>
       </arg>
       <doc>Adds the given character to the room's floor.</doc>
-      <invoke>add_character</invoke>
+      <invoke>add_creature</invoke>
     </method>
 
     <!-- Object management -->
@@ -2591,21 +2591,21 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
       <invoke>add_object</invoke>
     </method>
 
-    <!-- exits -->
+    <!-- portals -->
     <method>
-      <name>findExit</name>
+      <name>findPortal</name>
       <return>
-        <type>RoomExit</type>
+        <type>Portal</type>
       </return>
       <arg>
         <name>name</name>
         <type>String</type>
       </arg>
-      <doc>Locate an exit, searching for a match against name.</doc>
-      <invoke>find_exit</invoke>
+      <doc>Locate an portal, searching for a match against name.</doc>
+      <invoke>find_portal</invoke>
     </method>
     <method>
-      <name>exits</name>
+      <name>portals</name>
       <return>
         <type>Iterator</type>
       </return>
@@ -2614,8 +2614,8 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
         Room* room;
       </iterdata>
       <iternext><![CDATA[
-        if (index < room->exits.size()) {
-          _iterval = room->exits[index];
+        if (index < room->portals.size()) {
+          _iterval = room->portals[index];
           ++index;
           return true;
         } else {
@@ -2624,7 +2624,7 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
         }
       ]]></iternext>
       <code>_return = new _iterator(); _return->index = 0; _return->room = _self;</code>
-      <doc>Returns an iterator for all the exits in the room.</doc>
+      <doc>Returns an iterator for all the portals in the room.</doc>
     </method>
 
     <!-- Output a message -->
@@ -2767,11 +2767,11 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
     <doc>Find and return the specified room if it exists.</doc>
   </function>
 
-  <!-- Room Exit -->
+  <!-- Room Portal -->
   <type>
-    <name>RoomExit</name>
+    <name>Portal</name>
     <parent>Entity</parent>
-    <doc><link type="RoomExit"/>'s represent all of the various kinds of exits that may exist in a room.</doc>
+    <doc><link type="Portal"/>'s represent all of the various kinds of portals that may exist in a room.</doc>
 
     <method>
       <name>setName</name>
@@ -2797,17 +2797,17 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
       <name>getTargetRoom</name>
       <return>
         <type>Room</type>
-        <doc>Room that the exit leads to.</doc>
+        <doc>Room that the portal leads to.</doc>
       </return>
       <invoke>get_target_room</invoke>
     </method>
     <method>
-      <name>getTargetExit</name>
+      <name>getTargetPortal</name>
       <return>
-        <type>RoomExit</type>
-        <doc>Linked exit, or nil if there is no linked exit.</doc>
+        <type>Portal</type>
+        <doc>Linked portal, or nil if there is no linked portal.</doc>
       </return>
-      <invoke>get_target_exit</invoke>
+      <invoke>get_target_portal</invoke>
     </method>
 
     <!-- usage info -->
@@ -2824,7 +2824,7 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
       <return>
         <type>Integer</type>
       </return>
-      <doc>The detail parameter specifies what flavour text is added to the exit's usage.  For example, a climbable exit may be "climb up" or "climb down" or "climb through" or so on.</doc>
+      <doc>The detail parameter specifies what flavour text is added to the portal's usage.  For example, a climbable portal may be "climb up" or "climb down" or "climb through" or so on.</doc>
       <code><![CDATA[_return = _self->get_usage().get_value();]]></code>
     </method>
     <method>
@@ -2832,25 +2832,25 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
       <return>
         <type>Integer</type>
       </return>
-      <doc>Returns the direction the exit heads in, such as north or southeast.</doc>
+      <doc>Returns the direction the portal heads in, such as north or southeast.</doc>
       <code><![CDATA[_return = _self->get_dir().get_value();]]></code>
     </method>
 
     <!-- states -->
     <method>
       <name>open</name>
-      <doc>Opens the exit.</doc>
+      <doc>Opens the portal.</doc>
     </method>
     <method>
       <name>close</name>
-      <doc>Closes the exit.</doc>
+      <doc>Closes the portal.</doc>
     </method>
     <method>
       <name>isClosed</name>
       <return>
         <type>Boolean</type>
       </return>
-      <doc>Return true if the exit is closed.</doc>
+      <doc>Return true if the portal is closed.</doc>
       <invoke>is_closed</invoke>
     </method>
     <method>
@@ -2858,7 +2858,7 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
       <return>
         <type>Boolean</type>
       </return>
-      <doc>Return true if the exit is locked.</doc>
+      <doc>Return true if the portal is locked.</doc>
       <invoke>is_locked</invoke>
     </method>
     <method>
@@ -2866,34 +2866,34 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
       <return>
         <type>Boolean</type>
       </return>
-      <doc>Return true if the exit is hidden.</doc>
+      <doc>Return true if the portal is hidden.</doc>
       <invoke>is_hidden</invoke>
     </method>
     <method>
       <name>isStandard</name>
       <return>
         <type>Boolean</type>
-        <doc><link global="true">True</link> if the exit has a standard name, and <link global="false">false</link> otherwise.</doc>
+        <doc><link global="true">True</link> if the portal has a standard name, and <link global="false">false</link> otherwise.</doc>
       </return>
-      <doc>Standard exits are exists which have no custom name.  That is, their name is the same as their direction.  These are usually exits such as "north" and "southeast."</doc>
+      <doc>Standard portals are exists which have no custom name.  That is, their name is the same as their direction.  These are usually portals such as "north" and "southeast."</doc>
       <invoke>is_standard</invoke>
     </method>
     <method>
       <name>isNolook</name>
       <return>
         <type>Boolean</type>
-        <doc><link global="true">True</link> if the exit cannot be looked through.</doc>
+        <doc><link global="true">True</link> if the portal cannot be looked through.</doc>
       </return>
-      <doc>Normally, when an exit is looked at, the <link type="Room">room</link> the exit leads to can be seen.  When the nolook flag is enabled, however, the room is not displayed.</doc>
+      <doc>Normally, when an portal is looked at, the <link type="Room">room</link> the portal leads to can be seen.  When the nolook flag is enabled, however, the room is not displayed.</doc>
       <invoke>is_nolook</invoke>
     </method>
     <method>
       <name>isDisabled</name>
       <return>
         <type>Boolean</type>
-        <doc><link global="true">True</link> if the exit is disabled and unusable.</doc>
+        <doc><link global="true">True</link> if the portal is disabled and unusable.</doc>
       </return>
-      <doc>Disabled exits cannot be used.  Additionally, they are automatically hidden.  Note that the <link method="RoomExit.isHidden">is_hidden()</link> method will not reflect this fact, as it only checks if the hidden flag is explicitly set.</doc>
+      <doc>Disabled portals cannot be used.  Additionally, they are automatically hidden.  Note that the <link method="Portal.isHidden">is_hidden()</link> method will not reflect this fact, as it only checks if the hidden flag is explicitly set.</doc>
       <invoke>is_disabled</invoke>
     </method>
     <method>
@@ -2901,7 +2901,7 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
       <arg>
         <name>state</name>
         <type>Boolean</type>
-        <doc><link global="true">True</link> if the exit should be disabled, <link global="false">false</link> if it should be enabled as normal.</doc>
+        <doc><link global="true">True</link> if the portal should be disabled, <link global="false">false</link> if it should be enabled as normal.</doc>
       </arg>
       <invoke>set_disabled</invoke>
     </method>

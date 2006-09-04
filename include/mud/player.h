@@ -150,7 +150,7 @@ class Player : public Creature
 
 	// handling "player states"
 	int start (); // start the session
-	void quit (); // save and exit
+	void quit (); // save and portal
 
 	// player-only actions
 	void do_tell (Player* who, String what);

@@ -1,3 +1,8 @@
+2006-09-04 00:04:41  Sean Middleditch <elanthis@awesomeplay.com>
+
+  * Renamed RoomExit and related types to Portal.
+  * Fixed some Character/Creature conversion mistakes.
+
 2006-09-03 23:45:53  Sean Middleditch <elanthis@awesomeplay.com>
 
   * Remove differentiation between attributes and keyed attributes

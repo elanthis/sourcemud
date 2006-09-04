@@ -16,9 +16,9 @@ function checkPortalTime()
 }
 
 // open the portal and create object
-function openPortal(room, exit)
+function openPortal(room, portal)
 {
-	exit.setDisabled(false);
+	portal.setDisabled(false);
 
 	var obj = createObjectFromBlueprint(portal_tag_name);
 	if (obj) {
@@ -30,9 +30,9 @@ function openPortal(room, exit)
 }
 
 // close the portal and destroy object
-function closePortal(room, exit)
+function closePortal(room, portal)
 {
-	exit.setDisabled(true);
+	portal.setDisabled(true);
 
 	foreach (var entity in getEntitiesByTag(portal_tag))
 		entity.remove();
@@ -51,14 +51,14 @@ function updatePortal()
 	if (!room)
 		return;
 
-	// get the correct exit; bail if not found
-	//exit = room.getExitById(portal_exit_id);
-	var exit = nil;
-	if (!exit)
+	// get the correct portal; bail if not found
+	//portal = room.getPortalById(portal_portal_id);
+	var portal = nil;
+	if (!portal)
 		return;
 
-	// check whether exit is already disabled
-	var open = !exit.isDisabled();
+	// check whether portal is already disabled
+	var open = !portal.isDisabled();
 
 	// current state same as what it should be? bail
 	if (open == checkPortalTime())
@@ -66,9 +66,9 @@ function updatePortal()
 
 	// open or close the portal
 	if (!open)
-		openPortal(room, exit);
+		openPortal(room, portal);
 	else
-		closePortal(room, exit);
+		closePortal(room, portal);
 }
 
 // force destruction of the portal
@@ -79,14 +79,14 @@ function destroyPortal()
 	if (!room)
 		return;
 
-	// get the correct exit; bail if not found
-	//exit = room.getExitById(portal_exit_id);
-	var exit = nil;
-	if (!exit)
+	// get the correct portal; bail if not found
+	//portal = room.getPortalById(portal_portal_id);
+	var portal = nil;
+	if (!portal)
 		return;
 
 	// and close
-	closePortal(room, exit);
+	closePortal(room, portal);
 }
 
 // called when the server initially boots to set the proper portal status

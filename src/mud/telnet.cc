@@ -118,7 +118,7 @@ String color_type_names[] = {
 	S("item"),
 	S("special"),
 	S("admin"),
-	S("exit"),
+	S("portal"),
 	S("stat"),
 	S("statvbad"),
 	S("statbad"),
@@ -630,7 +630,7 @@ TelnetHandler::in_handle (char* buffer, size_t size)
 					break;
 				}
 
-				// only printable characters thank you
+				// only printable creatures thank you
 				if (c == '\n' || isprint (c)) {
 					// need to grow?
 					if (in_cnt + 2 >= in_size) {
@@ -645,7 +645,7 @@ TelnetHandler::in_handle (char* buffer, size_t size)
 					input.data()[in_cnt ++] = c;
 					input.data()[in_cnt] = '\0';
 
-					// echo back normal characters
+					// echo back normal creatures
 					if (c != '\n' && io_flags.do_echo)
 						send_data (1, c);
 				// basic backspace support
@@ -1089,7 +1089,7 @@ TelnetHandler::send_iac (uint count, ...)
 			bc = 0;
 		}
 
-		// doube up on IAC character
+		// doube up on IAC creature
 		if (byte == IAC)
 			buffer[bc ++] = IAC;
 		if (bc >= 16) {
@@ -1124,7 +1124,7 @@ TelnetHandler::send_data (uint count, ...)
 			bc = 0;
 		}
 
-		// doube up on IAC character
+		// doube up on IAC creature
 		if (byte == IAC)
 			buffer[bc ++] = IAC;
 		if (bc >= 16) {

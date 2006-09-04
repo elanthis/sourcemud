@@ -1,23 +1,23 @@
 <?xml version="1.0"?>
 <hooks>
-	<hook name="save_character">
-		<arg name="this" type="Character" />
+	<hook name="save_creature">
+		<arg name="this" type="Creature" />
 		<arg name="writer" type="ScriptRestrictedWriter" />
-		<doc>Called whenever a Character is saved to disk.  Additional properties may be saved to the writer.</doc>
+		<doc>Called whenever a Creature is saved to disk.  Additional properties may be saved to the writer.</doc>
 	</hook>
-	<hook name="character_heartbeat">
-		<arg name="this" type="Character" />
-		<doc>Called once per heartbeat for every Character.</doc>
+	<hook name="creature_heartbeat">
+		<arg name="this" type="Creature" />
+		<doc>Called once per heartbeat for every Creature.</doc>
 	</hook>
 	<hook name="save_entity">
 		<arg name="this" type="Entity" />
 		<arg name="writer" type="ScriptRestrictedWriter" />
 		<doc>Called whenever any Entity is saved to disk.  Additional properties may be saved to the writer.</doc>
 	</hook>
-	<hook name="save_exit">
-		<arg name="this" type="RoomExit" />
+	<hook name="save_portal">
+		<arg name="this" type="Portal" />
 		<arg name="writer" type="ScriptRestrictedWriter" />
-		<doc>Called whenever a RoomExit is saved to disk.  Additional properties may be saved to the writer.</doc>
+		<doc>Called whenever a Portal is saved to disk.  Additional properties may be saved to the writer.</doc>
 	</hook>
 	<hook name="ready">
 		<doc>This hook is called once when the engine first initialized and the game is ready to begin.</doc>
@@ -32,7 +32,7 @@
 	</hook>
 	<hook name="npc_death">
 		<arg name="this" type="Npc" />
-		<arg name="killer" type="Character" />
+		<arg name="killer" type="Creature" />
 		<doc>This hook is called whenever any Npc dies.</doc>
 	</hook>
 	<hook name="npc_heartbeat">
@@ -62,13 +62,13 @@
 		<arg name="this" type="Player" />
 		<doc>Invoked when a player first logins in.  A primary use of this hook is to set a starting Room for the player.</doc>
 	</hook>
-	<hook name="create_character">
+	<hook name="create_creature">
 		<arg name="this" type="Player" />
-		<doc>Invoked when a user attempts to create a new character.  The hook should begin a character creation process.</doc>
+		<doc>Invoked when a user attempts to create a new creature.  The hook should begin a creature creation process.</doc>
 	</hook>
 	<hook name="player_death">
 		<arg name="this" type="Player" />
-		<arg name="killer" type="Character" />
+		<arg name="killer" type="Creature" />
 		<doc>Invoked whenever a Player dies.</doc>
 	</hook>
 	<hook name="player_heartbeat">
@@ -86,8 +86,8 @@
 	</hook>
 	<hook name="show_room">
 		<arg name="this" type="Room" />
-		<arg name="viewer" type="Character" />
-		<doc>Invoked whenever a room description is displayed to a character.  This hook is called just after the description display, and may be used to display additional information about a room.</doc>
+		<arg name="viewer" type="Creature" />
+		<doc>Invoked whenever a room description is displayed to a creature.  This hook is called just after the description display, and may be used to display additional information about a room.</doc>
 	</hook>
 	<hook name="save_zone">
 		<arg name="this" type="Zone" />

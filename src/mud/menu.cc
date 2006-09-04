@@ -56,11 +56,11 @@ TelnetModeMainMenu::show_main ()
 }
 
 void
-TelnetModeMainMenu::show_chars ()
+TelnetModeMainMenu::show_characters()
 {
 	show_banner();
 
-	*get_handler() << "Your available characaters:\n\n";
+	*get_handler() << "Your available characters:\n\n";
 
 	if (account->get_char_list().empty()) {
 		*get_handler() << " 1) Return to main menu\n";
@@ -127,11 +127,11 @@ TelnetModeMainMenu::process (char* line)
 			// play?
 			} else if (input == "1" || prefix_match("play", input)) {
 				state = STATE_PLAY_SELECT;
-				show_chars();
+				show_characters();
 			// create?
 			} else if (input == "2" || prefix_match("create", input)) {
 				// check max
-				if (account->get_char_list().size() >= account->get_max_chars()) {
+				if (account->get_char_list().size() >= account->get_max_characters()) {
 					show_main();
 					*get_handler() << "You already have the maximum number of characters allowed.\n\n";
 				} else {
@@ -147,9 +147,9 @@ TelnetModeMainMenu::process (char* line)
 			// delete?
 			} else if (input == "4" || prefix_match("delete", input)) {
 				state = STATE_DELETE_SELECT;
-				show_chars();
-			// exit?
-			} else if (input == "5" || prefix_match("exit", input)) {
+				show_characters();
+			// portal?
+			} else if (input == "5" || prefix_match("portal", input)) {
 				*get_handler() << StreamParse(MessageManager.get(S("quit")));
 				get_handler()->disconnect();
 			// eh?
@@ -186,7 +186,7 @@ TelnetModeMainMenu::process (char* line)
 			// get player
 			Player* player = PlayerManager.load(account, account->get_char_list()[choice]);
 			if (player == NULL) {
-				show_chars();
+				show_characters();
 				*get_handler() << CADMIN "Error: Creature cannot be found." CNORMAL "\n\n";
 				break;
 			}

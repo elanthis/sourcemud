@@ -38,27 +38,27 @@ CreatureAffectGroup::add_affect (ICreatureAffect* affect)
 }
 
 int
-CreatureAffectGroup::apply (Creature* character) const
+CreatureAffectGroup::apply (Creature* creature) const
 {
 	for (AffectList::const_iterator i = affects.begin(); i != affects.end(); ++i)
-		if ((*i)->apply(character))
+		if ((*i)->apply(creature))
 			return -1;
 	return 0;
 }
 
 void
-CreatureAffectGroup::remove (Creature* character) const
+CreatureAffectGroup::remove (Creature* creature) const
 {
 	for (AffectList::const_iterator i = affects.begin(); i != affects.end(); ++i)
-		(*i)->remove(character);
+		(*i)->remove(creature);
 }
 
 void
-CreatureAffectGroup::update (Creature* character)
+CreatureAffectGroup::update (Creature* creature)
 {
 	if (duration > 0)
 		--duration;
 
 	for (AffectList::const_iterator i = affects.begin(); i != affects.end(); ++i)
-		(*i)->update (character);
+		(*i)->update (creature);
 }

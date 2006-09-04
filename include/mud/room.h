@@ -10,10 +10,10 @@
 
 #include "mud/elist.h"
 #include "common/string.h"
-#include "mud/exit.h"
+#include "mud/portal.h"
 
 class Object;
-class RoomExit;
+class Portal;
 class Creature;
 
 // Room, the general type
@@ -22,8 +22,8 @@ class Room : public Entity
 	public:
 	// nasty public stuff
 	EList<Object> objects;
-	EList<Creature> chars;
-	EList<RoomExit> exits;
+	EList<Creature> creatures;
+	EList<Portal> portals;
 
 	Room ();
 
@@ -47,12 +47,12 @@ class Room : public Entity
 	inline bool is_noweather () const { return flags.noweather; }
 	inline void set_noweather (bool v) { flags.noweather = v; }
 
-	// exits
-	class RoomExit* get_exit_at (uint);
-	class RoomExit* get_exit_by_dir (ExitDir);
-	class RoomExit* find_exit (String, uint c = 1, uint *matches = NULL);
-	class RoomExit* new_exit (); //  will pick a unique ID, return exit
-	void sort_exits (); // re-sort exits; FIXME: this is ugly to have to do manually
+	// portals
+	class Portal* get_portal_at (uint);
+	class Portal* get_portal_by_dir (PortalDir);
+	class Portal* find_portal (String, uint c = 1, uint *matches = NULL);
+	class Portal* new_portal (); //  will pick a unique ID, return portal
+	void sort_portals (); // re-sort portals; FIXME: this is ugly to have to do manually
 
 	// identifier
 	inline String get_id () const { return id; }
@@ -79,13 +79,13 @@ class Room : public Entity
 
 	// display
 	void show (const class StreamControl& stream, class Creature* viewer);
-	void show_exits (const class StreamControl& stream);
+	void show_portals (const class StreamControl& stream);
 
 	// output
 	void put (String text, size_t len, GCType::vector<class Creature*>* ignore = NULL);
 
 	// get entities
-	class Creature* find_character (String name, uint c = 1, uint *matches = NULL);
+	class Creature* find_creature (String name, uint c = 1, uint *matches = NULL);
 	class Object* find_object (String name, uint c = 1, uint *matches = NULL);
 
 	// count players in room
@@ -93,7 +93,7 @@ class Room : public Entity
 
 	// add entities
 	void add_object (class Object* object);
-	void add_character (class Creature* character);
+	void add_creature (class Creature* creature);
 
 	// coins on the floor
 	inline uint get_coins () const { return coins; }

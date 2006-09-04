@@ -479,7 +479,7 @@ Npc::heartbeat (void)
 	// have rt and ai?
 	bool have_rt = get_round_time() > 0;
 
-	// do character update
+	// do creature update
 	Creature::heartbeat();
 
 	// ai heartbeart
@@ -547,20 +547,20 @@ Npc::display_desc (const StreamControl& stream)
 }
 
 bool
-Npc::can_use_exit (RoomExit* exit) const
+Npc::can_use_portal (Portal* portal) const
 {
-	assert(exit != NULL);
+	assert(portal != NULL);
 
-	// disabled exits can't be used
-	if (exit->is_disabled())
+	// disabled portals can't be used
+	if (portal->is_disabled())
 		return false;
 
-	// exit's room is our room, yes?
-	if (get_room() != exit->get_room())
+	// portal's room is our room, yes?
+	if (get_room() != portal->get_room())
 		return false;
 
 	// get target room; must be valid
-	Room* troom = exit->get_target_room();
+	Room* troom = portal->get_target_room();
 	if (troom == NULL)
 		return false;
 
@@ -583,7 +583,7 @@ Npc::can_use_exit (RoomExit* exit) const
 		}
 	}
 
-	// FIXME: check exit usage types; climb, crawl, etc
+	// FIXME: check portal usage types; climb, crawl, etc
 
 	// no failures - all good
 	return true;

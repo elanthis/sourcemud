@@ -51,46 +51,46 @@ void command_create (Player* builder, String argv[])
 
 		builder->get_room()->add_object (new_object);
 		*builder << "New object " << StreamName(*new_object, NONE) << " created.\n";
-	// create exit in room
-	} else if (str_eq(argv[0], S("exit"))) {
+	// create portal in room
+	} else if (str_eq(argv[0], S("portal"))) {
 		Room* room = builder->get_room();
 		if (room == NULL) {
 			*builder << "You are not in a room.\n";
 			return;
 		}
 
-		// crate exit
-		RoomExit *exit = room->new_exit ();
+		// crate portal
+		Portal *portal = room->new_portal ();
 
-		if (exit) {
+		if (portal) {
 			// have a name to set?
 			if (!argv[1].empty()) {
 				// try setting a direction as well
-				ExitDir dir = ExitDir::lookup(argv[1]);
+				PortalDir dir = PortalDir::lookup(argv[1]);
 				if (dir.valid())
-					exit->set_dir (dir);
+					portal->set_dir (dir);
 
 				// set name
-				exit->set_name (argv[1]);
+				portal->set_name (argv[1]);
 
 				// set target
 				if (!argv[2].empty()) {
 					Room* target = ZoneManager.get_room(argv[2]);
 					if (target != NULL) {
 						// do target set
-						exit->set_target(argv[2]);
+						portal->set_target(argv[2]);
 
-						// make a reciprical exit
+						// make a reciprical portal
 						if (dir.valid()) {
-							ExitDir op = dir.get_opposite();
-							if (!target->get_exit_by_dir(op)) {
-								RoomExit* op_exit = target->new_exit();
-								op_exit->set_dir(op);
-								op_exit->set_name(op.get_name());
-								op_exit->set_target(room->get_id());
-								*builder << "Reciprical exit created.\n";
+							PortalDir op = dir.get_opposite();
+							if (!target->get_portal_by_dir(op)) {
+								Portal* op_portal = target->new_portal();
+								op_portal->set_dir(op);
+								op_portal->set_name(op.get_name());
+								op_portal->set_target(room->get_id());
+								*builder << "Reciprical portal created.\n";
 							} else {
-								*builder << "Reciprical exits.\n";
+								*builder << "Reciprical portals.\n";
 							}
 						}
 					} else {
@@ -99,10 +99,10 @@ void command_create (Player* builder, String argv[])
 				}
 			}
 
-			*builder << "Exit created.\n";
+			*builder << "Portal created.\n";
 		} else {
 			// failed error
-			*builder << "Failed to create new exit.\n";
+			*builder << "Failed to create new portal.\n";
 		}
 	// create room in zone
 	} else if (str_eq(argv[0], S("room"))) {
@@ -165,7 +165,7 @@ void command_destroy (Player* builder, String argv[])
 		return;
 	}
 
-	// find character?
+	// find creature?
 	if (NPC(entity)) {
 		entity->destroy();
 		*builder << "NPC " << StreamName(NPC(entity)) << " destroyed.\n";
@@ -179,10 +179,10 @@ void command_destroy (Player* builder, String argv[])
 		return;
 	}
 
-	// find exit?
-	if (ROOMEXIT(entity)) {
+	// find portal?
+	if (PORTAL(entity)) {
 		entity->destroy();
-		*builder << "Exit " << StreamName(ROOMEXIT(entity)) << " destroyed.\n";
+		*builder << "Portal " << StreamName(PORTAL(entity)) << " destroyed.\n";
 		return;
 	}
 
@@ -211,7 +211,7 @@ void command_destroy (Player* builder, String argv[])
 	}
 }
 
-void command_exitlist (Player *builder, String argv[])
+void command_portallist (Player *builder, String argv[])
 {
 	Room *room = NULL;
 	
@@ -229,7 +229,7 @@ void command_exitlist (Player *builder, String argv[])
 		}
 	}
 
-	*builder << "Exit list:\n";
+	*builder << "Portal list:\n";
 
-	room->show_exits (*builder);
+	room->show_portals (*builder);
 }

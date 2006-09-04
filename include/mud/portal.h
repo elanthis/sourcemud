@@ -5,15 +5,15 @@
  * http://www.awemud.net
  */
 
-#ifndef ROOMEXIT_H
-#define ROOMEXIT_H
+#ifndef AWEMUD_MUD_PORTAL_H
+#define AWEMUD_MUD_PORTAL_H
 
 #include "mud/entity.h"
 #include "common/string.h"
 #include "scriptix/function.h"
 
 // Direction object
-class ExitDir {
+class PortalDir {
 	public:
 	// the directions
 	typedef enum {
@@ -36,24 +36,24 @@ class ExitDir {
 	static dir_t opposites[];
 	
 	public:
-	inline ExitDir (int s_value) : value((dir_t)s_value) {}
-	inline ExitDir () : value(NONE) {}
+	inline PortalDir (int s_value) : value((dir_t)s_value) {}
+	inline PortalDir () : value(NONE) {}
 
 	inline String get_name() const { return names[value]; }
-	inline ExitDir get_opposite() const { return opposites[value]; }
+	inline PortalDir get_opposite() const { return opposites[value]; }
 	inline bool valid () const { return value != NONE; }
 
 	inline dir_t get_value () const { return value; }
 
-	static ExitDir lookup (String name);
+	static PortalDir lookup (String name);
 
-	inline bool operator == (const ExitDir& dir) const { return dir.value == value; }
-	inline bool operator != (const ExitDir& dir) const { return dir.value != value; }
+	inline bool operator == (const PortalDir& dir) const { return dir.value == value; }
+	inline bool operator != (const PortalDir& dir) const { return dir.value != value; }
 	inline operator bool () const { return valid(); }
 };
 
-// Exit usage object
-class ExitUsage {
+// Portal usage object
+class PortalUsage {
 	public:
 	typedef enum {
 		WALK = 0,
@@ -68,21 +68,21 @@ class ExitUsage {
 	static const String names[];
 	
 	public:
-	inline ExitUsage (int s_value) : value((type_t)s_value) {}
-	inline ExitUsage () : value(WALK) {}
+	inline PortalUsage (int s_value) : value((type_t)s_value) {}
+	inline PortalUsage () : value(WALK) {}
 
 	inline String get_name() const { return names[value]; }
 
 	inline type_t get_value () const { return value; }
 
-	static ExitUsage lookup (String name);
+	static PortalUsage lookup (String name);
 
-	inline bool operator == (const ExitUsage& dir) const { return dir.value == value; }
-	inline bool operator != (const ExitUsage& dir) const { return dir.value != value; }
+	inline bool operator == (const PortalUsage& dir) const { return dir.value == value; }
+	inline bool operator != (const PortalUsage& dir) const { return dir.value != value; }
 };
 
-// Exit flavour detail
-class ExitDetail  {
+// Portal flavour detail
+class PortalDetail  {
 	public:
 	typedef enum {
 		NONE = 0,
@@ -104,25 +104,25 @@ class ExitDetail  {
 	static const String names[];
 	
 	public:
-	inline ExitDetail (int s_value) : value((type_t)s_value) {}
-	inline ExitDetail () : value(NONE) {}
+	inline PortalDetail (int s_value) : value((type_t)s_value) {}
+	inline PortalDetail () : value(NONE) {}
 
 	inline String get_name() const { return names[value]; }
 
 	inline type_t get_value () const { return value; }
 
-	static ExitDetail lookup (String name);
+	static PortalDetail lookup (String name);
 
-	inline bool operator == (const ExitDetail& dir) const { return dir.value == value; }
-	inline bool operator != (const ExitDetail& dir) const { return dir.value != value; }
+	inline bool operator == (const PortalDetail& dir) const { return dir.value == value; }
+	inline bool operator != (const PortalDetail& dir) const { return dir.value != value; }
 };
 
-// Room exits.  These define things like doors, general directions (west,
+// Room portals.  These define things like doors, general directions (west,
 // east), and so on
-class RoomExit : public Entity
+class Portal : public Entity
 {
 	public:
-	RoomExit ();
+	Portal ();
 
 	// name information
 	virtual EntityName get_name () const;
@@ -133,10 +133,10 @@ class RoomExit : public Entity
 	virtual String get_desc () const { return desc; }
 	virtual void set_desc (String s_desc) { desc = s_desc; }
 
-	// 'standard' exits have no custom name
+	// 'standard' portals have no custom name
 	inline bool is_standard () const { return name.get_name().empty(); }
 
-	// the taget room and exit (target exit is the exit you come out of)
+	// the taget room and portal (target portal is the portal you come out of)
 	inline String get_target () const { return target; }
 	inline void set_target (String t) { target = t; }
 
@@ -146,9 +146,9 @@ class RoomExit : public Entity
 	virtual void owner_release (Entity*);
 	virtual inline class Room *get_room () const { return parent_room; }
 	
-	// get the TARGET room and exit
+	// get the TARGET room and portal
 	class Room *get_target_room () const;
-	RoomExit *get_target_exit () const;
+	Portal *get_target_portal () const;
 
 	// get a function to call when used
 	inline const Scriptix::ScriptFunction& get_use () const { return on_use; }
@@ -166,17 +166,17 @@ class RoomExit : public Entity
 	String get_go () const;
 	inline void set_go (String t) { text.go = t; }
 
-	// exit usage (climb, etc.)
-	inline ExitUsage get_usage () const { return usage; }
-	inline void set_usage (ExitUsage t) { usage = t; }
+	// portal usage (climb, etc.)
+	inline PortalUsage get_usage () const { return usage; }
+	inline void set_usage (PortalUsage t) { usage = t; }
 
-	// exit detail (on, over, etc.)
-	inline ExitDetail get_detail () const { return detail; }
-	inline void set_detail (ExitDetail t) { detail = t; }
+	// portal detail (on, over, etc.)
+	inline PortalDetail get_detail () const { return detail; }
+	inline void set_detail (PortalDetail t) { detail = t; }
 
 	// direction (east, west, etc.)
-	inline ExitDir get_dir () const { return dir; }
-	inline void set_dir (ExitDir d) { dir = d; }
+	inline PortalDir get_dir () const { return dir; }
+	inline void set_dir (PortalDir d) { dir = d; }
 
 	// flags
 	bool is_valid () const;
@@ -188,7 +188,7 @@ class RoomExit : public Entity
 	inline bool is_nolook () const { return flags.nolook; }
 	inline bool is_disabled () const { return flags.disabled; }
 
-	// color of exit
+	// color of portal
 	virtual String ncolor () const { return S(CEXIT); }
 
 	// manage state
@@ -218,7 +218,7 @@ class RoomExit : public Entity
 	virtual int load_finish ();
 
 	// sort
-	bool operator< (const RoomExit& exit) const;
+	bool operator< (const Portal& portal) const;
 
 	protected:
 	// data members
@@ -230,9 +230,9 @@ class RoomExit : public Entity
 		String leaves;
 		String enters;
 	} text;
-	ExitDir dir;
-	ExitUsage usage;
-	ExitDetail detail;
+	PortalDir dir;
+	PortalUsage usage;
+	PortalDetail detail;
 	class Room *parent_room;
 	StringList keywords;
 
@@ -249,13 +249,13 @@ class RoomExit : public Entity
 	Scriptix::ScriptFunctionSource on_use;
 
 	protected:
-	~RoomExit () {}
+	~Portal () {}
 
 	// extra
 	friend class Room;
-	E_TYPE(RoomExit)
+	E_TYPE(Portal)
 };
 
-#define ROOMEXIT(ent) E_CAST(ent,RoomExit)
+#define PORTAL(ent) E_CAST(ent,Portal)
 
 #endif

@@ -198,7 +198,7 @@ class ActionAttackCreature : public IAction
 	bool repeat;
 };
 
-// attack a character
+// attack a creature
 void
 Creature::do_attack (Creature* victim)
 {
@@ -208,7 +208,7 @@ Creature::do_attack (Creature* victim)
 	add_action(new ActionAttackCreature(this, victim, false));
 }
 
-// attack a character until dead
+// attack a creature until dead
 void
 Creature::do_kill (Creature* victim)
 {

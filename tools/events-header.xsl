@@ -16,7 +16,7 @@
 class Room;
 class Entity;
 class Object;
-class RoomExit;
+class Portal;
 class Zone;
 
 namespace Events {

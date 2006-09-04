@@ -86,7 +86,7 @@ namespace parse {
 // function definitions
 namespace {
 	// get a token
-	// NOTE: leaves *in pointing at character following last character of token
+	// NOTE: leaves *in pointing at creature following last creature of token
 	token_type get_token (const char** in, const char* end, StringBuffer& namebuf)
 	{
 		// clear buffer
@@ -152,7 +152,7 @@ namespace {
 			} while (*in != end && **in != q);
 			// save string
 			namebuf << StreamChunk(sin + 1, *in - sin - 1);
-			++*in; // skip past end quote character
+			++*in; // skip past end quote creature
 			return TOK_STRING;
 		}
 
@@ -382,7 +382,7 @@ namespace {
 			}
 		}
 
-		// if we're disable and not in a check, exit now
+		// if we're disable and not in a check, portal now
 		if (state.disable) {
 			skip(in, end);
 			return 0;

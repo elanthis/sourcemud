@@ -74,7 +74,7 @@ class TelnetModeMainMenu : public ITelnetMode
 	// menus
 	void show_banner ();
 	void show_main ();
-	void show_chars ();
+	void show_characters ();
 	void show_create ();
 	void show_del_confirm ();
 	void show_account ();
