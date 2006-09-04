@@ -1,3 +1,11 @@
+2006-09-04 01:23:46  Sean Middleditch <elanthis@awesomeplay.com>
+
+  * Changed object actions from a file object to an attribute.
+  * Renamed attribute type of creatures from char to creature.
+  * Cleaned up the parser code, added (somewhat) useful error
+    messages on failure.
+  * Fixed the parse codes used in example.zone for day/night tests.
+
 2006-09-04 00:04:41  Sean Middleditch <elanthis@awesomeplay.com>
 
   * Renamed RoomExit and related types to Portal.

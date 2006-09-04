@@ -280,10 +280,7 @@ ObjectBlueprint::save (File::Writer& writer)
 		writer.attr(S("blueprint"), S("container"), i->get_name());
 
 	for (ActionList::const_iterator i = actions.begin(); i != actions.end(); ++i) {
-		writer.begin(S("action"));
-		writer.attr(S("action"), S("id"), i->first);
-		writer.block(S("action"), S("script"), i->second.get_source());
-		writer.end();
+		writer.block(S("action"), i->first, i->second.get_source());
 	}
 
 	// script hook
@@ -335,21 +332,13 @@ ObjectBlueprint::load (File::Reader& reader)
 			ContainerType type = ContainerType::lookup(node.get_data());
 			if (type.valid())
 				containers.insert(type);
-		FO_OBJECT("action")
+		FO_WILD("action")
 			String id;
 			Scriptix::ScriptFunctionSource script;
-			FO_READ_BEGIN
-				FO_ATTR("action", "id")
-					id = node.get_data();
-				FO_ATTR("action", "script")
-					script = Scriptix::ScriptFunctionSource::compile(S("action"), node.get_data(), S("self,user,data"), reader.get_filename(), node.get_line());
-					if(!script)
-						throw File::Error(S("Failed to compile action script"));
-			FO_READ_ERROR
-				return -1;
-			FO_READ_END
-			if (id.empty())
-				throw File::Error(S("Action has no ID"));
+			id = node.get_key();
+			script = Scriptix::ScriptFunctionSource::compile(S("action"), node.get_data(), S("self,user,data"), reader.get_filename(), node.get_line());
+			if(!script)
+				throw File::Error(S("Failed to compile action script"));
 			actions[id] = script;
 		FO_ATTR("blueprint", "parent")
 			ObjectBlueprint* blueprint = ObjectBlueprintManager.lookup(node.get_data());

@@ -139,14 +139,14 @@ Creature::save (File::Writer& writer)
 	Entity::save(writer);
 
 	if (dead)
-		writer.attr(S("char"), S("dead"), S("yes"));
+		writer.attr(S("creature"), S("dead"), S("yes"));
 
-	writer.attr(S("char"), S("position"), position.get_name());
+	writer.attr(S("creature"), S("position"), position.get_name());
 
 	if (coins)
-		writer.attr(S("char"), S("coins"), coins);
+		writer.attr(S("creature"), S("coins"), coins);
 
-	writer.attr(S("char"), S("hp"), health.cur);
+	writer.attr(S("creature"), S("hp"), health.cur);
 
 	if (equipment.right_held) {
 		writer.begin(S("equip_right_hand"));
@@ -187,14 +187,14 @@ Creature::load_node (File::Reader& reader, File::Node& node)
 {
 	FO_NODE_BEGIN
 		FO_PARENT(Entity)
-		FO_ATTR("char", "dead")
+		FO_ATTR("creature", "dead")
 			dead = node.get_data();
-		FO_ATTR("char", "position")
+		FO_ATTR("creature", "position")
 			position = CreaturePosition::lookup(node.get_data());
-		FO_ATTR("char", "coins")
+		FO_ATTR("creature", "coins")
 			FO_TYPE_ASSERT(INT);
 			coins = tolong(node.get_data());
-		FO_ATTR("char", "hp")
+		FO_ATTR("creature", "hp")
 			FO_TYPE_ASSERT(INT);
 			health.cur = tolong(node.get_data());
 		FO_OBJECT("equip_right_hand")

@@ -29,7 +29,7 @@ spawn {
 room {
   room.id = "clear_pond"
   room.name = "Forest pond"
-  room.desc = "A small pond lies between the bases of several large trees{if day-or-night = 'night'}, reflecting the moonlight in its clear, calm surface{else}.  The water is very still, and crystal clear{endif}.  The pond is not very deep, and doesn't appear to be the residence of any fish or waterlife.  The forest itself is quite dense here."
+  room.desc = "A small pond lies between the bases of several large trees{if eq {day-or-night} 'night'}, reflecting the moonlight in its clear, calm surface{else}.  The water is very still, and crystal clear{endif}.  The pond is not very deep, and doesn't appear to be the residence of any fish or waterlife.  The forest itself is quite dense here."
   entity.uid = <3>
   room.outdoors = true
   portal {
@@ -86,26 +86,23 @@ room {
   object {
     blueprint {
       blueprint.name = "a stone altar"
-      blueprint.desc = "{<1>.D} is very simple in design.  It is little more than a stone block, with runes to forest gods and spirits inscribed on all four sides.  The top of the alter is perfectly smooth."
+      blueprint.desc = "{$1.D} is very simple in design.  It is little more than a stone block, with runes to forest gods and spirits inscribed on all four sides.  The top of the alter is perfectly smooth."
       blueprint.weight = 140
       blueprint.roomlist = false
       blueprint.gettable = false
       blueprint.trashable = false
       blueprint.container = "on"
-      action {
-        action.id = "touch"
-        action.script = begin
-          // user kneeling?
-          if (user.position() == POS_KNEEL) {
-            // messages
-            user << "You feel a warmth spread across your body.\n";
-            user.room() << @ignore(user) << " glows faintly, then returns to normal.\n";
-            // heal player
-            var amount = user.getMaxhp() - user.getHp();
-            user.heal(amount);
-          }
-        end
-      }
+      action.touch = begin
+        // user kneeling?
+        if (user.position() == POS_KNEEL) {
+          // messages
+          user << "You feel a warmth spread across your body.\n";
+          user.room() << @ignore(user) << " glows faintly, then returns to normal.\n";
+          // heal player
+          var amount = user.getMaxhp() - user.getHp();
+          user.heal(amount);
+        }
+      end
       user.read_text = "The runes on the altar are all gibberish to you."
     }
     entity.uid = <11>
@@ -363,8 +360,8 @@ room {
     npc.blueprint = "wolf_large"
     entity.uid = <42>
     entity.tag = "forest_critter"
-    char.position = "stand"
-    char.hp = 100
+    creature.position = "stand"
+    creature.hp = 100
     equip_right_hand {
       object.blueprint = "claws_animal"
       entity.uid = <43>
@@ -391,18 +388,15 @@ room {
   object {
     blueprint {
       blueprint.name = "the River Styx"
-      blueprint.desc = "The dark river is quite calm, and rather peaceful in appearance.  Despite this tranquil facade, supernatural fear still penetrates into the core of your soul when you look at it.  {<1>.C} is none other than the River Styx, one of the few ways spoken of in legends to forever destroy a soul."
+      blueprint.desc = "The dark river is quite calm, and rather peaceful in appearance.  Despite this tranquil facade, supernatural fear still penetrates into the core of your soul when you look at it.  {$1.C} is none other than the River Styx, one of the few ways spoken of in legends to forever destroy a soul."
       blueprint.keyword = "murky river"
       blueprint.roomlist = false
       blueprint.gettable = false
       blueprint.trashable = false
-      action {
-        action.id = "touch"
-        action.script = begin
-          user << "Dear " << @name(user, EN_NONE, false) << ",\n  Look, do you even know what this river is?  Don't touch it, alright?\n  -- The Management\n";
-          return 0;
-        end
-      }
+      action.touch = begin
+        user << "Dear " << @name(user, EN_NONE, false) << ",\n  Look, do you even know what this river is?  Don't touch it, alright?\n  -- The Management\n";
+        return 0;
+      end
     }
     entity.uid = <56>
   }
@@ -576,7 +570,7 @@ room {
   }
   object {
     blueprint {
-      blueprint.name = "a ornate sign"
+      blueprint.name = "an ornate sign"
       blueprint.desc = "The sign reads, Cutter and Trader of Gems."
       blueprint.roomlist = false
       blueprint.gettable = false
@@ -614,7 +608,7 @@ room {
   object {
     blueprint {
       blueprint.name = "a gem case"
-      blueprint.desc = "The {<1>.n} is crafted of a light stained wood, and set with thick glass.  Dozens and dozens of jewels, of all colours, lie neatly organized in the case.  Several bits of fine jewelry can also be found, fitted with fine gems."
+      blueprint.desc = "The {$1.n} is crafted of a light stained wood, and set with thick glass.  Dozens and dozens of jewels, of all colours, lie neatly organized in the case.  Several bits of fine jewelry can also be found, fitted with fine gems."
       blueprint.roomlist = false
       blueprint.gettable = false
       blueprint.trashable = false
@@ -624,7 +618,7 @@ room {
   object {
     blueprint {
       blueprint.name = "a gem case"
-      blueprint.desc = "The {<1>.n} is crafted of a light stained wood, and set with thick glass.  Dozens and dozens of jewels, of all colours, lie neatly organized in the case.  Several bits of fine jewelry can also be found, fitted with fine gems."
+      blueprint.desc = "The {$1.n} is crafted of a light stained wood, and set with thick glass.  Dozens and dozens of jewels, of all colours, lie neatly organized in the case.  Several bits of fine jewelry can also be found, fitted with fine gems."
       blueprint.roomlist = false
       blueprint.gettable = false
       blueprint.trashable = false
@@ -635,8 +629,8 @@ room {
     npc.blueprint = "rabbit"
     entity.uid = <86>
     entity.tag = "forest_critter"
-    char.position = "stand"
-    char.hp = 60
+    creature.position = "stand"
+    creature.hp = 60
     equip_right_hand {
       object.blueprint = "claws_animal"
       entity.uid = <87>
@@ -955,7 +949,7 @@ room {
 room {
   room.id = "darlet_rosewood_east_6"
   room.name = "Darlet: Rosewood Road"
-  room.desc = "Westward, the road stretches towards the town square.  A short distance to the east, Rosewood makes a slight turn to the southeast.  Here however is the destination for many of Darlet's welcome, if not completely trusted guests.  That being the large, three story, inn, situated on the north side of the street.  Wayfarers Rest is how the sign on the front porch reads. {if day-or-night = 'night'} From the dark street, the warm light coming from the inn's numerous windows invite the weary, and the occasional round of song invites the thirsty{else} The scent of freshly baked bread, and roasting meat, drift lightly on the air, making this stop all the more inviting{endif}."
+  room.desc = "Westward, the road stretches towards the town square.  A short distance to the east, Rosewood makes a slight turn to the southeast.  Here however is the destination for many of Darlet's welcome, if not completely trusted guests.  That being the large, three story, inn, situated on the north side of the street.  Wayfarers Rest is how the sign on the front porch reads. {if eq {day-or-night} 'night'} From the dark street, the warm light coming from the inn's numerous windows invite the weary, and the occasional round of song invites the thirsty{else} The scent of freshly baked bread, and roasting meat, drift lightly on the air, making this stop all the more inviting{endif}."
   entity.uid = <143>
   room.outdoors = true
   portal {
@@ -999,7 +993,7 @@ room {
 room {
   room.id = "clover_1"
   room.name = "Darlet: Clover Lane"
-  room.desc = "The lane is a bit narrow, with houses pressing in on both sides.  One home stands out in particular, with its iron gate just east of the street. {if day-or-night = 'night'} The lamps on either side of the gate are lit, providing a bit of security for the enterance. {else} A sign on the gate announces that this is the residence of Dallin Grayrock.{endif}"
+  room.desc = "The lane is a bit narrow, with houses pressing in on both sides.  One home stands out in particular, with its iron gate just east of the street. {if eq {day-or-night} 'night'} The lamps on either side of the gate are lit, providing a bit of security for the enterance. {else} A sign on the gate announces that this is the residence of Dallin Grayrock.{endif}"
   entity.uid = <151>
   room.outdoors = true
   portal {
@@ -1027,7 +1021,7 @@ room {
 room {
   room.id = "clover_2"
   room.name = "Bowmans Crescent and Clover"
-  room.desc = "To the south, the narrow Clover Lane runs straight towards the larger Rosewood Road.  Bowmans Crescent, heading to the west and northeast, makes its way about the outskirts of Darlet. {if day-or-night = 'day'}A large willow tree stands proudly in an open field, just north of the intersection.  A small tree house has been built into its branches. {else}A large willow tree stands guarding the intersection, just north of the street.  Its long branches sway gently in the moonlight. {endif}"
+  room.desc = "To the south, the narrow Clover Lane runs straight towards the larger Rosewood Road.  Bowmans Crescent, heading to the west and northeast, makes its way about the outskirts of Darlet. {if eq {day-or-night} 'day'}A large willow tree stands proudly in an open field, just north of the intersection.  A small tree house has been built into its branches. {else}A large willow tree stands guarding the intersection, just north of the street.  Its long branches sway gently in the moonlight. {endif}"
   entity.uid = <155>
   room.outdoors = true
   portal {
@@ -1327,7 +1321,7 @@ room {
 room {
   room.id = "bowmans_9"
   room.name = "Darlet: Bowmans Crescent"
-  room.desc = "A short distance to the west, the gray stone wall surrounding the town of Darlet can be seen standing watch over the peaceful little hamlet.  To the east, a small copse of ashwood trees {if day-or-night = 'day'}shade a grassy field from the heat of the sun.{else} are silhouetted against the night sky, dancing gently in the moonlight.{endif}"
+  room.desc = "A short distance to the west, the gray stone wall surrounding the town of Darlet can be seen standing watch over the peaceful little hamlet.  To the east, a small copse of ashwood trees {if eq {day-or-night} 'day'}shade a grassy field from the heat of the sun.{else} are silhouetted against the night sky, dancing gently in the moonlight.{endif}"
   entity.uid = <208>
   room.outdoors = true
   portal {
@@ -1360,7 +1354,7 @@ room {
 room {
   room.id = "bowmans_11"
   room.name = "Darlet: Bowmans Crescent"
-  room.desc = "To the Northwest, the hard pack dirt of Bowmans Crescent dips slightly down hill, as if to duck beneath the outstretched branches of the trees that grow on either side of the road.  To the east, and slightly uphill, the road comes to a small intersection, where a large willow tree stands tall and proud, a silently swaying sentinel {if day-or-night = 'night'}in the night.{else}under the sun.{endif}"
+  room.desc = "To the Northwest, the hard pack dirt of Bowmans Crescent dips slightly down hill, as if to duck beneath the outstretched branches of the trees that grow on either side of the road.  To the east, and slightly uphill, the road comes to a small intersection, where a large willow tree stands tall and proud, a silently swaying sentinel {if eq {day-or-night} 'night'}in the night.{else}under the sun.{endif}"
   entity.uid = <214>
   room.outdoors = true
   portal {
@@ -1377,7 +1371,7 @@ room {
 room {
   room.id = "bowmans_12"
   room.name = "Darlet: Bowmans Crescent"
-  room.desc = "Now and then, the {if day-or-night = 'day'}sun light{else}moon light{endif} peeks through the natural canopy overhead, to fall upon the packed earth road.  The trees hedge the road on both sides protectively, as a parent shelters a child."
+  room.desc = "Now and then, the {if eq {day-or-night} 'day'}sun light{else}moon light{endif} peeks through the natural canopy overhead, to fall upon the packed earth road.  The trees hedge the road on both sides protectively, as a parent shelters a child."
   entity.uid = <217>
   room.outdoors = true
   portal {
@@ -1611,7 +1605,7 @@ room {
   object {
     blueprint {
       blueprint.name = "a wooden box"
-      blueprint.desc = "{<1>.D} looks like it might have once been a coffin, though it is now nothing but broken planks of rotted wood."
+      blueprint.desc = "{$1.D} looks like it might have once been a coffin, though it is now nothing but broken planks of rotted wood."
       blueprint.roomlist = false
       blueprint.gettable = false
       blueprint.trashable = false
@@ -1648,7 +1642,7 @@ room {
   object {
     blueprint {
       blueprint.name = "a gnarled tree"
-      blueprint.desc = "{<1>.D} appears dead.  Its roots and branches are twisted as if in agony, and a length of rotted rope hangs from one of its higher boughs, a sure mark of the deceased tree's grim function in past times."
+      blueprint.desc = "{$1.D} appears dead.  Its roots and branches are twisted as if in agony, and a length of rotted rope hangs from one of its higher boughs, a sure mark of the deceased tree's grim function in past times."
       blueprint.roomlist = false
       blueprint.gettable = false
       blueprint.trashable = false
@@ -1659,8 +1653,8 @@ room {
     npc.blueprint = "skeleton"
     entity.uid = <265>
     entity.tag = "graveyard_undead"
-    char.position = "stand"
-    char.hp = 60
+    creature.position = "stand"
+    creature.hp = 60
     equip_right_hand {
       object.blueprint = "claws_animal"
       entity.uid = <266>
@@ -1671,7 +1665,7 @@ room {
 room {
   room.id = "graveyard_mausoleum"
   room.name = "Old Graveyard"
-  room.desc = "The tombstones are accompanies here by a small mausoleum, more ornate than the other crumbling structures in the grave yard."
+  room.desc = "The tombstones are accompanied here by a small mausoleum, more ornate than the other crumbling structures in the grave yard."
   entity.uid = <268>
   portal {
     entity.uid = <269>
@@ -1686,7 +1680,7 @@ room {
   object {
     blueprint {
       blueprint.name = "a mausoleum"
-      blueprint.desc = "{<1>.D} is made of granite, and decorated with dark marble and faded inscriptions.  The building appears mostly intact, save for the front door, which appears to have been damaged by some kind of heavy force, like a battering ram.  {<1>.D}'s only legible inscription reads, 'Ravelor Materna'."
+      blueprint.desc = "{$1.D} is made of granite, and decorated with dark marble and faded inscriptions.  The building appears mostly intact, save for the front door, which appears to have been damaged by some kind of heavy force, like a battering ram.  {$1.D}'s only legible inscription reads, 'Ravelor Materna'."
       blueprint.roomlist = false
       blueprint.gettable = false
       blueprint.trashable = false
@@ -1696,8 +1690,8 @@ room {
   npc {
     npc.blueprint = "wolf"
     entity.uid = <271>
-    char.position = "stand"
-    char.hp = 100
+    creature.position = "stand"
+    creature.hp = 100
     equip_right_hand {
       object.blueprint = "claws_animal"
       entity.uid = <272>
