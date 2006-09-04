@@ -317,10 +317,7 @@ namespace {
 			return;
 		}
 
-		// log connection
-		Log::Network << "HTTP client connected: " << Network::get_addr_name(addr);
-		
-		// create a new telnet handler
+		// create a new HTTP handler
 		HTTPHandler *http = new HTTPHandler(client, addr);
 		if (http == NULL) {
 			fdprintf(client, "HTTP/1.0 500 Internal Server Error\n\nServer failure.\n");
@@ -708,7 +705,7 @@ main (int argc, char **argv)
 	running = true;
 	while (running) {
 		// poll timeout
-		long timeout = -1;
+		long timeout = 15000; // 15 seconds
 
 		// need to run now to process data?
 		if (EventManager.events_pending())
@@ -741,8 +738,8 @@ main (int argc, char **argv)
 			// update weather
 			WeatherManager.update();
 
-			// HTTP sessions
-			HTTPPageManager.check_sessions();
+			// HTTP timeouts 
+			HTTPPageManager.check_timeouts();
 
 			// update time
 			bool is_day = TimeManager.time.is_day ();

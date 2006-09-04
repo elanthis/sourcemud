@@ -54,18 +54,18 @@ html.header = begin
 		<body>
 			<div id="title">AweMUD Portal</div>
 
-			{if $account}
 			<div id="menu">
+			{if $account}
 				<b>{$account.name}</b>
 				| <a href="/">Home</a>
+				| <a href="/account">Account</a>
 				| <a href="/logout">Logout</a>
-			</div>
 			{else}
-			<div id="menu">
 				<a href="/login">Login</a>
 				| <a href="/">Home</a>
-			</div>
 			{endif}
+				| <a href="/stats">Stats</a>
+			</div>
 
 			<div id="body">
 				{if $msg}<p id="msg">{$msg}</p>{endif}
@@ -90,6 +90,7 @@ html.index = begin
 end
 
 html.login = begin
+	{if eq {$account} ''}
 	<form action="/login" method="post">
 		<table align="center">
 			<tr><th colspan="2">Login</th></tr>
@@ -106,11 +107,27 @@ html.login = begin
 			</tr>
 		</table>
 	</form>
+	{endif}
 end
 
 html.logout = begin
 	<p style="text-align: center;">Good-bye!</p>
 	<p style="text-align: center;"><a href="/login">Login</a></p>
+end
+
+html.account = begin
+	<form action="/account" method="post">
+		<table align="center">
+			<tr><th colspan="2">Account Details</th></tr>
+			<tr><td><label>Account ID:</label></td><td>{html {$account.id}}</td></tr>
+			<tr><td><label for="acct_name">Your Name:</label></td><td><input type="text" name="acct_name" id="acct_name" size="30" value="{html {$account.name}}" /></td></tr>
+			<tr><td><label for="acct_email">Email Address:</label></td><td><input type="text" name="acct_email" id="acct_email" size="30" value="{html {$account.email}}" /></td></tr>
+			<tr><td colspan="2"><hr /></td></tr>
+			<tr><td><label for="new_pass1">New Passphrase:</label></td><td><input type="password" name="new_pass1" id="new_pass1" size="20" /> (optional)</td></tr>
+			<tr><td><label for="new_pass2">Retype Passphrase:</label></td><td><input type="password" name="new_pass2" id="new_pass2" size="20" /> (must match)</td></tr>
+			<tr><td class="options" colspan="2"><input type="submit" name="action" value="Save Changes" /></td></tr>
+		</table>
+	</form>
 end
 
 html.stats = begin

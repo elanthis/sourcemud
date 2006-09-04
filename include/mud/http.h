@@ -54,6 +54,7 @@ class HTTPHandler : public Scriptix::Native, public SocketUser, public IStreamSi
 
 	// output
 	virtual void stream_put (const char*, size_t len);
+	virtual IStreamSink* get_stream () { return this; }
 
 	// processing
 	void process ();
@@ -94,13 +95,12 @@ class HTTPHandler : public Scriptix::Native, public SocketUser, public IStreamSi
 	// HTTP parsing
 	StringBuffer line;
 	StringBuffer output;
+	String url;
 	enum { GET, POST } reqtype;
 	enum { REQ, HEADER, BODY, DONE, ERROR } state;
-	String url;
-	String reqid;
-	GCType::map<String, String> headers;
 	size_t content_length;
-	String sid;
+	time_t timeout;
+	GCType::map<String, String> headers;
 
 	// POST data
 	GCType::map<String, String> post;
@@ -124,7 +124,8 @@ class SHTTPPageManager : public IManager
 	HTTPSession* create_session (Account* account);
 	void destroy_session (HTTPSession* session);
 	HTTPSession* get_session (String id);
-	void check_sessions ();
+
+	void check_timeouts ();
 
 	private:
 	typedef GCType::map<String, String> TemplateMap;

@@ -48,6 +48,7 @@ namespace Scriptix {
 	extern const TypeDef TypeValue_Type;
 	extern const TypeDef Struct_Type;
 	extern const TypeDef Stream_Type;
+	extern const TypeDef Nil_Type;
 }
 
 int
@@ -62,6 +63,7 @@ SScriptManager::initialize ()
 	t_type = add_type(&TypeValue_Type);
 	t_struct = add_type(&Scriptix::Struct_Type);
 	t_stream = add_type(&Scriptix::Stream_Type);
+	t_nil = add_type(&Scriptix::Nil_Type);
 
 	return 0;
 }

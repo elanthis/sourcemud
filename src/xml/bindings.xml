@@ -3503,6 +3503,22 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
       <code><![CDATA[if (_self->get_session()) _return = _self->get_session()->get_var(_arg_name);]]></code>
     </method>
 
+    <!-- POST variables -->
+    <method>
+      <name>getPOST</name>
+      <arg>
+        <type>String</type>
+        <name>name</name>
+        <doc>Name of the POST variable to retrieve.</doc>
+      </arg>
+      <return>
+        <type>String</type>
+        <doc>The value of the POST variable retrieved.  Will be nil if the variable is not set.</doc>
+      </return>
+      <doc>This will retrieve the requested POST variable from a form submission.</doc>
+      <code><![CDATA[_return = _self->get_post(_arg_name);]]></code>
+    </method>
+
     <!-- Display a particular template -->
     <method>
       <name>displayTemplate</name>

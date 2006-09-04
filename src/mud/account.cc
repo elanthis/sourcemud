@@ -164,7 +164,10 @@ Account::revoke_access(AccessID id)
 int
 Account::parse_property (const StreamControl& stream, String method, const ParseArgs& argv) const
 {
-	if (method == "name") {
+	if (method == "id") {
+		stream << id;
+		return 0;
+	} else if (method == "name") {
 		stream << name;
 		return 0;
 	} else if (method == "email") {

@@ -97,6 +97,9 @@ class TypeValue : public IValue
 // Root typedef
 extern const TypeDef IValue_Type;
 
+// Nil typedef
+extern const TypeDef Nil_Type;
+
 // Creating new types
 #define SX_TYPEIMPL(CPPNAME, SXNAME, CPPPARENT) \
 	extern const Scriptix::TypeDef CPPNAME ## _Type; \

@@ -36,8 +36,9 @@
 using namespace Scriptix;
 
 // Root typedef
-namespace { const MethodDef Value_Methods[] = { { String(), 0, 0, } }; }
-const TypeDef Scriptix::IValue_Type = { S("Value"), NULL, Value_Methods };
+namespace { const MethodDef No_Methods[] = { { String(), 0, 0, } }; }
+const TypeDef Scriptix::IValue_Type = { S("Value"), NULL, No_Methods };
+const TypeDef Scriptix::Nil_Type = { S("Nil"), NULL, No_Methods };
 
 // CONSTRUCTORS
 Value::Value (String s_value)
@@ -74,7 +75,7 @@ const TypeInfo*
 Value::get_type () const
 {
 	if (value == NULL)
-		return NULL;
+		return ScriptManager.get_nil_type();
 
 	if ((intptr_t)value & 0x01)
 		return ScriptManager.get_number_type();
@@ -87,11 +88,11 @@ Value::is_a (const TypeInfo* type) const
 {
 	const TypeInfo* my_type = get_type();
 
-	while (my_type != NULL) {
+	do {
 		if (my_type == type)
 			return true;
 		my_type = my_type->get_parent();
-	}
+	} while (my_type != NULL);
 
 	return false;
 }

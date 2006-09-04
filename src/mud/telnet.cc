@@ -255,7 +255,7 @@ TelnetHandler::TelnetHandler (int s_sock, const SockStorage& s_netaddr) : Script
 	cur_col = 0;
 	mode = NULL;
 	memset(&io_flags, 0, sizeof(IOFlags));
-	timeout = SettingsManager.get_activity_timeout();
+	timeout = SettingsManager.get_telnet_timeout();
 
 	// initial telnet options
 	io_flags.want_echo = true;
@@ -284,7 +284,7 @@ TelnetHandler::TelnetHandler (int s_sock, const SockStorage& s_netaddr) : Script
 	}
 
 	// in stamp
-	time (&in_stamp);
+	in_stamp = time(NULL);
 }
 
 // ----- COMPRESSION -----
@@ -618,6 +618,9 @@ TelnetHandler::draw_bar (uint percent)
 void
 TelnetHandler::in_handle (char* buffer, size_t size)
 {
+	// time stamp
+	in_stamp = time(NULL);
+
 	// deal with telnet options
 	unsigned char c;
 	size_t in_size = input.size();
@@ -880,9 +883,6 @@ TelnetHandler::process_input ()
 void
 TelnetHandler::process_command (char* cbuffer)
 {
-	// time stamp
-	time (&in_stamp);
-
 	// force output update
 	io_flags.need_prompt = true;
 
@@ -1035,6 +1035,9 @@ TelnetHandler::process_sb ()
 void
 TelnetHandler::prepare ()
 {
+	// check timeout
+	check_timeout();
+
 	// fix up color
 	if (!colors.empty()) {
 		if (io_flags.use_ansi)
@@ -1261,25 +1264,15 @@ TelnetHandler::end_chunk ()
 }
 
 // check various timeouts
-int
-TelnetHandler::check_time ()
+void
+TelnetHandler::check_timeout ()
 {
-	// get time diff
-	time_t now;
-	time (&now);
-	unsigned long diff = (unsigned long)difftime(now, in_stamp);
-
-	// check time..
-	if (diff >= (timeout * 60)) {
+	if ((time(NULL) - in_stamp) >= (int)(timeout * 60)) {
 		// disconnect the dink
 		*this << CADMIN "You are being disconnected for lack of activity." CNORMAL "\n";
-		Log::Info << "Connection timeout (" << timeout << " minutes of no input).";
+		Log::Network << "Telnet timeout (" << timeout << " minutes of no input) for " << Network::get_addr_name(addr);
 		disconnect();
-		return 1;
 	}
-
-	// no disconnections... yet
-	return 0;
 }
 
 char

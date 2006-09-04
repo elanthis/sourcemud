@@ -53,8 +53,11 @@ misc_dir = @DATADIR@/lib/awemud/data/
 ## Maximum number of connections allowed in total from all hosts.
 #max_clients = 1000
 
-## Minutes of inactivity on a connection before it is disconnected.
-#activity_timeout = 15
+## Minutes of inactivity on a telnet connection before it is disconnected.
+#telnet_timeout = 30
+
+## Seconds of inactivity on an HTTP connection before it is disconnected.
+#http_timeout = 30
 
 ## Enable IPv6 support.
 #ipv6 = true

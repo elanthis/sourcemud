@@ -78,6 +78,8 @@ namespace {
 		SETTING_INT(characters_per_account, 0, NULL, "acct_char_limit", 3)
 		SETTING_INT(active_per_account, 0, NULL, "acct_play_limit", 1)
 		SETTING_INT(auto_save, 0, NULL, "auto_save", 15)
+		SETTING_INT(telnet_timeout, 0, NULL, "telnet_timeout", 30)
+		SETTING_INT(http_timeout, 0, NULL, "http_timeout", 30)
 		{ NULL, 0, NULL, NULL, NULL, NULL, NULL, 0, S(""), false }
 	};
 }

@@ -247,7 +247,7 @@ class TelnetHandler : public Scriptix::Native, public SocketUser, public IStream
 	void add_zmp (size_t argc, String argv[]);
 
 	// timeout handling
-	int check_time (); // check to see if we should disconnect
+	virtual void check_timeout (); // check to see if we should disconnect
 };
 
 // indent stream

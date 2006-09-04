@@ -9,7 +9,33 @@ function pageStats(page, id, http)
 	http.footer();
 }
 
+// demo
+function pageDemoScript(page, id, http)
+{
+	http.header();
+
+	if (page == '/demo/session') {
+		if (!http.isSession())
+			http << '<p>You must login for this demo to work.</p>';
+
+		if (http.getPOST('action') == 'Save')
+			http.setVar('val', http.getPOST('val'));
+
+		http << '<form action="/demo/session" method="post">';
+		http << '<input type="text" name="val" value="' << http.getVar('val') << '" /> <input type="submit" name="action" value="Save" />';
+		http << '</form>';
+	} else {
+		http << '<p>Demos:</p><ul>';
+		http << '<li><a href="/demo/session">session variables</a></li>';
+		http << '</ul>';
+	}
+
+	http.footer();
+}
+
 function init()
 {
-	registerPage('stats', pageStats);
+	registerPage('/stats', pageStats);
+	registerPage('/demo', pageDemoScript);
+	registerPage('/demo/session', pageDemoScript);
 }

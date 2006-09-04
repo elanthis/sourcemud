@@ -5,8 +5,9 @@
  * http://www.awemud.net
  */
 
-// FIXME: make this a config value
-#define HTTP_SESSION_TIMEOUT (60*30) // 30 minutes
+#define HTTP_REQUEST_TIMEOUT 30 // 30 seconds
+#define HTTP_HEADER_LINE_MAX 2048 // arbitrary max line length
+#define HTTP_POST_BODY_MAX (16*1024) // 16K
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -42,6 +43,7 @@ HTTPHandler::HTTPHandler (int s_sock, const SockStorage& s_netaddr) : Scriptix::
 	addr = s_netaddr;
 	state = REQ;
 	session = NULL;
+	timeout = time(NULL);
 }
 
 // disconnect
@@ -75,6 +77,8 @@ HTTPHandler::stream_put (const char *text, size_t len)
 void
 HTTPHandler::in_handle (char* buffer, size_t size)
 {
+	timeout = time(NULL);
+
 	while (size > 0) {
 		// if we're in the body of a POST, we need to get content_length bytes
 		if (state == BODY) {
@@ -107,12 +111,18 @@ HTTPHandler::in_handle (char* buffer, size_t size)
 				size -= (c - buffer) + 1;
 				buffer = c + 1;
 			} else {
+				// if we still don't have a line but we're over the max, fail
+				if (line.size() + size >= HTTP_HEADER_LINE_MAX) {
+					Log::Network << "HTTP - error ? " << Network::get_addr_name(addr) << " <header length overflow>";
+					*this << "HTTP/1.0 413 Request Entity Too Large\n\nRequest header length overflow.\n";
+				}
+
 				// append remaining data to our line buffer
 				line.write(buffer, size);
 			}
-		// any other state, just ignore it
-		} else {
-			// ignore
+		// other states; just ignore any further data
+		} else if (state == DONE || state == ERROR) {
+			break;
 		}
 	}
 }
@@ -121,6 +131,12 @@ HTTPHandler::in_handle (char* buffer, size_t size)
 void
 HTTPHandler::prepare ()
 {
+	if (timeout != 0 && (time(NULL) - timeout) >= HTTP_REQUEST_TIMEOUT) {
+		Log::Network << "HTTP - error - " << Network::get_addr_name(addr) << " <request timeout>";
+		*this << "HTTP/1.0 408 Request Timeout\n\nRequest timed out.\n";
+		state = ERROR;
+		timeout = 0;
+	}
 }
 
 char
@@ -156,13 +172,16 @@ HTTPHandler::process ()
 	switch (state) {
 		case REQ:
 		{
-			String text = line.str();
+			// empty line?  ignore
+			if (line.empty())
+				return;
 
 			// parse
-			StringList parts = explode(text, ' ');
+			StringList parts = explode(line.str(), ' ');
 
 			// check size
 			if (parts.size() != 3) {
+				Log::Network << "HTTP - error ? " << Network::get_addr_name(addr) << " <malformed request>";
 				*this << "HTTP/1.0 400 Bad Request\n\nInvalid request\n";
 				state = ERROR;
 				return;
@@ -174,21 +193,14 @@ HTTPHandler::process ()
 			else if (parts[0] == "POST")
 				reqtype = POST;
 			else {
+				Log::Network << "HTTP " << parts[0] << " " << parts[1] << " error ? " << Network::get_addr_name(addr) << " <illegal request type>";
 				*this << "HTTP/1.0 405 Method Not Allowed\n\nUnauthorized request type " << parts[0] << "\n";
 				state = ERROR;
 				return;
 			}
 
 			// get URL
-			StringList url_parts = explode(parts[1], '/');
-			if (url_parts.size() != 2 && url_parts.size() != 3) {
-				*this << "HTTP/1.0 404 Not Found\n\nUnknown URL " << parts[1] << "\n";
-				state = ERROR;
-				return;
-			}
-			url = url_parts[1];
-			if (url_parts.size() == 3)
-				reqid = url_parts[2];
+			url = parts[1];
 
 			state = HEADER;
 			break;
@@ -205,7 +217,6 @@ HTTPHandler::process ()
 				// a GET request is now processed immediately
 				if (reqtype == GET) {
 					execute();
-					state = DONE;
 				// a POST request requires us to parse the body first
 				} else {
 					state = BODY;
@@ -217,6 +228,7 @@ HTTPHandler::process ()
 			const char* c = strchr(line.c_str(), ':');
 			// require ': ' after header name
 			if (c == NULL || *(c + 1) != ' ') {
+				Log::Network << "HTTP " << (reqtype == GET ? "GET" : "POST") << " " << url << " error ? " << Network::get_addr_name(addr) << " <malformed header>";
 				*this << "HTTP/1.0 400 Bad Request\n\nInvalid header:\n" << line.c_str() << "\n";
 				state = ERROR;
 				return;
@@ -227,6 +239,7 @@ HTTPHandler::process ()
 		case BODY:
 		{
 			// parse the data
+			StringBuffer value;
 			const char* begin;
 			const char* end;
 			const char* sep;
@@ -241,13 +254,29 @@ HTTPHandler::process ()
 				// find the = separator
 				sep = strchr(begin, '=');
 				if (sep == NULL || sep > end) {
+					Log::Network << "HTTP " << (reqtype == GET ? "GET" : "POST") << " " << url << " error ? " << Network::get_addr_name(addr) << " <malformed form data>";
 					*this << "HTTP/1.0 400 Bad Request\n\nMalformed form data.\n";
 					state = ERROR;
 					return;
 				}
 
+				// decode the value
+				value.clear();
+				for (const char* c = sep + 1; c < end; ++c) {
+					if (*c == '+') {
+						value << ' ';
+					} else if (*c == '%') {
+						int r;
+						sscanf(c + 1, "%2X", &r);
+						value << (char)r;
+						c += 2;
+					} else {
+						value << *c;
+					}
+				}
+
 				// store the data
-				post[strlower(String(begin, sep - begin))] = String(sep + 1, end - sep - 1);
+				post[strlower(String(begin, sep - begin))] = value.str();
 
 				// set begin to next token
 				begin = end;
@@ -257,7 +286,6 @@ HTTPHandler::process ()
 
 			// execute
 			execute();
-			state = DONE;
 			break;
 		}
 		case DONE:
@@ -273,6 +301,7 @@ HTTPHandler::check_headers()
 	if (reqtype == POST) {
 		// must be application/x-www-form-urlencoded
 		if (headers[S("content-type")] != "application/x-www-form-urlencoded") {
+			Log::Network << "HTTP " << (reqtype == GET ? "GET" : "POST") << " " << url << " error ? " << Network::get_addr_name(addr) << " <incorrect content-type>";
 			*this << "HTTP/1.0 406 Not Acceptable\n\nContent-type must be application/x-www-form-urlencoded.\n";
 			state = ERROR;
 			return;
@@ -281,11 +310,18 @@ HTTPHandler::check_headers()
 		// must have a content-length
 		String len = headers[S("content-length")];
 		if (len.empty()) {
+			Log::Network << "HTTP " << (reqtype == GET ? "GET" : "POST") << " " << url << " error ? " << Network::get_addr_name(addr) << " <missing content-length>";
 			*this << "HTTP/1.0 406 Not Acceptable\n\nNo Content-length was provided.\n";
 			state = ERROR;
 			return;
 		}
 		content_length = strtoul(len.c_str(), NULL, 10);
+
+		// check max content length
+		if (content_length > HTTP_POST_BODY_MAX) {
+			Log::Network << "HTTP " << url << " error " << (get_account() ? get_account()->get_id() : S("-")) << Network::get_addr_name(addr) << " <form data overflow>";
+			*this << "HTTP/1.0 413 Request Entity Too Large\n\nForm data length overflow.\n";
+		}
 	}
 
 	// if we have a session id, use it
@@ -294,6 +330,7 @@ HTTPHandler::check_headers()
 	if ((sid_start = strstr(cookies.c_str(), "AWEMUD_SESSION=")) != NULL) {
 		sid_start = strchr(sid_start, '=') + 1;
 		const char* sid_end = strchr(sid_start, ';');
+		String sid;
 		if (sid_end == NULL)
 			sid = String(sid_start);
 		else
@@ -309,22 +346,43 @@ HTTPHandler::check_headers()
 void
 HTTPHandler::execute()
 {
-	if (url.empty())
+	// split off reqid if we have one
+	String path = url;
+	const char* sep = strchr(url, '?');
+	String reqid;
+	if (sep != NULL) {
+		path = String(url, sep - url.c_str());
+		reqid = String(sep + 1);
+	}
+
+	// handle built-in pages
+	if (path == "/")
 		page_index();
-	else if (url == "login")
+	else if (path == "/login")
 		page_login();
-	else if (url == "logout")
+	else if (path == "/logout")
 		page_logout();
-	else if (url == "account")
+	else if (path == "/account")
 		page_account();
+	// do a script page
 	else {
-		Scriptix::ScriptFunction func = HTTPPageManager.get_page(url);
+		Scriptix::ScriptFunction func = HTTPPageManager.get_page(path);
 		if (func) {
-			func.run(url, reqid, this);
+			func.run(path, reqid, this);
 		} else {
+			Log::Network << "HTTP " << (reqtype == GET ? "GET" : "POST") << " " << url << " error " << (get_account() ? get_account()->get_id() : S("-")) << " " << Network::get_addr_name(addr) << " <page not found>";
 			*this << "HTTP/1.0 404 Not Found\n\nPage not found\n\n";
+			state = ERROR;
+			return;
 		}
 	}
+
+	// log access
+	Log::Network << "HTTP " << (reqtype == GET ? "GET" : "POST") << " " << url << " valid " << (get_account() ? get_account()->get_id() : S("-")) << " " << Network::get_addr_name(addr);
+
+
+	// done
+	state = DONE;
 }
 
 void
@@ -357,14 +415,15 @@ HTTPHandler::page_login()
 
 	*this << "\n"
 		<< StreamParse(HTTPPageManager.get_template(S("header")), S("msg"), msg, S("account"), get_account())
-		<< StreamParse(HTTPPageManager.get_template(S("login")))
+		<< StreamParse(HTTPPageManager.get_template(S("login")), S("account"), get_account())
 		<< StreamParse(HTTPPageManager.get_template(S("footer")));
 }
 
 void
 HTTPHandler::page_logout()
 {
-	HTTPPageManager.destroy_session(session);
+	if (session != NULL)
+		HTTPPageManager.destroy_session(session);
 
 	*this << "HTTP/1.0 200 OK\nContent-type: text/html\nSet-cookie: AWEMUD_SESSION=\n\n"
 		<< StreamParse(HTTPPageManager.get_template(S("header")))
@@ -375,8 +434,40 @@ HTTPHandler::page_logout()
 void
 HTTPHandler::page_account()
 {
+	// must have an account for this to work
+	if (get_account() == NULL) {
+		*this << "HTTP/1.0 403 Access Denied\n\nYou must login to access this page.\n";
+		return;
+	}
+
+	String msg;
+	if (post[S("action")] == "Save Changes") {
+		String name = strip(post[S("acct_name")]);
+		String email = strip(post[S("acct_email")]);
+		if (name.empty() || email.empty()) {
+			msg = S("You may not enter an empty name or email address.");
+		} else {
+			String pass1 = post[S("new_pass1")];
+			String pass2 = post[S("new_pass2")];
+
+			if (pass1 != pass2) {
+				msg = S("Passphrases do not match.");
+			} else {
+				if (!pass1.empty())
+					get_account()->set_passphrase(pass1);
+
+				get_account()->set_name(name);
+				get_account()->set_email(email);
+				get_account()->save();
+
+				msg = S("Changes saved successfully!");
+			}
+		}
+	}
+
+	// did they try to save changes?
 	*this << "HTTP/1.0 200 OK\nContent-type: text/html\n\n"
-		<< StreamParse(HTTPPageManager.get_template(S("header")), S("account"), get_account())
+		<< StreamParse(HTTPPageManager.get_template(S("header")), S("account"), get_account(), S("msg"), msg)
 		<< StreamParse(HTTPPageManager.get_template(S("account")), S("account"), get_account())
 		<< StreamParse(HTTPPageManager.get_template(S("footer")));
 }
@@ -437,7 +528,7 @@ HTTPSession::update_timestamp ()
 bool
 HTTPSession::check_timestamp ()
 {
-	return (time(NULL) - timestamp) < HTTP_SESSION_TIMEOUT;
+	return (time(NULL) - timestamp) < SettingsManager.get_http_timeout();
 }
 
 String
@@ -530,7 +621,6 @@ SHTTPPageManager::destroy_session (HTTPSession* session)
 	SessionMap::iterator i = sessions.find(session->get_id());
 	if (i != sessions.end())
 		sessions.erase(i);
-	Log::Info << "Destroy session " << session->get_id();
 	session->clear();
 	session = NULL;
 }
@@ -545,7 +635,7 @@ SHTTPPageManager::get_session (String id)
 }
 
 void
-SHTTPPageManager::check_sessions ()
+SHTTPPageManager::check_timeouts ()
 {
 	SessionMap::iterator i, n;
 	i = sessions.begin();
@@ -553,7 +643,6 @@ SHTTPPageManager::check_sessions ()
 		n = i;
 		++n;
 		if (!i->second->check_timestamp()) {
-			Log::Info << "Expiring session " << i->second->get_id();
 			i->second->clear();
 			sessions.erase(i);
 		}

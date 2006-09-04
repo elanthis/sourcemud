@@ -1,3 +1,13 @@
+2006-09-04 09:46:09  Sean Middleditch <elanthis@awesomeplay.com>
+
+  * Fixed telnet timeout not working.
+  * Added a Nil type to Scriptix to avoid crashes on errors
+    regarding nil values.
+  * Added HTTP timeouts.
+  * Added request size checking to HTTP requests.
+  * Greatly improved HTTP error reporting and logging.
+  * Note: HTTP still susceptible to "header bombing."
+
 2006-09-04 07:13:47  Sean Middleditch <elanthis@awesomeplay.com>
 
   * Add proper HTTP session tracking and session IDs.

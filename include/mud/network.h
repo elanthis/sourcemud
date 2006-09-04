@@ -74,8 +74,8 @@ class IPConnList {
 	int add (SockStorage& addr);
 	void remove (SockStorage& addr);
 
-	const ConnList& get_conn_list (void) const { return connections; }
-	inline uint get_total (void) { return total_conns; }
+	const ConnList& get_conn_list () const { return connections; }
+	inline uint get_total () { return total_conns; }
 
 	private:
 	ConnList connections;
@@ -84,15 +84,15 @@ class IPConnList {
 
 class ISocketHandler : public GC {
 	public:
-	virtual ~ISocketHandler (void) {}
+	virtual ~ISocketHandler () {}
 
-	virtual void prepare (void) = 0;
-	virtual void in_ready (void) = 0;
-	virtual void out_ready (void) = 0;
-	virtual void hangup (void) = 0;
+	virtual void prepare () = 0;
+	virtual void in_ready () = 0;
+	virtual void out_ready () = 0;
+	virtual void hangup () = 0;
 
-	virtual int get_sock (void) = 0;
-	virtual char get_poll_flags (void) = 0;
+	virtual int get_sock () = 0;
+	virtual char get_poll_flags () = 0;
 };
 
 class SocketListener : public ISocketHandler {
@@ -101,12 +101,12 @@ class SocketListener : public ISocketHandler {
 
 	// must provide in_ready to accept() incoming connections
 
-	virtual void prepare (void) {}
-	virtual void out_ready (void) {}
-	virtual void hangup (void) {}
+	virtual void prepare () {}
+	virtual void out_ready () {}
+	virtual void hangup () {}
 
-	virtual inline int get_sock (void) { return sock; }
-	virtual inline char get_poll_flags (void) { return POLLSYS_READ; }
+	virtual inline int get_sock () { return sock; }
+	virtual inline char get_poll_flags () { return POLLSYS_READ; }
 
 	protected:
 	int sock;
@@ -119,14 +119,14 @@ class SocketUser : public ISocketHandler {
 	// called with input
 	virtual void in_handle (char* buffer, size_t size) = 0;
 	// must implement:
-	//  void prepare (void)
-	//  void out_ready (void)
-	//  char get_poll_flags (void)
-	//  void hangup (void)
+	//  void prepare ()
+	//  void out_ready ()
+	//  char get_poll_flags ()
+	//  void hangup ()
 
-	virtual void in_ready (void);
+	virtual void in_ready ();
 
-	virtual inline int get_sock (void) { return sock; }
+	virtual inline int get_sock () { return sock; }
 
 	protected:
 	int sock;
@@ -134,14 +134,14 @@ class SocketUser : public ISocketHandler {
 
 class SNetworkManager : public IManager {
 	public:
-	virtual int initialize (void);
-	virtual void shutdown (void);
+	virtual int initialize ();
+	virtual void shutdown ();
 
 	int add_socket (ISocketHandler* socket);
 
 	int poll (long timeout);
 
-	inline const String& get_host (void) const { return host; }
+	inline const String& get_host () const { return host; }
 
 	// track connections
 	IPConnList connections;
