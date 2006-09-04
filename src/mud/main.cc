@@ -741,6 +741,9 @@ main (int argc, char **argv)
 			// update weather
 			WeatherManager.update();
 
+			// HTTP sessions
+			HTTPPageManager.check_sessions();
+
 			// update time
 			bool is_day = TimeManager.time.is_day ();
 			uint hour = TimeManager.time.get_hour ();

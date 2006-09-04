@@ -32,6 +32,7 @@ SX_FILES=\
 	scripts/death.sx \
 	scripts/store.sx \
 	scripts/whereis.sx \
+	scripts/webserver.sx \
 	scripts/example.zone.sx
 
 SX_CONTROL=\

@@ -9,9 +9,7 @@
 
 #include <ctype.h>
 
-#include "mud/entity.h"
 #include "mud/parse.h"
-#include "mud/creature.h"
 #include "common/streams.h"
 #include "mud/gametime.h"
 #include "common/strbuf.h"
@@ -227,9 +225,9 @@ namespace {
 	// invoke a method
 	int invoke_method (const StreamControl& stream, ParseValue self, String method, ParseArgs& argv)
 	{
-		// if it's an entity, invoke Entity::parse_property();
-		if (self.is_entity()) {
-			return self.get_entity()->parse_property(stream, method, argv);
+		// if it's an object, invoke Entity::parse_property();
+		if (self.is_object()) {
+			return self.get_object()->parse_property(stream, method, argv);
 		}
 		
 		// it's a string, so process it ourself
@@ -478,8 +476,8 @@ namespace {
 			} else {
 				if (value.is_string())
 					buffer << value.get_string();
-				else if (value.is_entity())
-					buffer << StreamName(value.get_entity());
+				else if (value.is_object())
+					value.get_object()->parse_default(buffer);
 			}
 		// just a function?
 		} else if (method) {

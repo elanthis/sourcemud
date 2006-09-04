@@ -47,7 +47,7 @@ typedef std::map<UniqueID, Entity*> UniqueIDMap; // NOTE: also non-GC scanning
 // --- Entity Definiton ---
 
 // entity control
-class Entity : public Scriptix::Native
+class Entity : public Scriptix::Native, public Parsable
 {
 	public:
 	Entity (const Scriptix::TypeInfo* type);
@@ -100,6 +100,7 @@ class Entity : public Scriptix::Native
 
 	// for parsing, pull a property based on a char
 	virtual int parse_property (const class StreamControl& stream, String method, const ParseArgs& argv) const;
+	virtual void parse_default (const class StreamControl& stream) const;
 
 	// heartbeat
 	virtual void heartbeat () = 0;

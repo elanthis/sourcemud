@@ -511,6 +511,22 @@ namespace MD5 {
 		snprintf (buffer, MD5_BUFFER_SIZE, "%s", MD5Crypt (key, salt));
 	}
 
+	void
+	hash (const char* source, char* out)
+	{
+		MD5_CTX ctx;
+		union {
+			uint32_t ints[4];
+			char final[16];
+		} result;
+
+		MD5Init(&ctx);
+		MD5Update(&ctx, (const unsigned char*)source, strlen(source));
+		MD5Final((unsigned char*)result.final, &ctx);
+
+		snprintf(out, MD5_BUFFER_SIZE, "%X%X%X%X", result.ints[0], result.ints[1], result.ints[2], result.ints[3]);
+	}
+
 	int
 	compare (const char *base, const char *pass)
 	{

@@ -5,6 +5,9 @@
  * http://www.awemud.net
  */
 
+// FIXME: make this a config value
+#define HTTP_SESSION_TIMEOUT (60*30) // 30 minutes
+
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
@@ -29,6 +32,7 @@
 #include "mud/settings.h"
 #include "common/log.h"
 #include "mud/fileobj.h"
+#include "common/md5.h"
 
 SHTTPPageManager HTTPPageManager;
 
@@ -37,6 +41,7 @@ HTTPHandler::HTTPHandler (int s_sock, const SockStorage& s_netaddr) : Scriptix::
 {
 	addr = s_netaddr;
 	state = REQ;
+	session = NULL;
 }
 
 // disconnect
@@ -282,6 +287,23 @@ HTTPHandler::check_headers()
 		}
 		content_length = strtoul(len.c_str(), NULL, 10);
 	}
+
+	// if we have a session id, use it
+	String cookies = headers[S("cookie")];
+	const char* sid_start;
+	if ((sid_start = strstr(cookies.c_str(), "AWEMUD_SESSION=")) != NULL) {
+		sid_start = strchr(sid_start, '=') + 1;
+		const char* sid_end = strchr(sid_start, ';');
+		if (sid_end == NULL)
+			sid = String(sid_start);
+		else
+			sid = String(sid_start, sid_end - sid_start);
+
+		// get the session (may be NULL if expired/invalid)
+		session = HTTPPageManager.get_session(sid);
+		if (session != NULL)
+			session->update_timestamp();
+	}
 }
 
 void
@@ -298,7 +320,7 @@ HTTPHandler::execute()
 	else {
 		Scriptix::ScriptFunction func = HTTPPageManager.get_page(url);
 		if (func) {
-			*this << "HTTP/1.0 200 OK\nContent-type: text/html\n\n";
+			func.run(url, reqid, this);
 		} else {
 			*this << "HTTP/1.0 404 Not Found\n\nPage not found\n\n";
 		}
@@ -309,8 +331,8 @@ void
 HTTPHandler::page_index()
 {
 	*this << "HTTP/1.0 200 OK\nContent-type: text/html\n\n"
-		<< StreamParse(HTTPPageManager.get_template(S("header")))
-		<< StreamParse(HTTPPageManager.get_template(S("index")))
+		<< StreamParse(HTTPPageManager.get_template(S("header")), S("account"), get_account())
+		<< StreamParse(HTTPPageManager.get_template(S("index")), S("account"), get_account())
 		<< StreamParse(HTTPPageManager.get_template(S("footer")));
 }
 
@@ -319,18 +341,22 @@ HTTPHandler::page_login()
 {
 	String msg;
 
+	*this << "HTTP/1.0 200 OK\nContent-type: text/html\n";
+
 	// attempt login?
 	if (post[S("action")] == "Login") {
-		account = AccountManager.get(post[S("username")]);
+		Account* account = AccountManager.get(post[S("username")]);
 		if (account != NULL && account->check_passphrase(post[S("password")])) {
+			session = HTTPPageManager.create_session(account);
 			msg = S("Login successful!");
+			*this << "Set-cookie: AWEMUD_SESSION=" << session->get_id() << "\n";
 		} else {
 			msg = S("Incorrect username or passphrase.");
 		}
 	}
 
-	*this << "HTTP/1.0 200 OK\nContent-type: text/html\n\n"
-		<< StreamParse(HTTPPageManager.get_template(S("header")), S("msg"), msg)
+	*this << "\n"
+		<< StreamParse(HTTPPageManager.get_template(S("header")), S("msg"), msg, S("account"), get_account())
 		<< StreamParse(HTTPPageManager.get_template(S("login")))
 		<< StreamParse(HTTPPageManager.get_template(S("footer")));
 }
@@ -338,6 +364,8 @@ HTTPHandler::page_login()
 void
 HTTPHandler::page_logout()
 {
+	HTTPPageManager.destroy_session(session);
+
 	*this << "HTTP/1.0 200 OK\nContent-type: text/html\nSet-cookie: AWEMUD_SESSION=\n\n"
 		<< StreamParse(HTTPPageManager.get_template(S("header")))
 		<< StreamParse(HTTPPageManager.get_template(S("logout")))
@@ -348,8 +376,8 @@ void
 HTTPHandler::page_account()
 {
 	*this << "HTTP/1.0 200 OK\nContent-type: text/html\n\n"
-		<< StreamParse(HTTPPageManager.get_template(S("header")))
-		<< StreamParse(HTTPPageManager.get_template(S("account")))
+		<< StreamParse(HTTPPageManager.get_template(S("header")), S("account"), get_account())
+		<< StreamParse(HTTPPageManager.get_template(S("account")), S("account"), get_account())
 		<< StreamParse(HTTPPageManager.get_template(S("footer")));
 }
 
@@ -360,6 +388,79 @@ HTTPHandler::get_post (String id) const
 	if (i == post.end())
 		return String();
 	return i->second;
+}
+
+int
+HTTPHandler::parse_property (const StreamControl& stream, String method, const ParseArgs& argv) const
+{
+	if (method == "post" && argv.size() == 1) {
+		stream << get_post(argv[0].get_string());
+		return 0;
+	} else {
+		return -1;
+	}
+}
+
+void
+HTTPHandler::parse_default (const StreamControl& stream) const
+{
+	stream << "<HTTP>";
+}
+
+HTTPSession::HTTPSession (Account* account)
+{
+	assert(account != NULL);
+
+	// initial setup
+	this->account = account;
+	timestamp = time(NULL);
+
+	// generate session ID
+	StringBuffer buf;
+	buf << "AweMUD";
+	buf << account->get_id();
+	buf << account->get_name();
+	buf << rand();
+	buf << account->get_email();
+	buf << timestamp;
+	char md5buf[MD5_BUFFER_SIZE];
+	MD5::hash(buf.c_str(), md5buf);
+	id = String(md5buf);
+}
+
+void
+HTTPSession::update_timestamp ()
+{
+	timestamp = time(NULL);
+}
+
+bool
+HTTPSession::check_timestamp ()
+{
+	return (time(NULL) - timestamp) < HTTP_SESSION_TIMEOUT;
+}
+
+String
+HTTPSession::get_var (String id) const
+{
+	GCType::map<String,String>::const_iterator i = vars.find(id);
+	if (i == vars.end())
+		return String();
+	return i->second;
+}
+
+void
+HTTPSession::set_var (String id, String val)
+{
+	vars[id] = val;
+}
+
+void
+HTTPSession::clear ()
+{
+	vars.clear();
+	id.clear();
+	account = NULL;
 }
 
 int
@@ -408,4 +509,54 @@ void
 SHTTPPageManager::register_page (String id, Scriptix::ScriptFunction func)
 {
 	pages[id] = func;
+}
+
+HTTPSession*
+SHTTPPageManager::create_session (Account* account)
+{
+	assert(account != NULL);
+
+	HTTPSession* session = new HTTPSession(account);
+	sessions[session->get_id()] = session;
+
+	return session;
+}
+
+void
+SHTTPPageManager::destroy_session (HTTPSession* session)
+{
+	assert(session != NULL);
+
+	SessionMap::iterator i = sessions.find(session->get_id());
+	if (i != sessions.end())
+		sessions.erase(i);
+	Log::Info << "Destroy session " << session->get_id();
+	session->clear();
+	session = NULL;
+}
+
+HTTPSession*
+SHTTPPageManager::get_session (String id)
+{
+	SessionMap::iterator i = sessions.find(id);
+	if (i == sessions.end())
+		return NULL;
+	return i->second;
+}
+
+void
+SHTTPPageManager::check_sessions ()
+{
+	SessionMap::iterator i, n;
+	i = sessions.begin();
+	while (i != sessions.end()) {
+		n = i;
+		++n;
+		if (!i->second->check_timestamp()) {
+			Log::Info << "Expiring session " << i->second->get_id();
+			i->second->clear();
+			sessions.erase(i);
+		}
+		i = n;
+	}
 }

@@ -262,6 +262,12 @@ Entity::parse_property (const StreamControl& stream, String comm, const ParseArg
 	return -1;
 }
 
+void
+Entity::parse_default (const StreamControl& stream) const
+{
+	stream << StreamName(*this);
+}
+
 bool
 Entity::has_tag (TagID tag) const
 {

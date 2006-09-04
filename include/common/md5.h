@@ -15,6 +15,11 @@ namespace MD5 {
 	// given a key, it creats a salt and encrypts in MD5,
 	// storing the result in buffer, which must be
 	// MD5_BUFFER_SIZE or larger (including NUL byte location)
+	
+	void hash (const char* source, char* buffer);
+	// computes an MD5 hash of the source string,
+	// storing the result in buffer, which must be
+	// MD5_BUFFER_SIZE or larger (including NUL byte location)
 
 	int compare (const char *base, const char *pass);
 	// given an already encrypted password (including the salt)

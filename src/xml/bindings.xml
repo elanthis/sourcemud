@@ -3391,15 +3391,116 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
       <name>header</name>
       <doc>Display the default page header.</doc>
       <code><![CDATA[
-        *_self << StreamParse(HTTPPageManager.get_template(S("header")));
+        *_self << "HTTP/1.0 200 OK\nContent-type: text/html\n\n";
+        *_self << StreamParse(HTTPPageManager.get_template(S("header")), S("account"), _self->get_account());
       ]]></code>
     </method>
     <method>
       <name>footer</name>
       <doc>Display the default page footer.</doc>
       <code><![CDATA[
-        *_self << StreamParse(HTTPPageManager.get_template(S("footer")));
+        *_self << StreamParse(HTTPPageManager.get_template(S("footer")), S("account"), _self->get_account());
       ]]></code>
+    </method>
+
+    <!-- Redirect the browser -->
+    <method>
+      <name>redirect</name>
+      <arg>
+        <type>String</type>
+        <name>url</name>
+        <doc>The URL to redirect the user to.</doc>
+      </arg>
+      <doc>This method redirects the user's browser.  It's most useful after doing form processing successfully.</doc>
+      <code><![CDATA[*_self << "HTTP/1.0 302 Temporary Redirect\nLocation: " << _arg_url << "\nContent-type: text/html\n\n<p><a href=\"" << _arg_url << "\">" << _arg_url << "</a></p>\n";]]></code>
+    </method>
+
+    <!-- Check if a session is active -->
+    <method>
+      <name>isSession</name>
+      <return>
+        <type>Boolean</type>
+        <doc>True if there is a session open.</doc>
+      </return>
+      <doc>This method returns true if the current connection has an associated session.</doc>
+      <code><![CDATA[_return = _self->get_session() != NULL;]]></code>
+    </method>
+
+    <!-- Auth checking -->
+    <method>
+      <name>checkAccess</name>
+      <return>
+        <type>Boolean</type>
+        <doc>True if the requirement was passed.</doc>
+      </return>
+      <arg>
+        <name>privilege</name>
+        <type>String</type>
+        <doc>The privilege which is required.</doc>
+      </arg>
+      <doc>This function tests if the currently logged in user (if any) has the requested privilege.</doc>
+      <code><![CDATA[
+        if (!_self->get_account() || !_self->get_account()->has_access(AccessID::lookup(_arg_privilege))) {
+          _return = false;
+        } else {
+          _return = true;
+        }
+      ]]></code>
+    </method>
+    <method>
+      <name>requireAccess</name>
+      <return>
+        <type>Boolean</type>
+        <doc>True if the requirement was passed.</doc>
+      </return>
+      <arg>
+        <name>privilege</name>
+        <type>String</type>
+        <doc>The privilege which is required.</doc>
+      </arg>
+      <doc>This function, like checkAccess, tests if the current logged in user (if any) has the associated privilege.  This function will also automatically display an access denied error if the requested privilege is not available, however.</doc>
+      <code><![CDATA[
+        if (!_self->get_account() || !_self->get_account()->has_access(AccessID::lookup(_arg_privilege))) {
+          *_self << "HTTP/1.0 403 Access Denied\nContent-type: text/html\n\n";
+          *_self << StreamParse(HTTPPageManager.get_template(S("header")), S("account"), _self->get_account());
+          *_self << StreamParse(HTTPPageManager.get_template(S("noaccess")), S("account"), _self->get_account(), S("priv"), _arg_privilege);
+          *_self << StreamParse(HTTPPageManager.get_template(S("footer")));
+          _return = false;
+        } else {
+          _return = true;
+        }
+      ]]></code>
+    </method>
+
+    <!-- Set/get session variables -->
+    <method>
+      <name>setVar</name>
+      <arg>
+        <type>String</type>
+        <name>name</name>
+        <doc>Name of the session variable to set.</doc>
+      </arg>
+      <arg>
+        <type>String</type>
+        <name>value</name>
+        <doc>The value to set the session variable to.</doc>
+      </arg>
+      <doc>This will store the name/value pair with the HTTP session, and the values will be retained across page requests.  This will only work if the user is logged in and there is an active session.</doc>
+      <code><![CDATA[if (_self->get_session()) _self->get_session()->set_var(_arg_name, _arg_value);]]></code>
+    </method>
+    <method>
+      <name>getVar</name>
+      <arg>
+        <type>String</type>
+        <name>name</name>
+        <doc>Name of the session variable to retrieve.</doc>
+      </arg>
+      <return>
+        <type>String</type>
+        <doc>The value of the session variable retrieved.  Will be nil if the variable is not set or there is no active session.</doc>
+      </return>
+      <doc>This will retrieve a value stored with setVar.</doc>
+      <code><![CDATA[if (_self->get_session()) _return = _self->get_session()->get_var(_arg_name);]]></code>
     </method>
 
     <!-- Display a particular template -->
@@ -3417,9 +3518,10 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
         ParseNames vnames;
         vlist.resize(_argc);
         vnames.resize(_argc);
-        //vlist[0] = _self;
+        vlist[0] = _self;
         vnames[0] = S("http");
-        //vlist[1] = _self->get_account();
+        if (_self->get_session() != NULL)
+          vlist[1] = _self->get_session()->get_account();
         vnames[1] = S("account");
         for (size_t i = 2; i < _argc; ++i) {
           if (_argv[i].is_a(AweMUD_EntityType)) {

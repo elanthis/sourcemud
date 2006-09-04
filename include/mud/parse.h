@@ -11,41 +11,52 @@
 #include "common/gcvector.h"
 #include "common/streams.h"
 
-class Entity;
-class Creature;
+class ParseValue;
+
+typedef StringList ParseNames;
+typedef GCType::vector<ParseValue> ParseArgs;
+
+class Parsable
+{
+	public:
+	virtual ~Parsable () {}
+
+	// return non-zero if the requested method/property does not exist
+	virtual int parse_property (const class StreamControl& stream, String method, const ParseArgs& argv) const = 0;
+
+	// stream a default desc/name/whatever
+	virtual void parse_default (const class StreamControl& stream) const = 0;
+};
 
 class ParseValue : public GC
 {
 	public:
-	enum Type { T_ENTITY, T_STRING, T_NULL };
+	enum Type { T_OBJECT, T_STRING, T_NULL };
 
 	// constructors
-	inline ParseValue () : type(T_NULL), entity(NULL), string() {}
-	inline ParseValue (const Entity* s_entity) : type(s_entity == NULL ? T_NULL : T_ENTITY), entity(s_entity), string() {}
-	inline ParseValue (String s_string) : type(T_STRING), entity(NULL), string(s_string) {}
+	inline ParseValue () : type(T_NULL), object(NULL), string() {}
+	inline ParseValue (const Parsable* s_object) : type(s_object == NULL ? T_NULL : T_OBJECT), object(s_object), string() {}
+	inline ParseValue (String s_string) : type(T_STRING), object(NULL), string(s_string) {}
 
 	// fetch the type of the mixed value
 	inline Type get_type () const { return type; }
-	inline bool is_entity () const { return type == T_ENTITY; }
+	inline bool is_object () const { return type == T_OBJECT; }
 	inline bool is_string () const { return type == T_STRING; }
 	inline bool is_null () const { return type == T_NULL; }
 
 	// specific getters
-	inline const Entity* get_entity () const { return this->entity; }
+	inline const Parsable* get_object () const { return this->object; }
 	inline const String& get_string () const { return this->string; }
 
 	// assign
-	inline const Entity* operator= (const Entity* entity) { type = (entity == NULL ? T_NULL : T_ENTITY); return this->entity = entity; }
+	inline const Parsable* operator= (const Parsable* object) { type = (object == NULL ? T_NULL : T_OBJECT); return this->object = object; }
 	inline const String& operator= (String string) { type = T_STRING; return this->string = string; }
 
 	private:
 	Type type;
-	const Entity* entity;
+	const Parsable* object;
 	String string;
 };
-
-typedef StringList ParseNames;
-typedef GCType::vector<ParseValue> ParseArgs;
 
 namespace parse {
 	const StreamControl& text (const StreamControl& stream, String format, const ParseArgs& argv, const ParseNames& names);

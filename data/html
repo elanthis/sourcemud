@@ -4,6 +4,18 @@ html.header = begin
 		<head>
 			<title>AweMUD Portal</title>
 			<style type="text/css">
+				td \{
+					text-align: left;
+					vertical-top: top;
+				}
+				th \{
+					text-align: left;
+					vertical-top: top;
+					background: #666;
+					font-weight: bold;
+					color: #fff;
+					padding: 2px;
+				}
 				td.options \{
 					text-align: right;
 				}
@@ -48,6 +60,11 @@ html.header = begin
 				| <a href="/">Home</a>
 				| <a href="/logout">Logout</a>
 			</div>
+			{else}
+			<div id="menu">
+				<a href="/login">Login</a>
+				| <a href="/">Home</a>
+			</div>
 			{endif}
 
 			<div id="body">
@@ -74,7 +91,8 @@ end
 
 html.login = begin
 	<form action="/login" method="post">
-		<table>
+		<table align="center">
+			<tr><th colspan="2">Login</th></tr>
 			<tr>
 				<td><label for="username">Account:</label></td>
 				<td><input type="text" size="25" name="username" id="username" /></td>
@@ -93,4 +111,15 @@ end
 html.logout = begin
 	<p style="text-align: center;">Good-bye!</p>
 	<p style="text-align: center;"><a href="/login">Login</a></p>
+end
+
+html.stats = begin
+	<table align="center">
+		<tr><th colspan="2">Site Statistics</th></tr>
+		<tr><td><label>Build:</label></td><td>{build}</td></tr>
+		<tr><td><label>Uptime:</label></td><td>{uptime}</td></tr>
+		<tr><td><label>Hostname:</label></td><td>{hostname}</td></tr>
+		<tr><td><label>Active Players:</label></td><td>{player-count}</td></tr>
+		<tr><td><label>Game Time:</label></td><td>{date} {time}</td></tr>
+	</table>
 end

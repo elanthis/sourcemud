@@ -42,7 +42,6 @@ SUniqueIDManager::initialize ()
 void
 SUniqueIDManager::shutdown ()
 {
-	Log::Info << "Saving unique ID state";
 	FILE* file = fopen(SettingsManager.get_misc_path() + "/uniqid", "w");
 	if (file == NULL) {
 		Log::Error << "UniqueIDManager.shutdown(): Failed to open uniqid: " << strerror(errno);

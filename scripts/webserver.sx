@@ -1,0 +1,15 @@
+// Web server routines
+// Copyright (C) 2006  AwesomePlay Productions, Inc.
+
+// display site statistics
+function pageStats(page, id, http)
+{
+	http.header();
+	http.displayTemplate('stats');
+	http.footer();
+}
+
+function init()
+{
+	registerPage('stats', pageStats);
+}

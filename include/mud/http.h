@@ -22,8 +22,32 @@
 #include "scriptix/native.h"
 #include "scriptix/function.h"
 #include "mud/account.h"
+#include "mud/parse.h"
 
-class HTTPHandler : public Scriptix::Native, public SocketUser, public IStreamSink
+class HTTPSession : public GC
+{
+	public:
+	HTTPSession (Account* s_account);
+
+	String get_id () const { return id; }
+	Account* get_account () const { return account; }
+
+	String get_var (String id) const;
+	void set_var (String id, String value);
+
+	void update_timestamp();
+	bool check_timestamp();
+
+	void clear ();
+
+	private:
+	String id;
+	time_t timestamp;
+	Account* account;
+	GCType::map<String,String> vars;
+};
+
+class HTTPHandler : public Scriptix::Native, public SocketUser, public IStreamSink, public Parsable
 {
 	public:
 	HTTPHandler (int s_sock, const SockStorage& s_netaddr);
@@ -46,7 +70,8 @@ class HTTPHandler : public Scriptix::Native, public SocketUser, public IStreamSi
 	String get_post (String name) const;
 
 	// get user account
-	Account* get_account () const { return account; }
+	HTTPSession* get_session () const { return session; }
+	Account* get_account () const { return session ? session->get_account() : NULL; }
 
 	// low-level IO
 	void disconnect ();
@@ -55,6 +80,10 @@ class HTTPHandler : public Scriptix::Native, public SocketUser, public IStreamSi
 	virtual void out_ready ();
 	virtual void hangup ();
 	virtual void prepare ();
+
+	// parse values
+	int parse_property (const StreamControl& stream, String method, const ParseArgs& argv) const;
+	void parse_default (const StreamControl& stream) const;
 
 	protected:
 	~HTTPHandler () {}
@@ -71,12 +100,13 @@ class HTTPHandler : public Scriptix::Native, public SocketUser, public IStreamSi
 	String reqid;
 	GCType::map<String, String> headers;
 	size_t content_length;
+	String sid;
 
 	// POST data
 	GCType::map<String, String> post;
 
-	// Registered account
-	Account* account;
+	// the session
+	HTTPSession* session;
 };
 
 class SHTTPPageManager : public IManager
@@ -91,12 +121,20 @@ class SHTTPPageManager : public IManager
 
 	void register_page (String id, Scriptix::ScriptFunction func);
 
+	HTTPSession* create_session (Account* account);
+	void destroy_session (HTTPSession* session);
+	HTTPSession* get_session (String id);
+	void check_sessions ();
+
 	private:
 	typedef GCType::map<String, String> TemplateMap;
 	TemplateMap templates;
 
 	typedef GCType::map<String, Scriptix::ScriptFunction> PageMap;
 	PageMap pages;
+
+	typedef GCType::map<String, HTTPSession*> SessionMap;
+	SessionMap sessions;
 };
 extern SHTTPPageManager HTTPPageManager;
 

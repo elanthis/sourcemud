@@ -60,12 +60,6 @@ room {
     }
     entity.uid = <7>
   }
-  object {
-    object.blueprint = "npc_corpse"
-    object.name = "a large wolf corpse"
-    entity.uid = <308>
-    user.npc_blueprint = "wolf_large"
-  }
 }
 room {
   room.id = "altar"
@@ -155,6 +149,18 @@ room {
     }
     entity.uid = <19>
   }
+  npc {
+    npc.blueprint = "fox"
+    entity.uid = <400>
+    entity.tag = "forest_critter"
+    creature.position = "stand"
+    creature.hp = 90
+    equip_right_hand {
+      object.blueprint = "claws_animal"
+      entity.uid = <401>
+    }
+    npc.zonelock = true
+  }
 }
 room {
   room.id = "forest_cliff"
@@ -200,12 +206,6 @@ room {
   object {
     object.blueprint = "claws_animal"
     entity.uid = <29>
-  }
-  object {
-    object.blueprint = "npc_corpse"
-    object.name = "a large wolf corpse"
-    entity.uid = <302>
-    user.npc_blueprint = "wolf_large"
   }
 }
 room {
@@ -1658,6 +1658,18 @@ room {
     equip_right_hand {
       object.blueprint = "claws_animal"
       entity.uid = <266>
+    }
+    npc.zonelock = true
+  }
+  npc {
+    npc.blueprint = "skeleton"
+    entity.uid = <402>
+    entity.tag = "graveyard_undead"
+    creature.position = "stand"
+    creature.hp = 60
+    equip_right_hand {
+      object.blueprint = "claws_animal"
+      entity.uid = <403>
     }
     npc.zonelock = true
   }
