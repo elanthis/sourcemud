@@ -26,6 +26,7 @@
     #include "mud/creature.h"
     #include "mud/hooks.h"
     #include "common/strbuf.h"
+    #include "mud/http.h"
 
     using namespace std;
   ]]></header>
@@ -3378,6 +3379,75 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
       <doc>Secret skills are locked skills which are hidden from the player entirely.  Any skill which isIntrinsic returns true for will also return for for isRestricted and isLocked.</doc>
     </method>
   </type>
+
+  <!-- HTTP -->
+  <type>
+    <name>HTTP</name>
+    <cppname>HTTPHandler</cppname>
+    <doc>The HTTP object represents an HTTP connection.  This are one-off requests, which are used to script the AweMUD Portal interface.</doc>
+
+    <!-- Display the page header/footer -->
+    <method>
+      <name>header</name>
+      <doc>Display the default page header.</doc>
+      <code><![CDATA[
+        *_self << StreamParse(HTTPPageManager.get_template(S("header")));
+      ]]></code>
+    </method>
+    <method>
+      <name>footer</name>
+      <doc>Display the default page footer.</doc>
+      <code><![CDATA[
+        *_self << StreamParse(HTTPPageManager.get_template(S("footer")));
+      ]]></code>
+    </method>
+
+    <!-- Display a particular template -->
+    <method>
+      <name>displayTemplate</name>
+      <arg>
+        <type>String</type>
+        <name>name</name>
+        <doc>Template to display.</doc>
+      </arg>
+      <doc>Displays a template to the user with the default expansions.</doc>
+      <varg />
+      <code><![CDATA[
+        ParseArgs vlist;
+        ParseNames vnames;
+        vlist.resize(_argc);
+        vnames.resize(_argc);
+        //vlist[0] = _self;
+        vnames[0] = S("http");
+        //vlist[1] = _self->get_account();
+        vnames[1] = S("account");
+        for (size_t i = 2; i < _argc; ++i) {
+          if (_argv[i].is_a(AweMUD_EntityType)) {
+            vlist[i] = ((Entity*)_argv[i].get());
+          } else {
+            _argv[i] = _argv[i].to_string();
+            if (!_argv[i].is_nil())
+              vlist[i] = _argv[i].get_string();
+          }
+        }
+        parse::text(*_self, HTTPPageManager.get_template(_arg_name), vlist, vnames);
+      ]]></code>
+    </method>
+  </type>
+  <function>
+    <name>registerPage</name>
+    <arg>
+      <name>name</name>
+      <type>String</type>
+      <doc>Page name.</doc>
+    </arg>
+    <arg>
+      <name>callback</name>
+      <type>Function</type>
+      <doc>Callback function.  It must take the following arguments: page name (String), reqid (String), connection (HTTP).</doc>
+    </arg>
+    <code><![CDATA[HTTPPageManager.register_page(_arg_name, _arg_callback);]]></code>
+  </function>
 
   <!-- Telnet -->
   <type>

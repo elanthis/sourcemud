@@ -53,6 +53,7 @@ class SSettingsManager : public IManager
 	SETTING_STRING(chroot)
 	SETTING_STRING(sendmail_bin)
 	SETTING_INT(port)
+	SETTING_INT(http)
 	SETTING_INT(max_per_host)
 	SETTING_INT(max_clients)
 	SETTING_INT(characters_per_account)

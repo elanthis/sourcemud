@@ -1,3 +1,10 @@
+2006-09-04 04:49:23  Sean Middleditch <elanthis@awesomeplay.com>
+
+  * AweMUD now includes a basic web server, complete with
+    Scriptix integration.  Sort of.  Still needs a lot of work.
+    DO NOT enable on sites with public access, the code is not
+    yet deemed secure.
+
 2006-09-04 01:42:19  Sean Middleditch <elanthis@awesomeplay.com>
 
   * Fix mail compilation for systems with sendmail support.

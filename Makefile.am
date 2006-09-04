@@ -147,7 +147,7 @@ WORLD = data/time data/weather
 ZONES = data/example.zone
 
 HELP = data/awemud.help data/commands.help data/olc.help
-GAMEDATA = data/messages data/races data/socials data/calendar data/skills data/uniqid data/traits
+GAMEDATA = data/messages data/races data/socials data/calendar data/skills data/uniqid data/traits data/html
 TEMPLATES = data/animals.npcs data/undead.npcs data/armor.objs data/misc.objs data/weapons.objs data/gems.objs 
 DATAFILES = $(WORLD) $(HELP) $(GAMEDATA) $(TEMPLATES)
 
@@ -235,6 +235,7 @@ noinst_HEADERS=\
 	include/mud/filetab.h \
 	include/mud/gametime.h \
 	include/mud/help.h \
+	include/mud/http.h \
 	include/mud/idmap.h \
 	include/mud/login.h \
 	include/mud/message.h \
@@ -357,6 +358,7 @@ awemud_bin_SOURCES=\
 	src/mud/fileobj.cc \
 	src/mud/filetab.cc \
 	src/mud/help.cc \
+	src/mud/http.cc \
 	src/mud/hooks.cc \
 	src/mud/idmap.cc \
 	src/mud/login.cc \

@@ -19,9 +19,11 @@ class StringBuffer : public IStreamSink
 	public:
 	StringBuffer () : buffer(stat_buffer), buffer_size(STRING_BUFFER_STATIC_SIZE) { stat_buffer[0] = 0; }
 
-	bool empty () const { return buffer[0] != 0; }
+	bool empty () const { return buffer[0] == 0; }
 	String str () const { return String(buffer); }
 	CString c_str () const { return buffer; }
+
+	size_t size () const { return strlen(buffer); }
 
 	void write (const char* bytes, size_t len);
 	virtual void stream_put (const char* bytes, size_t len) { write(bytes, len); }

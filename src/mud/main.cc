@@ -46,6 +46,7 @@
 #include "mud/settings.h"
 #include "mud/login.h"
 #include "common/fdprintf.h"
+#include "mud/http.h"
 
 // DECLARATIONS
 namespace {
@@ -53,6 +54,14 @@ namespace {
 	{
 		public:
 		inline TelnetListener (int s_sock) : SocketListener(s_sock) {}
+
+		virtual void in_ready ();
+	};
+
+	class HTTPListener : public SocketListener
+	{
+		public:
+		inline HTTPListener (int s_sock) : SocketListener(s_sock) {}
 
 		virtual void in_ready ();
 	};
@@ -272,6 +281,63 @@ namespace {
 
 		// init login
 		telnet->set_mode(new TelnetModeLogin(telnet));
+	}
+
+	void
+	HTTPListener::in_ready ()
+	{
+		// accept client
+		SockStorage addr;
+		int client = Network::accept_tcp(sock, addr);
+		if (client == -1) {
+			Log::Error << "accept() failed: " << strerror(errno);
+			return;
+		}
+
+		// deny blocked hosts
+		if (NetworkManager.denies.exists(addr)) {
+			fdprintf(client, "HTTP/1.0 403 Forbidden\n\nYour host or network has been banned from this server.\n");
+			Log::Network << "HTTP client rejected: " << Network::get_addr_name(addr) << ": host or network banned";
+			close(client);
+			return;
+		}
+
+		// manage connection count
+		int err = NetworkManager.connections.add(addr);
+		if (err == -1) {
+			fdprintf(client, "HTTP/1.0 503 Service Unavailable\n\nToo many users connected.\n");
+			Log::Network << "HTTP client rejected: " << Network::get_addr_name(addr) << ": too many users";
+			close(client);
+			return;
+		}
+		if (err == -2) {
+			fdprintf(client, "HTTP/1.0 503 Service Unavailable\n\nToo many users connected from your host.\n");
+			Log::Network << "HTTP client rejected: " << Network::get_addr_name(addr) << ": too many users from client host";
+			close(client);
+			return;
+		}
+
+		// log connection
+		Log::Network << "HTTP client connected: " << Network::get_addr_name(addr);
+		
+		// create a new telnet handler
+		HTTPHandler *http = new HTTPHandler(client, addr);
+		if (http == NULL) {
+			fdprintf(client, "HTTP/1.0 500 Internal Server Error\n\nServer failure.\n");
+			Log::Error << "HTTPHandler() failed, closing connection.";
+			close(client);
+			NetworkManager.connections.remove(addr);
+			return;
+		}
+
+		// add to poll manager
+		if (NetworkManager.add_socket(http)) {
+			fdprintf(client, "HTTP/1.0 500 Internal Server Error\n\nServer failure.\n");
+			Log::Error << "PollSystem::add_socket() failed, closing connection.";
+			close(client);
+			NetworkManager.connections.remove(addr);
+			return;
+		}
 	}
 
 	void
@@ -530,6 +596,8 @@ main (int argc, char **argv)
 	// listen sockets
 	int player_ipv4 = -1;
 	int player_ipv6 = -1;
+	int http_ipv6 = -1;
+	int http_ipv4 = -1;
 	int control_unix = -1;
 
 	// control interface
@@ -550,7 +618,6 @@ main (int argc, char **argv)
 		player_ipv6 = Network::listen_tcp(accept_port, AF_INET6);
 		if (player_ipv6 == -1)
 			return 1;
-		Log::Info << "IPv6 enabled";
 	}
 #endif // HAVE_IPV6
 
@@ -558,7 +625,25 @@ main (int argc, char **argv)
 	player_ipv4 = Network::listen_tcp(accept_port, AF_INET);
 	if (player_ipv4 == -1)
 		return 1;
-	Log::Info << "Listening on " << NetworkManager.get_host() << "." << accept_port;
+
+	Log::Info << "Listening for players on " << NetworkManager.get_host() << "." << accept_port;
+
+	// HTTP server
+	if (SettingsManager.get_http() != 0) {
+#ifdef HAVE_IPV6
+		if (SettingsManager.get_ipv6()) {
+			http_ipv6 = Network::listen_tcp(SettingsManager.get_http(), AF_INET6);
+			if (http_ipv6 == -1)
+				return 1;
+		}
+#endif // HAVE_IPV6
+
+		http_ipv4 = Network::listen_tcp(SettingsManager.get_http(), AF_INET);
+		if (http_ipv4 == -1)
+			return 1;
+
+		Log::Info << "Listening for web clients on " << NetworkManager.get_host() << "." << SettingsManager.get_http();
+	}
 
 	// change user/group
 	if (grp) {
@@ -596,6 +681,18 @@ main (int argc, char **argv)
 	}
 	if (player_ipv6 != -1) {
 		if (NetworkManager.add_socket(new TelnetListener(player_ipv6))) {
+			Log::Error << "NetworkManager.add_socket() failed";
+			return 1;
+		}
+	}
+	if (http_ipv4 != -1) {
+		if (NetworkManager.add_socket(new HTTPListener(http_ipv4))) {
+			Log::Error << "NetworkManager.add_socket() failed";
+			return 1;
+		}
+	}
+	if (http_ipv6 != -1) {
+		if (NetworkManager.add_socket(new HTTPListener(http_ipv6))) {
 			Log::Error << "NetworkManager.add_socket() failed";
 			return 1;
 		}

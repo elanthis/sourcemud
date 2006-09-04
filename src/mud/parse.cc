@@ -403,11 +403,6 @@ namespace {
 
 			// get value of variable, error if no such variable
 			value = get_value(buffer.str(), state);
-			if (value.is_null()) {
-				skip(in);
-				stream << "{error: value is null}";
-				return -1;
-			}
 
 			// next token
 			if ((token = get_token(in, buffer)) == TOK_ERROR) {
@@ -442,12 +437,6 @@ namespace {
 		} else if (token != TOK_END) {
 			skip(in);
 			stream << "{error: arguments given to non-function}";
-			return -1;
-
-		// no method, so we better have a value
-		} else if (value.is_null()) {
-			skip(in);
-			stream << "{error: value is null}";
 			return -1;
 		}
 
@@ -493,7 +482,7 @@ namespace {
 					buffer << StreamName(value.get_entity());
 			}
 		// just a function?
-		} else {
+		} else if (method) {
 			if (parse::exec_command(buffer, method, argv)) {
 				stream << "{error: command failed}";
 				return -1;

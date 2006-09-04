@@ -41,7 +41,7 @@ namespace {
 	SettingInfo settings[] = {
 		SETTING_STRING(log_file, 'l', "log", "log_file", "")
 		SETTING_STRING(pid_file, 'p', "pid", "pid_file", "awemud.pid")
-		SETTING_STRING(deny_file, 0, NULL, "denied_hosts_file", "")
+		SETTING_STRING(deny_file, 0, "deny", "denied_hosts_file", "")
 		SETTING_STRING(control_sock, 'c', "control-sock", "control_sock", "")
 		SETTING_STRING(control_users, 0, "control-users", "control_users", "")
 		SETTING_STRING(control_admins, 0, "control-admins", "control_admins", "")
@@ -72,6 +72,7 @@ namespace {
 		SETTING_BOOL(backup_accounts, 0, NULL, "backup_accounts", false)
 		SETTING_BOOL(backup_zones, 0, NULL, "backup_zones", false)
 		SETTING_INT(port, 'P', "port", "port", 4545)
+		SETTING_INT(http, 'H', "http", "http_port", 0)
 		SETTING_INT(max_per_host, 0, NULL, "max_per_host", 5)
 		SETTING_INT(max_clients, 0, NULL, "max_clients", 1000)
 		SETTING_INT(characters_per_account, 0, NULL, "acct_char_limit", 3)
