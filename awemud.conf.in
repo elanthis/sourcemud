@@ -56,7 +56,7 @@ misc_dir = @DATADIR@/lib/awemud/data/
 ## Minutes of inactivity on a telnet connection before it is disconnected.
 #telnet_timeout = 30
 
-## Seconds of inactivity on an HTTP connection before it is disconnected.
+## Minutes of inactivity on an HTTP session before it is discarded.
 #http_timeout = 30
 
 ## Enable IPv6 support.

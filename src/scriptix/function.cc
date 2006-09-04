@@ -211,7 +211,7 @@ ScriptFunction::run(Scriptix::Value a, Scriptix::Value b) const {
 	Scriptix::Value ret;
 	Scriptix::Value argv[2];
 	argv[0] = a;
-	argv[2] = a;
+	argv[1] = b;
 	if (Scriptix::ScriptManager.invoke(func, (sizeof(argv)/sizeof(argv[0])), argv, &ret) != Scriptix::SXE_OK)
 		return Scriptix::Value();
 	return ret;

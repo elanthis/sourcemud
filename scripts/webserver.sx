@@ -2,7 +2,7 @@
 // Copyright (C) 2006  AwesomePlay Productions, Inc.
 
 // display site statistics
-function pageStats(page, id, http)
+function pageStats(page, http)
 {
 	http.header();
 	http.displayTemplate('stats');
@@ -10,7 +10,7 @@ function pageStats(page, id, http)
 }
 
 // demo
-function pageDemoScript(page, id, http)
+function pageDemoScript(page, http)
 {
 	http.header();
 

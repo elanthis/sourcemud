@@ -58,7 +58,6 @@ class HTTPHandler : public Scriptix::Native, public SocketUser, public IStreamSi
 
 	// processing
 	void process ();
-	void check_headers ();
 	void execute ();
 
 	// hard-coded pages
@@ -67,8 +66,12 @@ class HTTPHandler : public Scriptix::Native, public SocketUser, public IStreamSi
 	void page_logout ();
 	void page_account ();
 
+	// error
+	void http_error (int error, String msg);
+
 	// get post data
 	String get_post (String name) const;
+	String get_request (String name) const;
 
 	// get user account
 	HTTPSession* get_session () const { return session; }
@@ -90,19 +93,26 @@ class HTTPHandler : public Scriptix::Native, public SocketUser, public IStreamSi
 	~HTTPHandler () {}
 
 	protected:
+	// parse urlencoded data (GET/POST)
+	void parse_request_data (GCType::map<String,String>& map, const char* input) const;
+
+
 	SockStorage addr;
 
 	// HTTP parsing
 	StringBuffer line;
 	StringBuffer output;
 	String url;
+	String path;
+	enum { NONE, URLENCODED } posttype;
 	enum { GET, POST } reqtype;
 	enum { REQ, HEADER, BODY, DONE, ERROR } state;
 	size_t content_length;
 	time_t timeout;
 	GCType::map<String, String> headers;
 
-	// POST data
+	// request data
+	GCType::map<String, String> get;
 	GCType::map<String, String> post;
 
 	// the session

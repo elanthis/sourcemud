@@ -681,6 +681,8 @@ number = roll_dice(3, 6);]]></example>
         } else if (val.is_a(AweMUD_EntityType)) {
           Entity* entity = (Entity*)val.get();
           buffer << entity;
+        } else {
+          buffer << val.get();
         }
       }
   
@@ -3503,7 +3505,21 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
       <code><![CDATA[if (_self->get_session()) _return = _self->get_session()->get_var(_arg_name);]]></code>
     </method>
 
-    <!-- POST variables -->
+    <!-- request variables -->
+    <method>
+      <name>getRequest</name>
+      <arg>
+        <type>String</type>
+        <name>name</name>
+        <doc>Name of the GET variable to retrieve.</doc>
+      </arg>
+      <return>
+        <type>String</type>
+        <doc>The value of the GET variable retrieved.  Will be nil if the variable is not set.</doc>
+      </return>
+      <doc>This will retrieve the requested GET variable from a form submission.</doc>
+      <code><![CDATA[_return = _self->get_request(_arg_name);]]></code>
+    </method>
     <method>
       <name>getPOST</name>
       <arg>
@@ -3562,7 +3578,7 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
     <arg>
       <name>callback</name>
       <type>Function</type>
-      <doc>Callback function.  It must take the following arguments: page name (String), reqid (String), connection (HTTP).</doc>
+      <doc>Callback function.  It must take the following arguments: page name (String) and connection (HTTP).</doc>
     </arg>
     <code><![CDATA[HTTPPageManager.register_page(_arg_name, _arg_callback);]]></code>
   </function>

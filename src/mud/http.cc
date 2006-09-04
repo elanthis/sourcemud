@@ -113,8 +113,8 @@ HTTPHandler::in_handle (char* buffer, size_t size)
 			} else {
 				// if we still don't have a line but we're over the max, fail
 				if (line.size() + size >= HTTP_HEADER_LINE_MAX) {
-					Log::Network << "HTTP - error ? " << Network::get_addr_name(addr) << " <header length overflow>";
-					*this << "HTTP/1.0 413 Request Entity Too Large\n\nRequest header length overflow.\n";
+					http_error(413, S("Header too large."));
+					return;
 				}
 
 				// append remaining data to our line buffer
@@ -131,12 +131,15 @@ HTTPHandler::in_handle (char* buffer, size_t size)
 void
 HTTPHandler::prepare ()
 {
+	// handle timeout
 	if (timeout != 0 && (time(NULL) - timeout) >= HTTP_REQUEST_TIMEOUT) {
-		Log::Network << "HTTP - error - " << Network::get_addr_name(addr) << " <request timeout>";
-		*this << "HTTP/1.0 408 Request Timeout\n\nRequest timed out.\n";
-		state = ERROR;
+		http_error(408, S("Request timed out."));
 		timeout = 0;
 	}
+
+	// disconnect if we are all done
+	if (output.empty() && (state == DONE || state == ERROR))
+		disconnect();
 }
 
 char
@@ -151,13 +154,12 @@ HTTPHandler::get_poll_flags ()
 void
 HTTPHandler::out_ready ()
 {
-	// FIXME: do this right
-	send(sock, output.c_str(), output.size(), 0);
-	output.clear();
-
-	// disconnect if that we are done
-	if (state == DONE || state == ERROR)
-		disconnect();
+	int ret = send(sock, output.c_str(), output.size(), 0);
+	if (ret > 0) {
+		// HACK - this works, but isn't necessarily bright
+		memmove(&output[0], output.c_str() + ret, output.size() - ret);
+		output[output.size() - ret] = 0;
+	}
 }
 
 void
@@ -181,9 +183,7 @@ HTTPHandler::process ()
 
 			// check size
 			if (parts.size() != 3) {
-				Log::Network << "HTTP - error ? " << Network::get_addr_name(addr) << " <malformed request>";
-				*this << "HTTP/1.0 400 Bad Request\n\nInvalid request\n";
-				state = ERROR;
+				http_error(400, S("Invalid request."));
 				return;
 			}
 
@@ -193,14 +193,19 @@ HTTPHandler::process ()
 			else if (parts[0] == "POST")
 				reqtype = POST;
 			else {
-				Log::Network << "HTTP " << parts[0] << " " << parts[1] << " error ? " << Network::get_addr_name(addr) << " <illegal request type>";
-				*this << "HTTP/1.0 405 Method Not Allowed\n\nUnauthorized request type " << parts[0] << "\n";
-				state = ERROR;
+				http_error(405, S("Illegal request type."));
 				return;
 			}
 
 			// get URL
 			url = parts[1];
+			const char* sep = strchr(url.c_str(), '?');
+			if (sep != NULL) {
+				path = String(url.c_str(), sep - url.c_str());
+				parse_request_data(get, sep + 1);
+			} else {
+				path = url;
+			}
 
 			state = HEADER;
 			break;
@@ -209,11 +214,6 @@ HTTPHandler::process ()
 		{
 			// no more headers
 			if (line.empty()) {
-				// do header check
-				check_headers();
-				if (state == ERROR)
-					return;
-
 				// a GET request is now processed immediately
 				if (reqtype == GET) {
 					execute();
@@ -228,61 +228,54 @@ HTTPHandler::process ()
 			const char* c = strchr(line.c_str(), ':');
 			// require ': ' after header name
 			if (c == NULL || *(c + 1) != ' ') {
-				Log::Network << "HTTP " << (reqtype == GET ? "GET" : "POST") << " " << url << " error ? " << Network::get_addr_name(addr) << " <malformed header>";
-				*this << "HTTP/1.0 400 Bad Request\n\nInvalid header:\n" << line.c_str() << "\n";
-				state = ERROR;
+				http_error(400, S("Malformed header."));
 				return;
 			}
-			headers[strlower(String(line.c_str(), c - line.c_str()))] = String(c + 2);
+
+			// determine which header we're dealing with
+			if (!strncasecmp("Content-type", line.c_str(), c - line.c_str())) {
+				// POST: content-type (must be application/x-www-form-urlencoded
+				if (!strcmp("application/x-www-form-urlencoded", c + 2))
+					posttype = URLENCODED;
+				else {
+					http_error(406, S("Content-type for POST must be application/x-www-form-urlencoded."));
+					return;
+				}
+			} else if (!strncasecmp("Content-length", line.c_str(), c - line.c_str())) {
+				// POST: content-length
+				content_length = strtoul(c + 2, NULL, 10);
+
+				// check max content length
+				if (content_length > HTTP_POST_BODY_MAX) {
+					http_error(413, S("Form data length overflow."));
+				}
+			} else if (!strncasecmp("Cookie", line.c_str(), c - line.c_str())) {
+				// Cookie; look for AWEMUD_SESSION
+				const char* sid_start;
+				if ((sid_start = strstr(c + 2, "AWEMUD_SESSION=")) != NULL) {
+					sid_start = strchr(sid_start, '=') + 1;
+					const char* sid_end = strchr(sid_start, ';');
+					String sid;
+					if (sid_end == NULL)
+						sid = String(sid_start);
+					else
+						sid = String(sid_start, sid_end - sid_start);
+
+					// get the session (may be NULL if expired/invalid)
+					session = HTTPPageManager.get_session(sid);
+					if (session != NULL)
+						session->update_timestamp();
+				}
+			} else {
+				// ignore it
+			}
+
 			break;
 		}
 		case BODY:
 		{
-			// parse the data
-			StringBuffer value;
-			const char* begin;
-			const char* end;
-			const char* sep;
-
-			begin = line.c_str();
-			do {
-				// find the end of the current pair
-				end = strchr(begin, '&');
-				if (end == NULL)
-					end = line.c_str() + line.size();
-
-				// find the = separator
-				sep = strchr(begin, '=');
-				if (sep == NULL || sep > end) {
-					Log::Network << "HTTP " << (reqtype == GET ? "GET" : "POST") << " " << url << " error ? " << Network::get_addr_name(addr) << " <malformed form data>";
-					*this << "HTTP/1.0 400 Bad Request\n\nMalformed form data.\n";
-					state = ERROR;
-					return;
-				}
-
-				// decode the value
-				value.clear();
-				for (const char* c = sep + 1; c < end; ++c) {
-					if (*c == '+') {
-						value << ' ';
-					} else if (*c == '%') {
-						int r;
-						sscanf(c + 1, "%2X", &r);
-						value << (char)r;
-						c += 2;
-					} else {
-						value << *c;
-					}
-				}
-
-				// store the data
-				post[strlower(String(begin, sep - begin))] = value.str();
-
-				// set begin to next token
-				begin = end;
-				if (*begin == '&')
-					++begin;
-			} while (*begin != 0);
+			// parse the post data
+			parse_request_data(post, line.c_str());
 
 			// execute
 			execute();
@@ -293,67 +286,85 @@ HTTPHandler::process ()
 			break;
 	}
 }
-
+	
 void
-HTTPHandler::check_headers()
+HTTPHandler::parse_request_data (GCType::map<String,String>& map, const char* line) const
 {
-	// if we're a POST, we must have the proper headers/values
-	if (reqtype == POST) {
-		// must be application/x-www-form-urlencoded
-		if (headers[S("content-type")] != "application/x-www-form-urlencoded") {
-			Log::Network << "HTTP " << (reqtype == GET ? "GET" : "POST") << " " << url << " error ? " << Network::get_addr_name(addr) << " <incorrect content-type>";
-			*this << "HTTP/1.0 406 Not Acceptable\n\nContent-type must be application/x-www-form-urlencoded.\n";
-			state = ERROR;
-			return;
+	// parse the data
+	StringBuffer value;
+	const char* begin;
+	const char* end;
+	const char* sep;
+
+	begin = line;
+	do {
+		// find the end of the current pair
+		end = strchr(begin, '&');
+		if (end == NULL)
+			end = line + strlen(line);
+
+		// find the = separator
+		sep = strchr(begin, '=');
+		if (sep == NULL)
+			sep = end;
+
+		// decode the name 
+		value.clear();
+		for (const char* c = begin; c < sep; ++c) {
+			if (*c == '+') {
+				value << ' ';
+			} else if (*c == '%') {
+				int r;
+				sscanf(c + 1, "%2X", &r);
+				value << (char)tolower(r);
+				c += 2;
+			} else {
+				value << (char)tolower(*c);
+			}
 		}
 
-		// must have a content-length
-		String len = headers[S("content-length")];
-		if (len.empty()) {
-			Log::Network << "HTTP " << (reqtype == GET ? "GET" : "POST") << " " << url << " error ? " << Network::get_addr_name(addr) << " <missing content-length>";
-			*this << "HTTP/1.0 406 Not Acceptable\n\nNo Content-length was provided.\n";
-			state = ERROR;
-			return;
+		// get reference to value
+		String& vref = map[value.str()];
+
+		// decode the value, if we have one
+		if (sep != end) {
+			value.clear();
+			for (const char* c = sep + 1; c < end; ++c) {
+				if (*c == '+') {
+					value << ' ';
+				} else if (*c == '%') {
+					int r;
+					sscanf(c + 1, "%2X", &r);
+					value << (char)r;
+					c += 2;
+				} else {
+					value << *c;
+				}
+			}
 		}
-		content_length = strtoul(len.c_str(), NULL, 10);
 
-		// check max content length
-		if (content_length > HTTP_POST_BODY_MAX) {
-			Log::Network << "HTTP " << url << " error " << (get_account() ? get_account()->get_id() : S("-")) << Network::get_addr_name(addr) << " <form data overflow>";
-			*this << "HTTP/1.0 413 Request Entity Too Large\n\nForm data length overflow.\n";
-		}
-	}
+		// store the data;
+		// if we didn't parse a value above, the value by default
+		// is the same as the name
+		vref = value.str();
 
-	// if we have a session id, use it
-	String cookies = headers[S("cookie")];
-	const char* sid_start;
-	if ((sid_start = strstr(cookies.c_str(), "AWEMUD_SESSION=")) != NULL) {
-		sid_start = strchr(sid_start, '=') + 1;
-		const char* sid_end = strchr(sid_start, ';');
-		String sid;
-		if (sid_end == NULL)
-			sid = String(sid_start);
-		else
-			sid = String(sid_start, sid_end - sid_start);
-
-		// get the session (may be NULL if expired/invalid)
-		session = HTTPPageManager.get_session(sid);
-		if (session != NULL)
-			session->update_timestamp();
-	}
+		// set begin to next token
+		begin = end;
+		if (*begin == '&')
+			++begin;
+	} while (*begin != 0);
 }
 
 void
 HTTPHandler::execute()
 {
-	// split off reqid if we have one
-	String path = url;
-	const char* sep = strchr(url, '?');
-	String reqid;
-	if (sep != NULL) {
-		path = String(url, sep - url.c_str());
-		reqid = String(sep + 1);
-	}
+	/*
+	// DEBUG: Log request variables
+	for (GCType::map<String,String>::iterator i = get.begin(); i != get.end(); ++i)
+		Log::Info << "GET: " << i->first << "=" << i->second;
+	for (GCType::map<String,String>::iterator i = post.begin(); i != post.end(); ++i)
+		Log::Info << "POST: " << i->first << "=" << i->second;
+	*/
 
 	// handle built-in pages
 	if (path == "/")
@@ -368,18 +379,15 @@ HTTPHandler::execute()
 	else {
 		Scriptix::ScriptFunction func = HTTPPageManager.get_page(path);
 		if (func) {
-			func.run(path, reqid, this);
+			func.run(path, this);
 		} else {
-			Log::Network << "HTTP " << (reqtype == GET ? "GET" : "POST") << " " << url << " error " << (get_account() ? get_account()->get_id() : S("-")) << " " << Network::get_addr_name(addr) << " <page not found>";
-			*this << "HTTP/1.0 404 Not Found\n\nPage not found\n\n";
-			state = ERROR;
+			http_error(404, S("Page does not exist."));
 			return;
 		}
 	}
 
 	// log access
-	Log::Network << "HTTP " << (reqtype == GET ? "GET" : "POST") << " " << url << " valid " << (get_account() ? get_account()->get_id() : S("-")) << " " << Network::get_addr_name(addr);
-
+	Log::Network << "HTTP " << (reqtype == GET ? "GET" : "POST") << " " << url << " 200 " << (get_account() ? get_account()->get_id() : S("-")) << " " << Network::get_addr_name(addr);
 
 	// done
 	state = DONE;
@@ -402,9 +410,9 @@ HTTPHandler::page_login()
 	*this << "HTTP/1.0 200 OK\nContent-type: text/html\n";
 
 	// attempt login?
-	if (post[S("action")] == "Login") {
-		Account* account = AccountManager.get(post[S("username")]);
-		if (account != NULL && account->check_passphrase(post[S("password")])) {
+	if (get_post(S("action")) == "Login") {
+		Account* account = AccountManager.get(get_post(S("username")));
+		if (account != NULL && account->check_passphrase(get_post(S("password")))) {
 			session = HTTPPageManager.create_session(account);
 			msg = S("Login successful!");
 			*this << "Set-cookie: AWEMUD_SESSION=" << session->get_id() << "\n";
@@ -441,7 +449,7 @@ HTTPHandler::page_account()
 	}
 
 	String msg;
-	if (post[S("action")] == "Save Changes") {
+	if (get_post(S("action")) == "Save Changes") {
 		String name = strip(post[S("acct_name")]);
 		String email = strip(post[S("acct_email")]);
 		if (name.empty() || email.empty()) {
@@ -470,6 +478,45 @@ HTTPHandler::page_account()
 		<< StreamParse(HTTPPageManager.get_template(S("header")), S("account"), get_account(), S("msg"), msg)
 		<< StreamParse(HTTPPageManager.get_template(S("account")), S("account"), get_account())
 		<< StreamParse(HTTPPageManager.get_template(S("footer")));
+}
+
+void
+HTTPHandler::http_error (int error, String msg)
+{
+	// lookup HTTP error msg code
+	String http_msg;
+	switch (error) {
+		case 200: http_msg=S("OK"); break;
+		case 400: http_msg=S("Bad Request"); break;
+		case 403: http_msg=S("Access Denied"); break;
+		case 404: http_msg=S("Not Found"); break;
+		case 405: http_msg=S("Method Not Allowed"); break;
+		case 406: http_msg=S("Not Acceptable"); break;
+		case 408: http_msg=S("Request Timeout"); break;
+		case 413: http_msg=S("Request Entity Too Large"); break;
+		default: http_msg = S("Unknown"); break;
+	}
+
+	// display error page
+	*this << "HTTP/1.0 " << error << " " << http_msg << "\nContent-type: text/html\n\n"
+		<< StreamParse(HTTPPageManager.get_template(S("header")), S("account"), get_account())
+		<< StreamParse(HTTPPageManager.get_template(S("error")), S("error"), tostr(error), S("http_msg"), http_msg, S("msg"), msg)
+		<< StreamParse(HTTPPageManager.get_template(S("footer")));
+
+	// log error
+	Log::Network << "HTTP " << (reqtype == GET ? "GET" : reqtype == POST ? "POST" : "-") << " " << (url ? url : S("-")) << " " << error << " " << (get_account() ? get_account()->get_id() : S("-")) << " " << Network::get_addr_name(addr) << " <" << msg << ">";
+
+	// set error state
+	state = ERROR;
+}
+
+String
+HTTPHandler::get_request (String id) const
+{
+	GCType::map<String,String>::const_iterator i = get.find(id);
+	if (i == get.end())
+		return String();
+	return i->second;
 }
 
 String
@@ -528,7 +575,7 @@ HTTPSession::update_timestamp ()
 bool
 HTTPSession::check_timestamp ()
 {
-	return (time(NULL) - timestamp) < SettingsManager.get_http_timeout();
+	return (time(NULL) - timestamp) < SettingsManager.get_http_timeout() * 60;
 }
 
 String

@@ -140,9 +140,9 @@ namespace {
 			return TOK_METHOD;
 
 		// alphanumeric is a name
-		} else if (isalnum(c)) {
+		} else if (isalnum(c) || c == '_') {
 			namebuf << c;
-			while (!in.eof() && (isalnum(in.peek()) || in.peek() == '-')) {
+			while (!in.eof() && (isalnum(in.peek()) || in.peek() == '-' || in.peek() == '_')) {
 				c = in.get();
 				namebuf << c;
 			}

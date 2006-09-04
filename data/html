@@ -79,6 +79,10 @@ html.footer = begin
 	</html>
 end
 
+html.error = begin
+	<p id="msg">Error {$error}: {$http_msg}<br /><br />{$msg}</p>
+end
+
 html.index = begin
 	<p>Welcome to the AweMUD portal!</p>
 
