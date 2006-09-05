@@ -12,4 +12,4 @@ if ! test -x "$bindir/awemud-bin" || ! test -f "$sysconfdir/$tarname/awemud.conf
 	exit 1
 fi
 
-"$bindir/awemud-bin" -C "$sysconfdir/$tarname/awemud.conf"
+"$bindir/awemud-bin" -C "$sysconfdir/awemud.conf"
