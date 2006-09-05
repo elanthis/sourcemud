@@ -148,9 +148,18 @@ WORLD = data/time data/weather
 ZONES = data/example.zone
 
 HELP = data/awemud.help data/commands.help data/olc.help
-GAMEDATA = data/messages data/races data/socials data/calendar data/skills data/uniqid data/traits data/html
-TEMPLATES = data/animals.npcs data/undead.npcs data/armor.objs data/misc.objs data/weapons.objs data/gems.objs 
-DATAFILES = $(WORLD) $(HELP) $(GAMEDATA) $(TEMPLATES)
+GAMEDATA = data/messages data/races data/socials data/calendar data/skills data/uniqid data/traits
+BLUEPRINTS = data/animals.npcs data/undead.npcs data/armor.objs data/misc.objs data/weapons.objs data/gems.objs 
+HTML_TPL = \
+	data/html/header.tpl \
+	data/html/footer.tpl \
+	data/html/index.tpl \
+	data/html/login.tpl \
+	data/html/logout.tpl \
+	data/html/account.tpl \
+	data/html/stats.tpl
+
+DATAFILES = $(WORLD) $(HELP) $(GAMEDATA) $(BLUEPRINTS) $(HTML_TPL)
 
 EXTRA_DIST += $(DATAFILES) $(PLAYERS) $(ACCOUNTS) $(WORLD_IN) $(ZONES) $(PLAYERINFO) $(SQL)
 
@@ -167,10 +176,13 @@ helpdir=${localstatedir}/lib/@PACKAGE_TARNAME@/help
 help_DATA = $(HELP)
 
 blueprintdir=${localstatedir}/lib/@PACKAGE_TARNAME@/blueprints
-blueprint_DATA = $(TEMPLATES)
+blueprint_DATA = $(BLUEPRINTS)
 
 gamedatadir=${localstatedir}/lib/@PACKAGE_TARNAME@/data
 gamedata_DATA = $(GAMEDATA)
+
+htmltpldir=${localstatedir}/lib/@PACKAGE_TARNAME@/data/html
+htmltpl_DATA = $(HTML_TPL)
 
 logdatadir=${localstatedir}/log
 logdata_DATA =

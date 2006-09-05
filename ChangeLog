@@ -1,3 +1,7 @@
+2006-09-05 03:10:29  Sean Middleditch <elanthis@awesomeplay.com>
+
+  * Split the data/html file into separate .tpl files in data/html/.
+
 2006-09-04 20:39:32  Sean Middleditch <elanthis@awesomeplay.com>
 
   * Made _ a valid character for a parse name.

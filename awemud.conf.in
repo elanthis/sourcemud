@@ -35,6 +35,9 @@ help_dir = @DATADIR@/lib/awemud/help/
 ## Directory holding misc. data.
 misc_dir = @DATADIR@/lib/awemud/data/
 
+## Directory holding HTML .tpl files.
+html_dir = @DATADIR@/lib/awemud/data/html/
+
 ## Path of the control interface UNIX socket.
 #control_sock = @DATADIR@/run/awemud-ctrl.sock
 

@@ -31,7 +31,6 @@ int
 Account::save (void) const
 {
 	String path = SettingsManager.get_account_path() + "/" + strlower(id) + ".acct";
-	Log::Info << "Saving account " << id;
 
 	// open
 	File::Writer writer;

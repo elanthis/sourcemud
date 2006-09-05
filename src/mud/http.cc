@@ -15,14 +15,12 @@
 
 #include <stdio.h>
 #include <unistd.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <arpa/telnet.h>
-#include <sys/socket.h>
-#include <sys/types.h>
 #include <ctype.h>
+#include <errno.h>
+#include <string.h>
 #include <stdarg.h>
+#include <dirent.h>
+#include <fnmatch.h>
 
 #include "common/error.h"
 #include "mud/server.h"
@@ -32,7 +30,6 @@
 #include "mud/http.h"
 #include "mud/settings.h"
 #include "common/log.h"
-#include "mud/fileobj.h"
 #include "common/md5.h"
 
 SHTTPPageManager HTTPPageManager;
@@ -387,7 +384,7 @@ HTTPHandler::execute()
 	}
 
 	// log access
-	Log::Network << "HTTP " << (reqtype == GET ? "GET" : "POST") << " " << url << " 200 " << (get_account() ? get_account()->get_id() : S("-")) << " " << Network::get_addr_name(addr);
+	Log::Network << (reqtype == GET ? "GET" : "POST") << " " << url << " 200 " << (get_account() ? get_account()->get_id() : S("-")) << " " << Network::get_addr_name(addr);
 
 	// done
 	state = DONE;
@@ -504,7 +501,7 @@ HTTPHandler::http_error (int error, String msg)
 		<< StreamParse(HTTPPageManager.get_template(S("footer")));
 
 	// log error
-	Log::Network << "HTTP " << (reqtype == GET ? "GET" : reqtype == POST ? "POST" : "-") << " " << (url ? url : S("-")) << " " << error << " " << (get_account() ? get_account()->get_id() : S("-")) << " " << Network::get_addr_name(addr) << " <" << msg << ">";
+	Log::Network << (reqtype == GET ? "GET" : reqtype == POST ? "POST" : "-") << " " << (url ? url : S("-")) << " " << error << " " << (get_account() ? get_account()->get_id() : S("-")) << " " << Network::get_addr_name(addr) << " <" << msg << ">";
 
 	// set error state
 	state = ERROR;
@@ -604,20 +601,37 @@ HTTPSession::clear ()
 int
 SHTTPPageManager::initialize (void)
 {
-	File::Reader reader;
+	StringBuffer buf;
 
-	// open templates file
-	if (reader.open(SettingsManager.get_misc_path() + "/html"))
-		return -1;
+	// read templates dir
+	DIR* dir;
+	struct dirent* dent;
+	dir = opendir(SettingsManager.get_html_path());
+	while ((dent = readdir(dir)) != NULL) {
+		if (!fnmatch("*.tpl", dent->d_name, FNM_PERIOD)) {
+			// load template
+			buf.clear();
 
-	// read said file
-	FO_READ_BEGIN
-		FO_WILD("html")
-			templates[node.get_key()] = node.get_data();
-	FO_READ_ERROR
-		// damnable errors!
-		return -1;
-	FO_READ_END
+			// open file
+			buf << SettingsManager.get_html_path() << "/" << dent->d_name;
+			FILE* in = fopen(buf.c_str(), "rt");
+			if (in == NULL) {
+				Log::Error << "Failed to load template '" << dent->d_name << "': " << strerror(errno);
+				return -1;
+			}
+
+			// read in buffer
+			buf.clear();
+			char line[512];
+			while (fgets(line, sizeof(line), in) != NULL)
+				buf << line;
+
+			// clean up
+			fclose(in);
+			templates[String(dent->d_name, strlen(dent->d_name) - 4)] = buf.str();
+		}
+	}
+	closedir(dir);
 
 	// all good
 	return 0;
