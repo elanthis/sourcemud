@@ -305,7 +305,7 @@ Player::start (void)
 {
 	// login message
 	clear_scr();
-	*this << "\n" << StreamParse (MessageManager.get(S("login")), S("user"), this) << "\n";
+	*this << "\n" << StreamParse (MessageManager.get(S("login")), S("player"), this) << "\n";
 
 	// not already active?  add to room...
 	if (!is_active()) {
@@ -621,7 +621,7 @@ Player::show_prompt (void)
 }
 
 int
-Player::parse_property (const StreamControl& stream, String comm, const ParseArgs& argv) const
+Player::parse_property (const StreamControl& stream, String comm, const ParseList& argv) const
 {
 	// RACE
 	if (str_eq(comm, S("race"))) {
@@ -751,7 +751,7 @@ Player::clear_scr (void)
 void
 Player::display_desc (const StreamControl& stream) const
 {
-	stream << StreamParse(get_race()->get_desc(), S("player"), this);
+	stream << StreamParse(get_race()->get_desc(), S("self"), this);
 }
 
 // get player trait

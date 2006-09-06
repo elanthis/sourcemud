@@ -25,21 +25,21 @@ npc_blueprint {
   blueprint.id = "rabbit_skeleton"
   blueprint.parent = "base_undead"
   blueprint.name = "a rabbit skeleton"
-  blueprint.desc = "Bits of fur and sinew hang off the tiny bones of {$1.D}."
+  blueprint.desc = "Bits of fur and sinew hang off the tiny bones of {$self.D}."
   user.corpse_name = "rabbit skeleton"
 }
 npc_blueprint {
   blueprint.id = "fox_skeleton"
   blueprint.parent = "base_undead"
   blueprint.name = "a fox skeleton"
-  blueprint.desc = "{$1.D} shambles around with none of the grace of a living fox."
+  blueprint.desc = "{$self.D} shambles around with none of the grace of a living fox."
   user.corpse_name = "fox skeleton"
 }
 npc_blueprint {
   blueprint.id = "wolf_skeleton"
   blueprint.parent = "base_undead"
   blueprint.name = "a wolf skeleton"
-  blueprint.desc = "The eyes of {$1.d} glow a malevolent red."
+  blueprint.desc = "The eyes of {$self.d} glow a malevolent red."
   user.corpse_name = "wolf skeleton"
 }
 npc_blueprint {

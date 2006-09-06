@@ -13,7 +13,7 @@ race {
   # description
   race.about = "Humans are perhaps the most versatile of the races.  Looked down upon by the other races for their ambition, humans often are capable of reaching achievements far quicker than the other races."
 
-  race.desc = "{$1.D} is a {$1.trait 'build'} {$1.male} standing at {$1.height}, with {$1.trait 'skin color'} skin, {$1.trait 'eye color'} eyes, and {! $1.trait 'hair style'}."
+  race.desc = "{$self.D} is a {$self.trait 'build'} {$self.male} standing at {$self.height}, with {$self.trait 'skin color'} skin, {$self.trait 'eye color'} eyes, and {! $self.trait 'hair style'}."
 
   # eye colors
   trait."eye color" = "brown"
@@ -72,7 +72,7 @@ race {
   # description
   race.about = "Elves are tall, graceful people.  Usually living in the forest, the elven people have an affinity for nature, and abhor the destruction wrought to the lands by humans.  Elves live exceptionally long lives."
 
-  race.desc = "{$1.D} stands {$1.height} tall, with an air of graceful nobility.  {! $1.Trait 'hair style'} frames {$1.his} angular facial features.  {$1.His} {$1.trait 'eye color'} eyes stand starkly apart from the {$1.trait 'skin color'} skin of {$1.his} {! $1.trait 'build'} frame."
+  race.desc = "{$self.D} stands {$self.height} tall, with an air of graceful nobility.  {! $self.Trait 'hair style'} frames {$self.his} angular facial features.  {$self.His} {$self.trait 'eye color'} eyes stand starkly apart from the {$self.trait 'skin color'} skin of {$self.his} {! $self.trait 'build'} frame."
 
   # mods
   stat.strength = -5
@@ -136,7 +136,7 @@ race {
 
   race.about = "Mischevious humanoids that look like nothing but a cross between a cat and a human.  The kalruan have a fine coat of fur covering their bodies, tails, and feline ears, and have cat-like features about their face.  The kalruan are known for their hedonistic behaviour."
 
-  race.desc = "{$1.D} stands {$1.height} in height.  {$1.His} {! $1.trait 'build'} body and long tail are covered in {$1.trait 'fur color'} fur.  {$1.He} has {! $1.trait 'hair style'}.  {$1.His} eyes are {if eq {$1.trait 'eye color'} 'green'}a brilliant green{else}{$1.trait 'eye color'}{endif} and twinkle with a mischevious spark."
+  race.desc = "{$self.D} stands {$self.height} in height.  {$self.His} {! $self.trait 'build'} body and long tail are covered in {$self.trait 'fur color'} fur.  {$self.He} has {! $self.trait 'hair style'}.  {$self.His} eyes are {if eq {$self.trait 'eye color'} 'green'}a brilliant green{else}{$self.trait 'eye color'}{endif} and twinkle with a mischevious spark."
 
   # mods
   stat.spirit = 5
@@ -199,7 +199,7 @@ race {
 
   race.about = "Tough as stone, and not much better looking, dwarves are a race of beings who live in the earth itself.  Their craftsmanship, in both metal and stone, is reknown by all.  Despite their shorter heights, a dwarf is often far stronger than the other races; they are also excellent warriors."
 
-  race.desc = "{$1.D} is {$1.height} tall and {! $1.trait 'build'} with a long {! $1.trait 'hair color'} beard.  {$1.His} {$1.trait 'eye color'} eyes look almost like gems set in the {$1.trait 'skin color'} rocky skin of {$1.his} face, topped with {! $1.trait 'hair style'}."
+  race.desc = "{$self.D} is {$self.height} tall and {! $self.trait 'build'} with a long {! $self.trait 'hair color'} beard.  {$self.His} {$self.trait 'eye color'} eyes look almost like gems set in the {$self.trait 'skin color'} rocky skin of {$self.his} face, topped with {! $self.trait 'hair style'}."
 
   # mods
   stat.strength = 5

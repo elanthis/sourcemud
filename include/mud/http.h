@@ -86,7 +86,7 @@ class HTTPHandler : public Scriptix::Native, public SocketUser, public IStreamSi
 	virtual void prepare ();
 
 	// parse values
-	int parse_property (const StreamControl& stream, String method, const ParseArgs& argv) const;
+	int parse_property (const StreamControl& stream, String method, const ParseList& argv) const;
 	void parse_default (const StreamControl& stream) const;
 
 	protected:
@@ -148,5 +148,15 @@ class SHTTPPageManager : public IManager
 	SessionMap sessions;
 };
 extern SHTTPPageManager HTTPPageManager;
+
+struct StreamHTTPEscape {
+	inline
+	explicit StreamHTTPEscape(String s_text) : text(s_text) {}
+
+	friend const class StreamControl& operator << (const class StreamControl& stream, const StreamHTTPEscape& esc);
+
+	String text;
+};
+typedef StreamHTTPEscape StreamXMLEscape;
 
 #endif

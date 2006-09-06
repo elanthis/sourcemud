@@ -25,7 +25,7 @@ object_blueprint {
 object_blueprint {
   blueprint.id = "npc_corpse"
   blueprint.name = "a corpse"
-  blueprint.desc = "The {$1.name} appears fresh.  It is laying motionless on the ground, as every good corpse should."
+  blueprint.desc = "The {$self.name} appears fresh.  It is laying motionless on the ground, as every good corpse should."
   blueprint.weight = 10
   blueprint.cost = 0
   blueprint.container = "on"

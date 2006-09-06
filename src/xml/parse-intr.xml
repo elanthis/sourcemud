@@ -2,6 +2,7 @@
 <parse-interface>
   <include>mud/server.h</include>
   <include>mud/player.h</include>
+  <include>mud/http.h</include>
 
   <command name="eq">
     <arg type="string" name="s1" />
@@ -101,20 +102,7 @@
   </command>
   <command name="html">
     <arg type="string" name="str" />
-    <code><![CDATA[
-      for (String::iterator i = str.begin(); i != str.end(); ++i) {
-        if (*i == '"')
-          stream << "&quot;";
-        else if (*i == '<')
-          stream << "&lt;";
-        else if (*i == '>')
-          stream << "&gt;";
-        else if (*i == '&')
-          stream << "&amp;";
-        else
-          stream << *i;
-      }
-    ]]></code>
+    <code><![CDATA[ stream << StreamHTTPEscape(str); ]]></code>
   </command>
 </parse-interface>
 <!-- vim: set filetype=xml shiftwidth=2 tabstop=2 expandtab : -->

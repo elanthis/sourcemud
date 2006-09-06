@@ -7,7 +7,7 @@ npc_blueprint {
   blueprint.id = "rabbit"
   blueprint.name = "a rabbit"
 
-  blueprint.desc = "{$1.D} is small and covered in brown fur.  Its nose twitches occasionally as it searches for food."
+  blueprint.desc = "{$self.D} is small and covered in brown fur.  Its nose twitches occasionally as it searches for food."
 
   blueprint.ai = animal
   user.ai_flee = 95
@@ -30,7 +30,7 @@ npc_blueprint {
   blueprint.id = "fox"
   blueprint.name = "a fox"
 
-  blueprint.desc = "The red {$1.n} scurries about, looking for danger."
+  blueprint.desc = "The red {$self.n} scurries about, looking for danger."
 
   blueprint.ai = animal
   user.ai_flee = 95
@@ -53,7 +53,7 @@ npc_blueprint {
   blueprint.id = "wolf"
   blueprint.name = "a wolf"
 
-  blueprint.desc = "{$1.D} doesn't appear to be afraid of much."
+  blueprint.desc = "{$self.D} doesn't appear to be afraid of much."
 
   blueprint.ai = animal
   user.ai_flee = 60
@@ -76,7 +76,7 @@ npc_blueprint {
   blueprint.id = "wolf_large"
   blueprint.name = "a large wolf"
 
-  blueprint.desc = "{$1.D} is huge, larger than most other wolves by far.  Its gray fur is rough and coarse.  The wolf doesn't look friendly."
+  blueprint.desc = "{$self.D} is huge, larger than most other wolves by far.  Its gray fur is rough and coarse.  The wolf doesn't look friendly."
 
   blueprint.ai = animal
   user.ai_flee = 60
@@ -100,7 +100,7 @@ npc_blueprint {
   blueprint.name = "a dire wolf"
   blueprint.alignment = -700
 
-  blueprint.desc = "Demonic in appearnace, {$1.D} is larger than any wolf could be through natural means.  Its eyes glow red, and its near-black fur is broken in places, where spiked ridges run along its body.  {$1.D} has as sinister a nature as any animal could have."
+  blueprint.desc = "Demonic in appearnace, {$self.D} is larger than any wolf could be through natural means.  Its eyes glow red, and its near-black fur is broken in places, where spiked ridges run along its body.  {$self.D} has as sinister a nature as any animal could have."
 
   blueprint.ai = animal
   user.ai_flee = 10

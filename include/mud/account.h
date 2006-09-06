@@ -80,7 +80,7 @@ class Account : public Cleanup, public Parsable
 	inline void grant_builder (void) { grant_access(AccessID::lookup(S("builder"))); }
 
 	// parsing
-	virtual int parse_property (const class StreamControl& stream, String method, const ParseArgs& argv) const;
+	virtual int parse_property (const class StreamControl& stream, String method, const ParseList& argv) const;
 	virtual void parse_default (const class StreamControl& stream) const;
 
 	private:

@@ -62,10 +62,9 @@ namespace {
 	struct ParseState {
 		IfStack if_stack;
 		const ParseArgs& argv;
-		const ParseNames& names;
 		int disable;
 
-		inline ParseState (const ParseArgs& s_argv, const ParseNames& s_names) : if_stack(), argv(s_argv), names(s_names), disable(0) {}
+		inline ParseState (const ParseArgs& s_argv) : if_stack(), argv(s_argv), disable(0) {}
 	};
 
 	class ParseIn {
@@ -85,15 +84,14 @@ namespace {
 	token_type get_token (const char** in, const char* end, StringBuffer& namebuf);
 	void skip (const char** in, const char* end);
 	String get_arg (ParseArgs& argv, uint index);
-	int invoke_method (const StreamControl& stream, ParseValue self, String method, ParseArgs& argv);
-	ParseValue get_value (const char* name, ParseState& state);
+	int invoke_method (const StreamControl& stream, ParseValue self, String method, ParseList& argv);
 	int do_command (const char** in, const char* end, ParseState& state, const StreamControl& stream, int depth, bool if_allowed);
 	int do_text(const StreamControl& stream, String in, ParseState& state, int depth);
 }
 
 // externally defined in parse_commands.cc, generated from gen/parse-intr.xml
 namespace parse {
-	extern int exec_command (const StreamControl& stream, String command, ParseArgs& argv);
+	extern int exec_command (const StreamControl& stream, String command, ParseList& argv);
 }
 
 // function definitions
@@ -212,7 +210,7 @@ namespace {
 	}
 
 	// get an argument as a string
-	String get_arg (ParseArgs& argv, uint index)
+	String get_arg (ParseList& argv, uint index)
 	{
 		// bounds check
 		if (index >= argv.size())
@@ -223,7 +221,7 @@ namespace {
 	}
 
 	// invoke a method
-	int invoke_method (const StreamControl& stream, ParseValue self, String method, ParseArgs& argv)
+	int invoke_method (const StreamControl& stream, ParseValue self, String method, ParseList& argv)
 	{
 		// if it's an object, invoke Entity::parse_property();
 		if (self.is_object()) {
@@ -244,31 +242,6 @@ namespace {
 		return -1;
 	}
 
-	// return a value from the argv
-	ParseValue get_value (const char* name, ParseState& state)
-	{
-		char* end;
-		unsigned index;
-
-		// if it's an int, do an index lookup
-		index = strtol(name, &end, 10);
-		if (*end == 0) {
-			--index;
-			if (index < 0 || index >= state.argv.size())
-				return ParseValue();
-			return state.argv[index];
-		}
-
-		// search by name
-		for (uint i = 0; i < state.names.size(); ++i) {
-			if (!strcasecmp(state.names[i], name))
-				return state.argv[i];
-		}
-
-		// nothing found
-		return ParseValue();
-	}
-
 	// handle a command
 	int do_command (ParseIn& in, ParseState& state, const StreamControl& stream, int depth, bool if_allowed)
 	{
@@ -278,7 +251,7 @@ namespace {
 		ParseValue value;
 		String method;
 		StringBuffer buffer;
-		ParseArgs argv;
+		ParseList argv;
 
 		// max depth
 		if (depth > PARSE_MAX_DEPTH) {
@@ -400,7 +373,10 @@ namespace {
 			}
 
 			// get value of variable, error if no such variable
-			value = get_value(buffer.str(), state);
+			value = ParseValue();
+			ParseArgs::const_iterator i = state.argv.find(buffer.str());
+			if (i != state.argv.end())
+				value = i->second;
 
 			// next token
 			if ((token = get_token(in, buffer)) == TOK_ERROR) {
@@ -502,7 +478,7 @@ namespace {
 			}
 		// or expand bang
 		} else if (is_bang) {
-			ParseState bstate(state.argv, state.names);
+			ParseState bstate(state.argv);
 			StringBuffer bbuffer;
 			if (do_text(bbuffer, buffer.str(), bstate, depth + 1)) {
 				stream << bbuffer;
@@ -564,9 +540,9 @@ namespace {
 namespace parse {
 	// parse text
 	const StreamControl&
-	text(const StreamControl& stream, String in, const ParseArgs& argv, const ParseNames& names)
+	text(const StreamControl& stream, String in, const ParseArgs& argv)
 	{
-		ParseState state(argv, names);
+		ParseState state(argv);
 
 		if (do_text(stream, in, state, 1))
 			stream << in;

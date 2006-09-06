@@ -146,7 +146,7 @@ class Player : public Creature
 	void clear_scr ();
 
 	// parsing
-	virtual int parse_property (const class StreamControl& stream, String method, const ParseArgs& argv) const;
+	virtual int parse_property (const class StreamControl& stream, String method, const ParseList& argv) const;
 
 	// handling "player states"
 	int start (); // start the session

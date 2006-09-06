@@ -219,7 +219,7 @@ Entity::load_node (File::Reader& reader, File::Node& node)
 }
 
 int
-Entity::parse_property (const StreamControl& stream, String comm, const ParseArgs& argv) const
+Entity::parse_property (const StreamControl& stream, String comm, const ParseList& argv) const
 {
 	// SPECIAL: one-letter name commands
 	if (comm.size() == 1) {

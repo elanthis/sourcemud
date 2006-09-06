@@ -30,7 +30,7 @@ text.menu_banner = begin
 end
 
 text.login = begin
-Welcome, {$1.n}!
+Welcome, {$player.n}!
 
 If you find yourself in need of assistance, try using the {bold 'help'} command.
 end

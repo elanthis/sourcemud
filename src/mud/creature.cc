@@ -566,7 +566,7 @@ Creature::deactivate (void)
 }
 
 int
-Creature::parse_property (const StreamControl& stream, String comm, const ParseArgs& argv) const
+Creature::parse_property (const StreamControl& stream, String comm, const ParseList& argv) const
 {
 	// HE / SHE
 	if (str_eq(comm, S("he"))) {
@@ -658,7 +658,7 @@ Creature::display_equip (const StreamControl& stream) const
 			if (didshow) {
 				stream << ", ";
 			} else {
-				stream << StreamParse(S("  {$1.He} is wearing "), S("self"), this);
+				stream << StreamParse(S("  {$self.He} is wearing "), S("self"), this);
 				didshow = true;
 			}
 			// do show
@@ -673,7 +673,7 @@ Creature::display_equip (const StreamControl& stream) const
 		if (didshow) {
 			stream << " and ";
 		} else {
-			stream << StreamParse(S("  {$1.He} is wearing "), S("self"), this);
+			stream << StreamParse(S("  {$self.He} is wearing "), S("self"), this);
 			didshow = true;
 		}
 		// show it
@@ -694,7 +694,7 @@ Creature::display_equip (const StreamControl& stream) const
 			if (didshow) {
 				stream << ", ";
 			} else {
-				stream << StreamParse(S("  {$1.He} is holding "), S("self"), this);
+				stream << StreamParse(S("  {$self.He} is holding "), S("self"), this);
 				didshow = true;
 			}
 			// show
@@ -708,7 +708,7 @@ Creature::display_equip (const StreamControl& stream) const
 		if (didshow) {
 			stream << " and ";
 		} else {
-			stream << StreamParse(S("  {$1.He} is holding "), S("self"), this);
+			stream << StreamParse(S("  {$self.He} is holding "), S("self"), this);
 			didshow = true;
 		}
 		// show it
@@ -717,18 +717,18 @@ Creature::display_equip (const StreamControl& stream) const
 
 	// dead or position
 	if (is_dead())
-		stream << StreamParse(S("  {$1.He} is laying on the ground, dead."), S("self"), this);
+		stream << StreamParse(S("  {$self.He} is laying on the ground, dead."), S("self"), this);
 	else if (get_pos() != CreaturePosition::STAND)
-		stream << StreamParse(S("  {$1.He} is {$1.position}."), S("self"), this);
+		stream << StreamParse(S("  {$self.He} is {$self.position}."), S("self"), this);
 
 	// health
 	if (!is_dead() && get_max_hp() > 0) {
 		if (get_hp() * 100 / get_max_hp() <= 25)
-			stream << StreamParse(S("  {$1.He} appears severely wounded."), S("self"), this);
+			stream << StreamParse(S("  {$self.He} appears severely wounded."), S("self"), this);
 		else if (get_hp() * 100 / get_max_hp() <= 75)
-			stream << StreamParse(S("  {$1.He} appears wounded."), S("self"), this);
+			stream << StreamParse(S("  {$self.He} appears wounded."), S("self"), this);
 		else
-			stream << StreamParse(S("  {$1.He} appears to be in good health."), S("self"), this);
+			stream << StreamParse(S("  {$self.He} appears to be in good health."), S("self"), this);
 	}
 }
 

@@ -27,13 +27,13 @@ value.white = "white"
 value.yellow = "yellow"
 
 # Hair styles
-value.short = "short {$1.trait 'hair color'} hair"
-value.long = "long {$1.trait 'hair color'} hair"
-value.flowing = "flowing {$1.trait 'hair color'} hair"
-value.bun = "{$1.trait 'hair color'} hair put back in a bun"
-value.curly = "curly {$1.trait 'hair color'} locks"
-value.ponytail = "{$1.trait 'hair color'} hair pulled back into a ponytail"
-value.spiked = "spiked {$1.trait 'hair color'} hair"
+value.short = "short {$self.trait 'hair color'} hair"
+value.long = "long {$self.trait 'hair color'} hair"
+value.flowing = "flowing {$self.trait 'hair color'} hair"
+value.bun = "{$self.trait 'hair color'} hair put back in a bun"
+value.curly = "curly {$self.trait 'hair color'} locks"
+value.ponytail = "{$self.trait 'hair color'} hair pulled back into a ponytail"
+value.spiked = "spiked {$self.trait 'hair color'} hair"
 value.shaved = "a shaved head"
 
 # Builds (body, face, etc.)

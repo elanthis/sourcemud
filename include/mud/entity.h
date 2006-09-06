@@ -99,7 +99,7 @@ class Entity : public Scriptix::Native, public Parsable
 	virtual int handle_event (const Event& event);
 
 	// for parsing, pull a property based on a char
-	virtual int parse_property (const class StreamControl& stream, String method, const ParseArgs& argv) const;
+	virtual int parse_property (const class StreamControl& stream, String method, const ParseList& argv) const;
 	virtual void parse_default (const class StreamControl& stream) const;
 
 	// heartbeat

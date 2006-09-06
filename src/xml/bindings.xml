@@ -613,19 +613,26 @@ number = roll_dice(3, 6);]]></example>
     <varg/>
     <doc>Formats a string using entity attributes.  The string parameter is plain text with special markup in it.  Additional arguments may given, up to three.  Only <link type="Entity"/>, <link type="String"/>, or <link type="Integer"/> values may be given as the extra arguments.  The markup results in data being pulled from one of the given entities, or conditional text being displayed.</doc>
     <code><![CDATA[
+      if (_argc % 2 != 1) {
+        Scriptix::ScriptManager.raise_error(Scriptix::SXE_BADARGS, "Arguments to 'HTTP.displayTemplate()' must be in name/value pairs.");
+        return Scriptix::Nil;
+      }
+
       ParseArgs vlist;
-      vlist.resize(_argc - 1);
-      for (size_t i = 1; i < _argc; ++i) {
-        if (_argv[i].is_a(AweMUD_EntityType)) {
-          vlist[i - 1] = ((Entity*)_argv[i].get());
+      String name;
+      for (size_t i = 1; i < _argc; i += 2) {
+        name = _argv[1].get_string();
+        if (_argv[i + 1].is_a(AweMUD_EntityType)) {
+          vlist[name] = ((Entity*)_argv[i + 1].get());
         } else {
-          _argv[i] = _argv[i].to_string();
+          _argv[i + 1] = _argv[i + 1].to_string();
           if (!_argv[i].is_nil())
-            vlist[i - 1] = _argv[i].get_string();
+            vlist[name] = _argv[i + 1].get_string();
         }
       }
+
       StringBuffer buffer;
-      parse::text(buffer, _arg_format, vlist, ParseNames(_argc - 1));
+      parse::text(buffer, _arg_format, vlist);
       _return = buffer.str();
     ]]></code>
   </function>
@@ -1456,19 +1463,25 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
       </arg>
       <varg/>
       <code><![CDATA[
+        if (_argc % 2 != 0) {
+          Scriptix::ScriptManager.raise_error(Scriptix::SXE_BADARGS, "Arguments to 'HTTP.displayTemplate()' must be in name/value pairs.");
+          return Scriptix::Nil;
+        }
+
         ParseArgs vlist;
-        vlist.resize(_argc - 1);
-        vlist[0] = _self;
-        for (size_t i = 2; i < _argc; ++i) {
-          if (_argv[i].is_a(AweMUD_EntityType)) {
-            vlist[i - 1] = ((Entity*)_argv[i].get());
+        String name;
+        for (size_t i = 2; i < _argc; i += 2) {
+          name = _argv[1].get_string();
+          if (_argv[i + 1].is_a(AweMUD_EntityType)) {
+            vlist[name] = ((Entity*)_argv[i + 1].get());
           } else {
-            _argv[i] = _argv[i].to_string();
+            _argv[i + 1] = _argv[i + 1].to_string();
             if (!_argv[i].is_nil())
-              vlist[i - 1] = _argv[i].get_string();
+              vlist[name] = _argv[i + 1].get_string();
           }
         }
-        parse::text(*_self, _arg_format, vlist, ParseNames(_argc - 1));
+
+        parse::text(*_self, _arg_format, vlist);
       ]]></code>
       <doc>This is a convenience function that calls <link function="strParse"/> on the arguments and <link method="Creature.put"/> on the result.  Additional arguments to the function are given as argument to the strParse call.  The first argument given to strParse is automatically the Creature instance itself.</doc>
     </method>
@@ -2669,19 +2682,25 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
       </arg>
       <varg/>
       <code><![CDATA[
+        if (_argc % 2 != 0) {
+          Scriptix::ScriptManager.raise_error(Scriptix::SXE_BADARGS, "Arguments to 'HTTP.displayTemplate()' must be in name/value pairs.");
+          return Scriptix::Nil;
+        }
+
         ParseArgs vlist;
-        vlist.resize(_argc - 1);
-        vlist[0] = _self;
-        for (size_t i = 2; i < _argc; ++i) {
-          if (_argv[i].is_a(AweMUD_EntityType)) {
-            vlist[i - 1] = ((Entity*)_argv[i].get());
+        String name;
+        for (size_t i = 2; i < _argc; i += 2) {
+          name = _argv[1].get_string();
+          if (_argv[i + 1].is_a(AweMUD_EntityType)) {
+            vlist[name] = ((Entity*)_argv[i + 1].get());
           } else {
-            _argv[i] = _argv[i].to_string();
+            _argv[i + 1] = _argv[i + 1].to_string();
             if (!_argv[i].is_nil())
-              vlist[i - 1] = _argv[i].get_string();
+              vlist[name] = _argv[i + 1].get_string();
           }
         }
-        parse::text(*_self, _arg_format, vlist, ParseNames(_argc - 1));
+
+        parse::text(*_self, _arg_format, vlist);
       ]]></code>
       <doc>This is a convenience function that calls <link function="strParse"/> on the arguments and <link method="Room.put"/> on the result.  Additional arguments to the function are given as argument to the strParse call.  The first argument given to strParse is automatically the Room instance itself.</doc>
     </method>
@@ -3546,25 +3565,27 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
       <doc>Displays a template to the user with the default expansions.</doc>
       <varg />
       <code><![CDATA[
+        if (_argc % 2 != 0) {
+          Scriptix::ScriptManager.raise_error(Scriptix::SXE_BADARGS, "Arguments to 'HTTP.displayTemplate()' must be in name/value pairs.");
+          return Scriptix::Nil;
+        }
+
         ParseArgs vlist;
-        ParseNames vnames;
-        vlist.resize(_argc);
-        vnames.resize(_argc);
-        vlist[0] = _self;
-        vnames[0] = S("http");
+        String name;
+        vlist[S("http")] = _self;
         if (_self->get_session() != NULL)
-          vlist[1] = _self->get_session()->get_account();
-        vnames[1] = S("account");
-        for (size_t i = 2; i < _argc; ++i) {
-          if (_argv[i].is_a(AweMUD_EntityType)) {
-            vlist[i] = ((Entity*)_argv[i].get());
+          vlist[S("account")] = _self->get_session()->get_account();
+        for (size_t i = 2; i < _argc; i += 2) {
+          name = _argv[1].get_string();
+          if (_argv[i + 1].is_a(AweMUD_EntityType)) {
+            vlist[name] = ((Entity*)_argv[i + 1].get());
           } else {
-            _argv[i] = _argv[i].to_string();
+            _argv[i + 1] = _argv[i + 1].to_string();
             if (!_argv[i].is_nil())
-              vlist[i] = _argv[i].get_string();
+              vlist[name] = _argv[i + 1].get_string();
           }
         }
-        parse::text(*_self, HTTPPageManager.get_template(_arg_name), vlist, vnames);
+        parse::text(*_self, HTTPPageManager.get_template(_arg_name), vlist);
       ]]></code>
     </method>
   </type>

@@ -851,7 +851,7 @@ Object::is_rotting () const
 
 // get parsable member values
 int
-Object::parse_property (const StreamControl& stream, String comm, const ParseArgs& argv) const
+Object::parse_property (const StreamControl& stream, String comm, const ParseList& argv) const
 {
 	// COST
 	if (!strcmp(comm, "cost")) {

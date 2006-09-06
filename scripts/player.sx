@@ -41,7 +41,7 @@ function playerShowInfo(self)
 {
 	// basics
 	self << "Your status:\n";
-	printInfo(self, "Name", self);
+	printInfo(self, "Name", self.getName());
 	printInfo(self, "Race", capwords(self.getRace().getName()));
 	if (self.getGender() == GENDER_MALE)
 		printInfo(self, "Gender", "Male");
@@ -54,7 +54,7 @@ function playerShowInfo(self)
 	printInfo(self, "Age", self.getAge() .. " years (born on " .. self.getBirthday().getDate() .. ")");
 
 	// appearance
-	printInfo(self, "Appearance", strParse("{$1.Desc}", self));
+	printInfo(self, "Appearance", strParse('{$self.Desc}', 'self', self));
 
 	// alignment
 	if (self.isNeutral()) {

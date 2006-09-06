@@ -526,10 +526,10 @@ HTTPHandler::get_post (String id) const
 }
 
 int
-HTTPHandler::parse_property (const StreamControl& stream, String method, const ParseArgs& argv) const
+HTTPHandler::parse_property (const StreamControl& stream, String method, const ParseList& argv) const
 {
 	if (method == "post" && argv.size() == 1) {
-		stream << get_post(argv[0].get_string());
+		stream.stream_put(get_post(argv[0].get_string()));
 		return 0;
 	} else {
 		return -1;
@@ -709,4 +709,22 @@ SHTTPPageManager::check_timeouts ()
 		}
 		i = n;
 	}
+}
+
+const StreamControl&
+operator << (const StreamControl& stream, const StreamHTTPEscape& esc)
+{
+	for (String::const_iterator i = esc.text.begin(); i != esc.text.end(); ++i) {
+		if (*i == '<')
+			stream.stream_put("&lt;");
+		else if (*i == '>')
+			stream.stream_put("&gt;");
+		else if (*i == '&')
+			stream.stream_put("&amp;");
+		else if (*i == '"')
+			stream.stream_put("&quot;");
+		else
+			stream.stream_put(&*i, 1);
+	}
+	return stream;
 }

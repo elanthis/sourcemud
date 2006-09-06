@@ -1,3 +1,14 @@
+2006-09-06 00:20:31  Sean Middleditch <elanthis@awesomeplay.com>
+
+  * Parse system now only accepts named parameters; they may no
+    longer be accessed by index, and every parameter must have
+    a name.
+  * Updated all script functions/methods that used the parsing
+    engine to take alternative string/value pairs in their variable
+    argument list.
+  * Updated all date and source to replace use of indexed parse
+    parameters with named parameters.
+
 2006-09-05 11:45:41  Sean Middleditch <elanthis@awesomeplay.com>
 
   * Fix name of awemud.conf parameter for setting the HTML template
