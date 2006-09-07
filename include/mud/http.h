@@ -119,7 +119,7 @@ class HTTPHandler : public Scriptix::Native, public SocketUser, public IStreamSi
 	HTTPSession* session;
 };
 
-class SHTTPPageManager : public IManager
+class SHTTPManager : public IManager
 {
 	public:
 	virtual int initialize (void);
@@ -147,7 +147,7 @@ class SHTTPPageManager : public IManager
 	typedef GCType::map<String, HTTPSession*> SessionMap;
 	SessionMap sessions;
 };
-extern SHTTPPageManager HTTPPageManager;
+extern SHTTPManager HTTPManager;
 
 struct StreamHTTPEscape {
 	inline

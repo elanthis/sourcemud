@@ -27,6 +27,7 @@
 #include "common/gcmap.h"
 #include "common/imanager.h"
 #include "mud/bindings.h"
+#include "mud/pconn.h"
 
 #ifdef HAVE_LIBZ
 #include <zlib.h>
@@ -137,9 +138,9 @@ class Player : public Creature
 	virtual void stream_put (const char* data, size_t len = 0);
 	void show_prompt ();
 	void process_command (String cmd);
-	void connect (class TelnetHandler* telnet);
+	void connect (IPlayerConnection* conn);
 	void disconnect ();
-	inline class TelnetHandler* get_telnet() const { return conn; }
+	IPlayerConnection* get_conn() const { return conn; }
 	void toggle_echo (bool value);
 	void set_indent (uint level);
 	uint get_width ();
@@ -160,7 +161,7 @@ class Player : public Creature
 	typedef GCType::map<CreatureTraitID, CreatureTraitValue> TraitMap;
 
 	EntityName name;
-	class TelnetHandler* conn;
+	IPlayerConnection* conn;
 	Account* account;
 	String last_command;
 	String last_tell;

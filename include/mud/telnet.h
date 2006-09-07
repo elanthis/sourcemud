@@ -5,8 +5,8 @@
  * http://www.awemud.net
  */
 
-#ifndef TELNET_H
-#define TELNET_H
+#ifndef AWEMUD_MUD_TELNET_H
+#define AWEMUD_MUD_TELNET_H
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -152,7 +152,6 @@ class TelnetHandler : public Scriptix::Native, public SocketUser, public IStream
 
 	// ZMP
 	inline bool has_zmp () const { return io_flags.zmp; }
-	inline bool has_zmp_net_awemud () const { return io_flags.zmp_net_awemud; } // supports the net.awemud. package?
 	inline bool has_zmp_color () const { return io_flags.zmp_color; } // supports the color.define command?
 	void send_zmp (size_t argc, const String argv[]);
 	void zmp_support (String pkg, bool value);
@@ -193,7 +192,7 @@ class TelnetHandler : public Scriptix::Native, public SocketUser, public IStream
 	struct IOFlags {
 		int use_ansi:1, need_prompt:1, need_newline:1, do_echo:1,
 			do_eor:1, want_echo:1, xterm:1, force_echo:1, zmp:1,
-			ready:1, soft_break:1, ansi_term:1, zmp_net_awemud:1,
+			ready:1, soft_break:1, ansi_term:1,
 			zmp_color:1, auto_indent:1;
 	} io_flags;
 

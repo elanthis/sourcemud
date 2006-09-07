@@ -1,3 +1,10 @@
+2006-09-07 02:59:47  Sean Middleditch <elanthis@awesomeplay.com>
+
+  * Removed support for ZMP net.awemud package, since it doesn't
+    really exist anywhere.
+  * Player now attaches to a IPlayerConnection object.  Basically,
+    this allows us to have multiple protocols for players.
+
 2006-09-06 00:20:31  Sean Middleditch <elanthis@awesomeplay.com>
 
   * Parse system now only accepts named parameters; they may no

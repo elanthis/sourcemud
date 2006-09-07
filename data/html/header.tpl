@@ -5,11 +5,11 @@
 		<style type="text/css">
 			td \{
 				text-align: left;
-				vertical-top: top;
+				vertical-align: top;
 			}
 			th \{
 				text-align: left;
-				vertical-top: top;
+				vertical-align: top;
 				background: #666;
 				font-weight: bold;
 				color: #fff;

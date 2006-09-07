@@ -386,7 +386,7 @@ TelnetModeMainMenu::process (char* line)
 int
 TelnetModePlay::initialize ()
 {
-	player->connect(get_handler());
+	player->connect(this);
 
 	// start the player
 	if (player->start()) {
@@ -398,6 +398,13 @@ TelnetModePlay::initialize ()
 	// finish off
 	Log::Info << player->get_id() << " logged in";
 	return 0;
+}
+
+void
+TelnetModePlay::pconn_disconnect ()
+{
+	player = NULL;
+	get_handler()->disconnect();
 }
 
 void
@@ -422,7 +429,7 @@ TelnetModePlay::finish ()
 void
 TelnetModePlay::shutdown ()
 {
-	if (player && player->get_telnet() == get_handler()) {
+	if (player && dynamic_cast<TelnetHandler*>(player->get_conn()) == get_handler()) {
 		player->disconnect();
 		player = NULL;
 	}

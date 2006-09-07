@@ -215,9 +215,6 @@ Player::save (void)
 	writer.close();
 	umask(omask);
 
-	// log
-	Log::Info << "Saved player " << get_id();
-
 	return;
 }
 
@@ -534,50 +531,20 @@ Player::heartbeat(void) {
 
 	// STATUS UPDATES
 
-	// health
-	if (get_hp() != ninfo.last_hp || get_max_hp() != ninfo.last_max_hp) {
-		if (get_telnet()) {
-			if (get_telnet()->has_zmp_net_awemud()) {
-				ZMPPack zmp(S("net.awemud.status.set"));
-				zmp.add(S("hp"));
-				zmp.add(ninfo.last_hp);
-				zmp.add(ninfo.last_max_hp);
-				zmp.send(get_telnet());
-			} else if (get_hp() >= get_max_hp()) {
-				get_telnet()->force_update();
-			}
-		}
-	}
+	// force a prompt redraw if these change
+	uint rts = get_round_time();
+	if (get_hp() != ninfo.last_hp || get_max_hp() != ninfo.last_max_hp || rts != ninfo.last_rt)
+		get_conn()->pconn_force_prompt();
 
-	// store
+	// store values
 	ninfo.last_hp = get_hp();
 	ninfo.last_max_hp = get_max_hp();
-
-	// round time
-	uint rts = get_round_time();
-	if (rts != ninfo.last_rt) {
-
-		if (get_telnet()) {
-			if (get_telnet()->has_zmp_net_awemud()) {
-				// send zmp
-				ZMPPack rt(S("net.awemud.status.set"));
-				rt.add(S("rt"));
-				rt.add(ninfo.last_rt);
-				rt.add(ninfo.last_max_rt);
-				rt.send(get_telnet());
-			} else if (rts == 0) {
-				get_telnet()->force_update();
-			}
-		}
-	}
-
-	// store rt
 	ninfo.last_rt = rts;
 
-	// max rt is the highest rt found, reset at 0
-	if (ninfo.last_rt > ninfo.last_max_rt)
-		ninfo.last_max_rt = ninfo.last_rt;
-	else if (ninfo.last_rt == 0)
+	// max is either current max, or zero if rt is done
+	if (rts > ninfo.last_max_rt)
+		ninfo.last_max_rt = rts;
+	else if (rts == 0)
 		ninfo.last_max_rt = 0;
 
 	// update handler
@@ -605,19 +572,7 @@ Player::deactivate (void)
 void
 Player::show_prompt (void)
 {
-	// no telnet handler?  bail
-	if (!get_telnet())
-		return;
-
-	// net.awemud around?  just show >
-	if (get_telnet()->has_zmp_net_awemud()) {
-		*this << ">";
-	// do the full/stock prompt
-	} else {
-		char prompt[128];
-		snprintf (prompt, 128, "-- HP:%d/%d RT:%u >", get_hp (), get_max_hp (), get_round_time ());
-		*this << prompt;
-	}
+	*this << "-- HP:" << get_hp() << "/" << get_max_hp() << " RT:" << get_round_time() << " >";
 }
 
 int
@@ -666,7 +621,7 @@ Player::parse_property (const StreamControl& stream, String comm, const ParseLis
 
 // connect to a telnet handler
 void
-Player::connect (TelnetHandler* handler)
+Player::connect (IPlayerConnection* handler)
 {
 	// can't be same connection
 	assert(handler != conn);
@@ -680,6 +635,7 @@ Player::connect (TelnetHandler* handler)
 
 	// set connection
 	conn = handler;
+	handler->pconn_connect(this);
 	
 	// reset all network info
 	memset(&ninfo, 0, sizeof(ninfo));
@@ -690,16 +646,14 @@ void
 Player::disconnect (void)
 {
 	// already disconnected?
-	if (!get_telnet())
+	if (!get_conn())
 		return;
 
-	TelnetHandler* telnet = get_telnet();
-	
-	// remove telnet handler
-	conn = NULL;
+	// tell connection handler we're disconnecting
+	get_conn()->pconn_disconnect();
 
-	// end the current telnet mode
-	telnet->finish();
+	// no more connection handler
+	conn = NULL;
 
 	// begin timeout
 	ninfo.timeout_ticks = ROUNDS_TO_TICKS(60); // 60 second timeout
@@ -709,32 +663,32 @@ Player::disconnect (void)
 void
 Player::stream_put (const char* data, size_t len)
 {
-	if (get_telnet())
-		get_telnet()->stream_put(data, len);
+	if (get_conn())
+		get_conn()->pconn_write(data, len);
 }
 
 // toggle echo
 void
 Player::toggle_echo (bool value)
 {
-	if (get_telnet())
-		get_telnet()->toggle_echo(value);
+	if (get_conn())
+		get_conn()->pconn_set_echo(value);
 }
 
 // set indent
 void
 Player::set_indent (uint level)
 {
-	if (get_telnet())
-		get_telnet()->set_indent(level);
+	if (get_conn())
+		get_conn()->pconn_set_indent(level);
 }
 
 // get width of view
 uint
 Player::get_width (void)
 {
-	if (get_telnet())
-		return get_telnet()->get_width();
+	if (get_conn())
+		return get_conn()->pconn_get_width();
 	else
 		return TELNET_DEFAULT_WIDTH;
 }
@@ -743,8 +697,8 @@ Player::get_width (void)
 void
 Player::clear_scr (void)
 {
-	if (get_telnet())
-		get_telnet()->clear_scr();
+	if (get_conn())
+		get_conn()->pconn_clear();
 }
 
 // show player description

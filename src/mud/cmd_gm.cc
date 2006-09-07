@@ -28,14 +28,14 @@ void command_gm_boot (Player* gm, String argv[])
 		*gm << "You cannot boot yourself.\n";
 	} else if (cn == NULL) {
 		*gm << "Player '" << argv[0] << "' is not logged in.\n";
-	} else if (cn->get_telnet() == NULL) {
+	} else if (cn->get_conn() == NULL) {
 		*gm << "Player '" << argv[0] << "' is not actively connected.\n";
 	} else {
-		if (cn->get_telnet()) {
+		if (cn->get_conn()) {
 			*gm << "Booting " << StreamName(cn) << "...\n";
 			*cn << CADMIN "You are being booted by a GM." CNORMAL "\n";
 			Log::Info << "User " << cn->get_account()->get_id() << " booted by " << gm->get_account()->get_id();
-			cn->get_telnet()->disconnect();
+			cn->disconnect();
 		} else {
 			*gm << StreamName(cn, DEFINITE, true) << " is already disconnected.\n";
 		}

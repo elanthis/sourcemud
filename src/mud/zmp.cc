@@ -401,33 +401,6 @@ TelnetHandler::zmp_support (String pkg, bool value)
 			}
 		}
 	}
-
-	// net.awemud?
-	else if (str_eq(pkg, S("net.awemud."))) {
-		io_flags.zmp_net_awemud = value;
-
-		// init if true
-		if (value) {
-			// send net.awemud.name if we're on
-			ZMPPack name(S("net.awemud.name"));
-			name.add(S("AweMUD NG"));
-			name.send(this);
-
-			// make health status bar
-			ZMPPack health_bar(S("net.awemud.status.create"));
-			health_bar.add(S("hp"));
-			health_bar.add(S("Health"));
-			health_bar.add(S("fraction"));
-			health_bar.send(this);
-
-			// make round status bar
-			ZMPPack round_bar(S("net.awemud.status.create"));
-			round_bar.add(S("rt"));
-			round_bar.add(S("Round"));
-			round_bar.add(S("count"));
-			round_bar.send(this);
-		}
-	}
 }
 
 // built-in handlers

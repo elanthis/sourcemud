@@ -32,7 +32,7 @@
 #include "common/log.h"
 #include "common/md5.h"
 
-SHTTPPageManager HTTPPageManager;
+SHTTPManager HTTPManager;
 
 SCRIPT_TYPE(HTTP);
 HTTPHandler::HTTPHandler (int s_sock, const SockStorage& s_netaddr) : Scriptix::Native(AweMUD_HTTPType), SocketUser(s_sock)
@@ -259,7 +259,7 @@ HTTPHandler::process ()
 						sid = String(sid_start, sid_end - sid_start);
 
 					// get the session (may be NULL if expired/invalid)
-					session = HTTPPageManager.get_session(sid);
+					session = HTTPManager.get_session(sid);
 					if (session != NULL)
 						session->update_timestamp();
 				}
@@ -355,8 +355,9 @@ HTTPHandler::parse_request_data (GCType::map<String,String>& map, const char* li
 void
 HTTPHandler::execute()
 {
-	/*
+
 	// DEBUG: Log request variables
+	/*
 	for (GCType::map<String,String>::iterator i = get.begin(); i != get.end(); ++i)
 		Log::Info << "GET: " << i->first << "=" << i->second;
 	for (GCType::map<String,String>::iterator i = post.begin(); i != post.end(); ++i)
@@ -374,7 +375,7 @@ HTTPHandler::execute()
 		page_account();
 	// do a script page
 	else {
-		Scriptix::ScriptFunction func = HTTPPageManager.get_page(path);
+		Scriptix::ScriptFunction func = HTTPManager.get_page(path);
 		if (func) {
 			func.run(path, this);
 		} else {
@@ -394,9 +395,9 @@ void
 HTTPHandler::page_index()
 {
 	*this << "HTTP/1.0 200 OK\nContent-type: text/html\n\n"
-		<< StreamParse(HTTPPageManager.get_template(S("header")), S("account"), get_account())
-		<< StreamParse(HTTPPageManager.get_template(S("index")), S("account"), get_account())
-		<< StreamParse(HTTPPageManager.get_template(S("footer")));
+		<< StreamParse(HTTPManager.get_template(S("header")), S("account"), get_account())
+		<< StreamParse(HTTPManager.get_template(S("index")), S("account"), get_account())
+		<< StreamParse(HTTPManager.get_template(S("footer")));
 }
 
 void
@@ -410,7 +411,7 @@ HTTPHandler::page_login()
 	if (get_post(S("action")) == "Login") {
 		Account* account = AccountManager.get(get_post(S("username")));
 		if (account != NULL && account->check_passphrase(get_post(S("password")))) {
-			session = HTTPPageManager.create_session(account);
+			session = HTTPManager.create_session(account);
 			msg = S("Login successful!");
 			*this << "Set-cookie: AWEMUD_SESSION=" << session->get_id() << "\n";
 		} else {
@@ -419,21 +420,21 @@ HTTPHandler::page_login()
 	}
 
 	*this << "\n"
-		<< StreamParse(HTTPPageManager.get_template(S("header")), S("msg"), msg, S("account"), get_account())
-		<< StreamParse(HTTPPageManager.get_template(S("login")), S("account"), get_account())
-		<< StreamParse(HTTPPageManager.get_template(S("footer")));
+		<< StreamParse(HTTPManager.get_template(S("header")), S("msg"), msg, S("account"), get_account())
+		<< StreamParse(HTTPManager.get_template(S("login")), S("account"), get_account())
+		<< StreamParse(HTTPManager.get_template(S("footer")));
 }
 
 void
 HTTPHandler::page_logout()
 {
 	if (session != NULL)
-		HTTPPageManager.destroy_session(session);
+		HTTPManager.destroy_session(session);
 
 	*this << "HTTP/1.0 200 OK\nContent-type: text/html\nSet-cookie: AWEMUD_SESSION=\n\n"
-		<< StreamParse(HTTPPageManager.get_template(S("header")))
-		<< StreamParse(HTTPPageManager.get_template(S("logout")))
-		<< StreamParse(HTTPPageManager.get_template(S("footer")));
+		<< StreamParse(HTTPManager.get_template(S("header")))
+		<< StreamParse(HTTPManager.get_template(S("logout")))
+		<< StreamParse(HTTPManager.get_template(S("footer")));
 }
 
 void
@@ -441,7 +442,7 @@ HTTPHandler::page_account()
 {
 	// must have an account for this to work
 	if (get_account() == NULL) {
-		*this << "HTTP/1.0 403 Access Denied\n\nYou must login to access this page.\n";
+		http_error(403, S("You must login to access this page."));
 		return;
 	}
 
@@ -472,9 +473,9 @@ HTTPHandler::page_account()
 
 	// did they try to save changes?
 	*this << "HTTP/1.0 200 OK\nContent-type: text/html\n\n"
-		<< StreamParse(HTTPPageManager.get_template(S("header")), S("account"), get_account(), S("msg"), msg)
-		<< StreamParse(HTTPPageManager.get_template(S("account")), S("account"), get_account())
-		<< StreamParse(HTTPPageManager.get_template(S("footer")));
+		<< StreamParse(HTTPManager.get_template(S("header")), S("account"), get_account(), S("msg"), msg)
+		<< StreamParse(HTTPManager.get_template(S("account")), S("account"), get_account())
+		<< StreamParse(HTTPManager.get_template(S("footer")));
 }
 
 void
@@ -496,9 +497,9 @@ HTTPHandler::http_error (int error, String msg)
 
 	// display error page
 	*this << "HTTP/1.0 " << error << " " << http_msg << "\nContent-type: text/html\n\n"
-		<< StreamParse(HTTPPageManager.get_template(S("header")), S("account"), get_account())
-		<< StreamParse(HTTPPageManager.get_template(S("error")), S("error"), tostr(error), S("http_msg"), http_msg, S("msg"), msg)
-		<< StreamParse(HTTPPageManager.get_template(S("footer")));
+		<< StreamParse(HTTPManager.get_template(S("header")), S("account"), get_account())
+		<< StreamParse(HTTPManager.get_template(S("error")), S("error"), tostr(error), S("http_msg"), http_msg, S("msg"), msg)
+		<< StreamParse(HTTPManager.get_template(S("footer")));
 
 	// log error
 	Log::Network << (reqtype == GET ? "GET" : reqtype == POST ? "POST" : "-") << " " << (url ? url : S("-")) << " " << error << " " << (get_account() ? get_account()->get_id() : S("-")) << " " << Network::get_addr_name(addr) << " <" << msg << ">";
@@ -599,7 +600,7 @@ HTTPSession::clear ()
 }
 
 int
-SHTTPPageManager::initialize (void)
+SHTTPManager::initialize (void)
 {
 	StringBuffer buf;
 
@@ -638,33 +639,33 @@ SHTTPPageManager::initialize (void)
 }
 
 void
-SHTTPPageManager::shutdown (void)
+SHTTPManager::shutdown (void)
 {
 	templates.clear();
 }
 
 String
-SHTTPPageManager::get_template (String id)
+SHTTPManager::get_template (String id)
 {
 	TemplateMap::iterator i = templates.find(id);
 	return i != templates.end() ? i->second : String();
 }
 
 Scriptix::ScriptFunction
-SHTTPPageManager::get_page (String id)
+SHTTPManager::get_page (String id)
 {
 	PageMap::iterator i = pages.find(id);
 	return i != pages.end() ? i->second : Scriptix::ScriptFunction();
 }
 
 void
-SHTTPPageManager::register_page (String id, Scriptix::ScriptFunction func)
+SHTTPManager::register_page (String id, Scriptix::ScriptFunction func)
 {
 	pages[id] = func;
 }
 
 HTTPSession*
-SHTTPPageManager::create_session (Account* account)
+SHTTPManager::create_session (Account* account)
 {
 	assert(account != NULL);
 
@@ -675,7 +676,7 @@ SHTTPPageManager::create_session (Account* account)
 }
 
 void
-SHTTPPageManager::destroy_session (HTTPSession* session)
+SHTTPManager::destroy_session (HTTPSession* session)
 {
 	assert(session != NULL);
 
@@ -687,7 +688,7 @@ SHTTPPageManager::destroy_session (HTTPSession* session)
 }
 
 HTTPSession*
-SHTTPPageManager::get_session (String id)
+SHTTPManager::get_session (String id)
 {
 	SessionMap::iterator i = sessions.find(id);
 	if (i == sessions.end())
@@ -696,7 +697,7 @@ SHTTPPageManager::get_session (String id)
 }
 
 void
-SHTTPPageManager::check_timeouts ()
+SHTTPManager::check_timeouts ()
 {
 	SessionMap::iterator i, n;
 	i = sessions.begin();

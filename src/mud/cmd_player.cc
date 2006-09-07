@@ -106,7 +106,7 @@ void command_skills (Player* player, String[])
 void command_setcolor (Player* player, String argv[])
 {
 	// must have a telnet connection
-	if (player->get_telnet() == NULL) {
+	if (player->get_conn() == NULL) {
 		*player << "Must have an active telnet connection.\n";
 		return;
 	}
@@ -172,7 +172,7 @@ void command_setcolor (Player* player, String argv[])
 
 	// set color
 	} else {
-		player->get_telnet()->set_color (ctype, cvalue);
+		player->get_conn()->pconn_set_color (ctype, cvalue);
 		*player << "Color '" << color_type_names [ctype]<< "' set to " << color_values[cvalue] << color_value_names[cvalue] << CNORMAL "\n";
 	}
 }

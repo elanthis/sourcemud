@@ -10,6 +10,7 @@
 
 #include "mud/telnet.h"
 #include "mud/account.h"
+#include "mud/pconn.h"
 
 class TelnetModeLogin : public ITelnetMode
 {
@@ -80,7 +81,7 @@ class TelnetModeMainMenu : public ITelnetMode
 	void show_account ();
 };
 
-class TelnetModePlay : public ITelnetMode
+class TelnetModePlay : public ITelnetMode, public IPlayerConnection
 {
 	public:
 	TelnetModePlay (TelnetHandler* s_handler, class Player* s_player) : ITelnetMode (s_handler), player(s_player) {}
@@ -90,6 +91,16 @@ class TelnetModePlay : public ITelnetMode
 	virtual void process (char* line);
 	virtual void shutdown ();
 	virtual void finish ();
+
+	virtual void pconn_connect (Player* player) {}
+	virtual void pconn_disconnect ();
+	virtual void pconn_write (const char* data, size_t len) { get_handler()->stream_put(data, len); }
+	virtual void pconn_set_echo (bool value) { get_handler()->toggle_echo(value); }
+	virtual void pconn_set_indent (uint level) { get_handler()->set_indent(level); }
+	virtual void pconn_set_color (int color, int value) { get_handler()->set_color(color, value); }
+	virtual void pconn_clear () { get_handler()->clear_scr(); }
+	virtual void pconn_force_prompt () { get_handler()->force_update(); }
+	virtual uint pconn_get_width () { return get_handler()->get_width(); }
 
 	private:
 	class Player* player;

@@ -258,6 +258,7 @@ noinst_HEADERS=\
 	include/mud/object.h \
 	include/mud/olc.h \
 	include/mud/parse.h \
+	include/mud/pconn.h \
 	include/mud/pdesc.h \
 	include/mud/player.h \
 	include/mud/portal.h \

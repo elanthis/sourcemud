@@ -5,8 +5,8 @@
  * http://www.awemud.net
  */
 
-#ifndef __TYPES__
-#define __TYPES__
+#ifndef AWEMUD_COMMON_TYPES_H
+#define AWEMUD_COMMON_TYPES_H
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"

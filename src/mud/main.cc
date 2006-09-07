@@ -739,7 +739,7 @@ main (int argc, char **argv)
 			WeatherManager.update();
 
 			// HTTP timeouts 
-			HTTPPageManager.check_timeouts();
+			HTTPManager.check_timeouts();
 
 			// update time
 			bool is_day = TimeManager.time.is_day ();

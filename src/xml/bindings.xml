@@ -1914,20 +1914,9 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
 
     <!-- Processors/IO -->
     <method>
-      <name>getTelnet</name>
-      <invoke>get_telnet</invoke>
-      <return>
-        <type>Telnet</type>
-        <doc>The Telnet object connected to this player, or Nil if no Telnet object is connected.</doc>
-      </return>
-    </method>
-    <method>
       <name>clearScr</name>
+      <invoke>clear_scr</invoke>
       <doc>Clear the player's screen.</doc>
-      <code><![CDATA[
-        if (_self->get_telnet())
-          _self->get_telnet()->clear_scr();
-      ]]></code>
     </method>
     <method>
       <name>setIndent</name>
@@ -1937,32 +1926,6 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
         <type>Integer</type>
         <doc>Amount to indent all further output by.</doc>
       </arg>
-    </method>
-    <method>
-      <name>getIndent</name>
-      <invoke>get_indent</invoke>
-      <return>
-        <type>Integer</type>
-        <doc>Current indentation settings.</doc>
-      </return>
-      <code><![CDATA[
-        if (_self->get_telnet())
-          _return = _self->get_telnet()->get_indent();
-      ]]></code>
-    </method>
-    <method>
-      <name>drawBar</name>
-      <invoke>draw_bar</invoke>
-      <arg>
-        <name>percent</name>
-        <type>Integer</type>
-        <doc>Percentage of bar to fill in.</doc>
-      </arg>
-      <doc>Draws a 14 character wide progress bar on the player's output.</doc>
-      <code><![CDATA[
-        if (_self->get_telnet())
-          _self->get_telnet()->draw_bar(_arg_percent);
-      ]]></code>
     </method>
 
     <!-- Weird information functions -->
@@ -3413,14 +3376,14 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
       <doc>Display the default page header.</doc>
       <code><![CDATA[
         *_self << "HTTP/1.0 200 OK\nContent-type: text/html\n\n";
-        *_self << StreamParse(HTTPPageManager.get_template(S("header")), S("account"), _self->get_account());
+        *_self << StreamParse(HTTPManager.get_template(S("header")), S("account"), _self->get_account());
       ]]></code>
     </method>
     <method>
       <name>footer</name>
       <doc>Display the default page footer.</doc>
       <code><![CDATA[
-        *_self << StreamParse(HTTPPageManager.get_template(S("footer")), S("account"), _self->get_account());
+        *_self << StreamParse(HTTPManager.get_template(S("footer")), S("account"), _self->get_account());
       ]]></code>
     </method>
 
@@ -3483,9 +3446,9 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
       <code><![CDATA[
         if (!_self->get_account() || !_self->get_account()->has_access(AccessID::lookup(_arg_privilege))) {
           *_self << "HTTP/1.0 403 Access Denied\nContent-type: text/html\n\n";
-          *_self << StreamParse(HTTPPageManager.get_template(S("header")), S("account"), _self->get_account());
-          *_self << StreamParse(HTTPPageManager.get_template(S("noaccess")), S("account"), _self->get_account(), S("priv"), _arg_privilege);
-          *_self << StreamParse(HTTPPageManager.get_template(S("footer")));
+          *_self << StreamParse(HTTPManager.get_template(S("header")), S("account"), _self->get_account());
+          *_self << StreamParse(HTTPManager.get_template(S("noaccess")), S("account"), _self->get_account(), S("priv"), _arg_privilege);
+          *_self << StreamParse(HTTPManager.get_template(S("footer")));
           _return = false;
         } else {
           _return = true;
@@ -3585,7 +3548,7 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
               vlist[name] = _argv[i + 1].get_string();
           }
         }
-        parse::text(*_self, HTTPPageManager.get_template(_arg_name), vlist);
+        parse::text(*_self, HTTPManager.get_template(_arg_name), vlist);
       ]]></code>
     </method>
   </type>
@@ -3601,7 +3564,7 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
       <type>Function</type>
       <doc>Callback function.  It must take the following arguments: page name (String) and connection (HTTP).</doc>
     </arg>
-    <code><![CDATA[HTTPPageManager.register_page(_arg_name, _arg_callback);]]></code>
+    <code><![CDATA[HTTPManager.register_page(_arg_name, _arg_callback);]]></code>
   </function>
 
   <!-- Telnet -->
