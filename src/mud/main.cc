@@ -55,7 +55,7 @@ namespace {
 		public:
 		inline TelnetListener (int s_sock) : SocketListener(s_sock) {}
 
-		virtual void in_ready ();
+		virtual void sock_in_ready ();
 	};
 
 	class HTTPListener : public SocketListener
@@ -63,7 +63,7 @@ namespace {
 		public:
 		inline HTTPListener (int s_sock) : SocketListener(s_sock) {}
 
-		virtual void in_ready ();
+		virtual void sock_in_ready ();
 	};
 
 	class ControlListener : public SocketListener
@@ -71,7 +71,7 @@ namespace {
 		public:
 		inline ControlListener (int s_sock) : SocketListener(s_sock) {}
 
-		virtual void in_ready ();
+		virtual void sock_in_ready ();
 	};
 
 	void cleanup ();
@@ -214,7 +214,7 @@ namespace {
 	}
 
 	void
-	TelnetListener::in_ready ()
+	TelnetListener::sock_in_ready ()
 	{
 		// accept client
 		SockStorage addr;
@@ -284,7 +284,7 @@ namespace {
 	}
 
 	void
-	HTTPListener::in_ready ()
+	HTTPListener::sock_in_ready ()
 	{
 		// accept client
 		SockStorage addr;
@@ -338,7 +338,7 @@ namespace {
 	}
 
 	void
-	ControlListener::in_ready ()
+	ControlListener::sock_in_ready ()
 	{
 		// accept client
 		uid_t uid;

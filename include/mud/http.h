@@ -47,7 +47,7 @@ class HTTPSession : public GC
 	GCType::map<String,String> vars;
 };
 
-class HTTPHandler : public Scriptix::Native, public SocketUser, public IStreamSink, public Parsable
+class HTTPHandler : public Scriptix::Native, public SocketConnection, public IStreamSink, public Parsable
 {
 	public:
 	HTTPHandler (int s_sock, const SockStorage& s_netaddr);
@@ -79,11 +79,9 @@ class HTTPHandler : public Scriptix::Native, public SocketUser, public IStreamSi
 
 	// low-level IO
 	void disconnect ();
-	virtual void in_handle (char* buffer, size_t size);
-	virtual char get_poll_flags ();
-	virtual void out_ready ();
-	virtual void hangup ();
-	virtual void prepare ();
+	virtual void sock_input (char* buffer, size_t size);
+	virtual void sock_hangup ();
+	virtual void sock_flush ();
 
 	// parse values
 	int parse_property (const StreamControl& stream, String method, const ParseList& argv) const;
@@ -101,7 +99,6 @@ class HTTPHandler : public Scriptix::Native, public SocketUser, public IStreamSi
 
 	// HTTP parsing
 	StringBuffer line;
-	StringBuffer output;
 	String url;
 	String path;
 	enum { NONE, URLENCODED } posttype;

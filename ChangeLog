@@ -1,3 +1,7 @@
+2006-09-08 16:48:12  Sean Middleditch <elanthis@awesomeplay.com>
+
+  * Cleaned up the socket classes and their interfaces.
+
 2006-09-07 02:59:47  Sean Middleditch <elanthis@awesomeplay.com>
 
   * Removed support for ZMP net.awemud package, since it doesn't

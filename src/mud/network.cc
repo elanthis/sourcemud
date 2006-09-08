@@ -141,12 +141,15 @@ namespace {
 	}
 }
 
-/**************
- * SocketUser *
- **************/
+/********************
+ * SocketConnection *
+ ********************/
+
+SocketConnection::SocketConnection (int s_sock) : output(), sock(s_sock), disconnect(false)
+{}
 
 void
-SocketUser::in_ready (void)
+SocketConnection::sock_in_ready ()
 {
 	char buffer[2048];
 	int err = recv(sock, buffer, sizeof(buffer), 0);
@@ -157,7 +160,7 @@ SocketUser::in_ready (void)
 		close(sock);
 		sock = -1;
 
-		hangup();
+		sock_hangup();
 		return;
 	}
 
@@ -166,13 +169,45 @@ SocketUser::in_ready (void)
 		close(sock);
 		sock = -1;
 
-		hangup();
+		sock_hangup();
 		return;
 	}
 
 	// real data
-	else if (err > 0)
-		in_handle(buffer, err);
+	else if (err > 0 && !disconnect)
+		sock_input(buffer, err);
+}
+
+
+void
+SocketConnection::sock_out_ready ()
+{
+	int ret = send(sock, output.c_str(), output.size(), 0);
+	if (ret > 0) {
+		// HACK - this works, but isn't necessarily bright
+		memmove(&output[0], output.c_str() + ret, output.size() - ret);
+		output[output.size() - ret] = 0;
+	}
+}
+
+void
+SocketConnection::sock_buffer (const char* bytes, size_t len)
+{
+	output.write(bytes, len);
+}
+
+void
+SocketConnection::sock_disconnect ()
+{
+	disconnect = true;
+}
+
+void
+SocketConnection::sock_complete_disconnect ()
+{
+	shutdown(sock, SHUT_RDWR);
+	close(sock);
+	sock = -1;
 }
 
 /******************
@@ -187,7 +222,7 @@ struct PollData : public GC {
 };
 
 int
-SNetworkManager::initialize (void)
+SNetworkManager::initialize ()
 {
 	p_data = new PollData();
 
@@ -219,7 +254,7 @@ SNetworkManager::initialize (void)
 }
 
 void
-SNetworkManager::shutdown (void)
+SNetworkManager::shutdown ()
 {
 	p_data->sockets.resize(0);
 	p_data->addlist.resize(0);
@@ -254,9 +289,12 @@ SNetworkManager::poll (long timeout)
 	// build the cread and cwrite bit sets
 	i = p_data->sockets.begin();
 	while (i != p_data->sockets.end()) {
-		(*i)->prepare();
+		(*i)->sock_flush();
 
-		int sock = (*i)->get_sock();
+		if ((*i)->sock_is_disconnect_waiting() && !(*i)->sock_is_out_waiting())
+			(*i)->sock_complete_disconnect();
+
+		int sock = (*i)->sock_get_fd();
 		if (sock == -1) {
 			i = p_data->sockets.erase(i);
 			continue;
@@ -265,10 +303,8 @@ SNetworkManager::poll (long timeout)
 		if (sock > max_sock)
 			max_sock = sock;
 
-		char flags = (*i)->get_poll_flags();
-		if (flags & POLLSYS_READ)
-			FD_SET(sock, &cread);
-		if (flags & POLLSYS_WRITE)
+		FD_SET(sock, &cread);
+		if ((*i)->sock_is_out_waiting())
 			FD_SET(sock, &cwrite);
 
 		++ i;
@@ -293,11 +329,11 @@ SNetworkManager::poll (long timeout)
 	// process states
 	if (ret > 0) {
 		for (i = p_data->sockets.begin(); i != p_data->sockets.end(); ++i) {
-			int sock = (*i)->get_sock();
+			int sock = (*i)->sock_get_fd();
 			if (FD_ISSET(sock, &cwrite))
-				(*i)->out_ready();
+				(*i)->sock_out_ready();
 			if (FD_ISSET(sock, &cread))
-				(*i)->in_ready();
+				(*i)->sock_in_ready();
 		}
 	}
 

@@ -241,12 +241,12 @@ TextBuffer::release ()
 }
 
 SCRIPT_TYPE(Telnet);
-TelnetHandler::TelnetHandler (int s_sock, const SockStorage& s_netaddr) : Scriptix::Native (AweMUD_TelnetType), SocketUser(s_sock)
+TelnetHandler::TelnetHandler (int s_sock, const SockStorage& s_netaddr) : Scriptix::Native (AweMUD_TelnetType), SocketConnection(s_sock)
 {
 	addr = s_netaddr;
 
 	// various state settings
-	in_cnt = out_cnt = sb_cnt = outchunk_cnt = esc_cnt = 0;
+	in_cnt = sb_cnt = outchunk_cnt = esc_cnt = 0;
 	istate = ISTATE_TEXT;
 	ostate = OSTATE_TEXT;
 	margin = 0;
@@ -353,10 +353,7 @@ TelnetHandler::disconnect ()
 	}
 
 	// close socket
-	if (sock != -1) {
-		close(sock);
-		sock = -1;
-	}
+	sock_disconnect();
 }
 
 // toggle echo
@@ -616,7 +613,7 @@ TelnetHandler::draw_bar (uint percent)
 
 // process input
 void
-TelnetHandler::in_handle (char* buffer, size_t size)
+TelnetHandler::sock_input (char* buffer, size_t size)
 {
 	// time stamp
 	in_stamp = time(NULL);
@@ -1033,7 +1030,7 @@ TelnetHandler::process_sb ()
 
 // flush out the output, write prompt
 void
-TelnetHandler::prepare ()
+TelnetHandler::sock_flush ()
 {
 	// check timeout
 	check_timeout();
@@ -1188,7 +1185,7 @@ TelnetHandler::add_output (const char *data, size_t len)
 
 			// out of output?
 			if (!zstate->avail_out) {
-				add_to_out_buffer(buffer, sizeof(buffer));
+				sock_buffer(buffer, sizeof(buffer));
 				zstate->next_out = (Bytef*)buffer;
 				zstate->avail_out = sizeof(buffer);
 			}
@@ -1197,48 +1194,11 @@ TelnetHandler::add_output (const char *data, size_t len)
 		// have we any remaining output?
 		deflate(zstate, Z_SYNC_FLUSH);
 		if (zstate->avail_out < sizeof(buffer))
-			add_to_out_buffer(buffer, sizeof(buffer) - zstate->avail_out);
+			sock_buffer(buffer, sizeof(buffer) - zstate->avail_out);
 	} else
 #endif // HAVE_LIBZ
 
-	add_to_out_buffer(data, len);
-}
-
-void
-TelnetHandler::add_to_out_buffer (const char* data, size_t len)
-{
-	// empty?  why both...
-	if (len == 0)
-		return;
-	// grow output buffer if needed
-	while (len + out_cnt >= output.size()) {
-		// can't grow enough?
-		if (output.grow()) {
-			// overflow message
-			const char* overflow_msg = "\r\n\r\n[[ ** OUTPUT OVERFLOW ** ]\r\n\r\n]";
-			strncpy(output.data(), overflow_msg, output.size());
-			out_cnt = strlen(overflow_msg);
-
-			// copy as much of _end_ of new buffer as is possible
-			size_t remain = output.size() - out_cnt;
-			if (len > remain) {
-				data += len - remain;
-				len = remain;
-			}
-
-			// copy to buffer
-			memcpy(output.data() + out_cnt, data, len);
-			out_cnt += len;
-
-			// log it and return
-			Log::Warning << "Telnet output buffer overflow"; // FIXME: log which client, somehow
-			return;
-		}
-	}
-
-	// append remaining data
-	memcpy(output.data() + out_cnt, data, len * sizeof(char));
-	out_cnt += len;
+	sock_buffer(data, len);
 }
 
 void
@@ -1275,40 +1235,8 @@ TelnetHandler::check_timeout ()
 	}
 }
 
-char
-TelnetHandler::get_poll_flags ()
-{
-	char flags = POLLSYS_READ;
-	if (out_cnt > 0)
-		flags |= POLLSYS_WRITE;
-	return flags;
-}
-
 void
-TelnetHandler::out_ready ()
-{
-	if (out_cnt == 0)
-		return;
-
-	int ret = send(sock, output.data(), out_cnt, 0);
-	if (ret == -1 && errno != EAGAIN && errno != EINTR) {
-		Log::Error << "send() failed: " << strerror(errno);
-		return;
-	}
-
-	if (ret <= 0)
-		return;
-
-	if (out_cnt - ret > 0) {
-		memmove(output.data(), output.data() + out_cnt, out_cnt - ret);
-	} else if (out_cnt == (uint)ret) {
-		output.release();
-		out_cnt = 0;
-	}
-}
-
-void
-TelnetHandler::hangup ()
+TelnetHandler::sock_hangup ()
 {
 	disconnect();
 }

@@ -30,7 +30,7 @@ SControlManager ControlManager;
 		return; \
 	} \
 
-ControlHandler::ControlHandler (int s_sock, uid_t s_uid) : SocketUser(s_sock), account(NULL), uid(s_uid)
+ControlHandler::ControlHandler (int s_sock, uid_t s_uid) : SocketConnection(s_sock), account(NULL), uid(s_uid)
 {
 	in_buffer[0] = '\0';
 }
@@ -42,14 +42,13 @@ ControlHandler::is_admin () const
 }
 
 void
-ControlHandler::in_handle (char* buffer, size_t size)
+ControlHandler::sock_input (char* buffer, size_t size)
 {
 	int len = strlen(in_buffer);
 
 	if (len + size + 1 > CONTROL_BUFFER_SIZE) {
 		*this << "+INTERNAL Input overflow";
-		close(sock);
-		sock = -1;
+		sock_disconnect();
 		return;
 	}
 
@@ -60,29 +59,7 @@ ControlHandler::in_handle (char* buffer, size_t size)
 }
 
 void
-ControlHandler::out_ready ()
-{
-	// FIXME: might lose output
-	if (send(sock, out_buffer.c_str(), out_buffer.size(), 0) == -1) {
-		Log::Error << "send() failed: " << strerror(errno);
-		close(sock);
-		sock = -1;
-	}
-
-	out_buffer.clear();
-}
-
-char
-ControlHandler::get_poll_flags ()
-{
-	char flags = POLLSYS_READ;
-	if (!out_buffer.empty())
-		flags |= POLLSYS_WRITE;
-	return flags;
-}
-
-void
-ControlHandler::hangup ()
+ControlHandler::sock_hangup ()
 {
 	Log::Network << "Control client disconnected";
 }
@@ -90,7 +67,7 @@ ControlHandler::hangup ()
 void
 ControlHandler::stream_put (const char* str, size_t len)
 {
-	out_buffer = out_buffer + String(str, len);
+	sock_buffer(str, len);
 }
 
 void
@@ -193,8 +170,7 @@ ControlHandler::handle (int argc, String argv[])
 	// quit
 	} else if (str_eq(argv[0], S("quit"))) {
 		*this << "+OK Farewell\n";
-		close(sock);
-		sock = -1;
+		sock_disconnect();
 	// change passphrase
 	} else if (str_eq(argv[0], S("chpass"))) {
 		if (argc != 3) {

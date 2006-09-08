@@ -21,7 +21,7 @@
 #define CONTROL_BUFFER_SIZE 1024
 
 // a control user
-class ControlHandler : public IStreamSink, public SocketUser
+class ControlHandler : public IStreamSink, public SocketConnection
 {
 	public:
 	ControlHandler (int s_sock, uid_t s_uid);
@@ -34,15 +34,12 @@ class ControlHandler : public IStreamSink, public SocketUser
 	bool is_admin () const;
 
 	// network I/O
-	virtual void prepare () {}
-	virtual void in_handle (char* buf, size_t size);
-	virtual char get_poll_flags ();
-	virtual void out_ready ();
-	virtual void hangup ();
+	virtual void sock_flush () {}
+	virtual void sock_input (char* buf, size_t size);
+	virtual void sock_hangup ();
 
 	private:
 	char in_buffer[CONTROL_BUFFER_SIZE];
-	String out_buffer;
 	Account* account;
 	uid_t uid;
 

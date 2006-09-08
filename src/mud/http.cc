@@ -35,7 +35,7 @@
 SHTTPManager HTTPManager;
 
 SCRIPT_TYPE(HTTP);
-HTTPHandler::HTTPHandler (int s_sock, const SockStorage& s_netaddr) : Scriptix::Native(AweMUD_HTTPType), SocketUser(s_sock)
+HTTPHandler::HTTPHandler (int s_sock, const SockStorage& s_netaddr) : Scriptix::Native(AweMUD_HTTPType), SocketConnection(s_sock)
 {
 	addr = s_netaddr;
 	state = REQ;
@@ -47,17 +47,11 @@ HTTPHandler::HTTPHandler (int s_sock, const SockStorage& s_netaddr) : Scriptix::
 void
 HTTPHandler::disconnect ()
 {
-	// don't log this; FIXME: we should ahve one log line per request, noting usrl/user/etc
-	// Log::Network << "HTTP client disconnected: " << Network::get_addr_name(addr);
-
 	// reduce count
 	NetworkManager.connections.remove(addr);
 
 	// close socket
-	if (sock != -1) {
-		close(sock);
-		sock = -1;
-	}
+	sock_disconnect();
 }
 
 /* output a data of text -
@@ -67,12 +61,12 @@ HTTPHandler::disconnect ()
 void
 HTTPHandler::stream_put (const char *text, size_t len) 
 {
-	output.write(text, len);
+	sock_buffer(text, len);
 }
 
 // process input
 void
-HTTPHandler::in_handle (char* buffer, size_t size)
+HTTPHandler::sock_input (char* buffer, size_t size)
 {
 	timeout = time(NULL);
 
@@ -126,7 +120,7 @@ HTTPHandler::in_handle (char* buffer, size_t size)
 
 // flush out the output, write prompt
 void
-HTTPHandler::prepare ()
+HTTPHandler::sock_flush ()
 {
 	// handle timeout
 	if (timeout != 0 && (time(NULL) - timeout) >= HTTP_REQUEST_TIMEOUT) {
@@ -135,32 +129,12 @@ HTTPHandler::prepare ()
 	}
 
 	// disconnect if we are all done
-	if (output.empty() && (state == DONE || state == ERROR))
-		disconnect();
-}
-
-char
-HTTPHandler::get_poll_flags ()
-{
-	char flags = POLLSYS_READ;
-	if (!output.empty())
-		flags |= POLLSYS_WRITE;
-	return flags;
+	if (state == DONE || state == ERROR)
+		sock_disconnect();
 }
 
 void
-HTTPHandler::out_ready ()
-{
-	int ret = send(sock, output.c_str(), output.size(), 0);
-	if (ret > 0) {
-		// HACK - this works, but isn't necessarily bright
-		memmove(&output[0], output.c_str() + ret, output.size() - ret);
-		output[output.size() - ret] = 0;
-	}
-}
-
-void
-HTTPHandler::hangup ()
+HTTPHandler::sock_hangup ()
 {
 	disconnect();
 }

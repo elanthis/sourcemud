@@ -120,7 +120,7 @@ class ITelnetMode : public GC
 	class TelnetHandler* handler;
 };
 
-class TelnetHandler : public Scriptix::Native, public SocketUser, public IStreamSink
+class TelnetHandler : public Scriptix::Native, public SocketConnection, public IStreamSink
 {
 	public:
 	TelnetHandler (int s_sock, const SockStorage& s_netaddr);
@@ -160,11 +160,9 @@ class TelnetHandler : public Scriptix::Native, public SocketUser, public IStream
 	void set_mode (ITelnetMode* new_mode);
 
 	// low-level IO
-	virtual void in_handle (char* buffer, size_t size);
-	virtual char get_poll_flags ();
-	virtual void out_ready ();
-	virtual void hangup ();
-	virtual void prepare ();
+	virtual void sock_input (char* buffer, size_t size);
+	virtual void sock_hangup ();
+	virtual void sock_flush ();
 
 	protected:
 	// destructor
@@ -172,10 +170,9 @@ class TelnetHandler : public Scriptix::Native, public SocketUser, public IStream
 
 	protected:
 	TextBuffer input; // player input buffer
-	TextBuffer output; // output
 	TextBuffer outchunk; // chunk of output
 	TextBuffer subrequest; // telnet-subrequest input
-	uint in_cnt, out_cnt, sb_cnt, outchunk_cnt; // counts for buffers
+	uint in_cnt, sb_cnt, outchunk_cnt; // counts for buffers
 	char esc_buf[TELNET_MAX_ESCAPE_SIZE]; // output escape sequences
 	uint esc_cnt; // count of escape characters
 	uint width, height; // terminal size
@@ -238,7 +235,6 @@ class TelnetHandler : public Scriptix::Native, public SocketUser, public IStream
 
 	// data output
 	void add_output (const char* data, size_t len);
-	void add_to_out_buffer (const char* data, size_t len);
 	void add_to_chunk (const char* data, size_t len);
 	void end_chunk ();
 	void send_iac (uint, ...); // build iac
