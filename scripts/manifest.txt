@@ -1,0 +1,8 @@
+awemud.sx
+string.sx
+corerules.sx
+npc.sx
+object.sx
+player.sx
+webserver.sx
+*.sx

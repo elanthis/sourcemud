@@ -9,9 +9,6 @@
 
 #line 11 "tools/script-code.xsl"
 
-#include <fnmatch.h>
-#include <dirent.h>
-
 #include "common/gcbase.h"
 #include "common/string.h"
 #include "mud/bindings.h"
@@ -26,6 +23,7 @@
 #include "scriptix/type.h"
 #include "scriptix/stream.h"
 #include "scriptix/vimpl.h"
+#include "common/manifest.h"
 
 #define SCRIPTIX_MAX_ARGV 32
 
@@ -36,41 +34,6 @@ using namespace std;
 SScriptBindings ScriptBindings;
 
 namespace {
-	// find a list of files matching a particular pattern in a particular directory
-	StringList
-	find_files (String path, String pattern)
-	{
-		DIR *dir;
-		dirent *dent;
-		StringList files;
-		
-		// open dir
-		dir = opendir (path);
-		if (dir == NULL) {
-			Log::Error << "Failed opening '" << path << "'";
-			return files;
-		}
-
-		// read entries
-		while ((dent = readdir (dir)) != NULL) {
-			// if it matches, add to list
-			if (!fnmatch (pattern.c_str(), dent->d_name, 0))
-				files.push_back(path + S("/") + String(dent->d_name));
-		}
-
-		// all done
-		closedir(dir);
-		return files;
-	}
-
-	void
-	append_unique (StringList& base, const StringList& append)
-	{
-		for (StringList::const_iterator i = append.begin(); i != append.end(); ++i)
-			if (std::find(base.begin(), base.end(), *i) == base.end())
-				base.push_back(*i);
-	}
-
 	class InitHandler : public Scriptix::CompilerHandler {
 		public:
 		GCType::vector<Scriptix::Function*> init;
@@ -105,26 +68,7 @@ SScriptBindings::initialize()
 	bind();
 
 	// load scripts
-	StringList scripts;
-
-	// read file listing scripts to load
-	String path = SettingsManager.get_scripts_path();
-	File::Reader reader;
-	if (reader.open(path + "/load")) {
-		Log::Error << "Failed to open '" << path << "/load'";
-		return -1;
-	}
-
-	FO_READ_BEGIN
-		FO_ATTR("load", "script")
-			scripts.push_back(path + "/" + node.get_data());
-		FO_ATTR("load", "pattern")
-			append_unique(scripts, find_files(path, node.get_data()));
-	FO_READ_ERROR
-		return -1;
-	FO_READ_END
-
-	reader.close();
+	StringList scripts = manifest_load(SettingsManager.get_scripts_path());
 
 	// do loading
 	InitHandler init;

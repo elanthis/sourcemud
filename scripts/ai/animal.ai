@@ -2,6 +2,8 @@
 # Copyright (C) 2003  AwesomePlay Productions Inc.
 # Sean Middleditch <elanthis@awemud.net>
 
+ai.id = "animal"
+
 # initialize after loading up
 event.load = begin
 	self.ai_targets = array(); 

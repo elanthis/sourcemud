@@ -1,8 +1,0 @@
-load.script = "awemud.sx"
-load.script = "string.sx"
-load.script = "corerules.sx"
-load.script = "npc.sx"
-load.script = "object.sx"
-load.script = "player.sx"
-load.script = "webserver.sx"
-load.pattern = "*.sx"

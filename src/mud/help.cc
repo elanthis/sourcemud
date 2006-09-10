@@ -5,11 +5,6 @@
  * http://www.awemud.net
  */
 
-#include <dirent.h>
-#include <fnmatch.h>
-
-#include <list>
-
 #include "common/string.h"
 #include "mud/player.h"
 #include "mud/command.h"
@@ -20,6 +15,7 @@
 #include "mud/parse.h"
 #include "mud/help.h"
 #include "mud/telnet.h"
+#include "common/manifest.h"
 
 SHelpManager HelpManager;
 
@@ -58,52 +54,34 @@ SHelpManager::print (StreamControl& stream, String name)
 }
 
 int
-SHelpManager::initialize (void)
+SHelpManager::initialize ()
 {
-	DIR *dir;
-	dirent *dent;
-	String path = SettingsManager.get_help_path();
+	StringList files = manifest_load(SettingsManager.get_help_path());
 
-	// open directory
-	dir = opendir(path);
-	if (dir == NULL) {
-		Log::Error << "Failed to open help folder: " << strerror(errno);
-		return 1;
+	for (StringList::iterator i = files.begin(); i != files.end(); ++i) {
+		File::Reader reader;
+
+		// open failed?
+		if (reader.open(*i))
+			return -1;
+
+		// read file
+		FO_READ_BEGIN
+			FO_WILD("topic")
+				HelpTopic* topic = new HelpTopic();
+				topic->name = node.get_key();
+				topic->about = node.get_data();
+				topics.push_back(topic);
+		FO_READ_ERROR
+			return -1;
+		FO_READ_END
 	}
-
-	// read each entry
-	while ((dent = readdir(dir)) != NULL) {
-		// match file
-		if (!fnmatch ("*.help", dent->d_name, 0)) {
-			File::Reader reader;
-
-			// open failed?
-			if (reader.open(path + S("/") + String(dent->d_name))) {
-				closedir(dir);
-				return -1;
-			}
-
-			// read file
-			FO_READ_BEGIN
-				FO_WILD("topic")
-					HelpTopic* topic = new HelpTopic();
-					topic->name = node.get_key();
-					topic->about = node.get_data();
-					topics.push_back(topic);
-			FO_READ_ERROR
-				closedir(dir);
-				return -1;
-			FO_READ_END
-		}
-	}
-
-	closedir(dir);
 
 	return 0;
 }
 
 void
-SHelpManager::shutdown (void)
+SHelpManager::shutdown ()
 {
 	// delete all topics
 	for (TopicList::iterator i = topics.begin(); i != topics.end(); ++i)

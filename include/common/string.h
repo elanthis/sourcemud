@@ -139,6 +139,15 @@ bool prefix_match (CString string, CString prefix);
 // determine a numeric value from input word, i.e. first=>1, second=>2, etc.
 uint str_value (String);
 
+// concatenate the path and filename together
+//  if the path already ends in a /, don't add one
+//  if the file begins with a /, ignore the path
+String make_path (CString path, CString file);
+
+// find the base name of the path; i.e., strip all directories and final suffix
+// e.g.  /path/foo.html -> foo
+String base_name (CString path);
+
 // string list building/parsing
 StringList& explode(StringList& out, String string, char ch);
 String& implode(String& out, const StringList& list, char ch);

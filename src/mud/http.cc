@@ -19,8 +19,6 @@
 #include <errno.h>
 #include <string.h>
 #include <stdarg.h>
-#include <dirent.h>
-#include <fnmatch.h>
 
 #include "common/error.h"
 #include "mud/server.h"
@@ -31,6 +29,7 @@
 #include "mud/settings.h"
 #include "common/log.h"
 #include "common/md5.h"
+#include "common/manifest.h"
 
 SHTTPManager HTTPManager;
 
@@ -578,35 +577,25 @@ SHTTPManager::initialize (void)
 {
 	StringBuffer buf;
 
-	// read templates dir
-	DIR* dir;
-	struct dirent* dent;
-	dir = opendir(SettingsManager.get_html_path());
-	while ((dent = readdir(dir)) != NULL) {
-		if (!fnmatch("*.tpl", dent->d_name, FNM_PERIOD)) {
-			// load template
-			buf.clear();
-
-			// open file
-			buf << SettingsManager.get_html_path() << "/" << dent->d_name;
-			FILE* in = fopen(buf.c_str(), "rt");
-			if (in == NULL) {
-				Log::Error << "Failed to load template '" << dent->d_name << "': " << strerror(errno);
-				return -1;
-			}
-
-			// read in buffer
-			buf.clear();
-			char line[512];
-			while (fgets(line, sizeof(line), in) != NULL)
-				buf << line;
-
-			// clean up
-			fclose(in);
-			templates[String(dent->d_name, strlen(dent->d_name) - 4)] = buf.str();
+	// read templates
+	StringList files = manifest_load(SettingsManager.get_html_path());
+	for (StringList::iterator i = files.begin(); i != files.end(); ++i) {
+		FILE* in = fopen(*i, "rt");
+		if (in == NULL) {
+			Log::Error << "Failed to load HTML template " << *i << ": " << strerror(errno);
+			return -1;
 		}
+
+		// read in buffer
+		buf.clear();
+		char line[512];
+		while (fgets(line, sizeof(line), in) != NULL)
+			buf << line;
+
+		// clean up
+		fclose(in);
+		templates[base_name(*i)] = buf.str();
 	}
-	closedir(dir);
 
 	// all good
 	return 0;

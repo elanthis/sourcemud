@@ -55,8 +55,6 @@ room {
       blueprint.gettable = false
       blueprint.trashable = false
       blueprint.container = "in"
-      user.drink_text = "You cup your hands in {$object.d}, and bring the water up to your waiting lips.  The water is cool and clean, with a wonderfully pleasing taste."
-      user.drink_room = "{$actor.I} cups {$actor.his} hands in {$object.d}, and brings some water up to {$actor.his} waiting lips."
     }
     entity.uid = <7>
   }
@@ -97,7 +95,6 @@ room {
           user.heal(amount);
         }
       end
-      user.read_text = "The runes on the altar are all gibberish to you."
     }
     entity.uid = <11>
     object {
@@ -576,7 +573,6 @@ room {
       blueprint.gettable = false
       blueprint.touchable = false
       blueprint.trashable = false
-      user.read_text = "Cutter and Trader of Gems."
     }
     entity.uid = <83>
   }
@@ -601,7 +597,6 @@ room {
       blueprint.desc = "The plaque is made of ivory, with golden script covering its white surface."
       blueprint.gettable = false
       blueprint.trashable = false
-      user.read_text = "Jeral's Jewelry\nGem Cutting Available\nTo see our wares, use the {bold 'menu'} command."
     }
     entity.uid = <89>
   }
@@ -664,7 +659,6 @@ room {
       blueprint.desc = "The wooden sign looks to be fairly new.  It is contructed of a dark wood, and has writing on it in large, white colored letters."
       blueprint.gettable = false
       blueprint.trashable = false
-      user.read_text = "Welcome to the Darlet Weapon Smith!  Use the {bold 'menu'} command to see what we have available."
     }
     entity.uid = <94>
   }

@@ -22,7 +22,7 @@ class ScriptRestrictedWriter;
 class AI : public GC
 {
 	public:
-	AI (String s_name);
+	AI () {}
 
 	int load (File::Reader& reader);
 

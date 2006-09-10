@@ -442,3 +442,50 @@ str_tr (String source, String from, String to)
 
 	return result.str();
 }
+
+String
+make_path (CString path, CString file)
+{
+	assert(path != NULL);
+	assert(file != NULL);
+
+	// if the file begins with a /, it's already a full path
+	if (file[0] == '/')
+		return String(file);
+
+	// if there is no path given, just return the file name
+	if (path[0] == 0)
+		return String(file);
+
+	StringBuffer res;
+	res << path;
+
+	// if the path does not alrady end in a /, add one
+	if (res[res.size()-1] != '/')
+		res << '/';
+
+	res << file;
+
+	return res.str();
+}
+
+String
+base_name (CString path)
+{
+	assert(path != NULL);
+
+	// find directory
+	const char* start = strrchr(path, '/');
+	if (start == NULL)
+		start = path;
+	else
+		start = start + 1;
+
+	// find last extension
+	const char* ext = strrchr(start, '.');
+
+	if (ext == NULL)
+		return String(start);
+	else
+		return String(start, ext - start);
+}

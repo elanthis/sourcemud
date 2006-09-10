@@ -103,6 +103,9 @@ namespace File
 		// consume the rest of the current begin
 		void consume ();
 
+		// get the current path
+		String get_path () const { return filename; }
+
 		// get current line
 		inline size_t get_line () const { return line; }
 

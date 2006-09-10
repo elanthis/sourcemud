@@ -1,3 +1,13 @@
+2006-09-10 04:21:25  Sean Middleditch <elanthis@awesomeplay.com>
+
+  * Added a new manifest.txt parser/generator.  These files are
+    used to list other files.  Brilliant, isn't it?
+  * Updated the script loader, AI loader, HTML template loader,
+    and help file loader to use the new manifest.txt support
+    instead of using a customer file or opendir().
+  * Moved files around a bit, so that each set of files is in its
+    own directory and thus can have its own manifest.txt.
+
 2006-09-10 01:29:57  Sean Middleditch <elanthis@awesomeplay.com>
 
   * Fixed some accidental replacements of "character" with

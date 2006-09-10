@@ -5,24 +5,22 @@
  * http://www.awemud.net
  */
 
-#include <dirent.h>
-#include <fnmatch.h>
-
 #include "mud/settings.h"
 #include "mud/creature.h"
 #include "mud/ai.h"
 #include "mud/room.h"
 #include "mud/eventids.h"
 #include "mud/bindings.h"
+#include "common/manifest.h"
 
 SAIManager AIManager;
-
-AI::AI (String s_name) : name(s_name) {} 
 
 int
 AI::load (File::Reader& reader)
 {
 	FO_READ_BEGIN
+		FO_ATTR("ai", "id")
+			name = node.get_data();
 		FO_ATTR("event", "load")
 			load_cb = Scriptix::ScriptFunction::compile(S("load"), node.get_data(), S("self"), reader.get_filename(), node.get_line());
 			
@@ -61,6 +59,11 @@ AI::load (File::Reader& reader)
 	FO_READ_ERROR
 		return -1;
 	FO_READ_END
+
+	if (name.empty()) {
+		Log::Error << "AI in " << reader.get_path() << " has no ID.";
+		return -1;
+	}
 
 	return 0;
 }
@@ -138,38 +141,28 @@ SAIManager::initialize (void)
 	if (require(EventManager) != 0)
 		return 1;
 	
-	DIR *dir;
-	dirent *dent;
-
-	// read directory
-	dir = opendir (SettingsManager.get_ai_path());
-	if (dir != NULL) {
-		while ((dent = readdir (dir)) != NULL) {
-			if (!fnmatch ("*.ai", dent->d_name, 0)) {
-				StringBuffer file;
-				file << SettingsManager.get_ai_path() << '/' << dent->d_name;
-				String name(dent->d_name, strlen(dent->d_name) - 3);
-
-				// load ai
-				AI* ai = new AI(name);
-				if (ai == NULL) {
-					fatal("new AI failed");
-					closedir(dir);
-					return -1;
-				}
-				File::Reader reader;
-				if (reader.open(file.str())) {
-					Log::Error << "Failed to open " << file.str();
-					return -1;
-				}
-				if (ai->load(reader))
-					return -1;
-
-				add(ai);
-			}
+	StringList files = manifest_load(SettingsManager.get_ai_path());
+	for (StringList::iterator i = files.begin(); i != files.end(); ++i) {
+		// load ai
+		AI* ai = new AI();
+		if (ai == NULL) {
+			fatal("new AI failed");
+			return -1;
 		}
+		File::Reader reader;
+		if (reader.open(*i))
+			return -1;
+		if (ai->load(reader))
+			return -1;
+
+		// make sure that the script name matches the AI id in the file
+		if (base_name(*i) != ai->get_name()) {
+			Log::Warning << "Ignoring AI script: path " << *i << " does not match ID " << ai->get_name();
+			continue;
+		}
+
+		add(ai);
 	}
-	closedir (dir);
 
 	return 0;
 }

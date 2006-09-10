@@ -23,6 +23,7 @@ EXTRA_DIST += src/xml/bindings.xml src/xml/event-list.xml src/xml/parse-intr.xml
 ### GAME SCRIPTS ###
 
 SX_FILES=\
+	scripts/manifest.txt
 	scripts/awemud.sx \
 	scripts/string.sx \
 	scripts/corerules.sx \
@@ -35,18 +36,16 @@ SX_FILES=\
 	scripts/webserver.sx \
 	scripts/example.zone.sx
 
-SX_CONTROL=\
-	scripts/load
-
 AI_FILES=\
-	scripts/animal.ai
+	scripts/ai/manifest.txt
+	scripts/ai/animal.ai
 
-EXTRA_DIST += $(SX_FILES) $(AI_FILES) $(SX_CONTROL)
+EXTRA_DIST += $(SX_FILES) $(AI_FILES)
 
 gamescriptdir = ${localstatedir}/lib/@PACKAGE_TARNAME@/scripts
 gamescript_DATA = $(SX_FILES) $(SX_CONTROL)
 
-aiscriptdir = ${localstatedir}/lib/@PACKAGE_TARNAME@/scripts
+aiscriptdir = ${localstatedir}/lib/@PACKAGE_TARNAME@/scripts/ai
 aiscript_DATA = $(AI_FILES)
 
 ### DOCUMENTATION ###
@@ -147,10 +146,11 @@ WORLD_IN = data/time data/weather
 WORLD = data/time data/weather
 ZONES = data/example.zone
 
-HELP = data/awemud.help data/commands.help data/olc.help
+HELP = data/help/manifest.txt data/help/awemud.help data/help/commands.help data/help/olc.help
 GAMEDATA = data/messages data/races data/socials data/calendar data/skills data/uniqid data/traits
 BLUEPRINTS = data/animals.npcs data/undead.npcs data/armor.objs data/misc.objs data/weapons.objs data/gems.objs 
 HTML_TPL = \
+	data/html/manifest.txt \
 	data/html/header.tpl \
 	data/html/footer.tpl \
 	data/html/index.tpl \
@@ -181,7 +181,7 @@ blueprint_DATA = $(BLUEPRINTS)
 gamedatadir=${localstatedir}/lib/@PACKAGE_TARNAME@/data
 gamedata_DATA = $(GAMEDATA)
 
-htmltpldir=${localstatedir}/lib/@PACKAGE_TARNAME@/data/html
+htmltpldir=${localstatedir}/lib/@PACKAGE_TARNAME@/html
 htmltpl_DATA = $(HTML_TPL)
 
 logdatadir=${localstatedir}/log
@@ -203,6 +203,7 @@ noinst_HEADERS=\
 	include/common/imanager.h \
 	include/common/log.h \
 	include/common/mail.h \
+	include/common/manifest.h \
 	include/common/md5.h \
 	include/common/rand.h \
 	include/common/regex.h \
@@ -301,6 +302,7 @@ COMMON_SOURCES=\
 	src/common/gc.cc \
 	src/common/imanager.cc \
 	src/common/log.cc \
+	src/common/manifest.cc \
 	src/common/md5.cc \
 	src/common/rand.cc \
 	src/common/regex.cc \
