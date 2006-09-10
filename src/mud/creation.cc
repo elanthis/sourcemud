@@ -20,12 +20,12 @@ const int STAT_TOKEN_INC = 5; // the increment by which stats are advanced durin
 const int STAT_BASE = 30; // base value of all stats, before point distribution
 const int STAT_MAX = 90; // maximum stat can be raised to in character creation
 
-bool TelnetModeNewCreature::is_match (String test, String operand)
+bool TelnetModeNewCharacter::is_match (String test, String operand)
 {
 	return !operand.empty() && !strncasecmp(test.c_str(), operand.c_str(), operand.size());
 }
 
-int TelnetModeNewCreature::initialize ()
+int TelnetModeNewCharacter::initialize ()
 {
 	// clear all variables
 	name.clear();
@@ -35,12 +35,12 @@ int TelnetModeNewCreature::initialize ()
 	return 0;
 }
 
-void TelnetModeNewCreature::shutdown ()
+void TelnetModeNewCharacter::shutdown ()
 {
 }
 
 // DISPLAY CURRENT STATE'S PROMPT
-void TelnetModeNewCreature::prompt ()
+void TelnetModeNewCharacter::prompt ()
 {
 	switch (state) {
 		case STATE_NAME:
@@ -85,7 +85,7 @@ void TelnetModeNewCreature::prompt ()
 }
 
 // PROCESS INPUT FOR CURRENT STATE
-void TelnetModeNewCreature::process (char* line)
+void TelnetModeNewCharacter::process (char* line)
 {
 	String input = strlower(S(line));
 	int numeric = tolong(input);
@@ -287,10 +287,10 @@ void TelnetModeNewCreature::process (char* line)
 	}
 }
 
-void TelnetModeNewCreature::display ()
+void TelnetModeNewCharacter::display ()
 {
 	get_handler()->clear_scr();
-	*get_handler() << 	S("Creature Creation\n------------------\n");
+	*get_handler() << 	S("Character Creation\n------------------\n");
 	if (name)
 		*get_handler() << "Name: " << name << "\n";
 	if (race)
@@ -454,20 +454,20 @@ void TelnetModeNewCreature::display ()
 			*get_handler() << "Is it thy wish for me to create this profile?\n\n";
 			break;
 		case STATE_CONTINUE:
-			*get_handler() << " " CADMIN "** Creature Created **" CNORMAL "\n\n";
+			*get_handler() << " " CADMIN "** Character Created **" CNORMAL "\n\n";
 			break;
 		default:
 			break;
 	}
 }
 
-void TelnetModeNewCreature::show_error (String msg)
+void TelnetModeNewCharacter::show_error (String msg)
 {
 	display();
 	*get_handler() << CWARNING << msg << CNORMAL << "\n\n";
 }
 
-void TelnetModeNewCreature::enter_state (state_t new_state)
+void TelnetModeNewCharacter::enter_state (state_t new_state)
 {
 	state = new_state;
 
@@ -508,7 +508,7 @@ void TelnetModeNewCreature::enter_state (state_t new_state)
 	display();
 }
 
-void TelnetModeNewCreature::create ()
+void TelnetModeNewCharacter::create ()
 {
 	Player* player;
 
@@ -562,7 +562,7 @@ void TelnetModeNewCreature::create ()
 }
 
 // RETURN TO THE MAIN MENU
-void TelnetModeNewCreature::finish ()
+void TelnetModeNewCharacter::finish ()
 {
 	get_handler()->set_mode(new TelnetModeMainMenu(get_handler(), account));
 }

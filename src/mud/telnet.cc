@@ -361,16 +361,7 @@ bool
 TelnetHandler::toggle_echo (bool v)
 {
 	io_flags.want_echo = v;
-
-	// force echoing?
-	if (io_flags.force_echo) {
-		io_flags.do_echo = v;
-	// normal negotiation
-	} else {
-		if (v == false)
-			io_flags.do_echo = false;
-		send_iac (2, v ? WONT : WILL, TELOPT_ECHO);
-	}
+	send_iac (2, v ? WONT : WILL, TELOPT_ECHO);
 
 	return v;
 }
@@ -646,7 +637,7 @@ TelnetHandler::sock_input (char* buffer, size_t size)
 					input.data()[in_cnt] = '\0';
 
 					// echo back normal creatures
-					if (c != '\n' && io_flags.do_echo)
+					if (c != '\n' && (io_flags.want_echo && io_flags.do_echo))
 						send_data (1, c);
 				// basic backspace support
 				} else if (c == 127) {

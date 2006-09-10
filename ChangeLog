@@ -1,3 +1,9 @@
+2006-09-10 01:29:57  Sean Middleditch <elanthis@awesomeplay.com>
+
+  * Fixed some accidental replacements of "character" with
+    "creature."
+  * Fixed an echo handling bug.
+
 2006-09-08 16:48:12  Sean Middleditch <elanthis@awesomeplay.com>
 
   * Cleaned up the socket classes and their interfaces.

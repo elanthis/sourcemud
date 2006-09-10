@@ -94,8 +94,8 @@ TelnetModeMainMenu::prompt ()
 {
 	switch (state) {
 		case STATE_MENU: *get_handler() << "Select:"; break;
-		case STATE_PLAY_SELECT: *get_handler() << "Creature to play:"; break;
-		case STATE_DELETE_SELECT: *get_handler() << "Creature to delete:"; break;
+		case STATE_PLAY_SELECT: *get_handler() << "Character to play:"; break;
+		case STATE_DELETE_SELECT: *get_handler() << "Character to delete:"; break;
 		case STATE_DELETE_CONFIRM: *get_handler() << "Confirm:"; break;
 		case STATE_ACCOUNT: *get_handler() << "Select:"; break;
 		case STATE_CHANGE_NAME: *get_handler() << "Your real-life name:"; break;
@@ -136,9 +136,9 @@ TelnetModeMainMenu::process (char* line)
 					*get_handler() << "You already have the maximum number of characters allowed.\n\n";
 				} else {
 					// create
-					ITelnetMode* mode = new TelnetModeNewCreature(get_handler(), account);
+					ITelnetMode* mode = new TelnetModeNewCharacter(get_handler(), account);
 					if (mode != NULL)
-						get_handler()->set_mode(new TelnetModeNewCreature(get_handler(), account));
+						get_handler()->set_mode(new TelnetModeNewCharacter(get_handler(), account));
 				}
 			// account?
 			} else if (input == "3" || prefix_match("account", input)) {
@@ -187,7 +187,7 @@ TelnetModeMainMenu::process (char* line)
 			Player* player = PlayerManager.load(account, account->get_char_list()[choice]);
 			if (player == NULL) {
 				show_characters();
-				*get_handler() << CADMIN "Error: Creature cannot be found." CNORMAL "\n\n";
+				*get_handler() << CADMIN "Error: Character cannot be found." CNORMAL "\n\n";
 				break;
 			}
 
@@ -371,7 +371,7 @@ TelnetModeMainMenu::process (char* line)
 				// message
 				account->del_character(tmp);
 				Log::Info << "Account '" << account->get_id() << "' deleted player '" << tmp << "'";
-				*get_handler() << "Creature " CPLAYER << tmp << CNORMAL " has been permanently deleted.\n\n";
+				*get_handler() << "Character " CPLAYER << tmp << CNORMAL " has been permanently deleted.\n\n";
 				tmp.clear();
 			} else {
 				// no delete

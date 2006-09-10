@@ -329,7 +329,7 @@ Room::show (const StreamControl& stream, Creature* viewer)
 				if (last) {
 					// first item?
 					if (!displayed)
-						stream << "Obvious portals are ";
+						stream << "Obvious exits are ";
 					else
 						stream << ", ";
 
@@ -352,7 +352,7 @@ Room::show (const StreamControl& stream, Creature* viewer)
 		if (last) {
 			// pre-text
 			if (!displayed)
-				stream << "Obvious portals are ";
+				stream << "Obvious exits are ";
 			else if (displayed > 1)
 				stream << ", and ";
 			else
