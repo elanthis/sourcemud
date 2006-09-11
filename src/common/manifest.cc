@@ -62,44 +62,10 @@ namespace {
 				return;
 		files.push_back(path);
 	}
-
-	void
-	do_wildcard (StringList& files, String path, const char* wild)
-	{
-		DIR* dir;
-		dirent* d;
-
-		dir = opendir(path);
-		if (dir == NULL) {
-			Log::Error << "Failed to read directory " << path << ": " << strerror(errno);
-			return;
-		}
-
-		while ((d = readdir(dir)) != NULL) {
-			// ignore dot files
-			if (d->d_name[0] == '.')
-				continue;
-
-			// if doesn't match, skip it
-			if (fnmatch(wild, d->d_name, 0) != 0)
-				continue;
-
-			// determine actual path
-			String fpath = make_path(path, d->d_name);
-
-			// we know it exists, but make sure it's a regular file
-			if (!file_exists(fpath))
-				continue;
-
-			append_once(files, fpath);
-		}
-
-		closedir(dir);
-	}
 }
 
 StringList
-manifest_load (String path)
+ManifestFile::get_files () const
 {
 	StringList files;
 
@@ -117,21 +83,18 @@ manifest_load (String path)
 		if (line[0] == 0)
 			continue;
 
-		// don't allow directories
+		// don't allow directories or hidden files
 		if (line[0] == '.' || strchr(line, '/') != NULL) {
 			Log::Warning << "Ignoring file '" << line << "' in " << path << "/manifest.txt";
 			continue;
 		}
 
-		// wildcard?
-		if (strpbrk(line, "*?[") != NULL) {
-			// process wildcard
-			do_wildcard(files, path, line);
-			continue;
-		}
-
 		// determine actual path
 		String fpath = make_path(path, line);
+
+		// make sure we have the proper extension
+		if (!has_suffix(fpath, ext))
+			continue;
 
 		// fail if file does not exist
 		if (!file_exists(fpath)) {
@@ -142,29 +105,5 @@ manifest_load (String path)
 		append_once(files, fpath);
 	}
 
-	Log::Info << mpath << ":";
-	for (StringList::iterator i = files.begin(); i != files.end(); ++i)
-		Log::Info << "  " << *i;
-
 	return files;
-}
-
-int
-manifest_save (String path, const StringList& files)
-{
-	String mpath = make_path(path, "manifest.txt");
-	FILE* file = fopen(mpath, "wt");
-	if (file == NULL) {
-		Log::Error << "Failed to write to " << mpath << ": " << strerror(errno);
-		return -1;
-	}
-
-	for (StringList::const_iterator i = files.begin(); i != files.end(); ++i) {
-		fputs(*i, file);
-		putc('\n', file);
-	}
-
-	fclose(file);
-
-	return 0;
 }

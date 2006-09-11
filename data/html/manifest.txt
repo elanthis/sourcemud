@@ -1,1 +1,9 @@
-*.tpl
+account.tpl
+error.tpl
+footer.tpl
+header.tpl
+index.tpl
+login.tpl
+logout.tpl
+manifest.txt
+stats.tpl

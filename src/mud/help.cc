@@ -56,8 +56,8 @@ SHelpManager::print (StreamControl& stream, String name)
 int
 SHelpManager::initialize ()
 {
-	StringList files = manifest_load(SettingsManager.get_help_path());
-
+	ManifestFile man(SettingsManager.get_help_path(), S(".help"));
+	StringList files = man.get_files();;
 	for (StringList::iterator i = files.begin(); i != files.end(); ++i) {
 		File::Reader reader;
 

@@ -578,7 +578,8 @@ SHTTPManager::initialize (void)
 	StringBuffer buf;
 
 	// read templates
-	StringList files = manifest_load(SettingsManager.get_html_path());
+	ManifestFile man(SettingsManager.get_html_path(), S(".tpl"));
+	StringList files = man.get_files();
 	for (StringList::iterator i = files.begin(); i != files.end(); ++i) {
 		FILE* in = fopen(*i, "rt");
 		if (in == NULL) {

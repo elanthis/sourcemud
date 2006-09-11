@@ -68,7 +68,8 @@ SScriptBindings::initialize()
 	bind();
 
 	// load scripts
-	StringList scripts = manifest_load(SettingsManager.get_scripts_path());
+	ManifestFile man(SettingsManager.get_scripts_path(), S(".sx"));
+	StringList scripts = man.get_files();;
 
 	// do loading
 	InitHandler init;

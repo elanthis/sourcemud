@@ -489,3 +489,18 @@ base_name (CString path)
 	else
 		return String(start, ext - start);
 }
+
+bool
+has_suffix (CString base, CString suffix)
+{
+	assert(base != NULL);
+	assert(suffix != NULL);
+
+	if (strlen(base) < strlen(suffix))
+		return false;
+
+	if (strcmp(base + strlen(base) - strlen(suffix), suffix) == 0)
+		return true;
+
+	return false;
+}

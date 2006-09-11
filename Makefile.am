@@ -144,11 +144,20 @@ ACCOUNTS = data/admin.acct
 
 WORLD_IN = data/time data/weather
 WORLD = data/time data/weather
-ZONES = data/example.zone
+ZONES = \
+	data/zones/manifest.txt \
+	data/zones/example.zone
 
 HELP = data/help/manifest.txt data/help/awemud.help data/help/commands.help data/help/olc.help
 GAMEDATA = data/messages data/races data/socials data/calendar data/skills data/uniqid data/traits
-BLUEPRINTS = data/animals.npcs data/undead.npcs data/armor.objs data/misc.objs data/weapons.objs data/gems.objs 
+BLUEPRINTS = \
+	data/blueprints/manifest.txt \
+	data/blueprints/animals.npcs \
+	data/blueprints/undead.npcs \
+	data/blueprints/armor.objs \
+	data/blueprints/misc.objs \
+	data/blueprints/weapons.objs \
+	data/blueprints/gems.objs 
 HTML_TPL = \
 	data/html/manifest.txt \
 	data/html/header.tpl \

@@ -1,5 +1,5 @@
 # Player file: Admin
-# Timestamp: Sun Sep  3 21:22:36 2006
+# Timestamp: Sun Sep 10 03:50:43 2006
 # 
 
 entity.uid = <1>
@@ -26,11 +26,11 @@ stat.Fortitude = 100
 stat.Intellect = 100
 stat.Spirit = 100
 stat.Willpower = 100
+trait.hair_color = "silver"
+trait.eye_color = "gold"
 trait.hair_style = "long"
 trait.skin_color = "fair"
 trait.build = "lean"
-trait.hair_color = "silver"
-trait.eye_color = "gold"
 player.gender = "male"
 player.height = 74
 player.location = "clear_pond"

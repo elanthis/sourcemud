@@ -141,7 +141,8 @@ SAIManager::initialize (void)
 	if (require(EventManager) != 0)
 		return 1;
 	
-	StringList files = manifest_load(SettingsManager.get_ai_path());
+	ManifestFile man(SettingsManager.get_ai_path(), S(".ai"));
+	StringList files = man.get_files();;
 	for (StringList::iterator i = files.begin(); i != files.end(); ++i) {
 		// load ai
 		AI* ai = new AI();

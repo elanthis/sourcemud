@@ -11,7 +11,19 @@
 #include "common/gcvector.h"
 #include "common/string.h"
 
-StringList manifest_load (String path);
-int manifest_save (String path, const StringList& files);
+class ManifestFile
+{
+	public:
+	ManifestFile (String s_path, String s_ext) : path(s_path), ext(s_ext) {}
+
+	StringList get_files () const;
+	bool has_file (String file) const;
+	int remove_file (String file);
+	int add_file (String file);
+
+	private:
+	String path;
+	String ext;
+};
 
 #endif

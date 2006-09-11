@@ -6,7 +6,6 @@
  */
 
 #include <unistd.h>
-#include <dirent.h>
 
 #include "mud/body.h"
 #include "mud/npc.h"
@@ -19,6 +18,7 @@
 #include "mud/skill.h"
 #include "mud/hooks.h"
 #include "mud/bindings.h"
+#include "common/manifest.h"
 
 void
 NpcBlueprint::reset_name (void)
@@ -652,42 +652,30 @@ SNpcBlueprintManager::initialize (void)
 	if (require(EventManager) != 0)
 		return 1;
 
-	String path = SettingsManager.get_blueprint_path();
-	
-	dirent* d_ent;
-	DIR* dir = opendir(path.c_str());
-	if (!dir) {
-		Log::Error << "Failed to open blueprint folder '" << path << "': " << strerror(errno);
-		return -1;
-	}
-	while ((d_ent = readdir(dir)) != NULL) {
-		// match file name
-		size_t len = strlen(d_ent->d_name);
-		if (len >= 6 && d_ent->d_name[0] != '.' && !strcmp(".npcs", &d_ent->d_name[len - 5])) {
-			// load from file
-			File::Reader reader;
-			if (reader.open(path + S("/") + String(d_ent->d_name)))
-				return -1;
-			FO_READ_BEGIN
-				FO_OBJECT("npc_blueprint")
-					NpcBlueprint* blueprint = new NpcBlueprint();
-					if (blueprint->load(reader)) {
-						Log::Warning << "Failed to load blueprint in " << reader.get_filename() << " at " << node.get_line();
-						return -1;
-					}
+	ManifestFile man(SettingsManager.get_blueprint_path(), S(".npcs"));
+	StringList files = man.get_files();;
+	for (StringList::iterator i = files.begin(); i != files.end(); ++i) {
+		File::Reader reader;
+		if (reader.open(*i))
+			return -1;
+		FO_READ_BEGIN
+			FO_OBJECT("npc_blueprint")
+				NpcBlueprint* blueprint = new NpcBlueprint();
+				if (blueprint->load(reader)) {
+					Log::Warning << "Failed to load blueprint in " << reader.get_filename() << " at " << node.get_line();
+					return -1;
+				}
 
-					if (!blueprint->get_id()) {
-						Log::Warning << "Blueprint has no ID in " << reader.get_filename() << " at " << node.get_line();
-						return -1;
-					}
+				if (!blueprint->get_id()) {
+					Log::Warning << "Blueprint has no ID in " << reader.get_filename() << " at " << node.get_line();
+					return -1;
+				}
 
-					blueprints[blueprint->get_id()] = blueprint;
-			FO_READ_ERROR
-				return -1;
-			FO_READ_END
-		}
+				blueprints[blueprint->get_id()] = blueprint;
+		FO_READ_ERROR
+			return -1;
+		FO_READ_END
 	}
-	closedir(dir);
 
 	return 0;
 }

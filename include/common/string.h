@@ -148,6 +148,10 @@ String make_path (CString path, CString file);
 // e.g.  /path/foo.html -> foo
 String base_name (CString path);
 
+// test if the suffix string is actually at the end of the base string
+// useful for testing for file extensions and the like
+bool has_suffix (CString base, CString suffix);
+
 // string list building/parsing
 StringList& explode(StringList& out, String string, char ch);
 String& implode(String& out, const StringList& list, char ch);

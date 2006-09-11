@@ -8,7 +8,6 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <limits.h>
-#include <dirent.h>
 
 #include "mud/entity.h"
 #include "mud/object.h"
@@ -22,6 +21,7 @@
 #include "common/streams.h"
 #include "mud/settings.h"
 #include "mud/hooks.h"
+#include "common/manifest.h"
 
 String ContainerType::names[] = {
 	S("none"),
@@ -942,21 +942,13 @@ SObjectBlueprintManager::initialize ()
 		return 1;
 
 
-	String path = SettingsManager.get_blueprint_path();
-	
-	dirent* d_ent;
-	DIR* dir = opendir(path.c_str());
-	if (!dir) {
-		Log::Error << "Failed to open blueprint folder '" << path << "': " << strerror(errno);
-		return -1;
-	}
-	while ((d_ent = readdir(dir)) != NULL) {
-		// match file name
-		size_t len = strlen(d_ent->d_name);
-		if (len >= 6 && d_ent->d_name[0] != '.' && !strcmp(".objs", &d_ent->d_name[len - 5])) {
+	ManifestFile man(SettingsManager.get_blueprint_path(), S(".objs"));
+	StringList files = man.get_files();;
+	for (StringList::iterator i = files.begin(); i != files.end(); ++i) {
+		if (has_suffix(*i, S(".objs"))) {
 			// load from file
 			File::Reader reader;
-			if (reader.open(path + S("/") + String(d_ent->d_name)))
+			if (reader.open(*i))
 				return -1;
 			FO_READ_BEGIN
 				FO_OBJECT("object_blueprint")
@@ -977,7 +969,6 @@ SObjectBlueprintManager::initialize ()
 			FO_READ_END
 		}
 	}
-	closedir(dir);
 
 	return 0;
 }

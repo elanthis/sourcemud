@@ -6,8 +6,6 @@
  */
 
 #include <time.h>
-#include <dirent.h>
-#include <fnmatch.h>
 
 #include "mud/room.h"
 #include "mud/zone.h"
@@ -21,6 +19,7 @@
 #include "mud/object.h"
 #include "mud/hooks.h"
 #include "mud/bindings.h"
+#include "common/manifest.h"
 
 SZoneManager ZoneManager;
 
@@ -239,17 +238,11 @@ Zone::save_hook (ScriptRestrictedWriter* writer)
 }
 
 int
-Zone::load (String name)
+Zone::load (String path)
 {
-	assert (!name.empty());
-
-	String path = SettingsManager.get_zone_path() + "/" + name + ".zone";
-
 	File::Reader reader;
-	if (reader.open(path)) {
-		Log::Error << "Failed to open " << path << " for reading";
-		return 1;
-	}
+	if (reader.open(path))
+		return -1;
 
 	return load (reader);
 }
@@ -369,23 +362,14 @@ int
 SZoneManager::load_world ()
 {
 	// read zones dir
-	DIR* dir;
-	struct dirent* dent;
-	dir = opendir(SettingsManager.get_zone_path());
-	while ((dent = readdir(dir)) != NULL) {
-		if (!fnmatch("*.zone", dent->d_name, FNM_PERIOD)) {
-			// load zone
-			String name(dent->d_name);
-			name = String(name.c_str(), name.size() - 5);
-			Zone* zone = new Zone();
-			if (zone->load (name)) {
-				Log::Error << "Failed to load zone '" << name << "'";
-				return -1;
-			}
-			add_zone (zone);
-		}
+	ManifestFile man(SettingsManager.get_zone_path(), S(".zone"));
+	StringList files = man.get_files();;
+	for (StringList::iterator i = files.begin(); i != files.end(); ++i) {
+		Zone* zone = new Zone();
+		if (zone->load (*i))
+			return -1;
+		add_zone (zone);
 	}
-	closedir(dir);
 
 	return 0;
 }
