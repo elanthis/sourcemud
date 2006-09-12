@@ -171,23 +171,25 @@ room {
     portal.target = "broken_tree"
   }
   portal {
-    portal.name = "a cliff"
-    entity.uid = <23>
-    portal.keyword = "down"
-    portal.usage = "climb"
-    portal.detail = "down"
-    portal.hidden = true
-    portal.target = "cliff_ledge"
-  }
-  portal {
     portal.name = "a large tree"
     portal.desc = "It looks as if the tree is often climbed.  Perhaps it offers a good vantage point."
     entity.uid = <24>
     portal.keyword = "up"
+    portal.dir = "up"
     portal.usage = "climb"
     portal.detail = "up"
     portal.hidden = true
     portal.target = "tree_top"
+  }
+  portal {
+    portal.name = "a cliff"
+    entity.uid = <23>
+    portal.keyword = "down"
+    portal.dir = "down"
+    portal.usage = "climb"
+    portal.detail = "down"
+    portal.hidden = true
+    portal.target = "cliff_ledge"
   }
   object {
     blueprint {
@@ -212,20 +214,21 @@ room {
   entity.uid = <30>
   room.outdoors = true
   portal {
-    portal.name = "a cliff"
-    entity.uid = <31>
-    portal.keyword = "up"
-    portal.usage = "climb"
-    portal.detail = "up"
-    portal.target = "forest_cliff"
-  }
-  portal {
     portal.name = "a cave"
     portal.desc = "A narrow cave leads into the cliff face, twisting off towards the northeast."
     entity.uid = <32>
     portal.dir = "north"
     portal.detail = "in"
     portal.target = "cave_entrance"
+  }
+  portal {
+    portal.name = "a cliff"
+    entity.uid = <31>
+    portal.keyword = "up"
+    portal.dir = "up"
+    portal.usage = "climb"
+    portal.detail = "up"
+    portal.target = "forest_cliff"
   }
   object {
     blueprint {
@@ -249,6 +252,7 @@ room {
     portal.name = "a tree"
     entity.uid = <35>
     portal.keyword = "down"
+    portal.dir = "down"
     portal.usage = "climb"
     portal.detail = "down"
     portal.target = "forest_cliff"
@@ -260,16 +264,16 @@ room {
   room.desc = "The cave opens onto a ledge on the side of a great cliff.  Not much can be seen deeper in the cave, as it twists and turns towards the northeast.  The sound of dripping water echos from deeper in the tunnels."
   entity.uid = <36>
   portal {
-    entity.uid = <37>
-    portal.dir = "northeast"
-    portal.target = "cave_niche"
-  }
-  portal {
     portal.name = "a opening"
     portal.desc = "The cave exit here leads out onto a small ledge on the face of a cliff, towering over the valley below."
     entity.uid = <38>
     portal.dir = "south"
     portal.target = "cliff_ledge"
+  }
+  portal {
+    entity.uid = <37>
+    portal.dir = "northeast"
+    portal.target = "cave_niche"
   }
 }
 room {
@@ -320,11 +324,6 @@ room {
   room.desc = "This section of cave is just behind a wide waterfall.  The rushing water pouring past the cave mouth is near deafening in sound, and a thick mist of cold water droplets scatter about the cave, making the cave very damp and the floor quite slick.  There is a lone scone in the middle of the cave floor, with a bright flame burning in it, seemingly unaffected by the water."
   entity.uid = <49>
   portal {
-    entity.uid = <50>
-    portal.dir = "west"
-    portal.target = "cave_niche"
-  }
-  portal {
     portal.name = "a glowing portal"
     entity.uid = <51>
     portal.dir = "north"
@@ -333,6 +332,11 @@ room {
     portal.nolook = true
     portal.disabled = true
     portal.target = "altar"
+  }
+  portal {
+    entity.uid = <50>
+    portal.dir = "west"
+    portal.target = "cave_niche"
   }
   object {
     blueprint {
@@ -426,17 +430,18 @@ room {
   room.desc = "Hidden between the majestic oaks of the forest, a small granite portal rests here, its surface a shimmering, deep blue.  The portal doesn't seem to see much use, as the ground at its feet is mostly untrampled.  The trees seem unaffected by its obvious magically nature."
   entity.uid = <61>
   portal {
-    entity.uid = <62>
-    portal.dir = "south"
-    portal.target = "forest_trail_west"
-  }
-  portal {
     portal.name = "a granite portal"
     portal.desc = "The portal is a granite frame, nestled between two tall, thick trees.  Within the stone frame, a mirror-smooth surface of rolling blue color gives off an eerie light."
     entity.uid = <63>
+    portal.dir = "north"
     portal.detail = "through"
     portal.nolook = true
     portal.target = "city_of_dead"
+  }
+  portal {
+    entity.uid = <62>
+    portal.dir = "south"
+    portal.target = "forest_trail_west"
   }
 }
 room {
@@ -458,6 +463,7 @@ room {
   portal {
     portal.name = "a hidden path"
     entity.uid = <67>
+    portal.dir = "southeast"
     portal.detail = "under"
     portal.hidden = true
     portal.target = "forest_under_bridge"
@@ -495,6 +501,7 @@ room {
     portal.name = "a cave"
     portal.desc = "The cave opening leads downwards into the earth."
     entity.uid = <71>
+    portal.dir = "north"
     portal.detail = "in"
     portal.target = "cave_waterfall"
   }
@@ -502,6 +509,7 @@ room {
     portal.name = "a path"
     portal.desc = "The path climbs back up towards the main path and the wooden bridge."
     entity.uid = <72>
+    portal.dir = "northwest"
     portal.detail = "up"
     portal.target = "forest_bridge"
   }
@@ -547,6 +555,15 @@ room {
   entity.uid = <79>
   room.outdoors = true
   portal {
+    portal.name = "a gem cutter"
+    portal.desc = "The gem cutter's door is made of a dark wood.  Its appears to be of very sturdy craftsmanship."
+    entity.uid = <82>
+    portal.dir = "north"
+    portal.detail = "through"
+    portal.door = true
+    portal.target = "darlet_gem_cutter"
+  }
+  portal {
     entity.uid = <80>
     portal.dir = "east"
     portal.target = "darlet_rosewood_east_1"
@@ -555,15 +572,6 @@ room {
     entity.uid = <81>
     portal.dir = "west"
     portal.target = "darlet_gate_west"
-  }
-  portal {
-    portal.name = "a gem cutter"
-    portal.desc = "The gem cutter's door is made of a dark wood.  Its appears to be of very sturdy craftsmanship."
-    entity.uid = <82>
-    portal.dir = "north"
-    portal.detail = "through"
-    portal.door = true
-    portal.target = "darlet_gem_cutter"
   }
   object {
     blueprint {
@@ -709,9 +717,9 @@ room {
   entity.uid = <102>
   room.outdoors = true
   portal {
-    entity.uid = <103>
+    portal.name = "the armorer"
+    entity.uid = <107>
     portal.dir = "north"
-    portal.hidden = true
     portal.target = "darlet_armorer"
   }
   portal {
@@ -728,12 +736,6 @@ room {
     entity.uid = <106>
     portal.dir = "southeast"
     portal.target = "darlet_ashwood_1"
-  }
-  portal {
-    portal.name = "a door"
-    entity.uid = <107>
-    portal.hidden = true
-    portal.target = "darlet_armorer"
   }
   object {
     blueprint {
@@ -891,19 +893,19 @@ room {
     portal.target = "darlet_square"
   }
   portal {
-    entity.uid = <135>
-    portal.dir = "south"
-    portal.target = "darlet_ashwood_vine"
-  }
-  portal {
     portal.name = "a metal door"
     portal.desc = "The weapon smith's door is made of a dark, hard metal."
     entity.uid = <136>
     portal.keyword = "weapon smith"
-    portal.dir = "south"
+    portal.dir = "east"
     portal.detail = "through"
     portal.door = true
     portal.target = "darlet_weapon_smith"
+  }
+  portal {
+    entity.uid = <135>
+    portal.dir = "south"
+    portal.target = "darlet_ashwood_vine"
   }
 }
 room {
@@ -1173,15 +1175,16 @@ room {
     portal.target = "darlet_rosewood_east_10"
   }
   portal {
-    entity.uid = <184>
-    portal.dir = "west"
-    portal.target = "darlet_rosewood_east_8"
-  }
-  portal {
     portal.name = "a gate"
     portal.desc = "The wrought iron gate is old and rusted in some places but over all it is in good repair.  Arched and topped with pointed tips, the gate is about a span high.  Tall enough to keep out all but the most daring of climbers.  A sign has been inlaid into the iron work which reads \"Sleep peacefully in the arms of Morphious\"."
     entity.uid = <185>
+    portal.dir = "south"
     portal.target = "cemetery_1"
+  }
+  portal {
+    entity.uid = <184>
+    portal.dir = "west"
+    portal.target = "darlet_rosewood_east_8"
   }
   object {
     blueprint {
@@ -1257,6 +1260,19 @@ room {
   entity.uid = <197>
   room.outdoors = true
   portal {
+    portal.name = "a path"
+    entity.uid = <201>
+    portal.dir = "north"
+    portal.hidden = true
+    portal.target = "path_tower_1"
+  }
+  portal {
+    portal.name = "a clearing"
+    entity.uid = <200>
+    portal.dir = "east"
+    portal.target = "fest_1"
+  }
+  portal {
     entity.uid = <198>
     portal.dir = "northeast"
     portal.target = "bowmans_7"
@@ -1265,17 +1281,6 @@ room {
     entity.uid = <199>
     portal.dir = "southwest"
     portal.target = "bowmans_5"
-  }
-  portal {
-    portal.name = "a clearing"
-    entity.uid = <200>
-    portal.target = "fest_1"
-  }
-  portal {
-    portal.name = "a path"
-    entity.uid = <201>
-    portal.hidden = true
-    portal.target = "path_tower_1"
   }
 }
 room {
@@ -1490,14 +1495,15 @@ room {
   entity.uid = <239>
   room.outdoors = true
   portal {
+    portal.name = "a road"
+    entity.uid = <241>
+    portal.dir = "east"
+    portal.target = "bowmans_6"
+  }
+  portal {
     entity.uid = <240>
     portal.dir = "southeast"
     portal.target = "path_tower_2"
-  }
-  portal {
-    portal.name = "a road"
-    entity.uid = <241>
-    portal.target = "bowmans_6"
   }
 }
 room {
@@ -1524,6 +1530,7 @@ room {
   portal {
     portal.name = "a road"
     entity.uid = <246>
+    portal.dir = "north"
     portal.target = "bowmans_6"
   }
 }
@@ -1534,6 +1541,7 @@ room {
   portal {
     portal.name = "a gate"
     entity.uid = <248>
+    portal.dir = "south"
     portal.target = "darlet_rosewood_east_9"
   }
 }

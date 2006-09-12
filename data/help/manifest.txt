@@ -1,1 +1,3 @@
-*.help
+awemud.help
+commands.help
+olc.help

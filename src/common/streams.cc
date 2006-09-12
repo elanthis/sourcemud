@@ -7,7 +7,6 @@
 
 #include "common/streams.h"
 #include "mud/parse.h"
-#include "mud/room.h"
 
 StreamParse::StreamParse(String s_text)
 	: text(s_text), argv()

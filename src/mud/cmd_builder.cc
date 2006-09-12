@@ -59,51 +59,26 @@ void command_create (Player* builder, String argv[])
 			return;
 		}
 
-		// crate portal
-		Portal *portal = room->new_portal ();
-
-		if (portal) {
-			// have a name to set?
-			if (!argv[1].empty()) {
-				// try setting a direction as well
-				PortalDir dir = PortalDir::lookup(argv[1]);
-				if (dir.valid())
-					portal->set_dir (dir);
-
-				// set name
-				portal->set_name (argv[1]);
-
-				// set target
-				if (!argv[2].empty()) {
-					Room* target = ZoneManager.get_room(argv[2]);
-					if (target != NULL) {
-						// do target set
-						portal->set_target(argv[2]);
-
-						// make a reciprical portal
-						if (dir.valid()) {
-							PortalDir op = dir.get_opposite();
-							if (!target->get_portal_by_dir(op)) {
-								Portal* op_portal = target->new_portal();
-								op_portal->set_dir(op);
-								op_portal->set_name(op.get_name());
-								op_portal->set_target(room->get_id());
-								*builder << "Reciprical portal created.\n";
-							} else {
-								*builder << "Reciprical portals.\n";
-							}
-						}
-					} else {
-						*builder << "Could not find room '" << argv[2] << "'.\n";
-					}
-				}
-			}
-
-			*builder << "Portal created.\n";
-		} else {
-			// failed error
-			*builder << "Failed to create new portal.\n";
+		PortalDir dir = PortalDir::lookup(argv[1]);
+		if (!dir.valid()) {
+			*builder << "Invalid portal direction.\n";
+			return;
 		}
+
+		if (room->get_portal_by_dir(dir)) {
+			*builder << "Portal for direction " << dir.get_name() << " already exists.\n";
+			return;
+		}
+
+		Room* target = ZoneManager.get_room(argv[2]);
+		if (target == NULL) {
+			*builder << "Target room '" << argv[2] << "' not found.\n";
+			return;
+		}
+
+		Portal* portal = room->new_portal(dir);
+		portal->set_target(target->get_id());
+		*builder << "Portal created.\n";
 	// create room in zone
 	} else if (str_eq(argv[0], S("room"))) {
 		Zone *zone = NULL;

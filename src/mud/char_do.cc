@@ -264,7 +264,7 @@ Creature::do_look (Portal *portal)
 	// get target room
 	Room* target_room = NULL;
 	if (!portal->is_closed() && !portal->is_nolook())
-		target_room = portal->get_target_room();
+		target_room = portal->get_relative_target(get_room());
 
 	// basic description
 	if (portal->get_desc() && strlen(portal->get_desc()))
@@ -1259,15 +1259,8 @@ class ActionUsePortal : public IAction
 			return 1;
 		}
 
-		// try the use script - if it returns false, don't do normal stuff below
-		if (!portal->get_use().empty()) {
-			Scriptix::Value result = portal->get_use().run(portal, get_actor());
-			if (result.is_false())
-				return 1;
-		}
-
 		// get target room
-		Room *new_room = portal->get_target_room ();
+		Room *new_room = portal->get_relative_target(get_actor()->get_room());
 		if (new_room == NULL) {
 			*get_actor() << StreamName(*portal, DEFINITE, true) << " does not lead anywhere.\n";
 			return 1;

@@ -75,10 +75,14 @@ Room::load_node (File::Reader& reader, File::Node& node)
 				throw File::Error(S("new Portal() failed"));
 			if (portal->load(reader))
 				throw File::Error(S("Failed to load portal"));
+			if (!portal->get_dir().valid())
+				throw File::Error(S("Portal has no dir"));
+			if (get_portal_by_dir(portal->get_dir()) != NULL)
+				throw File::Error(S("Duplicate portal direction"));
 
 			// add
 			portal->parent_room = this;
-			portals.add(portal);
+			portals[portal->get_dir()] = portal;
 
 			// activate if necessary
 			if (is_active())
@@ -100,9 +104,6 @@ Room::load_node (File::Reader& reader, File::Node& node)
 int
 Room::load_finish ()
 {
-	// ensure portals are sorted
-	sort_portals();
-	
 	return 0;
 }
 
@@ -130,10 +131,12 @@ Room::save (File::Writer& writer)
 	if (coins)
 		writer.attr(S("room"), S("coins"), coins);
 
-	for (EList<Portal>::const_iterator i = portals.begin(); i != portals.end(); ++i) {
-		writer.begin(S("portal"));
-		(*i)->save(writer);
-		writer.end();
+	for (GCType::map<PortalDir,Portal*>::const_iterator i = portals.begin(); i != portals.end(); ++i) {
+		if (i->second->get_owner() == this) {
+			writer.begin(S("portal"));
+			i->second->save(writer);
+			writer.end();
+		}
 	}
 
 	for (EList<Object>::const_iterator i = objects.begin(); i != objects.end(); ++i) {
@@ -166,12 +169,12 @@ Room::find_portal (String e_name, uint c, uint *matches)
 	if (matches)
 		*matches = 0;
 
-	for (EList<Portal>::const_iterator i = portals.begin(); i != portals.end(); ++i) {
-		if ((*i)->name_match (e_name)) {
+	for (GCType::map<PortalDir,Portal*>::const_iterator i = portals.begin(); i != portals.end(); ++i) {
+		if (i->second->name_match (e_name)) {
 			if (matches)
 				++ *matches;
 			if ((-- c) == 0)
-				return (*i);
+				return i->second;
 		}
 	}
 	return NULL;
@@ -180,21 +183,23 @@ Room::find_portal (String e_name, uint c, uint *matches)
 Portal *
 Room::get_portal_by_dir (PortalDir dir)
 {
-	for (EList<Portal>::const_iterator i = portals.begin(); i != portals.end(); ++i)
-		if ((*i)->get_dir () == dir)
-			return (*i);
+	for (GCType::map<PortalDir,Portal*>::const_iterator i = portals.begin(); i != portals.end(); ++i)
+		if (i->second->get_dir () == dir)
+			return i->second;
 	return NULL;
 }
 
-Portal *
-Room::new_portal ()
+Portal*
+Room::new_portal (PortalDir dir)
 {
 	Portal *portal = new Portal ();
 	if (portal == NULL)
 		return NULL;
+	portal->set_dir(dir);
 	portal->parent_room = this;
-	portal->activate();
-	portals.add(portal);
+	portals[dir] = portal;
+	if (is_active())
+		portal->activate();
 	return portal;
 }
 
@@ -223,8 +228,8 @@ Room::activate ()
 {
 	Entity::activate ();
 
-	for (EList<Portal>::const_iterator i = portals.begin(); i != portals.end(); ++i)
-		(*i)->activate();
+	for (GCType::map<PortalDir,Portal*>::const_iterator i = portals.begin(); i != portals.end(); ++i)
+		i->second->activate();
 	for (EList<Creature>::const_iterator i = creatures.begin(); i != creatures.end(); ++i)
 		(*i)->activate();
 	for (EList<Object>::const_iterator i = objects.begin(); i != objects.end(); ++i)
@@ -234,8 +239,8 @@ Room::activate ()
 void
 Room::deactivate ()
 {
-	for (EList<Portal>::const_iterator i = portals.begin(); i != portals.end(); ++i)
-		(*i)->deactivate();
+	for (GCType::map<PortalDir,Portal*>::const_iterator i = portals.begin(); i != portals.end(); ++i)
+		i->second->deactivate();
 	for (EList<Creature>::const_iterator i = creatures.begin(); i != creatures.end(); ++i)
 		(*i)->deactivate();
 	for (EList<Object>::const_iterator i = objects.begin(); i != objects.end(); ++i)
@@ -278,8 +283,9 @@ Room::owner_release (Entity* child)
 	// Portal?
 	Portal* portal = PORTAL(child);
 	if (portal != NULL) {
-		portals.remove(portal);
-		return;
+		GCType::map<PortalDir,Portal*>::iterator i = portals.find(portal->get_dir());
+		if (i != portals.end() && i->second == portal)
+			portals.erase(i);
 	}
 
 	// something we don't support
@@ -298,7 +304,6 @@ Room::show (const StreamControl& stream, Creature* viewer)
 	stream << "[ " << StreamName(*this, NONE, true) << " ]\n";
 	stream << CDESC "  " << StreamParse(get_desc(), S("room"), this, S("actor"), viewer) << CNORMAL;
 
-
 	// we're outdoors - do that stuff
 	if (is_outdoors ()) {
 		// show weather
@@ -315,59 +320,29 @@ Room::show (const StreamControl& stream, Creature* viewer)
 	}
 	stream << "\n";
 
-	// portal list
-	if (!portals.empty()) {
-		// setup
-		int displayed = 0;
-		Portal* last = NULL;
-		
-		// iterator
-		for (EList<Portal>::const_iterator i = portals.begin(); i != portals.end(); ++i) {
-			// room not hidden?
-			if (!(*i)->is_hidden() && !(*i)->is_disabled()) {
-				// had a previous entry?  output it
-				if (last) {
-					// first item?
-					if (!displayed)
-						stream << "Obvious exits are ";
-					else
-						stream << ", ";
+	// lists of stuffs
+	GCType::vector<Entity*> ents;
+	ents.reserve(10);
 
-					// print name
-					if (last->is_closed())
-						stream << "[";
-					stream << StreamName(*last, NONE);
-					if (last->is_closed())
-						stream << "]";
-
-					++displayed;
-				}
-
-				// last item was this item
-				last = *i;
-			}
-		}
-		
-		// one left over?
-		if (last) {
-			// pre-text
-			if (!displayed)
-				stream << "Obvious exits are ";
-			else if (displayed > 1)
-				stream << ", and ";
-			else
-				stream << " and ";
-
-			// show name
-			stream << StreamName(*last, NONE);
-
-			++displayed;
-		}
-
-		// finish up if we printed anything
-		if (displayed)
-			stream << ".\n";
+	// portals
+	for (GCType::map<PortalDir,Portal*>::const_iterator i = portals.begin(); i != portals.end(); ++i) {
+		// room not hidden?
+		if (!i->second->is_hidden() && !i->second->is_disabled())
+			ents.push_back(i->second);
 	}
+	if (!ents.empty()) {
+		stream << "Obvious exits are ";
+		for (size_t i = 0; i < ents.size(); ++i) {
+			if (i > 0) {
+				stream << ", ";
+				if (i == ents.size() - 1)
+					stream << "and ";
+			}
+			stream << StreamName(ents[i], NONE);
+		}
+		stream << ".\n";
+	}
+	ents.clear();
 
 	// displaying creatures and objects
 	int displayed = 0;
@@ -470,8 +445,8 @@ Room::show (const StreamControl& stream, Creature* viewer)
 void
 Room::show_portals (const StreamControl& stream)
 {
-	for (EList<Portal>::const_iterator i = portals.begin(); i != portals.end(); ++i)
-		stream << StreamName(*(*i)) << " <" << (*i)->get_target() << ">\n";
+	for (GCType::map<PortalDir,Portal*>::const_iterator i = portals.begin(); i != portals.end(); ++i)
+		stream << StreamName(*i->second) << " <" << i->second->get_target() << ">\n";
 }
 
 /* broadcast a message to the Room */
@@ -561,32 +536,14 @@ Room::handle_event (const Event& event)
 		children[index++] = *i;
 
 	// propogate to portals
-	for (EList<Portal>::const_iterator i = portals.begin(); i != portals.end(); ++i)
-		children[index++] = *i;
+	for (GCType::map<PortalDir,Portal*>::const_iterator i = portals.begin(); i != portals.end(); ++i)
+		children[index++] = i->second;
 
 	// do event sending
 	for (EList<Entity>::const_iterator i = children.begin(); i != children.end(); ++i)
 		(*i)->handle_event(event);
 
 	return 0;
-}
-
-// custom dereferencing sorting operator...
-namespace {
-	template <typename T>
-	class DerefSort
-	{
-		public:
-		bool operator()(const T* f1, const T* f2) {
-			return *f1 < *f2;
-		}
-	};
-}
-
-void
-Room::sort_portals ()
-{
-	std::sort(portals.begin(), portals.end(), DerefSort<Portal>());
 }
 
 // StreamSink for room buffering

@@ -1,3 +1,12 @@
+2006-09-12 02:35:25  Sean Middleditch <elanthis@awesomeplay.com>
+
+  * Began restructing the portal system.  All portals will now be
+    shared between room instances, unless the portal is explicitly
+    marked one way.  This means that each portal has to be added to
+    only a single room in the .zone files, and it will automatically
+    register itself with the target room on load up.  Or will,
+    at least; that's not yet complete.
+
 2006-09-11 01:47:43  Sean Middleditch <elanthis@awesomeplay.com>
 
   * Updated the manifest file code.

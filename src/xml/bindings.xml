@@ -2777,24 +2777,6 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
       <invoke>set_desc</invoke>
     </method>
 
-    <!-- info -->
-    <method>
-      <name>getTargetRoom</name>
-      <return>
-        <type>Room</type>
-        <doc>Room that the portal leads to.</doc>
-      </return>
-      <invoke>get_target_room</invoke>
-    </method>
-    <method>
-      <name>getTargetPortal</name>
-      <return>
-        <type>Portal</type>
-        <doc>Linked portal, or nil if there is no linked portal.</doc>
-      </return>
-      <invoke>get_target_portal</invoke>
-    </method>
-
     <!-- usage info -->
     <method>
       <name>getUsage</name>

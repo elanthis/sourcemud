@@ -1,5 +1,5 @@
 # Player file: Admin
-# Timestamp: Sun Sep 10 03:50:43 2006
+# Timestamp: Mon Sep 11 22:33:52 2006
 # 
 
 entity.uid = <1>
@@ -26,14 +26,14 @@ stat.Fortitude = 100
 stat.Intellect = 100
 stat.Spirit = 100
 stat.Willpower = 100
+trait.build = "lean"
 trait.hair_color = "silver"
 trait.eye_color = "gold"
 trait.hair_style = "long"
 trait.skin_color = "fair"
-trait.build = "lean"
 player.gender = "male"
 player.height = 74
-player.location = "clear_pond"
+player.location = "forest_cliff"
 player.general_xp = 65
 player.warrior_xp = 227
 player.rogue_xp = 0

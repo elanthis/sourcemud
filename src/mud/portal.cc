@@ -52,6 +52,8 @@ const String PortalDir::names[] = {
 	S("northeast"),
 	S("southeast"),
 	S("southwest"),
+	S("up"),
+	S("down"),
 };
 PortalDir::dir_t PortalDir::opposites[] = {
 	PortalDir::NONE,
@@ -63,48 +65,143 @@ PortalDir::dir_t PortalDir::opposites[] = {
 	PortalDir::SOUTHWEST,
 	PortalDir::NORTHWEST,
 	PortalDir::NORTHEAST,
+	PortalDir::DOWN,
+	PortalDir::UP,
 };
 
 // local tables
 namespace {
 	// When You go {the-portal}
 	const String portal_go_table[PortalDetail::COUNT][PortalUsage::COUNT] = {
-		{ S("You head to {$portal.d}."), S("You climb {$portal.d}."), S("You crawl to {$portal.d}.") },
-		{ S("You go in {$portal.d}."), S("You climb in {$portal.d}."), S("You crawl in {$portal.d}.") },
-		{ S("You get on {$portal.d}."), S("You climb on {$portal.d}."), S("You crawl on {$portal.d}.") },
-		{ S("You head over {$portal.d}."), S("You climb over {$portal.d}."), S("You crawl over {$portal.d}.") },
-		{ S("You go under {$portal.d}."), S("You climb beneath {$portal.d}."), S("You crawl under {$portal.d}.") },
-		{ S("You head across {$portal.d}."), S("You climb across {$portal.d}."), S("You crawl across {$portal.d}.") },
-		{ S("You go out {$portal.d}."), S("You climb out {$portal.d}."), S("You crawl out {$portal.d}.") },
-		{ S("You go up {$portal.d}."), S("You climb up {$portal.d}."), S("You crawl up {$portal.d}.") },
-		{ S("You go down {$portal.d}."), S("You climb down {$portal.d}."), S("You crawl down {$portal.d}.") },
-		{ S("You head through {$portal.d}."), S("You climb through {$portal.d}."), S("You crawl through {$portal.d}.") },
+		{
+			S("You head to {$portal.d}."),
+			S("You climb {$portal.d}."),
+			S("You crawl to {$portal.d}.")
+		}, {
+			S("You go in {$portal.d}."),
+			S("You climb in {$portal.d}."),
+			S("You crawl in {$portal.d}.")
+		}, {
+			S("You get on {$portal.d}."),
+			S("You climb on {$portal.d}."),
+			S("You crawl on {$portal.d}.")
+		}, {
+			S("You head over {$portal.d}."),
+			S("You climb over {$portal.d}."),
+			S("You crawl over {$portal.d}.")
+		}, {
+			S("You go under {$portal.d}."),
+			S("You climb beneath {$portal.d}."),
+			S("You crawl under {$portal.d}.")
+		}, {
+			S("You head across {$portal.d}."),
+			S("You climb across {$portal.d}."),
+			S("You crawl across {$portal.d}.")
+		}, {
+			S("You go out {$portal.d}."),
+			S("You climb out {$portal.d}."),
+			S("You crawl out {$portal.d}.")
+		}, {
+			S("You go up {$portal.d}."),
+			S("You climb up {$portal.d}."),
+			S("You crawl up {$portal.d}.")
+		}, {
+			S("You go down {$portal.d}."),
+			S("You climb down {$portal.d}."),
+			S("You crawl down {$portal.d}.")
+		}, {
+			S("You head through {$portal.d}."),
+			S("You climb through {$portal.d}."),
+			S("You crawl through {$portal.d}.")
+		},
 	};
 	// When {person} goes {the-portal}
 	const String portal_leaves_table[PortalDetail::COUNT][PortalUsage::COUNT] = {
-		{ S("{$actor.I} heads to {$portal.d}."), S("{$actor.I} climbs {$portal.d}."), S("{$actor.I} crawls to {$portal.d}.") },
-		{ S("{$actor.I} goes in {$portal.d}."), S("{$actor.I} climbs in {$portal.d}."), S("{$actor.I} crawls in {$portal.d}.") },
-		{ S("{$actor.I} gets on {$portal.d}."), S("{$actor.I} climbs on {$portal.d}."), S("{$actor.I} crawls on {$portal.d}.") },
-		{ S("{$actor.I} heads over {$portal.d}."), S("{$actor.I} climbs over {$portal.d}."), S("{$actor.I} crawls over {$portal.d}.") },
-		{ S("{$actor.I} goes under {$portal.d}."), S("{$actor.I} climbs beneath {$portal.d}."), S("{$actor.I} crawls under {$portal.d}.") },
-		{ S("{$actor.I} heads across {$portal.d}."), S("{$actor.I} climbs across {$portal.d}."), S("{$actor.I} crawls across {$portal.d}.") },
-		{ S("{$actor.I} goes out {$portal.d}."), S("{$actor.I} climbs out {$portal.d}."), S("{$actor.I} crawls out {$portal.d}.") },
-		{ S("{$actor.I} goes up {$portal.d}."), S("{$actor.I} climbs up {$portal.d}."), S("{$actor.I} crawls up {$portal.d}.") },
-		{ S("{$actor.I} goes down {$portal.d}."), S("{$actor.I} climbs down {$portal.d}."), S("{$actor.I} crawls down {$portal.d}.") },
-		{ S("{$actor.I} heads through {$portal.d}."), S("{$actor.I} climbs through {$portal.d}."), S("{$actor.I} crawls through {$portal.d}.") },
+		{
+			S("{$actor.I} heads to {$portal.d}."),
+			S("{$actor.I} climbs {$portal.d}."),
+			S("{$actor.I} crawls to {$portal.d}.")
+		}, {
+			S("{$actor.I} goes in {$portal.d}."),
+			S("{$actor.I} climbs in {$portal.d}."),
+			S("{$actor.I} crawls in {$portal.d}.")
+		}, {
+			S("{$actor.I} gets on {$portal.d}."),
+			S("{$actor.I} climbs on {$portal.d}."),
+			S("{$actor.I} crawls on {$portal.d}.")
+		}, {
+			S("{$actor.I} heads over {$portal.d}."),
+			S("{$actor.I} climbs over {$portal.d}."),
+			S("{$actor.I} crawls over {$portal.d}.")
+		}, {
+			S("{$actor.I} goes under {$portal.d}."),
+			S("{$actor.I} climbs beneath {$portal.d}."),
+			S("{$actor.I} crawls under {$portal.d}.")
+		}, {
+			S("{$actor.I} heads across {$portal.d}."),
+			S("{$actor.I} climbs across {$portal.d}."),
+			S("{$actor.I} crawls across {$portal.d}.")
+		}, {
+			S("{$actor.I} goes out {$portal.d}."),
+			S("{$actor.I} climbs out {$portal.d}."),
+			S("{$actor.I} crawls out {$portal.d}.")
+		}, {
+			S("{$actor.I} goes up {$portal.d}."),
+			S("{$actor.I} climbs up {$portal.d}."),
+			S("{$actor.I} crawls up {$portal.d}.")
+		}, {
+			S("{$actor.I} goes down {$portal.d}."),
+			S("{$actor.I} climbs down {$portal.d}."),
+			S("{$actor.I} crawls down {$portal.d}.")
+		}, {
+			S("{$actor.I} heads through {$portal.d}."),
+			S("{$actor.I} climbs through {$portal.d}."),
+			S("{$actor.I} crawls through {$portal.d}.")
+		},
 	};
 	// When {person} enters from {the-portal}
 	const String portal_enters_table[PortalDetail::COUNT][PortalUsage::COUNT] = {
-		{ S("{$actor.I} arrives from {$portal.d}."), S("{$actor.I} climbs in from {$portal.d}."), S("{$actor.I} crawls in from {$portal.d}.") },
-		{ S("{$actor.I} comes out from {$portal.d}."), S("{$actor.I} climbs out from {$portal.d}."), S("{$actor.I} crawls out from {$portal.d}.") },
-		{ S("{$actor.I} gets off {$portal.d}."), S("{$actor.I} climbs off {$portal.d}."), S("{$actor.I} crawls off {$portal.d}.") },
-		{ S("{$actor.I} arrives from over {$portal.d}."), S("{$actor.I} climbs over from {$portal.d}."), S("{$actor.I} crawls over from {$portal.d}.") },
-		{ S("{$actor.I} comes from under {$portal.d}."), S("{$actor.I} climbs from beneath {$portal.d}."), S("{$actor.I} crawls from under {$portal.d}.") },
-		{ S("{$actor.I} arrives from across {$portal.d}."), S("{$actor.I} climbs from across {$portal.d}."), S("{$actor.I} crawls from across {$portal.d}.") },
-		{ S("{$actor.I} comes in from {$portal.d}."), S("{$actor.I} climbs in from {$portal.d}."), S("{$actor.I} crawls in from {$portal.d}.") },
-		{ S("{$actor.I} comes down from {$portal.d}."), S("{$actor.I} climbs down {$portal.d}."), S("{$actor.I} crawls down {$portal.d}.") },
-		{ S("{$actor.I} comes up {$portal.d}."), S("{$actor.I} climbs up {$portal.d}."), S("{$actor.I} crawls up {$portal.d}.") },
-		{ S("{$actor.I} comes through {$portal.d}."), S("{$actor.I} climbs through from {$portal.d}."), S("{$actor.I} crawls from through {$portal.d}.") },
+		{
+			S("{$actor.I} arrives from {$portal.d}."),
+			S("{$actor.I} climbs in from {$portal.d}."),
+			S("{$actor.I} crawls in from {$portal.d}.")
+		}, {
+			S("{$actor.I} comes out from {$portal.d}."),
+			S("{$actor.I} climbs out from {$portal.d}."),
+			S("{$actor.I} crawls out from {$portal.d}.")
+		}, {
+			S("{$actor.I} gets off {$portal.d}."),
+			S("{$actor.I} climbs off {$portal.d}."),
+			S("{$actor.I} crawls off {$portal.d}.")
+		}, {
+			S("{$actor.I} arrives from over {$portal.d}."),
+			S("{$actor.I} climbs over from {$portal.d}."),
+			S("{$actor.I} crawls over from {$portal.d}.")
+		}, {
+			S("{$actor.I} comes from under {$portal.d}."),
+			S("{$actor.I} climbs from beneath {$portal.d}."),
+			S("{$actor.I} crawls from under {$portal.d}.")
+		}, {
+			S("{$actor.I} arrives from across {$portal.d}."),
+			S("{$actor.I} climbs from across {$portal.d}."),
+			S("{$actor.I} crawls from across {$portal.d}.")
+		}, {
+			S("{$actor.I} comes in from {$portal.d}."),
+			S("{$actor.I} climbs in from {$portal.d}."),
+			S("{$actor.I} crawls in from {$portal.d}.")
+		}, {
+			S("{$actor.I} comes down from {$portal.d}."),
+			S("{$actor.I} climbs down {$portal.d}."),
+			S("{$actor.I} crawls down {$portal.d}.")
+		}, {
+			S("{$actor.I} comes up {$portal.d}."),
+			S("{$actor.I} climbs up {$portal.d}."),
+			S("{$actor.I} crawls up {$portal.d}.")
+		}, {
+			S("{$actor.I} comes through {$portal.d}."),
+			S("{$actor.I} climbs through from {$portal.d}."),
+			S("{$actor.I} crawls from through {$portal.d}.")
+		},
 	};
 }
 
@@ -138,7 +235,7 @@ PortalDetail::lookup (String name)
 SCRIPT_TYPE(Portal);
 Portal::Portal() : Entity(AweMUD_PortalType), name(),
 	target(), dir(), usage(), detail(), parent_room(NULL),
-	flags(), on_use()
+	flags()
 {}
 
 EntityName
@@ -158,24 +255,64 @@ Portal::add_keyword (String keyword)
 }
 
 Room *
-Portal::get_target_room () const
+Portal::get_relative_target (Room* base) const
 {
-	if (target)
+	assert(base != NULL);
+
+	// if we're asking about the owner, return the 'target' room
+	if (base == parent_room)
 		return ZoneManager.get_room (target);
+	// if we're the target room, return the owner
+	else if (base->get_id() == target)
+		return parent_room;
+	// otherwise, we're not involved with this portal at all
 	else
 		return NULL;
 }
 
-Portal *
-Portal::get_target_portal () const
+Portal*
+Portal::get_relative_portal (Room* base) const
 {
-	Room *r = ZoneManager.get_room (target);
-	if (r == NULL)
-		return NULL;
+	assert(base != NULL);
 
-	Portal *e = r->get_portal_by_dir (dir.get_opposite());
+	// if we're a two-way portal, it's always ourself
+	if (!is_oneway())
+		return const_cast<Portal*>(this);
 
-	return e;
+	// if we're the portal's owner, get the target's opposite portal
+	if (base == parent_room) {
+		Room* room = ZoneManager.get_room(target);
+		if (room == NULL)
+			return NULL;
+		return room->get_portal_by_dir(dir.get_opposite());
+	}
+
+	// we're a one-way portal and not the owner, so go away
+	return NULL;
+}
+
+PortalDir
+Portal::get_relative_dir (Room* base) const
+{
+	assert(base != NULL);
+
+	// owner uses the base dir
+	if (base == parent_room)
+		return dir;
+	// target uses the opposite dir
+	else if (base->get_id() == target)
+		return dir.get_opposite();
+	// we're not related to this room
+	else
+		return PortalDir();
+}
+
+bool
+Portal::has_room (Room* base) const
+{
+	assert(base != NULL);
+
+	return (base == parent_room || base->get_id() == target);
 }
 
 bool
@@ -204,16 +341,16 @@ Portal::save (File::Writer& writer)
 		writer.attr(S("portal"), S("usage"), usage.get_name());
 	if (detail != PortalDetail::NONE)
 		writer.attr(S("portal"), S("detail"), detail.get_name());
-	if (is_hidden ())
+	if (is_hidden())
 		writer.attr(S("portal"), S("hidden"), true);
-	if (is_door ()) {
+	if (is_door()) {
 		writer.attr(S("portal"), S("door"), true);
-		if (is_closed ())
+		if (is_closed())
 			writer.attr(S("portal"), S("closed"), true);
-		if (is_locked ())
+		if (is_locked())
 			writer.attr(S("portal"), S("locked"), true);
-		if (!is_synced ())
-			writer.attr(S("portal"), S("nosync"), true);
+		if (is_oneway())
+			writer.attr(S("portal"), S("onway"), true);
 	}
 	if (is_nolook())
 		writer.attr(S("portal"), S("nolook"), true);
@@ -222,16 +359,6 @@ Portal::save (File::Writer& writer)
 
 	if (!target.empty())
 		writer.attr(S("portal"), S("target"), target);
-
-	if (text.enters)
-		writer.attr(S("portal"), S("enters"), text.enters);
-	if (text.leaves)
-		writer.attr(S("portal"), S("leaves"), text.leaves);
-	if (text.go)
-		writer.attr(S("portal"), S("go"), text.go);
-
-	if (!on_use.empty())
-		writer.block (S("portal"), S("on_use"), on_use.get_source());
 }
 
 void
@@ -261,35 +388,27 @@ Portal::load_node (File::Reader& reader, File::Node& node)
 			detail = PortalDetail::lookup(node.get_data());
 		FO_ATTR("portal", "hidden")
 			FO_TYPE_ASSERT(BOOL);
-			set_hidden(str_is_true(node.get_data()));
+			set_hidden(node.get_bool());
 		FO_ATTR("portal", "door")
 			FO_TYPE_ASSERT(BOOL);
-			set_door(str_is_true(node.get_data()));
+			set_door(node.get_bool());
 		FO_ATTR("portal", "closed")
 			FO_TYPE_ASSERT(BOOL);
-			set_closed(str_is_true(node.get_data()));
+			set_closed(node.get_bool());
 		FO_ATTR("portal", "locked")
 			FO_TYPE_ASSERT(BOOL);
-			set_locked(str_is_true(node.get_data()));
-		FO_ATTR("portal", "nosync")
+			set_locked(node.get_bool());
+		FO_ATTR("portal", "oneway")
 			FO_TYPE_ASSERT(BOOL);
-			set_synced(str_is_true(node.get_data()));
+			set_oneway(node.get_bool());
 		FO_ATTR("portal", "nolook")
 			FO_TYPE_ASSERT(BOOL);
-			set_nolook(str_is_true(node.get_data()));
+			set_nolook(node.get_bool());
 		FO_ATTR("portal", "disabled")
 			FO_TYPE_ASSERT(BOOL);
-			set_disabled(str_is_true(node.get_data()));
+			set_disabled(node.get_bool());
 		FO_ATTR("portal", "target")
 			target = node.get_data();
-		FO_ATTR("portal", "enters")
-			text.enters = node.get_data();
-		FO_ATTR("portal", "leaves")
-			text.leaves = node.get_data();
-		FO_ATTR("portal", "go")
-			text.go = node.get_data();
-		FO_ATTR("portal", "on_use")
-			on_use = Scriptix::ScriptFunctionSource::compile(S("on_use"), node.get_data(), S("portal,user"), reader.get_filename(), node.get_line());
 		FO_PARENT(Entity)
 	FO_NODE_END
 }
@@ -304,8 +423,8 @@ void
 Portal::open () {
 	flags.closed = false;;
 
-	if (is_synced ()) {
-		Portal *other = get_target_portal ();
+	if (!is_oneway()) {
+		Portal *other = get_relative_portal(parent_room);
 		if (other) {
 			other->flags.closed = false;;
 			*other->get_room() << StreamName(other, DEFINITE, true) << " is opened from the other side.\n";
@@ -317,8 +436,8 @@ void
 Portal::close () {
 	flags.closed = true;;
 
-	if (is_synced ()) {
-		Portal *other = get_target_portal ();
+	if (!is_oneway()) {
+		Portal *other = get_relative_portal(parent_room);
 		if (other) {
 			other->flags.closed = true;;
 			*other->get_room() << StreamName(other, DEFINITE, true) << " is closed from the other side.\n";
@@ -330,8 +449,8 @@ void
 Portal::unlock () {
 	flags.locked = false;;
 
-	if (is_synced ()) {
-		Portal *other = get_target_portal ();
+	if (!is_oneway()) {
+		Portal *other = get_relative_portal(parent_room);
 		if (other) {
 			other->flags.locked = false;;
 			*other->get_room() << "A click eminates from " << StreamName(other) << ".\n";
@@ -343,8 +462,8 @@ void
 Portal::lock () {
 	flags.locked = true;;
 
-	if (is_synced ()) {
-		Portal *other = get_target_portal ();
+	if (!is_oneway()) {
+		Portal *other = get_relative_portal(parent_room);
 		if (other) {
 			other->flags.locked = true;;
 			*other->get_room() << "A click eminates from " << StreamName(other) << ".\n";
@@ -381,10 +500,6 @@ Portal::owner_release (Entity* child)
 String
 Portal::get_go () const
 {
-	// customized?
-	if (text.go)
-		return text.go;
-
 	// use table
 	return portal_go_table[detail.get_value()][usage.get_value()];
 }
@@ -392,10 +507,6 @@ Portal::get_go () const
 String
 Portal::get_leaves () const
 {
-	// customized?
-	if (text.leaves)
-		return text.leaves;
-
 	// use table
 	return portal_leaves_table[detail.get_value()][usage.get_value()];
 }
@@ -403,31 +514,8 @@ Portal::get_leaves () const
 String
 Portal::get_enters () const
 {
-	// customized?
-	if (text.enters)
-		return text.enters;
-
 	// use table
 	return portal_enters_table[detail.get_value()][usage.get_value()];
-}
-
-bool
-Portal::operator< (const Portal& portal) const
-{
-	// empty names always first
-	if (name.empty() && !portal.name.empty())
-		return true;
-	else if (!name.empty() && portal.name.empty())
-		return false;
-		
-	// sort by direction
-	if (dir.get_value() < portal.dir.get_value())
-		return true;
-	else if (dir.get_value() > portal.dir.get_value())
-		return false;
-
-	// then name
-	return get_name() < portal.get_name();
 }
 
 bool
@@ -443,14 +531,4 @@ Portal::name_match (String match) const
 
 	// no match
 	return false;
-}
-
-void
-Portal::set_use (String script)
-{
-	if (script) {
-		on_use = Scriptix::ScriptFunctionSource::compile(S("on_use"), script, S("portal,user"), S("portal db"), 1);
-	} else {
-		on_use.clear();
-	}
 }

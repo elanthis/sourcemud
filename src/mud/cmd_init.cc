@@ -456,7 +456,7 @@ SCommandManager::initialize (void)
 			"create [npc|object] [<template>]\n"
 			"create room <name> [<zone>]\n"
 			"create zone <name>\n"
-			"crate portal [<name/dir> [to <target>]]\n",
+			"create portal <dir> <target>\n",
 			create,
 			ACCESS_BUILDER,
 			Player)
@@ -464,8 +464,7 @@ SCommandManager::initialize (void)
 		FORMAT(80, "create :0object :1%?")
 		FORMAT(80, "create :0room :1% :2%?")
 		FORMAT(80, "create :0zone :1%")
-		FORMAT(80, "create :0portal :1%?")
-		FORMAT(80, "create :0portal :1% to :2%")
+		FORMAT(80, "create :0portal :1% :2%")
 	END_COMM
 	COMMAND("destroy",
 			"destroy [<type>] <entity>\n",

@@ -23,7 +23,7 @@ class Room : public Entity
 	// nasty public stuff
 	EList<Object> objects;
 	EList<Creature> creatures;
-	EList<Portal> portals;
+	GCType::map<PortalDir, Portal*> portals;
 
 	Room ();
 
@@ -51,8 +51,7 @@ class Room : public Entity
 	class Portal* get_portal_at (uint);
 	class Portal* get_portal_by_dir (PortalDir);
 	class Portal* find_portal (String, uint c = 1, uint *matches = NULL);
-	class Portal* new_portal (); //  will pick a unique ID, return portal
-	void sort_portals (); // re-sort portals; FIXME: this is ugly to have to do manually
+	class Portal* new_portal (PortalDir dir);
 
 	// identifier
 	inline String get_id () const { return id; }

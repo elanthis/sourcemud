@@ -1,2 +1,6 @@
-*.objs
-*.npcs
+armor.objs
+gems.objs
+misc.objs
+weapons.objs
+animals.npcs
+undead.npcs

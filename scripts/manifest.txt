@@ -5,4 +5,7 @@ npc.sx
 object.sx
 player.sx
 webserver.sx
-*.sx
+death.sx
+example.zone.sx
+store.sx
+whereis.sx

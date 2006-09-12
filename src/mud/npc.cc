@@ -556,11 +556,11 @@ Npc::can_use_portal (Portal* portal) const
 		return false;
 
 	// portal's room is our room, yes?
-	if (get_room() != portal->get_room())
+	if (!portal->has_room(get_room()))
 		return false;
 
 	// get target room; must be valid
-	Room* troom = portal->get_target_room();
+	Room* troom = portal->get_relative_target(get_room());
 	if (troom == NULL)
 		return false;
 
