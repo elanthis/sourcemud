@@ -368,8 +368,12 @@ SZoneManager::load_world ()
 		Zone* zone = new Zone();
 		if (zone->load (*i))
 			return -1;
-		add_zone (zone);
+		zones.push_back(zone); // don't call add_zone(), we don't want to activate it yet
 	}
+
+	// now activate all zones
+	for (ZoneList::iterator i = zones.begin(); i != zones.end(); ++i)
+		(*i)->activate();
 
 	return 0;
 }
@@ -420,7 +424,8 @@ SZoneManager::get_zone_at (size_t index)
 Room *
 SZoneManager::get_room (String id)
 {
-	assert (id);
+	if (id.empty())
+		return NULL;
 
 	Room *room;
 	for (ZoneList::iterator i = zones.begin(); i != zones.end(); ++i) {
@@ -457,13 +462,15 @@ SZoneManager::add_zone (Zone *zone)
 {
 	assert (zone != NULL);
 
-	// already active?  then its already added
-	if (zone->is_active())
-		return;
+	// make sure we don't already have the zone
+	for (ZoneList::iterator i = zones.begin(); i != zones.end(); ++i)
+		if (*i == zone)
+			return;
 
-	// activate and add
-	zone->activate();
+	// push the zone
 	zones.push_back(zone);
+
+	// activate it
 }
 
 void

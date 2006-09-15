@@ -349,13 +349,13 @@ Portal::save (File::Writer& writer)
 			writer.attr(S("portal"), S("closed"), true);
 		if (is_locked())
 			writer.attr(S("portal"), S("locked"), true);
-		if (is_oneway())
-			writer.attr(S("portal"), S("onway"), true);
 	}
 	if (is_nolook())
 		writer.attr(S("portal"), S("nolook"), true);
 	if (is_disabled())
 		writer.attr(S("portal"), S("disabled"), true);
+	if (is_oneway())
+		writer.attr(S("portal"), S("oneway"), true);
 
 	if (!target.empty())
 		writer.attr(S("portal"), S("target"), target);
@@ -420,54 +420,50 @@ Portal::load_finish ()
 }
 
 void
-Portal::open () {
-	flags.closed = false;;
+Portal::open (Room* base, Creature* actor)
+{
+	flags.closed = false;
 
 	if (!is_oneway()) {
-		Portal *other = get_relative_portal(parent_room);
-		if (other) {
-			other->flags.closed = false;;
-			*other->get_room() << StreamName(other, DEFINITE, true) << " is opened from the other side.\n";
-		}
+		Room* other = get_relative_target(base);
+		if (other)
+			*other << StreamName(other, DEFINITE, true) << " is opened from the other side by " << StreamName(actor, INDEFINITE, false) << ".\n";
 	}
 }
 
 void
-Portal::close () {
+Portal::close (Room* base, Creature* actor)
+{
 	flags.closed = true;;
 
 	if (!is_oneway()) {
-		Portal *other = get_relative_portal(parent_room);
-		if (other) {
-			other->flags.closed = true;;
-			*other->get_room() << StreamName(other, DEFINITE, true) << " is closed from the other side.\n";
-		}
+		Room* other = get_relative_target(base);
+		if (other)
+			*other << StreamName(other, DEFINITE, true) << " is closed from the other side by " << StreamName(actor, INDEFINITE, false) << ".\n";
 	}
 }
 
 void
-Portal::unlock () {
-	flags.locked = false;;
+Portal::unlock (Room* base, Creature* actor)
+{
+	flags.locked = false;
 
 	if (!is_oneway()) {
-		Portal *other = get_relative_portal(parent_room);
-		if (other) {
-			other->flags.locked = false;;
-			*other->get_room() << "A click eminates from " << StreamName(other) << ".\n";
-		}
+		Room* other = get_relative_target(base);
+		if (other)
+			*other << "A click eminates from " << StreamName(other, DEFINITE) << ".\n";
 	}
 }
 
 void
-Portal::lock () {
+Portal::lock (Room* base, Creature* actor)
+{
 	flags.locked = true;;
 
 	if (!is_oneway()) {
-		Portal *other = get_relative_portal(parent_room);
-		if (other) {
-			other->flags.locked = true;;
-			*other->get_room() << "A click eminates from " << StreamName(other) << ".\n";
-		}
+		Room* other = get_relative_target(base);
+		if (other)
+			*other << "A click eminates from " << StreamName(other, DEFINITE) << ".\n";
 	}
 }
 
@@ -531,4 +527,28 @@ Portal::name_match (String match) const
 
 	// no match
 	return false;
+}
+
+void
+Portal::activate ()
+{
+	if (!is_oneway()) {
+		Room* room = ZoneManager.get_room(target);
+		if (room != NULL) {
+			if (!room->register_portal(this)) {
+				Log::Warning << "Room '" << room->get_id() << "' already has portal for direction " << get_dir().get_opposite().get_name() << ", converting " << get_dir().get_name() << " portal of room '" << parent_room->get_id() << "' to one-way";
+				set_oneway(true);
+			}
+		}
+	}
+}
+
+void
+Portal::deactivate ()
+{
+	if (!is_oneway()) {
+		Room* room = ZoneManager.get_room(target);
+		if (room != NULL)
+			room->unregister_portal(this);
+	}
 }

@@ -1,0 +1,11 @@
+// Definite player starting location
+// Copyright (C) 2006  AwesomePlay Productions, Inc.
+
+function playerStart(player)
+{
+	player.enter(getRoom('saladhin_ranath_courtyard'), nil);
+}
+function init()
+{
+	registerHook('player_start', playerStart);
+}

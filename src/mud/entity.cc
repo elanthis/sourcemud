@@ -174,7 +174,7 @@ Entity::load (File::Reader& reader)
 
 			if (load_node(reader, node) != FO_SUCCESS_CODE) {
 				if (node.is_attr())
-					Log::Error << "Unrecognized attribute '" << node.get_name () << ' ' << node.get_key() << "' at " << reader.get_filename() << ':' << node.get_line();
+					Log::Error << "Unrecognized attribute '" << node.get_name () << '.' << node.get_key() << "' at " << reader.get_filename() << ':' << node.get_line();
 				else if (node.is_begin())
 					Log::Error << "Unrecognized object '" << node.get_name() << "' at " << reader.get_filename() << ':' << node.get_line();
 				else

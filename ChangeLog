@@ -1,3 +1,11 @@
+2006-09-15 22:09:01  Sean Middleditch <elanthis@awesomeplay.com>
+
+  * Many portal updates.
+  * The example.zone was very incomplete and buggy, and with the new
+    portal changes, required a lot of work to update.  Began writing
+    a new example world (pulled straight from the arse as I go).
+  * Fixed error message on unknown attributes in fileobj files.
+
 2006-09-12 02:35:25  Sean Middleditch <elanthis@awesomeplay.com>
 
   * Began restructing the portal system.  All portals will now be

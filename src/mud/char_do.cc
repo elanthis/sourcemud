@@ -274,7 +274,7 @@ Creature::do_look (Portal *portal)
 
 	// show direction
 	if (portal->get_dir().valid() && portal->get_name().get_text() != portal->get_dir().get_name())
-		*this << StreamName(*portal, DEFINITE, true) << " heads " << portal->get_dir().get_name() << ".  ";
+		*this << StreamName(*portal, DEFINITE, true) << " heads " << portal->get_relative_dir(get_room()).get_name() << ".  ";
 
 	// closed portal?
 	if (portal->is_closed())
@@ -1028,14 +1028,16 @@ class ActionOpenPortal : public IAction
 		// checks
 		if (!get_actor()->check_move())
 			return 1;
-		if (!portal->is_closed ()) {
-			*get_actor() << StreamName(*portal, DEFINITE, true) << " is already open.\n";
-			return 1;
-		}
 
 		// door?
 		if (!portal->is_door()) {
 			*get_actor() << StreamName(*portal, DEFINITE, true) << " is not a door.\n";
+			return 1;
+		}
+
+		// already open?
+		if (!portal->is_closed()) {
+			*get_actor() << StreamName(*portal, DEFINITE, true) << " is already open.\n";
 			return 1;
 		}
 
@@ -1051,7 +1053,7 @@ class ActionOpenPortal : public IAction
 		}
 
 		// open it
-		portal->open ();
+		portal->open (get_actor()->get_room(), get_actor());
 		*get_actor() << "You open " << StreamName(*portal, DEFINITE) << ".\n";
 		if (get_actor()->get_room())
 			*get_actor()->get_room() << StreamIgnore(get_actor()) << StreamName(get_actor(), INDEFINITE, true) << " opens " << StreamName(portal, DEFINITE) << ".\n";
@@ -1089,10 +1091,6 @@ class ActionClosePortal : public IAction
 		// checks
 		if (!get_actor()->check_move())
 			return 1;
-		if (!portal->is_closed()) {
-			*get_actor() << StreamName(*portal, DEFINITE, true) << " is already closed.\n";
-			return 1;
-		}
 
 		// door?
 		if (!portal->is_door()) {
@@ -1100,8 +1098,14 @@ class ActionClosePortal : public IAction
 			return 1;
 		}
 
+		// already closed?
+		if (portal->is_closed()) {
+			*get_actor() << StreamName(*portal, DEFINITE, true) << " is already closed.\n";
+			return 1;
+		}
+
 		// close it
-		portal->close ();
+		portal->close (get_actor()->get_room(), get_actor());
 		*get_actor() << "You close " << StreamName(*portal, DEFINITE) << ".\n";
 		if (get_actor()->get_room())
 			*get_actor()->get_room() << StreamIgnore(get_actor()) << StreamName(get_actor(), INDEFINITE, true) << " closes " << StreamName(portal, DEFINITE) << ".\n";
@@ -1153,7 +1157,7 @@ class ActionLockPortal : public IAction
 		}
 
 		// lock it
-		portal->lock ();
+		portal->lock (get_actor()->get_room(), get_actor());
 		*get_actor() << "You lock " << StreamName(*portal, DEFINITE) << ".\n";
 		if (get_actor()->get_room())
 			*get_actor()->get_room() << StreamIgnore(get_actor()) << StreamName(get_actor(), INDEFINITE, true) << " locks " << StreamName(portal, DEFINITE) << ".\n";
@@ -1205,7 +1209,7 @@ class ActionUnlockPortal : public IAction
 		}
 
 		// unlock it
-		portal->unlock ();
+		portal->unlock (get_actor()->get_room(), get_actor());
 		*get_actor() << "You unlock " << StreamName(*portal, DEFINITE) << ".\n";
 		if (get_actor()->get_room())
 			*get_actor()->get_room() << StreamIgnore(get_actor()) << StreamName(get_actor(), INDEFINITE, true) << " unlocks " << StreamName(portal, DEFINITE) << ".\n";
@@ -1240,15 +1244,6 @@ class ActionUsePortal : public IAction
 
 	virtual int start (void)
 	{
-		// portal must be in same room
-		if (portal->get_room() != get_actor()->get_room())
-			return 1;
-
-		// set rounds 
-		// one round plus one per every 20% below max health
-		// add five if an NPC
-		rounds = 1 + (100 - (get_actor()->get_hp() * 100 / get_actor()->get_max_hp())) / 20 + (NPC(get_actor()) ? 5 : 0);
-
 		// checks
 		if (!get_actor()->check_move())
 			return 1;
@@ -1265,6 +1260,11 @@ class ActionUsePortal : public IAction
 			*get_actor() << StreamName(*portal, DEFINITE, true) << " does not lead anywhere.\n";
 			return 1;
 		}
+
+		// set rounds 
+		// one round plus one per every 20% below max health
+		// add five if an NPC
+		rounds = 1 + (100 - (get_actor()->get_hp() * 100 / get_actor()->get_max_hp())) / 20 + (NPC(get_actor()) ? 5 : 0);
 
 		// do go
 		get_actor()->enter (new_room, portal);
@@ -1313,7 +1313,7 @@ class ActionKickPortal : public IAction
 		}
 
 		// kick it
-		portal->open();
+		portal->open(get_actor()->get_room(), get_actor());
 		*get_actor() << "You kick " << StreamName(*portal, DEFINITE) << " open.\n";
 		if (get_actor()->get_room())
 			*get_actor()->get_room() << StreamIgnore(get_actor()) << StreamName(get_actor(), INDEFINITE, true) << " kicks " << StreamName(portal, DEFINITE) << " open.\n";

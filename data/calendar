@@ -2,15 +2,6 @@
 # Copyright (C) 2003-2005  AwesomePlay Productions Inc.
 # Sean Middleditch <elanthis@awemud.net>
 
-# Enumerate weekday names
-calendar.weekday = "Sunday"
-calendar.weekday = "Monday"
-calendar.weekday = "Tuesday"
-calendar.weekday = "Wednesday"
-calendar.weekday = "Thursday"
-calendar.weekday = "Friday"
-calendar.weekday = "Saturday"
-
 # Various day/night texts
 calendar.day = "The Sun is casting its light about the world."
 calendar.day = "The Sun's golden rays are illuminating the lands."
@@ -25,76 +16,99 @@ calendar.sunset = "The Sun sets on the Western horiron."
 calendar.sunset = "Darkness creeps across the lands as night embraces the world."
 calendar.sunset = "The day is conquered by night, and warm light fades into cool darkness."
 
-# Define months
+# Enumerate weekday names
+calendar.weekday = "Ra'din"
+calendar.weekday = "Din"
+calendar.weekday = "Jara"
+calendar.weekday = "So'jin"
+calendar.weekday = "Thrala"
+calendar.weekday = "Rathul"
+calendar.weekday = "Ra'long"
+
+# Months
 month {
-  month.name = "January"
-  month.days = 31
+	month.name = "Snowfall"
+	month.days = 61
 }
 month {
-  month.name = "February"
-  month.days = 28
-  # leap day, once per 4 years
-  month.leap = 4
+	month.name = "Rainfall"
+	month.days = 61
 }
 month {
-  month.name = "March"
-  month.days = 31
+	month.name = "First Planting"
+	month.days = 61
 }
 month {
-  month.name = "April"
-  month.days = 30
+	month.name = "Tides"
+	month.days = 61
+	month.leap = 4
 }
 month {
-  month.name = "May"
-  month.days = 31
+	month.name = "Second Planting"
+	month.days = 61
 }
 month {
-  month.name = "June"
-  month.days = 30
-}
-month {
-  month.name = "July"
-  month.days = 31
-}
-month {
-  month.name = "August"
-  month.days = 31
-}
-month {
-  month.name = "September"
-  month.days = 30
-}
-month {
-  month.name = "October"
-  month.days = 31
-}
-month {
-  month.name = "November"
-  month.days = 30
-}
-month {
-  month.name = "December"
-  month.days = 31
+	month.name = "Harvest"
+	month.days = 61
 }
 
-# Define holidays
-holiday {
-  holiday.name = "Winter Solstice"
-  # Every 21st of December
-  holiday.month = "December"
-  holiday.day = 21
-}
-holiday {
-  holiday.name = "Turur Frer"
-  # Every other year, second Tuesday of March
-  holiday.years = 2
-  holiday.month = "March"
-  holiday.weekday = "Tuesday"
-  holiday.wdindex = 2
-}
-holiday {
-  holiday.name = "10th Day of 4th Year"
-  # 10th day of every month, every 4 years
-  holiday.years = 4
-  holiday.day = 10
-}
+### The following are the settings used in real-life
+#calendar.weekday = "Sunday"
+#calendar.weekday = "Monday"
+#calendar.weekday = "Tuesday"
+#calendar.weekday = "Wednesday"
+#calendar.weekday = "Thursday"
+#calendar.weekday = "Friday"
+#calendar.weekday = "Saturday"
+#
+## Define months
+#month {
+#  month.name = "January"
+#  month.days = 31
+#}
+#month {
+#  month.name = "February"
+#  month.days = 28
+#  # leap day, once per 4 years
+#  month.leap = 4
+#}
+#month {
+#  month.name = "March"
+#  month.days = 31
+#}
+#month {
+#  month.name = "April"
+#  month.days = 30
+#}
+#month {
+#  month.name = "May"
+#  month.days = 31
+#}
+#month {
+#  month.name = "June"
+#  month.days = 30
+#}
+#month {
+#  month.name = "July"
+#  month.days = 31
+#}
+#month {
+#  month.name = "August"
+#  month.days = 31
+#}
+#month {
+#  month.name = "September"
+#  month.days = 30
+#}
+#month {
+#  month.name = "October"
+#  month.days = 31
+#}
+#month {
+#  month.name = "November"
+#  month.days = 30
+#}
+#month {
+#  month.name = "December"
+#  month.days = 31
+#}

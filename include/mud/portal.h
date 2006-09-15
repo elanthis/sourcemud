@@ -137,7 +137,7 @@ class Portal : public Entity
 	virtual void set_desc (String s_desc) { desc = s_desc; }
 
 	// 'standard' portals have no custom name
-	bool is_standard () const { return name.get_name().empty(); }
+	bool is_standard () const { return name.empty(); }
 
 	// the taget room and portal (target portal is the portal you come out of)
 	String get_target () const { return target; }
@@ -153,6 +153,10 @@ class Portal : public Entity
 	virtual Entity* get_owner () const;
 	virtual void owner_release (Entity*);
 	virtual class Room *get_room () const { return parent_room; }
+
+	// activate/deactivtee
+	virtual void activate ();
+	virtual void deactivate ();
 
 	// portal usage (climb, etc.)
 	PortalUsage get_usage () const { return usage; }
@@ -186,10 +190,10 @@ class Portal : public Entity
 	virtual String ncolor () const { return S(CEXIT); }
 
 	// manage state
-	void lock ();
-	void unlock ();
-	void close ();
-	void open ();
+	void lock (Room* base, class Creature* actor);
+	void unlock (Room* base, class Creature* actor);
+	void close (Room* base, class Creature* actor);
+	void open (Room* base, class Creature* actor);
 
 	// heartbeat
 	void heartbeat ();

@@ -2806,10 +2806,30 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
     <!-- states -->
     <method>
       <name>open</name>
+      <arg>
+        <type>Room</type>
+        <name>base</name>
+        <doc>The Room from which the portal was opened.</doc>
+      </arg>
+      <arg>
+        <type>Creature</type>
+        <name>actor</name>
+        <doc>The Creature who performed the action, if any.</doc>
+      </arg>
       <doc>Opens the portal.</doc>
     </method>
     <method>
       <name>close</name>
+      <arg>
+        <type>Room</type>
+        <name>base</name>
+        <doc>The Room from which the portal was closed.</doc>
+      </arg>
+      <arg>
+        <type>Creature</type>
+        <name>actor</name>
+        <doc>The Creature who performed the action, if any.</doc>
+      </arg>
       <doc>Closes the portal.</doc>
     </method>
     <method>

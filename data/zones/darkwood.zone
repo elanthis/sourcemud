@@ -1,0 +1,50 @@
+# Zone: darkwood
+
+# --- BASICS ---
+zone.id = "darkwood"
+zone.name = "Dark Wood"
+zone.desc = "An eerie, dark wood."
+entity.uid = <1441>
+
+# --- SPAWNS ---
+
+# --- ROOMS ---
+room {
+  room.id = "darkwood_cave"
+  room.name = "Dark Wood: Cave Opening"
+  room.desc = "The grisly trees of the wood give way to a small rock outcropping, which sports a small opening.  The rough rock looks much like the mouth of some terrible beast tearing through the earth at its prey.  The sound of dripping water can be heard from within the cave."
+  entity.uid = <1460>
+  portal {
+    portal.name = "the cave opening"
+    entity.uid = <0>
+    portal.dir = "southeast"
+    portal.detail = "through"
+    portal.oneway = true
+    portal.target = "catacomb_cave"
+  }
+}
+room {
+  room.id = "darkwood_gnarled"
+  room.name = "Dark Wood: Gnarled Tree"
+  room.desc = "A gnarled tree, far larger than other trees in the wood, rises to unseen hights here.  The aroma of decay lingers in the air, as if the tree attracts death itself.  The usually dim light of the wood is even darker here, for neither the sun nor the moon can easily penetrate the gloom cast by the gnarled tree's vast limbs."
+  entity.uid = <1464>
+  portal {
+    entity.uid = <0>
+    portal.dir = "east"
+    portal.target = "darkwood_saladhin"
+  }
+  portal {
+    entity.uid = <0>
+    portal.dir = "southwest"
+    portal.target = "darkwood_cave"
+  }
+}
+room {
+  room.id = "darkwood_saladhin"
+  room.name = "Dark Wood: Saladhin City"
+  room.desc = "The strong, tall wall of Saladhin slices through the wood from north to south, and the massive gate set into it offers the protection of the city to haggard travellers.  The heads of several of the dark wood's more fearsome predators are set of poles outside the gate, giving testament to the efficacy of the city's defenders."
+  entity.uid = <1465>
+}
+
+#  --- EOF ---
+# vim: set shiftwidth=2 tabstop=2 expandtab:

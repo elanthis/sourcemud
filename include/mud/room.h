@@ -53,6 +53,11 @@ class Room : public Entity
 	class Portal* find_portal (String, uint c = 1, uint *matches = NULL);
 	class Portal* new_portal (PortalDir dir);
 
+	// this is called when a portal needs to attach itself to the room
+	// as a target
+	bool register_portal (Portal* portal);
+	void unregister_portal (Portal* portal);
+
 	// identifier
 	inline String get_id () const { return id; }
 	inline void set_id (String new_id) { id = new_id; }

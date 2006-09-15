@@ -1,0 +1,169 @@
+# Zone: catacombs
+
+# --- BASICS ---
+zone.id = "catacombs"
+zone.name = "Saladhin Catacombs"
+zone.desc = "Labyrithine catacombs under the metropolis of Saladhin."
+entity.uid = <1440>
+
+# --- SPAWNS ---
+
+# --- ROOMS ---
+room {
+  room.id = "catacomb_well"
+  room.name = "Catacombs: Well Basin"
+  room.desc = "In the center of the cavern is a murky pool of water, into which hangs a rope from an opening in the center of the ceiling."
+  entity.uid = <1448>
+  portal {
+    entity.uid = <0>
+    portal.dir = "south"
+    portal.target = "catacomb_3_3"
+  }
+  portal {
+    entity.uid = <0>
+    portal.dir = "southwest"
+    portal.target = "catacomb_2_3"
+  }
+  portal {
+    portal.name = "a rope"
+    entity.uid = <0>
+    portal.dir = "up"
+    portal.usage = "climb"
+    portal.detail = "up"
+    portal.hidden = true
+    portal.oneway = true
+    portal.target = "saladhin_square"
+  }
+}
+room {
+  room.id = "catacomb_cave"
+  room.name = "Catacombs: Cave Entrance"
+  room.desc = "{if eq {day-or-night} 'day'}Sunlight streams through the narrow cave opening at this point of the catacombs.  Beyond the gaping maw are ghastly trees, each seeming twisted in pain.  The cold darkness of the deeper caves seems inviting in comparison."
+  entity.uid = <1449>
+  portal {
+    entity.uid = <0>
+    portal.dir = "south"
+    portal.target = "catacomb_1_2"
+  }
+  portal {
+    portal.name = "the cave opening"
+    entity.uid = <0>
+    portal.dir = "northwest"
+    portal.detail = "through"
+    portal.oneway = true
+    portal.target = "darkwood_cave"
+  }
+}
+room {
+  room.id = "catacomb_2_1"
+  room.name = "Catacombs"
+  room.desc = "The moist walls of the catacomb are faintly illuminated by the purple moss growing in spotches across the ceiling.  Stalagmites make movement tricky, and the occassional puddle on the floor turns out to be deeper than it appears, adding another level of treachery to the uneven footing of the catacombs."
+  entity.uid = <1450>
+  portal {
+    entity.uid = <0>
+    portal.dir = "east"
+    portal.target = "catacomb_3_1"
+  }
+  portal {
+    entity.uid = <0>
+    portal.dir = "southeast"
+    portal.target = "catacomb_well"
+  }
+  portal {
+    entity.uid = <0>
+    portal.dir = "southwest"
+    portal.target = "catacomb_1_2"
+  }
+}
+room {
+  room.id = "catacomb_3_1"
+  room.name = "Catacombs"
+  room.desc = "The moist walls of the catacomb are faintly illuminated by the purple moss growing in spotches across the ceiling.  Stalagmites make movement tricky, and the occassional puddle on the floor turns out to be deeper than it appears, adding another level of treachery to the uneven footing of the catacombs."
+  entity.uid = <1451>
+  portal {
+    entity.uid = <0>
+    portal.dir = "east"
+    portal.target = "catacomb_4_1"
+  }
+}
+room {
+  room.id = "catacomb_4_1"
+  room.name = "Catacombs"
+  room.desc = "The moist walls of the catacomb are faintly illuminated by the purple moss growing in spotches across the ceiling.  Stalagmites make movement tricky, and the occassional puddle on the floor turns out to be deeper than it appears, adding another level of treachery to the uneven footing of the catacombs."
+  entity.uid = <1452>
+  portal {
+    entity.uid = <0>
+    portal.dir = "south"
+    portal.target = "catacomb_4_2"
+  }
+}
+room {
+  room.id = "catacomb_1_2"
+  room.name = "Catacombs"
+  room.desc = "The moist walls of the catacomb are faintly illuminated by the purple moss growing in spotches across the ceiling.  Stalagmites make movement tricky, and the occassional puddle on the floor turns out to be deeper than it appears, adding another level of treachery to the uneven footing of the catacombs."
+  entity.uid = <1453>
+  portal {
+    entity.uid = <0>
+    portal.dir = "south"
+    portal.target = "catacomb_1_3"
+  }
+}
+room {
+  room.id = "catacomb_2_2"
+  room.name = "Catacombs"
+  room.desc = "The moist walls of the catacomb are faintly illuminated by the purple moss growing in spotches across the ceiling.  Stalagmites make movement tricky, and the occassional puddle on the floor turns out to be deeper than it appears, adding another level of treachery to the uneven footing of the catacombs."
+  entity.uid = <1454>
+  portal {
+    entity.uid = <0>
+    portal.dir = "south"
+    portal.target = "catacomb_2_3"
+  }
+}
+room {
+  room.id = "catacomb_4_2"
+  room.name = "Catacombs"
+  room.desc = "The moist walls of the catacomb are faintly illuminated by the purple moss growing in spotches across the ceiling.  Stalagmites make movement tricky, and the occassional puddle on the floor turns out to be deeper than it appears, adding another level of treachery to the uneven footing of the catacombs."
+  entity.uid = <1455>
+  portal {
+    entity.uid = <0>
+    portal.dir = "south"
+    portal.target = "catacomb_4_3"
+  }
+  portal {
+    entity.uid = <0>
+    portal.dir = "southwest"
+    portal.target = "catacomb_3_3"
+  }
+}
+room {
+  room.id = "catacomb_1_3"
+  room.name = "Catacombs"
+  room.desc = "The moist walls of the catacomb are faintly illuminated by the purple moss growing in spotches across the ceiling.  Stalagmites make movement tricky, and the occassional puddle on the floor turns out to be deeper than it appears, adding another level of treachery to the uneven footing of the catacombs."
+  entity.uid = <1456>
+  portal {
+    entity.uid = <0>
+    portal.dir = "east"
+    portal.target = "catacomb_2_3"
+  }
+}
+room {
+  room.id = "catacomb_2_3"
+  room.name = "Catacombs"
+  room.desc = "The moist walls of the catacomb are faintly illuminated by the purple moss growing in spotches across the ceiling.  Stalagmites make movement tricky, and the occassional puddle on the floor turns out to be deeper than it appears, adding another level of treachery to the uneven footing of the catacombs."
+  entity.uid = <1457>
+}
+room {
+  room.id = "catacomb_3_3"
+  room.name = "Catacombs"
+  room.desc = "The moist walls of the catacomb are faintly illuminated by the purple moss growing in spotches across the ceiling.  Stalagmites make movement tricky, and the occassional puddle on the floor turns out to be deeper than it appears, adding another level of treachery to the uneven footing of the catacombs."
+  entity.uid = <1458>
+}
+room {
+  room.id = "catacomb_4_3"
+  room.name = "Catacombs"
+  room.desc = "The moist walls of the catacomb are faintly illuminated by the purple moss growing in spotches across the ceiling.  Stalagmites make movement tricky, and the occassional puddle on the floor turns out to be deeper than it appears, adding another level of treachery to the uneven footing of the catacombs."
+  entity.uid = <1459>
+}
+
+#  --- EOF ---
+# vim: set shiftwidth=2 tabstop=2 expandtab:

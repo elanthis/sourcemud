@@ -237,7 +237,7 @@ class ScriptRestrictedWriter : public Scriptix::Native
 		} else { \
 			if (node.is_begin()) \
 				reader.consume(); \
-			else if (node.is_attr()) Log::Error << "Unrecognized attribute '" << node.get_name() << "' at " << reader.get_filename() << ':' << node.get_line(); \
+			else if (node.is_attr()) Log::Error << "Unrecognized attribute '" << node.get_name() << '.' << node.get_key() << "' at " << reader.get_filename() << ':' << node.get_line(); \
 			else if (node.is_begin()) Log::Error << "Unrecognized object '" << node.get_name() << "' at " << reader.get_filename() << ':' << node.get_line(); \
 			throw(File::Error(S("unexpected value"))); \
 		} \

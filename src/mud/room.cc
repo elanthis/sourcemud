@@ -183,10 +183,11 @@ Room::find_portal (String e_name, uint c, uint *matches)
 Portal *
 Room::get_portal_by_dir (PortalDir dir)
 {
-	for (GCType::map<PortalDir,Portal*>::const_iterator i = portals.begin(); i != portals.end(); ++i)
-		if (i->second->get_dir () == dir)
-			return i->second;
-	return NULL;
+	GCType::map<PortalDir,Portal*>::iterator i = portals.find(dir);
+	if (i != portals.end())
+		return i->second;
+	else
+		return NULL;
 }
 
 Portal*
@@ -201,6 +202,33 @@ Room::new_portal (PortalDir dir)
 	if (is_active())
 		portal->activate();
 	return portal;
+}
+
+bool
+Room::register_portal (Portal* portal)
+{
+	assert(portal != NULL);
+	assert(portal->get_target() == get_id());
+
+	GCType::map<PortalDir,Portal*>::iterator i = portals.find(portal->get_dir().get_opposite());
+	if (i == portals.end()) {
+		portals[portal->get_dir().get_opposite()] = portal;
+		return true;
+	} else if (i->second == portal)
+		return true; // already registered
+	else
+		return false; // another portal is here
+}
+
+void
+Room::unregister_portal (Portal* portal)
+{
+	assert(portal != NULL);
+	assert(portal->get_target() == get_id());
+
+	GCType::map<PortalDir,Portal*>::iterator i = portals.find(portal->get_dir().get_opposite());
+	if (i != portals.end() && i->second == portal)
+		portals.erase(i);
 }
 
 // coins
@@ -229,7 +257,8 @@ Room::activate ()
 	Entity::activate ();
 
 	for (GCType::map<PortalDir,Portal*>::const_iterator i = portals.begin(); i != portals.end(); ++i)
-		i->second->activate();
+		if (i->second->get_owner() == this)
+			i->second->activate();
 	for (EList<Creature>::const_iterator i = creatures.begin(); i != creatures.end(); ++i)
 		(*i)->activate();
 	for (EList<Object>::const_iterator i = objects.begin(); i != objects.end(); ++i)
@@ -240,7 +269,8 @@ void
 Room::deactivate ()
 {
 	for (GCType::map<PortalDir,Portal*>::const_iterator i = portals.begin(); i != portals.end(); ++i)
-		i->second->deactivate();
+		if (i->second->get_owner() == this)
+			i->second->deactivate();
 	for (EList<Creature>::const_iterator i = creatures.begin(); i != creatures.end(); ++i)
 		(*i)->deactivate();
 	for (EList<Object>::const_iterator i = objects.begin(); i != objects.end(); ++i)
@@ -326,7 +356,7 @@ Room::show (const StreamControl& stream, Creature* viewer)
 
 	// portals
 	for (GCType::map<PortalDir,Portal*>::const_iterator i = portals.begin(); i != portals.end(); ++i) {
-		// room not hidden?
+		// portal not hidden?
 		if (!i->second->is_hidden() && !i->second->is_disabled())
 			ents.push_back(i->second);
 	}
@@ -334,11 +364,19 @@ Room::show (const StreamControl& stream, Creature* viewer)
 		stream << "Obvious exits are ";
 		for (size_t i = 0; i < ents.size(); ++i) {
 			if (i > 0) {
-				stream << ", ";
-				if (i == ents.size() - 1)
-					stream << "and ";
+				if (i == ents.size() - 1) {
+					if (i > 1)
+						stream << ", and ";
+					else
+						stream << " and ";
+				} else {
+					stream << ", ";
+				}
 			}
-			stream << StreamName(ents[i], NONE);
+			if (PORTAL(ents[i])->is_standard())
+				stream << CEXIT << PORTAL(ents[i])->get_relative_dir(this).get_name() << CNORMAL;
+			else
+				stream << StreamName(ents[i], INDEFINITE);
 		}
 		stream << ".\n";
 	}

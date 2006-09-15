@@ -31,10 +31,10 @@ SX_FILES=\
 	scripts/npc.sx \
 	scripts/object.sx \
 	scripts/death.sx \
+	scripts/start.sx \
 	scripts/store.sx \
 	scripts/whereis.sx \
-	scripts/webserver.sx \
-	scripts/example.zone.sx
+	scripts/webserver.sx
 
 AI_FILES=\
 	scripts/ai/manifest.txt
@@ -146,6 +146,10 @@ WORLD_IN = data/time data/weather
 WORLD = data/time data/weather
 ZONES = \
 	data/zones/manifest.txt \
+	data/zones/underworld.zone \
+	data/zones/saladhin.zone \
+	data/zones/catacombs.zone \
+	data/zones/darkwood.zone \
 	data/zones/example.zone
 
 HELP = data/help/manifest.txt data/help/awemud.help data/help/commands.help data/help/olc.help
