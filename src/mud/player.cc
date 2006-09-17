@@ -391,8 +391,7 @@ Player::kill (Creature *killer)
 	// now laying down
 	position = CreaturePosition::LAY;
 
-	// event/hook
-	Events::send_death(get_room(), this, killer);
+	// FIXME EVENT
 	Hooks::player_death(this, killer);
 }
 

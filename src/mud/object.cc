@@ -279,10 +279,6 @@ ObjectBlueprint::save (File::Writer& writer)
 	for (ContainerList::const_iterator i = containers.begin (); i != containers.end (); i ++)
 		writer.attr(S("blueprint"), S("container"), i->get_name());
 
-	for (ActionList::const_iterator i = actions.begin(); i != actions.end(); ++i) {
-		writer.block(S("action"), i->first, i->second.get_source());
-	}
-
 	// script hook
 	ScriptRestrictedWriter* swriter = new ScriptRestrictedWriter(&writer);
 	Hooks::save_object_blueprint(this, swriter);
@@ -332,14 +328,6 @@ ObjectBlueprint::load (File::Reader& reader)
 			ContainerType type = ContainerType::lookup(node.get_data());
 			if (type.valid())
 				containers.insert(type);
-		FO_WILD("action")
-			String id;
-			Scriptix::ScriptFunctionSource script;
-			id = node.get_key();
-			script = Scriptix::ScriptFunctionSource::compile(S("action"), node.get_data(), S("self,user,data"), reader.get_filename(), node.get_line());
-			if(!script)
-				throw File::Error(S("Failed to compile action script"));
-			actions[id] = script;
 		FO_ATTR("blueprint", "parent")
 			ObjectBlueprint* blueprint = ObjectBlueprintManager.lookup(node.get_data());
 			if (blueprint)
@@ -599,40 +587,6 @@ Object::deactivate ()
 		(*e)->deactivate();
 
 	Entity::deactivate();
-}
-
-Scriptix::ScriptFunction
-Object::get_action (String name)
-{
-	ObjectBlueprint* blueprint = get_blueprint();
-	while (blueprint) {
-		ObjectBlueprint::ActionList::const_iterator i = blueprint->get_actions().find(name);
-		if (i != blueprint->get_actions().end())
-			return i->second;
-		blueprint = blueprint->get_parent();
-	}
-	return NULL;
-}
-
-ObjectActionCode
-Object::do_action (String name, Entity* user, Scriptix::Value data)
-{
-	// get script
-	Scriptix::ScriptFunction func = get_action(name);
-
-	// no script?  return default
-	if (func.empty())
-		return OBJECT_ACTION_OK_NORMAL;
-
-	// run script
-	int res = func.run(this, user, data);
-
-	// sanity check return value
-	if (res != OBJECT_ACTION_OK_NORMAL && res != OBJECT_ACTION_OK_QUIET && res != OBJECT_ACTION_CANCEL_NORMAL && res != OBJECT_ACTION_CANCEL_QUIET)
-		return OBJECT_ACTION_CANCEL_NORMAL;
-
-	// return script code
-	return (ObjectActionCode)res;
 }
 
 bool

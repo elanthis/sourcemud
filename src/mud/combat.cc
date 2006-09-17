@@ -138,12 +138,7 @@ class ActionAttackCreature : public IAction
 			else
 				*attacker->get_room() << " = MISS\n";
 
-			// hit script
-			if (attack_roll + attack_strength >= defend_strength)
-				weapon->do_action(S("attack_hit"), attacker, victim);
-
-			// event
-			Events::send_attack(attacker->get_room(), attacker, victim, weapon);
+			// FIXME EVENT
 
 			// accounting
 			++ attacks;

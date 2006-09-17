@@ -68,13 +68,17 @@ AI::load (File::Reader& reader)
 	return 0;
 }
 
-void
+bool
 AI::do_event (Creature* self, const Event& event) const
 {
 	// get handler
 	EventList::const_iterator i = event_cb.find(event.get_id());
-	if (i != event_cb.end())
-		i->second.run(self, EventID::nameof(event.get_id()), event.get_actor(), event.get_room(), event.get_data(0), event.get_data(1), event.get_data(2), event.get_data(3), event.get_data(4));
+	if (i != event_cb.end()) {
+		bool res = i->second.run(self, EventID::nameof(event.get_id()), event.get_actor(), event.get_room(), event.get_data(0), event.get_data(1), event.get_data(2), event.get_data(3), event.get_data(4)).is_true();
+		if (event.get_type() != EVENT_NOTIFY && !res)
+			return false;
+	}
+	return true;
 }
 
 void

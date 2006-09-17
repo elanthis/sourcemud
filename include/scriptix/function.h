@@ -104,6 +104,7 @@ class ScriptFunction : public GCType::GC
 	Value run(Value a, Value b, Value c, Value d, Value e, Value f, Value g) const;
 	Value run(Value a, Value b, Value c, Value d, Value e, Value f, Value g, Value h) const;
 	Value run(Value a, Value b, Value c, Value d, Value e, Value f, Value g, Value h, Value i) const;
+	Value run(size_t argc, Value argv[]) const;
 
 	private:
 	Scriptix::Function* func;

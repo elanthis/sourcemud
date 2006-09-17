@@ -134,8 +134,7 @@ Creature::do_say (String text)
 		stream << CTALK << text << CNORMAL "\"\n";
 	}
 
-	// send out an event
-	Events::send_say(this->get_room(), this, text);
+	// FIXME EVENT
 }
 
 void
@@ -200,7 +199,7 @@ Creature::do_look (void)
 	Room *r = get_room();
 	if (r) {
 		r->show (StreamControl(*this), this);
-		Events::send_look(r, this, NULL);
+		// FIXME EVENT
 	}
 }
 
@@ -225,9 +224,7 @@ Creature::do_look (Creature *ch)
 	// finish
 	*this << "\n";
 
-	// event
-	if (this != ch)
-		Events::send_look(this->get_room(), this, ch);
+	// FIXME EVENT
 }
 
 void
@@ -290,8 +287,7 @@ Creature::do_look (Portal *portal)
 	if (target_room)
 		target_room->show(*this, this);
 
-	// send look event
-	Events::send_look(this->get_room(), this, portal);
+	// FIXME EVENT
 }
 
 class ActionChangePosition : public IAction
@@ -358,6 +354,11 @@ class ActionGet : public IAction
 			*get_actor() << "Your hands are full.\n";
 			return 1;
 		} else {
+			// send a request event
+			if (!Events::requestGetItem(get_actor()->get_room(), get_actor(), obj, container))
+				return 1;
+
+			// get the object
 			if (container) {
 				*get_actor() << "You get " << StreamName(*obj, DEFINITE) << " from " << StreamName(container, DEFINITE) << ".\n";
 				if (get_actor()->get_room()) *get_actor()->get_room() << StreamIgnore(get_actor()) << StreamName(get_actor(), INDEFINITE, true) << " gets " << StreamName(obj, INDEFINITE) << " from " << StreamName(container, INDEFINITE) << ".\n";
@@ -366,7 +367,8 @@ class ActionGet : public IAction
 				if (get_actor()->get_room()) *get_actor()->get_room() << StreamIgnore(get_actor()) << StreamName(get_actor(), INDEFINITE, true) << " picks up " << StreamName(obj, INDEFINITE) << ".\n";
 			}
 
-			Events::send_get(get_actor()->get_room(), get_actor(), obj, container);
+			// notification
+			Events::notifyGetItem(get_actor()->get_room(), get_actor(), obj, container);
 			return 0;
 		}
 	}
@@ -583,14 +585,19 @@ class ActionDrop : public IInstantAction
 			return;
 		}
 
+		// request event
+		if (!Events::requestPutItem(get_actor()->get_room(), get_actor(), obj, get_actor()->get_room()))
+			return;
+
+		// do drop
 		*get_actor() << "You drop " << StreamName(*obj, DEFINITE) << ".\n";
 		if (get_actor()->get_room())
 			*get_actor()->get_room() << StreamIgnore(get_actor()) << StreamName(get_actor(), INDEFINITE, true) << " drops " << StreamName(obj) << ".\n";
 
 		get_actor()->get_room()->add_object (obj);
 
-		Events::send_drop(get_actor()->get_room(), get_actor(), obj);
-
+		// send notification
+		Events::notifyPutItem(get_actor()->get_room(), get_actor(), obj, get_actor()->get_room());
 		return;
 	}
 
@@ -617,49 +624,26 @@ class ActionRead : public IInstantAction
 		if (!get_actor()->check_see())
 			return;
 
-		switch (obj->do_action(S("read"), get_actor())) {
-			// use the object normally
-			case OBJECT_ACTION_OK_NORMAL:
-			{
-				// has plain text?
-				String text = obj->get_property(S("read_text")).get_string();
-				if (!text) {
-					*get_actor() << StreamName(*obj, DEFINITE, true) << " cannot be read.\n";
-					return;
-				}
-
-				// show text
-				*get_actor() << StreamParse(text, S("object"), obj, S("get_actor()"), get_actor()) << "\n";
-					
-				// room text
-				if (get_actor()->get_room()) {
-					text = obj->get_property(S("read_room")).get_string();
-					if (!text)
-						*get_actor()->get_room() << StreamIgnore(get_actor()) << StreamName(get_actor(), INDEFINITE, true) << " reads " << StreamName(obj) << ".\n";
-					else
-						*get_actor()->get_room() << StreamIgnore(get_actor()) << StreamParse(text, S("object"), obj, S("get_actor()"), get_actor()) << "\n";
-				}
-
-				// event
-				Events::send_read(get_actor()->get_room(), get_actor(), obj);
-				return;
-			}
-
-			// just send the event
-			case OBJECT_ACTION_OK_QUIET:
-				// event
-				Events::send_read(get_actor()->get_room(), get_actor(), obj);
-				return;
-
-			// fail with error
-			case OBJECT_ACTION_CANCEL_NORMAL:
-				*get_actor() << StreamName(*obj, DEFINITE, true) << " cannot be read.\n";
-				return;
-
-			// quiet fail
-			case OBJECT_ACTION_CANCEL_QUIET:
-				return;
+		// has plain text?
+		String text = obj->get_property(S("read_text")).get_string();
+		if (!text) {
+			*get_actor() << StreamName(*obj, DEFINITE, true) << " cannot be read.\n";
+			return;
 		}
+
+		// show text
+		*get_actor() << StreamParse(text, S("object"), obj, S("get_actor()"), get_actor()) << "\n";
+			
+		// room text
+		if (get_actor()->get_room()) {
+			text = obj->get_property(S("read_room")).get_string();
+			if (!text)
+				*get_actor()->get_room() << StreamIgnore(get_actor()) << StreamName(get_actor(), INDEFINITE, true) << " reads " << StreamName(obj) << ".\n";
+			else
+				*get_actor()->get_room() << StreamIgnore(get_actor()) << StreamParse(text, S("object"), obj, S("get_actor()"), get_actor()) << "\n";
+		}
+
+		// FIXME EVENT
 	}
 
 	private:
@@ -689,54 +673,27 @@ class ActionEat : public IAction
 		if (!get_actor()->check_move())
 			return 1;
 
-		switch (obj->do_action(S("eat"), obj)) {
-			// normal processing
-			case OBJECT_ACTION_OK_NORMAL:
-			{
-				// you eat text
-				String text = obj->get_property(S("eat_text")).get_string();
-				if (!text) {
-					*get_actor() << "You can't eat " << StreamName(*obj, DEFINITE) << ".\n";
-					return 1;
-				}
-
-				// show text
-				*get_actor() << StreamParse(text, S("object"), obj, S("get_actor()"), get_actor()) << "\n";
-					
-				// room text
-				if (get_actor()->get_room()) {
-					text = obj->get_property(S("eat_room")).get_string();
-					if (!text)
-						*get_actor()->get_room() << StreamIgnore(get_actor()) << StreamName(get_actor(), INDEFINITE, true) << " eats " << StreamName(obj) << ".\n";
-					else
-						*get_actor()->get_room() << StreamIgnore(get_actor()) << StreamParse(text, S("object"), obj, S("get_actor()"), get_actor()) << "\n";
-				}
-
-				// event
-				Events::send_eat(get_actor()->get_room(), get_actor(), obj);
-				return 0;
-			}
-
-			// just send event
-			case OBJECT_ACTION_OK_QUIET:
-				// event
-				Events::send_eat(get_actor()->get_room(), get_actor(), obj);
-				return 0;
-
-			// failure message
-			case OBJECT_ACTION_CANCEL_NORMAL:
-				// error
-				*get_actor() << "You can't eat " << StreamName(*obj, DEFINITE) << ".\n";
-				return 1;
-
-			// do nothing
-			case OBJECT_ACTION_CANCEL_QUIET:
-				// quiet
-				return 1;
+		// you eat text
+		String text = obj->get_property(S("eat_text")).get_string();
+		if (!text) {
+			*get_actor() << "You can't eat " << StreamName(*obj, DEFINITE) << ".\n";
+			return 1;
 		}
 
-		// should never reach this
-		abort();
+		// show text
+		*get_actor() << StreamParse(text, S("object"), obj, S("get_actor()"), get_actor()) << "\n";
+			
+		// room text
+		if (get_actor()->get_room()) {
+			text = obj->get_property(S("eat_room")).get_string();
+			if (!text)
+				*get_actor()->get_room() << StreamIgnore(get_actor()) << StreamName(get_actor(), INDEFINITE, true) << " eats " << StreamName(obj) << ".\n";
+			else
+				*get_actor()->get_room() << StreamIgnore(get_actor()) << StreamParse(text, S("object"), obj, S("get_actor()"), get_actor()) << "\n";
+		}
+
+		// FIXME EVENT
+		return 0;
 	}
 
 	private:
@@ -766,54 +723,27 @@ class ActionDrink : public IAction
 		if (!get_actor()->check_move())
 			return 1;
 
-		switch (obj->do_action(S("drink"), obj)) {
-			// normal processing
-			case OBJECT_ACTION_OK_NORMAL:
-			{
-				// you drink text
-				String text = obj->get_property(S("drink_text")).get_string();
-				if (!text) {
-					*get_actor() << "You can't drink " << StreamName(*obj, DEFINITE) << ".\n";
-					return 1;
-				}
-
-				// show text
-				*get_actor() << StreamParse(text, S("object"), obj, S("get_actor()"), get_actor()) << "\n";
-					
-				// room text
-				if (get_actor()->get_room()) {
-					text = obj->get_property(S("drink_room")).get_string();
-					if (!text)
-						*get_actor()->get_room() << StreamIgnore(get_actor()) << StreamName(get_actor(), INDEFINITE, true) << " drinks " << StreamName(obj) << ".\n";
-					else
-						*get_actor()->get_room() << StreamIgnore(get_actor()) << StreamParse(text, S("object"), obj, S("get_actor()"), get_actor()) << "\n";
-				}
-
-				// event
-				Events::send_drink(get_actor()->get_room(), get_actor(), obj);
-				return 0;
-			}
-
-			// just send event
-			case OBJECT_ACTION_OK_QUIET:
-				// event
-				Events::send_drink(get_actor()->get_room(), get_actor(), obj);
-				return 0;
-
-			// failure message
-			case OBJECT_ACTION_CANCEL_NORMAL:
-				// error
-				*get_actor() << "You can't drink " << StreamName(*obj, DEFINITE) << ".\n";
-				return 1;
-
-			// do nothing
-			case OBJECT_ACTION_CANCEL_QUIET:
-				// quiet
-				return 1;
+		// you drink text
+		String text = obj->get_property(S("drink_text")).get_string();
+		if (!text) {
+			*get_actor() << "You can't drink " << StreamName(*obj, DEFINITE) << ".\n";
+			return 1;
 		}
 
-		// should never reach this
-		abort();
+		// show text
+		*get_actor() << StreamParse(text, S("object"), obj, S("get_actor()"), get_actor()) << "\n";
+			
+		// room text
+		if (get_actor()->get_room()) {
+			text = obj->get_property(S("drink_room")).get_string();
+			if (!text)
+				*get_actor()->get_room() << StreamIgnore(get_actor()) << StreamName(get_actor(), INDEFINITE, true) << " drinks " << StreamName(obj) << ".\n";
+			else
+				*get_actor()->get_room() << StreamIgnore(get_actor()) << StreamParse(text, S("object"), obj, S("get_actor()"), get_actor()) << "\n";
+		}
+
+		// FIXME EVENT
+		return 0;
 	}
 
 	private:
@@ -849,36 +779,13 @@ class ActionRaise : public IAction
 			return 1;
 		}
 
-		switch (obj->do_action(S("raise"), get_actor())) {
-			// normal processing
-			case OBJECT_ACTION_OK_NORMAL:
-				// output
-				*get_actor() << "You raise " << StreamName(*obj, DEFINITE) << " into the air.\n";
-				if (get_actor()->get_room())
-					*get_actor()->get_room() << StreamIgnore(get_actor()) << StreamName(get_actor(), INDEFINITE, true) << " raises " << StreamName(obj) << " into the air.\n";
+		// output
+		*get_actor() << "You raise " << StreamName(*obj, DEFINITE) << " into the air.\n";
+		if (get_actor()->get_room())
+			*get_actor()->get_room() << StreamIgnore(get_actor()) << StreamName(get_actor(), INDEFINITE, true) << " raises " << StreamName(obj) << " into the air.\n";
 
-				// event
-				Events::send_raise(get_actor()->get_room(), get_actor(), obj);
-				return 0;
-
-			// just the event
-			case OBJECT_ACTION_OK_QUIET:
-				// event
-				Events::send_raise(get_actor()->get_room(), get_actor(), obj);
-				return 0;
-
-			// error message
-			case OBJECT_ACTION_CANCEL_NORMAL:
-				*get_actor()<< "You cannot raise " << StreamName(*obj, DEFINITE) << ".\n";
-				return 1;
-
-			// silent fail
-			case OBJECT_ACTION_CANCEL_QUIET:
-				return 1;
-		}
-
-		// should never reach this
-		abort();
+		// FIXME EVENT
+		return 0;
 	}
 
 	private:
@@ -910,33 +817,13 @@ class ActionTouch : public IInstantAction
 			return;
 		}
 
-		switch (obj->do_action(S("touch"), get_actor())) {
-			// normal processing
-			case OBJECT_ACTION_OK_NORMAL:
-				// output
-				*get_actor() << "You touch " << StreamName(*obj, DEFINITE) << ".\n";
-				if (get_actor()->get_room())
-					*get_actor()->get_room() << StreamIgnore(get_actor()) << StreamName(get_actor(), INDEFINITE, true) << " touches " << StreamName(obj) << ".\n";
+		// output
+		*get_actor() << "You touch " << StreamName(*obj, DEFINITE) << ".\n";
+		if (get_actor()->get_room())
+			*get_actor()->get_room() << StreamIgnore(get_actor()) << StreamName(get_actor(), INDEFINITE, true) << " touches " << StreamName(obj) << ".\n";
 
-				// event
-				Events::send_touch(get_actor()->get_room(), get_actor(), obj);
-				return;
-
-			// just the event
-			case OBJECT_ACTION_OK_QUIET:
-				// event
-				Events::send_touch(get_actor()->get_room(), get_actor(), obj);
-				return;
-
-			// error message
-			case OBJECT_ACTION_CANCEL_NORMAL:
-				*get_actor()<< "You cannot touch " << StreamName(*obj, DEFINITE) << ".\n";
-				return;
-
-			// silent fail
-			case OBJECT_ACTION_CANCEL_QUIET:
-				return;
-		}
+		// FIXME EVENT
+		return;
 	}
 
 	private:
@@ -971,35 +858,13 @@ class ActionKick : public IAction
 			return 1;
 		}
 
-		switch (obj->do_action(S("kick"), get_actor())) {
-			// normal processing
-			case OBJECT_ACTION_OK_NORMAL:
-				// output
-				*get_actor() << "You kick " << StreamName(*obj, DEFINITE) << ".\n";
-				if (get_actor()->get_room())
-					*get_actor()->get_room() << StreamIgnore(get_actor()) << StreamName(get_actor(), INDEFINITE, true) << " kickes " << StreamName(obj) << ".\n";
+		// output
+		*get_actor() << "You kick " << StreamName(*obj, DEFINITE) << ".\n";
+		if (get_actor()->get_room())
+			*get_actor()->get_room() << StreamIgnore(get_actor()) << StreamName(get_actor(), INDEFINITE, true) << " kickes " << StreamName(obj) << ".\n";
 
-				// event
-				Events::send_kick(get_actor()->get_room(), get_actor(), obj);
-				return 0;
-
-			// just event event
-			case OBJECT_ACTION_OK_QUIET:
-				Events::send_kick(get_actor()->get_room(), get_actor(), obj);
-				return 0;
-
-			// failure message
-			case OBJECT_ACTION_CANCEL_NORMAL:
-				*get_actor()<< "You cannot kick " << StreamName(*obj, DEFINITE) << ".\n";
-				return 1;
-
-			// quiet failure
-			case OBJECT_ACTION_CANCEL_QUIET:
-				return 1;
-		}
-
-		// should never reach this
-		abort();
+		// FIXME EVENT
+		return 0;
 	}
 
 	private:
@@ -1047,8 +912,7 @@ class ActionOpenPortal : public IAction
 			if (get_actor()->get_room())
 				*get_actor()->get_room() << StreamIgnore(get_actor()) << StreamName(get_actor(), INDEFINITE, true) << " tries to open " << StreamName(portal, DEFINITE) << ", but it appears to be locked.\n";
 
-			// event (you touch the door to see if its locked
-			Events::send_touch(get_actor()->get_room(), get_actor(), portal);
+			// FIXME EVENT (Touch event)
 			return 0;
 		}
 
@@ -1058,9 +922,7 @@ class ActionOpenPortal : public IAction
 		if (get_actor()->get_room())
 			*get_actor()->get_room() << StreamIgnore(get_actor()) << StreamName(get_actor(), INDEFINITE, true) << " opens " << StreamName(portal, DEFINITE) << ".\n";
 
-		// events
-		Events::send_touch(get_actor()->get_room(), get_actor(), portal);
-		Events::send_open(get_actor()->get_room(), get_actor(), portal);
+		// FIXME EVENT (Touch and Open)
 
 		return 0;
 	}
@@ -1110,9 +972,7 @@ class ActionClosePortal : public IAction
 		if (get_actor()->get_room())
 			*get_actor()->get_room() << StreamIgnore(get_actor()) << StreamName(get_actor(), INDEFINITE, true) << " closes " << StreamName(portal, DEFINITE) << ".\n";
 
-		// events
-		Events::send_touch(get_actor()->get_room(), get_actor(), portal);
-		Events::send_close(get_actor()->get_room(), get_actor(), portal);
+		// FIXME EVENT (Touch and Close)
 
 		return 0;
 	}
@@ -1162,9 +1022,7 @@ class ActionLockPortal : public IAction
 		if (get_actor()->get_room())
 			*get_actor()->get_room() << StreamIgnore(get_actor()) << StreamName(get_actor(), INDEFINITE, true) << " locks " << StreamName(portal, DEFINITE) << ".\n";
 
-		// events
-		Events::send_touch(get_actor()->get_room(), get_actor(), portal);
-		Events::send_lock(get_actor()->get_room(), get_actor(), portal);
+		// FIXME EVENT (Touch and Lock)
 
 		return 0;
 	}
@@ -1214,10 +1072,7 @@ class ActionUnlockPortal : public IAction
 		if (get_actor()->get_room())
 			*get_actor()->get_room() << StreamIgnore(get_actor()) << StreamName(get_actor(), INDEFINITE, true) << " unlocks " << StreamName(portal, DEFINITE) << ".\n";
 
-		// events
-		Events::send_touch(get_actor()->get_room(), get_actor(), portal);
-		Events::send_unlock(get_actor()->get_room(), get_actor(), portal);
-
+		// FIXME EVENT (Touch and Unlock)
 		return 0;
 	}
 
@@ -1318,9 +1173,7 @@ class ActionKickPortal : public IAction
 		if (get_actor()->get_room())
 			*get_actor()->get_room() << StreamIgnore(get_actor()) << StreamName(get_actor(), INDEFINITE, true) << " kicks " << StreamName(portal, DEFINITE) << " open.\n";
 
-		// events
-		Events::send_touch(get_actor()->get_room(), get_actor(), portal);
-		Events::send_kick(get_actor()->get_room(), get_actor(), portal);
+		// FIXME EVENT (Touch and Kick)
 
 		return 0;
 	}

@@ -42,23 +42,12 @@
 #define OBJECT_ROT_TICKS ROUNDS_TO_TICKS(60 * 1)
   // rotting objects wither away after 1 minute
 
-// ACTIONS:
-//  Script usage return codes follow.  Scripted actions must return
-//  one of the codes.  Default return is nil (0).
-enum ObjectActionCode {
-	OBJECT_ACTION_OK_NORMAL = 0,		// do normal processing (may send event)
-	OBJECT_ACTION_OK_QUIET = 1,			// just send an event
-	OBJECT_ACTION_CANCEL_NORMAL = 2,	// error message, no event
-	OBJECT_ACTION_CANCEL_QUIET = 3		// no further processing at all
-};
-
 // Object blueprint
 class
 ObjectBlueprint : public Scriptix::Native
 {
 	public:
 	typedef GCType::set<ContainerType> ContainerList;
-	typedef GCType::map<String,Scriptix::ScriptFunctionSource> ActionList;
 
 	ObjectBlueprint ();
 
@@ -120,9 +109,6 @@ ObjectBlueprint : public Scriptix::Native
 	bool set_container_exist (ContainerType type, bool);
 	bool has_container (ContainerType type) const;
 
-	// actions
-	inline const ActionList& get_actions () const { return actions; }
-
 	// load
 	int load (File::Reader& reader);
 	void save (File::Writer& writer);
@@ -135,7 +121,6 @@ ObjectBlueprint : public Scriptix::Native
 	ObjectBlueprint* parent;
 	
 	ContainerList containers;
-	ActionList actions;
 
 	EntityName name;
 	String desc;
@@ -213,10 +198,6 @@ Object : public Entity
 	// character holding the object (again, tracing through parenst)
 	class Creature* get_holder () const;
 	class Room* get_room () const;
-
-	// actions
-	Scriptix::ScriptFunction get_action (String action);
-	ObjectActionCode do_action (String action, Entity* user, Scriptix::Value data = Scriptix::Value());
 
 	// name color
 	virtual String ncolor () const { return S(CITEM); }

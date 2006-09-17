@@ -1,13 +1,13 @@
 # Player file: Admin
-# Timestamp: Fri Sep 15 18:08:57 2006
+# Timestamp: Sun Sep 17 01:00:45 2006
 # 
 
 entity.uid = <1>
 creature.position = "stand"
 creature.hp = 150
 equip_right_hand {
-  object.blueprint = "sw_fire"
-  entity.uid = <274>
+  object.blueprint = "sw_long"
+  entity.uid = <1466>
 }
 equip_body {
   object.blueprint = "ar_chain_shirt"

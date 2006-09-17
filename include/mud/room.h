@@ -105,7 +105,7 @@ class Room : public Entity
 	uint give_coins (uint amount);
 
 	// handle events - propogate
-	virtual int handle_event (const Event& event);
+	void broadcast_event (const Event& event);
 
 	// owner management - see entity.h
 	virtual void set_owner (Entity* owner);

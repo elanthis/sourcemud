@@ -20,45 +20,57 @@
 class Entity;
 class Room;
 
+enum EventType {
+	EVENT_REQUEST,
+	EVENT_NOTIFY,
+	EVENT_COMMAND
+};
+
 DECLARE_IDMAP(Event)
 
-class EventHandler : public Scriptix::Native {
+class EventHandler : public GC {
 	protected:
+	EventType type;
 	EventID event;
 	String script;
 	Scriptix::ScriptFunction sxfunc;
 
 	public:
-	EventHandler (void);
-	EventHandler (EventID s_event);
+	EventHandler ();
 
 	int load (File::Reader& reader);
 	void save (File::Writer& writer) const;
 
-	EventID get_event (void) const { return event; }
-	Scriptix::ScriptFunction get_func (void) const { return sxfunc; }
+	EventType get_type () const { return type; }
+	EventID get_event () const { return event; }
+	Scriptix::ScriptFunction get_func () const { return sxfunc; }
 };
 
 // should only be stack allocated
 class Event : public GC
 {
 	public:
-	inline Event (void) : id(), room(NULL), actor(NULL) {}
-	inline Event (EventID s_id, Room* s_room, Entity* s_actor) : id(s_id), room(s_room), actor(s_actor) {}
-	inline Event (const Event& event) : id(event.id), room(event.room), actor(event.actor), data(event.data) {}
+	Event (EventType s_type, EventID s_id, Room* s_room, Entity* s_actor, Entity* s_target, Entity* s_aux) : type(s_type), id(s_id), room(s_room), actor(s_actor), target(s_target), aux(s_target) {}
+	Event (const Event& event) : id(event.id), room(event.room), actor(event.actor), target(event.target), aux(event.aux), data(event.data) {}
 
-	inline EventID get_id (void) const { return id; }
-	inline String get_name (void) const { return EventID::nameof(id); }
+	EventType get_type () const { return type; }
+	EventID get_id () const { return id; }
+	String get_name () const { return EventID::nameof(id); }
 	
-	inline Room* get_room (void) const { return room; }
-	inline Entity* get_actor (void) const { return actor; }
-	inline const Scriptix::Value& get_data (uint i) const { return data[i]; }
-	inline Scriptix::Value& get_data (uint i) { return data[i]; }
+	Room* get_room () const { return room; }
+	Entity* get_actor () const { return actor; }
+	Entity* get_target () const { return target; }
+	Entity* get_aux () const { return aux; }
+	const Scriptix::Value& get_data (uint i) const { return data[i]; }
+	Scriptix::Value& get_data (uint i) { return data[i]; }
 
 	private:
+	EventType type;
 	EventID id;
 	Room* room; // room the event occured in
 	Entity* actor; // who/what initiated the event
+	Entity* target; // target of the action (if any)
+	Entity* aux; // auxillary entity (if any)
 	Scriptix::Value data[5]; // misc data
 };
 
@@ -66,29 +78,31 @@ class SEventManager : public IManager
 {
 	public:
 	// initialize manager
-	virtual int initialize (void);
+	virtual int initialize ();
 
 	// shutdown the manager
-	virtual void shutdown (void);
+	virtual void shutdown ();
 
-	// send a quickie event
-	int send (EventID id, class Room* room, class Entity* actor, Scriptix::Value data1 = Scriptix::Value(), Scriptix::Value data2 = Scriptix::Value(), Scriptix::Value data3 = Scriptix::Value(), Scriptix::Value data4 = Scriptix::Value(), Scriptix::Value data5 = Scriptix::Value());
+	bool request (EventID id, class Room* room, class Entity* actor, class Entity* target, class Entity* aux, Scriptix::Value data1 = Scriptix::Value(), Scriptix::Value data2 = Scriptix::Value(), Scriptix::Value data3 = Scriptix::Value(), Scriptix::Value data4 = Scriptix::Value(), Scriptix::Value data5 = Scriptix::Value());
+	void notify (EventID id, class Room* room, class Entity* actor, class Entity* target, class Entity* aux, Scriptix::Value data1 = Scriptix::Value(), Scriptix::Value data2 = Scriptix::Value(), Scriptix::Value data3 = Scriptix::Value(), Scriptix::Value data4 = Scriptix::Value(), Scriptix::Value data5 = Scriptix::Value());
+	bool command (EventID id, class Room* room, class Entity* actor, class Entity* target, class Entity* aux, Scriptix::Value data1 = Scriptix::Value(), Scriptix::Value data2 = Scriptix::Value(), Scriptix::Value data3 = Scriptix::Value(), Scriptix::Value data4 = Scriptix::Value(), Scriptix::Value data5 = Scriptix::Value());
 
 	// return true if there are pending events
-	inline bool events_pending (void) { return !events.empty(); }
+	bool events_pending () { return !events.empty(); }
 
 	// compile an event handler script
 	Scriptix::ScriptFunction compile (EventID id, String source, String filename, unsigned long fileline);
 
 	// process events
-	void process (void);
+	void process ();
 
 	private:
+	size_t nest;
 	size_t count;
 	typedef std::deque<Event, gc_allocator<Event> > EQueue;
 	EQueue events;
 
-	void initialize_ids (void);
+	void initialize_ids ();
 };
 extern SEventManager EventManager;
 

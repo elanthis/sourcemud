@@ -406,6 +406,13 @@ Creature::enter (Room *new_room, Portal *old_portal)
 	if (new_room->creatures.has(this))
 		return false;
 
+	// check if we're allowed to leave
+	if (!Events::requestLeaveRoom(get_room(), this, old_portal))
+		return false;
+	// check if we're allowed to enter
+	if (!Events::requestEnterRoom(new_room, this, old_portal?old_portal->get_relative_portal(get_room()):NULL))
+		return false;
+
 	// entering portal
 	Portal* enter_portal = NULL;
 
@@ -419,7 +426,7 @@ Creature::enter (Room *new_room, Portal *old_portal)
 			*get_room() << StreamIgnore(this) << StreamParse(old_portal->get_leaves()).add(S("actor"), this).add( S("portal"), old_portal) << "\n";
 
 		// opposite portal is our entrance
-		enter_portal = new_room->get_portal_by_dir(old_portal->get_dir().get_opposite());
+		enter_portal = old_portal->get_relative_portal(get_room());
 	}
 
 	// valid portal?
@@ -428,11 +435,10 @@ Creature::enter (Room *new_room, Portal *old_portal)
 	else
 		*new_room << StreamName(this, INDEFINITE, true) << " arrives.\n";
 
-	// move, look, event
-	Events::send_leave(get_room(), this, old_portal);
+	Events::notifyLeaveRoom(get_room(), this, old_portal);
 	new_room->add_creature (this);
 	do_look();
-	Events::send_enter(get_room(), this, enter_portal);
+	Events::notifyEnterRoom(get_room(), this, enter_portal);
 
 	return true;
 }
@@ -448,7 +454,7 @@ Creature::heal (uint amount)
 	// have we been resurrected?
 	if (health.cur > 0 && was_dead) {
 		dead = false;
-		Events::send_resurrect(get_room(), this);
+		// FIXME EVENT
 	}
 }
 
@@ -459,7 +465,7 @@ Creature::damage (uint amount, Creature *trigger) {
 		return false;
 	// do damage and event
 	health.cur -= amount;
-	Events::send_damage(get_room(), this, trigger, amount);
+	// FIXME EVENT
 	// caused death?
 	if (health.cur <= 0 && !is_dead ()) {
 		dead = true;

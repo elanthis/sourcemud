@@ -176,7 +176,7 @@ class Npc : public Creature
 	void heartbeat ();
 
 	// handle vents - AI
-	virtual int handle_event (const Event& event);
+	virtual bool handle_event (const Event& event);
 
 	// display desc
 	virtual void display_desc (const class StreamControl& stream);

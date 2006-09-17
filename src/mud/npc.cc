@@ -453,21 +453,22 @@ Npc::kill (Creature *killer)
 	// lay down, drop crap
 	position = CreaturePosition::LAY;
 
-	// hook/event
-	Events::send_death(get_room(), this, killer);
+	// FIXME EVENT
 	if (!Hooks::npc_death(this, killer)) {
 		// only if there's no hook - hooks must do this for us!
 		destroy();
 	}
 }
 
-int
+bool
 Npc::handle_event (const Event& event)
 {
 	// ai
 	AI* ai = get_ai();
-	if (ai)
-		ai->do_event (this, event);
+	if (ai) {
+		if (event.get_type() != EVENT_NOTIFY && !ai->do_event (this, event))
+			return false;
+	}
 
 	// normal event handler
 	return Entity::handle_event (event);

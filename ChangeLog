@@ -1,3 +1,9 @@
+2006-09-17 05:01:57  Sean Middleditch <elanthis@awesomeplay.com>
+
+  * New event system semantics.
+  * Removed object action code, as the new event semantics
+    super-cede it.
+
 2006-09-15 22:09:01  Sean Middleditch <elanthis@awesomeplay.com>
 
   * Many portal updates.

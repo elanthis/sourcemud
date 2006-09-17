@@ -18,15 +18,27 @@
 
 SEventManager EventManager;
 
+static const size_t EVENT_MAX_NEST = 10;
+
 SCRIPT_TYPE(EventHandler);
-EventHandler::EventHandler (void) : Scriptix::Native(AweMUD_EventHandlerType), event(), script(), sxfunc() {}
-EventHandler::EventHandler (EventID s_event) : Scriptix::Native(AweMUD_EventHandlerType), event(s_event), script(), sxfunc() {}
+EventHandler::EventHandler () : type(EVENT_NOTIFY), event(), script(), sxfunc() {}
 
 int
 EventHandler::load (File::Reader& reader) {
 	FO_READ_BEGIN
+		FO_ATTR("event", "type")
+			if (node.get_data() == "request")
+				type = EVENT_REQUEST;
+			else if (node.get_data() == "notify")
+				type = EVENT_NOTIFY;
+			else if (node.get_data() == "command")
+				type = EVENT_COMMAND;
+			else {
+				Log::Error << "Unknown event type '" << node.get_data() << "'";
+				return -1;
+			}
 		FO_ATTR("event", "id")
-			event = EventID::create(node.get_name());
+			event = EventID::create(node.get_data());
 		FO_ATTR("event", "script")
 			sxfunc = NULL;
 			if (node.get_data())
@@ -40,26 +52,32 @@ EventHandler::load (File::Reader& reader) {
 
 void
 EventHandler::save (File::Writer& writer) const {
+	writer.attr(S("event"), S("type"), type == EVENT_REQUEST ? S("request") : type == EVENT_NOTIFY ? S("notify") : S("command"));
 	writer.attr(S("event"), S("id"), EventID::nameof(event));
 	if (script)
 		writer.block(S("event"), S("script"), script);
 }
 
-int
+bool
 Entity::handle_event (const Event& event)
 {
+	Scriptix::Value argv[12] = { this, event.get_type(), event.get_id().name(), event.get_room(), event.get_actor(), event.get_target(), event.get_aux(), event.get_data(0), event.get_data(1), event.get_data(2), event.get_data(3), event.get_data(4) };
 	for (EventList::const_iterator i = events.begin (); i != events.end (); ++ i)
-		if (event.get_id() == (*i)->get_event ()) {
-			if (!(*i)->get_func().empty())
-				(*i)->get_func().run(this, event.get_id().name(), event.get_actor(), event.get_room(), event.get_data(0), event.get_data(1), event.get_data(2), event.get_data(3), event.get_data(4));
+		if (event.get_type() == (*i)->get_type() && event.get_id() == (*i)->get_event ()) {
+			if (!(*i)->get_func().empty()) {
+				bool res = (*i)->get_func().run(12, argv).is_true();
+				if (event.get_type() != EVENT_NOTIFY && !res)
+					return false;
+			}
 		}
-	return 0;
+	return true;
 }
 
 int
 SEventManager::initialize (void)
 {
 	count = 0;
+	nest = 0;
 	initialize_ids();
 
 	return 0;
@@ -71,32 +89,116 @@ SEventManager::shutdown (void)
 	events.clear();
 }
 
-int
-SEventManager::send (EventID id, Room* room, Entity *actor, Scriptix::Value data1, Scriptix::Value data2, Scriptix::Value data3, Scriptix::Value data4, Scriptix::Value data5)
+bool
+SEventManager::request (EventID id, Room* room, Entity *actor, Entity* target, Entity* aux, Scriptix::Value data1, Scriptix::Value data2, Scriptix::Value data3, Scriptix::Value data4, Scriptix::Value data5)
 {
 	assert (id.valid());
 
-	// fetch room if we haev none given
-	if (room == NULL) {
-		Entity* ent = actor;
-		while (ent != NULL && !ROOM(ent))
-			ent = ent->get_owner();
-		if (ent == NULL)
-			return -1;
-		room = (Room*)ent;
+	// manage nesting
+	if (nest == EVENT_MAX_NEST) {
+		Log::Error << "Event system exceeded maximum nested events of " << EVENT_MAX_NEST << " sending request event " << id.name();
+		return false;
 	}
 
+	// error if no room
+	if (room == NULL) {
+		Log::Error << "No room was given for event.";
+		return false;
+	}
+
+	// get zone
+	Zone* zone = room->get_zone();
+
 	// create event
-	Event event(id, room, actor);
+	Event event(EVENT_REQUEST, id, room, actor, target, aux);
 	event.get_data(0) = data1;
 	event.get_data(1) = data2;
 	event.get_data(2) = data3;
 	event.get_data(3) = data4;
 	event.get_data(4) = data5;
+
+	// do processing
+	++nest;
+	if (actor && !actor->handle_event(event)) {
+		--nest;
+		return false;
+	}
+	if (target && !actor->handle_event(event)) {
+		--nest;
+		return false;
+	}
+	if (aux && !actor->handle_event(event)) {
+		--nest;
+		return false;
+	}
+	if (room && !actor->handle_event(event)) {
+		--nest;
+		return false;
+	}
+	if (zone && !actor->handle_event(event)) {
+		--nest;
+		return false;
+	}
+	--nest;
+	return true;
+}
+
+bool
+SEventManager::command (EventID id, Room* room, Entity *actor, Entity* target, Entity* aux, Scriptix::Value data1, Scriptix::Value data2, Scriptix::Value data3, Scriptix::Value data4, Scriptix::Value data5)
+{
+	assert (id.valid());
+
+	// manage nesting
+	if (nest == EVENT_MAX_NEST) {
+		Log::Error << "Event system exceeded maximum nested events of " << EVENT_MAX_NEST << " sending command event " << id.name();
+		return false;
+	}
+
+	// error if no room
+	if (room == NULL) {
+		Log::Error << "No room was given for event.";
+		return false;
+	}
+
+	// create event
+	Event event(EVENT_COMMAND, id, room, actor, target, aux);
+	event.get_data(0) = data1;
+	event.get_data(1) = data2;
+	event.get_data(2) = data3;
+	event.get_data(3) = data4;
+	event.get_data(4) = data5;
+
+	// do processing
+	++nest;
+	bool result = false;
+	if (actor)
+		result = actor->handle_event(event);
+	--nest;
+	return result;
+}
+
+void
+SEventManager::notify (EventID id, Room* room, Entity *actor, Entity* target, Entity* aux, Scriptix::Value data1, Scriptix::Value data2, Scriptix::Value data3, Scriptix::Value data4, Scriptix::Value data5)
+{
+	assert (id.valid());
+
+	// error if no room
+	if (room == NULL) {
+		Log::Error << "No room was given for event.";
+		return;
+	}
+
+	// create event
+	Event event(EVENT_NOTIFY, id, room, actor, target, aux);
+	event.get_data(0) = data1;
+	event.get_data(1) = data2;
+	event.get_data(2) = data3;
+	event.get_data(3) = data4;
+	event.get_data(4) = data5;
+
+	// just queue it, doesn't need to happen now
 	events.push_back(event);
 	++count;
-
-	return 0;
 }
 
 void
@@ -109,10 +211,9 @@ SEventManager::process (void)
 	size_t processing = count;
 
 	// as long as we have events...
-	Event event;
 	while (processing >= 0 && !events.empty()) {
 		// get event
-		event = events.front();
+		Event event = events.front();
 		events.pop_front();
 		--count;
 		--processing;
@@ -131,6 +232,6 @@ SEventManager::process (void)
 		*/
 
 		// send event
-		event.get_room()->handle_event(event);
+		event.get_room()->broadcast_event(event);
 	}
 }

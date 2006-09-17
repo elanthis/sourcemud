@@ -189,6 +189,14 @@ ScriptFunctionSource::compile (String name, String code, String args, String fil
 }
 
 Scriptix::Value
+ScriptFunction::run(size_t argc, Scriptix::Value argv[]) const {
+	Scriptix::Value ret;
+	if (Scriptix::ScriptManager.invoke(func, argc, argv, &ret) != Scriptix::SXE_OK)
+		return Scriptix::Value();
+	return ret;
+}
+
+Scriptix::Value
 ScriptFunction::run() const {
 	Scriptix::Value ret;
 	if (Scriptix::ScriptManager.invoke(func, 0, NULL, &ret) != Scriptix::SXE_OK)

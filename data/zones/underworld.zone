@@ -32,10 +32,6 @@ room {
       blueprint.roomlist = false
       blueprint.gettable = false
       blueprint.trashable = false
-      action.touch = begin
-        user << "Dear " << @name(user, EN_NONE, false) << ",\n  Look, do you even know what this river is?  Don't touch it, alright?\n  -- The Management\n";
-        return 0;
-      end
     }
     entity.uid = <407>
   }

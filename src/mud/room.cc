@@ -555,8 +555,8 @@ Room::count_players () const
 	return count;
 }
 
-int
-Room::handle_event (const Event& event)
+void
+Room::broadcast_event (const Event& event)
 {
 	// handle in self first
 	Entity::handle_event (event);
@@ -578,10 +578,9 @@ Room::handle_event (const Event& event)
 		children[index++] = i->second;
 
 	// do event sending
-	for (EList<Entity>::const_iterator i = children.begin(); i != children.end(); ++i)
+	for (EList<Entity>::const_iterator i = children.begin(); i != children.end(); ++i) {
 		(*i)->handle_event(event);
-
-	return 0;
+	}
 }
 
 // StreamSink for room buffering

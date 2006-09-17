@@ -1,0 +1,32 @@
+AweMUD Event System
+AweMUD Next Generation
+Copyright (C) 2006  AwesomePlay Productions, Inc.
+Sean Middleditch <elanthis@awemud.net>
+-------------------------------------------------
+
+1. Introduction
+   ============
+   AweMUD uses an event message system to control behavior of game entities.
+
+2. Event Types
+   ===========
+   There are three types of events.
+
+   - Requests.  When some type of action is being attempted, a request event
+     is first sent to the involved entities, the current room, and the current
+	 zone.  A request event handler must return a boolean value.  If a false
+	 value is returned, no further event handlers are called, and the calling
+	 code should cease any further processing of the action.  This is used to
+	 cancel the action.  The handler which returns the false event should
+	 display a message to the actor that invoked the action.
+   - Notification.  After an action is performed, a notification event is sent
+     to the current room, every creature and object in that room, and the
+	 current zone.  There is no return value for a notification event.
+   - Commands.  A command event is sent only to a single game entity, the
+     command's recipient.  A command event tells the entity to perform some
+	 particular action.  The command event handler returns a boolean value,
+	 with a true response indicating that the command was successfully
+	 carried out.
+
+3. Event Manager
+   =============

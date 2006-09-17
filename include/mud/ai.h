@@ -28,7 +28,7 @@ class AI : public GC
 
 	void do_load (Creature* self) const;
 	void do_save (Creature* self, ScriptRestrictedWriter* writer) const;
-	void do_event (Creature* self, const Event& event) const;
+	bool do_event (Creature* self, const Event& event) const;
 	void do_ready (Creature* self) const;
 	void do_heartbeat (Creature* self) const;
 	void do_pump (Creature* self, Scriptix::Value arg) const;

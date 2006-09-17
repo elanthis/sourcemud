@@ -323,36 +323,6 @@ if (value == false) { ... }</example>
     </global>
   </global-group>
 
-  <!-- Object Actions -->
-  <global-group>
-    <name>Object Actions</name>
-    <doc><link type="Object"/>s can have various actions attached to them.  An action is simply a script with a specific name that is invoked when a <link type="Creature"/> tries to use the object in a specific way.  The scripts used in object actions must return one of these return values telling the engine what sorts of further processing should be done for the action.</doc>
-    <global>
-      <name>OBJACT_OK</name>
-      <type>Integer</type>
-      <expr>OBJECT_ACTION_OK_NORMAL</expr>
-      <doc>The engine will do any default processing for the action, including printing out default usage messages, and send an event for the action.</doc>
-    </global>
-    <global>
-      <name>OBJACT_OK_QUIET</name>
-      <type>Integer</type>
-      <expr>OBJECT_ACTION_OK_QUIET</expr>
-      <doc>The engine will do not do any default processing for the action, but it will send an event for the action.  Because no default processing is done, players initiating the action will not see any output unless the action script displays something.</doc>
-    </global>
-    <global>
-      <name>OBJACT_FAIL</name>
-      <type>Integer</type>
-      <expr>OBJECT_ACTION_CANCEL_NORMAL</expr>
-      <doc>The engine will print out a default error message for the action.  No event is sent.</doc>
-    </global>
-    <global>
-      <name>OBJACT_FAIL_QUIET</name>
-      <type>Integer</type>
-      <expr>OBJECT_ACTION_CANCEL_QUIET</expr>
-      <doc>The engine will not print out any messages, nor will it send an event for the action.  The action script should print out failure messages to the user.</doc>
-    </global>
-  </global-group>
-
   <!-- Containers -->
   <global-group>
     <name>Containers</name>
@@ -468,39 +438,6 @@ number = roll_dice(3, 6);]]></example>
       <doc>Range of values returned.  Highest possible result will be one less than the range.  Lowest possible result will be zero.</doc>
     </arg>
     <doc>Return a random number from 0 thru range-1.</doc>
-  </function>
-
-  <!-- General events -->
-  <function>
-    <name>signalEvent</name>
-    <return>
-      <type>Integer</type>
-      <doc>N/A - FIXME</doc>
-    </return>
-    <arg>
-      <name>event</name>
-      <type>String</type>
-      <doc>Name of the event to send.</doc>
-    </arg>
-    <arg>
-      <name>room</name>
-      <type>Room</type>
-      <doc>The room the event is occuring in.</doc>
-    </arg>
-    <arg>
-      <name>actor</name>
-      <type>Entity</type>
-      <nullok/>
-      <doc>The Entity which caused the event to happen.</doc>
-    </arg>
-    <arg>
-      <name>target</name>
-      <type>Entity</type>
-      <nullok/>
-      <doc>The receiver of the event.</doc>
-    </arg>
-    <code>_return = EventManager.send(EventID::lookup(_arg_event), _arg_room, _arg_actor, _arg_target);</code>
-    <doc>This function sends out a signal.  The signal is identified by the event argument.  Each of the two entities involved (trigger, target) will be looked at to see if they wish to process the signal; if they do a script may be called on their behalf.</doc>
   </function>
 
   <!-- Time/ticks -->
@@ -2297,22 +2234,6 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
       <doc>Adds the given object to the container of the given type.</doc>
     </method>
 
-    <!-- ObjectUsages -->
-    <method>
-      <name>getAction</name>
-      <invoke>get_action</invoke>
-      <return>
-        <type>Function</type>
-        <doc>Requested action handler, or nil if undefined.</doc>
-      </return>
-      <arg>
-        <name>name</name>
-        <type>String</type>
-        <doc>Action to lookup.</doc>
-      </arg>
-      <doc>Returns a function associated with the action.  The returned function takes the object itself as the first parameter and the user of the object as the second parameter, and returns an <link global="Object Actions"/> value.</doc>
-    </method>
-
     <!-- Parent tracking -->
     <method>
       <name>room</name>
@@ -3297,12 +3218,6 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
         _return = String(time_buf);
       ]]></code>
     </method>
-  </type>
-
-  <!-- Events -->
-  <type>
-    <name>EventHandler</name>
-    <doc>TBD</doc>
   </type>
 
   <!-- Skill -->

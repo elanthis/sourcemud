@@ -1,254 +1,36 @@
 <?xml version="1.0"?>
 <events>
-	<event>
-		<name>look</name>
-		<actor>
-			<type>Creature</type>
-			<doc>The character that performed the look.</doc>
-		</actor>
-		<arg>
-			<name>target</name>
-			<type>Entity</type>
-			<doc>The entity that was looked at.  If the character looked at the room itself, then this is equal to the room.</doc>
-		</arg>
+  <event name="Look">
+    <type request="1" notify="1" />
+    <actor type="Creature" doc="The character that performed the look." />
+    <target type="Entity" doc="The entity being looked at." />
 		<doc>Invoked whenever a character looks around in a room, or at a specific entity in a room.</doc>
-	</event>
-	<event>
-		<name>death</name>
-		<actor>
-			<type>Entity</type>
-			<doc>The <link type="Object" /> or <link type="Creature" /> that was destroyed.</doc>
-		</actor>
-		<arg>
-			<name>killer</name>
-			<type>Entity</type>
-			<doc>The thing that destroyed the actor.</doc>
-		</arg>
-		<doc>This event is called whenever someone or something dies.</doc>
-	</event>
-	<event>
-		<name>enter</name>
-		<actor>
-			<type>Creature</type>
-			<doc>The character who entered the room.</doc>
-		</actor>
-		<arg>
-			<name>target</name>
-			<type>Portal</type>
-			<doc>The portal the character entered from.</doc>
-		</arg>
-		<room>
-			<doc>The room which was entered by the actor.</doc>
-		</room>
-		<doc>The enter event is called whenever a <link type="Creature"/> enters the <link type="Room"/>.</doc>
-        <example><![CDATA[// note: use 'creaky_floor' in an enter event handler action for a room
-// note 2: this example is bit-rot'd, please update me!
-  public
-  creaky_floor(event, target, trigger, location, data)
-  {
-    // trigger is the character who entered
-    trigger = event.get_sender();
-    trigger.print("The floor ominously creaks as you enter the room.\n");
-    trigger.rprint("The floor creaks loudly as ", trigger.get_namef(ENT_DEF, false), " enters the room.\n");
-  }]]></example>
-	</event>
-	<event>
-		<name>leave</name>
-		<actor>
-			<type>Creature</type>
-			<doc>The character who left the room.</doc>
-		</actor>
-		<arg>
-			<name>target</name>
-			<type>Portal</type>
-			<doc>The portal the character left through.</doc>
-		</arg>
-		<room>
-			<doc>The room which was left by the actor.</doc>
-		</room>
-	</event>
-	<event>
-		<name>get</name>
-		<actor>
-			<type>Creature</type>
-			<doc>Who picked the item up.</doc>
-		</actor>
-		<arg>
-			<name>object</name>
-			<type>Object</type>
-			<doc>The Object that was retrieved.</doc>
-		</arg>
-		<arg>
-			<name>source</name>
-			<type>Entity</type>
-			<doc>The <link linkend="Object"/> where the target was retrieved from, or the <link linkend="Room"/> in which the target was laying.</doc>
-		</arg>
-        <doc>When an <link linkend="Object"/> is picked up, retrieved from a container, or otherwise enters a <link linkend="Creature"/>'s hands, the get event will be triggered.</doc>
-	</event>
-	<event>
-		<name>read</name>
-		<actor>
-			<type>Creature</type>
-		</actor>
-		<arg>
-			<name>target</name>
-			<type>Object</type>
-			<doc>The object being read.</doc>
-		</arg>
-	</event>
-	<event>
-		<name>raise</name>
-		<actor>
-			<type>Creature</type>
-		</actor>
-		<arg>
-			<name>target</name>
-			<type>Object</type>
-			<doc>The object being raised into the air.</doc>
-		</arg>
-	</event>
-	<event>
-		<name>eat</name>
-		<actor>
-			<type>Creature</type>
-		</actor>
-		<arg>
-			<name>target</name>
-			<type>Object</type>
-		</arg>
-	</event>
-	<event>
-		<name>drink</name>
-		<actor>
-			<type>Creature</type>
-		</actor>
-		<arg>
-			<name>target</name>
-			<type>Object</type>
-		</arg>
-	</event>
-	<event>
-		<name>say</name>
-		<actor>
-			<type>Creature</type>
-		</actor>
-		<arg>
-			<name>text</name>
-			<type>String</type>
-			<doc>The text said by the actor.</doc>
-		</arg>
-	</event>
-	<event>
-		<name>drop</name>
-		<actor>
-			<type>Creature</type>
-		</actor>
-		<arg>
-			<name>object</name>
-			<type>Object</type>
-		</arg>
-	</event>
-	<event>
-		<name>touch</name>
-		<actor>
-			<type>Creature</type>
-		</actor>
-		<arg>
-			<name>target</name>
-			<type>Entity</type>
-		</arg>
-	</event>
-	<event>
-		<name>kick</name>
-		<actor>
-			<type>Creature</type>
-		</actor>
-		<arg>
-			<name>target</name>
-			<type>Entity</type>
-		</arg>
-	</event>
-	<event>
-		<name>open</name>
-		<actor>
-			<type>Creature</type>
-		</actor>
-		<arg>
-			<name>target</name>
-			<type>Entity</type>
-		</arg>
-	</event>
-	<event>
-		<name>close</name>
-		<actor>
-			<type>Creature</type>
-		</actor>
-		<arg>
-			<name>target</name>
-			<type>Entity</type>
-		</arg>
-	</event>
-	<event>
-		<name>lock</name>
-		<actor>
-			<type>Creature</type>
-		</actor>
-		<arg>
-			<name>target</name>
-			<type>Entity</type>
-		</arg>
-	</event>
-	<event>
-		<name>unlock</name>
-		<actor>
-			<type>Creature</type>
-		</actor>
-		<arg>
-			<name>target</name>
-			<type>Entity</type>
-		</arg>
-	</event>
-	<event>
-		<name>resurrect</name>
-		<actor>
-			<type>Creature</type>
-			<doc>The character that was resurrected.</doc>
-		</actor>
-	</event>
-	<event>
-		<name>damage</name>
-		<actor>
-			<type>Entity</type>
-			<doc>The attacking <link class="Creature"/> or <link class="Object"/> which caused the damage.</doc>
-		</actor>
-		<arg>
-			<name>victim</name>
-			<type>Entity</type>
-			<doc>The <link class="Creature"/> or <link class="Object"/> which received the damage.</doc>
-		</arg>
-		<arg>
-			<name>amount</name>
-			<type>Integer</type>
-			<doc>The amount of damage incurred.</doc>
-		</arg>
-		<doc>This event is triggered whenever damage is inflicted.  For example, this will occur during combat on successful hits.</doc>
-	</event>
-	<event>
-		<name>attack</name>
-		<actor>
-			<type>Creature</type>
-			<doc>The attacker.</doc>
-		</actor>
-		<arg>
-			<name>victim</name>
-			<type>Entity</type>
-			<doc>The <link class="Creature"/> or <link class="Object"/> which was attacked.</doc>
-		</arg>
-		<arg>
-			<name>weapon</name>
-			<type>Object</type>
-			<doc>The weapon which was used for the attack, or nil if no weapon was used.</doc>
-		</arg>
-		<doc>This event is triggered whenever an attack is attempted.  Note that this event does not indicate whether the attack hit or missed.</doc>
-	</event>
+  </event>
+  <event name="LeaveRoom">
+    <type request="1" notify="1" />
+    <actor type="Creature" doc="The character leaving the room." />
+    <aux type="Portal" doc="The portal being used, if any." />
+    <doc>Whenever a creature leaves the room.</doc>
+  </event>
+  <event name="EnterRoom">
+    <type request="1" notify="1" />
+    <actor type="Creature" doc="The character entering the room." />
+    <aux type="Portal" doc="The portal being entered from, if any." />
+    <doc>Whenever a creature enters the room.</doc>
+  </event>
+  <event name="GetItem">
+    <type request="1" notify="1" />
+    <actor type="Creature" doc="The creature getting the item." />
+    <target type="Object" doc="The item being retrieved." />
+    <aux type="Entity" doc="The source of the item." />
+    <doc>Whenever a creature picks up an item.</doc>
+  </event>
+  <event name="PutItem">
+    <type request="1" notify="1" />
+    <actor type="Creature" doc="The creature putting the item." />
+    <target type="Object" doc="The item being put." />
+    <aux type="Entity" doc="The destination of the item." />
+    <doc>Whenever a creature puts an item somewhere.</doc>
+  </event>
 </events>
+<!-- vim: set tabstop=2 shiftwidth=2 expandtab : -->

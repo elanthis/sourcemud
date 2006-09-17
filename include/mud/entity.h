@@ -96,7 +96,7 @@ class Entity : public Scriptix::Native, public Parsable
 	virtual bool name_match (String name) const;
 
 	// event triggers
-	virtual int handle_event (const Event& event);
+	virtual bool handle_event (const Event& event);
 
 	// for parsing, pull a property based on a char
 	virtual int parse_property (const class StreamControl& stream, String method, const ParseList& argv) const;
