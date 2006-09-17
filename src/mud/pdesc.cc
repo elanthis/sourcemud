@@ -60,13 +60,11 @@ SCreatureTraitManager::initialize ()
 	FO_READ_BEGIN
 		// this is one of the available traits
 		FO_ATTR("trait", "class")
-			FO_TYPE_ASSERT(STRING)
-			CreatureTraitID::create(node.get_data());
+			CreatureTraitID::create(node.get_string());
 		// this is one of the available trait values
 		FO_WILD("value")
-			FO_TYPE_ASSERT(STRING)
-			names.push_back(node.get_key());
-			descs.push_back(node.get_data());
+			names.push_back(node.get_name());
+			descs.push_back(node.get_string());
 	FO_READ_ERROR
 		return -1;
 	FO_READ_END

@@ -1,3 +1,9 @@
+2006-09-17 22:26:46  Sean Middleditch <elanthis@awesomeplay.com>
+
+  * Added a new list type to the fileobj format, which is currently
+    used by the races file.
+  * Cleaned up the fileobj API to remove all legacy cruft.
+
 2006-09-17 18:04:14  Sean Middleditch <elanthis@awesomeplay.com>
 
   * More work on updating the events in use.

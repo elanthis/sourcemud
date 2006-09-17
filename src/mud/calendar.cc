@@ -31,15 +31,13 @@ GameCalendar::load (void)
 			// read month attribute
 			FO_READ_BEGIN
 				FO_ATTR("month", "name")
-					month.name = node.get_data();
+					month.name = node.get_string();
 				// days in month
 				FO_ATTR("month", "days")
-					FO_TYPE_ASSERT(INT);
-					month.day_count = tolong(node.get_data());
+					month.day_count = node.get_int();
 				// leap year count
 				FO_ATTR("month", "leap")
-					FO_TYPE_ASSERT(INT);
-					month.leap_years = tolong(node.get_data());
+					month.leap_years = node.get_int();
 			FO_READ_ERROR
 				return -1;
 			FO_READ_END
@@ -63,32 +61,29 @@ GameCalendar::load (void)
 					holiday.name = node.get_name();
 				// day of month
 				FO_ATTR("holiday", "day")
-					FO_TYPE_ASSERT(INT)
-					holiday.day = tolong(node.get_data());
+					holiday.day = node.get_int();
 				// month?
 				FO_ATTR("holiday", "month")
-					holiday.month = find_month(node.get_data());
+					holiday.month = find_month(node.get_string());
 					if (holiday.month < 0) {
 						holiday.month = 0;
-						Log::Error << "Unknown month '" << node.get_data() << "' at " << reader.get_filename() << ':' << node.get_line();
+						Log::Error << "Unknown month '" << node.get_string() << "' at " << reader.get_filename() << ':' << node.get_line();
 						return -1;
 					}
 				// years repeat?
 				FO_ATTR("holiday", "years")
-					FO_TYPE_ASSERT(INT)
-					holiday.year = tolong(node.get_data());
+					holiday.year = node.get_int();
 				// day of week?
 				FO_ATTR("holiday", "weekday")
-					holiday.weekday = find_weekday(node.get_data());
+					holiday.weekday = find_weekday(node.get_string());
 					if (holiday.weekday < 0) {
 						holiday.weekday = 0;
-						Log::Error << "Unknown weekday '" << node.get_data() << "' at " << reader.get_filename() << ':' << node.get_line();
+						Log::Error << "Unknown weekday '" << node.get_string() << "' at " << reader.get_filename() << ':' << node.get_line();
 						return -1;
 					}
 				// weekday index?  (like 2nd tuesday)
 				FO_ATTR("holiday", "wdindex")
-					FO_TYPE_ASSERT(INT)
-					holiday.wdindex = tolong(node.get_data());
+					holiday.wdindex = node.get_int();
 			FO_READ_ERROR
 				return -1;
 			FO_READ_END
@@ -104,19 +99,19 @@ GameCalendar::load (void)
 		
 		// weekday?
 		FO_ATTR("calendar", "weekday")
-			weekdays.push_back(node.get_data());
+			weekdays.push_back(node.get_string());
 		// daytyime desc text?
 		FO_ATTR("calendar", "day")
-			day_text.push_back(node.get_data());
+			day_text.push_back(node.get_string());
 		// nighttime desc text?
 		FO_ATTR("calendar", "night")
-			night_text.push_back(node.get_data());
+			night_text.push_back(node.get_string());
 		// sun-rising text?
 		FO_ATTR("calendar", "sunrise")
-			sunrise_text.push_back(node.get_data());
+			sunrise_text.push_back(node.get_string());
 		// sun-setting text?
 		FO_ATTR("calendar", "sunset")
-			sunset_text.push_back(node.get_data());
+			sunset_text.push_back(node.get_string());
 	FO_READ_ERROR
 		return -1;
 	FO_READ_END

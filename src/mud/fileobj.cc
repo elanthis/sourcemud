@@ -127,6 +127,12 @@ File::Reader::read_token (String& outstr)
 		return TOKEN_SET;
 	} else if (test == '.') {
 		return TOKEN_KEY;
+	} else if (test == '[') {
+		return TOKEN_START_LIST;
+	} else if (test == ']') {
+		return TOKEN_END_LIST;
+	} else if (test == ',') {
+		return TOKEN_COMMA;
 
 	// string
 	} else if (test == '"') {
@@ -270,11 +276,12 @@ File::Reader::get (Node& node)
 {
 	Token op;
 	String opstr;
+	GCType::vector<Value> list;
 
 	// clear node
+	node.klass.clear();
 	node.name.clear();
-	node.key.clear();
-	node.data.clear();
+	node.value = Value();
 
 	// get op - expect name
 	op = read_token(opstr);
@@ -300,7 +307,7 @@ File::Reader::get (Node& node)
 	// expect a name
 	if (op != TOKEN_STRING)
 		throw File::Error(S("Parse error: name expected"));
-	node.name = opstr;
+	node.klass = opstr;
 
 	// get next token
 	op = read_token(opstr);
@@ -315,7 +322,7 @@ File::Reader::get (Node& node)
 		op = read_token(opstr);
 		if (op != TOKEN_STRING)
 			throw File::Error(S("Parse error: name expected after ."));
-		node.key = opstr;
+		node.name = opstr;
 
 		// next token
 		op = read_token(opstr);
@@ -327,8 +334,8 @@ File::Reader::get (Node& node)
 
 	// object?
 	if (op == TOKEN_BEGIN) {
-		// if we had a key, we can't be an object
-		if (node.key)
+		// if we had a name, we can't be an object
+		if (node.name)
 			throw File::Error(S("Parse error: unexpected object"));
 
 		// return as object type
@@ -339,8 +346,8 @@ File::Reader::get (Node& node)
 	// attribute?
 	else if (op == TOKEN_SET) {
 		// attributes must have a key
-		if (!node.key)
-			throw File::Error(S("Parse error: key name expected before ="));
+		if (!node.name)
+			throw File::Error(S("Parse error: name expected before ="));
 
 		// read
 		node.type = Node::ATTR;
@@ -354,31 +361,60 @@ File::Reader::get (Node& node)
 			throw File::Error(S("Parse error: unexpected EOF"));
 
 		// set data
-		if (type == TOKEN_NUMBER) {
-			node.datatype = TYPE_INT;
-			node.data = data;
-		} else if (type == TOKEN_TRUE) {
-			node.datatype = TYPE_BOOL;
-			node.data = S("true");
-		} else if (type == TOKEN_FALSE) {
-			node.datatype = TYPE_BOOL;
-			node.data = S("false");
-		} else if (type == TOKEN_STRING) {
-			node.datatype = TYPE_STRING;
-			node.data = data;
-		} else if (type == TOKEN_ID) {
-			node.datatype = TYPE_ID;
-			node.data = data;
-		// invalid syntax
-		} else {
-			throw File::Error(S("Parse error: invalid syntax"));
-		}
+		if (!set_value(type, data, node.value))
+			throw File::Error(S("Parse error: parse error, unexpected token"));
 
 		return true;
 	}
 
 	// wrong token
 	throw File::Error(S("Parse error: unexpected token"));
+}
+
+bool
+File::Reader::set_value (File::Reader::Token type, String data, File::Value& value)
+{
+	if (type == TOKEN_NUMBER) {
+		value = Value(Value::TYPE_INT, data);
+	} else if (type == TOKEN_TRUE) {
+		value = Value(Value::TYPE_BOOL, S("true"));
+	} else if (type == TOKEN_FALSE) {
+		value = Value(Value::TYPE_BOOL, S("false"));
+	} else if (type == TOKEN_STRING) {
+		value = Value(Value::TYPE_STRING, data);
+	} else if (type == TOKEN_ID) {
+		value = Value(Value::TYPE_ID, data);
+	} else if (type == TOKEN_START_LIST) {
+		GCType::vector<Value> list;
+		while (true) {
+			type = read_token(data);
+			if (type == TOKEN_ERROR)
+				throw File::Error(data);
+			Value nvalue;
+			if (type == TOKEN_START_LIST) {
+				Log::Error << "Illegal to include a list in a list at " << get_filename() << ":" << get_line();
+				return false;
+			}
+			if (!set_value(type, data, nvalue)) {
+				Log::Error << "Unexpected token in list at " << get_filename() << ":" << get_line();
+				return false;
+			}
+			list.push_back(nvalue);
+			type = read_token(data);
+			if (type == TOKEN_ERROR)
+				throw File::Error(data);
+			else if (type == TOKEN_END_LIST)
+				break;
+			else if (type != TOKEN_COMMA) {
+				Log::Error << "Unexpected token in list at " << get_filename() << ":" << get_line();
+				return false;
+			}
+		}
+		value = Value(list);
+	} else {
+		return false;
+	}
+	return true;
 }
 
 void
@@ -412,13 +448,13 @@ File::Object::load (File::Reader& reader)
 				throw File::Error(S("Invalid declaration in object"));
 			}
 
-			if (node.get_datatype() == TYPE_STRING)
+			if (node.get_value_type() == Value::TYPE_STRING)
 				strings[node.get_name()].push_back(node.get_string());
-			else if (node.get_datatype() == TYPE_INT)
+			else if (node.get_value_type() == Value::TYPE_INT)
 				ints[node.get_name()].push_back(node.get_int());
-			else if (node.get_datatype() == TYPE_BOOL)
+			else if (node.get_value_type() == Value::TYPE_BOOL)
 				bools[node.get_name()].push_back(node.get_bool());
-			else if (node.get_datatype() == TYPE_ID)
+			else if (node.get_value_type() == Value::TYPE_ID)
 				ids[node.get_name()].push_back(node.get_id());
 			else
 				throw File::Error(S("Unknown data type in object"));
@@ -435,18 +471,18 @@ File::Object::get_string (String name, uint index) const
 {
 	StringList::const_iterator i = strings.find(name);
 	if (i == strings.end())
-		throw KeyError(TYPE_STRING, name, index);
+		throw KeyError(Value::TYPE_STRING, name, index);
 	if (index > i->second.size())
-		throw KeyError(TYPE_STRING, name, index);
+		throw KeyError(Value::TYPE_STRING, name, index);
 	return i->second[index];
 }
 
-File::KeyError::KeyError (DataType type, String name, uint index) : File::Error(String())
+File::KeyError::KeyError (Value::Type type, String name, uint index) : File::Error(String())
 {
-	what = (type == TYPE_STRING ? S("string") :
-		type == TYPE_INT ? S("int") :
-		type == TYPE_BOOL ? S("bool") :
-		type == TYPE_ID ? S("id") :
+	what = (type == Value::TYPE_STRING ? S("string") :
+		type == Value::TYPE_INT ? S("int") :
+		type == Value::TYPE_BOOL ? S("bool") :
+		type == Value::TYPE_ID ? S("id") :
 		S("unknown"))
 		+ " " + name + "." + tostr(index) + " is not defined";
 }
@@ -642,42 +678,102 @@ File::valid_name (String name)
 int
 File::Node::get_int () const
 {
-	if (datatype != TYPE_INT) {
-		Log::Error << "Incorrect data type for '" << get_name() << "' at :" << get_line();
+	if (value.get_type() != Value::TYPE_INT) {
+		Log::Error << "Incorrect data type for '" << get_class() << '.' << get_name() << "' at :" << get_line();
 		throw(File::Error(S("data type mismatch")));
 	}
 
-	return tolong(data);
+	return tolong(value.get_value());
 }
 
 bool
 File::Node::get_bool () const
 {
-	if (datatype != TYPE_BOOL) {
-		Log::Error << "Incorrect data type for '" << get_name() << "' at :" << get_line();
+	if (value.get_type() != Value::TYPE_BOOL) {
+		Log::Error << "Incorrect data type for '" << get_class() << '.' << get_name() << "' at :" << get_line();
 		throw(File::Error(S("data type mismatch")));
 	}
-	return data == "true" || data == "yes" || data == "on";
+	return value.get_value() == "true" || value.get_value() == "yes" || value.get_value() == "on";
 }
 
 String
 File::Node::get_string () const
 {
-	if (datatype != TYPE_STRING) {
-		Log::Error << "Incorrect data type for '" << get_name() << "' at :" << get_line();
+	if (value.get_type() != Value::TYPE_STRING) {
+		Log::Error << "Incorrect data type for '" << get_class () << '.' << get_name() << "' at :" << get_line();
 		throw(File::Error(S("data type mismatch")));
 	}
-	return data;
+	return value.get_value();
 }
 
 UniqueID
 File::Node::get_id () const
 {
-	if (datatype != TYPE_ID) {
-		Log::Error << "Incorrect data type for '" << get_name() << "' at :" << get_line();
+	if (value.get_type() != Value::TYPE_ID) {
+		Log::Error << "Incorrect data type for '" << get_class() << '.' << get_name() << "' at :" << get_line();
 		throw(File::Error(S("data type mismatch")));
 	}
-	return UniqueIDManager.decode(data);
+	return UniqueIDManager.decode(value.get_value());
+}
+
+const GCType::vector<File::Value>&
+File::Node::get_list () const
+{
+	if (value.get_type() != Value::TYPE_LIST) {
+		Log::Error << "Incorrect data type for '" << get_class() << '.' << get_name() << "' at :" << get_line();
+		throw(File::Error(S("data type mismatch")));
+	}
+	return value.get_list();
+}
+
+const GCType::vector<File::Value>&
+File::Node::get_list (size_t size) const
+{
+	if (value.get_type() != Value::TYPE_LIST) {
+		Log::Error << "Incorrect data type for '" << get_class() << '.' << get_name() << "' at :" << get_line();
+		throw(File::Error(S("data type mismatch")));
+	}
+	if (value.get_list().size() != size) {
+		Log::Error << "Incorrect number of elements in list for '" << get_class() << '.' << get_name() << "' at :" << get_line();
+		throw(File::Error(S("list size mismatch")));
+	}
+	return value.get_list();
+}
+
+String
+File::Node::get_string (size_t index) const
+{
+	if (value.get_type() != Value::TYPE_LIST) {
+		Log::Error << "Incorrect data type for '" << get_class () << '.' << get_name() << "' at :" << get_line();
+		throw(File::Error(S("data type mismatch")));
+	}
+	if (value.get_list().size() <= index) {
+		Log::Error << "Incorrect number of elements in list for '" << get_class() << '.' << get_name() << "' at :" << get_line();
+		throw(File::Error(S("list size mismatch")));
+	}
+	if (value.get_list()[index].get_type() != Value::TYPE_STRING) {
+		Log::Error << "Incorrect data type for element " << (index + 1) << " of '" << get_class () << '.' << get_name() << "' at :" << get_line();
+		throw(File::Error(S("data type mismatch")));
+	}
+	return value.get_list()[index].get_value();
+}
+
+int
+File::Node::get_int (size_t index) const
+{
+	if (value.get_type() != Value::TYPE_LIST) {
+		Log::Error << "Incorrect data type for '" << get_class () << '.' << get_name() << "' at :" << get_line();
+		throw(File::Error(S("data type mismatch")));
+	}
+	if (value.get_list().size() <= index) {
+		Log::Error << "Incorrect number of elements in list for '" << get_class() << '.' << get_name() << "' at :" << get_line();
+		throw(File::Error(S("list size mismatch")));
+	}
+	if (value.get_list()[index].get_type() != Value::TYPE_INT) {
+		Log::Error << "Incorrect data type for element " << (index + 1) << " of '" << get_class () << '.' << get_name() << "' at :" << get_line();
+		throw(File::Error(S("data type mismatch")));
+	}
+	return tolong(value.get_list()[index].get_value());
 }
 
 SCRIPT_TYPE(RestrictedWriter)

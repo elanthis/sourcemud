@@ -16,44 +16,44 @@ race {
   race.desc = "{$self.D} is a {$self.trait 'build'} {$self.male} standing at {$self.height}, with {$self.trait 'skin color'} skin, {$self.trait 'eye color'} eyes, and {! $self.trait 'hair style'}."
 
   # eye colors
-  trait."eye color" = "brown"
-  trait."eye color" = "blue"
-  trait."eye color" = "green"
-  trait."eye color" = "grey"
-  trait."eye color" = "black"
+  race.trait = [ "eye color", "brown" ]
+  race.trait = [ "eye color", "blue" ]
+  race.trait = [ "eye color", "green" ]
+  race.trait = [ "eye color", "grey" ]
+  race.trait = [ "eye color", "black" ]
 
   # hair colors
-  trait."hair color" = "brown"
-  trait."hair color" = "grey"
-  trait."hair color" = "white"
-  trait."hair color" = "black"
-  trait."hair color" = "blonde"
-  trait."hair color" = "red"
+  race.trait = [ "hair color", "brown" ]
+  race.trait = [ "hair color", "grey" ]
+  race.trait = [ "hair color", "white" ]
+  race.trait = [ "hair color", "black" ]
+  race.trait = [ "hair color", "blonde" ]
+  race.trait = [ "hair color", "red" ]
 
   # skin colors
-  trait."skin color" = "fair"
-  trait."skin color" = "dark"
-  trait."skin color" = "tan"
+  race.trait = [ "skin color", "fair" ]
+  race.trait = [ "skin color", "dark" ]
+  race.trait = [ "skin color", "tan" ]
 
   # hair styles
-  trait."hair style" = "short"
-  trait."hair style" = "long"
-  trait."hair style" = "flowing"
-  trait."hair style" = "bun"
-  trait."hair style" = "curly"
-  trait."hair style" = "ponytail"
-  trait."hair style" = "spiked"
-  trait."hair style" = "shaved"
+  race.trait = [ "hair style", "short" ]
+  race.trait = [ "hair style", "long" ]
+  race.trait = [ "hair style", "flowing" ]
+  race.trait = [ "hair style", "bun" ]
+  race.trait = [ "hair style", "curly" ]
+  race.trait = [ "hair style", "ponytail" ]
+  race.trait = [ "hair style", "spiked" ]
+  race.trait = [ "hair style", "shaved" ]
 
   # body builds
-  trait.build = "average"
-  trait.build = "broad"
-  trait.build = "fat"
-  trait.build = "large"
-  trait.build = "lean"
-  trait.build = "hunched"
-  trait.build = "slim"
-  trait.build = "stocky"
+  race.trait = [ "build", "average" ]
+  race.trait = [ "build", "broad" ]
+  race.trait = [ "build", "fat" ]
+  race.trait = [ "build", "large" ]
+  race.trait = [ "build", "lean" ]
+  race.trait = [ "build", "hunched" ]
+  race.trait = [ "build", "slim" ]
+  race.trait = [ "build", "stocky" ]
 
   # age
   race.min_age = 18
@@ -75,10 +75,10 @@ race {
   race.desc = "{$self.D} stands {$self.height} tall, with an air of graceful nobility.  {! $self.Trait 'hair style'} frames {$self.his} angular facial features.  {$self.His} {$self.trait 'eye color'} eyes stand starkly apart from the {$self.trait 'skin color'} skin of {$self.his} {! $self.trait 'build'} frame."
 
   # mods
-  stat.strength = -5
-  stat.fortitude = -10
-  stat.spirit = 5
-  stat.agility = 10
+  race.stat_bonus = [ "strength", -5 ]
+  race.stat_bonus = [ "fortitude", -10 ]
+  race.stat_bonus = [ "spirit", 5 ]
+  race.stat_bonus = [ "agility", 10 ]
 
   # age and lifespan
   race.min_age = 50
@@ -86,40 +86,40 @@ race {
   race.lifespan = 2000
 
   # eye colors
-  trait."eye color" = "brown"
-  trait."eye color" = "blue"
-  trait."eye color" = "green"
-  trait."eye color" = "black"
+  race.trait = [ "eye color", "brown" ]
+  race.trait = [ "eye color", "blue" ]
+  race.trait = [ "eye color", "green" ]
+  race.trait = [ "eye color", "black" ]
 
   # hair colors
-  trait."hair color" = "brown"
-  trait."hair color" = "silver"
-  trait."hair color" = "white"
-  trait."hair color" = "black"
-  trait."hair color" = "blonde"
-  trait."hair color" = "green"
-  trait."hair color" = "blue"
-  trait."hair color" = "red"
+  race.trait = [ "hair color", "brown" ]
+  race.trait = [ "hair color", "silver" ]
+  race.trait = [ "hair color", "white" ]
+  race.trait = [ "hair color", "black" ]
+  race.trait = [ "hair color", "blonde" ]
+  race.trait = [ "hair color", "green" ]
+  race.trait = [ "hair color", "blue" ]
+  race.trait = [ "hair color", "red" ]
 
   # skin colors
-  trait."skin color" = "fair"
-  trait."skin color" = "tan"
+  race.trait = [ "skin color", "fair" ]
+  race.trait = [ "skin color", "tan" ]
 
   # hair styles
-  trait."hair style" = "short"
-  trait."hair style" = "long"
-  trait."hair style" = "flowing"
-  trait."hair style" = "bun"
-  trait."hair style" = "curly"
-  trait."hair style" = "ponytail"
-  trait."hair style" = "spiked"
-  trait."hair style" = "shaved"
+  race.trait = [ "hair style", "short" ]
+  race.trait = [ "hair style", "long" ]
+  race.trait = [ "hair style", "flowing" ]
+  race.trait = [ "hair style", "bun" ]
+  race.trait = [ "hair style", "curly" ]
+  race.trait = [ "hair style", "ponytail" ]
+  race.trait = [ "hair style", "spiked" ]
+  race.trait = [ "hair style", "shaved" ]
 
   # body builds
-  trait.build = "average"
-  trait.build = "lean"
-  trait.build = "hunched"
-  trait.build = "slim"
+  race.trait = [ "build", "average" ]
+  race.trait = [ "build", "lean" ]
+  race.trait = [ "build", "hunched" ]
+  race.trait = [ "build", "slim" ]
 
   # heights
   race.male_height = 74
@@ -139,10 +139,10 @@ race {
   race.desc = "{$self.D} stands {$self.height} in height.  {$self.His} {! $self.trait 'build'} body and long tail are covered in {$self.trait 'fur color'} fur.  {$self.He} has {! $self.trait 'hair style'}.  {$self.His} eyes are {if eq {$self.trait 'eye color'} 'green'}a brilliant green{else}{$self.trait 'eye color'}{endif} and twinkle with a mischevious spark."
 
   # mods
-  stat.spirit = 5
-  stat.agility = 10
-  stat.fortitude = -5
-  stat.willpower = -10
+  race.stat_bonus = [ "spirit", 5 ]
+  race.stat_bonus = [ "agility", 10 ]
+  race.stat_bonus = [ "fortitude", -5 ]
+  race.stat_bonus = [ "willpower", -10 ]
 
   # age and lifespan
   race.min_age = 12
@@ -150,39 +150,39 @@ race {
   race.lifespan = 60
 
   # eye colors
-  trait."eye color" = "brown"
-  trait."eye color" = "blue"
-  trait."eye color" = "green"
-  trait."eye color" = "black"
-  trait."eye color" = "yellow"
+  race.trait = [ "eye color", "brown" ]
+  race.trait = [ "eye color", "blue" ]
+  race.trait = [ "eye color", "green" ]
+  race.trait = [ "eye color", "black" ]
+  race.trait = [ "eye color", "yellow" ]
 
   # hair colors
-  trait."hair color" = "brown"
-  trait."hair color" = "black"
-  trait."hair color" = "red"
-  trait."hair color" = "orange"
+  race.trait = [ "hair color", "brown" ]
+  race.trait = [ "hair color", "black" ]
+  race.trait = [ "hair color", "red" ]
+  race.trait = [ "hair color", "orange" ]
 
   # fur colors
-  trait."skin color" = "pink"
-  trait."fur color" = "brown"
-  trait."fur color" = "black"
-  trait."fur color" = "red"
-  trait."fur color" = "orange"
-  trait."fur color" = "tan"
+  race.trait = [ "skin color", "pink" ]
+  race.trait = [ "fur color", "brown" ]
+  race.trait = [ "fur color", "black" ]
+  race.trait = [ "fur color", "red" ]
+  race.trait = [ "fur color", "orange" ]
+  race.trait = [ "fur color", "tan" ]
 
   # hair styles
-  trait."hair style" = "short"
-  trait."hair style" = "spiked"
+  race.trait = [ "hair style", "short" ]
+  race.trait = [ "hair style", "spiked" ]
 
   # body builds
-  trait.build = "average"
-  trait.build = "broad"
-  trait.build = "fat"
-  trait.build = "large"
-  trait.build = "lean"
-  trait.build = "hunched"
-  trait.build = "slim"
-  trait.build = "stocky"
+  race.trait = [ "build", "average" ]
+  race.trait = [ "build", "broad" ]
+  race.trait = [ "build", "fat" ]
+  race.trait = [ "build", "large" ]
+  race.trait = [ "build", "lean" ]
+  race.trait = [ "build", "hunched" ]
+  race.trait = [ "build", "slim" ]
+  race.trait = [ "build", "stocky" ]
 
   # heights
   race.male_height = 72
@@ -202,9 +202,9 @@ race {
   race.desc = "{$self.D} is {$self.height} tall and {! $self.trait 'build'} with a long {! $self.trait 'hair color'} beard.  {$self.His} {$self.trait 'eye color'} eyes look almost like gems set in the {$self.trait 'skin color'} rocky skin of {$self.his} face, topped with {! $self.trait 'hair style'}."
 
   # mods
-  stat.strength = 5
-  stat.fortitude = 10
-  stat.spirit = -15
+  race.stat_bonus = [ "strength", 5 ]
+  race.stat_bonus = [ "fortitude", 10 ]
+  race.stat_bonus = [ "spirit", -15 ]
 
   # age and lifespan
   race.min_age = 30
@@ -212,40 +212,40 @@ race {
   race.lifespan = 400
 
   # eye colors
-  trait."eye color" = "brown"
-  trait."eye color" = "black"
-  trait."eye color" = "red"
+  race.trait = [ "eye color", "brown" ]
+  race.trait = [ "eye color", "black" ]
+  race.trait = [ "eye color", "red" ]
 
   # hair colors
-  trait."hair color" = "brown"
-  trait."hair color" = "white"
-  trait."hair color" = "black"
-  trait."hair color" = "blonde"
-  trait."hair color" = "red"
+  race.trait = [ "hair color", "brown" ]
+  race.trait = [ "hair color", "white" ]
+  race.trait = [ "hair color", "black" ]
+  race.trait = [ "hair color", "blonde" ]
+  race.trait = [ "hair color", "red" ]
 
   # skin colors
-  trait."skin color" = "tan"
-  trait."skin color" = "reddish"
-  trait."skin color" = "dark"
-  trait."skin color" = "granite"
+  race.trait = [ "skin color", "tan" ]
+  race.trait = [ "skin color", "reddish" ]
+  race.trait = [ "skin color", "dark" ]
+  race.trait = [ "skin color", "granite" ]
 
   # hair styles
-  trait."hair style" = "short"
-  trait."hair style" = "long"
-  trait."hair style" = "flowing"
-  trait."hair style" = "bun"
-  trait."hair style" = "curly"
-  trait."hair style" = "ponytail"
-  trait."hair style" = "spiked"
-  trait."hair style" = "shaved"
+  race.trait = [ "hair style", "short" ]
+  race.trait = [ "hair style", "long" ]
+  race.trait = [ "hair style", "flowing" ]
+  race.trait = [ "hair style", "bun" ]
+  race.trait = [ "hair style", "curly" ]
+  race.trait = [ "hair style", "ponytail" ]
+  race.trait = [ "hair style", "spiked" ]
+  race.trait = [ "hair style", "shaved" ]
 
   # body builds
-  trait.build = "average"
-  trait.build = "broad"
-  trait.build = "fat"
-  trait.build = "large"
-  trait.build = "hunched"
-  trait.build = "stocky"
+  race.trait = [ "build", "average" ]
+  race.trait = [ "build", "broad" ]
+  race.trait = [ "build", "fat" ]
+  race.trait = [ "build", "large" ]
+  race.trait = [ "build", "hunched" ]
+  race.trait = [ "build", "stocky" ]
 
   # heights
   race.male_height = 55

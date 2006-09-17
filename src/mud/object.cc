@@ -291,56 +291,48 @@ ObjectBlueprint::load (File::Reader& reader)
 {
 	FO_READ_BEGIN
 		FO_ATTR("blueprint", "id")
-			id = node.get_data();
+			id = node.get_string();
 		FO_ATTR("blueprint", "name")
-			set_name(node.get_data());
+			set_name(node.get_string());
 		FO_ATTR("blueprint", "keyword")
-			keywords.push_back(node.get_data());
+			keywords.push_back(node.get_string());
 		FO_ATTR("blueprint", "desc")
-			set_desc(node.get_data());
+			set_desc(node.get_string());
 		FO_ATTR("blueprint", "weight")
-			FO_TYPE_ASSERT(INT);
-			set_weight(tolong(node.get_data()));
+			set_weight(node.get_int());
 		FO_ATTR("blueprint", "cost")
-			FO_TYPE_ASSERT(INT);
-			set_cost(tolong(node.get_data()));
+			set_cost(node.get_int());
 		FO_ATTR("blueprint", "equip")
-			set_equip(EquipLocation::lookup(node.get_data()));
+			set_equip(EquipLocation::lookup(node.get_string()));
 		FO_ATTR("blueprint", "gettable")
-			FO_TYPE_ASSERT(BOOL);
-			set_gettable(str_is_true(node.get_data()));
+			set_gettable(node.get_bool());
 		FO_ATTR("blueprint", "touchable")
-			FO_TYPE_ASSERT(BOOL);
-			set_touchable(str_is_true(node.get_data()));
+			set_touchable(node.get_bool());
 		FO_ATTR("blueprint", "roomlist")
-			FO_TYPE_ASSERT(BOOL);
-			set_hidden(!str_is_true(node.get_data()));
+			set_hidden(!node.get_bool());
 		FO_ATTR("blueprint", "dropable")
-			FO_TYPE_ASSERT(BOOL);
-			set_dropable(str_is_true(node.get_data()));
+			set_dropable(node.get_bool());
 		FO_ATTR("blueprint", "trashable")
-			FO_TYPE_ASSERT(BOOL);
-			set_trashable(str_is_true(node.get_data()));
+			set_trashable(node.get_bool());
 		FO_ATTR("blueprint", "rotting")
-			FO_TYPE_ASSERT(BOOL);
-			set_rotting(str_is_true(node.get_data()));
+			set_rotting(node.get_bool());
 		FO_ATTR("blueprint", "container")
-			ContainerType type = ContainerType::lookup(node.get_data());
+			ContainerType type = ContainerType::lookup(node.get_string());
 			if (type.valid())
 				containers.insert(type);
 		FO_ATTR("blueprint", "parent")
-			ObjectBlueprint* blueprint = ObjectBlueprintManager.lookup(node.get_data());
+			ObjectBlueprint* blueprint = ObjectBlueprintManager.lookup(node.get_string());
 			if (blueprint)
 				set_parent(blueprint);
 			else
-				Log::Warning << "Undefined parent object blueprint '" << node.get_data() << "' at " << reader.get_filename() << ':' << node.get_line();
+				Log::Warning << "Undefined parent object blueprint '" << node.get_string() << "' at " << reader.get_filename() << ':' << node.get_line();
 		FO_WILD("user")
-			if (node.get_datatype() == File::TYPE_INT)
-				set_property(node.get_key(), tolong(node.get_data()));
-			else if (node.get_datatype() == File::TYPE_STRING)
-				set_property(node.get_key(), node.get_data());
-			else if (node.get_datatype() == File::TYPE_BOOL)
-				set_property(node.get_key(), str_is_true(node.get_data()));
+			if (node.get_value_type() == File::Value::TYPE_INT)
+				set_property(node.get_name(), node.get_int());
+			else if (node.get_value_type() == File::Value::TYPE_STRING)
+				set_property(node.get_name(), node.get_string());
+			else if (node.get_value_type() == File::Value::TYPE_BOOL)
+				set_property(node.get_name(), node.get_bool());
 			else {
 				Log::Error << "Invalid data type for script attribute at " << reader.get_filename() << ':' << node.get_line();
 				return -1;
@@ -493,14 +485,14 @@ Object::load_node(File::Reader& reader, File::Node& node)
 		FO_ATTR("object", "blueprint")
 			// sets a real blueprint
 			ObjectBlueprint* blueprint = NULL;
-			if ((blueprint = ObjectBlueprintManager.lookup(node.get_data())) == NULL)
-				Log::Error << "Could not find object blueprint '" << node.get_data() << "'";
+			if ((blueprint = ObjectBlueprintManager.lookup(node.get_string())) == NULL)
+				Log::Error << "Could not find object blueprint '" << node.get_string() << "'";
 			else
 				set_blueprint(blueprint);
 		FO_ATTR("object", "name")
-			name.set_name(node.get_data());
+			name.set_name(node.get_string());
 		FO_ATTR("object", "location")
-			location = ContainerType::lookup(node.get_data());
+			location = ContainerType::lookup(node.get_string());
 		FO_OBJECT("object")
 			Object* obj = new Object ();
 			if (obj->load (reader))

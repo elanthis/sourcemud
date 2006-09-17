@@ -44,18 +44,18 @@ WeatherRegion::load (File::Reader& reader)
 			WeatherState state(node.get_name());
 			FO_READ_BEGIN
 				FO_ATTR("weather", "id")
-					state.id = node.get_data();
+					state.id = node.get_string();
 				FO_ATTR("weather", "desc")
-					state.descs.push_back(node.get_data());
+					state.descs.push_back(node.get_string());
 				FO_OBJECT("change")
 					WeatherChange change;
 					FO_READ_BEGIN
 						FO_ATTR("weather", "target")
-							change.to = node.get_data();
+							change.to = node.get_string();
 						FO_ATTR("weather", "chance")
-							change.chance = tolong(node.get_data());
+							change.chance = node.get_int();
 						FO_ATTR("weather", "text")
-							change.desc = node.get_data();
+							change.desc = node.get_string();
 					FO_READ_ERROR
 						throw error;
 					FO_READ_END
@@ -65,12 +65,11 @@ WeatherRegion::load (File::Reader& reader)
 			FO_READ_END
 			states.push_back(state);
 		FO_ATTR("weather", "state")
-			state = get_state(node.get_data());
+			state = get_state(node.get_string());
 			if (state < 0)
 				throw File::Error(S("Current state out of range"));
 		FO_ATTR("weather", "ticks")
-			FO_TYPE_ASSERT(INT);
-			ticks = tolong(node.get_data());
+			ticks = node.get_int();
 			if (ticks > 500) // ludicrous
 				ticks = 500;
 	FO_READ_ERROR

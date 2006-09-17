@@ -163,6 +163,7 @@ Entity::save_hook (ScriptRestrictedWriter* writer)
 int
 Entity::load (File::Reader& reader)
 {
+/*
 	// catch errors
 	try {
 		File::Node node;
@@ -174,7 +175,7 @@ Entity::load (File::Reader& reader)
 
 			if (load_node(reader, node) != FO_SUCCESS_CODE) {
 				if (node.is_attr())
-					Log::Error << "Unrecognized attribute '" << node.get_name () << '.' << node.get_key() << "' at " << reader.get_filename() << ':' << node.get_line();
+					Log::Error << "Unrecognized attribute '" << node.get_name () << '.' << node.get_name() << "' at " << reader.get_filename() << ':' << node.get_line();
 				else if (node.is_begin())
 					Log::Error << "Unrecognized object '" << node.get_name() << "' at " << reader.get_filename() << ':' << node.get_line();
 				else
@@ -188,6 +189,12 @@ Entity::load (File::Reader& reader)
 		Log::Error << error.get_what() << " at " << reader.get_filename() << ':' << reader.get_line();
 		return -1;
 	}
+*/
+	FO_READ_BEGIN
+		} else if (load_node(reader, node) == FO_SUCCESS_CODE) {
+	FO_READ_ERROR
+		return -1;
+	FO_READ_END
 
 	// finish up
 	return load_finish();
@@ -198,19 +205,18 @@ Entity::load_node (File::Reader& reader, File::Node& node)
 {
 	FO_NODE_BEGIN
 		FO_ATTR("entity", "uid")
-			FO_TYPE_ASSERT(ID);
-			uid = UniqueIDManager.decode(node.get_data());
+			uid = node.get_id();
 		FO_WILD("user")
-			if (node.get_datatype() == File::TYPE_INT)
-				set_property(node.get_key(), tolong(node.get_data()));
-			else if (node.get_datatype() == File::TYPE_STRING)
-				set_property(node.get_key(), node.get_data());
-			else if (node.get_datatype() == File::TYPE_BOOL)
-				set_property(node.get_key(), node.get_bool());
+			if (node.get_value_type() == File::Value::TYPE_INT)
+				set_property(node.get_name(), node.get_int());
+			else if (node.get_value_type() == File::Value::TYPE_STRING)
+				set_property(node.get_name(), node.get_string());
+			else if (node.get_value_type() == File::Value::TYPE_BOOL)
+				set_property(node.get_name(), node.get_bool());
 			else
 				throw File::Error(S("Invalid data type for script attribute"));
 		FO_ATTR("entity", "tag")
-			add_tag(TagID::create(node.get_data()));
+			add_tag(TagID::create(node.get_string()));
 		FO_OBJECT("event")
 			EventHandler* event = new EventHandler();
 			if (!event->load(reader))

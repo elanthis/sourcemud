@@ -104,20 +104,15 @@ Spawn::load (File::Reader& reader)
 
 	FO_READ_BEGIN
 		FO_ATTR("spawn", "count")
-			FO_TYPE_ASSERT(INT)
-			min = tolong(node.get_data());
+			min = node.get_int();
 		FO_ATTR("spawn", "tag")
-			FO_TYPE_ASSERT(STRING)
-			tag = TagID::create(node.get_data());
+			tag = TagID::create(node.get_string());
 		FO_ATTR("spawn", "delay")
-			FO_TYPE_ASSERT(INT)
-			delay = tolong(node.get_data());
+			delay = node.get_int();
 		FO_ATTR("spawn", "blueprint")
-			FO_TYPE_ASSERT(STRING)
-			blueprints.push_back(node.get_data());
+			blueprints.push_back(node.get_string());
 		FO_ATTR("spawn", "room")
-			FO_TYPE_ASSERT(STRING)
-			rooms.push_back(node.get_data());
+			rooms.push_back(node.get_string());
 	FO_READ_ERROR
 		return -1;
 	FO_READ_END
@@ -174,11 +169,11 @@ Zone::load_node (File::Reader& reader, File::Node& node)
 {
 	FO_NODE_BEGIN
 		FO_ATTR("zone", "name")
-			set_name(node.get_data());
+			set_name(node.get_string());
 		FO_ATTR("zone", "desc")
-			set_desc(node.get_data());
+			set_desc(node.get_string());
 		FO_ATTR("zone", "id")
-			id = node.get_data();
+			id = node.get_string();
 		FO_OBJECT("room")
 			Room* room = new Room();
 			if (room->load (reader))

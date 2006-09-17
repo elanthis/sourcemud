@@ -165,58 +165,53 @@ NpcBlueprint::load (File::Reader& reader)
 {
 	FO_READ_BEGIN
 		FO_ATTR("blueprint", "id")
-			id = node.get_data();
+			id = node.get_string();
 		FO_ATTR("blueprint", "ai")
-			ai = AIManager.get(node.get_data());
+			ai = AIManager.get(node.get_string());
 			if (ai == NULL)
-				Log::Warning << "Unknown AI system '" << node.get_data() << "' at " << reader.get_filename() << ':' << node.get_line();
+				Log::Warning << "Unknown AI system '" << node.get_string() << "' at " << reader.get_filename() << ':' << node.get_line();
 		FO_ATTR("blueprint", "parent")
-			NpcBlueprint* blueprint = NpcBlueprintManager.lookup(node.get_data());
+			NpcBlueprint* blueprint = NpcBlueprintManager.lookup(node.get_string());
 			if (blueprint)
 				set_parent(blueprint);
 			else
-				Log::Warning << "Undefined parent npc blueprint '" << node.get_data() << "' at " << reader.get_filename() << ':' << node.get_line();
+				Log::Warning << "Undefined parent npc blueprint '" << node.get_string() << "' at " << reader.get_filename() << ':' << node.get_line();
 		FO_ATTR("blueprint", "equip")
-			equip_list.push_back(node.get_data());
+			equip_list.push_back(node.get_string());
 		FO_WILD("user")
-			if (node.get_datatype() == File::TYPE_INT)
-				set_property(node.get_key(), tolong(node.get_data()));
-			else if (node.get_datatype() == File::TYPE_STRING)
-				set_property(node.get_key(), node.get_data());
-			else if (node.get_datatype() == File::TYPE_BOOL)
-				set_property(node.get_key(), str_is_true(node.get_data()));
+			if (node.get_value_type() == File::Value::TYPE_INT)
+				set_property(node.get_name(), node.get_int());
+			else if (node.get_value_type() == File::Value::TYPE_STRING)
+				set_property(node.get_name(), node.get_string());
+			else if (node.get_value_type() == File::Value::TYPE_BOOL)
+				set_property(node.get_name(), node.get_bool());
 			else {
 				Log::Error << "Invalid data type for script attribute at " << reader.get_filename() << ':' << node.get_line();
 				return -1;
 			}
 		FO_ATTR("blueprint", "name")
-			set_name(node.get_data());
+			set_name(node.get_string());
 		FO_ATTR("blueprint", "keyword")
-			keywords.push_back(node.get_data());
+			keywords.push_back(node.get_string());
 		FO_ATTR("blueprint", "desc")
-			set_desc(node.get_data());
+			set_desc(node.get_string());
 		FO_ATTR("blueprint", "gender")
-			set_gender(GenderType::lookup(node.get_data()));
+			set_gender(GenderType::lookup(node.get_string()));
 		FO_ATTR("blueprint", "alignment")
-			FO_TYPE_ASSERT(INT);
-			set_alignment(tolong(node.get_data()));
+			set_alignment(node.get_int());
 		FO_ATTR("combat", "dodge")
-			FO_TYPE_ASSERT(INT);
-			combat.dodge = tolong(node.get_data());
+			combat.dodge = node.get_int();
 			set_flags.dodge = true;
 		FO_ATTR("combat", "attack")
-			FO_TYPE_ASSERT(INT);
-			combat.attack = tolong(node.get_data());
+			combat.attack = node.get_int();
 			set_flags.attack = true;
 		FO_ATTR("combat", "damage")
-			FO_TYPE_ASSERT(INT);
-			combat.damage = tolong(node.get_data());
+			combat.damage = node.get_int();
 			set_flags.damage = true;
 		FO_WILD("stat")
-			CreatureStatID stat = CreatureStatID::lookup(node.get_key());
+			CreatureStatID stat = CreatureStatID::lookup(node.get_name());
 			if (stat) {
-				FO_TYPE_ASSERT(INT);
-				base_stats[stat.get_value()] = tolong(node.get_data());
+				base_stats[stat.get_value()] = node.get_int();
 			}
 	FO_READ_ERROR
 		return -1;
@@ -312,22 +307,20 @@ Npc::load_node (File::Reader& reader, File::Node& node)
 	FO_NODE_BEGIN
 		FO_ATTR("npc", "blueprint")
 			NpcBlueprint* blueprint;
-			if ((blueprint = NpcBlueprintManager.lookup(node.get_data())) == NULL)
-				Log::Error << "Could not find npc blueprint '" << node.get_data() << "'";
+			if ((blueprint = NpcBlueprintManager.lookup(node.get_string())) == NULL)
+				Log::Error << "Could not find npc blueprint '" << node.get_string() << "'";
 			else
 				set_blueprint(blueprint);
 		FO_ATTR("npc", "ai")
-			ai = AIManager.get(node.get_data());
+			ai = AIManager.get(node.get_string());
 			if (ai == NULL)
-				Log::Error << "Unknown AI system '" << node.get_data() << "' at " << reader.get_filename() << ':' << node.get_line();
+				Log::Error << "Unknown AI system '" << node.get_string() << "' at " << reader.get_filename() << ':' << node.get_line();
 		FO_ATTR("npc", "roomtag")
-			room_tag = TagID::create(node.get_data());
+			room_tag = TagID::create(node.get_string());
 		FO_ATTR("npc", "zonelock")
-			FO_TYPE_ASSERT(BOOL);
-			flags.zonelock = str_is_true(node.get_data());
+			flags.zonelock = node.get_bool();
 		FO_ATTR("npc", "reverse_roomtag")
-			FO_TYPE_ASSERT(BOOL);
-			flags.revroomtag = str_is_true(node.get_data());
+			flags.revroomtag = node.get_bool();
 		FO_PARENT(Creature)
 	FO_NODE_END
 }

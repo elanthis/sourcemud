@@ -264,27 +264,23 @@ SAccountManager::get (String in_name)
 	// read it in
 	FO_READ_BEGIN
 		FO_ATTR("account", S("name"))
-			account->name = node.get_data();
+			account->name = node.get_string();
 		FO_ATTR("account", S("email"))
-			account->email = node.get_data();
+			account->email = node.get_string();
 		FO_ATTR("account", S("passphrase"))
-			account->pass = node.get_data();
+			account->pass = node.get_string();
 		FO_ATTR("account", S("character"))
-			account->characters.push_back(node.get_data());
+			account->characters.push_back(node.get_string());
 		FO_ATTR("account", S("maxcharacters"))
-			FO_TYPE_ASSERT(INT);
-			account->maxcharacters = tolong(node.get_data());
+			account->maxcharacters = node.get_int();
 		FO_ATTR("account", S("maxactive"))
-			FO_TYPE_ASSERT(INT);
-			account->maxactive = tolong(node.get_data());
+			account->maxactive = node.get_int();
 		FO_ATTR("account", S("timeout"))
-			FO_TYPE_ASSERT(INT);
-			account->timeout = tolong(node.get_data());
+			account->timeout = node.get_int();
 		FO_ATTR("account", S("disabled"))
-			FO_TYPE_ASSERT(BOOL);
-			account->flags.disabled = str_is_true(node.get_data());
+			account->flags.disabled = node.get_bool();
 		FO_ATTR("account", S("access"))
-			account->access.insert(AccessID::create(node.get_data()));
+			account->access.insert(AccessID::create(node.get_string()));
 	FO_READ_ERROR
 		account = NULL;
 		return NULL;

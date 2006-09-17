@@ -52,23 +52,19 @@ Room::load_node (File::Reader& reader, File::Node& node)
 {
 	FO_NODE_BEGIN
 		FO_ATTR("room", "id")
-			set_id(node.get_data());
+			set_id(node.get_string());
 		FO_ATTR("room", "name")
-			set_name(node.get_data());
+			set_name(node.get_string());
 		FO_ATTR("room", "desc")
-			set_desc(node.get_data());
+			set_desc(node.get_string());
 		FO_ATTR("room", "outdoors")
-			FO_TYPE_ASSERT(BOOL);
-			flags.outdoors = str_is_true(node.get_data());
+			flags.outdoors = node.get_bool();
 		FO_ATTR("room", "safe")
-			FO_TYPE_ASSERT(BOOL);
-			flags.safe = str_is_true(node.get_data());
+			flags.safe = node.get_bool();
 		FO_ATTR("room", "noweather")
-			FO_TYPE_ASSERT(BOOL);
-			flags.noweather = str_is_true(node.get_data());
+			flags.noweather = node.get_bool();
 		FO_ATTR("room", "coins")
-			FO_TYPE_ASSERT(INT);
-			coins = tolong(node.get_data());
+			coins = node.get_int();
 		FO_OBJECT("portal")
 			Portal* portal = new Portal();
 			if (portal == NULL)

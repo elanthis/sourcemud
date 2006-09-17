@@ -145,8 +145,7 @@ STimeManager::initialize ()
 
 	FO_READ_BEGIN
 		FO_ATTR("time", "current")
-			FO_TYPE_ASSERT(STRING)
-			time.decode(node.get_data());
+			time.decode(node.get_string());
 	FO_READ_ERROR
 		return -1;
 	FO_READ_END

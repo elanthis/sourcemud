@@ -188,15 +188,13 @@ Creature::load_node (File::Reader& reader, File::Node& node)
 	FO_NODE_BEGIN
 		FO_PARENT(Entity)
 		FO_ATTR("creature", "dead")
-			dead = node.get_data();
+			dead = node.get_string();
 		FO_ATTR("creature", "position")
-			position = CreaturePosition::lookup(node.get_data());
+			position = CreaturePosition::lookup(node.get_string());
 		FO_ATTR("creature", "coins")
-			FO_TYPE_ASSERT(INT);
-			coins = tolong(node.get_data());
+			coins = node.get_int();
 		FO_ATTR("creature", "hp")
-			FO_TYPE_ASSERT(INT);
-			health.cur = tolong(node.get_data());
+			health.cur = node.get_int();
 		FO_OBJECT("equip_right_hand")
 			equipment.right_held = new Object();
 			if (equipment.right_held->load (reader))

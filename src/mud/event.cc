@@ -27,22 +27,22 @@ int
 EventHandler::load (File::Reader& reader) {
 	FO_READ_BEGIN
 		FO_ATTR("event", "type")
-			if (node.get_data() == "request")
+			if (node.get_string() == "request")
 				type = EVENT_REQUEST;
-			else if (node.get_data() == "notify")
+			else if (node.get_string() == "notify")
 				type = EVENT_NOTIFY;
-			else if (node.get_data() == "command")
+			else if (node.get_string() == "command")
 				type = EVENT_COMMAND;
 			else {
-				Log::Error << "Unknown event type '" << node.get_data() << "'";
+				Log::Error << "Unknown event type '" << node.get_string() << "'";
 				return -1;
 			}
 		FO_ATTR("event", "id")
-			event = EventID::create(node.get_data());
+			event = EventID::create(node.get_string());
 		FO_ATTR("event", "script")
 			sxfunc = NULL;
-			if (node.get_data())
-				sxfunc = EventManager.compile(event, node.get_data(), reader.get_filename(), node.get_line());
+			if (node.get_string())
+				sxfunc = EventManager.compile(event, node.get_string(), reader.get_filename(), node.get_line());
 	FO_READ_ERROR
 		return -1;
 	FO_READ_END

@@ -373,42 +373,35 @@ Portal::load_node (File::Reader& reader, File::Node& node)
 {
 	FO_NODE_BEGIN
 		FO_ATTR("portal", "name")
-			set_name(node.get_data());
+			set_name(node.get_string());
 		FO_ATTR("portal", "keyword")
-			keywords.push_back(node.get_data());
+			keywords.push_back(node.get_string());
 		FO_ATTR("portal", "desc")
-			set_desc(node.get_data());
+			set_desc(node.get_string());
 		FO_ATTR("portal", "usage")
-			usage = PortalUsage::lookup(node.get_data());
+			usage = PortalUsage::lookup(node.get_string());
 		FO_ATTR("portal", "dir")
-			dir = PortalDir::lookup(node.get_data());
+			dir = PortalDir::lookup(node.get_string());
 		FO_ATTR("portal", "direction") // duplicate of above - should we keep this?
-			dir = PortalDir::lookup(node.get_data());
+			dir = PortalDir::lookup(node.get_string());
 		FO_ATTR("portal", "detail")
-			detail = PortalDetail::lookup(node.get_data());
+			detail = PortalDetail::lookup(node.get_string());
 		FO_ATTR("portal", "hidden")
-			FO_TYPE_ASSERT(BOOL);
 			set_hidden(node.get_bool());
 		FO_ATTR("portal", "door")
-			FO_TYPE_ASSERT(BOOL);
 			set_door(node.get_bool());
 		FO_ATTR("portal", "closed")
-			FO_TYPE_ASSERT(BOOL);
 			set_closed(node.get_bool());
 		FO_ATTR("portal", "locked")
-			FO_TYPE_ASSERT(BOOL);
 			set_locked(node.get_bool());
 		FO_ATTR("portal", "oneway")
-			FO_TYPE_ASSERT(BOOL);
 			set_oneway(node.get_bool());
 		FO_ATTR("portal", "nolook")
-			FO_TYPE_ASSERT(BOOL);
 			set_nolook(node.get_bool());
 		FO_ATTR("portal", "disabled")
-			FO_TYPE_ASSERT(BOOL);
 			set_disabled(node.get_bool());
 		FO_ATTR("portal", "target")
-			target = node.get_data();
+			target = node.get_string();
 		FO_PARENT(Entity)
 	FO_NODE_END
 }

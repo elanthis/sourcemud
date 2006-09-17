@@ -22,14 +22,6 @@
 
 namespace File
 {
-	enum DataType
-	{
-		TYPE_INT = 0,
-		TYPE_BOOL,
-		TYPE_STRING,
-		TYPE_ID
-	};
-
 	class Error
 	{
 		protected:
@@ -41,27 +33,56 @@ namespace File
 		inline String get_what () const { return what; }
 	};
 
+	class Value : public GC
+	{
+		public:
+		enum Type {
+			TYPE_NONE,
+			TYPE_STRING,
+			TYPE_INT,
+			TYPE_BOOL,
+			TYPE_ID,
+			TYPE_LIST,
+		};
+
+		Value () : type(TYPE_NONE), value(), list() {}
+		Value (Type s_type, String s_value) : type(s_type), value(s_value), list() {}
+		Value (const GCType::vector<Value>& s_list) : type(TYPE_LIST), value(), list(s_list) {}
+
+		Type get_type () const { return type; }
+		String get_value () const { return value; }
+		const GCType::vector<Value>& get_list () const { return list; }
+
+		private:
+		Type type;
+		String value;
+		GCType::vector<Value> list;
+	};
+
 	class KeyError : public Error
 	{
 		public:
-		KeyError (DataType type, String name, uint index);
+		KeyError (Value::Type type, String name, uint index);
 	};
 
 	class Node : public GC
 	{
 		public:
+		inline String get_class () const { return klass; }
 		inline String get_name () const { return name; }
-		inline String get_key () const { return key; }
-		inline DataType get_datatype () const { return datatype; }
-
-		// data getter
-		inline const String& get_data () { return data; }
+		inline Value::Type get_value_type () const { return value.get_type(); }
 
 		// type checking getters; throws File::Error on type-mismatch
 		String get_string () const;
 		bool get_bool () const;
 		int get_int () const;
 		UniqueID get_id () const;
+
+		const GCType::vector<Value>& get_list () const;
+		const GCType::vector<Value>& get_list (size_t size) const;
+
+		String get_string (size_t index) const;
+		int get_int (size_t index) const;
 
 		// line number of node
 		inline size_t get_line () const { return line; }
@@ -78,10 +99,9 @@ namespace File
 			BEGIN, // object form name { data }
 			END,   // } after a BEGIN
 		} type;
-		String name; // basic name
-		String key; // attribute key
-		String data; // our data
-		DataType datatype; // type of data
+		String klass;
+		String name;
+		Value value;
 		size_t line; // line node came from
 
 		friend class Reader;
@@ -114,9 +134,10 @@ namespace File
 		String filename;
 		size_t line;
 
-		enum Token { TOKEN_ERROR, TOKEN_EOF, TOKEN_STRING, TOKEN_NUMBER, TOKEN_TRUE, TOKEN_FALSE, TOKEN_BEGIN, TOKEN_END, TOKEN_SET, TOKEN_ID, TOKEN_KEY };
+		enum Token { TOKEN_ERROR, TOKEN_EOF, TOKEN_STRING, TOKEN_NUMBER, TOKEN_TRUE, TOKEN_FALSE, TOKEN_BEGIN, TOKEN_END, TOKEN_SET, TOKEN_ID, TOKEN_KEY, TOKEN_START_LIST, TOKEN_END_LIST, TOKEN_COMMA };
 
 		Token read_token(String& data);
+		bool set_value (Token type, String data, Value& value);
 	};
 
 	class Object : public GC
@@ -158,19 +179,19 @@ namespace File
 		void close ();
 
 		// attributes
-		void attr (String name, String key, String data);
-		void attr (String name, String key, long data);
-		void attr (String name, String key, bool data);
-		void attr (String name, String key, const UniqueID& data);
+		void attr (String klass, String name, String data);
+		void attr (String klass, String name, long data);
+		void attr (String klass, String name, bool data);
+		void attr (String klass, String name, const UniqueID& data);
 
-		inline void attr (String name, String key, unsigned long data) { attr(name, key, (long)data); }
-		inline void attr (String name, String key, int data) { attr(name, key, (long)data); }
-		inline void attr (String name, String key, unsigned int data) { attr(name, key, (long)data); }
-		inline void attr (String name, String key, short data) { attr(name, key, (long)data); }
-		inline void attr (String name, String key, unsigned short data) { attr(name, key, (long)data); }
+		inline void attr (String klass, String name, unsigned long data) { attr(klass, name, (long)data); }
+		inline void attr (String klass, String name, int data) { attr(klass, name, (long)data); }
+		inline void attr (String klass, String name, unsigned int data) { attr(klass, name, (long)data); }
+		inline void attr (String klass, String name, short data) { attr(klass, name, (long)data); }
+		inline void attr (String klass, String name, unsigned short data) { attr(klass, name, (long)data); }
 
 		// output a data block
-		void block (String name, String key, String data);
+		void block (String klass, String name, String data);
 
 		// begin a new section
 		void begin (String name);
@@ -224,12 +245,12 @@ class ScriptRestrictedWriter : public Scriptix::Native
 	do { \
 	const bool _x_is_read = false; \
 	if (false && _x_is_read) {
-#define FO_ATTR(name,key) \
-		} else if (node.is_attr() && node.get_name() == name && node.get_key() == key) {
-#define FO_WILD(name) \
-		} else if (node.is_attr() && node.get_name() == name) {
-#define FO_OBJECT(name) \
-		} else if (node.is_begin() && node.get_name() == name) {
+#define FO_ATTR(klass,name) \
+		} else if (node.is_attr() && node.get_class() == klass && node.get_name() == name) {
+#define FO_WILD(klass) \
+		} else if (node.is_attr() && node.get_class() == klass) {
+#define FO_OBJECT(klass) \
+		} else if (node.is_begin() && node.get_class() == klass) {
 #define FO_PARENT(klass) \
 		} else if (klass::load_node(reader, node) == FO_SUCCESS_CODE) { \
 			/* no-op */
@@ -237,8 +258,8 @@ class ScriptRestrictedWriter : public Scriptix::Native
 		} else { \
 			if (node.is_begin()) \
 				reader.consume(); \
-			else if (node.is_attr()) Log::Error << "Unrecognized attribute '" << node.get_name() << '.' << node.get_key() << "' at " << reader.get_filename() << ':' << node.get_line(); \
-			else if (node.is_begin()) Log::Error << "Unrecognized object '" << node.get_name() << "' at " << reader.get_filename() << ':' << node.get_line(); \
+			else if (node.is_attr()) Log::Error << "Unrecognized attribute '" << node.get_class() << '.' << node.get_name() << "' at " << reader.get_filename() << ':' << node.get_line(); \
+			else if (node.is_begin()) Log::Error << "Unrecognized object '" << node.get_class() << "' at " << reader.get_filename() << ':' << node.get_line(); \
 			throw(File::Error(S("unexpected value"))); \
 		} \
 	} } catch (File::Error& error) { \
@@ -253,10 +274,5 @@ class ScriptRestrictedWriter : public Scriptix::Native
 	} while(false); \
 	/* found match */ \
 	return FO_SUCCESS_CODE;
-#define FO_TYPE_ASSERT(type) \
-	if(node.get_datatype() != (File::TYPE_ ## type)) { \
-		Log::Error << "Incorrect data type for '" << node.get_name() << "' at " << reader.get_filename() << ':' << node.get_line(); \
-		throw(File::Error(S("data type mismatch"))); \
-	}
 
 #endif

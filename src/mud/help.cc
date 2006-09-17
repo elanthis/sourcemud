@@ -69,8 +69,8 @@ SHelpManager::initialize ()
 		FO_READ_BEGIN
 			FO_WILD("topic")
 				HelpTopic* topic = new HelpTopic();
-				topic->name = node.get_key();
-				topic->about = node.get_data();
+				topic->name = node.get_name();
+				topic->about = node.get_string();
 				topics.push_back(topic);
 		FO_READ_ERROR
 			return -1;
