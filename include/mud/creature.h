@@ -37,14 +37,14 @@ class CreatureAlign {
 
 	public:
 	inline CreatureAlign (int s_value) : align(s_value) {}
-	inline CreatureAlign (void) : align(0) {}
+	inline CreatureAlign () : align(0) {}
 
-	inline int get_value (void) const { return align; }
+	inline int get_value () const { return align; }
 
-	inline bool is_evil (void) const { return align < -ALIGN_BOUND; }
-	inline bool is_good (void) const { return align > ALIGN_BOUND; }
-	inline bool is_neutral (void) const { return align > -ALIGN_NEUTRAL && align < ALIGN_NEUTRAL; }
-	inline operator int (void) const { return align; }
+	inline bool is_evil () const { return align < -ALIGN_BOUND; }
+	inline bool is_good () const { return align > ALIGN_BOUND; }
+	inline bool is_neutral () const { return align > -ALIGN_NEUTRAL && align < ALIGN_NEUTRAL; }
+	inline operator int () const { return align; }
 };
 
 // Creature statistic ID
@@ -62,17 +62,17 @@ class CreatureStatID {
 	} type_t;
 	
 	inline CreatureStatID (int s_value) : value((type_t)s_value) {}
-	inline CreatureStatID (void) : value(NONE) {}
+	inline CreatureStatID () : value(NONE) {}
 
-	inline String get_name(void) const { return names[value]; }
+	inline String get_name() const { return names[value]; }
 
-	inline type_t get_value (void) const { return value; }
+	inline type_t get_value () const { return value; }
 
 	static CreatureStatID lookup (String name);
 
 	inline bool operator == (CreatureStatID dir) const { return dir.value == value; }
 	inline bool operator != (CreatureStatID dir) const { return dir.value != value; }
-	inline operator bool (void) const { return value != NONE; }
+	inline operator bool () const { return value != NONE; }
 
 	private:
 	type_t value;
@@ -102,14 +102,14 @@ class CreaturePosition {
 	} type_t;
 	
 	inline CreaturePosition (int s_value) : value((type_t)s_value) {}
-	inline CreaturePosition (void) : value(STAND) {}
+	inline CreaturePosition () : value(STAND) {}
 
-	inline String get_name(void) const { return names[value]; }
-	inline String get_verb(void) const { return verbs[value]; }
-	inline String get_sverb(void) const { return sverbs[value]; }
-	inline String get_verbing(void) const { return verbings[value]; }
+	inline String get_name() const { return names[value]; }
+	inline String get_verb() const { return verbs[value]; }
+	inline String get_sverb() const { return sverbs[value]; }
+	inline String get_verbing() const { return verbings[value]; }
 
-	inline type_t get_value (void) const { return value; }
+	inline type_t get_value () const { return value; }
 
 	static CreaturePosition lookup (String name);
 
@@ -134,7 +134,7 @@ Creature : public Entity, public IStreamSink
 
 	// save/load
 	virtual int load_node (File::Reader& reader, File::Node& node);
-	virtual int load_finish (void);
+	virtual int load_finish ();
 	virtual void save (File::Writer& writer);
 	virtual void save_hook (class ScriptRestrictedWriter* writer);
 
@@ -142,23 +142,23 @@ Creature : public Entity, public IStreamSink
 	IStreamSink* get_stream () { return this; }
 
 	// positon
-	CreaturePosition get_pos (void) const { return position; }
+	CreaturePosition get_pos () const { return position; }
 	CreaturePosition set_pos (CreaturePosition p) { return position = p; }
 
 	// health
-	inline int get_hp (void) const { return health.cur; }
+	inline int get_hp () const { return health.cur; }
 	inline int set_hp (int new_hp) { return health.cur = new_hp; } // NOTE: avoid use of, only necessary in rare cases
-	inline int get_max_hp (void) const { return health.max; }
+	inline int get_max_hp () const { return health.max; }
 	inline int set_max_hp (int new_mhp) { return health.max = new_mhp; } // NOTE: avoid use of
 
 	// check data
-	inline bool is_dead (void) const { return dead; }
+	inline bool is_dead () const { return dead; }
 
 	// gender
-	virtual GenderType get_gender (void) const = 0;
+	virtual GenderType get_gender () const = 0;
 
 	// alignment
-	virtual CreatureAlign get_alignment (void) const = 0;
+	virtual CreatureAlign get_alignment () const = 0;
 
 	// stats
 	virtual int get_base_stat (CreatureStatID stat) const = 0;
@@ -167,9 +167,9 @@ Creature : public Entity, public IStreamSink
 	int get_stat_modifier (CreatureStatID stat) const;
 
 	// combat
-	virtual uint get_combat_dodge (void) const = 0; // dodge skill
-	virtual uint get_combat_attack (void) const = 0; // attack accuracy
-	virtual uint get_combat_damage (void) const = 0; // damage factor
+	virtual uint get_combat_dodge () const = 0; // dodge skill
+	virtual uint get_combat_attack () const = 0; // attack accuracy
+	virtual uint get_combat_damage () const = 0; // damage factor
 
 	// equipment
 	int hold (class Object*);
@@ -198,11 +198,11 @@ Creature : public Entity, public IStreamSink
 	void release_object (class Object*); // *ONLY* for use by Object::release() !!!!
 
 	// hands
-	int free_hands (void) const;
-	void swap_hands (void);
+	int free_hands () const;
+	void swap_hands ();
 
 	// currency
-	inline uint get_coins (void) const { return coins; }
+	inline uint get_coins () const { return coins; }
 	inline uint set_coins (uint amount) { return coins = amount; }
 	uint give_coins (uint amount);
 	uint take_coins (uint amount);
@@ -213,27 +213,27 @@ Creature : public Entity, public IStreamSink
 	virtual void kill (Creature *killer) = 0;
 
 	// Creature abilities
-	inline bool can_move (void) const { return !is_dead(); }
-	inline bool can_see (void) const { return true; }
-	inline bool can_talk (void) const { return true; }
-	inline bool can_act (void) const { return !is_dead(); }
+	inline bool can_move () const { return !is_dead(); }
+	inline bool can_see () const { return true; }
+	inline bool can_talk () const { return true; }
+	inline bool can_act () const { return !is_dead(); }
 
 	// affects
 	int add_affect (class CreatureAffectGroup* affect);
 
 	// actions
 	void add_action (IAction* action);
-	IAction* get_action (void) const;
-	void cancel_action (void);
+	IAction* get_action () const;
+	void cancel_action ();
 
 	// round time
-	uint get_round_time (void) const;
+	uint get_round_time () const;
 
 	// action checks w/ error messages
-	bool check_alive (void); // must be alive
-	bool check_move (void); // can move
-	bool check_rt (void); // roundtime has expired
-	bool check_see (void); // can see stuff
+	bool check_alive (); // must be alive
+	bool check_move (); // can move
+	bool check_rt (); // roundtime has expired
+	bool check_see (); // can see stuff
 
 	// input/output
 	virtual void stream_put (const char*, size_t len) {};
@@ -250,25 +250,25 @@ Creature : public Entity, public IStreamSink
 	class Entity* cl_find_any (String name, bool silent = false);
 
 	// heartbeat
-	virtual void heartbeat (void);
+	virtual void heartbeat ();
 
 	// must (de)activate equipment
-	virtual void activate (void);
-	virtual void deactivate (void);
+	virtual void activate ();
+	virtual void deactivate ();
 
 	// owner - see entity.h
 	virtual void set_owner (Entity* s_owner);
 	virtual void owner_release (Entity* child);
-	virtual class Entity* get_owner (void) const;
-	inline class Room* get_room (void) const { return location; }
+	virtual class Entity* get_owner () const;
+	inline class Room* get_room () const { return location; }
 
 	// enter a room
 	bool enter (class Room*, class Portal *in_portal);
 
 	// recalculate stuff
-	virtual void recalc_stats (void);
-	virtual void recalc_health (void);
-	virtual void recalc (void);
+	virtual void recalc_stats ();
+	virtual void recalc_health ();
+	virtual void recalc ();
 
 	// parsing
 	virtual int parse_property (const class StreamControl& stream, String method, const ParseList& argv) const;
@@ -285,9 +285,9 @@ Creature : public Entity, public IStreamSink
 	void do_say (String text);
 	void do_sing (String text);
 
-	void do_look (void);
+	void do_look ();
 	void do_look (Creature *who);
-	void do_look (const class Object *what, const class ContainerType& how);
+	void do_look (class Object *what, const class ContainerType& how);
 	void do_look (class Portal *what);
 
 	void do_move (int dir);

@@ -401,20 +401,31 @@ bool
 Creature::enter (Room *new_room, Portal *old_portal)
 {
 	assert (new_room != NULL);
+	Room* old_room = get_room();
 
 	// already here
 	if (new_room->creatures.has(this))
 		return false;
 
-	// check if we're allowed to leave
-	if (!Events::requestLeaveRoom(get_room(), this, old_portal))
-		return false;
-	// check if we're allowed to enter
-	if (!Events::requestEnterRoom(new_room, this, old_portal?old_portal->get_relative_portal(get_room()):NULL))
-		return false;
-
 	// entering portal
 	Portal* enter_portal = NULL;
+	if (old_portal && old_room)
+		enter_portal = old_portal->get_relative_portal(old_room);
+	
+	// zones
+	Zone* old_zone = NULL;
+	if (old_room)
+		old_zone = old_room->get_zone();
+	Zone* new_zone = new_room->get_zone();
+
+	// event checks
+	if (old_room)
+		if (!Events::requestLeaveRoom(old_room, this, old_portal, new_room)) return false;
+	if (!Events::requestEnterRoom(new_room, this, enter_portal, old_room)) return false;
+	if (old_room && old_zone != new_zone)
+		if (!Events::requestLeaveZone(old_room, this, new_zone)) return false;
+	if (old_zone != new_zone)
+		if (!Events::requestEnterZone(old_room, this, old_zone)) return false;
 
 	// did we go thru an portal?
 	if (old_portal) {
@@ -422,11 +433,8 @@ Creature::enter (Room *new_room, Portal *old_portal)
 		*this << StreamParse(old_portal->get_go()).add(S("actor"), this).add(S("portal"), old_portal) << "\n";
 
 		// "So-and-so leaves thru..." message
-		if (get_room())
-			*get_room() << StreamIgnore(this) << StreamParse(old_portal->get_leaves()).add(S("actor"), this).add( S("portal"), old_portal) << "\n";
-
-		// opposite portal is our entrance
-		enter_portal = old_portal->get_relative_portal(get_room());
+		if (old_room)
+			*old_room << StreamIgnore(this) << StreamParse(old_portal->get_leaves()).add(S("actor"), this).add( S("portal"), old_portal) << "\n";
 	}
 
 	// valid portal?
@@ -435,10 +443,17 @@ Creature::enter (Room *new_room, Portal *old_portal)
 	else
 		*new_room << StreamName(this, INDEFINITE, true) << " arrives.\n";
 
-	Events::notifyLeaveRoom(get_room(), this, old_portal);
 	new_room->add_creature (this);
+
+	if (old_room)
+		Events::notifyLeaveRoom(old_room, this, old_portal, new_room);
+	Events::notifyEnterRoom(new_room, this, enter_portal, old_room);
+	if (old_room && old_zone != new_zone)
+		Events::notifyLeaveZone(old_room, this, new_zone);
+	if (old_zone != new_zone)
+		Events::notifyEnterZone(old_room, this, old_zone);
+
 	do_look();
-	Events::notifyEnterRoom(get_room(), this, enter_portal);
 
 	return true;
 }

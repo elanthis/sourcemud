@@ -12,6 +12,7 @@
 #include "mud/room.h"
 #include "mud/creature.h"
 #include "mud/object.h"
+#include "mud/zone.h"
 
 namespace Events {
   // hack

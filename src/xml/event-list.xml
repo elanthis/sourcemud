@@ -10,27 +10,73 @@
     <type request="1" notify="1" />
     <actor type="Creature" doc="The character leaving the room." />
     <aux type="Portal" doc="The portal being used, if any." />
+    <arg type="Room" name="dest" doc="The destination room." />
     <doc>Whenever a creature leaves the room.</doc>
   </event>
   <event name="EnterRoom">
     <type request="1" notify="1" />
     <actor type="Creature" doc="The character entering the room." />
     <aux type="Portal" doc="The portal being entered from, if any." />
+    <arg type="Room" name="from" doc="The originating room." />
     <doc>Whenever a creature enters the room.</doc>
+  </event>
+  <event name="LeaveZone">
+    <type request="1" notify="1" />
+    <actor type="Creature" doc="The character leaving the room." />
+    <arg type="Zone" name="dest" doc="The destination zone." />
+    <doc>Whenever a creature leaves the zone.</doc>
+  </event>
+  <event name="EnterZone">
+    <type request="1" notify="1" />
+    <actor type="Creature" doc="The character entering the room." />
+    <arg type="Zone" name="from" doc="The originating zone." />
+    <doc>Whenever a creature enters the zone.</doc>
+  </event>
+  <event name="TouchItem">
+    <type request="1" notify="1" />
+    <actor type="Creature" doc="The creature touching the target." />
+    <target type="Object" doc="The item being touched." />
+    <doc>Whenever a creature attempts any action which requires touching the target item.</doc>
+  </event>
+  <event name="GraspItem">
+    <type request="1" notify="1" />
+    <actor type="Creature" doc="The creature grasping the target." />
+    <target type="Object" doc="The item being grasp." />
+    <doc>Whenever a creature attempts any action which requires holding the target item, even if only for a moment.</doc>
+  </event>
+  <event name="ReleaseItem">
+    <type request="1" notify="1" />
+    <actor type="Creature" doc="The creature releasing the target." />
+    <target type="Object" doc="The item being released." />
+    <doc>Whenever a creature attempts any action that requires releasing a held item permanently.  This should NOT be called when an item is held only temporarily for the duration of the action.  It should be called if the item is being moved from the hands to another body location or carried container.</doc>
   </event>
   <event name="GetItem">
     <type request="1" notify="1" />
     <actor type="Creature" doc="The creature getting the item." />
     <target type="Object" doc="The item being retrieved." />
-    <aux type="Entity" doc="The source of the item." />
-    <doc>Whenever a creature picks up an item.</doc>
+    <aux type="Object" doc="The source of the item." />
+    <arg type="String" doc="The type of container being used (in, on)." />
+    <doc>Whenever a creature retrieves an item from a container.</doc>
   </event>
   <event name="PutItem">
     <type request="1" notify="1" />
     <actor type="Creature" doc="The creature putting the item." />
     <target type="Object" doc="The item being put." />
-    <aux type="Entity" doc="The destination of the item." />
-    <doc>Whenever a creature puts an item somewhere.</doc>
+    <aux type="Object" doc="The destination of the item." />
+    <arg type="String" doc="The type of container being used (in, on)." />
+    <doc>Whenever a creature puts an item into a container.</doc>
+  </event>
+  <event name="DropItem">
+    <type request="1" notify="1" />
+    <actor type="Creature" doc="The creature dropping the item." />
+    <target type="Object" doc="The item being dropped." />
+    <doc>Whenever a creature drops an item to the floor of the room.</doc>
+  </event>
+  <event name="PickupItem">
+    <type request="1" notify="1" />
+    <actor type="Creature" doc="The creature picking up the item." />
+    <target type="Object" doc="The item being picked up." />
+    <doc>Whenever a creature picks up an item from the floor of a room.</doc>
   </event>
 </events>
 <!-- vim: set tabstop=2 shiftwidth=2 expandtab : -->
