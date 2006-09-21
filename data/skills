@@ -22,30 +22,39 @@
 #  means, even if the character already has ranks in the skill.
 
 #######################################
+#            SKILL CLASSES            #
+#######################################
+
+## class general  <- this is built-in
+class warrior "Skills geared toward brawn and combat experience."
+class rogue "Skills relating to stealth and subterfuge."
+class caster "Skills focusing on the arcane arts."
+
+#######################################
 #         PRIMARY STATISTICS          #
 #######################################
 
-str intrinsic "Strength" "Physical power and raw muscle."
-agi intrinsic "Agility" "Physical speed and reflexes."
-hel intrinsic "Health" "Physical resilience and resistance to illness."
-int intrinsic "Intellect" "Comprehension and critical thinking ability."
-wil intrinsic "Will Power" "Character and determination."
-spi intrinsic "Spirit" "Bond to the Ether."
-lck intrinsic "Luck" "Favor of the Fates."
+skill "Strength" general intrinsic "Physical power and raw muscle."
+skill "Agility" general intrinsic "Physical speed and reflexes."
+skill "Health" general intrinsic "Physical resilience and resistance to illness."
+skill "Intellect" general intrinsic "Comprehension and critical thinking ability."
+skill "Will Power" general intrinsic "Character and determination."
+skill "Spirit" general intrinsic "Bond to the Ether."
+skill "Luck" general intrinsic "Favor of the Fates."
 
 #######################################
-#           GENERAL SKILLS            #
+#           BASIC SKILLS              #
 #######################################
 
-dodge normal "Dodge" "Ability to dodge attacks and traps."
-shield normal "Shield" "Skill at blocking with a shield.."
-melee normal "Melee" "Ability with all close-range combat."
-balance normal "Balance" "Grace and skill at maintaining balance."
-lore_magic normal "Magic Lore" "Knowledge of arcana."
+skill "Dodge" warrior normal "Ability to dodge attacks and traps."
+skill "Shield" warrior normal "Skill at blocking with a shield.."
+skill "Melee" warrior normal "Ability with all close-range combat."
+skill "Balance" rogue normal "Grace and skill at maintaining balance."
+skill "Magic Lore" caster normal "Knowledge of arcana."
 
 #######################################
 #     SPELLS AND MAGIC ABILITIES      #
 #######################################
 
-magic_light restricted "Light" "Creates a glowing ball that illumates the area."
-magic_arcane_barrier restricted "Arcane Barrier" "Defensive barrier that protects against direct spell attacks."
+skill "Light" caster restricted "Creates a glowing ball that illumates the area."
+skill "Arcane Barrier" caster restricted "Defensive barrier that protects against direct spell attacks."

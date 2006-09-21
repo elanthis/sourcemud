@@ -47,34 +47,43 @@ SSkillManager::initialize (void)
 
 	// process all skills
 	for (size_t i = 0; i < reader.size(); ++i) {
-		SkillInfo* skill = new SkillInfo();
-		skill->short_name = reader.get(i, 0);
-		String type = reader.get(i, 1);
-		skill->name = reader.get(i, 2);
-		skill->desc = reader.get(i, 3);
+		// skill class
+		if (reader.get(i, 0) == "class") {
+		// skill description
+		} else if (reader.get(i, 0) == "skill") {
+			SkillInfo* skill = new SkillInfo();
+			skill->name = reader.get(i, 1);
+			// String group = reader.get(i, 2);
+			String type = reader.get(i, 3);
+			skill->desc = reader.get(i, 4);
 
-		if (skill->short_name.empty() || skill->name.empty() || skill->desc.empty()) {
-			Log::Info << "Incomplete skill at " << path << ":" << reader.get_line(i);
+			if (skill->name.empty() || skill->desc.empty()) {
+				Log::Info << "Incomplete skill at " << path << ":" << reader.get_line(i);
+				continue;
+			}
+
+			if (type == "normal")
+				skill->type = SKILL_TYPE_NORMAL;
+			else if (type == "intrinsic")
+				skill->type = SKILL_TYPE_INTRINSIC;
+			else if (type == "restricted")
+				skill->type = SKILL_TYPE_RESTRICTED;
+			else if (type == "locked")
+				skill->type = SKILL_TYPE_LOCKED;
+			else if (type == "secret")
+				skill->type = SKILL_TYPE_SECRET;
+			else {
+				Log::Info << "Invalid skill type '" << type << "' at " << path << ":" << reader.get_line(i);
+				continue;
+			}
+
+			// add skill
+			skill_list.push_back(skill);
+		// unknown
+		} else {
+			Log::Info << "Unknown skill entry type '" << reader.get(i, 0) << "' at " << path << ":" << reader.get_line(i);
 			continue;
 		}
-
-		if (type == "normal")
-			skill->type = SKILL_TYPE_NORMAL;
-		else if (type == "intrinsic")
-			skill->type = SKILL_TYPE_INTRINSIC;
-		else if (type == "restricted")
-			skill->type = SKILL_TYPE_RESTRICTED;
-		else if (type == "locked")
-			skill->type = SKILL_TYPE_LOCKED;
-		else if (type == "secret")
-			skill->type = SKILL_TYPE_SECRET;
-		else {
-			Log::Info << "Invalid skill type '" << type << "' at " << path << ":" << reader.get_line(i);
-			continue;
-		}
-
-		// add skill
-		skill_list.push_back(skill);
 	}
 
 	reader.close();
@@ -87,7 +96,6 @@ SSkillManager::initialize (void)
 	for (SkillList::iterator i = skill_list.begin(); i != skill_list.end(); ++i) {
 		(*i)->id = ++id;
 		skill_name_map[(*i)->get_name()] = *i;
-		skill_short_name_map[(*i)->get_short_name()] = *i;
 	}
 
 	return 0;
@@ -97,7 +105,6 @@ void
 SSkillManager::shutdown (void)
 {
 	skill_name_map.clear();
-	skill_short_name_map.clear();
 	skill_list.clear();
 }
 
@@ -106,15 +113,6 @@ SSkillManager::get_by_name (String name)
 {
 	SkillMap::iterator i = skill_name_map.find(name);
 	if (i != skill_name_map.end())
-		return i->second;
-	return NULL;
-}
-
-SkillInfo*
-SSkillManager::get_by_short_name (String name)
-{
-	SkillMap::iterator i = skill_short_name_map.find(name);
-	if (i != skill_short_name_map.end())
 		return i->second;
 	return NULL;
 }

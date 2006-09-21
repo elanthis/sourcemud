@@ -183,6 +183,7 @@ namespace File
 		void attr (String klass, String name, long data);
 		void attr (String klass, String name, bool data);
 		void attr (String klass, String name, const UniqueID& data);
+		void attr (String klass, String name, const GCType::vector<Value>& list);
 
 		inline void attr (String klass, String name, unsigned long data) { attr(klass, name, (long)data); }
 		inline void attr (String klass, String name, int data) { attr(klass, name, (long)data); }

@@ -1,5 +1,5 @@
 # Player file: Admin
-# Timestamp: Sun Sep 17 17:35:15 2006
+# Timestamp: Wed Sep 20 22:49:13 2006
 # 
 
 entity.uid = <1>
@@ -18,19 +18,19 @@ equip_back {
   entity.uid = <23>
 }
 player.race = "human"
-player.birthday = "1000/06/10 09.14"
+player.birthday = "0001/06/10 09.14"
 player.alignment = 0
-stat.Strength = 100
-stat.Agility = 100
-stat.Fortitude = 100
-stat.Intellect = 100
-stat.Spirit = 100
-stat.Willpower = 100
-trait.hair_style = "long"
-trait.skin_color = "fair"
-trait.build = "lean"
-trait.hair_color = "silver"
-trait.eye_color = "gold"
+player.stat = [ "Strength", "100" ]
+player.stat = [ "Agility", "100" ]
+player.stat = [ "Fortitude", "100" ]
+player.stat = [ "Intellect", "100" ]
+player.stat = [ "Spirit", "100" ]
+player.stat = [ "Willpower", "100" ]
+player.trait = [ "hair style", long ]
+player.trait = [ "skin color", fair ]
+player.trait = [ "build", lean ]
+player.trait = [ "hair color", silver ]
+player.trait = [ "eye color", gold ]
 player.gender = "male"
 player.height = 74
 player.location = "saladhin_ranath_courtyard"
@@ -38,18 +38,18 @@ player.general_xp = 65
 player.warrior_xp = 227
 player.rogue_xp = 0
 player.caster_xp = 0
-skill.agi = 0
-skill.magic_arcane_barrier = 0
-skill.balance = 0
-skill.dodge = 0
-skill.hel = 0
-skill.int = 0
-skill.magic_light = 0
-skill.lck = 0
-skill.lore_magic = 0
-skill.melee = 0
-skill.shield = 0
-skill.spi = 0
-skill.str = 0
-skill.wil = 0
+player.skill = [ "Agility", 0 ]
+player.skill = [ "Arcane Barrier", 0 ]
+player.skill = [ "Balance", 0 ]
+player.skill = [ "Dodge", 0 ]
+player.skill = [ "Health", 0 ]
+player.skill = [ "Intellect", 0 ]
+player.skill = [ "Light", 0 ]
+player.skill = [ "Luck", 0 ]
+player.skill = [ "Magic Lore", 0 ]
+player.skill = [ "Melee", 0 ]
+player.skill = [ "Shield", 0 ]
+player.skill = [ "Spirit", 0 ]
+player.skill = [ "Strength", 0 ]
+player.skill = [ "Will Power", 0 ]
 # vim: set shiftwidth=2 tabstop=2 expandtab:

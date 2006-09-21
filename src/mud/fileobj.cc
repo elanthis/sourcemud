@@ -517,81 +517,115 @@ File::Writer::do_indent (void)
 }
 
 void
-File::Writer::attr (String name, String key, String data)
+File::Writer::attr (String klass, String name, String data)
 {
 	if (!out)
 		return;
 
-	if (!File::valid_name(name) || !File::valid_name(key)) {
-		Log::Error << "Attempted to write id '" << name << "." << key << "'";
+	if (!File::valid_name(klass) || !File::valid_name(name)) {
+		Log::Error << "Attempted to write id '" << klass << "." << name << "'";
 		return;
 	}
 
 	do_indent();
-	out << name << "." << key << " = " << EscapeString(data) << "\n";
+	out << klass << "." << name << " = " << EscapeString(data) << "\n";
 }
 
 void
-File::Writer::attr (String name, String key, long data)
+File::Writer::attr (String klass, String name, long data)
 {
 	if (!out)
 		return;
 
-	if (!File::valid_name(name) || !File::valid_name(key)) {
-		Log::Error << "Attempted to write id '" << name << "." << key << "'";
+	if (!File::valid_name(klass) || !File::valid_name(name)) {
+		Log::Error << "Attempted to write id '" << klass << "." << name << "'";
 		return;
 	}
 
 	do_indent();
-	out << name << "." << key << " = " << data << "\n";
+	out << klass << "." << name << " = " << data << "\n";
 }
 
 void
-File::Writer::attr (String name, String key, bool data)
+File::Writer::attr (String klass, String name, bool data)
 {
 	if (!out)
 		return;
 
-	if (!File::valid_name(name) || !File::valid_name(key)) {
-		Log::Error << "Attempted to write id '" << name << "." << key << "'";
+	if (!File::valid_name(klass) || !File::valid_name(name)) {
+		Log::Error << "Attempted to write id '" << klass << "." << name << "'";
 		return;
 	}
 
 	do_indent();
-	out << name << "." << key << " = " << (data ? "true" : "false") << "\n";
+	out << klass << "." << name << " = " << (data ? "true" : "false") << "\n";
 }
 
 void
-File::Writer::attr (String name, String key, const UniqueID& data)
+File::Writer::attr (String klass, String name, const UniqueID& data)
 {
 	if (!out)
 		return;
 
-	if (!File::valid_name(name) || !File::valid_name(key)) {
-		Log::Error << "Attempted to write id '" << name << "." << key << "'";
+	if (!File::valid_name(klass) || !File::valid_name(name)) {
+		Log::Error << "Attempted to write id '" << klass << "." << name << "'";
 		return;
 	}
 
 	do_indent();
 
-	out << name << "." << key << " = <" << UniqueIDManager.encode(data) << ">\n";
+	out << klass << "." << name << " = <" << UniqueIDManager.encode(data) << ">\n";
 }
 
 void
-File::Writer::block (String name, String key, String data)
+File::Writer::attr (String klass, String name, const GCType::vector<Value>& list)
 {
 	if (!out)
 		return;
 
-	if (!File::valid_name(name) || !File::valid_name(key)) {
-		Log::Error << "Attempted to write id '" << name << "." << key << "'";
+	if (!File::valid_name(klass) || !File::valid_name(name)) {
+		Log::Error << "Attempted to write id '" << klass << "." << name << "'";
+		return;
+	}
+
+	out << klass << "." << name << " = [ ";
+
+	for (GCType::vector<Value>::const_iterator i = list.begin(); i != list.end(); ++i) {
+		if (i != list.begin())
+			out << ", ";
+		switch (i->get_type()) {
+			case Value::TYPE_NONE:
+			case Value::TYPE_LIST:
+				out << "\"\"";
+				break;
+			case Value::TYPE_STRING:
+				out << EscapeString(i->get_value());
+				break;
+			case Value::TYPE_INT:
+			case Value::TYPE_BOOL:
+			case Value::TYPE_ID:
+				out << i->get_value();
+				break;
+		}
+	}
+	out << " ]\n";
+}
+
+void
+File::Writer::block (String klass, String name, String data)
+{
+	if (!out)
+		return;
+
+	if (!File::valid_name(klass) || !File::valid_name(name)) {
+		Log::Error << "Attempted to write id '" << klass << "." << name << "'";
 		return;
 	}
 
 	do_indent();
 
 	// beginning
-	out << name << "." << key << " = begin\n" << data;
+	out << klass << "." << name << " = begin\n" << data;
 	// we need to add a newline if we don't have one on end already
 	// FIXME: escape if data includes end line
 	if (data.empty() || data[data.size()-1] != '\n')
@@ -602,18 +636,18 @@ File::Writer::block (String name, String key, String data)
 }
 
 void
-File::Writer::begin (String name)
+File::Writer::begin (String klass)
 {
 	if (!out)
 		return;
 
-	if (!File::valid_name(name)) {
-		Log::Error << "Attempted to write id '" << name << "'";
+	if (!File::valid_name(klass)) {
+		Log::Error << "Attempted to write id '" << klass << "'";
 		return;
 	}
 
 	do_indent();
-	out << name << " {\n";
+	out << klass << " {\n";
 	++ indent;
 }
 

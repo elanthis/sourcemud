@@ -1,3 +1,10 @@
+2006-09-21 02:57:37  Sean Middleditch <elanthis@awesomeplay.com>
+
+  * Updated player and npc types to use the new fileobj list
+    construct.
+  * Updated the skill info format to prepare for pure-skill system,
+    including dynamic XP pools and the removal of hard-coded stats.
+
 2006-09-17 22:26:46  Sean Middleditch <elanthis@awesomeplay.com>
 
   * Added a new list type to the fileobj format, which is currently

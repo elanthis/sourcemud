@@ -208,10 +208,10 @@ NpcBlueprint::load (File::Reader& reader)
 		FO_ATTR("combat", "damage")
 			combat.damage = node.get_int();
 			set_flags.damage = true;
-		FO_WILD("stat")
-			CreatureStatID stat = CreatureStatID::lookup(node.get_name());
+		FO_ATTR("blueprint", "stat")
+			CreatureStatID stat = CreatureStatID::lookup(node.get_string(0));
 			if (stat) {
-				base_stats[stat.get_value()] = node.get_int();
+				base_stats[stat.get_value()] = node.get_int(1);
 			}
 	FO_READ_ERROR
 		return -1;

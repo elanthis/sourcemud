@@ -33,7 +33,6 @@ class SkillInfo : public Scriptix::Native
 	SkillInfo ();
 
 	inline SkillID get_id () const { return id; }
-	inline const String& get_short_name () const { return short_name; }
 	inline const String& get_name () const { return name; }
 	inline const String& get_desc () const { return desc; }
 
@@ -44,7 +43,6 @@ class SkillInfo : public Scriptix::Native
 
 	private:
 	SkillID id;
-	String short_name;
 	String name;
 	String desc;
 	SkillType type;
@@ -76,7 +74,6 @@ class SSkillManager : public IManager
 	void shutdown ();
 
 	SkillInfo* get_by_name (String name);
-	SkillInfo* get_by_short_name (String short_name);
 	SkillInfo* get_by_id (SkillID id);
 
 	inline size_t get_size () { return skill_list.size(); }
@@ -85,7 +82,6 @@ class SSkillManager : public IManager
 
 	private:
 	SkillMap skill_name_map;
-	SkillMap skill_short_name_map;
 	SkillList skill_list;
 };
 

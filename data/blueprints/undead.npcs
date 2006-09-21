@@ -12,12 +12,12 @@ npc_blueprint {
 
   blueprint.equip = "claws_animal"
   
-  stat.Strength = 10
-  stat.Agility = 20
-  stat.Fortitude = 10
-  stat.Intellect = 0
-  stat.Spirit = 10
-  stat.Willpower = 0
+  blueprint.stat = [ "Strength", 10 ]
+  blueprint.stat = [ "Agility", 20 ]
+  blueprint.stat = [ "Fortitude", 10 ]
+  blueprint.stat = [ "Intellect", 0 ]
+  blueprint.stat = [ "Spirit", 10 ]
+  blueprint.stat = [ "Willpower", 0 ]
 }
 
 # --- ANIMALS ---

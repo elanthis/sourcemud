@@ -17,7 +17,7 @@ room {
   object {
     blueprint {
       blueprint.name = "the statue of Ranath the Merciful"
-      blueprint.desc = "The statue depicts one of the many aspects of Ranath.  The statue's long arms are drapped in exquisite robes of real silk, and the cupped hands form a basin filled with an oddly reflective liquid.  The ageless face of Ranath of Merciful looks anything but, with a gaze more befitting of a blood-thirsty warlord than a divine benefactor."
+      blueprint.desc = "The statue depicts one of the many aspects of Ranath.  The statue's long arms are draped in exquisite robes of real silk, and the cupped hands form a basin filled with an oddly reflective liquid.  The ageless face of Ranath of Merciful looks anything but, with a gaze more befitting of a blood-thirsty warlord than a divine benefactor."
       blueprint.roomlist = false
       blueprint.gettable = false
       blueprint.trashable = false
@@ -28,7 +28,7 @@ room {
 room {
   room.id = "saladhin_ranath_mainhall"
   room.name = "Temple of Ranath: Main Hall"
-  room.desc = "Great marble columns stretch down the length of hallway.  Tapestries depicting many of the legendary adventurs of the mortal Ranath decorate the cold stone walls.  {if eq {day-or-night} 'day'}The sun's light touches the tiled floors, let in by the glass windows set high along the hall's walls.{else}Thousands of candles set in small, ornate chandeliers softly but completely lights the hallway.{endif}"
+  room.desc = "Great marble columns stretch down the length of hallway.  Tapestries depicting many of the legendary adventures of the mortal Ranath decorate the cold stone walls.  {if eq {day-or-night} 'day'}The sun's light touches the tiled floors, let in by the glass windows set high along the hall's walls.{else}Thousands of candles set in small, ornate chandeliers softly but completely lights the hallway.{endif}"
   entity.uid = <411>
   portal {
     portal.name = "an oaken door"
@@ -42,7 +42,7 @@ room {
 room {
   room.id = "saladhin_ranath_courtyard"
   room.name = "Temple of Ranath: Courtyard"
-  room.desc = "To the north lies the vast complex of the Temple of Ranath.  Its outer walls are constructed of a curious red stone, save for the dome of the central cathedral, which is made of a pure white marble.  The courtyard itself is delicately but finely landscaped, with many plants not native to the region growing happily among the gardens.  {if eq {day-or-night} 'day'}Multitudes hurry back and forth along the street just south of the cardyard's towering gates.{else}The occasional figure slinks past along the dark street just south of the courtyard's towering gates.{endif}"
+  room.desc = "To the north lies the vast complex of the Temple of Ranath.  Its outer walls are constructed of a curious red stone, save for the dome of the central cathedral, which is made of a pure white marble.  The courtyard itself is delicately but finely landscaped, with many plants not native to the region growing happily among the gardens.  {if eq {day-or-night} 'day'}Multitudes hurry back and forth along the street just south of the courtyard's towering gates.{else}The occasional figure slinks past along the dark street just south of the courtyard's towering gates.{endif}"
   entity.uid = <413>
   portal {
     portal.name = "an iron door"
@@ -91,7 +91,7 @@ room {
 room {
   room.id = "saladhin_square"
   room.name = "Saladhin: Central Square"
-  room.desc = "The central square of Saladhin is perhaps the busiest section of the city, night or day.  The city's major thoroughfares all come to this place.  A magnificient clock tower rises on the north edge of the square, standing atop a stone archway through which the gold road runs.  On the south edge of the square is an elaborate fountain, and next to it is a stone well."
+  room.desc = "The central square of Saladhin is perhaps the busiest section of the city, night or day.  The city's major thoroughfares all come to this place.  A magnificent clock tower rises on the north edge of the square, standing atop a stone archway through which the gold road runs.  On the south edge of the square is an elaborate fountain, and next to it is a stone well."
   entity.uid = <1444>
   portal {
     entity.uid = <0>
@@ -154,7 +154,7 @@ room {
 room {
   room.id = "saladhin_kingsrow_empty"
   room.name = "Saladhin: Kings' Row"
-  room.desc = "Ostentatious palaces line the Kings' Row, home of the wealthy or noble born.  To the east, between the parapets of one of the more gaudy of the places, can be seen the outline of the clock tower in the central city square.  To the west is the metrapolosis' western gate."
+  room.desc = "Ostentatious palaces line the Kings' Row, home of the wealthy or noble born.  To the east, between the parapets of one of the more gaudy of the places, can be seen the outline of the clock tower in the central city square.  To the west is the metropolis's western gate."
   entity.uid = <1462>
   portal {
     entity.uid = <0>

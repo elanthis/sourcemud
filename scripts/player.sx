@@ -76,28 +76,6 @@ function playerShowInfo(self)
 	self.showExp();
 }
 
-// male/female articles
-function playerHisHer(self)
-{
-	var gen = self.getGender();
-	if (gen == GENDER_MALE)
-		return "his";
-	else if (gen == GENDER_FEMALE)
-		return "her";
-	else
-		return "its";
-}
-function playerHisHers(self)
-{
-	var gen = self.getGender();
-	if (gen == GENDER_MALE)
-		return "his";
-	else if (gen == GENDER_FEMALE)
-		return "hers";
-	else
-		return "its";
-}
-
 // helper function
 function printInfo(player, label, data)
 {
@@ -110,6 +88,4 @@ function init()
 	Player.addMethod('showExp', playerShowExp);
 	Player.addMethod('showStats', playerShowStats);
 	Player.addMethod('showInfo', playerShowInfo);
-	Player.addMethod('hisHers', playerHisHers);
-	Player.addMethod('hisHer', playerHisHer);
 }

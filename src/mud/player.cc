@@ -162,11 +162,19 @@ Player::save (File::Writer& writer)
 
 	writer.attr(S("player"), S("alignment"), alignment);
 
-	for (int i = 0; i < CreatureStatID::COUNT; ++i)
-		writer.attr(S("stat"), CreatureStatID(i).get_name(), base_stats[i]);
+	for (int i = 0; i < CreatureStatID::COUNT; ++i) {
+		GCType::vector<File::Value> list;
+		list.push_back(File::Value(File::Value::TYPE_STRING, CreatureStatID(i).get_name())); 
+		list.push_back(File::Value(File::Value::TYPE_STRING, tostr(base_stats[i])));
+		writer.attr(S("player"), S("stat"), list);
+	}
 	
-	for (TraitMap::const_iterator i = pdesc.traits.begin(); i != pdesc.traits.end(); ++i)
-		writer.attr(S("trait"), str_tr(CreatureTraitID::nameof(i->first), S(" "), S("_")), i->second.get_name());
+	for (TraitMap::const_iterator i = pdesc.traits.begin(); i != pdesc.traits.end(); ++i) {
+		GCType::vector<File::Value> list;
+		list.push_back(File::Value(File::Value::TYPE_STRING, CreatureTraitID::nameof(i->first))); 
+		list.push_back(File::Value(File::Value::TYPE_INT, i->second.get_name()));
+		writer.attr(S("player"), S("trait"), list);
+	}
 
 	writer.attr(S("player"), S("gender"), pdesc.gender.get_name());
 	writer.attr(S("player"), S("height"), pdesc.height);
@@ -179,8 +187,12 @@ Player::save (File::Writer& writer)
 	writer.attr(S("player"), S("rogue_xp"), exp[EXP_ROGUE]);
 	writer.attr(S("player"), S("caster_xp"), exp[EXP_CASTER]);
 
-	for (SSkillManager::SkillList::const_iterator i = SkillManager.get_skills().begin(); i != SkillManager.get_skills().end(); ++i)
-		writer.attr(S("skill"), (*i)->get_short_name(), skills.get_skill((*i)->get_id()));
+	for (SSkillManager::SkillList::const_iterator i = SkillManager.get_skills().begin(); i != SkillManager.get_skills().end(); ++i) {
+		GCType::vector<File::Value> list;
+		list.push_back(File::Value(File::Value::TYPE_STRING, (*i)->get_name())); 
+		list.push_back(File::Value(File::Value::TYPE_INT, tostr(skills.get_skill((*i)->get_id()))));
+		writer.attr(S("player"), S("skill"), list);
+	}
 }
 
 void
@@ -250,11 +262,11 @@ Player::load_node (File::Reader& reader, File::Node& node)
 		FO_ATTR("player", "birthday")
 			if (birthday.decode(node.get_string()))
 				throw File::Error (S("Invalid birthday"));
-		FO_WILD("trait")
-			CreatureTraitID trait = CreatureTraitID::lookup(str_tr(node.get_name(), S("_"), S(" ")));
+		FO_ATTR("player", "trait")
+			CreatureTraitID trait = CreatureTraitID::lookup(node.get_string(0));
 			if (!trait.valid())
 				throw File::Error (S("Unknown trait"));
-			CreatureTraitValue value = CreatureTraitManager.get_trait(node.get_string());
+			CreatureTraitValue value = CreatureTraitManager.get_trait(node.get_string(1));
 			if (!value.valid())
 				throw File::Error (S("Unknown trait value"));
 			pdesc.traits[trait] = value;
@@ -272,20 +284,20 @@ Player::load_node (File::Reader& reader, File::Node& node)
 			exp[EXP_ROGUE] = node.get_int();
 		FO_ATTR("player", "caster_xp")
 			exp[EXP_CASTER] = node.get_int();
-		FO_WILD("stat")
-			CreatureStatID stat = CreatureStatID::lookup(node.get_name());
+		FO_ATTR("player", "stat")
+			CreatureStatID stat = CreatureStatID::lookup(node.get_string(0));
 			if (stat) {
-				base_stats[stat.get_value()] = node.get_int();
+				base_stats[stat.get_value()] = node.get_int(1);
 			} else {
-				Log::Error << "Unknown stat '" << node.get_name() << "'";
+				Log::Error << "Unknown stat '" << node.get_string(0) << "'";
 				throw File::Error(S("invalid value"));
 			}
-		FO_WILD("skill")
-			SkillInfo* info = SkillManager.get_by_short_name(node.get_name());
+		FO_ATTR("player", "skill")
+			SkillInfo* info = SkillManager.get_by_name(node.get_string(0));
 			if (info != NULL) {
-				skills.set_skill(info->get_id(), node.get_int());
+				skills.set_skill(info->get_id(), node.get_int(1));
 			} else {
-				Log::Error << "Unknown skill '" << node.get_name() << "'";
+				Log::Error << "Unknown skill '" << node.get_string(0) << "'";
 				throw File::Error(S("invalid value"));
 			}
 	FO_NODE_END
