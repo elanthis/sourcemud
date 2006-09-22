@@ -1,3 +1,11 @@
+2006-09-22 17:30:56  Sean Middleditch <elanthis@awesomeplay.com>
+
+  * Fixed player saving of stats, it was saving stat values as
+    strings instead of as integers.
+  * Added some functions to easily convert between time_t and
+    String.
+  * Added creation time and last login time tracking to accounts.
+
 2006-09-21 02:57:37  Sean Middleditch <elanthis@awesomeplay.com>
 
   * Updated player and npc types to use the new fileobj list

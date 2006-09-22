@@ -8,6 +8,8 @@
 #ifndef __ACCOUNT_H__
 #define __ACCOUNT_H__
 
+#include <time.h>
+
 #include "common/gcbase.h"
 #include "common/gcset.h"
 #include "common/string.h"
@@ -30,54 +32,59 @@ class Account : public Cleanup, public Parsable
 {
 	public:
 	// the ID
-	inline String get_id (void) const { return id; }
+	String get_id () const { return id; }
 
 	// account info
-	inline String get_name (void) const { return name; }
-	inline void set_name (String s_name) { name = s_name; }
+	String get_name () const { return name; }
+	void set_name (String s_name) { name = s_name; }
 
-	inline String get_email (void) const { return email; }
-	inline void set_email (String s_email) { email = s_email; }
+	String get_email () const { return email; }
+	void set_email (String s_email) { email = s_email; }
 
 	// pass phrases
 	bool check_passphrase (String check) const;
 	void set_passphrase (String s_pass);
 
 	// character list
-	inline const StringList& get_char_list (void) const { return characters; }
+	const StringList& get_char_list () const { return characters; }
 	void add_character (String name);
 	void del_character (String name);
 
+	// times
+	time_t get_time_created () const { return time_created; }
+	time_t get_time_lastlogin () const { return time_lastlogin; }
+	void update_time_lastlogin ();
+
 	// save out
-	int save (void) const;
+	int save () const;
 
 	// active counts
-	inline uint get_active (void) { return active; }
+	uint get_active () { return active; }
 	// manage active connections FIXME should only be available to Player...
-	inline void inc_active (void) { ++active; }
-	inline void dec_active (void) { --active; }
+	void inc_active () { ++active; }
+	void dec_active () { --active; }
 
 	// limits
-	uint get_max_characters (void) const;
-	uint get_max_active (void) const;
-	inline uint get_timeout (void) const { return timeout; }
-	inline void set_max_characters (uint value) { maxcharacters = value; }
-	inline void set_max_active (uint value) { maxactive = value; }
-	inline void set_timeout (uint value) { timeout = value; }
-	inline bool is_disabled (void) const { return flags.disabled; }
-	inline void set_disabled (bool value) { flags.disabled = value; }
+	uint get_max_characters () const;
+	uint get_max_active () const;
+	uint get_timeout () const { return timeout; }
+	void set_max_characters (uint value) { maxcharacters = value; }
+	void set_max_active (uint value) { maxactive = value; }
+	void set_timeout (uint value) { timeout = value; }
+	bool is_disabled () const { return flags.disabled; }
+	void set_disabled (bool value) { flags.disabled = value; }
 
 	// access privileges
 	bool has_access (AccessID) const; // true if we do, false if we don't
 	bool grant_access (AccessID); // returns true if added, false is we already have
 	bool revoke_access (AccessID); // returns true if removed, flase if we didn't have it
-	inline const AccessList& get_access (void) const { return access; }
-	inline bool is_gm (void) const { return has_access(AccessID::lookup(S("gm"))); }
-	inline bool is_admin (void) const { return has_access(AccessID::lookup(S("admin"))); }
-	inline bool is_builder (void) const { return has_access(AccessID::lookup(S("builder"))); }
-	inline void grant_admin (void) { grant_access(AccessID::lookup(S("admin"))); }
-	inline void grant_gm (void) { grant_access(AccessID::lookup(S("gm"))); }
-	inline void grant_builder (void) { grant_access(AccessID::lookup(S("builder"))); }
+	const AccessList& get_access () const { return access; }
+	bool is_gm () const { return has_access(AccessID::lookup(S("gm"))); }
+	bool is_admin () const { return has_access(AccessID::lookup(S("admin"))); }
+	bool is_builder () const { return has_access(AccessID::lookup(S("builder"))); }
+	void grant_admin () { grant_access(AccessID::lookup(S("admin"))); }
+	void grant_gm () { grant_access(AccessID::lookup(S("gm"))); }
+	void grant_builder () { grant_access(AccessID::lookup(S("builder"))); }
 
 	// parsing
 	virtual int parse_property (const class StreamControl& stream, String method, const ParseList& argv) const;
@@ -92,6 +99,8 @@ class Account : public Cleanup, public Parsable
 	uint maxcharacters; // 0 means default
 	uint maxactive; // 0 means default
 	uint timeout; // 0 means default
+	time_t time_created;
+	time_t time_lastlogin;
 	StringList characters;
 	AccessList access;
 
@@ -100,7 +109,7 @@ class Account : public Cleanup, public Parsable
 	} flags;
 
 	Account (String s_id);
-	~Account (void);
+	~Account ();
 
 	friend class SAccountManager;
 };
@@ -108,8 +117,8 @@ class Account : public Cleanup, public Parsable
 class SAccountManager : public IManager
 {
 	public:
-	virtual int initialize (void);
-	virtual void shutdown (void);
+	virtual int initialize ();
+	virtual void shutdown ();
 
 	Account* get (String name); // need a copy for get
 

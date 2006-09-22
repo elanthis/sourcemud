@@ -223,6 +223,7 @@ noinst_HEADERS=\
 	include/common/streams.h \
 	include/common/strbuf.h \
 	include/common/string.h \
+	include/common/time.h \
 	include/common/types.h \
 	include/scriptix/array.h \
 	include/scriptix/atom.h \
@@ -321,7 +322,8 @@ COMMON_SOURCES=\
 	src/common/regex.cc \
 	src/common/streams.cc \
 	src/common/strbuf.cc \
-	src/common/strings.cc
+	src/common/strings.cc \
+	src/common/time.cc 
 
 SCRIPTIX_SOURCES=\
 	src/scriptix/array.cc \

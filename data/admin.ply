@@ -1,5 +1,5 @@
 # Player file: Admin
-# Timestamp: Wed Sep 20 22:49:13 2006
+# Timestamp: Fri Sep 22 13:26:44 2006
 # 
 
 entity.uid = <1>
@@ -20,12 +20,12 @@ equip_back {
 player.race = "human"
 player.birthday = "0001/06/10 09.14"
 player.alignment = 0
-player.stat = [ "Strength", "100" ]
-player.stat = [ "Agility", "100" ]
-player.stat = [ "Fortitude", "100" ]
-player.stat = [ "Intellect", "100" ]
-player.stat = [ "Spirit", "100" ]
-player.stat = [ "Willpower", "100" ]
+player.stat = [ "Strength", 100 ]
+player.stat = [ "Agility", 100 ]
+player.stat = [ "Fortitude", 100 ]
+player.stat = [ "Intellect", 100 ]
+player.stat = [ "Spirit", 100 ]
+player.stat = [ "Willpower", 100 ]
 player.trait = [ "hair style", long ]
 player.trait = [ "skin color", fair ]
 player.trait = [ "build", lean ]

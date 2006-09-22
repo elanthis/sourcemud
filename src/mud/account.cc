@@ -11,15 +11,18 @@
 #include "mud/fileobj.h"
 #include "mud/settings.h"
 #include "common/md5.h"
+#include "common/time.h"
 
 SAccountManager AccountManager;
 
 Account::Account (String s_id) : id(s_id), active(0), maxcharacters(0), maxactive(0)
 {
 	flags.disabled = false;
+	time_created = time(NULL);
+	time_lastlogin = (time_t)0;
 }
 
-Account::~Account (void)
+Account::~Account ()
 {
 	// remove from account list
 	SAccountManager::AccountList::iterator i = find(AccountManager.accounts.begin(), AccountManager.accounts.end(), this);
@@ -28,7 +31,7 @@ Account::~Account (void)
 }
 
 int
-Account::save (void) const
+Account::save () const
 {
 	String path = SettingsManager.get_account_path() + "/" + strlower(id) + ".acct";
 
@@ -51,6 +54,8 @@ Account::save (void) const
 		writer.attr(S("account"), S("maxactive"), maxactive);
 	if (timeout > 0)
 		writer.attr(S("account"), S("maxactive"), timeout);
+	writer.attr(S("account"), S("created"), time_to_str(time_created));
+	writer.attr(S("account"), S("lastlogin"), time_to_str(time_lastlogin));
 	for (AccessList::const_iterator i = access.begin(); i != access.end(); ++i)
 		writer.attr(S("account"), S("access"), AccessID::nameof(*i));
 
@@ -113,7 +118,7 @@ Account::del_character (String name)
 
 // get max characters allowed
 uint
-Account::get_max_characters (void) const
+Account::get_max_characters () const
 {
 	// explicit?
 	if (maxcharacters > 0)
@@ -125,7 +130,7 @@ Account::get_max_characters (void) const
 
 // get max active characters allowed
 uint
-Account::get_max_active (void) const
+Account::get_max_active () const
 {
 	// explicit?
 	if (maxactive > 0)
@@ -133,6 +138,13 @@ Account::get_max_active (void) const
 
 	// default
 	return SettingsManager.get_active_per_account();
+}
+
+// update login time
+void
+Account::update_time_lastlogin ()
+{
+	time_lastlogin = time(NULL);
 }
 
 // access
@@ -184,14 +196,14 @@ Account::parse_default (const StreamControl& stream) const
 }
 
 int
-SAccountManager::initialize (void)
+SAccountManager::initialize ()
 {
 
 	return 0;
 }
 
 void
-SAccountManager::shutdown (void)
+SAccountManager::shutdown ()
 {
 	// save all accounts
 	for (AccountList::iterator i = accounts.begin(); i != accounts.end(); ++i)
@@ -281,6 +293,10 @@ SAccountManager::get (String in_name)
 			account->flags.disabled = node.get_bool();
 		FO_ATTR("account", S("access"))
 			account->access.insert(AccessID::create(node.get_string()));
+		FO_ATTR("account", "created")
+			account->time_created = str_to_time(node.get_string());
+		FO_ATTR("account", "lastlogin")
+			account->time_lastlogin = str_to_time(node.get_string());
 	FO_READ_ERROR
 		account = NULL;
 		return NULL;

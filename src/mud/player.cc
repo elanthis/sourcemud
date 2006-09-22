@@ -165,7 +165,7 @@ Player::save (File::Writer& writer)
 	for (int i = 0; i < CreatureStatID::COUNT; ++i) {
 		GCType::vector<File::Value> list;
 		list.push_back(File::Value(File::Value::TYPE_STRING, CreatureStatID(i).get_name())); 
-		list.push_back(File::Value(File::Value::TYPE_STRING, tostr(base_stats[i])));
+		list.push_back(File::Value(File::Value::TYPE_INT, tostr(base_stats[i])));
 		writer.attr(S("player"), S("stat"), list);
 	}
 	

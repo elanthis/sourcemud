@@ -261,6 +261,9 @@ TelnetModeLogin::process (char* line)
 			return;
 		}
 
+		// set login time
+		account->update_time_lastlogin();
+
 		// ok, do login
 		get_handler()->set_mode(new TelnetModeMainMenu(get_handler(), account));
 	}
