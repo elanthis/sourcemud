@@ -200,7 +200,7 @@ SPlayerManager::destroy (String name)
 	for (PlayerList::iterator i = player_list.begin(); i != player_list.end(); ++i) {
 		if ((*i)->get_id() == name) {
 			if ((*i)->is_connected())
-				(*i)->quit();
+				(*i)->end_session();
 			break;
 		}
 	}

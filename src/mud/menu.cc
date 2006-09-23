@@ -389,7 +389,7 @@ TelnetModePlay::initialize ()
 	player->connect(this);
 
 	// start the player
-	if (player->start()) {
+	if (player->start_session() != 0) {
 		*get_handler() << "\n" CADMIN "Failed to start your login session." CNORMAL "\n";
 		Log::Warning << "Failed to start login session for '" << player->get_id() << "'.";
 		return -1;

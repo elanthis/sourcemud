@@ -18,8 +18,10 @@
 void
 Player::process_command (String line)
 {
-	if (str_eq(line, S("quit")))
-		quit();
+	if (str_eq(line, S("quit"))) {
+		end_session();
+		return;
+	}
 
 	if (line.empty())
 		return;

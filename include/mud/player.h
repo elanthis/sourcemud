@@ -28,6 +28,7 @@
 #include "common/imanager.h"
 #include "mud/bindings.h"
 #include "mud/pconn.h"
+#include "common/time.h"
 
 #ifdef HAVE_LIBZ
 #include <zlib.h>
@@ -86,6 +87,15 @@ class Player : public Creature
 	// connected?
 	//   currently in use by someone
 	inline bool is_connected () const { return conn != NULL; }
+
+	// time
+	time_t get_time_created () const { return time_created; }
+	time_t get_time_lastlogin () const { return time_lastlogin; }
+	uint32 get_total_playtime () const { return total_playtime; }
+
+	// session management
+	int start_session ();
+	void end_session ();
 
 	// birthday/age
 	uint get_age () const;
@@ -149,10 +159,6 @@ class Player : public Creature
 	// parsing
 	virtual int parse_property (const class StreamControl& stream, String method, const ParseList& argv) const;
 
-	// handling "player states"
-	int start (); // start the session
-	void quit (); // save and portal
-
 	// player-only actions
 	void do_tell (Player* who, String what);
 	void do_reply (String what);
@@ -174,6 +180,9 @@ class Player : public Creature
 	class Race *race;
 	CreatureAlign alignment;
 	uint exp[NUM_EXPS];
+	time_t time_created;
+	time_t time_lastlogin;
+	uint32 total_playtime;
 	GameTime birthday;
 	SkillSet skills;
 	struct NetworkInfo {

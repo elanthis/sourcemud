@@ -134,6 +134,10 @@ Player::Player (class Account* s_account, String s_id) : Creature (AweMUD_Player
 		exp[i] = 0;
 	}
 
+	time_created = time(NULL);
+	time_lastlogin = (time_t)0;
+	total_playtime = 0;
+
 	// set name
 	name.set_text(s_id);
 	name.set_article(EntityArticleClass::PROPER);
@@ -142,7 +146,7 @@ Player::Player (class Account* s_account, String s_id) : Creature (AweMUD_Player
 	PlayerManager.player_list.push_back(this);
 }
 
-Player::~Player (void)
+Player::~Player ()
 {
 	// remove
 	SPlayerManager::PlayerList::iterator i = std::find(PlayerManager.player_list.begin(), PlayerManager.player_list.end(), this);
@@ -154,6 +158,10 @@ void
 Player::save (File::Writer& writer)
 {
 	Creature::save(writer);
+
+	writer.attr(S("player"), S("created"), time_to_str(time_created));
+	writer.attr(S("player"), S("lastlogin"), time_to_str(time_lastlogin));
+	writer.attr(S("player"), S("playtime"), total_playtime);
 
 	if (race != NULL)
 		writer.attr(S("player"), S("race"), race->get_name());
@@ -196,7 +204,7 @@ Player::save (File::Writer& writer)
 }
 
 void
-Player::save (void)
+Player::save ()
 {
 	String path = PlayerManager.path(get_id());
 
@@ -300,12 +308,18 @@ Player::load_node (File::Reader& reader, File::Node& node)
 				Log::Error << "Unknown skill '" << node.get_string(0) << "'";
 				throw File::Error(S("invalid value"));
 			}
+		FO_ATTR("player", "created")
+			time_created = str_to_time(node.get_string());
+		FO_ATTR("player", "lastlogin")
+			time_lastlogin = str_to_time(node.get_string());
+		FO_ATTR("player", "playtime")
+			total_playtime = node.get_int();
 	FO_NODE_END
 }
 
 // 'startup' the player session
 int
-Player::start (void)
+Player::start_session ()
 {
 	// login message
 	clear_scr();
@@ -346,6 +360,9 @@ Player::start (void)
 		CreatureAffectGroup* strong = new CreatureAffectGroup(S("Strength"), CreatureAffectType::INNATE, 60 * 30);
 		strong->add_affect(new CreatureAffectStat(CreatureStatID::STRENGTH, 10));
 		add_affect(strong);
+
+		// update login time
+		time_lastlogin = time(NULL);
 	// already active... just "refresh" room
 	} else {
 		do_look();
@@ -357,10 +374,12 @@ Player::start (void)
 	return 0;
 }
 
-// quit from game
 void
-Player::quit (void)
+Player::end_session ()
 {
+	// update playtime
+	total_playtime += time(NULL) - time_lastlogin;
+
 	// save the player
 	save();
 
@@ -375,7 +394,7 @@ Player::quit (void)
 }
 
 uint
-Player::get_age (void) const
+Player::get_age () const
 {
 	// calculate the age in years, based on birthdate and current time
 	uint years = TimeManager.time.get_year() - birthday.get_year();
@@ -403,7 +422,7 @@ Player::kill (Creature *killer)
 }
 
 void
-Player::display_inventory (void)
+Player::display_inventory ()
 {
 	// start - worn
 	*this << "You are wearing ";
@@ -474,7 +493,7 @@ Player::display_inventory (void)
 }
 
 void
-Player::display_skills (void)
+Player::display_skills ()
 {
 	*this << "Skills:\n";
 
@@ -505,7 +524,7 @@ Player::grant_exp (uint type, uint amount) {
 }
 
 void
-Player::recalc_stats (void)
+Player::recalc_stats ()
 {
 	Creature::recalc_stats();
 
@@ -517,20 +536,20 @@ Player::recalc_stats (void)
 }
 
 void
-Player::recalc (void)
+Player::recalc ()
 {
 	Creature::recalc();
 }
 
 void
-Player::heartbeat(void) {
+Player::heartbeat() {
 	// do creature update
 	Creature::heartbeat();
 
 	// timeout?  then die
 	if (ninfo.timeout_ticks == 1) {
 		Log::Info << "Player '" << get_id() << "' has timed out.";
-		quit();
+		end_session();
 	} else if (ninfo.timeout_ticks > 0) {
 		--ninfo.timeout_ticks;
 	}
@@ -558,7 +577,7 @@ Player::heartbeat(void) {
 }
 
 void
-Player::activate (void)
+Player::activate ()
 {
 	Creature::activate();
 
@@ -567,7 +586,7 @@ Player::activate (void)
 }
 
 void
-Player::deactivate (void)
+Player::deactivate ()
 {
 	if (account != NULL)
 			account->dec_active();
@@ -576,7 +595,7 @@ Player::deactivate (void)
 }
 
 void
-Player::show_prompt (void)
+Player::show_prompt ()
 {
 	*this << "-- HP:" << get_hp() << "/" << get_max_hp() << " RT:" << get_round_time() << " >";
 }
@@ -649,7 +668,7 @@ Player::connect (IPlayerConnection* handler)
 
 // disconnect from a telnet handler
 void
-Player::disconnect (void)
+Player::disconnect ()
 {
 	// already disconnected?
 	if (!get_conn())
@@ -691,7 +710,7 @@ Player::set_indent (uint level)
 
 // get width of view
 uint
-Player::get_width (void)
+Player::get_width ()
 {
 	if (get_conn())
 		return get_conn()->pconn_get_width();
@@ -701,7 +720,7 @@ Player::get_width (void)
 
 // clear screen
 void
-Player::clear_scr (void)
+Player::clear_scr ()
 {
 	if (get_conn())
 		get_conn()->pconn_clear();

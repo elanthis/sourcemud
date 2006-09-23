@@ -1,3 +1,9 @@
+2006-09-23 04:01:49  Sean Middleditch <elanthis@awesomeplay.com>
+
+  * Added a created and last login time stamp to Player.
+  * Added a total playtime field to Player.
+  * Renamed start/quit in Player to start_session and end_session.
+
 2006-09-22 17:30:56  Sean Middleditch <elanthis@awesomeplay.com>
 
   * Fixed player saving of stats, it was saving stat values as

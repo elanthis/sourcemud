@@ -14,7 +14,7 @@ time_to_str (time_t time)
 	char buffer[128];
 
 	localtime_r(&time, &tm);
-	strftime(buffer, sizeof(buffer), "%Y-%m-%d %H:%M:%S %Z", &tm);
+	strftime(buffer, sizeof(buffer), "%Y-%m-%d %H:%M:%S", &tm);
 	return String(buffer);
 }
 
@@ -22,6 +22,7 @@ time_t
 str_to_time (String str)
 {
 	struct tm tm;
-	strptime(str.c_str(), "%Y-%m-%d %H:%M:%S %Z", &tm);
+	memset(&tm, 0, sizeof(tm));
+	strptime(str.c_str(), "%Y-%m-%d %H:%M:%S", &tm);
 	return mktime(&tm);
 }

@@ -1,5 +1,5 @@
 # Player file: Admin
-# Timestamp: Fri Sep 22 13:26:44 2006
+# Timestamp: Sat Sep 23 00:00:32 2006
 # 
 
 entity.uid = <1>
@@ -17,6 +17,9 @@ equip_back {
   object.blueprint = "co_leather_backpack"
   entity.uid = <23>
 }
+player.created = "2000-01-01 00:00:00"
+player.lastlogin = "2006-09-23 00:00:31"
+player.playtime = 9
 player.race = "human"
 player.birthday = "0001/06/10 09.14"
 player.alignment = 0
