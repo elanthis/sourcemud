@@ -161,37 +161,37 @@ if (value == false) { ... }</example>
       <name>STAT_STRENGTH</name>
       <type>Integer</type>
       <expr>CreatureStatID::STRENGTH</expr>
-      <doc>Strength character statistic.</doc>
+      <doc>Strength creature statistic.</doc>
     </global>
     <global>
       <name>STAT_FORTITUDE</name>
       <type>Integer</type>
       <expr>CreatureStatID::FORTITUDE</expr>
-      <doc>Endurance character statistic.</doc>
+      <doc>Endurance creature statistic.</doc>
     </global>
     <global>
       <name>STAT_AGILITY</name>
       <type>Integer</type>
       <expr>CreatureStatID::AGILITY</expr>
-      <doc>Agility character statistic.</doc>
+      <doc>Agility creature statistic.</doc>
     </global>
     <global>
       <name>STAT_INTELLECT</name>
       <type>Integer</type>
       <expr>CreatureStatID::INTELLECT</expr>
-      <doc>Intelligence character statistic.</doc>
+      <doc>Intelligence creature statistic.</doc>
     </global>
     <global>
       <name>STAT_SPIRIT</name>
       <type>Integer</type>
       <expr>CreatureStatID::SPIRIT</expr>
-      <doc>Spirit character statistic.</doc>
+      <doc>Spirit creature statistic.</doc>
     </global>
     <global>
       <name>STAT_WILLPOWER</name>
       <type>Integer</type>
       <expr>CreatureStatID::WILLPOWER</expr>
-      <doc>Creatureisma character statistic.</doc>
+      <doc>Creatureisma creature statistic.</doc>
     </global>
     <global>
       <name>STAT_COUNT</name>
@@ -284,7 +284,7 @@ if (value == false) { ... }</example>
   <!-- For Creature.cl_find_object -->
   <global-group>
     <name>Object Search Ranges</name>
-    <doc>The <link method="Creature.clFindObject"/> method can be configured to look in different places for the named object.  For example, you may search only the ground, only the character's inventory, or every reachable location.</doc>
+    <doc>The <link method="Creature.clFindObject"/> method can be configured to look in different places for the named object.  For example, you may search only the ground, only the creature's inventory, or every reachable location.</doc>
 
     <global>
       <name>GOC_HELD</name>
@@ -394,9 +394,9 @@ if (value == false) { ... }</example>
     <arg>
       <name>who</name>
       <type>Creature</type>
-      <doc>The character to not send output to.</doc>
+      <doc>The creature to not send output to.</doc>
     </arg>
-    <doc>This streamop is only valid for streams to Rooms.  By default, all characters in the room will receive the text streamed to a room.  Any characters listed in the @ignore streamop will not receive text from that particular stream.</doc>
+    <doc>This streamop is only valid for streams to Rooms.  By default, all creatures in the room will receive the text streamed to a room.  Any creatures listed in the @ignore streamop will not receive text from that particular stream.</doc>
     <example><![CDATA[player.room() << @ignore(player) << @name(player, EN_DEF, true) << " laughs maniacally.\n";]]></example>
     <code><![CDATA[
       _stream << StreamIgnore(_arg_who);
@@ -686,7 +686,7 @@ number = roll_dice(3, 6);]]></example>
     <name>getStatName</name>
     <return>
       <type>String</type>
-      <doc>Name of the character stat.</doc>
+      <doc>Name of the creature stat.</doc>
     </return>
     <arg>
       <name>stat</name>
@@ -709,7 +709,7 @@ number = roll_dice(3, 6);]]></example>
     <arg>
       <name>value</name>
       <type>Integer</type>
-      <doc>Value of a character stat.</doc>
+      <doc>Value of a creature stat.</doc>
     </arg>
     <doc>Returns the color control string for a statistic's value.  This is used to display "good" and "bad" color variations.</doc>
   </function>
@@ -723,7 +723,7 @@ number = roll_dice(3, 6);]]></example>
     <arg>
       <name>value</name>
       <type>Integer</type>
-      <doc>Value of a character stat.</doc>
+      <doc>Value of a creature stat.</doc>
     </arg>
     <doc>Returns a textual description for how good or bad a statistic's value is.</doc>
   </function>
@@ -809,7 +809,7 @@ number = roll_dice(3, 6);]]></example>
           return Scriptix::Nil;
 
         if (!File::valid_name(_arg_name)) {
-          Scriptix::ScriptManager.raise_error(Scriptix::SXE_BADARGS, "Attribute name has invalid characters");
+          Scriptix::ScriptManager.raise_error(Scriptix::SXE_BADARGS, "Attribute name has invalid creatures");
           return Scriptix::Nil;
         }
 
@@ -833,7 +833,7 @@ number = roll_dice(3, 6);]]></example>
           return Scriptix::Nil;
 
         if (!File::valid_name(_arg_name)) {
-          Scriptix::ScriptManager.raise_error(Scriptix::SXE_BADARGS, "Attribute name has invalid characters");
+          Scriptix::ScriptManager.raise_error(Scriptix::SXE_BADARGS, "Attribute name has invalid creatures");
           return Scriptix::Nil;
         }
 
@@ -857,7 +857,7 @@ number = roll_dice(3, 6);]]></example>
           return Scriptix::Nil;
 
         if (!File::valid_name(_arg_name)) {
-          Scriptix::ScriptManager.raise_error(Scriptix::SXE_BADARGS, "Attribute name has invalid characters");
+          Scriptix::ScriptManager.raise_error(Scriptix::SXE_BADARGS, "Attribute name has invalid creatures");
           return Scriptix::Nil;
         }
 
@@ -1032,11 +1032,11 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
     ]]></code>
   </function>
 
-  <!-- Generic characters -->
+  <!-- Generic creatures -->
   <type>
     <name>Creature</name>
     <parent>Entity</parent>
-    <doc>The character class represents the shared information between the <link type="NPC"/> and player classes.  There are also a few methods and attributes which are only useful to either the npc or player class; however, since the methods are more convenient to use without casting between this class and the true class, making them virtual methods here simplifies things.</doc>
+    <doc>The creature class represents the shared information between the <link type="NPC"/> and player classes.  There are also a few methods and attributes which are only useful to either the npc or player class; however, since the methods are more convenient to use without casting between this class and the true class, making them virtual methods here simplifies things.</doc>
 
     <!-- Stats -->
     <method>
@@ -1092,7 +1092,7 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
       <return>
         <type>Integer</type>
       </return>
-      <doc>Return the alignment value of the character.  &lt;= -250 is evil.  &gt;= 250 is good.  &lt;= 300 and &gt;= -300 is neutral.</doc>
+      <doc>Return the alignment value of the creature.  &lt;= -250 is evil.  &gt;= 250 is good.  &lt;= 300 and &gt;= -300 is neutral.</doc>
     </method>
     <method>
       <name>isEvil</name>
@@ -1100,7 +1100,7 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
         <type>Boolean</type>
       </return>
       <code>_return = _self->get_alignment().is_evil();</code>
-      <doc>Return true if the character is evil.</doc>
+      <doc>Return true if the creature is evil.</doc>
     </method>
     <method>
       <name>isGood</name>
@@ -1108,7 +1108,7 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
         <type>Boolean</type>
       </return>
       <code>_return = _self->get_alignment().is_good();</code>
-      <doc>Return true if the character is good.</doc>
+      <doc>Return true if the creature is good.</doc>
     </method>
     <method>
       <name>isNeutral</name>
@@ -1116,7 +1116,7 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
         <type>Boolean</type>
       </return>
       <code>_return = _self->get_alignment().is_neutral();</code>
-      <doc>Return true if the character is neutral.</doc>
+      <doc>Return true if the creature is neutral.</doc>
     </method>
 
     <!-- Build and inventory -->
@@ -1174,7 +1174,7 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
         <name>object</name>
         <type>Object</type>
       </arg>
-      <doc>This will make the character hold the given object.  If the character cannot hold the object (i.e., their hands are full), the method will _return = -1.  Otherwise, the body location ID will be returned.</doc>
+      <doc>This will make the creature hold the given object.  If the creature cannot hold the object (i.e., their hands are full), the method will _return = -1.  Otherwise, the body location ID will be returned.</doc>
     </method>
     <method>
       <name>wear</name>
@@ -1186,7 +1186,7 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
         <name>object</name>
         <type>Object</type>
       </arg>
-      <doc>This will make the character wear the given object.  If the character cannot wear the object (i.e., no suitable body location is free), the method will _return = -1.  Otherwise, the body location ID will be returned.</doc>
+      <doc>This will make the creature wear the given object.  If the creature cannot wear the object (i.e., no suitable body location is free), the method will _return = -1.  Otherwise, the body location ID will be returned.</doc>
     </method>
     <method>
       <name>equip</name>
@@ -1198,7 +1198,7 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
         <name>object</name>
         <type>Object</type>
       </arg>
-      <doc>This method is identical to the wear method, except that if no available body location for wearing the object can be found, the character will try to hold the object instead.  If no suitable body locations are found, and the character's hands are full, the method returns -1.  Otherwise, the body location ID will be returned.</doc>
+      <doc>This method is identical to the wear method, except that if no available body location for wearing the object can be found, the creature will try to hold the object instead.  If no suitable body locations are found, and the creature's hands are full, the method returns -1.  Otherwise, the body location ID will be returned.</doc>
     </method>
 
     <!-- ObjectUsages -->
@@ -1210,7 +1210,7 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
         <type>Portal</type>
         <doc>Portal to use.</doc>
       </arg>
-      <doc>The character will attempt to use the given portal.</doc>
+      <doc>The creature will attempt to use the given portal.</doc>
     </method>
     <method>
       <name>attack</name>
@@ -1244,7 +1244,7 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
         <type>Integer</type>
         <doc>Number of coins left.</doc>
       </return>
-      <doc>Takes a number of coins from the character.  If there aren't that many coins left, the character is left with 0 coins.  When doing transactions of coins, you should be careful that you don't assume the character has more coins than they really do.</doc>
+      <doc>Takes a number of coins from the creature.  If there aren't that many coins left, the creature is left with 0 coins.  When doing transactions of coins, you should be careful that you don't assume the creature has more coins than they really do.</doc>
     </method>
     <method>
       <name>giveCoins</name>
@@ -1256,9 +1256,9 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
       </arg>
       <return>
         <type>Integer</type>
-        <doc>Number of coins the character now has.</doc>
+        <doc>Number of coins the creature now has.</doc>
       </return>
-      <doc>Gives a number of coins to the character.  Creatures have a limit on how many coins they can carry.  You must be very careful during transactions and check the return value of this method; if the character has less coins than you anticipated after the method, they can't carry any more coins.  You should return the left over to the source they came from.</doc>
+      <doc>Gives a number of coins to the creature.  Creatures have a limit on how many coins they can carry.  You must be very careful during transactions and check the return value of this method; if the creature has less coins than you anticipated after the method, they can't carry any more coins.  You should return the left over to the source they came from.</doc>
     </method>
 
     <!-- Searching -->
@@ -1284,7 +1284,7 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
         <type>Boolean</type>
         <doc>Set to true if not "cannot find" message should be printed to the player.</doc>
       </arg>
-      <doc>Search the character's room (or inventory) for the named object.  The name should generally be player input.  This call can resolve arbitrary names, like "the sword" or "my other pouch."</doc>
+      <doc>Search the creature's room (or inventory) for the named object.  The name should generally be player input.  This call can resolve arbitrary names, like "the sword" or "my other pouch."</doc>
     </method>
     <method>
       <name>clFindCreature</name>
@@ -1296,14 +1296,14 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
       <arg>
         <name>name</name>
         <type>String</type>
-        <doc>Name of character to look for.  Can include flavour text and numeric indexes.</doc>
+        <doc>Name of creature to look for.  Can include flavour text and numeric indexes.</doc>
       </arg>
       <arg>
         <name>silent</name>
         <type>Boolean</type>
         <doc>Set to true if not "cannot find" message should be printed to the player.</doc>
       </arg>
-      <doc>This function searched for the named character (<link type="NPC"/> or <link type="Player"/>) in the current room.  The function can handle arbitrary names, like "the wolf" or "second thug."</doc>
+      <doc>This function searched for the named creature (<link type="NPC"/> or <link type="Player"/>) in the current room.  The function can handle arbitrary names, like "the wolf" or "second thug."</doc>
     </method>
     <method>
       <name>clFindPortal</name>
@@ -1351,7 +1351,7 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
         <name>text</name>
         <type>String</type>
       </arg>
-      <doc>The character will speak the given text.</doc>
+      <doc>The creature will speak the given text.</doc>
     </method>
 
     <method>
@@ -1371,7 +1371,7 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
         <name>text</name>
         <type>String</type>
       </arg>
-      <doc>If the character is a player, output the text to their connection; otherwise, do nothin.</doc>
+      <doc>If the creature is a player, output the text to their connection; otherwise, do nothin.</doc>
       <code><![CDATA[*_self << _arg_text;]]></code>
     </method>
     <method>
@@ -1443,7 +1443,7 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
           }
         }
       ]]></code>
-      <doc>Similar to print(), except output is sent to all players in the room of the character, and not the character itself.</doc>
+      <doc>Similar to print(), except output is sent to all players in the room of the creature, and not the creature itself.</doc>
     </method>
     <method>
       <name>riprint</name>
@@ -1480,7 +1480,7 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
           }
         }
       ]]></code>
-      <doc>The same as rprint(), except output is not shown to any characters in the ignore array.  The <link type="Creature"/> object the riprint method is called on is automatically added to the ignore list.</doc>
+      <doc>The same as rprint(), except output is not shown to any creatures in the ignore array.  The <link type="Creature"/> object the riprint method is called on is automatically added to the ignore list.</doc>
     </method>
 
     <!-- Status query -->
@@ -1490,7 +1490,7 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
       <return>
         <type>Boolean</type>
       </return>
-      <doc>Check if the character can see.</doc>
+      <doc>Check if the creature can see.</doc>
     </method>
     <method>
       <name>canMove</name>
@@ -1498,7 +1498,7 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
       <return>
         <type>Boolean</type>
       </return>
-      <doc>Check if the character can move.</doc>
+      <doc>Check if the creature can move.</doc>
     </method>
     <method>
       <name>canAct</name>
@@ -1506,7 +1506,7 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
       <return>
         <type>Boolean</type>
       </return>
-      <doc>Check if the character can perform a complex action.</doc>
+      <doc>Check if the creature can perform a complex action.</doc>
     </method>
     <method>
       <name>checkAlive</name>
@@ -1514,7 +1514,7 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
       <return>
         <type>Boolean</type>
       </return>
-      <doc>Check if the character is alive.  Prints an error message if the character is dead.</doc>
+      <doc>Check if the creature is alive.  Prints an error message if the creature is dead.</doc>
     </method>
     <method>
       <name>checkMove</name>
@@ -1522,7 +1522,7 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
       <return>
         <type>Boolean</type>
       </return>
-      <doc>Check if the character can move.  Prints an error message if the character cannot move.</doc>
+      <doc>Check if the creature can move.  Prints an error message if the creature cannot move.</doc>
     </method>
     <method>
       <name>checkRt</name>
@@ -1530,7 +1530,7 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
       <return>
         <type>Boolean</type>
       </return>
-      <doc>Check if the character has any remaining roundtime.  Prints an error message if the character must wait.</doc>
+      <doc>Check if the creature has any remaining roundtime.  Prints an error message if the creature must wait.</doc>
     </method>
     <method>
       <name>checkSee</name>
@@ -1538,7 +1538,7 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
       <return>
         <type>Boolean</type>
       </return>
-      <doc>check if the character can see.  Prints an error message if the character cannot see.</doc>
+      <doc>check if the creature can see.  Prints an error message if the creature cannot see.</doc>
     </method>
     <method>
       <name>isDead</name>
@@ -1546,14 +1546,14 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
       <return>
         <type>Boolean</type>
       </return>
-      <doc>Check if the character is dead.</doc>
+      <doc>Check if the creature is dead.</doc>
     </method>
     <method>
       <name>position</name>
       <return>
         <type>Integer</type>
       </return>
-      <doc>This is the character's position.</doc>
+      <doc>This is the creature's position.</doc>
       <code><![CDATA[_return =  _self->get_pos().get_value();]]></code>
     </method>
     <method>
@@ -1561,9 +1561,9 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
       <arg>
         <name>position</name>
         <type>Integer</type>
-        <doc>The character's new position.</doc>
+        <doc>The creature's new position.</doc>
       </arg>
-      <doc>Sets character's position (sitting, standing, etc.).</doc>
+      <doc>Sets creature's position (sitting, standing, etc.).</doc>
       <code><![CDATA[
         _self->set_pos(CreaturePosition(_arg_position));
       ]]></code>
@@ -1574,7 +1574,7 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
       <return>
         <type>Integer</type>
       </return>
-      <doc>The character's gender.</doc>
+      <doc>The creature's gender.</doc>
       <code>_return = _self->get_gender().get_value();</code>
     </method>
 
@@ -1595,7 +1595,7 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
       <return>
         <type>Integer</type>
       </return>
-      <doc>The current hit-point total of the character.</doc>
+      <doc>The current hit-point total of the creature.</doc>
     </method>
     <method>
       <name>setHp</name>
@@ -1607,7 +1607,7 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
         <name>hp</name>
         <type>Integer</type>
       </arg>
-      <doc>Sets the HP of the character to the given amount.  This new value is not bounds checked (against max health), and will not trigger death or resurrection events.  This should only be used when absolutely necessary.</doc>
+      <doc>Sets the HP of the creature to the given amount.  This new value is not bounds checked (against max health), and will not trigger death or resurrection events.  This should only be used when absolutely necessary.</doc>
     </method>
     <method>
       <name>getMaxhp</name>
@@ -1615,7 +1615,7 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
       <return>
         <type>Integer</type>
       </return>
-      <doc>The maximum natural value of the character's hit points.</doc>
+      <doc>The maximum natural value of the creature's hit points.</doc>
     </method>
     <method>
       <name>damage</name>
@@ -1668,7 +1668,7 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
         <type>Portal</type>
         <nullok/>
       </arg>
-      <doc>Moves the character to the specified room.  The portal they enter in from will be the given portal.</doc>
+      <doc>Moves the creature to the specified room.  The portal they enter in from will be the given portal.</doc>
     </method>
     <method>
       <name>room</name>
@@ -1696,7 +1696,7 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
   <type>
     <name>Player</name>
     <parent>Creature</parent>
-    <doc>The <link type="Player"/> class represents a character that is controlled by a human.  <link type="Player"/> classes also encompass the connection data.</doc>
+    <doc>The <link type="Player"/> class represents a creature that is controlled by a human.  <link type="Player"/> classes also encompass the connection data.</doc>
 
     <!-- Experience -->
     <method>
@@ -1780,7 +1780,7 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
       <return>
         <type>Integer</type>
       </return>
-      <doc>Returns the age of the character in years.</doc>
+      <doc>Returns the age of the creature in years.</doc>
     </method>
 
     <!-- Description details -->
@@ -1930,7 +1930,7 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
         <name>value</name>
         <type>Integer</type>
       </arg>
-      <doc>Set the character's alignment to the given value.</doc>
+      <doc>Set the creature's alignment to the given value.</doc>
     </method>
     <method>
       <name>setGender</name>
@@ -1940,7 +1940,7 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
         <name>gender</name>
         <type>Integer</type>
       </arg>
-      <doc>The character's gender.</doc>
+      <doc>The creature's gender.</doc>
     </method>
 
     <!-- Permissions -->
@@ -1979,7 +1979,7 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
     <parent>Creature</parent>
     <cppname>Npc</cppname>
 
-    <doc>Defines a non-player character, such as monsters.</doc>
+    <doc>Defines a non-player creature, such as monsters.</doc>
 
     <!-- Blueprints -->
     <method>
@@ -2242,7 +2242,7 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
         <type>Room</type>
         <doc><link type="Room"/> the object is in, or nil</doc>
       </return>
-      <doc>Returns the room the object is in.  This will track up the parent list, so that (for example) on object in a container equipped on a character will return the room the character is in.</doc>
+      <doc>Returns the room the object is in.  This will track up the parent list, so that (for example) on object in a container equipped on a creature will return the room the creature is in.</doc>
     </method>
     <method>
       <name>getHolder</name>
@@ -2251,7 +2251,7 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
         <type>Creature</type>
         <doc>Creature carrying the object, or nil.</doc>
       </return>
-      <doc>If the object is being carried by a Creature, return that character.</doc>
+      <doc>If the object is being carried by a Creature, return that creature.</doc>
     </method>
 
     <!-- flags -->
@@ -2411,11 +2411,11 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
         <name>name</name>
         <type>String</type>
       </arg>
-      <doc>Locate a character, searching for a match against name.</doc>
+      <doc>Locate a creature, searching for a match against name.</doc>
       <invoke>find_creature</invoke>
     </method>
     <method>
-      <name>characters</name>
+      <name>creatures</name>
       <return>
         <type>Iterator</type>
       </return>
@@ -2434,7 +2434,7 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
         }
       ]]></iternext>
       <code>_return = new _iterator(); _return->index = 0; _return->room = _self;</code>
-      <doc>Returns an iterator for all the characters in the room.</doc>
+      <doc>Returns an iterator for all the creatures in the room.</doc>
     </method>
     <method>
       <name>addCreature</name>
@@ -2442,7 +2442,7 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
         <name>object</name>
         <type>Creature</type>
       </arg>
-      <doc>Adds the given character to the room's floor.</doc>
+      <doc>Adds the given creature to the room's floor.</doc>
       <invoke>add_creature</invoke>
     </method>
 
@@ -2535,7 +2535,7 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
         <type>String</type>
       </arg>
       <code><![CDATA[_self->put(_arg_text, _arg_text.size());]]></code>
-      <doc>Outputs a string all characters in the room.</doc>
+      <doc>Sends the text to all creatures in the room.</doc>
       <invoke>put</invoke>
     </method>
     <method>
@@ -3268,7 +3268,7 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
         <type>Boolean</type>
         <doc>True if the skill is an instrinsic ability.</doc>
       </return>
-      <doc>Intrinsic skills are usually called 'stats' or 'attributes' in other game systems.  Strength or intelligence are examples of intrinsic skills.  Intrinsic skills cannot be improved by the player using the normal methods.  They are also displayed separately from other skills and are handled differently during character creation.  Any skill which isIntrinsic returns true for will also return for for isRestricted and isLocked.</doc>
+      <doc>Intrinsic skills are usually called 'stats' or 'attributes' in other game systems.  Strength or intelligence are examples of intrinsic skills.  Intrinsic skills cannot be improved by the player using the normal methods.  They are also displayed separately from other skills and are handled differently during creature creation.  Any skill which isIntrinsic returns true for will also return for for isRestricted and isLocked.</doc>
     </method>
     <method>
       <name>isSecret</name>
@@ -3597,7 +3597,7 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
   <type>
     <name>String</name>
     <doconly/>
-    <doc>Strings represent text.  Any series of characters (letters, numbers, punctuation, whitespace, and so on) is represented as a string.  New arbitrary strings can be defined by putting the text in quotes, either double (") or single (').  Example string: "This is a string"</doc>
+    <doc>Strings represent text.  Any series of creatures (letters, numbers, punctuation, whitespace, and so on) is represented as a string.  New arbitrary strings can be defined by putting the text in quotes, either double (") or single (').  Example string: "This is a string"</doc>
     <method>
       <name>length</name>
       <return>

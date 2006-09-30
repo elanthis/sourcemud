@@ -1,3 +1,13 @@
+2006-09-30 06:16:20  Sean Middleditch <elanthis@awesomeplay.com>
+
+  * Don't require a room for events, since events like EnterZone
+    for creatures just entering the game have no old room.
+  * Added a new AI, monster.ai, which is a very simple "attack
+    random player in room" AI.
+  * Removed the foodchain stuff from npc.sx.
+  * Added an attackRandomPlayer() method in npc.sx.
+  * Fixed display of object descriptions in Creature::do_look().
+
 2006-09-23 04:01:49  Sean Middleditch <elanthis@awesomeplay.com>
 
   * Added a created and last login time stamp to Player.

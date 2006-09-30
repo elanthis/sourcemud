@@ -1,16 +1,6 @@
 // NPC extensions
 // Copyright (C) 2002  AwesomePlay Productions, Inc.
 
-// Creature's foodchain value controls some AI
-function getFoodchain(self)
-{
-	var foodchain = Int(self.ai_foodchain);
-	if (foodchain > 0)
-		return foodchain;
-
-	return 50;
-}
-
 // random portal walking for NPCs
 function goRandomPortal(self)
 {
@@ -35,6 +25,39 @@ function goRandomPortal(self)
 	var rand = getRandom(portals.length());
 	self.doGo(portals[rand]);
 	return true;
+}
+
+// attack a random player
+function attackRandomPlayer(self)
+{
+	var room = self.getRoom();
+	if (!room)
+		return;
+
+	// round time?  cancel
+	if (self.getRoundTime() > 0)
+		return;
+
+	// get list of all players in the room
+	var players = array();
+	foreach(var cr in room.creatures())
+		if (!cr.isDead())
+			if (Player(cr))
+				players.append(cr);
+
+	// if there are any players...
+	if (players) {
+		// get target
+		var i = getRandom(0, players.length());
+		var target = players[i];
+
+		// attack!
+		self.attack(target);
+		return true;
+	}
+
+	// nothing to attack
+	return false;
 }
 
 // AI state handling
@@ -97,7 +120,7 @@ function init() {
 	registerHook('save_object', saveCorpseBlueprint);
 	registerHook('npc_death', makeCorpse);
 
-	Creature.addMethod('foodchain', getFoodchain);
 	NPC.addMethod('goRandomPortal', goRandomPortal);
+	NPC.addMethod('attackRandomPlayer', attackRandomPlayer);
 	NPC.addMethod('setState', setState);
 }

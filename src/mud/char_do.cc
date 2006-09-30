@@ -249,7 +249,7 @@ Creature::do_look (Object *obj, const ContainerType& type)
 	} else {
 		// generic - description and on or in contents
 		if (obj->get_desc())
-			*this << StreamParse(obj->get_desc(), S("object"), obj, S("actor"), this) << "  ";
+			*this << StreamParse(obj->get_desc(), S("self"), obj, S("actor"), this) << "  ";
 		// on contents?
 		if (obj->has_container (ContainerType::ON))
 			obj->show_contents(PLAYER(this), ContainerType::ON);

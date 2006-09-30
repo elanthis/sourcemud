@@ -2,60 +2,13 @@
 # Copyright (C) 2003-2005  AwesomePlay Productions Inc.
 # Sean Middleditch <elanthis@awemud.net>
 
-# --- ANIMALS ---
-npc_blueprint {
-  blueprint.id = "rabbit"
-  blueprint.name = "a rabbit"
-
-  blueprint.desc = "{$self.D} is small and covered in brown fur.  Its nose twitches occasionally as it searches for food."
-
-  blueprint.ai = animal
-  user.ai_flee = 95
-  user.ai_foodchain = 5
-
-  user.raise_as = "rabbit_skeleton"
-
-  combat.dodge = 10
-
-  blueprint.equip = "claws_animal"
-  
-  blueprint.stat = [ "Strength", 10 ]
-  blueprint.stat = [ "Agility", 90 ]
-  blueprint.stat = [ "Fortitude", 10 ]
-  blueprint.stat = [ "Intellect", 10 ]
-  blueprint.stat = [ "Spirit", 35 ]
-  blueprint.stat = [ "Willpower", 30 ]
-}
-npc_blueprint {
-  blueprint.id = "fox"
-  blueprint.name = "a fox"
-
-  blueprint.desc = "The red {$self.n} scurries about, looking for danger."
-
-  blueprint.ai = animal
-  user.ai_flee = 95
-  user.ai_foodchain = 15
-
-  user.raise_as = "fox_skeleton"
-
-  combat.dodge = 10
-
-  blueprint.equip = "claws_animal"
-  
-  blueprint.stat = [ "Strength", 30 ]
-  blueprint.stat = [ "Agility", 85 ]
-  blueprint.stat = [ "Fortitude", 40 ]
-  blueprint.stat = [ "Intellect", 10 ]
-  blueprint.stat = [ "Spirit", 30 ]
-  blueprint.stat = [ "Willpower", 30 ]
-}
 npc_blueprint {
   blueprint.id = "wolf"
   blueprint.name = "a wolf"
 
   blueprint.desc = "{$self.D} doesn't appear to be afraid of much."
 
-  blueprint.ai = animal
+  blueprint.ai = monster
   user.ai_flee = 60
   user.ai_foodchain = 45
 
@@ -78,7 +31,7 @@ npc_blueprint {
 
   blueprint.desc = "{$self.D} is huge, larger than most other wolves by far.  Its gray fur is rough and coarse.  The wolf doesn't look friendly."
 
-  blueprint.ai = animal
+  blueprint.ai = monster
   user.ai_flee = 60
   user.ai_foodchain = 55
 
@@ -102,7 +55,7 @@ npc_blueprint {
 
   blueprint.desc = "Demonic in appearnace, {$self.D} is larger than any wolf could be through natural means.  Its eyes glow red, and its near-black fur is broken in places, where spiked ridges run along its body.  {$self.D} has as sinister a nature as any animal could have."
 
-  blueprint.ai = animal
+  blueprint.ai = monster
   user.ai_flee = 10
   user.ai_foodchain = 70
 

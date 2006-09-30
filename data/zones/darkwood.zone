@@ -7,6 +7,13 @@ zone.desc = "An eerie, dark wood."
 entity.uid = <1441>
 
 # --- SPAWNS ---
+spawn {
+  spawn.tag = ""
+  spawn.count = 1
+  spawn.delay = 1
+  spawn.blueprint = "wolf"
+  spawn.room = "darkwood_gnarled"
+}
 
 # --- ROOMS ---
 room {

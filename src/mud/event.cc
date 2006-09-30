@@ -100,14 +100,10 @@ SEventManager::request (EventID id, Room* room, Entity *actor, Entity* target, E
 		return false;
 	}
 
-	// error if no room
-	if (room == NULL) {
-		Log::Error << "No room was given for event.";
-		return false;
-	}
-
 	// get zone
-	Zone* zone = room->get_zone();
+	Zone* zone = NULL;
+	if (room)
+		room->get_zone();
 
 	// create event
 	Event event(EVENT_REQUEST, id, room, actor, target, aux);
@@ -154,12 +150,6 @@ SEventManager::command (EventID id, Room* room, Entity *actor, Entity* target, E
 		return false;
 	}
 
-	// error if no room
-	if (room == NULL) {
-		Log::Error << "No room was given for event.";
-		return false;
-	}
-
 	// create event
 	Event event(EVENT_COMMAND, id, room, actor, target, aux);
 	event.get_data(0) = data1;
@@ -181,12 +171,6 @@ void
 SEventManager::notify (EventID id, Room* room, Entity *actor, Entity* target, Entity* aux, Scriptix::Value data1, Scriptix::Value data2, Scriptix::Value data3, Scriptix::Value data4, Scriptix::Value data5)
 {
 	assert (id.valid());
-
-	// error if no room
-	if (room == NULL) {
-		Log::Error << "No room was given for event.";
-		return;
-	}
 
 	// create event
 	Event event(EVENT_NOTIFY, id, room, actor, target, aux);

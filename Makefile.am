@@ -37,7 +37,8 @@ SX_FILES=\
 	scripts/webserver.sx
 
 AI_FILES=\
-	scripts/ai/manifest.txt
+	scripts/ai/manifest.txt \
+	scripts/ai/monster.ai \
 	scripts/ai/animal.ai
 
 EXTRA_DIST += $(SX_FILES) $(AI_FILES)

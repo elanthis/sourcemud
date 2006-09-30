@@ -108,13 +108,13 @@ class ActionAttackCreature : public IAction
 			// hit?
 			if (attack_roll + attack_strength >= defend_strength) {
 				// message to attacker
-				*attacker << "You hit " << StreamName(victim) << " with your " << StreamName(weapon) << "!\n";
+				*attacker << "You hit " << StreamName(victim, DEFINITE) << " with " << StreamName(weapon, YOUR) << "!\n";
 
 				// message to victim
-				*victim << StreamName(attacker) << " hit YOU with " << StreamName(weapon) << "!\n";
+				*victim << StreamName(attacker, DEFINITE, true) << " hit YOU with " << StreamName(weapon, INDEFINITE) << "!\n";
 				
 				// message to room
-				*attacker->get_room() << StreamIgnore(attacker) << StreamIgnore(victim) << StreamName(attacker) << " hit " << StreamName(victim) << " with " << StreamName(weapon) << "!\n";
+				*attacker->get_room() << StreamIgnore(attacker) << StreamIgnore(victim) << StreamName(attacker, DEFINITE, true) << " hit " << StreamName(victim, DEFINITE) << " with " << StreamName(weapon, INDEFINITE) << "!\n";
 
 				// accounting
 				total_damage += damage;
@@ -122,13 +122,13 @@ class ActionAttackCreature : public IAction
 			// miss...
 			} else {
 				// message to attacker
-				*attacker << "You attack " << StreamName(victim) << " with your " << StreamName(weapon) << ", but miss!\n";
+				*attacker << "You attack " << StreamName(victim, DEFINITE) << " with " << StreamName(weapon, YOUR) << ", but miss!\n";
 
 				// message to victim
-				*victim << StreamName(attacker) << " attacked YOU with " << StreamName(weapon) << ", but missed!\n";
+				*victim << StreamName(attacker, DEFINITE, true) << " attacks YOU with " << StreamName(weapon, INDEFINITE) << ", but missed!\n";
 				
 				// message to room
-				*attacker->get_room() << StreamIgnore(attacker) << StreamIgnore(victim) << StreamName(attacker) << " attacks " << StreamName(victim) << " with " << StreamName(weapon) << ", but misses!\n";
+				*attacker->get_room() << StreamIgnore(attacker) << StreamIgnore(victim) << StreamName(attacker, DEFINITE, true) << " attacks " << StreamName(victim, DEFINITE) << " with " << StreamName(weapon, INDEFINITE) << ", but misses!\n";
 			}
 
 			// combat info

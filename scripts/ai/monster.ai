@@ -1,0 +1,56 @@
+# AweMUD Next Generation - Animal AI
+# Copyright (C) 2003  AwesomePlay Productions Inc.
+# Sean Middleditch <elanthis@awemud.net>
+
+ai.id = "monster"
+
+# initialize after loading up
+event.load = begin
+	self.setState('wander');
+	self.ai_wander = 120 + getRandom(300);
+end
+
+# save data
+event.save = begin
+	if (String(self.ai_state))
+		writer.setString('ai_state', self.ai_state);
+end
+
+# heartbeat
+event.heartbeat = begin
+	// wander
+	if (self.ai_state == 'wander') {
+		if (self.getRoundTime() > 0)
+			return;
+
+		self.ai_wander -= 1;
+		if (self.ai_wander <= 0) {
+			self.ai_wander = 200 + getRandom(500);
+			self.goRandomPortal();
+		}
+	}
+end
+
+# someone new to toy with
+event.EnterRoom = begin
+	self.setState('attack');
+end
+
+# ready to act
+event.ready = begin
+	if (self.ai_state == 'attack') {
+		// if there's nothing to attack, go to wander state
+		if (!self.attackRandomPlayer())
+			self.setState('wander');
+	}
+end
+
+# state changes
+event.pump = begin
+	if (data == 'state') {
+		if (self.ai_state == 'attack')
+			self.attackRandomPlayer();
+	}
+end
+
+# vim: set filetype=scriptix :
