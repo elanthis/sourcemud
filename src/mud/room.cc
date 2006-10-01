@@ -360,19 +360,17 @@ Room::show (const StreamControl& stream, Creature* viewer)
 		stream << "Obvious exits are ";
 		for (size_t i = 0; i < ents.size(); ++i) {
 			if (i > 0) {
-				if (i == ents.size() - 1) {
-					if (i > 1)
-						stream << ", and ";
-					else
-						stream << " and ";
-				} else {
+				if (ents.size() == 2)
+					stream << " and ";
+				else if (i == ents.size() - 1)
+					stream << ", and ";
+				else
 					stream << ", ";
-				}
 			}
 			if (PORTAL(ents[i])->is_standard())
 				stream << CEXIT << PORTAL(ents[i])->get_relative_dir(this).get_name() << CNORMAL;
 			else
-				stream << StreamName(ents[i], INDEFINITE);
+				stream << StreamName(ents[i], INDEFINITE) << '[' << PORTAL(ents[i])->get_relative_dir(this).get_abbr() << ']';
 		}
 		stream << ".\n";
 	}

@@ -8,9 +8,9 @@ entity.uid = <1441>
 
 # --- SPAWNS ---
 spawn {
-  spawn.tag = ""
+  spawn.tag = "darkwood_wolf"
   spawn.count = 1
-  spawn.delay = 1
+  spawn.delay = 50
   spawn.blueprint = "wolf"
   spawn.room = "darkwood_gnarled"
 }

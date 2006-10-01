@@ -35,6 +35,7 @@ class PortalDir {
 	dir_t value;
 
 	static const String names[];
+	static const String abbreviations[];
 	static dir_t opposites[];
 	
 	public:
@@ -42,6 +43,7 @@ class PortalDir {
 	PortalDir () : value(NONE) {}
 
 	String get_name() const { return names[value]; }
+	String get_abbr() const { return abbreviations[value]; }
 	PortalDir get_opposite() const { return opposites[value]; }
 	bool valid () const { return value != NONE; }
 

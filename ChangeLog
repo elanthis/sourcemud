@@ -1,3 +1,7 @@
+2006-10-01 07:54:48  Sean Middleditch <elanthis@awesomeplay.com>
+
+  * Show the direction of all exits in room lists.
+
 2006-09-30 06:16:20  Sean Middleditch <elanthis@awesomeplay.com>
 
   * Don't require a room for events, since events like EnterZone

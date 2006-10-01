@@ -55,6 +55,19 @@ const String PortalDir::names[] = {
 	S("up"),
 	S("down"),
 };
+const String PortalDir::abbreviations[] = {
+	S("x"),
+	S("n"),
+	S("e"),
+	S("s"),
+	S("w"),
+	S("nw"),
+	S("ne"),
+	S("se"),
+	S("sw"),
+	S("u"),
+	S("d"),
+};
 PortalDir::dir_t PortalDir::opposites[] = {
 	PortalDir::NONE,
 	PortalDir::SOUTH,
