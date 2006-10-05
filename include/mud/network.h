@@ -143,8 +143,7 @@ class SocketConnection : public ISocketHandler {
 	virtual void sock_complete_disconnect ();
 
 	private:
-	// FIXME: using this, we can't have any protocol with NULs, which happens in telnet (ZMP) !
-	StringBuffer output;
+	GCType::vector<char> output;
 	int sock;
 	bool disconnect;
 };

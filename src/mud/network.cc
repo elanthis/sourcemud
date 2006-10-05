@@ -182,18 +182,29 @@ SocketConnection::sock_in_ready ()
 void
 SocketConnection::sock_out_ready ()
 {
-	int ret = send(sock, output.c_str(), output.size(), 0);
+	int ret = send(sock, &output[0], output.size(), 0);
 	if (ret > 0) {
 		// HACK - this works, but isn't necessarily bright
-		memmove(&output[0], output.c_str() + ret, output.size() - ret);
-		output[output.size() - ret] = 0;
+		memmove(&output[0], &output[ret], output.size() - ret);
+		output.resize(output.size() - ret);
 	}
+
+	// if we sent everything, clear buffer
+	if (output.empty())
+		output = GCType::vector<char>();
 }
 
 void
 SocketConnection::sock_buffer (const char* bytes, size_t len)
 {
-	output.write(bytes, len);
+	if (output.size() + len > output.capacity()) {
+		// size is + 1024 bytes
+		size_t newsize = ((output.size() + len) / 1024 + 1 * 1024);
+		output.reserve(newsize);
+	}
+	size_t oldsize = output.size();
+	output.resize(output.size() + len);
+	memcpy(&output[oldsize], bytes, len);
 }
 
 void
