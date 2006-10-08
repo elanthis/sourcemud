@@ -300,7 +300,8 @@ SNetworkManager::poll (long timeout)
 	// build the cread and cwrite bit sets
 	i = p_data->sockets.begin();
 	while (i != p_data->sockets.end()) {
-		(*i)->sock_flush();
+		if (!(*i)->sock_is_disconnect_waiting())
+			(*i)->sock_flush();
 
 		if ((*i)->sock_is_disconnect_waiting() && !(*i)->sock_is_out_waiting())
 			(*i)->sock_complete_disconnect();

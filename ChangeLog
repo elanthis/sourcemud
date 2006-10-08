@@ -1,3 +1,13 @@
+2006-10-08 08:43:22  Sean Middleditch <elanthis@awesomeplay.com>
+
+  * When a socket is waiting for a disconnect, do not call the flush
+    method any further.  (It shouldn't have any new waiting output,
+    after all.)  This will fix a rather nasty problem that occurs
+    when a telnet session times out from inactivity.
+  * Explicitly flush text chunk in telnet code before requesting
+    a disconnection.
+  * Remove spurious log of event name in AI module.
+
 2006-10-05 03:03:27  Sean Middleditch <elanthis@awesomeplay.com>
 
   * Fix the network code to use a vector of bytes instead of a

@@ -352,6 +352,9 @@ TelnetHandler::disconnect ()
 		mode = NULL;
 	}
 
+	// flush wiating text
+	end_chunk();
+
 	// close socket
 	sock_disconnect();
 }

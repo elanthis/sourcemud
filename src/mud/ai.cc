@@ -71,7 +71,6 @@ AI::load (File::Reader& reader)
 bool
 AI::do_event (Creature* self, const Event& event) const
 {
-	Log::Info << event.get_id().name();
 	// get handler
 	EventList::const_iterator i = event_cb.find(event.get_id());
 	if (i != event_cb.end()) {
