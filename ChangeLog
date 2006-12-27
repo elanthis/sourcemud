@@ -1,3 +1,7 @@
+2006-12-27 06:40:05  Sean Middleditch <elanthis@awesomeplay.com>
+
+  * Remove debugging message.  Oops.
+
 2006-12-27 06:37:15  Sean Middleditch <elanthis@awesomeplay.com>
 
   * Finally stabilized the sorting of entities so that they quit
