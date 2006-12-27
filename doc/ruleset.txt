@@ -1,0 +1,209 @@
+          /======================================================\
+          ||  Game mechanics and rules                          ||
+          ||  AweMUD MUD Server Software                        ||
+          ||  Copyright (C) 2006  AwesomePlay Productions, Inc. ||
+          ||  Sean Middleditch <elanthis@awemud.net>            ||
+          \======================================================/
+
+ I    Introduction
+ II   Core Concepts
+ III  Primary Aspects
+ IV   Skill and Lores
+ V    Special Abilities
+ VI   Advancement Paths
+ VII  Life and Death
+ VIII Experience
+
+-----------------------------------------------------------------------------
+ I     Introduction                                                        I
+-----------------------------------------------------------------------------
+
+This is the game mechanic ruleset used by AweMUD.
+
+One important aspect to keep in mind is that the ruleset internally uses
+numbers of a larger scale than what the players will see.  In general, all
+numbers are scaled down by a factor of 100 when displayed to the player, with
+all fractions rounded down.  So, a Strength aspect of 2474 would be displayed
+merely as 24.  This presents a bit of uncertainty to the players.  While they
+know the general range of most of the numbers in the system, they can't tell
+what their exact values are.  Two characters with St(24) may not be exactly
+the same strength.
+
+-----------------------------------------------------------------------------
+ II    Core Concepts                                                      II
+-----------------------------------------------------------------------------
+
+Characters are composed of a set of primary characters (II), skills and lores
+(III), and special abilities (IV).  These attributes define the physical
+capabilities and attained knowledge of the character.
+
+-----------------------------------------------------------------------------
+ III   Primary Aspects                                           III
+-----------------------------------------------------------------------------
+
+Primary aspects are broken into two groups: earthly (physical) and celestial
+(mental/spiritual).
+
+Human characters are expected to have aspect values in the range of 1000 to
+5000, with 1000 representing the ability of young child and 5000 representing
+the most extraordinary individuals, such as world champion athletes or
+reknowned scientists.
+
+Earthly aspects may be improved with practice, but celestial aspects may not.
+
+Earthly aspects:
+ Agility (Ag)      Deftness and fine motor control.
+ Endurance (En)    Stamina and ability to persevere.
+ Quickness (Qu)    Speed and physical reaction times.
+ Strength (St)     Brawn and muscle.
+ Toughness (To)    Fortitude and resistance to harm.
+
+Celestial aspects:
+ Bearing (Be)      Charisma and aura.
+ Discipline (Di)   Will power and self control.
+ Intelligence (In) Logic and comprehension.
+ Perception (Pe)   Attention to detail and intuition.
+ Wits (Wi)         Quick thinking and mental reaction.
+
+Earthly aspects can be increased at a cost of the current value divided by
+100.
+
+New characters begin play with a primary aspect value in the range of 2000 to
+3000.  Players may either choose to have their primary aspects determined by
+their starting career or they may select their aspect values from one of the
+following lists.  When using the list method, two lists must be chosen, one
+for earthly aspects and one for celestial aspects.  The same list may be
+chosen for both sides.
+ 3000, 2800, 2500, 2000, 2000
+ 2700, 2700, 2500, 2200, 2200
+
+-----------------------------------------------------------------------------
+ IV    Skills and Lores                                                   IV
+-----------------------------------------------------------------------------
+
+There are three varieties of skills: advanced, basic, and lores.  The
+difference between the three types of skills comes not in how they are used,
+but when they may be used and how they are improved.
+
+Advanced skills may not be used at all unless they the character has at least
+some training the skill.  Any attempt to perform an action based on an
+advanced skill by an untrained character automatically fails.  Basic and lore
+skills may be used by anyone without restriction.
+
+All three skills may be improved by spending experience points.  The cost for
+raising a skill is based on the skill variety, with advanced skills being the
+most expensive and lore skills being the least expensive.  Additionally,
+neither advanced skills nor basic skills may be improved without a teacher if
+the character is completely untrained in the use of the skill.  Once a
+character has any amount of training in the skill he no longer requires a
+teacher to improve the skill.
+
+Lore skills may be improved in a second fashion.  Every uncommon creature and
+item in the world has an associate lore and associated lore scarcity.  If a
+character encounters such an uncommon entity, and if the entity's lore
+scarcity is ranked higher than the character's associate lore skill, the
+character's lore skill improve by a small margin.
+
+All skills are valued in the range of 0 to 10000.  A value of 0-500 means
+that the character is untrained and not capable of using the skill
+effectively.  Notably, this means that the character cannot use or improve
+advanced skills that fall in this range.  The specific rankings are:
+ 0-500     Untrained
+ 501-3000  Apprentice
+ 3001-6000 Skilled
+ 6001-8000 Journeyman
+ 8001-9500 Master 
+ 9501-9999 Legendary
+
+Skills also offer synergy bonuses.  A synergy bonus is when one skill
+provides an increase to another skill.  This increase is considered part of
+the skill for all intents and purposes except for the calculation of synergy;
+namely, if an advanced skill is pushed to 501 or higher by way of synergy
+bonuses, the character may freely use and improve that skill.
+
+Synergy bonuses are calculated by taking the square root of the skill's value
+and then multiplying by the skill type scale factor; for advanced skills,
+this factor is 3, for basic skills, the factor is 1.75, and for lore skills
+the factor is 0.9.
+
+-----------------------------------------------------------------------------
+ V     Special Abilities                                                   V
+-----------------------------------------------------------------------------
+
+Special abilities function in a manner similar to advanced skills, except
+that a special ability is a boolean value; a character either has the ability
+or he does not.  Like an advanced skill, a special ability may not be used
+unless the character is trained in the ability.
+
+Many special abilities use particular skills.  In this case, the special
+ability may not be learned unless the character is at least at apprentice
+level in all skill dependees.
+
+If a character is of journeymen level or better in all skill dependees, he
+may learn the ability without the aid of a teacher.  Otherwise, a teacher
+must be found in order for the character to gain the ability.
+
+Many abilities are not dependent on any skills and neither have skill level
+restrictions nor are able to learned without a teacher.  Some skills have
+other special requirements, such as possessing certain traits, having
+experienced certain encounters, or even having other special abilities.  All
+such prerequisites must be learned before the character can obtain the
+ability.
+
+-----------------------------------------------------------------------------
+ VI    Advancement Paths                                                  VI
+-----------------------------------------------------------------------------
+
+Paths are a template by which a character gains skills, abilities, aspect
+improvements, and other advancements.  Paths are simply a list of
+advancements with priorities.  As a character becomes elligable for new
+advancements they are automatically purchased for the character.
+
+All characters begin with a path.  This path is one of the starting paths.
+Starting paths are short and do not contain many advancements.  A character
+may not change his starting path until it is complete; that is, until every
+advancement on the path is purchased.
+
+Once a character has completed his starting path, he may select any other
+path, or he may choose to have no path.  In addition to a path, a player may
+select a reserve amount, which is an amount of experience which the engine
+will not spend on path advancements, allowing the player to spend experience
+on non-path advancements as he sees fit.  Choosing to have no path is the
+equivalent of requesting a 100% reserve amount.
+
+Characters still in their starting career may not have a reserve amount set.
+
+-----------------------------------------------------------------------------
+ VII   Life and Death                                                    VII
+-----------------------------------------------------------------------------
+
+Characters have a number of life credits.  When a character dies, his spirit
+remains bound to his body for a short period of time.  If an appropriate
+healing method capable of restoring life is applied to the body within this
+time, the character is resurrected and incurs no life credit penalty.
+However, if this time runs out, the spirit leaves the body, and at this
+point, a life credit must be expended in order to be resurrected.
+
+A character has the option, once his time has run out, to either continue
+waiting for someone to supply resurrection or to be respawned at the nearest
+friendly temple.
+
+Characters who have not yet completed their starting path never lose a life
+credit, even if their time period runs out after death.  
+
+-----------------------------------------------------------------------------
+ VIII  Experience                                                       VIII
+-----------------------------------------------------------------------------
+
+Characters earn experience for over-coming hard-ships.  Experience is broken
+into several different types, and characters have separate pools for each
+type of experience.
+
+The five types of experience are:
+ Warrior
+ Caster
+ Rogue
+ Spirit
+ Quest
+
+Experience costs are separated by experience type.  

@@ -1111,7 +1111,34 @@ class ActionUsePortal : public IAction
 
 	virtual uint get_rounds () const { return rounds; }
 	virtual void describe (const StreamControl& stream) const { stream << "kicking " << StreamName(portal, INDEFINITE); }
-	virtual void finish () {}
+
+	virtual void finish ()
+	{
+		// checks
+		if (!get_actor()->check_move())
+			return;
+
+		// closed?  drat
+		if (portal->is_closed()) {
+			*get_actor() << StreamName(*portal, DEFINITE, true) << " is closed.\n";
+			return;
+		}
+
+		// get target room
+		Room *new_room = portal->get_relative_target(get_actor()->get_room());
+		if (new_room == NULL) {
+			*get_actor() << StreamName(*portal, DEFINITE, true) << " does not lead anywhere.\n";
+			return;
+		}
+
+		// set rounds 
+		// one round plus one per every 20% below max health
+		// add five if an NPC
+		rounds = 1 + (100 - (get_actor()->get_hp() * 100 / get_actor()->get_max_hp())) / 20 + (NPC(get_actor()) ? 5 : 0);
+
+		// do go
+		get_actor()->enter (new_room, portal);
+	}
 
 	virtual int start ()
 	{
@@ -1136,9 +1163,6 @@ class ActionUsePortal : public IAction
 		// one round plus one per every 20% below max health
 		// add five if an NPC
 		rounds = 1 + (100 - (get_actor()->get_hp() * 100 / get_actor()->get_max_hp())) / 20 + (NPC(get_actor()) ? 5 : 0);
-
-		// do go
-		get_actor()->enter (new_room, portal);
 
 		return 0;
 	}

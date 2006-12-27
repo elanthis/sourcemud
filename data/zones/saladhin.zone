@@ -121,16 +121,6 @@ room {
   }
   object {
     blueprint {
-      blueprint.name = "a fountain"
-      blueprint.desc = "The fountain is comprised of several statues, each of a different Avatar of Ranath, spraying water into a large basin filled with colorful fish."
-      blueprint.roomlist = false
-      blueprint.gettable = false
-      blueprint.trashable = false
-    }
-    entity.uid = <1447>
-  }
-  object {
-    blueprint {
       blueprint.name = "a stone well"
       blueprint.desc = "The stone well is of simple yet sturdy construction.  The bottom stretches into darkness."
       blueprint.roomlist = false
@@ -138,6 +128,16 @@ room {
       blueprint.trashable = false
     }
     entity.uid = <1446>
+  }
+  object {
+    blueprint {
+      blueprint.name = "a fountain"
+      blueprint.desc = "The fountain is comprised of several statues, each of a different Avatar of Ranath, spraying water into a large basin filled with colorful fish."
+      blueprint.roomlist = false
+      blueprint.gettable = false
+      blueprint.trashable = false
+    }
+    entity.uid = <1447>
   }
 }
 room {

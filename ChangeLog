@@ -1,3 +1,10 @@
+2006-12-27 06:37:15  Sean Middleditch <elanthis@awesomeplay.com>
+
+  * Finally stabilized the sorting of entities so that they quit
+    bouncing around in the zone files.
+  * Began adding a ruleset file.  It's mostly just thoughts,
+    and is so far unimplemented.
+
 2006-10-08 08:43:22  Sean Middleditch <elanthis@awesomeplay.com>
 
   * When a socket is waiting for a disconnect, do not call the flush

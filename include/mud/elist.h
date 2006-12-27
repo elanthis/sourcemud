@@ -44,7 +44,7 @@ EList<EntType>::add(EntType* ent)
 		if (ent == *i)
 			return;
 		// if it's lower than the new one, insert us after
-		if (**i < *ent) {
+		if (!(**i < *ent)) {
 			++i;
 			insert(i, ent);
 			return;

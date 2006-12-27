@@ -1,5 +1,5 @@
 # Player file: Admin
-# Timestamp: Sat Sep 30 02:14:56 2006
+# Timestamp: Tue Dec 26 18:29:59 2006
 # 
 
 entity.uid = <1>
@@ -18,7 +18,7 @@ equip_back {
   entity.uid = <23>
 }
 player.created = "2000-01-01 00:00:00"
-player.lastlogin = "2006-09-30 02:14:53"
+player.lastlogin = "2006-12-26 18:29:03"
 player.playtime = 12
 player.race = "human"
 player.birthday = "0001/06/10 09.14"
@@ -36,7 +36,7 @@ player.trait = [ "hair color", silver ]
 player.trait = [ "eye color", gold ]
 player.gender = "male"
 player.height = 74
-player.location = "saladhin_ranath_courtyard"
+player.location = "darkwood_cave"
 player.general_xp = 90
 player.warrior_xp = 306
 player.rogue_xp = 0

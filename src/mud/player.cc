@@ -597,7 +597,7 @@ Player::deactivate ()
 void
 Player::show_prompt ()
 {
-	*this << "-- HP:" << get_hp() << "/" << get_max_hp() << " RT:" << get_round_time() << " >";
+	*this << "< HP:" << get_hp() << "/" << get_max_hp() << " RT:" << get_round_time() << " >";
 }
 
 int

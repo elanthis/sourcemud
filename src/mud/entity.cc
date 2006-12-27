@@ -344,7 +344,9 @@ Entity::set_owner (Entity* owner)
 bool
 Entity::operator< (const Entity& ent) const
 {
-	return get_name() < ent.get_name();
+	bool t = get_name() < ent.get_name();
+	Log::Info << get_name().get_name() << " < " << ent.get_name().get_name() << " = " << t;
+	return t;
 }
 
 // ----- SEntityManager -----

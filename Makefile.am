@@ -69,7 +69,7 @@ endif
 endif
 
 DOCS := $(DOCBOOK_HTML) $(DOCBOOK_PDF) $(DOCBOOK_TXT)
-USER_DOCS := doc/parse.txt doc/zmp-x-awemud.txt
+USER_DOCS := doc/parse.txt doc/zmp-x-awemud.txt doc/ruleset.txt
 
 docdir = ${datadir}/doc/@PACKAGE_TARNAME@-@VERSION@
 doc_DATA = README NEWS COPYING AUTHORS FAQ $(DOCBOOK_TXT) $(USER_DOCS)
