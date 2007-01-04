@@ -207,6 +207,7 @@ rundata_DATA =
 ### HEADERS ###
 
 noinst_HEADERS=\
+	include/common/bitset.h \
 	include/common/error.h \
 	include/common/fdprintf.h \
 	include/common/gcbase.h \

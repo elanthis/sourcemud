@@ -1,3 +1,7 @@
+2007-01-04 07:52:20  Sean Middleditch <elanthis@awesomeplay.com>
+
+  * Include bitset.h.  Oops.
+
 2007-01-04 07:51:44  Sean Middleditch <elanthis@awesomeplay.com>
 
   * Removed the bitfield from ObjectBlueprint and replaced with
