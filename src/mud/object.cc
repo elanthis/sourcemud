@@ -53,17 +53,14 @@ bool
 ObjectBlueprint::set_name (String s_name)
 {
 	bool ret = name.set_name(s_name);
-	set_flags.name = true;
+	value_set &= OBJBL_SET_NAME;
 	return ret;
 }
 
 EntityName
 ObjectBlueprint::get_name () const
 {
-	if (set_flags.name || parent == NULL)
-		return name;
-	else
-		return parent->get_name();
+	return name;
 }
 
 void
@@ -71,13 +68,12 @@ ObjectBlueprint::reset_name ()
 {
 	// clear
 	name.set_name(S("an object"));
-	set_flags.name = false;
+	value_set.set_off(OBJBL_SET_NAME);
 
 	// get parent value
 	const ObjectBlueprint* data = get_parent();
-	if (data != NULL) {
+	if (data != NULL)
 		name = data->get_name();
-	}
 }
 
 void
@@ -85,7 +81,7 @@ ObjectBlueprint::reset_desc ()
 {
 	// clear
 	desc = S("object");
-	set_flags.desc = false;
+	value_set.set_off(OBJBL_SET_DESC);
 
 	// get parent value
 	const ObjectBlueprint* data = get_parent();
@@ -98,7 +94,7 @@ ObjectBlueprint::reset_weight ()
 {
 	// clear
 	weight = 0;
-	set_flags.weight = false;
+	value_set.set_off(OBJBL_SET_WEIGHT);
 
 	// get parent value
 	const ObjectBlueprint* data = get_parent();
@@ -111,7 +107,7 @@ ObjectBlueprint::reset_cost ()
 {
 	// clear
 	cost = 0;
-	set_flags.cost = false;
+	value_set.set_off(OBJBL_SET_COST);
 
 	// get parent value
 	const ObjectBlueprint* data = get_parent();
@@ -124,7 +120,7 @@ ObjectBlueprint::reset_equip ()
 {
 	// clear
 	equip = 0;
-	set_flags.equip = false;
+	value_set.set_off(OBJBL_SET_EQUIP);
 
 	// get parent value
 	const ObjectBlueprint* data = get_parent();
@@ -133,108 +129,41 @@ ObjectBlueprint::reset_equip ()
 }
 
 void
-ObjectBlueprint::reset_hidden ()
+ObjectBlueprint::reset_flag (bit_t flag)
 {
-	// clear
-	flags.hidden = false;
-	set_flags.hidden = false;
+	flags_set.set_off(flag);
 
 	// get parent value
 	const ObjectBlueprint* data = get_parent();
 	if (data != NULL)
-		flags.hidden = data->is_hidden();
-}
-
-void
-ObjectBlueprint::reset_gettable ()
-{
-	// clear
-	flags.gettable = true;
-	set_flags.gettable = false;
-
-	// get parent value
-	const ObjectBlueprint* data = get_parent();
-	if (data != NULL)
-		flags.gettable = data->is_gettable();
-}
-
-void
-ObjectBlueprint::reset_touchable ()
-{
-	// clear
-	flags.touchable = true;
-	set_flags.touchable = false;
-
-	// get parent value
-	const ObjectBlueprint* data = get_parent();
-	if (data != NULL)
-		flags.touchable = data->is_touchable();
-}
-
-void
-ObjectBlueprint::reset_dropable ()
-{
-	// clear
-	flags.dropable = true;
-	set_flags.dropable = false;
-
-	// get parent value
-	const ObjectBlueprint* data = get_parent();
-	if (data != NULL)
-		flags.dropable = data->is_dropable();
-}
-
-void
-ObjectBlueprint::reset_trashable ()
-{
-	// clear
-	flags.trashable = true;
-	set_flags.trashable = false;
-
-	// get parent value
-	const ObjectBlueprint* data = get_parent();
-	if (data != NULL)
-		flags.trashable = data->is_trashable();
-}
-
-void
-ObjectBlueprint::reset_rotting ()
-{
-	// clear
-	flags.rotting = true;
-	set_flags.rotting = false;
-
-	// get parent value
-	const ObjectBlueprint* data = get_parent();
-	if (data != NULL)
-		flags.rotting = data->is_rotting();
+		flags.set(flag, data->get_flag(flag));
 }
 
 void
 ObjectBlueprint::refresh ()
 {
-	if (!set_flags.name)
+	if (!value_set.check(OBJBL_SET_NAME))
 		reset_name();
-	if (!set_flags.desc)
+	if (!value_set.check(OBJBL_SET_DESC))
 		reset_desc();
-	if (!set_flags.weight)
+	if (!value_set.check(OBJBL_SET_WEIGHT))
 		reset_weight();
-	if (!set_flags.cost)
+	if (!value_set.check(OBJBL_SET_COST))
 		reset_cost();
-	if (!set_flags.equip)
+	if (!value_set.check(OBJBL_SET_EQUIP))
 		reset_equip();
-	if (!set_flags.hidden)
-		reset_hidden();
-	if (!set_flags.gettable)
-		reset_gettable();
-	if (!set_flags.touchable)
-		reset_touchable();
-	if (!set_flags.dropable)
-		reset_dropable();
-	if (!set_flags.trashable)
-		reset_trashable();
-	if (!set_flags.rotting)
-		reset_rotting();
+	if (!flags_set.check(OBJ_FLAG_HIDDEN))
+		reset_flag(OBJ_FLAG_HIDDEN);
+	if (!flags_set.check(OBJ_FLAG_GET))
+		reset_flag(OBJ_FLAG_GET);
+	if (!flags_set.check(OBJ_FLAG_TOUCH))
+		reset_flag(OBJ_FLAG_TOUCH);
+	if (!flags_set.check(OBJ_FLAG_DROP))
+		reset_flag(OBJ_FLAG_DROP);
+	if (!flags_set.check(OBJ_FLAG_TRASH))
+		reset_flag(OBJ_FLAG_TRASH);
+	if (!flags_set.check(OBJ_FLAG_ROT))
+		reset_flag(OBJ_FLAG_ROT);
 }
 
 void
@@ -243,35 +172,35 @@ ObjectBlueprint::save (File::Writer& writer)
 	if (id)
 		writer.attr(S("blueprint"), S("id"), id);
 
-	if (set_flags.name)
+	if (value_set.check(OBJBL_SET_NAME))
 		writer.attr(S("blueprint"), S("name"), name.get_name());
 
-	if (set_flags.desc)
+	if (value_set.check(OBJBL_SET_DESC))
 		writer.attr(S("blueprint"), S("desc"), desc);
 
 	for (StringList::const_iterator i = keywords.begin(); i != keywords.end(); ++i)
 		writer.attr(S("blueprint"), S("keyword"), *i);
 
-	if (set_flags.equip)
+	if (value_set.check(OBJBL_SET_EQUIP))
 		writer.attr(S("blueprint"), S("equip"), equip.get_name());
 
-	if (set_flags.cost)
+	if (value_set.check(OBJBL_SET_COST))
 		writer.attr(S("blueprint"), S("cost"), cost);
-	if (set_flags.weight)
+	if (value_set.check(OBJBL_SET_WEIGHT))
 		writer.attr(S("blueprint"), S("weight"), weight);
 
-	if (set_flags.hidden)
-		writer.attr(S("blueprint"), S("roomlist"), !is_hidden());
-	if (set_flags.gettable)
-		writer.attr(S("blueprint"), S("gettable"), is_gettable());
-	if (set_flags.touchable)
-		writer.attr(S("blueprint"), S("touchable"), is_touchable());
-	if (set_flags.dropable)
-		writer.attr(S("blueprint"), S("dropable"), is_dropable());
-	if (set_flags.trashable)
-		writer.attr(S("blueprint"), S("trashable"), is_trashable());
-	if (set_flags.rotting)
-		writer.attr(S("blueprint"), S("rotting"), is_rotting());
+	if (flags_set.check(OBJ_FLAG_HIDDEN))
+		writer.attr(S("blueprint"), S("hidden"), flags.check(OBJ_FLAG_HIDDEN));
+	if (flags_set.check(OBJ_FLAG_GET))
+		writer.attr(S("blueprint"), S("gettable"), flags.check(OBJ_FLAG_GET));
+	if (flags_set.check(OBJ_FLAG_TOUCH))
+		writer.attr(S("blueprint"), S("touchable"), flags.check(OBJ_FLAG_TOUCH));
+	if (flags_set.check(OBJ_FLAG_DROP))
+		writer.attr(S("blueprint"), S("dropable"), flags.check(OBJ_FLAG_DROP));
+	if (flags_set.check(OBJ_FLAG_TRASH))
+		writer.attr(S("blueprint"), S("trashable"), flags.check(OBJ_FLAG_TRASH));
+	if (flags_set.check(OBJ_FLAG_ROT))
+		writer.attr(S("blueprint"), S("rotting"), flags.check(OBJ_FLAG_ROT));
 
 	if (parent)
 		writer.attr(S("blueprint"), S("parent"), parent->get_id());
@@ -305,17 +234,17 @@ ObjectBlueprint::load (File::Reader& reader)
 		FO_ATTR("blueprint", "equip")
 			set_equip(EquipLocation::lookup(node.get_string()));
 		FO_ATTR("blueprint", "gettable")
-			set_gettable(node.get_bool());
+			set_flag(OBJ_FLAG_GET, node.get_bool());
 		FO_ATTR("blueprint", "touchable")
-			set_touchable(node.get_bool());
-		FO_ATTR("blueprint", "roomlist")
-			set_hidden(!node.get_bool());
+			set_flag(OBJ_FLAG_TOUCH, node.get_bool());
+		FO_ATTR("blueprint", "hidden")
+			set_flag(OBJ_FLAG_HIDDEN, node.get_bool());
 		FO_ATTR("blueprint", "dropable")
-			set_dropable(node.get_bool());
+			set_flag(OBJ_FLAG_DROP, node.get_bool());
 		FO_ATTR("blueprint", "trashable")
-			set_trashable(node.get_bool());
+			set_flag(OBJ_FLAG_TRASH, node.get_bool());
 		FO_ATTR("blueprint", "rotting")
-			set_rotting(node.get_bool());
+			set_flag(OBJ_FLAG_ROT, node.get_bool());
 		FO_ATTR("blueprint", "container")
 			ContainerType type = ContainerType::lookup(node.get_string());
 			if (type.valid())
@@ -762,37 +691,37 @@ bool
 Object::is_hidden () const
 {
 	assert(blueprint != NULL);
-	return blueprint->is_hidden();
+	return blueprint->get_flag(OBJ_FLAG_HIDDEN);
 }
 bool
 Object::is_trashable () const
 {
 	assert(blueprint != NULL);
-	return blueprint->is_trashable();
+	return blueprint->get_flag(OBJ_FLAG_TRASH);
 }
 bool
 Object::is_gettable () const
 {
 	assert(blueprint != NULL);
-	return blueprint->is_gettable();
+	return blueprint->get_flag(OBJ_FLAG_GET);
 }
 bool
 Object::is_dropable () const
 {
 	assert(blueprint != NULL);
-	return blueprint->is_dropable();
+	return blueprint->get_flag(OBJ_FLAG_DROP);
 }
 bool
 Object::is_touchable () const
 {
 	assert(blueprint != NULL);
-	return blueprint->is_touchable();
+	return blueprint->get_flag(OBJ_FLAG_TOUCH);
 }
 bool
 Object::is_rotting () const
 {
 	assert(blueprint != NULL);
-	return blueprint->is_rotting();
+	return blueprint->get_flag(OBJ_FLAG_ROT);
 }
 
 // get parsable member values

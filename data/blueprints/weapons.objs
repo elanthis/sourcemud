@@ -75,7 +75,7 @@ object_blueprint {
   blueprint.desc = "Sharp, pointy claws."
   blueprint.weight = 0
   blueprint.cost = 0
-  blueprint.roomlist = false
+  blueprint.hidden = true
   blueprint.dropable = false
 
   user.combat_speed = 5
@@ -95,7 +95,7 @@ object_blueprint {
   blueprint.desc = "Bunched fist."
   blueprint.weight = 0
   blueprint.cost = 0
-  blueprint.roomlist = false
+  blueprint.hidden = true
   blueprint.dropable = false
 
   user.combat_speed = 5

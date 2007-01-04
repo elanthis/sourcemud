@@ -18,7 +18,7 @@ room {
     blueprint {
       blueprint.name = "the statue of Ranath the Merciful"
       blueprint.desc = "The statue depicts one of the many aspects of Ranath.  The statue's long arms are draped in exquisite robes of real silk, and the cupped hands form a basin filled with an oddly reflective liquid.  The ageless face of Ranath of Merciful looks anything but, with a gaze more befitting of a blood-thirsty warlord than a divine benefactor."
-      blueprint.roomlist = false
+      blueprint.hidden = true
       blueprint.gettable = false
       blueprint.trashable = false
     }
@@ -112,7 +112,7 @@ room {
     blueprint {
       blueprint.name = "a clock tower"
       blueprint.desc = "The clock tower rises overhead, proclaiming the time to be {time}."
-      blueprint.roomlist = false
+      blueprint.hidden = true
       blueprint.gettable = false
       blueprint.touchable = false
       blueprint.trashable = false
@@ -123,7 +123,7 @@ room {
     blueprint {
       blueprint.name = "a stone well"
       blueprint.desc = "The stone well is of simple yet sturdy construction.  The bottom stretches into darkness."
-      blueprint.roomlist = false
+      blueprint.hidden = true
       blueprint.gettable = false
       blueprint.trashable = false
     }
@@ -133,7 +133,7 @@ room {
     blueprint {
       blueprint.name = "a fountain"
       blueprint.desc = "The fountain is comprised of several statues, each of a different Avatar of Ranath, spraying water into a large basin filled with colorful fish."
-      blueprint.roomlist = false
+      blueprint.hidden = true
       blueprint.gettable = false
       blueprint.trashable = false
     }

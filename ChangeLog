@@ -1,3 +1,10 @@
+2007-01-04 07:51:44  Sean Middleditch <elanthis@awesomeplay.com>
+
+  * Removed the bitfield from ObjectBlueprint and replaced with
+    the new BitSet template type.  This reduced the over-all code
+    in the blueprint, and it's just the start of the reduction I
+    want to do.
+
 2006-12-27 06:40:05  Sean Middleditch <elanthis@awesomeplay.com>
 
   * Remove debugging message.  Oops.

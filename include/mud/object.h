@@ -19,6 +19,30 @@
 #include "common/gcmap.h"
 #include "scriptix/native.h"
 #include "scriptix/function.h"
+#include "common/bitset.h"
+
+// Object flags
+enum {
+	OBJ_FLAG_TRASH = 1,
+	OBJ_FLAG_HIDDEN,
+	OBJ_FLAG_ROT,
+	OBJ_FLAG_TOUCH,
+	OBJ_FLAG_GET,
+	OBJ_FLAG_DROP,
+
+	OBJ_FLAG_MAX
+};
+
+// Object blueprint "set" flags
+enum {
+	OBJBL_SET_NAME = 1,
+	OBJBL_SET_DESC,
+	OBJBL_SET_WEIGHT,
+	OBJBL_SET_COST,
+	OBJBL_SET_EQUIP,
+
+	OBJBL_SET_MAX
+};
 
 // WEIGHT:
 //  cost is in hundredths of 1 unit of current (ex: US dollar)
@@ -59,53 +83,38 @@ ObjectBlueprint : public Scriptix::Native
 	bool set_name (String s_name);
 	void reset_name ();
 
-	inline const StringList& get_keywords () const { return keywords; }
+	const StringList& get_keywords () const { return keywords; }
 
 	// description
-	inline const String& get_desc () const { return desc; }
-	inline void set_desc (String s_desc) { desc = s_desc; set_flags.desc = true; }
+	const String& get_desc () const { return desc; }
+	void set_desc (String s_desc) { desc = s_desc; value_set &= OBJBL_SET_DESC; }
 	void reset_desc ();
 
 	// weight
-	inline uint get_weight () const { return weight; }
-	inline void set_weight (uint s_weight) { weight = s_weight; set_flags.weight = true; }
+	uint get_weight () const { return weight; }
+	void set_weight (uint s_weight) { weight = s_weight; value_set &= OBJBL_SET_WEIGHT; }
 	void reset_weight ();
 
 	// cost
-	inline uint get_cost () const { return cost; }
-	inline void set_cost (uint s_cost) { cost = s_cost; set_flags.cost = true; }
+	uint get_cost () const { return cost; }
+	void set_cost (uint s_cost) { cost = s_cost; value_set &= OBJBL_SET_COST; }
 	void reset_cost ();
 
 	// equip location
-	inline EquipLocation get_equip () const { return equip; }
-	inline void set_equip (EquipLocation s_equip) { equip = s_equip; set_flags.equip = true; }
+	EquipLocation get_equip () const { return equip; }
+	void set_equip (EquipLocation s_equip) { equip = s_equip; value_set &= OBJBL_SET_EQUIP; }
 	void reset_equip ();
 
 	// flags
-	inline bool is_hidden () const { return flags.hidden; }
-	inline void set_hidden (bool v) { flags.hidden = v; set_flags.hidden = true; }
-	void reset_hidden ();
-	inline bool is_touchable () const { return flags.touchable; }
-	inline void set_touchable (bool v) { flags.touchable = v; set_flags.touchable = true; }
-	void reset_touchable ();
-	inline bool is_gettable () const { return flags.gettable; }
-	inline void set_gettable (bool v) { flags.gettable = v; set_flags.gettable = true; }
-	void reset_gettable ();
-	inline bool is_dropable () const { return flags.dropable; }
-	inline void set_dropable (bool v) { flags.dropable = v; set_flags.dropable = true; }
-	void reset_dropable ();
-	inline bool is_trashable () const { return flags.trashable; }
-	inline void set_trashable (bool v) { flags.trashable = v; set_flags.trashable = true; }
-	void reset_trashable ();
-	inline bool is_rotting () const { return flags.rotting; }
-	inline void set_rotting (bool v) { flags.rotting = v; set_flags.rotting = true; }
-	void reset_rotting ();
+	bool get_flag (bit_t flag) const { return flags & flag; }
+	void set_flag (bit_t flag, bool b) { flags.set(flag, b); flags_set &= flag; }
+	void reset_flag (bit_t flag);
 
 	// update inherited data
 	void refresh ();
 
 	// containers
-	inline const ContainerList& get_containers () const { return containers; }
+	const ContainerList& get_containers () const { return containers; }
 	bool set_container_exist (ContainerType type, bool);
 	bool has_container (ContainerType type) const;
 
@@ -130,33 +139,11 @@ ObjectBlueprint : public Scriptix::Native
 	StringList keywords;
 
 	// flags
-	struct Flags {
-		char hidden:1, touchable:1, gettable:1, dropable:1,
-			trashable:1, rotting:1;
-		inline Flags () : hidden(false), touchable(true),
-			gettable(true), dropable(true), trashable(true),
-			rotting(false) {}
-	} flags;
+	BitSet<OBJ_FLAG_MAX-1> flags;
 
-	// set flags
-	struct SetFlags {
-		int	name:1,
-			desc:1,
-			weight:1,
-			cost:1,
-			equip:1,
-			hidden:1,
-			touchable:1,
-			gettable:1,
-			dropable:1,
-			trashable:1,
-			attack:1,
-			rotting:1;
-		inline SetFlags () : name(false), desc(false),
-			weight(false), cost(false), equip(false),
-			hidden(false), touchable(false), gettable(false), dropable(false),
-			trashable(false), attack(false), rotting(false) {}
-	} set_flags;
+	// mark whether some item is "set" or not
+	BitSet<OBJ_FLAG_MAX-1> flags_set;
+	BitSet<OBJBL_SET_MAX-1> value_set;
 
 	void set_parent (ObjectBlueprint* blueprint);
 

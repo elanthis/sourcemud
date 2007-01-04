@@ -51,7 +51,7 @@ room {
     blueprint {
       blueprint.name = "a clear pond"
       blueprint.desc = "The clear waters of the pond do not appear to house any waterlife.  The water is very still, and doesn't seem to be disturbed often."
-      blueprint.roomlist = false
+      blueprint.hidden = true
       blueprint.gettable = false
       blueprint.trashable = false
       blueprint.container = "in"
@@ -80,7 +80,7 @@ room {
       blueprint.name = "a stone altar"
       blueprint.desc = "{$self.D} is very simple in design.  It is little more than a stone block, with runes to forest gods and spirits inscribed on all four sides.  The top of the alter is perfectly smooth."
       blueprint.weight = 140
-      blueprint.roomlist = false
+      blueprint.hidden = true
       blueprint.gettable = false
       blueprint.trashable = false
       blueprint.container = "on"
@@ -139,7 +139,7 @@ room {
     blueprint {
       blueprint.name = "a tree"
       blueprint.desc = "The broken tree trunk appears to have fallen recently.  The marks on its separated ends look to be the result of cutting, perhaps by a saw or axe."
-      blueprint.roomlist = false
+      blueprint.hidden = true
       blueprint.gettable = false
       blueprint.trashable = false
       blueprint.container = "under"
@@ -195,7 +195,7 @@ room {
     blueprint {
       blueprint.name = "a valley"
       blueprint.desc = "Deep below is a mist shrouded valley.  Poking up through the white mist are the tops of tall trees, indicating the valley is as forested as the mountain's higher areas."
-      blueprint.roomlist = false
+      blueprint.hidden = true
       blueprint.gettable = false
       blueprint.touchable = false
       blueprint.trashable = false
@@ -234,7 +234,7 @@ room {
     blueprint {
       blueprint.name = "a valley"
       blueprint.desc = "Deep below is a mist shrouded valley.  Poking up through the white mist are the tops of tall trees, indicating the valley is as forested as the mountain's higher areas."
-      blueprint.roomlist = false
+      blueprint.hidden = true
       blueprint.gettable = false
       blueprint.touchable = false
       blueprint.trashable = false
@@ -295,7 +295,7 @@ room {
     blueprint {
       blueprint.name = "a niche"
       blueprint.desc = "The niche is about three feet tall, four feet wide, and two feet deep.  It begins nearly three feet above the cave floor.  The niche is smooth and precisely carved into the wall of the cave."
-      blueprint.roomlist = false
+      blueprint.hidden = true
       blueprint.gettable = false
       blueprint.trashable = false
       blueprint.container = "in"
@@ -342,7 +342,7 @@ room {
     blueprint {
       blueprint.name = "a waterfall"
       blueprint.desc = "The water pouring past the cave entrance is very loud, and very fierce.  You cannot see past the water, as too much is coming down."
-      blueprint.roomlist = false
+      blueprint.hidden = true
       blueprint.gettable = false
       blueprint.trashable = false
     }
@@ -391,7 +391,7 @@ room {
       blueprint.name = "the River Styx"
       blueprint.desc = "The dark river is quite calm, and rather peaceful in appearance.  Despite this tranquil facade, supernatural fear still penetrates into the core of your soul when you look at it.  {$self.C} is none other than the River Styx, one of the few ways spoken of in legends to forever destroy a soul."
       blueprint.keyword = "murky river"
-      blueprint.roomlist = false
+      blueprint.hidden = true
       blueprint.gettable = false
       blueprint.trashable = false
       action.touch = begin
@@ -472,7 +472,7 @@ room {
     blueprint {
       blueprint.name = "a wooden bridge"
       blueprint.desc = "The bridge is simple, yet stout.  The wooden beams supporting the walking planks rise a few spans above the rapids below, providing safe and dry passage across."
-      blueprint.roomlist = false
+      blueprint.hidden = true
       blueprint.gettable = false
       blueprint.trashable = false
     }
@@ -483,7 +483,7 @@ room {
       blueprint.name = "a river"
       blueprint.desc = "The river is not very wide, yet still too far to leap across.  The water of the river is moving swiftly, rushing over the edge of the mountain, deep into the mist shrouded valley below."
       blueprint.keyword = "waterfall"
-      blueprint.roomlist = false
+      blueprint.hidden = true
       blueprint.gettable = false
       blueprint.touchable = false
       blueprint.trashable = false
@@ -577,7 +577,7 @@ room {
     blueprint {
       blueprint.name = "an ornate sign"
       blueprint.desc = "The sign reads, Cutter and Trader of Gems."
-      blueprint.roomlist = false
+      blueprint.hidden = true
       blueprint.gettable = false
       blueprint.touchable = false
       blueprint.trashable = false
@@ -612,7 +612,7 @@ room {
     blueprint {
       blueprint.name = "a gem case"
       blueprint.desc = "The {$self.n} is crafted of a light stained wood, and set with thick glass.  Dozens and dozens of jewels, of all colours, lie neatly organized in the case.  Several bits of fine jewelry can also be found, fitted with fine gems."
-      blueprint.roomlist = false
+      blueprint.hidden = true
       blueprint.gettable = false
       blueprint.trashable = false
     }
@@ -622,7 +622,7 @@ room {
     blueprint {
       blueprint.name = "a gem case"
       blueprint.desc = "The {$self.n} is crafted of a light stained wood, and set with thick glass.  Dozens and dozens of jewels, of all colours, lie neatly organized in the case.  Several bits of fine jewelry can also be found, fitted with fine gems."
-      blueprint.roomlist = false
+      blueprint.hidden = true
       blueprint.gettable = false
       blueprint.trashable = false
     }
@@ -741,7 +741,6 @@ room {
     blueprint {
       blueprint.name = "a large stone clock"
       blueprint.desc = "The tall clock is a granite obelisk reaching some ten feet above the cobblestones.  A clock face resides on each of the monument's four sides, almost at the top, staring out in the cardinal directions.  The time reads {time}."
-      blueprint.roomlist = true
       blueprint.gettable = false
       blueprint.touchable = true
       blueprint.trashable = false
@@ -1006,7 +1005,7 @@ room {
     blueprint {
       blueprint.name = "a home"
       blueprint.desc = "The manor house of Dallin Grayrock is quit large, compared to most of the homes in Darlet.  Made of stone, the main living area is three stories tall, and topped with a gray slate roof.  The northern and southern ends of the home rise another span and a half higher than the main portion of the house, making the structure look like a small castle.  A long paved walkway leads from the front gate, past a small stable, and up to the front porch of the home.  It's quite apparent the owner is one of Darlets more affluent citizens."
-      blueprint.roomlist = false
+      blueprint.hidden = true
       blueprint.gettable = false
       blueprint.touchable = false
       blueprint.trashable = false
@@ -1189,7 +1188,7 @@ room {
   object {
     blueprint {
       blueprint.name = "a gate"
-      blueprint.roomlist = false
+      blueprint.hidden = true
       blueprint.gettable = false
       blueprint.touchable = true
       blueprint.trashable = false
@@ -1608,7 +1607,7 @@ room {
     blueprint {
       blueprint.name = "a wooden box"
       blueprint.desc = "{$self.D} looks like it might have once been a coffin, though it is now nothing but broken planks of rotted wood."
-      blueprint.roomlist = false
+      blueprint.hidden = true
       blueprint.gettable = false
       blueprint.trashable = false
     }
@@ -1618,7 +1617,7 @@ room {
     blueprint {
       blueprint.name = "an open grave"
       blueprint.desc = "The grave looks to have been dug long ago, but never filled in."
-      blueprint.roomlist = false
+      blueprint.hidden = true
       blueprint.gettable = false
       blueprint.trashable = false
       blueprint.container = "in"
@@ -1645,7 +1644,7 @@ room {
     blueprint {
       blueprint.name = "a gnarled tree"
       blueprint.desc = "{$self.D} appears dead.  Its roots and branches are twisted as if in agony, and a length of rotted rope hangs from one of its higher boughs, a sure mark of the deceased tree's grim function in past times."
-      blueprint.roomlist = false
+      blueprint.hidden = true
       blueprint.gettable = false
       blueprint.trashable = false
     }
@@ -1695,7 +1694,7 @@ room {
     blueprint {
       blueprint.name = "a mausoleum"
       blueprint.desc = "{$self.D} is made of granite, and decorated with dark marble and faded inscriptions.  The building appears mostly intact, save for the front door, which appears to have been damaged by some kind of heavy force, like a battering ram.  {$self.D}'s only legible inscription reads, 'Ravelor Materna'."
-      blueprint.roomlist = false
+      blueprint.hidden = true
       blueprint.gettable = false
       blueprint.trashable = false
     }

@@ -1,9 +1,9 @@
 # AweMUD NG
 # Configuration script
 BASE_VERSION=0.25
-VERSION=0.25.20061227
+VERSION=0.25.20070104
 
-AC_INIT([AweMUD], 0.25.20061227, [http://bugs.awemud.net/submit.php])
+AC_INIT([AweMUD], 0.25.20070104, [http://bugs.awemud.net/submit.php])
 AC_CONFIG_SRCDIR(src/mud/main.cc)
 AC_CONFIG_AUX_DIR(.)
 AM_INIT_AUTOMAKE([1.8])
