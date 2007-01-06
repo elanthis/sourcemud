@@ -144,8 +144,8 @@ Creature::cl_find_object (String line, int type, bool silent)
 	if (type & GOC_SUB && get_room() != NULL) {
 		for (EList<Object>::iterator iter = get_room()->objects.begin(); iter != get_room()->objects.end(); ++iter) {
 			// have an ON container - search inside
-			if (*iter != NULL && (*iter)->has_container (ContainerType::ON)) {
-				if ((object = (*iter)->find_object (name, index, ContainerType::ON, &matches))) {
+			if (*iter != NULL && (*iter)->get_flag (OBJ_FLAG_CONTAIN_ON)) {
+				if ((object = (*iter)->find_object (name, index, OBJ_FLAG_CONTAIN_ON, &matches))) {
 					return object;
 				}
 				if (matches >= index) {
@@ -185,7 +185,7 @@ Creature::cl_find_object (String line, int type, bool silent)
 
 // find an object inside a particular container
 Object*
-Creature::cl_find_object (String line, Object* container, ContainerType type, bool silent)
+Creature::cl_find_object (String line, Object* container, bit_t type, bool silent)
 {
 	const char* text = line.c_str();
 
@@ -222,7 +222,16 @@ Creature::cl_find_object (String line, Object* container, ContainerType type, bo
 	if (object)
 		return object;
 
-	*this << "You do not see '" << name << "' " << type.get_name() << " " << StreamName(container, DEFINITE) << ".\n";
+	// type name
+	String tname;
+	if (type == OBJ_FLAG_CONTAIN_ON)
+		tname = S("on");
+	else if (type == OBJ_FLAG_CONTAIN_IN)
+		tname = S("in");
+	else
+		tname = S("anywhere on");
+
+	*this << "You do not see '" << name << "' " << tname << " " << StreamName(container, DEFINITE) << ".\n";
 	return NULL;
 }
 
@@ -383,8 +392,8 @@ Creature::cl_find_any (String line, bool silent)
 		for (EList<Object>::iterator iter = get_room()->objects.begin(); index > 0 && iter != get_room()->objects.end(); ++iter) {
 			if (*iter != NULL) {
 				// have an ON container - search inside
-				if ((*iter)->has_container (ContainerType::ON)) {
-					if ((obj = (*iter)->find_object (name, index, ContainerType::ON, &matches))) {
+				if ((*iter)->get_flag (OBJ_FLAG_CONTAIN_ON)) {
+					if ((obj = (*iter)->find_object (name, index, OBJ_FLAG_CONTAIN_ON, &matches))) {
 						return obj;
 					}
 					if (matches >= index) {
@@ -530,13 +539,16 @@ void command_look (Creature* ch, String argv[]) {
 
 	// looking in/on/etc. container?
 	if (argv[0] && argv[0] != "at") {
-		ContainerType contain = ContainerType::lookup(argv[0]);
-		if (contain.valid()) {
-			Object* obj = ch->cl_find_object (argv[1], GOC_ANY);
-			if (obj)
-				ch->do_look (obj, contain);
-			return;
+		Object* obj = ch->cl_find_object (argv[1], GOC_ANY);
+		if (obj) {
+			if (argv[0] == "on")
+				ch->do_look (obj, OBJ_FLAG_CONTAIN_ON);
+			else if (argv[0] == "in")
+				ch->do_look (obj, OBJ_FLAG_CONTAIN_IN);
+			else
+				ch->do_look (obj, 0);
 		}
+		return;
 	}
 
 	// generic find
@@ -547,7 +559,7 @@ void command_look (Creature* ch, String argv[]) {
 			ch->do_look((Creature*)(entity));
 		// object?
 		else if (OBJECT(entity))
-			ch->do_look((Object*)(entity), ContainerType::NONE);
+			ch->do_look((Object*)(entity), 0);
 		// eixt?
 		else if (PORTAL(entity))
 			ch->do_look((Portal*)(entity));
@@ -615,7 +627,13 @@ void command_unlock (Creature* ch, String argv[]) {
 
 void command_get (Creature* ch, String argv[]) {
 	if (!argv[2].empty()) { // in, on, etc.
-		ContainerType type = argv[1] ? ContainerType::lookup(argv[1]) : ContainerType::NONE;
+		bit_t type;
+		if (argv[1] == "on")
+			type = OBJ_FLAG_CONTAIN_ON;
+		else if (argv[1] == "in")
+			type = OBJ_FLAG_CONTAIN_IN;
+		else
+			type = 0;
 
 		// get container
 		Object* cobj = ch->cl_find_object (argv[2], GOC_ANY);
@@ -623,17 +641,17 @@ void command_get (Creature* ch, String argv[]) {
 			return;
 
 		// no type, pick best, from in or on
-		if (!type.valid()) {
-			if (cobj->has_container (ContainerType::IN))
-				type = ContainerType::IN;
-			else if (cobj->has_container (ContainerType::ON))
-				type = ContainerType::ON;
-		} else if (!cobj->has_container (type)) {
-			type = ContainerType::NONE; // invalidate type
+		if (type == 0) {
+			if (cobj->get_flag (OBJ_FLAG_CONTAIN_IN))
+				type = OBJ_FLAG_CONTAIN_IN;
+			else if (cobj->get_flag (OBJ_FLAG_CONTAIN_ON))
+				type = OBJ_FLAG_CONTAIN_ON;
+		} else if (!cobj->get_flag (type)) {
+			type = 0; // invalidate type
 		}
 			
 		// no valid type?
-		if (!type.valid()) {
+		if (type == 0) {
 			*ch << "You can't do that with " << StreamName(*cobj, DEFINITE) << ".\n";
 			return;
 		}
@@ -643,7 +661,7 @@ void command_get (Creature* ch, String argv[]) {
 		if (obj)
 			ch->do_get (obj, cobj, type);
 		else
-			*ch << "Can't find '" << argv[0] << "' " << type.get_name() << " " << StreamName(*cobj, DEFINITE) << ".\n";
+			*ch << "Can't find '" << argv[0] << "' " << argv[1] << " " << StreamName(*cobj, DEFINITE) << ".\n";
 	// get from the room
 	} else {
 		// coins?
@@ -700,8 +718,6 @@ void command_get (Creature* ch, String argv[]) {
 }
 
 void command_put (Creature* ch, String argv[]) {
-	ContainerType type = ContainerType::lookup(argv[1]);
-
 	Object* obj = ch->cl_find_object (argv[0], GOC_HELD);
 	if (!obj) 
 		return;
@@ -710,7 +726,10 @@ void command_put (Creature* ch, String argv[]) {
 	if (!cobj)
 		return;
 
-	ch->do_put (obj, cobj, type);
+	if (argv[1] == "on")
+		ch->do_put (obj, cobj, OBJ_FLAG_CONTAIN_ON);
+	else if (argv[1] == "in")
+		ch->do_put (obj, cobj, OBJ_FLAG_CONTAIN_IN);
 }
 
 void command_give (Creature* ch, String argv[])

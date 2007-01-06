@@ -13,7 +13,6 @@
 #include "common/error.h"
 #include "mud/body.h"
 #include "mud/elist.h"
-#include "mud/container.h"
 #include "mud/server.h"
 #include "common/imanager.h"
 #include "common/gcmap.h"
@@ -30,8 +29,14 @@ enum {
 	OBJ_FLAG_GET,
 	OBJ_FLAG_DROP,
 
+	OBJ_FLAG_CONTAIN_IN,
+	OBJ_FLAG_CONTAIN_ON,
+
 	OBJ_FLAG_MAX
 };
+
+// For error-checking that a flag is a container type
+#define OBJ_IS_CONTAINER(n) ((n)&(OBJ_FLAG_CONTAIN_IN | OBJ_FLAG_CONTAIN_ON))
 
 // Object blueprint "set" flags
 enum {
@@ -71,8 +76,6 @@ class
 ObjectBlueprint : public Scriptix::Native
 {
 	public:
-	typedef GCType::set<ContainerType> ContainerList;
-
 	ObjectBlueprint ();
 
 	// blueprint id
@@ -113,11 +116,6 @@ ObjectBlueprint : public Scriptix::Native
 	// update inherited data
 	void refresh ();
 
-	// containers
-	const ContainerList& get_containers () const { return containers; }
-	bool set_container_exist (ContainerType type, bool);
-	bool has_container (ContainerType type) const;
-
 	// load
 	int load (File::Reader& reader);
 	void save (File::Writer& writer);
@@ -129,8 +127,6 @@ ObjectBlueprint : public Scriptix::Native
 	String id;
 	ObjectBlueprint* parent;
 	
-	ContainerList containers;
-
 	EntityName name;
 	String desc;
 	uint weight;
@@ -197,6 +193,7 @@ Object : public Entity
 	EquipLocation get_equip () const;
 
 	// check flags
+	bool get_flag (bit_t flag) const { return blueprint->get_flag(flag); }
 	bool is_hidden () const;
 	bool is_touchable () const;
 	bool is_gettable () const;
@@ -220,18 +217,17 @@ Object : public Entity
 	static Object* load_blueprint (String name);
 
 	// containers
-	bool has_container (ContainerType type) const;
-	bool add_object (Object *sub, ContainerType type);
-	void remove_object (Object *sub, ContainerType type);
-	Object *find_object (String name, uint index, ContainerType type, uint *matches = NULL) const;
-	void show_contents (class Player *player, ContainerType type) const;
+	bool add_object (Object *sub, bit_t type);
+	void remove_object (Object *sub, bit_t type);
+	Object *find_object (String name, uint index, bit_t type, uint *matches = NULL) const;
+	void show_contents (class Player *player, bit_t type) const;
 
 	// data
 	private:
 	EntityName name;
 	Entity *owner;
 	ObjectBlueprint* blueprint;
-	ContainerType location;
+	bit_t container;
 	uint calc_weight; // calculated weight of children objects
 	uint trash_timer; // ticks until trashed
 

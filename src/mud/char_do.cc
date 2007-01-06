@@ -230,9 +230,10 @@ Creature::do_look (Creature *ch)
 }
 
 void
-Creature::do_look (Object *obj, const ContainerType& type)
+Creature::do_look (Object *obj, bit_t type)
 {
 	assert (obj != NULL);
+	assert (type == 0 || OBJ_IS_CONTAINER(type));
 
 	// check
 	if (!check_see()) return;
@@ -241,18 +242,22 @@ Creature::do_look (Object *obj, const ContainerType& type)
 		return;
 
 	// specific container type
-	if (type != ContainerType::NONE) {
-		if (obj->has_container (type)) 
+	if (type != 0) {
+		if (obj->get_flag (type)) 
 			obj->show_contents (PLAYER(this), type);
+		else if (type == OBJ_FLAG_CONTAIN_IN)
+			*this << StreamName(*obj, DEFINITE, true) << " cannot be looked inside of.\n";
+		else if (type == OBJ_FLAG_CONTAIN_ON)
+			*this << StreamName(*obj, DEFINITE, true) << " cannot be looked ontop of.\n";
 		else
-			*this << StreamName(*obj, DEFINITE, true) << " cannot be looked " << type.get_name() << ".\n";
+			*this << StreamName(*obj, DEFINITE, true) << " cannot be looked at that way.\n";
 	} else {
 		// generic - description and on or in contents
 		if (obj->get_desc())
 			*this << StreamParse(obj->get_desc(), S("self"), obj, S("actor"), this) << "  ";
 		// on contents?
-		if (obj->has_container (ContainerType::ON))
-			obj->show_contents(PLAYER(this), ContainerType::ON);
+		if (obj->get_flag (OBJ_FLAG_CONTAIN_ON))
+			obj->show_contents(PLAYER(this), OBJ_FLAG_CONTAIN_ON);
 		else
 			*this << "\n";
 	}
@@ -343,8 +348,10 @@ Creature::do_position (CreaturePosition position)
 class ActionGet : public IAction
 {
 	public:
-	ActionGet (Creature* s_ch, Object* s_obj, Object* s_container, const ContainerType& s_type) :
-		IAction(s_ch), obj(s_obj), container(s_container), type(s_type) {}
+	ActionGet (Creature* s_ch, Object* s_obj, Object* s_container, bit_t s_type) :
+			IAction(s_ch), obj(s_obj), container(s_container), type(s_type) {
+		assert (type == 0 || OBJ_IS_CONTAINER(type));
+	}
 
 	virtual uint get_rounds () const { return 2; }
 	virtual void describe (const StreamControl& stream) const { stream << "getting " << StreamName(obj, INDEFINITE); }
@@ -391,13 +398,14 @@ class ActionGet : public IAction
 	private:
 	Object* obj;
 	Object* container;
-	const ContainerType type;
+	bit_t type;
 };
 
 void
-Creature::do_get (Object *obj, Object *contain, const ContainerType& type)
+Creature::do_get (Object *obj, Object *contain, bit_t type)
 {
 	assert (obj != NULL);
+	assert (type == 0 || OBJ_IS_CONTAINER(type));
 
 	add_action(new ActionGet(this, obj, contain, type));
 }
@@ -405,8 +413,10 @@ Creature::do_get (Object *obj, Object *contain, const ContainerType& type)
 class ActionPut : public IAction
 {
 	public:
-	ActionPut (Creature* s_ch, Object* s_obj, Object* s_container, const ContainerType& s_type) :
-		IAction(s_ch), obj(s_obj), container(s_container), type(s_type) {}
+	ActionPut (Creature* s_ch, Object* s_obj, Object* s_container, bit_t s_type) :
+			IAction(s_ch), obj(s_obj), container(s_container), type(s_type) {
+		assert (s_type == 0 || OBJ_IS_CONTAINER(s_type));
+	}
 
 	virtual uint get_rounds () const { return 2; }
 	virtual void describe (const StreamControl& stream) const { stream << "putting " << StreamName(obj, INDEFINITE); }
@@ -418,13 +428,20 @@ class ActionPut : public IAction
 
 		// FIXME: boy is this incomplete!!
 
-		if (!container->has_container (type)) {
+		if (!container->get_flag (type)) {
 			*get_actor() << "You cannot do that with " << StreamName(*container) << ".\n";
 			return 1;
 		} else {
 			// should force let go
 			container->add_object (obj, type);
-			*get_actor() << "You put " << StreamName(*obj, DEFINITE) << " " << type.get_name() << " " << StreamName(container, DEFINITE) << ".\n";
+			String tname;
+			if (type == OBJ_FLAG_CONTAIN_ON)
+				tname = S("on");
+			else if (type == OBJ_FLAG_CONTAIN_IN)
+				tname = S("in");
+			else
+				tname = S("somewhere on");
+			*get_actor() << "You put " << StreamName(*obj, DEFINITE) << " " << tname << " " << StreamName(container, DEFINITE) << ".\n";
 			return 0;
 		}
 	}
@@ -432,15 +449,15 @@ class ActionPut : public IAction
 	private:
 	Object* obj;
 	Object* container;
-	const ContainerType type;
+	bit_t type;
 };
 
 void
-Creature::do_put (Object *obj, Object *contain, const ContainerType& type)
+Creature::do_put (Object *obj, Object *contain, bit_t type)
 {
 	assert (obj != NULL);
 	assert (contain != NULL);
-	assert (type.valid());
+	assert (type == 0 || OBJ_IS_CONTAINER(type));
 
 	add_action(new ActionPut(this, obj, contain, type));
 }

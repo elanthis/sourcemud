@@ -23,23 +23,6 @@
 #include "mud/hooks.h"
 #include "common/manifest.h"
 
-String ContainerType::names[] = {
-	S("none"),
-	S("in"),
-	S("on"),
-	S("under"),
-	S("behind"),
-};
-
-ContainerType
-ContainerType::lookup (String name)
-{
-	for (uint i = 0; i < COUNT; ++i)
-		if (str_eq(name, names[i]))
-			return i;
-	return NONE;
-}
-
 // ----- ObjectBlueprint -----
 
 SCRIPT_TYPE(ObjectBlueprint);
@@ -205,8 +188,10 @@ ObjectBlueprint::save (File::Writer& writer)
 	if (parent)
 		writer.attr(S("blueprint"), S("parent"), parent->get_id());
 
-	for (ContainerList::const_iterator i = containers.begin (); i != containers.end (); i ++)
-		writer.attr(S("blueprint"), S("container"), i->get_name());
+	if (flags_set.check(OBJ_FLAG_CONTAIN_IN))
+		writer.attr(S("blueprint"), S("container"), flags.check(OBJ_FLAG_CONTAIN_IN));
+	if (flags_set.check(OBJ_FLAG_CONTAIN_ON))
+		writer.attr(S("blueprint"), S("container"), flags.check(OBJ_FLAG_CONTAIN_ON));
 
 	// script hook
 	ScriptRestrictedWriter* swriter = new ScriptRestrictedWriter(&writer);
@@ -246,9 +231,12 @@ ObjectBlueprint::load (File::Reader& reader)
 		FO_ATTR("blueprint", "rotting")
 			set_flag(OBJ_FLAG_ROT, node.get_bool());
 		FO_ATTR("blueprint", "container")
-			ContainerType type = ContainerType::lookup(node.get_string());
-			if (type.valid())
-				containers.insert(type);
+			if (node.get_string() == S("on"))
+				set_flag(OBJ_FLAG_CONTAIN_ON, true);
+			else if (node.get_string() == S("in"))
+				set_flag(OBJ_FLAG_CONTAIN_IN, true);
+			else
+				Log::Warning << "Unknown container type '" << node.get_string() << "' at " << reader.get_filename() << ':' << node.get_line();
 		FO_ATTR("blueprint", "parent")
 			ObjectBlueprint* blueprint = ObjectBlueprintManager.lookup(node.get_string());
 			if (blueprint)
@@ -286,42 +274,6 @@ ObjectBlueprint::get_undefined_property (Scriptix::Atom id) const
 	if (parent == NULL)
 		return Scriptix::Nil;
 	return parent->get_property(id);
-}
-
-bool
-ObjectBlueprint::set_container_exist (ContainerType type, bool exist)
-{
-	// find container
-	ContainerList::iterator i = containers.find(type);
-	if (i != containers.end()) {
-		if (!exist) {
-			containers.erase (i);
-			// parent(s) might still have it...
-			return has_container(type);
-		}
-		// has container
-		return true;
-	}
-	// add if doesn't exist
-	if (exist) {
-		containers.insert(type);
-		return true;
-	}
-	// parent(s) might have it
-	return has_container(type);
-}
-
-bool
-ObjectBlueprint::has_container (ContainerType type) const
-{
-	const ObjectBlueprint* blueprint = this;
-	while (blueprint) {
-		if (blueprint->get_containers().find(type) != blueprint->get_containers().end())
-			return true;
-		blueprint = blueprint->get_parent();
-	}
-
-	return false;
 }
 
 // ----- Object -----
@@ -371,8 +323,10 @@ Object::save (File::Writer& writer)
 	// parent data
 	Entity::save(writer);
 
-	if (location.valid())
-		writer.attr(S("object"), S("location"), location.get_name());
+	if (container == OBJ_FLAG_CONTAIN_IN)
+		writer.attr(S("object"), S("container"), S("in"));
+	if (container == OBJ_FLAG_CONTAIN_ON)
+		writer.attr(S("object"), S("container"), S("on"));
 
 	for (EList<Object>::const_iterator e = children.begin (); e != children.end(); ++e) {
 		writer.begin(S("object"));
@@ -420,14 +374,19 @@ Object::load_node(File::Reader& reader, File::Node& node)
 				set_blueprint(blueprint);
 		FO_ATTR("object", "name")
 			name.set_name(node.get_string());
-		FO_ATTR("object", "location")
-			location = ContainerType::lookup(node.get_string());
+		FO_ATTR("object", "container")
+			if (node.get_string() == S("in"))
+				container = OBJ_FLAG_CONTAIN_IN;
+			else if (node.get_string() == S("on"))
+				container = OBJ_FLAG_CONTAIN_ON;
+			else
+				throw File::Error(S("Object has invalid container attribute"));
 		FO_OBJECT("object")
 			Object* obj = new Object ();
 			if (obj->load (reader))
 				throw File::Error(S("Failed to load object"));
-			if (!obj->location.valid())
-				throw File::Error(S("child object has no valid location"));
+			if (!get_flag(obj->container))
+				throw File::Error(S("child object unallowed container"));
 			obj->set_owner (this);
 			children.add (obj);
 		FO_PARENT(Entity)
@@ -455,7 +414,7 @@ Object::owner_release (Entity* child)
 	// find it
 	EList<Object>::iterator e = std::find(children.begin(), children.end(), obj);
 	if (e != children.end()) {
-		obj->location = ContainerType::NONE;
+		obj->container = 0;
 		children.erase(e);
 		return;
 	}
@@ -511,25 +470,18 @@ Object::deactivate ()
 }
 
 bool
-Object::has_container (ContainerType type) const
+Object::add_object (Object *object, bit_t container)
 {
-	assert(blueprint);
-	return blueprint->has_container(type);
-}
-
-bool
-Object::add_object (Object *object, ContainerType type)
-{
-	assert (type.valid());
 	assert (object != NULL);
+	assert (OBJ_IS_CONTAINER(container));
 
 	// has contianer?
-	if (!has_container(type))
+	if (!get_flag(container))
 		return false;
 
 	// release and add
 	object->set_owner(this);
-	object->location = type;
+	object->container = container;
 	children.add(object);
 
 	// recalc our weight, and parent's weight
@@ -542,8 +494,10 @@ Object::add_object (Object *object, ContainerType type)
 }
 
 void
-Object::show_contents (Player *player, ContainerType type) const
+Object::show_contents (Player *player, bit_t container) const
 {
+	assert (OBJ_IS_CONTAINER(container));
+
 	*player << "You see ";
 	
 	Object* last = NULL;
@@ -552,7 +506,7 @@ Object::show_contents (Player *player, ContainerType type) const
 	// show objects
 	for (EList<Object>::const_iterator i = children.begin (); i != children.end(); ++i) {
 		// not right container?
-		if ((*i)->location != type)
+		if ((*i)->container != container)
 			continue;
 		// had a previous item?
 		if (last != NULL) {
@@ -579,21 +533,27 @@ Object::show_contents (Player *player, ContainerType type) const
 		*player << "nothing";
 
 	// finish up
-	*player << " " << type.get_name() << " " << StreamName(*this, DEFINITE, false) << ".\n";
+	String tname = S("somewhere on");
+	if (container == OBJ_FLAG_CONTAIN_ON)
+		tname = S("on");
+	else if (container == OBJ_FLAG_CONTAIN_IN)
+		tname = S("in");
+	*player << " " << tname << " " << StreamName(*this, DEFINITE, false) << ".\n";
 }
 
 Object *
-Object::find_object (String name, uint index, ContainerType type, uint *matches) const
+Object::find_object (String name, uint index, bit_t container, uint *matches) const
 {
 	assert (index != 0);
+	assert (OBJ_IS_CONTAINER(container));
 
 	// clear matches
 	if (matches)
 		*matches = 0;
 	
 	for (EList<Object>::const_iterator i = children.begin (); i != children.end(); ++i) {
-		// right container type
-		if (!type.valid() || (*i)->location == type) {
+		// right container container
+		if ((*i)->container == container) {
 			// check name
 			if ((*i)->name_match (name)) {
 				if (matches)
@@ -616,8 +576,7 @@ Object::recalc_weight ()
 
 	// add up weight of objects
 	for (EList<Object>::const_iterator i = children.begin(); i != children.end(); ++i)
-		if ((*i)->location == ContainerType::IN || (*i)->location == ContainerType::ON)
-			calc_weight += (*i)->get_weight();
+		calc_weight += (*i)->get_weight();
 }
 
 // find parent room

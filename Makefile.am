@@ -253,7 +253,6 @@ noinst_HEADERS=\
 	include/mud/clock.h \
 	include/mud/color.h \
 	include/mud/command.h \
-	include/mud/container.h \
 	include/mud/control.h \
 	include/mud/creation.h \
 	include/mud/creature.h \

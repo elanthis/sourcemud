@@ -130,12 +130,12 @@ SCommandManager::initialize (void)
 	// looking
 	COMMAND("look",
 			"look\n"
-			"look [at|in|on|under|behind] <object|person>\n",
+			"look [at|in|on] <object|person>\n",
 			look,
 			ACCESS_ALL,
 			Creature)
 		FORMAT(15, "look")
-		FORMAT(15, "look :0(in,on,under,behind,at)? :1*")
+		FORMAT(15, "look :0(in,on,at)? :1*")
 	END_COMM
 
 	// communication
@@ -227,16 +227,16 @@ SCommandManager::initialize (void)
 			get,
 			ACCESS_ALL,
 			Creature)
-		FORMAT(50, "get :0* from :1(in,on,under,behind)? :2*")
+		FORMAT(50, "get :0* from :1(in,on)? :2*")
 		FORMAT(50, "get :3%? coins")
 		FORMAT(50, "get :0*")
 	END_COMM
 	COMMAND("put",
-			"put <object> [in|on|under|behind] <location>\n",
+			"put <object> [in|on] <location>\n",
 			put,
 			ACCESS_ALL,
 			Creature)
-		FORMAT(50, "put :0* :1(in,on,under,behind) :2*")
+		FORMAT(50, "put :0* :1(in,on) :2*")
 	END_COMM
 	COMMAND("give",
 			"give <amount> coins [to] <player>\n",

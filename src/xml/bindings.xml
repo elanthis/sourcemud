@@ -330,27 +330,15 @@ if (value == false) { ... }</example>
 
     <global>
       <name>CON_IN</name>
-      <expr>ContainerType::IN</expr>
+      <expr>OBJ_FLAG_CONTAIN_IN</expr>
       <type>Integer</type>
       <doc>The 'inside' container type.</doc>
     </global>
     <global>
       <name>CON_ON</name>
-      <expr>ContainerType::ON</expr>
+      <expr>OBJ_FLAG_CONTAIN_ON</expr>
       <type>Integer</type>
       <doc>The 'on' container type.</doc>
-    </global>
-    <global>
-      <name>CON_UNDER</name>
-      <expr>ContainerType::UNDER</expr>
-      <type>Integer</type>
-      <doc>The 'under' container type.</doc>
-    </global>
-    <global>
-      <name>CON_BEHIND</name>
-      <expr>ContainerType::BEHIND</expr>
-      <type>Integer</type>
-      <doc>The 'behind' container type.</doc>
     </global>
   </global-group>
 
