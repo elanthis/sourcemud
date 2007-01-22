@@ -241,7 +241,7 @@ Creature : public Entity, public IStreamSink
 
 	// command processing utility funcs
 	class Object* cl_find_object (String name, int type, bool silent = false);
-	class Object* cl_find_object (String name, class Object* container, bit_t container, bool silent = false);
+	class Object* cl_find_object (String name, class Object* container, class ObjectLocation container, bool silent = false);
 
 	class Creature* cl_find_creature (String name, bool silent = false);
 	class Portal* cl_find_portal (String name, bool silent = false);
@@ -287,15 +287,15 @@ Creature : public Entity, public IStreamSink
 
 	void do_look ();
 	void do_look (Creature *who);
-	void do_look (class Object *what, bit_t container);
+	void do_look (class Object *what, class ObjectLocation container);
 	void do_look (class Portal *what);
 
 	void do_move (int dir);
 
 	void do_position (CreaturePosition);
 
-	void do_get (class Object*, class Object*, bit_t container);
-	void do_put (class Object*, class Object*, bit_t container);
+	void do_get (class Object*, class Object*, class ObjectLocation container);
+	void do_put (class Object*, class Object*, class ObjectLocation container);
 	void do_give_coins (class Creature* target, uint amount);
 	void do_drop (class Object*);
 

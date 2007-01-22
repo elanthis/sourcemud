@@ -330,13 +330,13 @@ if (value == false) { ... }</example>
 
     <global>
       <name>CON_IN</name>
-      <expr>OBJ_FLAG_CONTAIN_IN</expr>
+      <expr>ObjectLocation::IN</expr>
       <type>Integer</type>
       <doc>The 'inside' container type.</doc>
     </global>
     <global>
       <name>CON_ON</name>
-      <expr>OBJ_FLAG_CONTAIN_ON</expr>
+      <expr>ObjectLocation::ON</expr>
       <type>Integer</type>
       <doc>The 'on' container type.</doc>
     </global>
@@ -2207,6 +2207,7 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
         <type>Integer</type>
       </arg>
       <doc>This will search the container of the given type (or all container types if type=0) and _return = the Nth match against the given name, where N is the given index, starting at 1.</doc>
+      <code><![CDATA[_self->find_object(_arg_name, _arg_index, ObjectLocation(_arg_type));]]></code>
     </method>
     <method>
       <name>addObject</name>
@@ -2220,6 +2221,7 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
         <type>Integer</type>
       </arg>
       <doc>Adds the given object to the container of the given type.</doc>
+      <code><![CDATA[_self->add_object(_arg_object, ObjectLocation(_arg_type));]]></code>
     </method>
 
     <!-- Parent tracking -->

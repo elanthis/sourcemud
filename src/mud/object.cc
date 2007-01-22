@@ -23,6 +23,13 @@
 #include "mud/hooks.h"
 #include "common/manifest.h"
 
+String ObjectLocation::names[] = {
+	S("none"),
+	S("in"),
+	S("on"),
+	S("MAX")
+};
+
 // ----- ObjectBlueprint -----
 
 SCRIPT_TYPE(ObjectBlueprint);
@@ -36,7 +43,7 @@ bool
 ObjectBlueprint::set_name (String s_name)
 {
 	bool ret = name.set_name(s_name);
-	value_set &= OBJBL_SET_NAME;
+	value_set &= ObjectBlueprintSet::NAME;
 	return ret;
 }
 
@@ -51,7 +58,7 @@ ObjectBlueprint::reset_name ()
 {
 	// clear
 	name.set_name(S("an object"));
-	value_set.set_off(OBJBL_SET_NAME);
+	value_set.set_off(ObjectBlueprintSet::NAME);
 
 	// get parent value
 	const ObjectBlueprint* data = get_parent();
@@ -64,7 +71,7 @@ ObjectBlueprint::reset_desc ()
 {
 	// clear
 	desc = S("object");
-	value_set.set_off(OBJBL_SET_DESC);
+	value_set.set_off(ObjectBlueprintSet::DESC);
 
 	// get parent value
 	const ObjectBlueprint* data = get_parent();
@@ -77,7 +84,7 @@ ObjectBlueprint::reset_weight ()
 {
 	// clear
 	weight = 0;
-	value_set.set_off(OBJBL_SET_WEIGHT);
+	value_set.set_off(ObjectBlueprintSet::WEIGHT);
 
 	// get parent value
 	const ObjectBlueprint* data = get_parent();
@@ -90,7 +97,7 @@ ObjectBlueprint::reset_cost ()
 {
 	// clear
 	cost = 0;
-	value_set.set_off(OBJBL_SET_COST);
+	value_set.set_off(ObjectBlueprintSet::COST);
 
 	// get parent value
 	const ObjectBlueprint* data = get_parent();
@@ -103,7 +110,7 @@ ObjectBlueprint::reset_equip ()
 {
 	// clear
 	equip = 0;
-	value_set.set_off(OBJBL_SET_EQUIP);
+	value_set.set_off(ObjectBlueprintSet::EQUIP);
 
 	// get parent value
 	const ObjectBlueprint* data = get_parent();
@@ -112,7 +119,7 @@ ObjectBlueprint::reset_equip ()
 }
 
 void
-ObjectBlueprint::reset_flag (bit_t flag)
+ObjectBlueprint::reset_flag (ObjectFlag flag)
 {
 	flags_set.set_off(flag);
 
@@ -125,28 +132,28 @@ ObjectBlueprint::reset_flag (bit_t flag)
 void
 ObjectBlueprint::refresh ()
 {
-	if (!value_set.check(OBJBL_SET_NAME))
+	if (!value_set.check(ObjectBlueprintSet::NAME))
 		reset_name();
-	if (!value_set.check(OBJBL_SET_DESC))
+	if (!value_set.check(ObjectBlueprintSet::DESC))
 		reset_desc();
-	if (!value_set.check(OBJBL_SET_WEIGHT))
+	if (!value_set.check(ObjectBlueprintSet::WEIGHT))
 		reset_weight();
-	if (!value_set.check(OBJBL_SET_COST))
+	if (!value_set.check(ObjectBlueprintSet::COST))
 		reset_cost();
-	if (!value_set.check(OBJBL_SET_EQUIP))
+	if (!value_set.check(ObjectBlueprintSet::EQUIP))
 		reset_equip();
-	if (!flags_set.check(OBJ_FLAG_HIDDEN))
-		reset_flag(OBJ_FLAG_HIDDEN);
-	if (!flags_set.check(OBJ_FLAG_GET))
-		reset_flag(OBJ_FLAG_GET);
-	if (!flags_set.check(OBJ_FLAG_TOUCH))
-		reset_flag(OBJ_FLAG_TOUCH);
-	if (!flags_set.check(OBJ_FLAG_DROP))
-		reset_flag(OBJ_FLAG_DROP);
-	if (!flags_set.check(OBJ_FLAG_TRASH))
-		reset_flag(OBJ_FLAG_TRASH);
-	if (!flags_set.check(OBJ_FLAG_ROT))
-		reset_flag(OBJ_FLAG_ROT);
+	if (!flags_set.check(ObjectFlag::HIDDEN))
+		reset_flag(ObjectFlag::HIDDEN);
+	if (!flags_set.check(ObjectFlag::GET))
+		reset_flag(ObjectFlag::GET);
+	if (!flags_set.check(ObjectFlag::TOUCH))
+		reset_flag(ObjectFlag::TOUCH);
+	if (!flags_set.check(ObjectFlag::DROP))
+		reset_flag(ObjectFlag::DROP);
+	if (!flags_set.check(ObjectFlag::TRASH))
+		reset_flag(ObjectFlag::TRASH);
+	if (!flags_set.check(ObjectFlag::ROT))
+		reset_flag(ObjectFlag::ROT);
 }
 
 void
@@ -155,43 +162,43 @@ ObjectBlueprint::save (File::Writer& writer)
 	if (id)
 		writer.attr(S("blueprint"), S("id"), id);
 
-	if (value_set.check(OBJBL_SET_NAME))
+	if (value_set.check(ObjectBlueprintSet::NAME))
 		writer.attr(S("blueprint"), S("name"), name.get_name());
 
-	if (value_set.check(OBJBL_SET_DESC))
+	if (value_set.check(ObjectBlueprintSet::DESC))
 		writer.attr(S("blueprint"), S("desc"), desc);
 
 	for (StringList::const_iterator i = keywords.begin(); i != keywords.end(); ++i)
 		writer.attr(S("blueprint"), S("keyword"), *i);
 
-	if (value_set.check(OBJBL_SET_EQUIP))
+	if (value_set.check(ObjectBlueprintSet::EQUIP))
 		writer.attr(S("blueprint"), S("equip"), equip.get_name());
 
-	if (value_set.check(OBJBL_SET_COST))
+	if (value_set.check(ObjectBlueprintSet::COST))
 		writer.attr(S("blueprint"), S("cost"), cost);
-	if (value_set.check(OBJBL_SET_WEIGHT))
+	if (value_set.check(ObjectBlueprintSet::WEIGHT))
 		writer.attr(S("blueprint"), S("weight"), weight);
 
-	if (flags_set.check(OBJ_FLAG_HIDDEN))
-		writer.attr(S("blueprint"), S("hidden"), flags.check(OBJ_FLAG_HIDDEN));
-	if (flags_set.check(OBJ_FLAG_GET))
-		writer.attr(S("blueprint"), S("gettable"), flags.check(OBJ_FLAG_GET));
-	if (flags_set.check(OBJ_FLAG_TOUCH))
-		writer.attr(S("blueprint"), S("touchable"), flags.check(OBJ_FLAG_TOUCH));
-	if (flags_set.check(OBJ_FLAG_DROP))
-		writer.attr(S("blueprint"), S("dropable"), flags.check(OBJ_FLAG_DROP));
-	if (flags_set.check(OBJ_FLAG_TRASH))
-		writer.attr(S("blueprint"), S("trashable"), flags.check(OBJ_FLAG_TRASH));
-	if (flags_set.check(OBJ_FLAG_ROT))
-		writer.attr(S("blueprint"), S("rotting"), flags.check(OBJ_FLAG_ROT));
+	if (flags_set.check(ObjectFlag::HIDDEN))
+		writer.attr(S("blueprint"), S("hidden"), flags.check(ObjectFlag::HIDDEN));
+	if (flags_set.check(ObjectFlag::GET))
+		writer.attr(S("blueprint"), S("gettable"), flags.check(ObjectFlag::GET));
+	if (flags_set.check(ObjectFlag::TOUCH))
+		writer.attr(S("blueprint"), S("touchable"), flags.check(ObjectFlag::TOUCH));
+	if (flags_set.check(ObjectFlag::DROP))
+		writer.attr(S("blueprint"), S("dropable"), flags.check(ObjectFlag::DROP));
+	if (flags_set.check(ObjectFlag::TRASH))
+		writer.attr(S("blueprint"), S("trashable"), flags.check(ObjectFlag::TRASH));
+	if (flags_set.check(ObjectFlag::ROT))
+		writer.attr(S("blueprint"), S("rotting"), flags.check(ObjectFlag::ROT));
 
 	if (parent)
 		writer.attr(S("blueprint"), S("parent"), parent->get_id());
 
-	if (flags_set.check(OBJ_FLAG_CONTAIN_IN))
-		writer.attr(S("blueprint"), S("container"), flags.check(OBJ_FLAG_CONTAIN_IN));
-	if (flags_set.check(OBJ_FLAG_CONTAIN_ON))
-		writer.attr(S("blueprint"), S("container"), flags.check(OBJ_FLAG_CONTAIN_ON));
+	if (locations_set.check(ObjectLocation::IN))
+		writer.attr(S("blueprint"), S("container"), S("in"));
+	if (locations_set.check(ObjectLocation::ON))
+		writer.attr(S("blueprint"), S("container"), S("on"));
 
 	// script hook
 	ScriptRestrictedWriter* swriter = new ScriptRestrictedWriter(&writer);
@@ -219,22 +226,25 @@ ObjectBlueprint::load (File::Reader& reader)
 		FO_ATTR("blueprint", "equip")
 			set_equip(EquipLocation::lookup(node.get_string()));
 		FO_ATTR("blueprint", "gettable")
-			set_flag(OBJ_FLAG_GET, node.get_bool());
+			set_flag(ObjectFlag::GET, node.get_bool());
 		FO_ATTR("blueprint", "touchable")
-			set_flag(OBJ_FLAG_TOUCH, node.get_bool());
+			set_flag(ObjectFlag::TOUCH, node.get_bool());
 		FO_ATTR("blueprint", "hidden")
-			set_flag(OBJ_FLAG_HIDDEN, node.get_bool());
+			set_flag(ObjectFlag::HIDDEN, node.get_bool());
 		FO_ATTR("blueprint", "dropable")
-			set_flag(OBJ_FLAG_DROP, node.get_bool());
+			set_flag(ObjectFlag::DROP, node.get_bool());
 		FO_ATTR("blueprint", "trashable")
-			set_flag(OBJ_FLAG_TRASH, node.get_bool());
+			set_flag(ObjectFlag::TRASH, node.get_bool());
 		FO_ATTR("blueprint", "rotting")
-			set_flag(OBJ_FLAG_ROT, node.get_bool());
+			set_flag(ObjectFlag::ROT, node.get_bool());
 		FO_ATTR("blueprint", "container")
-			if (node.get_string() == S("on"))
-				set_flag(OBJ_FLAG_CONTAIN_ON, true);
-			else if (node.get_string() == S("in"))
-				set_flag(OBJ_FLAG_CONTAIN_IN, true);
+			if (node.get_string() == S("on")) {
+				locations.set_on(ObjectLocation::ON);
+				locations_set.set_on(ObjectLocation::ON);
+			} else if (node.get_string() == S("in")) {
+				locations.set_on(ObjectLocation::IN);
+				locations_set.set_on(ObjectLocation::IN);
+			}
 			else
 				Log::Warning << "Unknown container type '" << node.get_string() << "' at " << reader.get_filename() << ':' << node.get_line();
 		FO_ATTR("blueprint", "parent")
@@ -323,9 +333,9 @@ Object::save (File::Writer& writer)
 	// parent data
 	Entity::save(writer);
 
-	if (container == OBJ_FLAG_CONTAIN_IN)
+	if (container == ObjectLocation::IN)
 		writer.attr(S("object"), S("container"), S("in"));
-	if (container == OBJ_FLAG_CONTAIN_ON)
+	if (container == ObjectLocation::ON)
 		writer.attr(S("object"), S("container"), S("on"));
 
 	for (EList<Object>::const_iterator e = children.begin (); e != children.end(); ++e) {
@@ -376,16 +386,16 @@ Object::load_node(File::Reader& reader, File::Node& node)
 			name.set_name(node.get_string());
 		FO_ATTR("object", "container")
 			if (node.get_string() == S("in"))
-				container = OBJ_FLAG_CONTAIN_IN;
+				container = ObjectLocation::IN;
 			else if (node.get_string() == S("on"))
-				container = OBJ_FLAG_CONTAIN_ON;
+				container = ObjectLocation::ON;
 			else
 				throw File::Error(S("Object has invalid container attribute"));
 		FO_OBJECT("object")
 			Object* obj = new Object ();
 			if (obj->load (reader))
 				throw File::Error(S("Failed to load object"));
-			if (!get_flag(obj->container))
+			if (!has_location(obj->container))
 				throw File::Error(S("child object unallowed container"));
 			obj->set_owner (this);
 			children.add (obj);
@@ -414,7 +424,7 @@ Object::owner_release (Entity* child)
 	// find it
 	EList<Object>::iterator e = std::find(children.begin(), children.end(), obj);
 	if (e != children.end()) {
-		obj->container = 0;
+		obj->container = ObjectLocation::NONE;
 		children.erase(e);
 		return;
 	}
@@ -470,13 +480,12 @@ Object::deactivate ()
 }
 
 bool
-Object::add_object (Object *object, bit_t container)
+Object::add_object (Object *object, ObjectLocation container)
 {
 	assert (object != NULL);
-	assert (OBJ_IS_CONTAINER(container));
 
 	// has contianer?
-	if (!get_flag(container))
+	if (!has_location(container))
 		return false;
 
 	// release and add
@@ -494,10 +503,8 @@ Object::add_object (Object *object, bit_t container)
 }
 
 void
-Object::show_contents (Player *player, bit_t container) const
+Object::show_contents (Player *player, ObjectLocation container) const
 {
-	assert (OBJ_IS_CONTAINER(container));
-
 	*player << "You see ";
 	
 	Object* last = NULL;
@@ -534,18 +541,17 @@ Object::show_contents (Player *player, bit_t container) const
 
 	// finish up
 	String tname = S("somewhere on");
-	if (container == OBJ_FLAG_CONTAIN_ON)
+	if (container == ObjectLocation::ON)
 		tname = S("on");
-	else if (container == OBJ_FLAG_CONTAIN_IN)
+	else if (container == ObjectLocation::IN)
 		tname = S("in");
 	*player << " " << tname << " " << StreamName(*this, DEFINITE, false) << ".\n";
 }
 
 Object *
-Object::find_object (String name, uint index, bit_t container, uint *matches) const
+Object::find_object (String name, uint index, ObjectLocation container, uint *matches) const
 {
 	assert (index != 0);
-	assert (OBJ_IS_CONTAINER(container));
 
 	// clear matches
 	if (matches)
@@ -650,37 +656,37 @@ bool
 Object::is_hidden () const
 {
 	assert(blueprint != NULL);
-	return blueprint->get_flag(OBJ_FLAG_HIDDEN);
+	return blueprint->get_flag(ObjectFlag::HIDDEN);
 }
 bool
 Object::is_trashable () const
 {
 	assert(blueprint != NULL);
-	return blueprint->get_flag(OBJ_FLAG_TRASH);
+	return blueprint->get_flag(ObjectFlag::TRASH);
 }
 bool
 Object::is_gettable () const
 {
 	assert(blueprint != NULL);
-	return blueprint->get_flag(OBJ_FLAG_GET);
+	return blueprint->get_flag(ObjectFlag::GET);
 }
 bool
 Object::is_dropable () const
 {
 	assert(blueprint != NULL);
-	return blueprint->get_flag(OBJ_FLAG_DROP);
+	return blueprint->get_flag(ObjectFlag::DROP);
 }
 bool
 Object::is_touchable () const
 {
 	assert(blueprint != NULL);
-	return blueprint->get_flag(OBJ_FLAG_TOUCH);
+	return blueprint->get_flag(ObjectFlag::TOUCH);
 }
 bool
 Object::is_rotting () const
 {
 	assert(blueprint != NULL);
-	return blueprint->get_flag(OBJ_FLAG_ROT);
+	return blueprint->get_flag(ObjectFlag::ROT);
 }
 
 // get parsable member values

@@ -1,3 +1,9 @@
+2007-01-22 08:02:02  Sean Middleditch <elanthis@awesomeplay.com>
+
+  * Updated the BitSet code to require a typename/class with a MAX
+    value.  Which lets us make a type-safe enum class.  Which has to
+    be done manually right now, but that's pretty much fine with me.
+
 2007-01-06 20:32:00  Sean Middleditch <elanthis@awesomeplay.com>
 
   * Removed the heavy-weight container types code.  Yes, this

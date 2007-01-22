@@ -21,32 +21,63 @@
 #include "common/bitset.h"
 
 // Object flags
-enum {
-	OBJ_FLAG_TRASH = 1,
-	OBJ_FLAG_HIDDEN,
-	OBJ_FLAG_ROT,
-	OBJ_FLAG_TOUCH,
-	OBJ_FLAG_GET,
-	OBJ_FLAG_DROP,
+struct ObjectFlag {
+	enum bits {
+		TRASH = 1,
+		HIDDEN,
+		ROT,
+		TOUCH,
+		GET,
+		DROP,
 
-	OBJ_FLAG_CONTAIN_IN,
-	OBJ_FLAG_CONTAIN_ON,
+		MAX
+	};
 
-	OBJ_FLAG_MAX
+	ObjectFlag (bits b) : v(b) {}
+	explicit ObjectFlag (int i) : v((bits)(i>=1&&i<MAX?i:1)) {}
+	operator bits () const { return v; }
+
+	bits v;
 };
 
-// For error-checking that a flag is a container type
-#define OBJ_IS_CONTAINER(n) ((n)&(OBJ_FLAG_CONTAIN_IN | OBJ_FLAG_CONTAIN_ON))
+// Object container
+struct ObjectLocation {
+	enum bits {
+		NONE = 1,
+		IN,
+		ON,
+
+		MAX
+	};
+
+	ObjectLocation (bits b) : v(b) {}
+	explicit ObjectLocation (int i) : v((bits)(i>=1&&i<MAX?i:1)) {}
+	ObjectLocation () : v(NONE) {}
+	operator bits () const { return v; }
+
+	String name() const { return names[v-1]; }
+	static String names[MAX];
+
+	bits v;
+};
 
 // Object blueprint "set" flags
-enum {
-	OBJBL_SET_NAME = 1,
-	OBJBL_SET_DESC,
-	OBJBL_SET_WEIGHT,
-	OBJBL_SET_COST,
-	OBJBL_SET_EQUIP,
+struct ObjectBlueprintSet {
+	enum bits {
+		NAME = 1,
+		DESC,
+		WEIGHT,
+		COST,
+		EQUIP,
 
-	OBJBL_SET_MAX
+		MAX
+	};
+
+	ObjectBlueprintSet (bits b) : v(b) {}
+	explicit ObjectBlueprintSet (int i) : v((bits)(i>=1&&i<MAX?i:1)) {}
+	operator bits () const { return v; }
+
+	bits v;
 };
 
 // WEIGHT:
@@ -90,28 +121,29 @@ ObjectBlueprint : public Scriptix::Native
 
 	// description
 	const String& get_desc () const { return desc; }
-	void set_desc (String s_desc) { desc = s_desc; value_set &= OBJBL_SET_DESC; }
+	void set_desc (String s_desc) { desc = s_desc; value_set &= ObjectBlueprintSet::DESC; }
 	void reset_desc ();
 
 	// weight
 	uint get_weight () const { return weight; }
-	void set_weight (uint s_weight) { weight = s_weight; value_set &= OBJBL_SET_WEIGHT; }
+	void set_weight (uint s_weight) { weight = s_weight; value_set &= ObjectBlueprintSet::WEIGHT; }
 	void reset_weight ();
 
 	// cost
 	uint get_cost () const { return cost; }
-	void set_cost (uint s_cost) { cost = s_cost; value_set &= OBJBL_SET_COST; }
+	void set_cost (uint s_cost) { cost = s_cost; value_set &= ObjectBlueprintSet::COST; }
 	void reset_cost ();
 
 	// equip location
+	bool has_location (ObjectLocation type) const { return locations & type; }
 	EquipLocation get_equip () const { return equip; }
-	void set_equip (EquipLocation s_equip) { equip = s_equip; value_set &= OBJBL_SET_EQUIP; }
+	void set_equip (EquipLocation s_equip) { equip = s_equip; value_set &= ObjectBlueprintSet::EQUIP; }
 	void reset_equip ();
 
 	// flags
-	bool get_flag (bit_t flag) const { return flags & flag; }
-	void set_flag (bit_t flag, bool b) { flags.set(flag, b); flags_set &= flag; }
-	void reset_flag (bit_t flag);
+	bool get_flag (ObjectFlag flag) const { return flags & flag; }
+	void set_flag (ObjectFlag flag, bool b) { flags.set(flag, b); flags_set &= flag; }
+	void reset_flag (ObjectFlag flag);
 
 	// update inherited data
 	void refresh ();
@@ -135,11 +167,15 @@ ObjectBlueprint : public Scriptix::Native
 	StringList keywords;
 
 	// flags
-	BitSet<OBJ_FLAG_MAX-1> flags;
+	BitSet<ObjectFlag> flags;
+
+	// locations
+	BitSet<ObjectLocation> locations;
 
 	// mark whether some item is "set" or not
-	BitSet<OBJ_FLAG_MAX-1> flags_set;
-	BitSet<OBJBL_SET_MAX-1> value_set;
+	BitSet<ObjectFlag> flags_set;
+	BitSet<ObjectLocation> locations_set;
+	BitSet<ObjectBlueprintSet> value_set;
 
 	void set_parent (ObjectBlueprint* blueprint);
 
@@ -193,7 +229,7 @@ Object : public Entity
 	EquipLocation get_equip () const;
 
 	// check flags
-	bool get_flag (bit_t flag) const { return blueprint->get_flag(flag); }
+	bool get_flag (ObjectFlag flag) const { return blueprint->get_flag(flag); }
 	bool is_hidden () const;
 	bool is_touchable () const;
 	bool is_gettable () const;
@@ -217,17 +253,18 @@ Object : public Entity
 	static Object* load_blueprint (String name);
 
 	// containers
-	bool add_object (Object *sub, bit_t type);
-	void remove_object (Object *sub, bit_t type);
-	Object *find_object (String name, uint index, bit_t type, uint *matches = NULL) const;
-	void show_contents (class Player *player, bit_t type) const;
+	bool has_location (ObjectLocation type) const { return blueprint->has_location(type); }
+	bool add_object (Object *sub, ObjectLocation type);
+	void remove_object (Object *sub, ObjectLocation type);
+	Object *find_object (String name, uint index, ObjectLocation type, uint *matches = NULL) const;
+	void show_contents (class Player *player, ObjectLocation type) const;
 
 	// data
 	private:
 	EntityName name;
 	Entity *owner;
 	ObjectBlueprint* blueprint;
-	bit_t container;
+	ObjectLocation container;
 	uint calc_weight; // calculated weight of children objects
 	uint trash_timer; // ticks until trashed
 

@@ -144,8 +144,8 @@ Creature::cl_find_object (String line, int type, bool silent)
 	if (type & GOC_SUB && get_room() != NULL) {
 		for (EList<Object>::iterator iter = get_room()->objects.begin(); iter != get_room()->objects.end(); ++iter) {
 			// have an ON container - search inside
-			if (*iter != NULL && (*iter)->get_flag (OBJ_FLAG_CONTAIN_ON)) {
-				if ((object = (*iter)->find_object (name, index, OBJ_FLAG_CONTAIN_ON, &matches))) {
+			if (*iter != NULL && (*iter)->has_location(ObjectLocation::ON)) {
+				if ((object = (*iter)->find_object (name, index, ObjectLocation::ON, &matches))) {
 					return object;
 				}
 				if (matches >= index) {
@@ -185,7 +185,7 @@ Creature::cl_find_object (String line, int type, bool silent)
 
 // find an object inside a particular container
 Object*
-Creature::cl_find_object (String line, Object* container, bit_t type, bool silent)
+Creature::cl_find_object (String line, Object* container, ObjectLocation type, bool silent)
 {
 	const char* text = line.c_str();
 
@@ -223,15 +223,7 @@ Creature::cl_find_object (String line, Object* container, bit_t type, bool silen
 		return object;
 
 	// type name
-	String tname;
-	if (type == OBJ_FLAG_CONTAIN_ON)
-		tname = S("on");
-	else if (type == OBJ_FLAG_CONTAIN_IN)
-		tname = S("in");
-	else
-		tname = S("anywhere on");
-
-	*this << "You do not see '" << name << "' " << tname << " " << StreamName(container, DEFINITE) << ".\n";
+	*this << "You do not see '" << name << "' " << type.name() << " " << StreamName(container, DEFINITE) << ".\n";
 	return NULL;
 }
 
@@ -392,8 +384,8 @@ Creature::cl_find_any (String line, bool silent)
 		for (EList<Object>::iterator iter = get_room()->objects.begin(); index > 0 && iter != get_room()->objects.end(); ++iter) {
 			if (*iter != NULL) {
 				// have an ON container - search inside
-				if ((*iter)->get_flag (OBJ_FLAG_CONTAIN_ON)) {
-					if ((obj = (*iter)->find_object (name, index, OBJ_FLAG_CONTAIN_ON, &matches))) {
+				if ((*iter)->has_location(ObjectLocation::ON)) {
+					if ((obj = (*iter)->find_object (name, index, ObjectLocation::ON, &matches))) {
 						return obj;
 					}
 					if (matches >= index) {
@@ -542,11 +534,11 @@ void command_look (Creature* ch, String argv[]) {
 		Object* obj = ch->cl_find_object (argv[1], GOC_ANY);
 		if (obj) {
 			if (argv[0] == "on")
-				ch->do_look (obj, OBJ_FLAG_CONTAIN_ON);
+				ch->do_look (obj, ObjectLocation::ON);
 			else if (argv[0] == "in")
-				ch->do_look (obj, OBJ_FLAG_CONTAIN_IN);
+				ch->do_look (obj, ObjectLocation::IN);
 			else
-				ch->do_look (obj, 0);
+				ch->do_look (obj, ObjectLocation::NONE);
 		}
 		return;
 	}
@@ -559,7 +551,7 @@ void command_look (Creature* ch, String argv[]) {
 			ch->do_look((Creature*)(entity));
 		// object?
 		else if (OBJECT(entity))
-			ch->do_look((Object*)(entity), 0);
+			ch->do_look((Object*)(entity), ObjectLocation::NONE);
 		// eixt?
 		else if (PORTAL(entity))
 			ch->do_look((Portal*)(entity));
@@ -627,13 +619,11 @@ void command_unlock (Creature* ch, String argv[]) {
 
 void command_get (Creature* ch, String argv[]) {
 	if (!argv[2].empty()) { // in, on, etc.
-		bit_t type;
+		ObjectLocation type;
 		if (argv[1] == "on")
-			type = OBJ_FLAG_CONTAIN_ON;
+			type = ObjectLocation::ON;
 		else if (argv[1] == "in")
-			type = OBJ_FLAG_CONTAIN_IN;
-		else
-			type = 0;
+			type = ObjectLocation::IN;
 
 		// get container
 		Object* cobj = ch->cl_find_object (argv[2], GOC_ANY);
@@ -642,16 +632,16 @@ void command_get (Creature* ch, String argv[]) {
 
 		// no type, pick best, from in or on
 		if (type == 0) {
-			if (cobj->get_flag (OBJ_FLAG_CONTAIN_IN))
-				type = OBJ_FLAG_CONTAIN_IN;
-			else if (cobj->get_flag (OBJ_FLAG_CONTAIN_ON))
-				type = OBJ_FLAG_CONTAIN_ON;
-		} else if (!cobj->get_flag (type)) {
-			type = 0; // invalidate type
+			if (cobj->has_location(ObjectLocation::IN))
+				type = ObjectLocation::IN;
+			else if (cobj->has_location(ObjectLocation::ON))
+				type = ObjectLocation::ON;
+		} else if (!cobj->has_location(type)) {
+			type = ObjectLocation::NONE; // invalidate type
 		}
 			
 		// no valid type?
-		if (type == 0) {
+		if (type == ObjectLocation::NONE) {
 			*ch << "You can't do that with " << StreamName(*cobj, DEFINITE) << ".\n";
 			return;
 		}
@@ -712,7 +702,7 @@ void command_get (Creature* ch, String argv[]) {
 		} else {
 			Object* obj = ch->cl_find_object (argv[0], GOC_ROOM);
 			if (obj)
-				ch->do_get (obj, NULL, 0);
+				ch->do_get (obj, NULL, ObjectLocation::NONE);
 		}
 	}
 }
@@ -727,9 +717,9 @@ void command_put (Creature* ch, String argv[]) {
 		return;
 
 	if (argv[1] == "on")
-		ch->do_put (obj, cobj, OBJ_FLAG_CONTAIN_ON);
+		ch->do_put (obj, cobj, ObjectLocation::ON);
 	else if (argv[1] == "in")
-		ch->do_put (obj, cobj, OBJ_FLAG_CONTAIN_IN);
+		ch->do_put (obj, cobj, ObjectLocation::IN);
 }
 
 void command_give (Creature* ch, String argv[])

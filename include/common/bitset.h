@@ -20,32 +20,30 @@
 #define BITSET_BYTE(n) ((n-1)/8)
 #define BITSET_SHIFT(n) (1<<((n-1)%8))
 
-typedef uint bit_t;
-
-template<uint N> class BitSet
+template<typename E> class BitSet
 {
 	public:
+	typedef E bit_t;
+
 	void clear() { memset(bits, 0, sizeof(bits)); }
 
-	bool check(bit_t n) const { return bits[BITSET_BYTE(n)] & BITSET_SHIFT(n); }
-	void set_on(bit_t n) { bits[BITSET_BYTE(n)] |= BITSET_SHIFT(n); }
-	void set_off(bit_t n) { bits[BITSET_BYTE(n)] &= ~BITSET_SHIFT(n); }
-	void set(bit_t n, bool b) { if(b) set_on(n); else set_off(n); }
+	bool check(E n) const { return bits[BITSET_BYTE(n)] & BITSET_SHIFT(n); }
+	void set_on(E n) { bits[BITSET_BYTE(n)] |= BITSET_SHIFT(n); }
+	void set_off(E n) { bits[BITSET_BYTE(n)] &= ~BITSET_SHIFT(n); }
+	void set(E n, bool b) { if(b) set_on(n); else set_off(n); }
 
-	uint size() const { return N; }
+	uint size() const { return E::MAX-1; }
 	uint bytes() const { return sizeof(bits); }
 
 	const unsigned char* get() const { return bits; }
 
 	private:
-	unsigned char bits[BITSET_MAX(N)];
+	unsigned char bits[BITSET_MAX(E::MAX-1)];
 };
 
-typedef BitSet<32> bits_t;
-
-template<uint N> bool operator & (const BitSet<N>& set, bit_t n) { return set.check(n); }
-template<uint N> BitSet<N>& operator &= (BitSet<N>& set, bit_t n) { set.set_on(n); return set; }
-template<uint N> BitSet<N>& operator += (BitSet<N>& set, bit_t n) { set.set_on(n); return set; }
-template<uint N> BitSet<N>& operator -= (BitSet<N>& set, bit_t n) { set.set_off(n); return set; }
+template<typename E> bool operator & (const BitSet<E>& set, typename BitSet<E>::bit_t n) { return set.check(n); }
+template<typename E> BitSet<E>& operator &= (BitSet<E>& set, typename BitSet<E>::bit_t n) { set.set_on(n); return set; }
+template<typename E> BitSet<E>& operator += (BitSet<E>& set, typename BitSet<E>::bit_t n) { set.set_on(n); return set; }
+template<typename E> BitSet<E>& operator -= (BitSet<E>& set, typename BitSet<E>::bit_t n) { set.set_off(n); return set; }
 
 #endif
