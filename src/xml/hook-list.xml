@@ -40,9 +40,9 @@
 		<doc>Called once per heartbeat for every Npc.</doc>
 	</hook>
 	<hook name="save_object_blueprint">
-		<arg name="this" type="ObjectBlueprint" />
+		<arg name="this" type="ObjectBP" />
 		<arg name="swriter" type="ScriptRestrictedWriter" />
-		<doc>Called whenever an ObjectBlueprint is saved to disk.  Additional properties may be saved to the writer.</doc>
+		<doc>Called whenever an ObjectBP is saved to disk.  Additional properties may be saved to the writer.</doc>
 	</hook>
 	<hook name="save_object">
 		<arg name="this" type="Object" />

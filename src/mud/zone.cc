@@ -341,9 +341,9 @@ SZoneManager::initialize ()
 		return 1;
 	if (require(EntityManager) != 0)
 		return 1;
-	if (require(NpcBlueprintManager) != 0)
+	if (require(NpcBPManager) != 0)
 		return 1;
-	if (require(ObjectBlueprintManager) != 0)
+	if (require(ObjectBPManager) != 0)
 		return 1;
 	if (require(TimeManager) != 0)
 		return 1;

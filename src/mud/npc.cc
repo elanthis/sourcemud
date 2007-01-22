@@ -21,99 +21,99 @@
 #include "common/manifest.h"
 
 void
-NpcBlueprint::reset_name (void)
+NpcBP::reset_name (void)
 {
 	// clear
 	name.set_name(S("an npc"));
 	set_flags.name = false;
 
 	// get parent value
-	const NpcBlueprint* data = get_parent();
+	const NpcBP* data = get_parent();
 	if (data != NULL) {
 		name = data->get_name();
 	}
 }
 
 void
-NpcBlueprint::reset_desc (void)
+NpcBP::reset_desc (void)
 {
 	// clear
 	desc = String("npc");
 	set_flags.desc = false;
 
 	// get parent value
-	const NpcBlueprint* data = get_parent();
+	const NpcBP* data = get_parent();
 	if (data != NULL)
 		desc = data->get_desc();
 }
 
 void
-NpcBlueprint::reset_gender (void)
+NpcBP::reset_gender (void)
 {
 	// reset
 	gender = GenderType::NONE;
 	set_flags.gender = false;
 
 	// get parent value
-	const NpcBlueprint* data = get_parent();
+	const NpcBP* data = get_parent();
 	if (data != NULL)
 		gender = data->get_gender();
 }
 
 void
-NpcBlueprint::reset_alignment (void)
+NpcBP::reset_alignment (void)
 {
 	// reset
 	alignment = 0;
 	set_flags.alignment = false;
 
 	// get parent value
-	const NpcBlueprint* data = get_parent();
+	const NpcBP* data = get_parent();
 	if (data != NULL)
 		alignment = data->get_alignment();
 }
 
 void
-NpcBlueprint::reset_combat_dodge (void)
+NpcBP::reset_combat_dodge (void)
 {
 	// reset
 	combat.dodge = 0;
 	set_flags.dodge = false;
 
 	// get parent
-	const NpcBlueprint* data = get_parent ();
+	const NpcBP* data = get_parent ();
 	if (data != NULL)
 		combat.dodge = data->get_combat_dodge();
 }
 
 void
-NpcBlueprint::reset_combat_attack (void)
+NpcBP::reset_combat_attack (void)
 {
 	// reset
 	combat.attack = 0;
 	set_flags.attack = false;
 
 	// get parent
-	const NpcBlueprint* data = get_parent ();
+	const NpcBP* data = get_parent ();
 	if (data != NULL)
 		combat.attack = data->get_combat_attack();
 }
 
 void
-NpcBlueprint::reset_combat_damage (void)
+NpcBP::reset_combat_damage (void)
 {
 	// reset
 	combat.damage = 0;
 	set_flags.damage = false;
 
 	// get parent
-	const NpcBlueprint* data = get_parent ();
+	const NpcBP* data = get_parent ();
 	if (data != NULL)
 		combat.damage = data->get_combat_damage();
 }
 
 void
-NpcBlueprint::reset_stats (void)
+NpcBP::reset_stats (void)
 {
 	// reset
 	for (int i = 0; i < CreatureStatID::COUNT; ++i)
@@ -121,14 +121,14 @@ NpcBlueprint::reset_stats (void)
 	set_flags.stats = false;
 
 	// get parent
-	const NpcBlueprint* data = get_parent ();
+	const NpcBP* data = get_parent ();
 	if (data != NULL)
 		for (int i = 0; i < CreatureStatID::COUNT; ++i)
 			base_stats[i] = data->get_stat(i);
 }
 
 void
-NpcBlueprint::refresh (void)
+NpcBP::refresh (void)
 {
 	if (!set_flags.name)
 		reset_name();
@@ -148,20 +148,20 @@ NpcBlueprint::refresh (void)
 		reset_stats();
 }
 
-// ----- NpcBlueprint -----
+// ----- NpcBP -----
 
 SCRIPT_TYPE(NPCBlueprint);
-NpcBlueprint::NpcBlueprint (void) : Scriptix::Native(AweMUD_NPCBlueprintType), parent(NULL) {}
+NpcBP::NpcBP (void) : Scriptix::Native(AweMUD_NPCBlueprintType), parent(NULL) {}
 
 void
-NpcBlueprint::set_parent (NpcBlueprint* blueprint)
+NpcBP::set_parent (NpcBP* blueprint)
 {
 	parent = blueprint;
 	refresh();
 }
 
 int
-NpcBlueprint::load (File::Reader& reader)
+NpcBP::load (File::Reader& reader)
 {
 	FO_READ_BEGIN
 		FO_ATTR("blueprint", "id")
@@ -171,7 +171,7 @@ NpcBlueprint::load (File::Reader& reader)
 			if (ai == NULL)
 				Log::Warning << "Unknown AI system '" << node.get_string() << "' at " << reader.get_filename() << ':' << node.get_line();
 		FO_ATTR("blueprint", "parent")
-			NpcBlueprint* blueprint = NpcBlueprintManager.lookup(node.get_string());
+			NpcBP* blueprint = NpcBPManager.lookup(node.get_string());
 			if (blueprint)
 				set_parent(blueprint);
 			else
@@ -221,7 +221,7 @@ NpcBlueprint::load (File::Reader& reader)
 }
 
 void
-NpcBlueprint::save (File::Writer& writer)
+NpcBP::save (File::Writer& writer)
 {
 	if (set_flags.name)
 		writer.attr(S("blueprint"), S("name"), name.get_name());
@@ -251,7 +251,7 @@ NpcBlueprint::save (File::Writer& writer)
 }
 
 Scriptix::Value
-NpcBlueprint::get_undefined_property (Scriptix::Atom id) const
+NpcBP::get_undefined_property (Scriptix::Atom id) const
 {
 	if (parent == NULL)
 		return Scriptix::Nil;
@@ -266,7 +266,7 @@ Npc::Npc (void) : Creature (AweMUD_NPCType)
 	initialize();
 }
 
-Npc::Npc (NpcBlueprint* s_blueprint) : Creature (AweMUD_NPCType)
+Npc::Npc (NpcBP* s_blueprint) : Creature (AweMUD_NPCType)
 {
 	initialize();
 	blueprint = NULL;
@@ -306,8 +306,8 @@ Npc::load_node (File::Reader& reader, File::Node& node)
 {
 	FO_NODE_BEGIN
 		FO_ATTR("npc", "blueprint")
-			NpcBlueprint* blueprint;
-			if ((blueprint = NpcBlueprintManager.lookup(node.get_string())) == NULL)
+			NpcBP* blueprint;
+			if ((blueprint = NpcBPManager.lookup(node.get_string())) == NULL)
 				Log::Error << "Could not find npc blueprint '" << node.get_string() << "'";
 			else
 				set_blueprint(blueprint);
@@ -418,7 +418,7 @@ Npc::get_ai (void) const
 		return ai;
 
 	// blueprints
-	NpcBlueprint* blueprint = get_blueprint();
+	NpcBP* blueprint = get_blueprint();
 	while (blueprint != NULL) {
 		if (blueprint->get_ai())
 			return blueprint->get_ai();
@@ -490,7 +490,7 @@ Npc::heartbeat (void)
 }
 
 void
-Npc::set_blueprint (NpcBlueprint* s_blueprint)
+Npc::set_blueprint (NpcBP* s_blueprint)
 {
 	blueprint = s_blueprint;
 	for (int i = 0; i < CreatureStatID::COUNT; ++i)
@@ -503,7 +503,7 @@ Npc*
 Npc::load_blueprint (String name)
 {
 	// lookup the blueprint
-	NpcBlueprint* blueprint = NpcBlueprintManager.lookup(name);
+	NpcBP* blueprint = NpcBPManager.lookup(name);
 	if (!blueprint)
 		return NULL;
 	
@@ -586,7 +586,7 @@ Npc::can_use_portal (Portal* portal) const
 bool
 Npc::is_blueprint (String name) const
 {
-	NpcBlueprint* blueprint = get_blueprint();
+	NpcBP* blueprint = get_blueprint();
 
 	while (blueprint != NULL) {
 		if (str_eq(blueprint->get_id(), name))
@@ -605,7 +605,7 @@ Npc::name_match (String match) const
 		return true;
 
 	// blueprint keywords
-	NpcBlueprint* blueprint = get_blueprint();
+	NpcBP* blueprint = get_blueprint();
 	while (blueprint != NULL) {
 		for (StringList::const_iterator i = blueprint->get_keywords().begin(); i != blueprint->get_keywords().end(); i ++)
 			if (phrase_match (*i, match))
@@ -621,7 +621,7 @@ Npc::name_match (String match) const
 Scriptix::Value
 Npc::get_undefined_property (Scriptix::Atom id) const
 {
-	const NpcBlueprint* data = get_blueprint();
+	const NpcBP* data = get_blueprint();
 	if (data == NULL)
 		return Scriptix::Nil;
 	return data->get_property(id);
@@ -629,17 +629,17 @@ Npc::get_undefined_property (Scriptix::Atom id) const
 
 // Npc Blueprint Manager
 
-SNpcBlueprintManager NpcBlueprintManager;
+SNpcBPManager NpcBPManager;
 
 int
-SNpcBlueprintManager::initialize (void)
+SNpcBPManager::initialize (void)
 {
 	// requirements
 	if (require(SkillManager) != 0)
 		return 1;
 	if (require(AIManager) != 0)
 		return 1;
-	if (require(ObjectBlueprintManager) != 0)
+	if (require(ObjectBPManager) != 0)
 		return 1;
 	if (require(ScriptBindings) != 0)
 		return 1;
@@ -654,7 +654,7 @@ SNpcBlueprintManager::initialize (void)
 			return -1;
 		FO_READ_BEGIN
 			FO_OBJECT("npc_blueprint")
-				NpcBlueprint* blueprint = new NpcBlueprint();
+				NpcBP* blueprint = new NpcBP();
 				if (blueprint->load(reader)) {
 					Log::Warning << "Failed to load blueprint in " << reader.get_filename() << " at " << node.get_line();
 					return -1;
@@ -675,12 +675,12 @@ SNpcBlueprintManager::initialize (void)
 }
 
 void
-SNpcBlueprintManager::shutdown (void)
+SNpcBPManager::shutdown (void)
 {
 }
 
-NpcBlueprint*
-SNpcBlueprintManager::lookup (String id)
+NpcBP*
+SNpcBPManager::lookup (String id)
 {
 	BlueprintMap::iterator iter = blueprints.find(id);
 	if (iter == blueprints.end())

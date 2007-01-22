@@ -14,10 +14,10 @@
 
 // Npc blueprint
 class
-NpcBlueprint : public Scriptix::Native
+NpcBP : public Scriptix::Native
 {
 	public:
-	NpcBlueprint ();
+	NpcBP ();
 
 	// blueprint id
 	inline String get_id () const { return id; }
@@ -31,7 +31,7 @@ NpcBlueprint : public Scriptix::Native
 	void save (File::Writer& writer);
 
 	// parent blueprint
-	virtual NpcBlueprint* get_parent() const { return parent; }
+	virtual NpcBP* get_parent() const { return parent; }
 
 	// name
 	inline const EntityName& get_name () const { return name; }
@@ -82,7 +82,7 @@ NpcBlueprint : public Scriptix::Native
 	GenderType gender;
 	CreatureAlign alignment;
 	CreatureStatArray base_stats;
-	NpcBlueprint* parent;
+	NpcBP* parent;
 	StringList equip_list;
 	AI* ai;
 
@@ -108,18 +108,18 @@ NpcBlueprint : public Scriptix::Native
 
 	virtual Scriptix::Value get_undefined_property (Scriptix::Atom id) const;
 
-	void set_parent (NpcBlueprint* blueprint);
+	void set_parent (NpcBP* blueprint);
 };
 
 class Npc : public Creature
 {
 	public:
 	Npc ();
-	Npc (NpcBlueprint* s_blueprint);
+	Npc (NpcBP* s_blueprint);
 
 	// blueprints
-	virtual NpcBlueprint* get_blueprint () const { return blueprint; }
-	void set_blueprint (NpcBlueprint* s_blueprint);
+	virtual NpcBP* get_blueprint () const { return blueprint; }
+	void set_blueprint (NpcBP* s_blueprint);
 	static Npc* load_blueprint (String name);
 
 	// name info
@@ -189,7 +189,7 @@ class Npc : public Creature
 	// data
 	private:
 	TagID room_tag; // tag needed in a room to enter it
-	NpcBlueprint* blueprint;
+	NpcBP* blueprint;
 	AI* ai;
 
 	struct NPCFlags {
@@ -203,22 +203,22 @@ class Npc : public Creature
 	E_SUBTYPE(Npc, Creature);
 };
 
-class SNpcBlueprintManager : public IManager
+class SNpcBPManager : public IManager
 {
-	typedef GCType::map<String,NpcBlueprint*> BlueprintMap;
+	typedef GCType::map<String,NpcBP*> BlueprintMap;
 
 	public:
 	int initialize ();
 
 	void shutdown ();
 
-	NpcBlueprint* lookup (String id);
+	NpcBP* lookup (String id);
 
 	private:
 	BlueprintMap blueprints;
 };
 
-extern SNpcBlueprintManager NpcBlueprintManager;
+extern SNpcBPManager NpcBPManager;
 
 #define NPC(ent) E_CAST((ent),Npc)
 

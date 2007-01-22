@@ -30,117 +30,117 @@ String ObjectLocation::names[] = {
 	S("MAX")
 };
 
-// ----- ObjectBlueprint -----
+// ----- ObjectBP -----
 
-SCRIPT_TYPE(ObjectBlueprint);
-ObjectBlueprint::ObjectBlueprint () : Scriptix::Native(AweMUD_ObjectBlueprintType), parent(NULL)
+SCRIPT_TYPE(ObjectBP);
+ObjectBP::ObjectBP () : Scriptix::Native(AweMUD_ObjectBPType), parent(NULL)
 {
 	weight = 0;
 	cost = 0;
 }
 
 bool
-ObjectBlueprint::set_name (String s_name)
+ObjectBP::set_name (String s_name)
 {
 	bool ret = name.set_name(s_name);
-	value_set &= ObjectBlueprintSet::NAME;
+	value_set &= ObjectBPSet::NAME;
 	return ret;
 }
 
 EntityName
-ObjectBlueprint::get_name () const
+ObjectBP::get_name () const
 {
 	return name;
 }
 
 void
-ObjectBlueprint::reset_name ()
+ObjectBP::reset_name ()
 {
 	// clear
 	name.set_name(S("an object"));
-	value_set.set_off(ObjectBlueprintSet::NAME);
+	value_set.set_off(ObjectBPSet::NAME);
 
 	// get parent value
-	const ObjectBlueprint* data = get_parent();
+	const ObjectBP* data = get_parent();
 	if (data != NULL)
 		name = data->get_name();
 }
 
 void
-ObjectBlueprint::reset_desc ()
+ObjectBP::reset_desc ()
 {
 	// clear
 	desc = S("object");
-	value_set.set_off(ObjectBlueprintSet::DESC);
+	value_set.set_off(ObjectBPSet::DESC);
 
 	// get parent value
-	const ObjectBlueprint* data = get_parent();
+	const ObjectBP* data = get_parent();
 	if (data != NULL)
 		desc = data->get_desc();
 }
 
 void
-ObjectBlueprint::reset_weight ()
+ObjectBP::reset_weight ()
 {
 	// clear
 	weight = 0;
-	value_set.set_off(ObjectBlueprintSet::WEIGHT);
+	value_set.set_off(ObjectBPSet::WEIGHT);
 
 	// get parent value
-	const ObjectBlueprint* data = get_parent();
+	const ObjectBP* data = get_parent();
 	if (data != NULL)
 		weight = data->get_weight();
 }
 
 void
-ObjectBlueprint::reset_cost ()
+ObjectBP::reset_cost ()
 {
 	// clear
 	cost = 0;
-	value_set.set_off(ObjectBlueprintSet::COST);
+	value_set.set_off(ObjectBPSet::COST);
 
 	// get parent value
-	const ObjectBlueprint* data = get_parent();
+	const ObjectBP* data = get_parent();
 	if (data != NULL)
 		cost = data->get_cost();
 }
 
 void
-ObjectBlueprint::reset_equip ()
+ObjectBP::reset_equip ()
 {
 	// clear
 	equip = 0;
-	value_set.set_off(ObjectBlueprintSet::EQUIP);
+	value_set.set_off(ObjectBPSet::EQUIP);
 
 	// get parent value
-	const ObjectBlueprint* data = get_parent();
+	const ObjectBP* data = get_parent();
 	if (data != NULL)
 		equip = data->get_equip();
 }
 
 void
-ObjectBlueprint::reset_flag (ObjectFlag flag)
+ObjectBP::reset_flag (ObjectFlag flag)
 {
 	flags_set.set_off(flag);
 
 	// get parent value
-	const ObjectBlueprint* data = get_parent();
+	const ObjectBP* data = get_parent();
 	if (data != NULL)
 		flags.set(flag, data->get_flag(flag));
 }
 
 void
-ObjectBlueprint::refresh ()
+ObjectBP::refresh ()
 {
-	if (!value_set.check(ObjectBlueprintSet::NAME))
+	if (!value_set.check(ObjectBPSet::NAME))
 		reset_name();
-	if (!value_set.check(ObjectBlueprintSet::DESC))
+	if (!value_set.check(ObjectBPSet::DESC))
 		reset_desc();
-	if (!value_set.check(ObjectBlueprintSet::WEIGHT))
+	if (!value_set.check(ObjectBPSet::WEIGHT))
 		reset_weight();
-	if (!value_set.check(ObjectBlueprintSet::COST))
+	if (!value_set.check(ObjectBPSet::COST))
 		reset_cost();
-	if (!value_set.check(ObjectBlueprintSet::EQUIP))
+	if (!value_set.check(ObjectBPSet::EQUIP))
 		reset_equip();
 	if (!flags_set.check(ObjectFlag::HIDDEN))
 		reset_flag(ObjectFlag::HIDDEN);
@@ -157,26 +157,26 @@ ObjectBlueprint::refresh ()
 }
 
 void
-ObjectBlueprint::save (File::Writer& writer)
+ObjectBP::save (File::Writer& writer)
 {
 	if (id)
 		writer.attr(S("blueprint"), S("id"), id);
 
-	if (value_set.check(ObjectBlueprintSet::NAME))
+	if (value_set.check(ObjectBPSet::NAME))
 		writer.attr(S("blueprint"), S("name"), name.get_name());
 
-	if (value_set.check(ObjectBlueprintSet::DESC))
+	if (value_set.check(ObjectBPSet::DESC))
 		writer.attr(S("blueprint"), S("desc"), desc);
 
 	for (StringList::const_iterator i = keywords.begin(); i != keywords.end(); ++i)
 		writer.attr(S("blueprint"), S("keyword"), *i);
 
-	if (value_set.check(ObjectBlueprintSet::EQUIP))
+	if (value_set.check(ObjectBPSet::EQUIP))
 		writer.attr(S("blueprint"), S("equip"), equip.get_name());
 
-	if (value_set.check(ObjectBlueprintSet::COST))
+	if (value_set.check(ObjectBPSet::COST))
 		writer.attr(S("blueprint"), S("cost"), cost);
-	if (value_set.check(ObjectBlueprintSet::WEIGHT))
+	if (value_set.check(ObjectBPSet::WEIGHT))
 		writer.attr(S("blueprint"), S("weight"), weight);
 
 	if (flags_set.check(ObjectFlag::HIDDEN))
@@ -208,7 +208,7 @@ ObjectBlueprint::save (File::Writer& writer)
 }
 
 int
-ObjectBlueprint::load (File::Reader& reader)
+ObjectBP::load (File::Reader& reader)
 {
 	FO_READ_BEGIN
 		FO_ATTR("blueprint", "id")
@@ -224,7 +224,7 @@ ObjectBlueprint::load (File::Reader& reader)
 		FO_ATTR("blueprint", "cost")
 			set_cost(node.get_int());
 		FO_ATTR("blueprint", "equip")
-			set_equip(EquipLocation::lookup(node.get_string()));
+			set_equip(EquipSlot::lookup(node.get_string()));
 		FO_ATTR("blueprint", "gettable")
 			set_flag(ObjectFlag::GET, node.get_bool());
 		FO_ATTR("blueprint", "touchable")
@@ -248,7 +248,7 @@ ObjectBlueprint::load (File::Reader& reader)
 			else
 				Log::Warning << "Unknown container type '" << node.get_string() << "' at " << reader.get_filename() << ':' << node.get_line();
 		FO_ATTR("blueprint", "parent")
-			ObjectBlueprint* blueprint = ObjectBlueprintManager.lookup(node.get_string());
+			ObjectBP* blueprint = ObjectBPManager.lookup(node.get_string());
 			if (blueprint)
 				set_parent(blueprint);
 			else
@@ -272,14 +272,14 @@ ObjectBlueprint::load (File::Reader& reader)
 }
 
 void
-ObjectBlueprint::set_parent (ObjectBlueprint* blueprint)
+ObjectBP::set_parent (ObjectBP* blueprint)
 {
 	parent = blueprint;
 	refresh();
 }
 
 Scriptix::Value
-ObjectBlueprint::get_undefined_property (Scriptix::Atom id) const
+ObjectBP::get_undefined_property (Scriptix::Atom id) const
 {
 	if (parent == NULL)
 		return Scriptix::Nil;
@@ -297,7 +297,7 @@ Object::Object () : Entity (AweMUD_ObjectType)
 	trash_timer = 0;
 }
 
-Object::Object (ObjectBlueprint* s_blueprint) : Entity(AweMUD_ObjectType)
+Object::Object (ObjectBP* s_blueprint) : Entity(AweMUD_ObjectType)
 {
 	blueprint = NULL;
 	owner = NULL;
@@ -371,14 +371,14 @@ Object::load_node(File::Reader& reader, File::Node& node)
 	FO_NODE_BEGIN
 		FO_OBJECT("blueprint")
 			// creates a new anonymous blueprint
-			ObjectBlueprint* blueprint = new ObjectBlueprint();
+			ObjectBP* blueprint = new ObjectBP();
 			if (blueprint->load(reader))
 				throw File::Error(S("Failed to load anonymous blueprint"));
 			set_blueprint(blueprint);
 		FO_ATTR("object", "blueprint")
 			// sets a real blueprint
-			ObjectBlueprint* blueprint = NULL;
-			if ((blueprint = ObjectBlueprintManager.lookup(node.get_string())) == NULL)
+			ObjectBP* blueprint = NULL;
+			if ((blueprint = ObjectBPManager.lookup(node.get_string())) == NULL)
 				Log::Error << "Could not find object blueprint '" << node.get_string() << "'";
 			else
 				set_blueprint(blueprint);
@@ -644,7 +644,7 @@ Object::get_real_weight () const
 	assert(blueprint != NULL);
 	return blueprint->get_weight();
 }
-EquipLocation
+EquipSlot
 Object::get_equip () const
 {
 	assert(blueprint != NULL);
@@ -708,7 +708,7 @@ Object::parse_property (const StreamControl& stream, String comm, const ParseLis
 }
 
 void
-Object::set_blueprint (ObjectBlueprint* s_blueprint)
+Object::set_blueprint (ObjectBP* s_blueprint)
 {
 	blueprint = s_blueprint;
 }
@@ -717,7 +717,7 @@ Object::set_blueprint (ObjectBlueprint* s_blueprint)
 Object*
 Object::load_blueprint (String name)
 {
-	ObjectBlueprint* blueprint = ObjectBlueprintManager.lookup(name);
+	ObjectBP* blueprint = ObjectBPManager.lookup(name);
 	if (!blueprint)
 		return NULL;
 	
@@ -727,7 +727,7 @@ Object::load_blueprint (String name)
 bool
 Object::is_blueprint (String name) const
 {
-	ObjectBlueprint* blueprint = get_blueprint();
+	ObjectBP* blueprint = get_blueprint();
 
 	while (blueprint != NULL) {
 		if (str_eq(blueprint->get_id(), name))
@@ -746,7 +746,7 @@ Object::name_match (String match) const
 		return true;
 
 	// blueprint keywords
-	ObjectBlueprint* blueprint = get_blueprint();
+	ObjectBP* blueprint = get_blueprint();
 	while (blueprint != NULL) {
 		for (StringList::const_iterator i = blueprint->get_keywords().begin(); i != blueprint->get_keywords().end(); i ++)
 			if (phrase_match (*i, match))
@@ -762,7 +762,7 @@ Object::name_match (String match) const
 Scriptix::Value
 Object::get_undefined_property (Scriptix::Atom id) const
 {
-	const ObjectBlueprint* data = get_blueprint();
+	const ObjectBP* data = get_blueprint();
 	if (data == NULL)
 		return Scriptix::Nil;
 	return data->get_property(id);
@@ -770,10 +770,10 @@ Object::get_undefined_property (Scriptix::Atom id) const
 
 // Object Blueprint Manager
 
-SObjectBlueprintManager ObjectBlueprintManager;
+SObjectBPManager ObjectBPManager;
 
 int
-SObjectBlueprintManager::initialize ()
+SObjectBPManager::initialize ()
 {
 	// requirements
 	if (require(ScriptBindings) != 0)
@@ -792,7 +792,7 @@ SObjectBlueprintManager::initialize ()
 				return -1;
 			FO_READ_BEGIN
 				FO_OBJECT("object_blueprint")
-					ObjectBlueprint* blueprint = new ObjectBlueprint();
+					ObjectBP* blueprint = new ObjectBP();
 					if (blueprint->load(reader)) {
 						Log::Warning << "Failed to load blueprint in " << reader.get_filename() << " at " << node.get_line();
 						return -1;
@@ -814,12 +814,12 @@ SObjectBlueprintManager::initialize ()
 }
 
 void
-SObjectBlueprintManager::shutdown ()
+SObjectBPManager::shutdown ()
 {
 }
 
-ObjectBlueprint*
-SObjectBlueprintManager::lookup (String id)
+ObjectBP*
+SObjectBPManager::lookup (String id)
 {
 	BlueprintMap::iterator iter = blueprints.find(id);
 	if (iter == blueprints.end())

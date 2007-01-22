@@ -66,7 +66,7 @@ GenderType::lookup (String name)
 	return NONE;
 }
 
-String EquipLocation::names[] = {
+String EquipSlot::names[] = {
 	S("none"),
 	S("head"),
 	S("torso"),
@@ -80,8 +80,8 @@ String EquipLocation::names[] = {
 	S("waist")
 };
 
-EquipLocation
-EquipLocation::lookup (String name)
+EquipSlot
+EquipSlot::lookup (String name)
 {
 	for (uint i = 0; i < COUNT; ++i)
 		if (str_eq(name, names[i]))
@@ -145,17 +145,17 @@ int
 Creature::wear (Object *obj) {
 	assert (obj != NULL);
 
-	if (equipment.body_worn == NULL && obj->get_equip () == EquipLocation::TORSO) {
+	if (equipment.body_worn == NULL && obj->get_equip () == EquipSlot::TORSO) {
 		obj->set_owner(this);
 		equipment.body_worn = obj;
 		return 2;
 	}
-	if (equipment.back_worn == NULL && obj->get_equip () == EquipLocation::BACK) {
+	if (equipment.back_worn == NULL && obj->get_equip () == EquipSlot::BACK) {
 		obj->set_owner(this);
 		equipment.back_worn = obj;
 		return 3;
 	}
-	if (equipment.waist_worn == NULL && obj->get_equip () == EquipLocation::WAIST) {
+	if (equipment.waist_worn == NULL && obj->get_equip () == EquipSlot::WAIST) {
 		obj->set_owner(this);
 		equipment.waist_worn = obj;
 		return 4;

@@ -223,7 +223,7 @@ OLC_BEGIN_TYPE(Object)
 		OLC_GET
 			OLC_DISPLAY(edit->get_blueprint()->get_id())
 		OLC_SET
-			ObjectBlueprint* blueprint = ObjectBlueprintManager.lookup(value);
+			ObjectBP* blueprint = ObjectBPManager.lookup(value);
 			if (blueprint != NULL)
 				edit->set_blueprint(blueprint);
 			else
@@ -236,7 +236,7 @@ OLC_BEGIN_TYPE(Npc)
 		OLC_GET
 			OLC_DISPLAY(edit->get_blueprint()->get_id())
 		OLC_SET
-			NpcBlueprint* blueprint = NpcBlueprintManager.lookup(value);
+			NpcBP* blueprint = NpcBPManager.lookup(value);
 			if (blueprint != NULL)
 				edit->set_blueprint(blueprint);
 			else

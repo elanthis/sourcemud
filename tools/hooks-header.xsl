@@ -22,7 +22,7 @@ class Player;
 class Npc;
 class Zone;
 class ScriptRestrictedWriter;
-class ObjectBlueprint;
+class ObjectBP;
 
 namespace Hooks {
 	int add (String name, Scriptix::ScriptFunction cb);

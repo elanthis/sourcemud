@@ -2062,7 +2062,7 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
 
   <type>
     <name>NPCBlueprint</name>
-    <cppname>NpcBlueprint</cppname>
+    <cppname>NpcBP</cppname>
     <doc>NPC Blueprints describe an <link type="NPC"/>'s information.  Any NPC can derive from one a blueprint, inheriting that's blueprint's information.</doc>
 
     <!-- basics -->
@@ -2078,7 +2078,7 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
       <name>getParent</name>
       <invoke>get_parent</invoke>
       <return>
-        <type>NpcBlueprint</type>
+        <type>NpcBP</type>
         <doc>The blueprint this blueprint derives from, or nil if there is no parent.</doc>
       </return>
       <doc>Blueprints can derive from other blueprints, forming an inheritance.  Modifications to a parent blueprint affect all child blueprints, and any entity that derives from the blueprint or its children.</doc>
@@ -2112,7 +2112,7 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
     </method>
   </type>
   <function>
-    <name>getNpcBlueprint</name>
+    <name>getNpcBP</name>
     <return>
       <type>NPCBlueprint</type>
       <doc>Blueprint with the given ID, or nil if the blueprint does not exist.</doc>
@@ -2122,7 +2122,7 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
       <name>id</name>
       <doc>ID of blueprint to lookup.</doc>
     </arg>
-    <code><![CDATA[_return = NpcBlueprintManager.lookup(_arg_id);]]></code>
+    <code><![CDATA[_return = NpcBPManager.lookup(_arg_id);]]></code>
   </function>
 
   <!-- Object -->
@@ -2294,7 +2294,7 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
   </function>
 
   <type>
-    <name>ObjectBlueprint</name>
+    <name>ObjectBP</name>
     <doc>Object Blueprints describe an <link type="Object"/>'s information.  Any object can derive from one a blueprint, inheriting that's blueprint's information.</doc>
 
     <!-- basics -->
@@ -2309,7 +2309,7 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
     <method>
       <name>getParent</name>
       <return>
-        <type>ObjectBlueprint</type>
+        <type>ObjectBP</type>
         <doc>The blueprint this blueprint derives from, or nil if there is no parent.</doc>
       </return>
       <doc>Blueprints can derive from other blueprints, forming an inheritance.  Modifications to a parent blueprint affect all child blueprints, and any entity that derives from the blueprint or its children.</doc>
@@ -2352,18 +2352,18 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
     </method>
   </type>
   <function>
-    <name>getObjectBlueprint</name>
+    <name>getObjectBP</name>
     <arg>
       <type>String</type>
       <name>name</name>
       <doc>Name of the blueprint to lookup.</doc>
     </arg>
     <return>
-      <type>ObjectBlueprint</type>
+      <type>ObjectBP</type>
       <doc>The named blueprint, or nil if it doesn't exist.</doc>
     </return>
     <doc>Looks up the named <link type="Object"/> blueprint in the blueprint database.  If the blueprint doesn't exist, nil is returned.</doc>
-    <code>_return = ObjectBlueprintManager.lookup(_arg_name);</code>
+    <code>_return = ObjectBPManager.lookup(_arg_name);</code>
   </function>
 
   <!-- Room -->

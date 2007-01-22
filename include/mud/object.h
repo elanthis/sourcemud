@@ -62,7 +62,7 @@ struct ObjectLocation {
 };
 
 // Object blueprint "set" flags
-struct ObjectBlueprintSet {
+struct ObjectBPSet {
 	enum bits {
 		NAME = 1,
 		DESC,
@@ -73,8 +73,8 @@ struct ObjectBlueprintSet {
 		MAX
 	};
 
-	ObjectBlueprintSet (bits b) : v(b) {}
-	explicit ObjectBlueprintSet (int i) : v((bits)(i>=1&&i<MAX?i:1)) {}
+	ObjectBPSet (bits b) : v(b) {}
+	explicit ObjectBPSet (int i) : v((bits)(i>=1&&i<MAX?i:1)) {}
 	operator bits () const { return v; }
 
 	bits v;
@@ -104,10 +104,10 @@ struct ObjectBlueprintSet {
 
 // Object blueprint
 class
-ObjectBlueprint : public Scriptix::Native
+ObjectBP : public Scriptix::Native
 {
 	public:
-	ObjectBlueprint ();
+	ObjectBP ();
 
 	// blueprint id
 	inline String get_id () const { return id; }
@@ -121,23 +121,23 @@ ObjectBlueprint : public Scriptix::Native
 
 	// description
 	const String& get_desc () const { return desc; }
-	void set_desc (String s_desc) { desc = s_desc; value_set &= ObjectBlueprintSet::DESC; }
+	void set_desc (String s_desc) { desc = s_desc; value_set &= ObjectBPSet::DESC; }
 	void reset_desc ();
 
 	// weight
 	uint get_weight () const { return weight; }
-	void set_weight (uint s_weight) { weight = s_weight; value_set &= ObjectBlueprintSet::WEIGHT; }
+	void set_weight (uint s_weight) { weight = s_weight; value_set &= ObjectBPSet::WEIGHT; }
 	void reset_weight ();
 
 	// cost
 	uint get_cost () const { return cost; }
-	void set_cost (uint s_cost) { cost = s_cost; value_set &= ObjectBlueprintSet::COST; }
+	void set_cost (uint s_cost) { cost = s_cost; value_set &= ObjectBPSet::COST; }
 	void reset_cost ();
 
 	// equip location
 	bool has_location (ObjectLocation type) const { return locations & type; }
-	EquipLocation get_equip () const { return equip; }
-	void set_equip (EquipLocation s_equip) { equip = s_equip; value_set &= ObjectBlueprintSet::EQUIP; }
+	EquipSlot get_equip () const { return equip; }
+	void set_equip (EquipSlot s_equip) { equip = s_equip; value_set &= ObjectBPSet::EQUIP; }
 	void reset_equip ();
 
 	// flags
@@ -153,17 +153,17 @@ ObjectBlueprint : public Scriptix::Native
 	void save (File::Writer& writer);
 
 	// parent blueprint
-	virtual ObjectBlueprint* get_parent () const { return parent; }
+	virtual ObjectBP* get_parent () const { return parent; }
 
 	private:
 	String id;
-	ObjectBlueprint* parent;
+	ObjectBP* parent;
 	
 	EntityName name;
 	String desc;
 	uint weight;
 	uint cost;
-	EquipLocation equip;
+	EquipSlot equip;
 	StringList keywords;
 
 	// flags
@@ -175,9 +175,9 @@ ObjectBlueprint : public Scriptix::Native
 	// mark whether some item is "set" or not
 	BitSet<ObjectFlag> flags_set;
 	BitSet<ObjectLocation> locations_set;
-	BitSet<ObjectBlueprintSet> value_set;
+	BitSet<ObjectBPSet> value_set;
 
-	void set_parent (ObjectBlueprint* blueprint);
+	void set_parent (ObjectBP* blueprint);
 
 	virtual Scriptix::Value get_undefined_property (Scriptix::Atom id) const;
 };
@@ -188,7 +188,7 @@ Object : public Entity
 {
 	public:
 	Object ();
-	Object (ObjectBlueprint* s_blueprint);
+	Object (ObjectBP* s_blueprint);
 
 	// name info
 	bool set_name (String);
@@ -226,7 +226,7 @@ Object : public Entity
 
 	// object properties
 	uint get_cost () const;
-	EquipLocation get_equip () const;
+	EquipSlot get_equip () const;
 
 	// check flags
 	bool get_flag (ObjectFlag flag) const { return blueprint->get_flag(flag); }
@@ -248,8 +248,8 @@ Object : public Entity
 	void heartbeat ();
 
 	// blueprint information
-	virtual ObjectBlueprint* get_blueprint () const { return blueprint; }
-	void set_blueprint (ObjectBlueprint* blueprint);
+	virtual ObjectBP* get_blueprint () const { return blueprint; }
+	void set_blueprint (ObjectBP* blueprint);
 	static Object* load_blueprint (String name);
 
 	// containers
@@ -263,7 +263,7 @@ Object : public Entity
 	private:
 	EntityName name;
 	Entity *owner;
-	ObjectBlueprint* blueprint;
+	ObjectBP* blueprint;
 	ObjectLocation container;
 	uint calc_weight; // calculated weight of children objects
 	uint trash_timer; // ticks until trashed
@@ -281,22 +281,22 @@ Object : public Entity
 	E_TYPE(Object)
 };
 
-class SObjectBlueprintManager : public IManager
+class SObjectBPManager : public IManager
 {
-	typedef GCType::map<String,ObjectBlueprint*> BlueprintMap;
+	typedef GCType::map<String,ObjectBP*> BlueprintMap;
 
 	public:
 	int initialize ();
 
 	void shutdown ();
 
-	ObjectBlueprint* lookup (String id);
+	ObjectBP* lookup (String id);
 
 	private:
 	BlueprintMap blueprints;
 };
 
-extern SObjectBlueprintManager ObjectBlueprintManager;
+extern SObjectBPManager ObjectBPManager;
 
 #define OBJECT(ent) E_CAST(ent,Object)
 

@@ -1,3 +1,9 @@
+2007-01-22 08:10:48  Sean Middleditch <elanthis@awesomeplay.com>
+
+  * Renamed EquipLocation to EquipSlot.
+  * Renamed NpcBlueprint to NpcBP.
+  * Renamed ObjectBlueprint to ObjectBP.
+
 2007-01-22 08:02:02  Sean Middleditch <elanthis@awesomeplay.com>
 
   * Updated the BitSet code to require a typename/class with a MAX

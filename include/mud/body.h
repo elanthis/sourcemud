@@ -58,7 +58,7 @@ class GenderType
 };
 
 // Equip slot types
-class EquipLocation
+class EquipSlot
 {
 	public:
 	typedef enum {
@@ -77,8 +77,8 @@ class EquipLocation
 	} type_t;
 	
 	public:
-	EquipLocation (int s_value) : value((type_t)s_value) {}
-	EquipLocation (void) : value(NONE) {}
+	EquipSlot (int s_value) : value((type_t)s_value) {}
+	EquipSlot (void) : value(NONE) {}
 
 	bool valid (void) const { return value != NONE; }
 
@@ -86,10 +86,10 @@ class EquipLocation
 
 	type_t get_value (void) const { return value; }
 
-	static EquipLocation lookup (String name);
+	static EquipSlot lookup (String name);
 
-	inline bool operator == (const EquipLocation& dir) const { return dir.value == value; }
-	inline bool operator != (const EquipLocation& dir) const { return dir.value != value; }
+	inline bool operator == (const EquipSlot& dir) const { return dir.value == value; }
+	inline bool operator != (const EquipSlot& dir) const { return dir.value != value; }
 
 	private:
 	type_t value;
