@@ -25,7 +25,7 @@ function show_menu (player)
 	// show the menu
 	player << 'Items for Sale:\n' << @indent(2) << '-name-' << @indent(20) << ' -costs-\n' << @indent(0);
 	foreach (var item in list.split(',')) {
-		var blueprint = getObjectBlueprint(item);
+		var blueprint = getObjectBP(item);
 		if (blueprint) {
 			player << @ignore(2) << blueprint.getName().substr(0, 18) << @ignore(20) << pad(String(blueprint.getCost() * rate / 100), 7) << '\n' << @indent(0);
 		}
@@ -56,7 +56,7 @@ function buy_item (player, argv)
 	// find the item (blueprint)
 	var purchase = nil;
 	foreach (var item in list.split(',')) {
-		var blueprint = getObjectBlueprint(item);
+		var blueprint = getObjectBP(item);
 		if (blueprint && strMatch(argv[0], blueprint.getName())) {
 			purchase = blueprint;
 			break;

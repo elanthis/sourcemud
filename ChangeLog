@@ -1,3 +1,8 @@
+2007-01-24 04:48:35  Sean Middleditch <elanthis@awesomeplay.com>
+
+  * Fixed script not being up-to-date with renaming of
+    ObjectBlueprint.
+
 2007-01-22 08:10:48  Sean Middleditch <elanthis@awesomeplay.com>
 
   * Renamed EquipLocation to EquipSlot.
