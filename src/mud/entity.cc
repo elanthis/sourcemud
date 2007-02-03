@@ -32,15 +32,10 @@ Entity::Entity (const Scriptix::TypeInfo* type) : Scriptix::Native(type)
 EventHandler*
 Entity::get_event (EventID name)
 {
-	// try ours
 	for (EventList::iterator i = events.begin(); i != events.end(); ++i) {
 		if ((*i)->get_event() == name)
 			return *i;
 	}
-
-	// FIXME: need to let sub-classes handle blueprints...
-
-	// nope
 	return NULL;
 }
 
@@ -133,6 +128,14 @@ Entity::display_desc (const StreamControl& stream) const
 void
 Entity::save (File::Writer& writer)
 {
+	writer.begin(factory_type());
+	save_data(writer);
+	writer.end();
+}
+
+void
+Entity::save_data (File::Writer& writer)
+{
 	writer.attr(S("entity"), S("uid"), uid);
 
 	// event handler list
@@ -160,44 +163,41 @@ Entity::save_hook (ScriptRestrictedWriter* writer)
 }
 
 // load
+Entity*
+Entity::load (String factory, File::Reader& reader)
+{
+	Entity* entity;
+
+	// attempt to create entity
+	entity = create(factory);
+	if (entity == NULL) {
+		Log::Error << "Entity factory '" << factory << "' failed";
+		return NULL;
+	}
+
+	// attempt load
+	if (entity->load(reader) != 0)
+		return NULL;
+	
+	// ok
+	return entity;
+}
+
 int
 Entity::load (File::Reader& reader)
 {
-/*
-	// catch errors
-	try {
-		File::Node node;
-		
-		// read loop
-		while (reader.get(node)) {
-			if (node.is_end())
-				break;
-
-			if (load_node(reader, node) != FO_SUCCESS_CODE) {
-				if (node.is_attr())
-					Log::Error << "Unrecognized attribute '" << node.get_name () << '.' << node.get_name() << "' at " << reader.get_filename() << ':' << node.get_line();
-				else if (node.is_begin())
-					Log::Error << "Unrecognized object '" << node.get_name() << "' at " << reader.get_filename() << ':' << node.get_line();
-				else
-					Log::Error << "Unrecognized construct '" << node.get_name() << "' at " << reader.get_filename() << ':' << node.get_line();
-				return -1;
-			}
-		}
-
-	// show errors
-	} catch (File::Error& error) {
-		Log::Error << error.get_what() << " at " << reader.get_filename() << ':' << reader.get_line();
-		return -1;
-	}
-*/
+	// load the thing
 	FO_READ_BEGIN
 		} else if (load_node(reader, node) == FO_SUCCESS_CODE) {
 	FO_READ_ERROR
 		return -1;
 	FO_READ_END
 
-	// finish up
-	return load_finish();
+	// final check
+	if (load_finish() != 0)
+		return -1;
+
+	return 0;
 }
 
 int
@@ -206,6 +206,12 @@ Entity::load_node (File::Reader& reader, File::Node& node)
 	FO_NODE_BEGIN
 		FO_ATTR("entity", "uid")
 			uid = node.get_id();
+		FO_ATTR("entity", "tag")
+			add_tag(TagID::create(node.get_string()));
+		FO_OBJECT("event")
+			EventHandler* event = new EventHandler();
+			if (!event->load(reader))
+					events.push_back(event);
 		FO_WILD("user")
 			if (node.get_value_type() == File::Value::TYPE_INT)
 				set_property(node.get_name(), node.get_int());
@@ -215,12 +221,6 @@ Entity::load_node (File::Reader& reader, File::Node& node)
 				set_property(node.get_name(), node.get_bool());
 			else
 				throw File::Error(S("Invalid data type for script attribute"));
-		FO_ATTR("entity", "tag")
-			add_tag(TagID::create(node.get_string()));
-		FO_OBJECT("event")
-			EventHandler* event = new EventHandler();
-			if (!event->load(reader))
-					events.push_back(event);
 	FO_NODE_END
 }
 

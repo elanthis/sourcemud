@@ -117,6 +117,8 @@ class Npc : public Creature
 	Npc ();
 	Npc (NpcBP* s_blueprint);
 
+	virtual String factory_type () const { return S("npc"); }
+
 	// blueprints
 	virtual NpcBP* get_blueprint () const { return blueprint; }
 	void set_blueprint (NpcBP* s_blueprint);
@@ -142,7 +144,7 @@ class Npc : public Creature
 	// save and load
 	virtual int load_node (File::Reader& reader, File::Node& node);
 	virtual int load_finish ();
-	virtual void save (File::Writer& writer);
+	virtual void save_data (File::Writer& writer);
 	virtual void save_hook (class ScriptRestrictedWriter* writer);
 
 	// display

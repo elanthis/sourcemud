@@ -27,6 +27,8 @@ class Room : public Entity
 
 	Room ();
 
+	virtual String factory_type () const { return S("room"); }
+
 	// name information
 	inline virtual EntityName get_name () const { return name; }
 	inline void set_name (String s_name) { name.set_name(s_name); }
@@ -66,7 +68,7 @@ class Room : public Entity
 	inline virtual String ncolor () const { return S(CTITLE); }
 
 	// io
-	virtual void save (File::Writer& writer);
+	virtual void save_data (File::Writer& writer);
 	virtual void save_hook (class ScriptRestrictedWriter* writer);
 	virtual int load_node(File::Reader& reader, File::Node& node);
 	virtual int load_finish ();

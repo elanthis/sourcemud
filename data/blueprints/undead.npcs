@@ -6,11 +6,11 @@
 npc_blueprint {
   blueprint.id = "base_undead"
 
-  blueprint.ai = animal
+  blueprint.ai = "animal"
   user.ai_flee = -1
   user.ai_foodchain = 100
 
-  blueprint.equip = "claws_animal"
+  blueprint.equip = "claws"
   
   blueprint.stat = [ "Strength", 10 ]
   blueprint.stat = [ "Agility", 20 ]

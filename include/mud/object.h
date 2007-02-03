@@ -61,31 +61,13 @@ struct ObjectLocation {
 	bits v;
 };
 
-// Object blueprint "set" flags
-struct ObjectBPSet {
-	enum bits {
-		NAME = 1,
-		DESC,
-		WEIGHT,
-		COST,
-		EQUIP,
-
-		MAX
-	};
-
-	ObjectBPSet (bits b) : v(b) {}
-	explicit ObjectBPSet (int i) : v((bits)(i>=1&&i<MAX?i:1)) {}
-	operator bits () const { return v; }
-
-	bits v;
-};
-
-// WEIGHT:
+// COST:
 //  cost is in hundredths of 1 unit of current (ex: US dollar)
 //  so a cost of 2100 would possibly equal 21 US$.  In most
 //  fantasy settings, gold pieces or silver pieces are the standard
 //  unit of currency, so 2100 might equal 21 gold or 21 silver.
 
+// WEIGHT:
 //  weight is measured in decagrams.  There are 100 decagrams to a
 //  kilogram.  For the imperialists out there (such as myself),
 //  there are roughly 4.453 kilograms to each pound.  Most fantasy
@@ -102,111 +84,29 @@ struct ObjectBPSet {
 #define OBJECT_ROT_TICKS ROUNDS_TO_TICKS(60 * 1)
   // rotting objects wither away after 1 minute
 
-// Object blueprint
-class
-ObjectBP : public Scriptix::Native
-{
-	public:
-	ObjectBP ();
-
-	// blueprint id
-	inline String get_id () const { return id; }
-
-	// name
-	virtual EntityName get_name () const;
-	bool set_name (String s_name);
-	void reset_name ();
-
-	const StringList& get_keywords () const { return keywords; }
-
-	// description
-	const String& get_desc () const { return desc; }
-	void set_desc (String s_desc) { desc = s_desc; value_set &= ObjectBPSet::DESC; }
-	void reset_desc ();
-
-	// weight
-	uint get_weight () const { return weight; }
-	void set_weight (uint s_weight) { weight = s_weight; value_set &= ObjectBPSet::WEIGHT; }
-	void reset_weight ();
-
-	// cost
-	uint get_cost () const { return cost; }
-	void set_cost (uint s_cost) { cost = s_cost; value_set &= ObjectBPSet::COST; }
-	void reset_cost ();
-
-	// equip location
-	bool has_location (ObjectLocation type) const { return locations & type; }
-	EquipSlot get_equip () const { return equip; }
-	void set_equip (EquipSlot s_equip) { equip = s_equip; value_set &= ObjectBPSet::EQUIP; }
-	void reset_equip ();
-
-	// flags
-	bool get_flag (ObjectFlag flag) const { return flags & flag; }
-	void set_flag (ObjectFlag flag, bool b) { flags.set(flag, b); flags_set &= flag; }
-	void reset_flag (ObjectFlag flag);
-
-	// update inherited data
-	void refresh ();
-
-	// load
-	int load (File::Reader& reader);
-	void save (File::Writer& writer);
-
-	// parent blueprint
-	virtual ObjectBP* get_parent () const { return parent; }
-
-	private:
-	String id;
-	ObjectBP* parent;
-	
-	EntityName name;
-	String desc;
-	uint weight;
-	uint cost;
-	EquipSlot equip;
-	StringList keywords;
-
-	// flags
-	BitSet<ObjectFlag> flags;
-
-	// locations
-	BitSet<ObjectLocation> locations;
-
-	// mark whether some item is "set" or not
-	BitSet<ObjectFlag> flags_set;
-	BitSet<ObjectLocation> locations_set;
-	BitSet<ObjectBPSet> value_set;
-
-	void set_parent (ObjectBP* blueprint);
-
-	virtual Scriptix::Value get_undefined_property (Scriptix::Atom id) const;
-};
-
 // Object control
 class
 Object : public Entity
 {
 	public:
 	Object ();
-	Object (ObjectBP* s_blueprint);
 
 	// name info
-	bool set_name (String);
-	virtual EntityName get_name () const;
-	virtual bool name_match (String name) const;
+	virtual bool set_name (String) = 0;
+	virtual EntityName get_name () const = 0;
 
 	// description
-	virtual String get_desc () const;
+	virtual String get_desc () const = 0;
 
 	// save/load
 	virtual int load_node (File::Reader& reader, File::Node& node);
 	virtual int load_finish ();
-	virtual void save (File::Writer& writer);
+	virtual void save_data (File::Writer& writer);
 	virtual void save_hook (class ScriptRestrictedWriter* writer);
 
 	// weight
 	inline uint get_weight () const { return calc_weight + get_real_weight(); }
-	uint get_real_weight () const;
+	virtual uint get_real_weight () const = 0;
 
 	// owner tracking - see entity.h
 	virtual inline Entity* get_owner () const { return owner; }
@@ -225,20 +125,17 @@ Object : public Entity
 	virtual int parse_property (const class StreamControl& stream, String method, const ParseList& argv) const;
 
 	// object properties
-	uint get_cost () const;
-	EquipSlot get_equip () const;
+	virtual uint get_cost () const = 0;
+	virtual EquipSlot get_equip () const = 0;
 
 	// check flags
-	bool get_flag (ObjectFlag flag) const { return blueprint->get_flag(flag); }
-	bool is_hidden () const;
-	bool is_touchable () const;
-	bool is_gettable () const;
-	bool is_dropable () const;
-	bool is_trashable () const;
-	bool is_rotting () const;
-
-	// return ture if we derive from the named blueprint
-	bool is_blueprint (String blueprint) const;
+	virtual bool get_flag (ObjectFlag flag) const = 0;
+	bool is_hidden () const { return get_flag(ObjectFlag::HIDDEN); }
+	bool is_touchable () const { return get_flag(ObjectFlag::TOUCH); }
+	bool is_gettable () const { return get_flag(ObjectFlag::GET); }
+	bool is_dropable () const { return get_flag(ObjectFlag::DROP); }
+	bool is_trashable () const { return get_flag(ObjectFlag::TRASH); }
+	bool is_rotting () const { return get_flag(ObjectFlag::ROT); }
 
 	// (de)activate children
 	virtual void activate ();
@@ -247,13 +144,8 @@ Object : public Entity
 	// heartbeat
 	void heartbeat ();
 
-	// blueprint information
-	virtual ObjectBP* get_blueprint () const { return blueprint; }
-	void set_blueprint (ObjectBP* blueprint);
-	static Object* load_blueprint (String name);
-
 	// containers
-	bool has_location (ObjectLocation type) const { return blueprint->has_location(type); }
+	virtual bool has_location (ObjectLocation type) const = 0;
 	bool add_object (Object *sub, ObjectLocation type);
 	void remove_object (Object *sub, ObjectLocation type);
 	Object *find_object (String name, uint index, ObjectLocation type, uint *matches = NULL) const;
@@ -261,9 +153,7 @@ Object : public Entity
 
 	// data
 	private:
-	EntityName name;
 	Entity *owner;
-	ObjectBP* blueprint;
 	ObjectLocation container;
 	uint calc_weight; // calculated weight of children objects
 	uint trash_timer; // ticks until trashed
@@ -276,27 +166,8 @@ Object : public Entity
 	protected:
 	virtual ~Object ();
 
-	virtual Scriptix::Value get_undefined_property (Scriptix::Atom id) const;
-
 	E_TYPE(Object)
 };
-
-class SObjectBPManager : public IManager
-{
-	typedef GCType::map<String,ObjectBP*> BlueprintMap;
-
-	public:
-	int initialize ();
-
-	void shutdown ();
-
-	ObjectBP* lookup (String id);
-
-	private:
-	BlueprintMap blueprints;
-};
-
-extern SObjectBPManager ObjectBPManager;
 
 #define OBJECT(ent) E_CAST(ent,Object)
 

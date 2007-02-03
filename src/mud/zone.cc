@@ -20,6 +20,7 @@
 #include "mud/hooks.h"
 #include "mud/bindings.h"
 #include "common/manifest.h"
+#include "mud/shadow-object.h"
 
 SZoneManager ZoneManager;
 
@@ -81,7 +82,7 @@ Spawn::spawn (Zone* zone) const
 		npc->enter(room, NULL);
 	} else {
 		// try to spawn as object
-		Object* object = Object::load_blueprint(tempname);
+		Object* object = ShadowObject::load_blueprint(tempname);
 		if (object != NULL) {
 			// make sure object has the tag
 			object->add_tag(tag);
@@ -124,6 +125,8 @@ Spawn::load (File::Reader& reader)
 void
 Spawn::save (File::Writer& writer) const
 {
+	writer.begin(S("spawn"));
+
 	writer.attr(S("spawn"), S("tag"), TagID::nameof(tag));
 	writer.attr(S("spawn"), S("count"), min);
 	writer.attr(S("spawn"), S("delay"), delay);
@@ -133,6 +136,8 @@ Spawn::save (File::Writer& writer) const
 	for (StringList::const_iterator i = rooms.begin(); i != rooms.end(); ++i) {
 		writer.attr(S("spawn"), S("room"), *i);
 	}
+
+	writer.end();
 }
 
 SCRIPT_TYPE(Zone);
@@ -174,11 +179,9 @@ Zone::load_node (File::Reader& reader, File::Node& node)
 			set_desc(node.get_string());
 		FO_ATTR("zone", "id")
 			id = node.get_string();
-		FO_OBJECT("room")
-			Room* room = new Room();
-			if (room->load (reader))
-				throw File::Error(S("Failed to load room"));
-			add_room(room);
+		FO_ENTITY("zone", "child")
+			if (ROOM(entity) == NULL) throw File::Error(S("Zone child is not a Room"));
+			add_room(ROOM(entity));
 		FO_OBJECT("spawn")
 			Spawn spawn;
 			if (!spawn.load (reader))
@@ -190,7 +193,7 @@ Zone::load_node (File::Reader& reader, File::Node& node)
 }
 
 void
-Zone::save (File::Writer& writer)
+Zone::save_data (File::Writer& writer)
 {
 	// header
 	writer.comment(S("Zone: ") + get_id());
@@ -201,24 +204,20 @@ Zone::save (File::Writer& writer)
 	writer.attr(S("zone"), S("id"), id);
 	writer.attr(S("zone"), S("name"), name.get_name());
 	writer.attr(S("zone"), S("desc"), desc);
-	Entity::save(writer);
+	Entity::save_data(writer);
 
 	// spawns
 	writer.bl();
 	writer.comment (S("--- SPAWNS ---"));
-	for (SpawnList::const_iterator i = spawns.begin(); i != spawns.end(); ++i) {
-		writer.begin(S("spawn"));
+	for (SpawnList::const_iterator i = spawns.begin(); i != spawns.end(); ++i)
 		i->save(writer);
-		writer.end();
-	}
 
 	// rooms
 	writer.bl();
 	writer.comment(S("--- ROOMS ---"));
 	for (RoomList::iterator i = rooms.begin(); i != rooms.end(); ++i) {
-		writer.begin(S("room"));
+		writer.begin_open(S("zone"), S("child"));
 		(*i)->save(writer);
-		writer.end();
 	}
 
 	writer.bl();
@@ -239,7 +238,10 @@ Zone::load (String path)
 	if (reader.open(path))
 		return -1;
 
-	return load (reader);
+	if (Entity::load(reader))
+		return -1;
+
+	return 0;
 }
 
 void
@@ -263,7 +265,7 @@ Zone::save ()
 		Log::Error << "Failed to open " << path << " for writing";
 		return;
 	}
-	save(writer);
+	save_data(writer);
 }
 
 void

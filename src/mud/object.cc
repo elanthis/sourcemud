@@ -22,6 +22,9 @@
 #include "mud/settings.h"
 #include "mud/hooks.h"
 #include "common/manifest.h"
+#include "mud/shadow-object.h"
+#include "mud/unique-object.h"
+#include "mud/efactory.h"
 
 String ObjectLocation::names[] = {
 	S("none"),
@@ -33,7 +36,7 @@ String ObjectLocation::names[] = {
 // ----- ObjectBP -----
 
 SCRIPT_TYPE(ObjectBP);
-ObjectBP::ObjectBP () : Scriptix::Native(AweMUD_ObjectBPType), parent(NULL)
+ObjectBP::ObjectBP () : Scriptix::Native(AweMUD_ObjectBPType)
 {
 	weight = 0;
 	cost = 0;
@@ -43,7 +46,6 @@ bool
 ObjectBP::set_name (String s_name)
 {
 	bool ret = name.set_name(s_name);
-	value_set &= ObjectBPSet::NAME;
 	return ret;
 }
 
@@ -53,107 +55,31 @@ ObjectBP::get_name () const
 	return name;
 }
 
-void
-ObjectBP::reset_name ()
+bool
+ObjectBP::has_tag (TagID tag) const
 {
-	// clear
-	name.set_name(S("an object"));
-	value_set.set_off(ObjectBPSet::NAME);
-
-	// get parent value
-	const ObjectBP* data = get_parent();
-	if (data != NULL)
-		name = data->get_name();
+	return tags.find(tag) != tags.end();
 }
 
-void
-ObjectBP::reset_desc ()
+int
+ObjectBP::add_tag (TagID tag)
 {
-	// clear
-	desc = S("object");
-	value_set.set_off(ObjectBPSet::DESC);
-
-	// get parent value
-	const ObjectBP* data = get_parent();
-	if (data != NULL)
-		desc = data->get_desc();
+	tags.insert(tag);
+	return 0;
 }
 
-void
-ObjectBP::reset_weight ()
+int
+ObjectBP::remove_tag (TagID tag)
 {
-	// clear
-	weight = 0;
-	value_set.set_off(ObjectBPSet::WEIGHT);
+	// find
+	TagList::iterator ti = std::find(tags.begin(), tags.end(), tag);
+	if (ti == tags.end())
+		return 1;
 
-	// get parent value
-	const ObjectBP* data = get_parent();
-	if (data != NULL)
-		weight = data->get_weight();
-}
+	// remove
+	tags.erase(ti);
 
-void
-ObjectBP::reset_cost ()
-{
-	// clear
-	cost = 0;
-	value_set.set_off(ObjectBPSet::COST);
-
-	// get parent value
-	const ObjectBP* data = get_parent();
-	if (data != NULL)
-		cost = data->get_cost();
-}
-
-void
-ObjectBP::reset_equip ()
-{
-	// clear
-	equip = 0;
-	value_set.set_off(ObjectBPSet::EQUIP);
-
-	// get parent value
-	const ObjectBP* data = get_parent();
-	if (data != NULL)
-		equip = data->get_equip();
-}
-
-void
-ObjectBP::reset_flag (ObjectFlag flag)
-{
-	flags_set.set_off(flag);
-
-	// get parent value
-	const ObjectBP* data = get_parent();
-	if (data != NULL)
-		flags.set(flag, data->get_flag(flag));
-}
-
-void
-ObjectBP::refresh ()
-{
-	if (!value_set.check(ObjectBPSet::NAME))
-		reset_name();
-	if (!value_set.check(ObjectBPSet::DESC))
-		reset_desc();
-	if (!value_set.check(ObjectBPSet::WEIGHT))
-		reset_weight();
-	if (!value_set.check(ObjectBPSet::COST))
-		reset_cost();
-	if (!value_set.check(ObjectBPSet::EQUIP))
-		reset_equip();
-	if (!flags_set.check(ObjectFlag::HIDDEN))
-		reset_flag(ObjectFlag::HIDDEN);
-	if (!flags_set.check(ObjectFlag::GET))
-		reset_flag(ObjectFlag::GET);
-	if (!flags_set.check(ObjectFlag::TOUCH))
-		reset_flag(ObjectFlag::TOUCH);
-	if (!flags_set.check(ObjectFlag::DROP))
-		reset_flag(ObjectFlag::DROP);
-	if (!flags_set.check(ObjectFlag::TRASH))
-		reset_flag(ObjectFlag::TRASH);
-	if (!flags_set.check(ObjectFlag::ROT))
-		reset_flag(ObjectFlag::ROT);
+	return 0;
 }
 
 void
@@ -162,43 +88,31 @@ ObjectBP::save (File::Writer& writer)
 	if (id)
 		writer.attr(S("blueprint"), S("id"), id);
 
-	if (value_set.check(ObjectBPSet::NAME))
-		writer.attr(S("blueprint"), S("name"), name.get_name());
-
-	if (value_set.check(ObjectBPSet::DESC))
-		writer.attr(S("blueprint"), S("desc"), desc);
+	writer.attr(S("blueprint"), S("name"), name.get_name());
+	writer.attr(S("blueprint"), S("desc"), desc);
 
 	for (StringList::const_iterator i = keywords.begin(); i != keywords.end(); ++i)
 		writer.attr(S("blueprint"), S("keyword"), *i);
 
-	if (value_set.check(ObjectBPSet::EQUIP))
-		writer.attr(S("blueprint"), S("equip"), equip.get_name());
+	writer.attr(S("blueprint"), S("equip"), equip.get_name());
 
-	if (value_set.check(ObjectBPSet::COST))
-		writer.attr(S("blueprint"), S("cost"), cost);
-	if (value_set.check(ObjectBPSet::WEIGHT))
-		writer.attr(S("blueprint"), S("weight"), weight);
+	writer.attr(S("blueprint"), S("cost"), cost);
+	writer.attr(S("blueprint"), S("weight"), weight);
 
-	if (flags_set.check(ObjectFlag::HIDDEN))
-		writer.attr(S("blueprint"), S("hidden"), flags.check(ObjectFlag::HIDDEN));
-	if (flags_set.check(ObjectFlag::GET))
-		writer.attr(S("blueprint"), S("gettable"), flags.check(ObjectFlag::GET));
-	if (flags_set.check(ObjectFlag::TOUCH))
-		writer.attr(S("blueprint"), S("touchable"), flags.check(ObjectFlag::TOUCH));
-	if (flags_set.check(ObjectFlag::DROP))
-		writer.attr(S("blueprint"), S("dropable"), flags.check(ObjectFlag::DROP));
-	if (flags_set.check(ObjectFlag::TRASH))
-		writer.attr(S("blueprint"), S("trashable"), flags.check(ObjectFlag::TRASH));
-	if (flags_set.check(ObjectFlag::ROT))
-		writer.attr(S("blueprint"), S("rotting"), flags.check(ObjectFlag::ROT));
+	writer.attr(S("blueprint"), S("hidden"), flags.check(ObjectFlag::HIDDEN));
+	writer.attr(S("blueprint"), S("gettable"), flags.check(ObjectFlag::GET));
+	writer.attr(S("blueprint"), S("touchable"), flags.check(ObjectFlag::TOUCH));
+	writer.attr(S("blueprint"), S("dropable"), flags.check(ObjectFlag::DROP));
+	writer.attr(S("blueprint"), S("trashable"), flags.check(ObjectFlag::TRASH));
+	writer.attr(S("blueprint"), S("rotting"), flags.check(ObjectFlag::ROT));
 
-	if (parent)
-		writer.attr(S("blueprint"), S("parent"), parent->get_id());
-
-	if (locations_set.check(ObjectLocation::IN))
+	if (locations.check(ObjectLocation::IN))
 		writer.attr(S("blueprint"), S("container"), S("in"));
-	if (locations_set.check(ObjectLocation::ON))
+	if (locations.check(ObjectLocation::ON))
 		writer.attr(S("blueprint"), S("container"), S("on"));
+
+	for (TagList::iterator i = tags.begin(); i != tags.end(); ++i)
+		writer.attr(S("blueprint"), S("tag"), i->name());
 
 	// script hook
 	ScriptRestrictedWriter* swriter = new ScriptRestrictedWriter(&writer);
@@ -240,19 +154,10 @@ ObjectBP::load (File::Reader& reader)
 		FO_ATTR("blueprint", "container")
 			if (node.get_string() == S("on")) {
 				locations.set_on(ObjectLocation::ON);
-				locations_set.set_on(ObjectLocation::ON);
 			} else if (node.get_string() == S("in")) {
 				locations.set_on(ObjectLocation::IN);
-				locations_set.set_on(ObjectLocation::IN);
-			}
-			else
+			} else
 				Log::Warning << "Unknown container type '" << node.get_string() << "' at " << reader.get_filename() << ':' << node.get_line();
-		FO_ATTR("blueprint", "parent")
-			ObjectBP* blueprint = ObjectBPManager.lookup(node.get_string());
-			if (blueprint)
-				set_parent(blueprint);
-			else
-				Log::Warning << "Undefined parent object blueprint '" << node.get_string() << "' at " << reader.get_filename() << ':' << node.get_line();
 		FO_WILD("user")
 			if (node.get_value_type() == File::Value::TYPE_INT)
 				set_property(node.get_name(), node.get_int());
@@ -264,6 +169,8 @@ ObjectBP::load (File::Reader& reader)
 				Log::Error << "Invalid data type for script attribute at " << reader.get_filename() << ':' << node.get_line();
 				return -1;
 			}
+		FO_ATTR("blueprint", "tag")
+			tags.insert(TagID::create(node.get_string()));
 	FO_READ_ERROR
 		return -1;
 	FO_READ_END
@@ -271,47 +178,83 @@ ObjectBP::load (File::Reader& reader)
 	return 0;
 }
 
-void
-ObjectBP::set_parent (ObjectBP* blueprint)
-{
-	parent = blueprint;
-	refresh();
-}
-
-Scriptix::Value
-ObjectBP::get_undefined_property (Scriptix::Atom id) const
-{
-	if (parent == NULL)
-		return Scriptix::Nil;
-	return parent->get_property(id);
-}
-
 // ----- Object -----
 
 SCRIPT_TYPE(Object);
 Object::Object () : Entity (AweMUD_ObjectType)
 {
-	blueprint = NULL;
 	owner = NULL;
 	calc_weight = 0;
 	trash_timer = 0;
 }
 
-Object::Object (ObjectBP* s_blueprint) : Entity(AweMUD_ObjectType)
+ShadowObject::ShadowObject () : Object(), blueprint(0) { }
+
+ShadowObject::ShadowObject (ObjectBP* s_blueprint) : Object(), blueprint(0)
 {
-	blueprint = NULL;
-	owner = NULL;
-	calc_weight = 0;
 	set_blueprint(s_blueprint);
-	trash_timer = 0;
 }
 
-Object::~Object ()
+UniqueObject::UniqueObject () : Object() { }
+
+Object::~Object () { }
+ShadowObject::~ShadowObject () { }
+UniqueObject::~UniqueObject () { }
+
+void
+Object::save_data (File::Writer& writer)
 {
+	// parent location
+	if (container == ObjectLocation::IN)
+		writer.attr(S("object"), S("location"), S("in"));
+	if (container == ObjectLocation::ON)
+		writer.attr(S("object"), S("location"), S("on"));
+
+	// save children objects
+	for (EList<Object>::const_iterator e = children.begin (); e != children.end(); ++e) {
+		writer.begin_open(S("object"), S("child"));
+		(*e)->save(writer);
+	}
+
+	// parent data
+	Entity::save_data(writer);
 }
 
 void
-Object::save (File::Writer& writer)
+UniqueObject::save_data (File::Writer& writer)
+{
+	writer.attr(S("object"), S("name"), name.get_name());
+	writer.attr(S("object"), S("desc"), desc);
+
+	for (StringList::const_iterator i = keywords.begin(); i != keywords.end(); ++i)
+		writer.attr(S("object"), S("keyword"), *i);
+
+	writer.attr(S("object"), S("equip"), equip.get_name());
+
+	writer.attr(S("object"), S("cost"), cost);
+	writer.attr(S("object"), S("weight"), weight);
+
+	writer.attr(S("object"), S("hidden"), flags.check(ObjectFlag::HIDDEN));
+	writer.attr(S("object"), S("gettable"), flags.check(ObjectFlag::GET));
+	writer.attr(S("object"), S("touchable"), flags.check(ObjectFlag::TOUCH));
+	writer.attr(S("object"), S("dropable"), flags.check(ObjectFlag::DROP));
+	writer.attr(S("object"), S("trashable"), flags.check(ObjectFlag::TRASH));
+	writer.attr(S("object"), S("rotting"), flags.check(ObjectFlag::ROT));
+
+	if (locations.check(ObjectLocation::IN))
+		writer.attr(S("object"), S("container"), S("in"));
+	if (locations.check(ObjectLocation::ON))
+		writer.attr(S("object"), S("container"), S("on"));
+
+	for (TagList::iterator i = tags.begin(); i != tags.end(); ++i)
+		writer.attr(S("object"), S("tag"), i->name());
+
+	// parent data
+	Object::save_data(writer);
+}
+
+void
+ShadowObject::save_data (File::Writer& writer)
 {
 	// save blueprint
 	if (get_blueprint()) {
@@ -331,18 +274,7 @@ Object::save (File::Writer& writer)
 		writer.attr(S("object"), S("name"), name.get_name());
 
 	// parent data
-	Entity::save(writer);
-
-	if (container == ObjectLocation::IN)
-		writer.attr(S("object"), S("container"), S("in"));
-	if (container == ObjectLocation::ON)
-		writer.attr(S("object"), S("container"), S("on"));
-
-	for (EList<Object>::const_iterator e = children.begin (); e != children.end(); ++e) {
-		writer.begin(S("object"));
-		(*e)->save (writer);
-		writer.end();
-	}
+	Object::save_data(writer);
 }
 
 void
@@ -353,20 +285,44 @@ Object::save_hook (ScriptRestrictedWriter* writer)
 }
 
 int
-Object::load_finish ()
+Object::load_finish()
 {
 	recalc_weight();
-	
+	return 0;
+}
+
+int
+ShadowObject::load_finish ()
+{
 	if (blueprint == NULL) {
 		Log::Error << "object has no blueprint";
 		return -1;
 	}
 
-	return 0;
+	return Object::load_finish();
 }
 
 int
 Object::load_node(File::Reader& reader, File::Node& node)
+{
+	FO_NODE_BEGIN
+		FO_ATTR("object", "location")
+			if (node.get_string() == S("in"))
+				container = ObjectLocation::IN;
+			else if (node.get_string() == S("on"))
+				container = ObjectLocation::ON;
+			else
+				throw File::Error(S("Object has invalid container attribute"));
+		FO_ENTITY("object", "child")
+			if (OBJECT(entity) == NULL) throw File::Error(S("Object child is not an Object"));
+			OBJECT(entity)->set_owner (this);
+			children.add (OBJECT(entity));
+		FO_PARENT(Entity)
+	FO_NODE_END
+}
+
+int
+ShadowObject::load_node(File::Reader& reader, File::Node& node)
 {
 	FO_NODE_BEGIN
 		FO_OBJECT("blueprint")
@@ -384,22 +340,46 @@ Object::load_node(File::Reader& reader, File::Node& node)
 				set_blueprint(blueprint);
 		FO_ATTR("object", "name")
 			name.set_name(node.get_string());
-		FO_ATTR("object", "container")
-			if (node.get_string() == S("in"))
-				container = ObjectLocation::IN;
-			else if (node.get_string() == S("on"))
-				container = ObjectLocation::ON;
-			else
-				throw File::Error(S("Object has invalid container attribute"));
-		FO_OBJECT("object")
-			Object* obj = new Object ();
-			if (obj->load (reader))
-				throw File::Error(S("Failed to load object"));
-			if (!has_location(obj->container))
-				throw File::Error(S("child object unallowed container"));
-			obj->set_owner (this);
-			children.add (obj);
 		FO_PARENT(Entity)
+	FO_NODE_END
+}
+
+int
+UniqueObject::load_node (File::Reader& reader, File::Node& node)
+{
+	FO_NODE_BEGIN
+		FO_ATTR("object", "name")
+			set_name(node.get_string());
+		FO_ATTR("object", "keyword")
+			keywords.push_back(node.get_string());
+		FO_ATTR("object", "desc")
+			set_desc(node.get_string());
+		FO_ATTR("object", "weight")
+			set_weight(node.get_int());
+		FO_ATTR("object", "cost")
+			set_cost(node.get_int());
+		FO_ATTR("object", "equip")
+			set_equip(EquipSlot::lookup(node.get_string()));
+		FO_ATTR("object", "gettable")
+			set_flag(ObjectFlag::GET, node.get_bool());
+		FO_ATTR("object", "touchable")
+			set_flag(ObjectFlag::TOUCH, node.get_bool());
+		FO_ATTR("object", "hidden")
+			set_flag(ObjectFlag::HIDDEN, node.get_bool());
+		FO_ATTR("object", "dropable")
+			set_flag(ObjectFlag::DROP, node.get_bool());
+		FO_ATTR("object", "trashable")
+			set_flag(ObjectFlag::TRASH, node.get_bool());
+		FO_ATTR("object", "rotting")
+			set_flag(ObjectFlag::ROT, node.get_bool());
+		FO_ATTR("object", "container")
+			if (node.get_string() == S("on")) {
+				locations.set_on(ObjectLocation::ON);
+			} else if (node.get_string() == S("in")) {
+				locations.set_on(ObjectLocation::IN);
+			} else
+				Log::Warning << "Unknown container type '" << node.get_string() << "' at " << reader.get_filename() << ':' << node.get_line();
+		FO_PARENT(Object)
 	FO_NODE_END
 }
 
@@ -606,7 +586,14 @@ Object::get_holder () const
 }
 
 bool
-Object::set_name (String s_name)
+ShadowObject::set_name (String s_name)
+{
+	bool ret = name.set_name(s_name);
+	return ret;
+}
+
+bool
+UniqueObject::set_name (String s_name)
 {
 	bool ret = name.set_name(s_name);
 	return ret;
@@ -614,7 +601,7 @@ Object::set_name (String s_name)
 
 // get object name information
 EntityName
-Object::get_name () const
+ShadowObject::get_name () const
 {
 	assert(blueprint != NULL);
 	if (name.empty())
@@ -625,7 +612,7 @@ Object::get_name () const
 
 // get object description
 String
-Object::get_desc () const
+ShadowObject::get_desc () const
 {
 	assert(blueprint != NULL);
 	return blueprint->get_desc();
@@ -633,19 +620,19 @@ Object::get_desc () const
 
 // get object properties
 uint
-Object::get_cost () const
+ShadowObject::get_cost () const
 {
 	assert(blueprint != NULL);
 	return blueprint->get_cost();
 }
 uint
-Object::get_real_weight () const
+ShadowObject::get_real_weight () const
 {
 	assert(blueprint != NULL);
 	return blueprint->get_weight();
 }
 EquipSlot
-Object::get_equip () const
+ShadowObject::get_equip () const
 {
 	assert(blueprint != NULL);
 	return blueprint->get_equip();
@@ -653,37 +640,37 @@ Object::get_equip () const
 
 // get flags
 bool
-Object::is_hidden () const
+ShadowObject::is_hidden () const
 {
 	assert(blueprint != NULL);
 	return blueprint->get_flag(ObjectFlag::HIDDEN);
 }
 bool
-Object::is_trashable () const
+ShadowObject::is_trashable () const
 {
 	assert(blueprint != NULL);
 	return blueprint->get_flag(ObjectFlag::TRASH);
 }
 bool
-Object::is_gettable () const
+ShadowObject::is_gettable () const
 {
 	assert(blueprint != NULL);
 	return blueprint->get_flag(ObjectFlag::GET);
 }
 bool
-Object::is_dropable () const
+ShadowObject::is_dropable () const
 {
 	assert(blueprint != NULL);
 	return blueprint->get_flag(ObjectFlag::DROP);
 }
 bool
-Object::is_touchable () const
+ShadowObject::is_touchable () const
 {
 	assert(blueprint != NULL);
 	return blueprint->get_flag(ObjectFlag::TOUCH);
 }
 bool
-Object::is_rotting () const
+ShadowObject::is_rotting () const
 {
 	assert(blueprint != NULL);
 	return blueprint->get_flag(ObjectFlag::ROT);
@@ -708,51 +695,45 @@ Object::parse_property (const StreamControl& stream, String comm, const ParseLis
 }
 
 void
-Object::set_blueprint (ObjectBP* s_blueprint)
+ShadowObject::set_blueprint (ObjectBP* s_blueprint)
 {
 	blueprint = s_blueprint;
 }
 
 // load object from a blueprint
 Object*
-Object::load_blueprint (String name)
+ShadowObject::load_blueprint (String name)
 {
 	ObjectBP* blueprint = ObjectBPManager.lookup(name);
 	if (!blueprint)
 		return NULL;
 	
-	return new Object(blueprint);
+	return new ShadowObject(blueprint);
 }
 
 bool
-Object::is_blueprint (String name) const
+ShadowObject::is_blueprint (String name) const
 {
 	ObjectBP* blueprint = get_blueprint();
 
-	while (blueprint != NULL) {
-		if (str_eq(blueprint->get_id(), name))
-			return true;
-
-		blueprint = blueprint->get_parent();
-	}
+	if (blueprint != NULL)
+		return str_eq(blueprint->get_id(), name);
 
 	return false;
 }
 
 bool
-Object::name_match (String match) const
+ShadowObject::name_match (String match) const
 {
 	if (get_name().matches(match))
 		return true;
 
 	// blueprint keywords
 	ObjectBP* blueprint = get_blueprint();
-	while (blueprint != NULL) {
-		for (StringList::const_iterator i = blueprint->get_keywords().begin(); i != blueprint->get_keywords().end(); i ++)
+	if (blueprint != NULL) {
+		for (StringList::const_iterator i = blueprint->get_keywords().begin(); i != blueprint->get_keywords().end(); ++i)
 			if (phrase_match (*i, match))
 				return true;
-
-		blueprint = blueprint->get_parent();
 	}
 
 	// no match
@@ -760,7 +741,7 @@ Object::name_match (String match) const
 }
 
 Scriptix::Value
-Object::get_undefined_property (Scriptix::Atom id) const
+ShadowObject::get_undefined_property (Scriptix::Atom id) const
 {
 	const ObjectBP* data = get_blueprint();
 	if (data == NULL)
@@ -827,3 +808,11 @@ SObjectBPManager::lookup (String id)
 	else
 		return iter->second;
 }
+
+BEGIN_EFACTORY(SObject)
+	return new ShadowObject();
+END_EFACTORY
+
+BEGIN_EFACTORY(UObject)
+	return new UniqueObject();
+END_EFACTORY

@@ -254,11 +254,12 @@ File::Reader::read_token (String& outstr)
 				// add data
 				outstr = outstr + tstr;
 			}
+
+			return TOKEN_STRING;
 		}
 
-		// outstr = strlower(outstr);
-
-		return TOKEN_STRING;
+		// we're a gneric name token
+		return TOKEN_NAME;
 	}
 
 	// error
@@ -282,6 +283,7 @@ File::Reader::get (Node& node)
 	node.klass.clear();
 	node.name.clear();
 	node.value = Value();
+	node.type = Node::ERROR;
 
 	// get op - expect name
 	op = read_token(opstr);
@@ -305,7 +307,7 @@ File::Reader::get (Node& node)
 	node.line = line;
 
 	// expect a name
-	if (op != TOKEN_STRING)
+	if (op != TOKEN_NAME)
 		throw File::Error(S("Parse error: name expected"));
 	node.klass = opstr;
 
@@ -320,7 +322,7 @@ File::Reader::get (Node& node)
 	if (op == TOKEN_KEY) {
 		// read key
 		op = read_token(opstr);
-		if (op != TOKEN_STRING)
+		if (op != TOKEN_NAME && op != TOKEN_STRING)
 			throw File::Error(S("Parse error: name expected after ."));
 		node.name = opstr;
 
@@ -350,7 +352,6 @@ File::Reader::get (Node& node)
 			throw File::Error(S("Parse error: name expected before ="));
 
 		// read
-		node.type = Node::ATTR;
 		String data;
 		Token type = read_token(data);
 
@@ -360,10 +361,23 @@ File::Reader::get (Node& node)
 		if (type == TOKEN_EOF)
 			throw File::Error(S("Parse error: unexpected EOF"));
 
-		// set data
-		if (!set_value(type, data, node.value))
-			throw File::Error(S("Parse error: parse error, unexpected token"));
+		// attribute-object
+		if (type == TOKEN_NAME) {
+			node.value = Value(Value::TYPE_STRING, data);
+			type = read_token(data);
+			if (type != TOKEN_BEGIN)
+				throw File::Error(S("Parse error: { expected after name"));
+			node.type = Node::ABEGIN;
+			return true;
+		}
 
+		// can we read the value?
+		if (!set_value(type, data, node.value)) {
+			// unknown type
+			throw File::Error(S("Parse error: invalid attribute value"));
+		}
+
+		node.type = Node::ATTR;
 		return true;
 	}
 
@@ -418,9 +432,9 @@ File::Reader::set_value (File::Reader::Token type, String data, File::Value& val
 }
 
 void
-File::Reader::consume (void)
+File::Reader::consume ()
 {
-	Node node;
+	Node node(*this);
 	size_t depth = 0;
 
 	// keep reading nodes until EOF or begin end
@@ -433,58 +447,6 @@ File::Reader::consume (void)
 			if (depth-- == 0)
 				break;
 	}
-}
-
-int
-File::Object::load (File::Reader& reader)
-{
-	File::Node node;
-
-	try {
-		while (reader.get(node)) {
-			if (node.is_end()) {
-				break;
-			} else if (!node.is_attr()) {
-				throw File::Error(S("Invalid declaration in object"));
-			}
-
-			if (node.get_value_type() == Value::TYPE_STRING)
-				strings[node.get_name()].push_back(node.get_string());
-			else if (node.get_value_type() == Value::TYPE_INT)
-				ints[node.get_name()].push_back(node.get_int());
-			else if (node.get_value_type() == Value::TYPE_BOOL)
-				bools[node.get_name()].push_back(node.get_bool());
-			else if (node.get_value_type() == Value::TYPE_ID)
-				ids[node.get_name()].push_back(node.get_id());
-			else
-				throw File::Error(S("Unknown data type in object"));
-		}
-		return 0;
-	} catch (File::Error& error) {
-		Log::Error << error.get_what() << " at " << reader.get_filename() << ':' << reader.get_line();
-		return -1;
-	}
-}
-
-String
-File::Object::get_string (String name, uint index) const
-{
-	StringList::const_iterator i = strings.find(name);
-	if (i == strings.end())
-		throw KeyError(Value::TYPE_STRING, name, index);
-	if (index > i->second.size())
-		throw KeyError(Value::TYPE_STRING, name, index);
-	return i->second[index];
-}
-
-File::KeyError::KeyError (Value::Type type, String name, uint index) : File::Error(String())
-{
-	what = (type == Value::TYPE_STRING ? S("string") :
-		type == Value::TYPE_INT ? S("int") :
-		type == Value::TYPE_BOOL ? S("bool") :
-		type == Value::TYPE_ID ? S("id") :
-		S("unknown"))
-		+ " " + name + "." + tostr(index) + " is not defined";
 }
 
 int
@@ -501,7 +463,7 @@ File::Writer::open (String filename)
 }
 
 void
-File::Writer::close (void)
+File::Writer::close ()
 {
 	if (out) {
 		out << "# vim: set shiftwidth=2 tabstop=2 expandtab:\n";
@@ -510,7 +472,7 @@ File::Writer::close (void)
 }
 
 void
-File::Writer::do_indent (void)
+File::Writer::do_indent ()
 {
 	for (unsigned long i = 0; i < indent; ++i)
 		out << "  ";
@@ -521,6 +483,11 @@ File::Writer::attr (String klass, String name, String data)
 {
 	if (!out)
 		return;
+
+	if (is_begin_open) {
+		Log::Error << "Open begin block not followed by object";
+		return;
+	}
 
 	if (!File::valid_name(klass) || !File::valid_name(name)) {
 		Log::Error << "Attempted to write id '" << klass << "." << name << "'";
@@ -567,6 +534,11 @@ File::Writer::attr (String klass, String name, const UniqueID& data)
 	if (!out)
 		return;
 
+	if (is_begin_open) {
+		Log::Error << "Open begin block not followed by object";
+		return;
+	}
+
 	if (!File::valid_name(klass) || !File::valid_name(name)) {
 		Log::Error << "Attempted to write id '" << klass << "." << name << "'";
 		return;
@@ -582,6 +554,11 @@ File::Writer::attr (String klass, String name, const GCType::vector<Value>& list
 {
 	if (!out)
 		return;
+
+	if (is_begin_open) {
+		Log::Error << "Open begin block not followed by object";
+		return;
+	}
 
 	if (!File::valid_name(klass) || !File::valid_name(name)) {
 		Log::Error << "Attempted to write id '" << klass << "." << name << "'";
@@ -617,6 +594,11 @@ File::Writer::block (String klass, String name, String data)
 	if (!out)
 		return;
 
+	if (is_begin_open) {
+		Log::Error << "Open begin block not followed by object";
+		return;
+	}
+
 	if (!File::valid_name(klass) || !File::valid_name(name)) {
 		Log::Error << "Attempted to write id '" << klass << "." << name << "'";
 		return;
@@ -646,13 +628,36 @@ File::Writer::begin (String klass)
 		return;
 	}
 
-	do_indent();
+	if (!is_begin_open)
+		do_indent();
 	out << klass << " {\n";
 	++ indent;
+	is_begin_open = false;
 }
 
 void
-File::Writer::end (void)
+File::Writer::begin_open (String klass, String name)
+{
+	if (!out)
+		return;
+
+	if (is_begin_open) {
+		Log::Error << "Open begin block not followed by object";
+		return;
+	}
+
+	if (!File::valid_name(klass) || !File::valid_name(name)) {
+		Log::Error << "Attempted to write id '" << klass << "." << name << "' {";
+		return;
+	}
+
+	do_indent();
+	out << klass << '.' << name << " = ";
+	is_begin_open = true;
+}
+
+void
+File::Writer::end ()
 {
 	if (!out)
 		return;
@@ -808,6 +813,44 @@ File::Node::get_int (size_t index) const
 		throw(File::Error(S("data type mismatch")));
 	}
 	return tolong(value.get_list()[index].get_value());
+}
+
+const StreamControl&
+operator<< (const StreamControl& stream, const File::Node& node)
+{
+	stream << node.get_reader().get_path() << ',' << node.get_line() << ": ";
+	switch (node.get_node_type()) {
+		case File::Node::ATTR:
+			stream << node.get_class() << '.' << node.get_name() << " (";
+			switch (node.get_value_type()) {
+				case File::Value::TYPE_NONE: stream << "nil"; break;
+				case File::Value::TYPE_STRING: stream << "string"; break;
+				case File::Value::TYPE_INT: stream << "int"; break;
+				case File::Value::TYPE_BOOL: stream << (node.get_bool()?"true":"false"); break;
+				case File::Value::TYPE_ID: stream << "id"; break;
+				case File::Value::TYPE_LIST: stream << "list"; break;
+				default: stream << "unknown"; break;
+			}
+			stream << ')';
+			break;
+		case File::Node::ABEGIN:
+			stream << node.get_class() << '.' << node.get_name() << " (" << node.get_string() << ')';
+			break;
+		case File::Node::BEGIN:
+			stream << node.get_class();
+			break;
+		case File::Node::END:
+			stream << "$eof";
+			break;
+		case File::Node::ERROR:
+			stream << "<error>";
+			break;
+		default:
+			stream << "unknown";
+			break;
+	}
+
+	return stream;
 }
 
 SCRIPT_TYPE(RestrictedWriter)

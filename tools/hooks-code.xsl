@@ -17,6 +17,7 @@
 #include "mud/player.h"
 #include "mud/npc.h"
 #include "scriptix/function.h"
+#include "mud/shadow-object.h"
 
 namespace Hooks {
 ]]></xsl:text>

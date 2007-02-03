@@ -3,39 +3,27 @@
 # Sean Middleditch <elanthis@awemud.net>
 
 object_blueprint {
-  blueprint.id = "weapon"
-}
-
-object_blueprint {
-  blueprint.id = "ma_base"
-  blueprint.parent = "weapon"
-}
-
-object_blueprint {
   blueprint.id = "ma_iron"
-  blueprint.parent = "ma_base"
   blueprint.name = "an iron mace"
   blueprint.desc = "A simple soldier's mace."
   blueprint.weight = 155
   blueprint.cost = 50
+  blueprint.tag = "weapon"
+  blueprint.tag = "mace"
 
   user.attack_speed = 5
   user.attack_damage = 10
 }
 
 object_blueprint {
-  blueprint.id = "sw_base"
-  blueprint.parent = "weapon"
-}
-
-object_blueprint {
   blueprint.id = "sw_long"
-  blueprint.parent = "sw_base"
   blueprint.name = "long sword"
   blueprint.keyword = "longsword"
   blueprint.desc = "The long sword is a simple double-edged blade, of about 4 feet in length.  The weapon is weighted in the blade, making it ideal for slashing."
   blueprint.weight = 135
   blueprint.cost = 80
+  blueprint.tag = "weapon"
+  blueprint.tag = "sword"
 
   user.combat_speed = 7
   user.combat_damage = 14
@@ -43,12 +31,13 @@ object_blueprint {
 
 object_blueprint {
   blueprint.id = "sw_short"
-  blueprint.parent = "sw_base"
   blueprint.name = "a short sword"
   blueprint.keyword = "shortsword"
   blueprint.desc = "A simple short sword."
   blueprint.weight = 110
   blueprint.cost = 30
+  blueprint.tag = "weapon"
+  blueprint.tag = "sword"
 
   user.combat_speed = 5
   user.combat_damage = 10
@@ -56,12 +45,13 @@ object_blueprint {
 
 object_blueprint {
   blueprint.id = "sw_great"
-  blueprint.parent = "sw_base"
   blueprint.name = "a great sword"
   blueprint.keyword = "greatsword"
   blueprint.desc = "A long, heavy sword made of solid iron.  A human would need two hands to properly wield this massive weapon."
   blueprint.weight = 160
   blueprint.cost = 125
+  blueprint.tag = "weapon"
+  blueprint.tag = "sword"
 
   user.combat_speed = 15
   user.combat_damage = 30
@@ -69,14 +59,14 @@ object_blueprint {
 }
 
 object_blueprint {
-  blueprint.id = "claws_base"
+  blueprint.id = "claws"
   blueprint.name = "some claws"
-  blueprint.parent = "weapon"
   blueprint.desc = "Sharp, pointy claws."
   blueprint.weight = 0
   blueprint.cost = 0
   blueprint.hidden = true
   blueprint.dropable = false
+  blueprint.tag = "weapon"
 
   user.combat_speed = 5
   user.combat_damage = 5
@@ -84,28 +74,18 @@ object_blueprint {
 }
 
 object_blueprint {
-  blueprint.id = "claws_animal"
-  blueprint.parent = "claws_base"
-}
-
-object_blueprint {
-  blueprint.id = "fist_base"
+  blueprint.id = "fist"
   blueprint.name = "a fist"
-  blueprint.parent = "weapon"
   blueprint.desc = "Bunched fist."
   blueprint.weight = 0
   blueprint.cost = 0
   blueprint.hidden = true
   blueprint.dropable = false
+  blueprint.tag = "weapon"
 
   user.combat_speed = 5
   user.combat_damage = 2
   user.combat_hands = 1
-}
-
-object_blueprint {
-  blueprint.id = "fist_humanoid"
-  blueprint.parent = "fist_base"
 }
 
 # vim: set shiftwidth=2 tabstop=2 expandtab:

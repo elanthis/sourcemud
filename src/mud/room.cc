@@ -31,6 +31,8 @@
 #include "mud/portal.h"
 #include "mud/hooks.h"
 #include "mud/efactory.h"
+#include "mud/shadow-object.h"
+#include "mud/unique-object.h"
 
 /* constructor */
 SCRIPT_TYPE(Room);
@@ -65,34 +67,30 @@ Room::load_node (File::Reader& reader, File::Node& node)
 			flags.noweather = node.get_bool();
 		FO_ATTR("room", "coins")
 			coins = node.get_int();
-		FO_OBJECT("portal")
-			Portal* portal = new Portal();
-			if (portal == NULL)
-				throw File::Error(S("new Portal() failed"));
-			if (portal->load(reader))
-				throw File::Error(S("Failed to load portal"));
-			if (!portal->get_dir().valid())
-				throw File::Error(S("Portal has no dir"));
-			if (get_portal_by_dir(portal->get_dir()) != NULL)
-				throw File::Error(S("Duplicate portal direction"));
+		FO_ENTITY("room", "child")
+			if (NPC(entity)) {
+				add_creature(NPC(entity));
+			} else if (OBJECT(entity)) {
+				add_object(OBJECT(entity));
+			} else if (PORTAL(entity)) {
+				Portal* portal = PORTAL(entity);
 
-			// add
-			portal->parent_room = this;
-			portals[portal->get_dir()] = portal;
+				// direction checking
+				if (!portal->get_dir().valid())
+					throw File::Error(S("Portal has no dir"));
+				if (get_portal_by_dir(portal->get_dir()) != NULL)
+					throw File::Error(S("Duplicate portal direction"));
 
-			// activate if necessary
-			if (is_active())
-				portal->activate();
-		FO_OBJECT("object")
-			Object *obj = new Object ();
-			if (obj->load (reader) != 0)
-				throw File::Error(S("Failed to load object"));
-			add_object(obj);
-		FO_OBJECT("npc")
-			Npc *npc = new Npc ();
-			if (npc->load (reader) != 0)
-				throw File::Error(S("Failed to load npc"));
-			add_creature(npc);
+				// add
+				portal->parent_room = this;
+				portals[portal->get_dir()] = portal;
+
+				// activate if necessary
+				if (is_active())
+					portal->activate();
+			} else {
+				throw File::Error(S("Room child is not an Npc, Object, or Portal"));
+			}
 		FO_PARENT(Entity)
 	FO_NODE_END
 }
@@ -105,7 +103,7 @@ Room::load_finish ()
 
 /* save the stupid thing */
 void
-Room::save (File::Writer& writer)
+Room::save_data (File::Writer& writer)
 {
 	writer.attr(S("room"), S("id"), id);
 
@@ -115,7 +113,7 @@ Room::save (File::Writer& writer)
 	if (!desc.empty())
 		writer.attr(S("room"), S("desc"), desc);
 	
-	Entity::save(writer);
+	Entity::save_data(writer);
 
 	if (flags.outdoors)
 		writer.attr(S("room"), S("outdoors"), true);
@@ -129,23 +127,20 @@ Room::save (File::Writer& writer)
 
 	for (GCType::map<PortalDir,Portal*>::const_iterator i = portals.begin(); i != portals.end(); ++i) {
 		if (i->second->get_owner() == this) {
-			writer.begin(S("portal"));
+			writer.begin_open(S("room"), S("child"));
 			i->second->save(writer);
-			writer.end();
 		}
 	}
 
 	for (EList<Object>::const_iterator i = objects.begin(); i != objects.end(); ++i) {
-		writer.begin(S("object"));
+		writer.begin_open(S("room"), S("child"));
 		(*i)->save (writer);
-		writer.end();
 	}
 
 	for (EList<Creature>::const_iterator i = creatures.begin(); i != creatures.end(); ++i) {
 		if (NPC(*i)) {
-			writer.begin(S("npc"));
+			writer.begin_open(S("room"), S("child"));
 			(*i)->save(writer);
-			writer.end();
 		}
 	}
 }
@@ -614,3 +609,7 @@ Room::get_stream () {
 }
 
 StreamControl::StreamControl (Room& rptr) : sink(new RoomStreamSink(rptr)) {}
+
+BEGIN_EFACTORY(Room)
+	return new Room();
+END_EFACTORY

@@ -18,8 +18,9 @@ class Entity;
 class IEntityFactory
 {
 	public:
+	virtual String get_name () const = 0;
 	virtual ~IEntityFactory () {}
-	virtual Entity* create () = 0;
+	virtual Entity* create () const = 0;
 };
 
 class SEntityFactoryManager : public IManager
@@ -28,28 +29,31 @@ class SEntityFactoryManager : public IManager
 	int initialize ();
 	void shutdown ();
 
-	void add_factory (String klass, IEntityFactory*);
+	Entity* create (String name) const;
+
+	static void register_factory (const IEntityFactory*);
 
 	private:
-	typedef GCType::map<String, IEntityFactory*> FactoryList;
-	FactoryList factories;
+	typedef GCType::map<String, const IEntityFactory*> FactoryList;
+	static FactoryList* factories;
 };
 
 extern SEntityFactoryManager EntityFactoryManager;
 
 #define BEGIN_EFACTORY(name) \
 	namespace { \
-		class Factory_ ## name : public IEntityFactory, public IManager { \
-			virtual int initialize () { \
-				require(EntityFactoryManager); \
-				EntityFactoryManager.add_factory(#name, this); \
-				return 0; \
-			} \
-			virtual void shutdown () {} \
-			virtual Entity* create () {
+		namespace _Factory##name { \
+			class _Factory##name : public IEntityFactory { \
+				public: \
+				virtual String get_name () const { return S(#name); } \
+				_Factory##name () { \
+					SEntityFactoryManager::register_factory(this); \
+				} \
+				virtual Entity* create () const {
 #define END_EFACTORY \
-			} \
-		} factory_ ## name; \
+				} \
+			} _factory; \
+		} \
 	}
 
 #endif

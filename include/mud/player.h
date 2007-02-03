@@ -49,8 +49,10 @@ enum exp_spec {
 class Player : public Creature
 {
 	public:
-	// create
+	// create and initialize
 	Player (class Account* s_account, String s_id);
+
+	virtual String factory_type () const { return S("player"); }
 
 	// player's unique ID (this is identical to their name)
 	inline String get_id () const { return name.get_text(); }
@@ -72,7 +74,7 @@ class Player : public Creature
 	inline CreatureAlign adjust_alignment (int mod) { set_alignment(CreatureAlign(get_alignment() + mod)); return get_alignment(); }
 
 	// save and load
-	virtual void save (File::Writer& writer);
+	virtual void save_data (File::Writer& writer);
 	virtual void save_hook (class ScriptRestrictedWriter* writer);
 	void save ();
 

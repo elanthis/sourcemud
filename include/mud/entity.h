@@ -52,6 +52,10 @@ class Entity : public Scriptix::Native, public Parsable
 	public:
 	Entity (const Scriptix::TypeInfo* type);
 
+	// factory handling
+	virtual String factory_type () const = 0;
+	static Entity* create (String type); // efactory.cc
+
 	// get unique ID
 	inline const UniqueID& get_uid () const { return uid; }
 
@@ -86,10 +90,12 @@ class Entity : public Scriptix::Native, public Parsable
 	virtual String ncolor () const { return S(CNORMAL); }
 
 	// save/load
+	static Entity* load (String factory, File::Reader& reader);
 	int load (File::Reader& reader);
 	virtual int load_node (File::Reader& reader, File::Node& node);
 	virtual int load_finish () = 0;
-	virtual void save (File::Writer& writer);
+	void save (File::Writer& writer);
+	virtual void save_data (File::Writer& writer);
 	virtual void save_hook (class ScriptRestrictedWriter* writer);
 
 	// check name

@@ -16,6 +16,8 @@
 #include "mud/object.h"
 #include "common/streams.h"
 #include "mud/olc.h"
+#include "mud/shadow-object.h"
+#include "mud/unique-object.h"
 
 using namespace OLC;
 
@@ -40,13 +42,13 @@ void command_create (Player* builder, String argv[])
 	} else if (str_eq (argv[0], S("object"))) {
 		Object* new_object = NULL;
 		if (argv[1]) {
-			new_object = Object::load_blueprint(argv[1]);
+			new_object = ShadowObject::load_blueprint(argv[1]);
 			if (!new_object) {
 				*builder << "Failed to load blueprint '" << argv[1] << "'.\n";
 				return;
 			}
 		} else {
-			new_object = new Object();
+			new_object = new UniqueObject();
 		}
 
 		builder->get_room()->add_object (new_object);

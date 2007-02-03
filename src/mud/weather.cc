@@ -123,7 +123,7 @@ WeatherRegion::load ()
 
 	// open
 	File::Reader reader;
-	File::Node node;
+	File::Node node(reader);
 	if (reader.open(path)) {
 		Log::Error << "Failed to open " << path << ": " << strerror(errno);
 		return -1;

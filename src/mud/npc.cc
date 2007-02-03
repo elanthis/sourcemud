@@ -19,6 +19,7 @@
 #include "mud/hooks.h"
 #include "mud/bindings.h"
 #include "common/manifest.h"
+#include "mud/shadow-object.h"
 
 void
 NpcBP::reset_name (void)
@@ -326,12 +327,12 @@ Npc::load_node (File::Reader& reader, File::Node& node)
 }
 
 void
-Npc::save (File::Writer& writer)
+Npc::save_data (File::Writer& writer)
 {
 	if (get_blueprint())
 		writer.attr(S("npc"), S("blueprint"), get_blueprint()->get_id());
 
-	Creature::save(writer);
+	Creature::save_data(writer);
 
 	if (ai != NULL)
 		writer.attr(S("npc"), S("ai"), ai->get_name());
@@ -515,7 +516,7 @@ Npc::load_blueprint (String name)
 	// equip
 	while (blueprint != NULL) {
 		for (StringList::const_iterator i = blueprint->get_equip_list().begin(); i != blueprint->get_equip_list().end(); ++i) {
-			Object* object = Object::load_blueprint(*i);
+			Object* object = ShadowObject::load_blueprint(*i);
 			if (object != NULL)
 				npc->equip(object);
 			else

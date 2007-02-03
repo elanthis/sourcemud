@@ -3,24 +3,21 @@
 # Sean Middleditch <elanthis@awemud.net>
 
 object_blueprint {
-  blueprint.id = "currency"
-}
-
-object_blueprint {
   blueprint.id = "co_leather_backpack"
   blueprint.equip = "back"
   blueprint.name = "a leather backpack"
   blueprint.desc = "The leather backpack is very simple in design.  Intended for rugged travel, it is both sturdy and large."
   blueprint.weight = 8
   blueprint.container = "in"
+  blueprint.tag = "adventurer"
 }
 object_blueprint {
   blueprint.id = "bank_note"
   blueprint.name = "a bank note"
-  blueprint.parent = "currency"
   blueprint.desc = "The bank note is signed by the First Bank of the Lands, and is worth {1.cost} coins with any merchant who accepts bank notes."
   blueprint.weight = 1
   blueprint.cost = 1000
+  blueprint.tag = "banknote"
 }
 object_blueprint {
   blueprint.id = "npc_corpse"
@@ -30,12 +27,15 @@ object_blueprint {
   blueprint.cost = 0
   blueprint.container = "on"
   blueprint.rotting = true
+  blueprint.tag = "corpse"
 }
 
 object_blueprint {
   blueprint.id = "cave_waterfall_portal"
   blueprint.name = "a glowing portal"
   blueprint.desc = "The glowing portal's ovoid, smooth surface gives off a faint blue light as it rests against the northern cavern wall.  The various hues of blue that make up the swirling pattern on the portal's face seem almost at battle, with tides of darker blue giving way to hordes of pale blue, only to resurge and drive back the onslaught."
+  blueprint.gettable = false
+  blueprint.gettable = false
 }
 
 ##object_blueprint {

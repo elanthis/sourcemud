@@ -1,3 +1,41 @@
+2007-02-03 09:38:02  Sean Middleditch <elanthis@awesomeplay.com>
+
+  * Object blueprints cannot be inherited.  Too many problems,
+    too much complexity, and the only really useful inheritables
+    were events and blueprint IDs.  The later are replacable with
+    blueprint tags, and the former
+  * Split Object class into ShadowObject and UniqueObject.
+    The former is the type that inherits a blueprint, and the
+    later does not inherit a blueprint.
+  * Upgraded fileobj syntax to support an attribute/object mix,
+    in the form class.name = type { ... }.
+  * Revamped the Entity save/load interface to rely on new
+    attribute/object fileobj format and on EFactory.
+  * Updated EFactory to actually be usable.
+  * Updated the various entity sub-class save/load routines to
+    use the above changes.
+  * This now allows for us to save and load both object types
+    without needing huge gobs of ugly code.
+
+2007-02-01 07:55:33  Sean Middleditch <elanthis@awesomeplay.com>
+
+  * Object blueprints cannot be inherited.  Too many problems,
+    too much complexity, and the only really useful inheritables
+    were events and blueprint IDs.  The later are replacable with
+    blueprint tags, and the former
+  * Split Object class into ShadowObject and UniqueObject.
+    The former is the type that inherits a blueprint, and the
+    later does not inherit a blueprint.
+  * Upgraded fileobj syntax to support an attribute/object mix,
+    in the form class.name = type { ... }.
+  * Revamped the Entity save/load interface to rely on new
+    attribute/object fileobj format and on EFactory.
+  * Updated EFactory to actually be usable.
+  * Updated the various entity sub-class save/load routines to
+    use the above changes.
+  * This now allows for us to save and load both object types
+    without needing huge gobs of ugly code.
+
 2007-01-24 04:48:35  Sean Middleditch <elanthis@awesomeplay.com>
 
   * Fixed script not being up-to-date with renaming of

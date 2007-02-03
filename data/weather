@@ -3,26 +3,26 @@
 # Sean Middleditch <elanthis@awemud.net>
 
 state {
-  weather.id = clear
+  weather.id = "clear"
   weather.desc = "The sky is perfectly clear."
   change {
-    weather.target = rain
+    weather.target = "rain"
     weather.chance = 10
     weather.text = "Rain begins to fall."
   }
 }
 state {
-  weather.id = rain
+  weather.id = "rain"
   weather.desc = "Rain is pouring steadily."
   change {
-    weather.target = clear
+    weather.target = "clear"
     weather.chance = 20
     weather.text = "The rain ceases."
   }
 }
 
 #pattern {
-#  weather.title = raining
+#  weather.title = "raining"
 #  weather.chance = 30
 #  stage {
 #    weather.desc = "The rain is drizzling down."
@@ -43,12 +43,12 @@ state {
 #    weather.desc = "A rainstorm is raging across the land."
 #  }
 #  change {
-#    weather.pattern = cloudy
+#    weather.pattern = "cloudy"
 #    weather.desc = "The rain ceases falling."
 #  }
 #}
 #pattern {
-#  weather.title = snowing
+#  weather.title = "snowing"
 #  weather.chance = 10
 #  stage {
 #    weather.desc = "Snowflakes are gently floating to the ground."
@@ -64,12 +64,12 @@ state {
 #    weather.desc = "Snow is quickly covering the land."
 #  }
 #  change {
-#    weather.pattern = cloudy
+#    weather.pattern = "cloudy"
 #    weather.desc = "The snow ceases falling."
 #  }
 #}
 #pattern {
-#  weather.title = cloudy
+#  weather.title = "cloudy"
 #  weather.chance = 70
 #  stage {
 #    weather.desc = "The sky is partly cloudy."
@@ -85,26 +85,26 @@ state {
 #    weather.desc = "The sky is blanketed in clouds."
 #  }
 #  change {
-#    weather.pattern = clear
+#    weather.pattern = "clear"
 #    weather.desc = "The clouds clear up."
 #  }
 #  change {
-#    weather.pattern = raining
+#    weather.pattern = "raining"
 #    weather.desc = "Rain begins to fall."
 #  }
 #  change {
-#    weather.pattern = snowing
+#    weather.pattern = "snowing"
 #    weather.desc = "Snow begins to fall."
 #  }
 #}
 #pattern {
-#  weather.title = clear
+#  weather.title = "clear"
 #  weather.chance = 100
 #  stage {
 #    weather.desc = "The sky is perfectly clear."
 #  }
 #  change {
-#    weather.pattern = cloudy
+#    weather.pattern = "cloudy"
 #    weather.desc = "Clouds start moving in."
 #  }
 #}

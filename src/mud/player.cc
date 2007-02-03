@@ -34,6 +34,7 @@
 #include "mud/caffect.h"
 #include "mud/object.h"
 #include "mud/hooks.h"
+#include "mud/efactory.h"
 
 // manager of players
 SPlayerManager PlayerManager;
@@ -155,9 +156,9 @@ Player::~Player ()
 }
 	
 void
-Player::save (File::Writer& writer)
+Player::save_data (File::Writer& writer)
 {
-	Creature::save(writer);
+	Creature::save_data(writer);
 
 	writer.attr(S("player"), S("created"), time_to_str(time_created));
 	writer.attr(S("player"), S("lastlogin"), time_to_str(time_lastlogin));
@@ -231,7 +232,7 @@ Player::save ()
 	time(&t);
 	writer.comment(String("Timestamp: ") + String(ctime(&t)));
 	writer.bl();
-	save(writer);
+	save_data(writer);
 	writer.close();
 	umask(omask);
 
@@ -264,26 +265,32 @@ Player::load_node (File::Reader& reader, File::Node& node)
 		FO_ATTR("player", "race")
 			race = RaceManager.get (node.get_string());
 			if (race == NULL) {
-				Log::Error << "Player has invalid race '" << node.get_string() << "' at " << reader.get_filename() << ':' << node.get_line();
-				return -1;
+				Log::Error << node << ": Player has invalid race";
+				throw File::Error();
 			}
 		FO_ATTR("player", "birthday")
 			if (birthday.decode(node.get_string()))
 				throw File::Error (S("Invalid birthday"));
 		FO_ATTR("player", "trait")
 			CreatureTraitID trait = CreatureTraitID::lookup(node.get_string(0));
-			if (!trait.valid())
-				throw File::Error (S("Unknown trait"));
+			if (!trait.valid()) {
+				Log::Error << node << ": Unknown trait";
+				throw File::Error();
+			}
 			CreatureTraitValue value = CreatureTraitManager.get_trait(node.get_string(1));
-			if (!value.valid())
-				throw File::Error (S("Unknown trait value"));
+			if (!value.valid()) {
+				Log::Error << node << ": Unknown trait value";
+				throw File::Error();
+			}
 			pdesc.traits[trait] = value;
 		FO_ATTR("player", "height")
 			pdesc.height = node.get_int();
 		FO_ATTR("player", "location")
 			location = ZoneManager.get_room(node.get_string());
-			if (location == NULL)
-				Log::Error << "Unknown room '" << node.get_string() << "' at " << reader.get_filename() << ':' << node.get_line();
+			if (location == NULL) {
+				Log::Error << node << ": Unknown room";
+				throw File::Error();
+			}
 		FO_ATTR("player", "general_xp")
 			exp[EXP_GENERAL] = node.get_int();
 		FO_ATTR("player", "warrior_xp")
@@ -298,15 +305,15 @@ Player::load_node (File::Reader& reader, File::Node& node)
 				base_stats[stat.get_value()] = node.get_int(1);
 			} else {
 				Log::Error << "Unknown stat '" << node.get_string(0) << "'";
-				throw File::Error(S("invalid value"));
+				return -1;
 			}
 		FO_ATTR("player", "skill")
 			SkillInfo* info = SkillManager.get_by_name(node.get_string(0));
 			if (info != NULL) {
 				skills.set_skill(info->get_id(), node.get_int(1));
 			} else {
-				Log::Error << "Unknown skill '" << node.get_string(0) << "'";
-				throw File::Error(S("invalid value"));
+				Log::Error << node << ": Unknown skill";
+				throw File::Error();
 			}
 		FO_ATTR("player", "created")
 			time_created = str_to_time(node.get_string());

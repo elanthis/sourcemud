@@ -28,6 +28,7 @@ namespace File
 		String what;
 
 		public:
+		Error () : what() {}
 		Error (String s_what) : what(s_what) {}
 
 		inline String get_what () const { return what; }
@@ -59,15 +60,19 @@ namespace File
 		GCType::vector<Value> list;
 	};
 
-	class KeyError : public Error
-	{
-		public:
-		KeyError (Value::Type type, String name, uint index);
-	};
-
 	class Node : public GC
 	{
 		public:
+		enum Type {
+			ATTR,  // normal class.name = data
+			BEGIN, // object form type { data }
+			ABEGIN, // object form class.name = type { data }
+			END,   // } after a BEGIN or ABEGIN
+			ERROR // error
+		};
+
+		Node (class Reader& s_reader) : reader(s_reader) {}
+
 		inline String get_class () const { return klass; }
 		inline String get_name () const { return name; }
 		inline Value::Type get_value_type () const { return value.get_type(); }
@@ -84,21 +89,20 @@ namespace File
 		String get_string (size_t index) const;
 		int get_int (size_t index) const;
 
-		// line number of node
+		// file info
+		class Reader& get_reader () const { return reader; }
 		inline size_t get_line () const { return line; }
 
 		// type of node
 		inline bool is_attr () const { return type == ATTR; }
 		inline bool is_end () const { return type == END; }
 		inline bool is_begin () const { return type == BEGIN; }
+		inline bool is_abegin () const { return type == ABEGIN; }
+		inline Type get_node_type () const { return type; }
 
 		private:
-		enum {
-			ATTR,  // normal name = data
-			KEYED, // attribute in name:key = data
-			BEGIN, // object form name { data }
-			END,   // } after a BEGIN
-		} type;
+		Type type;
+		class Reader& reader;
 		String klass;
 		String name;
 		Value value;
@@ -134,44 +138,17 @@ namespace File
 		String filename;
 		size_t line;
 
-		enum Token { TOKEN_ERROR, TOKEN_EOF, TOKEN_STRING, TOKEN_NUMBER, TOKEN_TRUE, TOKEN_FALSE, TOKEN_BEGIN, TOKEN_END, TOKEN_SET, TOKEN_ID, TOKEN_KEY, TOKEN_START_LIST, TOKEN_END_LIST, TOKEN_COMMA };
+		enum Token { TOKEN_ERROR, TOKEN_EOF, TOKEN_STRING, TOKEN_NUMBER, TOKEN_TRUE, TOKEN_FALSE, TOKEN_BEGIN, TOKEN_END, TOKEN_SET, TOKEN_ID, TOKEN_KEY, TOKEN_START_LIST, TOKEN_END_LIST, TOKEN_COMMA, TOKEN_NAME };
 
 		Token read_token(String& data);
 		bool set_value (Token type, String data, Value& value);
 	};
 
-	class Object : public GC
-	{
-		public:
-		int load (Reader& reader);
-
-		String get_string (String name, uint index) const;
-		bool get_bool (String name, uint index) const;
-		int get_int (String name, uint index) const;
-		UniqueID get_id (String name, uint index) const;
-
-		size_t get_string_count (String name) const;
-		size_t get_bool_count (String name) const;
-		size_t get_int_count (String name) const;
-		size_t get_id_count (String name) const;
-		
-		private:
-		typedef GCType::map<String, GCType::vector<String> > StringList;
-		typedef GCType::map<String, GCType::vector<bool> > BoolList;
-		typedef GCType::map<String, GCType::vector<int> > IntList;
-		typedef GCType::map<String, GCType::vector<UniqueID> > IDList;
-
-		StringList strings;
-		BoolList bools;
-		IntList ints;
-		IDList ids;
-	};
-
 	class Writer : public Cleanup
 	{
 		public:
-		Writer () : out(), indent(0) {}
-		Writer (String file) : out(), indent(0) { open(file); }
+		Writer () : out(), indent(0), is_begin_open(false) {}
+		Writer (String file) : out(), indent(0), is_begin_open(false) { open(file); }
 		~Writer () { close(); }
 
 		int open (String file);
@@ -195,7 +172,10 @@ namespace File
 		void block (String klass, String name, String data);
 
 		// begin a new section
-		void begin (String name);
+		void begin (String type);
+
+		// open begin... MUST be followed by a regular begin
+		void begin_open (String klass, String name);
 
 		// end a section
 		void end ();
@@ -209,6 +189,7 @@ namespace File
 		private:
 		std::ofstream out;
 		size_t indent;
+		bool is_begin_open;
 
 		void do_indent();
 	};
@@ -216,6 +197,9 @@ namespace File
 	// return true if a valid attribute/object name
 	bool valid_name (String name);
 }
+
+// stream a node
+const StreamControl& operator<< (const StreamControl& stream, const File::Node& node);
 
 // can only write simply attributes, all with type "attr"
 class ScriptRestrictedWriter : public Scriptix::Native
@@ -236,12 +220,13 @@ class ScriptRestrictedWriter : public Scriptix::Native
 #define FO_SUCCESS_CODE 0
 #define FO_NOTFOUND_CODE 1
 #define FO_READ_BEGIN \
-	try { \
-		const bool _x_is_read = true; \
-		File::Node node; \
-		while (reader.get(node) && _x_is_read) { \
-			if (node.is_end()) { \
-				break;
+	do { \
+		try { \
+			const bool _x_is_read = true; \
+			File::Node node(reader); \
+			while (reader.get(node) && _x_is_read) { \
+				if (node.is_end()) { \
+					break;
 #define FO_NODE_BEGIN \
 	do { \
 	const bool _x_is_read = false; \
@@ -252,21 +237,24 @@ class ScriptRestrictedWriter : public Scriptix::Native
 		} else if (node.is_attr() && node.get_class() == klass) {
 #define FO_OBJECT(klass) \
 		} else if (node.is_begin() && node.get_class() == klass) {
+#define FO_ENTITY(klass,name) \
+		} else if (node.is_abegin() && node.get_class() == klass && node.get_name() == name) { \
+			Entity* entity = Entity::load(node.get_string(), reader); \
+			if (entity == NULL) throw File::Error();
 #define FO_PARENT(klass) \
 		} else if (klass::load_node(reader, node) == FO_SUCCESS_CODE) { \
 			/* no-op */
 #define FO_READ_ERROR \
 		} else { \
-			if (node.is_begin()) \
+			if (node.is_begin() || node.is_abegin()) \
 				reader.consume(); \
-			else if (node.is_attr()) Log::Error << "Unrecognized attribute '" << node.get_class() << '.' << node.get_name() << "' at " << reader.get_filename() << ':' << node.get_line(); \
-			else if (node.is_begin()) Log::Error << "Unrecognized object '" << node.get_class() << "' at " << reader.get_filename() << ':' << node.get_line(); \
-			throw(File::Error(S("unexpected value"))); \
+			Log::Error << node << ": Unrecognized attribute"; \
+			throw File::Error(); \
 		} \
 	} } catch (File::Error& error) { \
-		Log::Error << error.get_what() << " at " << reader.get_filename() << ':' << reader.get_line();
+		if (error.get_what()) Log::Error << reader.get_filename() << ',' << reader.get_line() << ": " << error.get_what();
 #define FO_READ_END \
-	}
+	} } while(false);
 #define FO_NODE_END \
 	} else { \
 		/* nothing found */ \

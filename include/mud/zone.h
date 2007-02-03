@@ -49,6 +49,8 @@ class Zone : public Entity
 	public:
 	Zone ();
 
+	virtual String factory_type () const { return S("zone"); }
+
 	// zone ID
 	String get_id () const { return id; }
 	void set_id (String new_id) { id = new_id; }
@@ -74,7 +76,7 @@ class Zone : public Entity
 	virtual int load_node(File::Reader& reader, File::Node& node);
 	virtual int load_finish () { return 0; }
 	int load (String path);
-	virtual void save (File::Writer& writer);
+	virtual void save_data (File::Writer& writer);
 	virtual void save_hook (class ScriptRestrictedWriter* writer);
 	void save ();
 

@@ -9,12 +9,12 @@ entity.uid = <404>
 # --- SPAWNS ---
 
 # --- ROOMS ---
-room {
+zone.child = room {
   room.id = "city_of_dead"
   room.name = "City of the Dead"
   room.desc = "Surrounded by the cries of the tormented echoing from the towers of great walls is the City of the Dead.  It is here that those who perish in the mortal realms come to await judgement.  Those faithful to their gods are taken to paradise, while those who failed their deity are taken to the tall, red towers stretching into the darkness above.  Wandering the streets of the city are the lost souls; those who never found a god to call their own, and are left to find paradise as they will in the bleak city, just as they did in life.  The spirits all avoid the wide river flowing through the center of the city, trembling in fear of it even as they cross the wide bridges spanning the black, murky water."
   entity.uid = <405>
-  portal {
+  room.child = portal {
     portal.name = "a circle of light"
     portal.desc = "From a height unseen, luminescent fingers stretch down towards the murky ground of the City of the Dead.  Indeterminite shapes can be seen dancing across the white veil, and other wispy forms seem to be rising up through the pillar of light."
     entity.uid = <406>
@@ -24,15 +24,19 @@ room {
     portal.oneway = true
     portal.target = "saladhin_ranath_chamber"
   }
-  object {
-    blueprint {
-      blueprint.name = "the River Styx"
-      blueprint.desc = "The dark river is quite calm, and rather peaceful in appearance.  Despite this tranquil facade, supernatural fear still penetrates into the core of your soul when you look at it.  {$self.C} is none other than the River Styx, one of the few ways spoken of in legends to forever destroy a soul."
-      blueprint.keyword = "murky river"
-      blueprint.hidden = true
-      blueprint.gettable = false
-      blueprint.trashable = false
-    }
+  room.child = uobject {
+    object.name = "the River Styx"
+    object.desc = "The dark river is quite calm, and rather peaceful in appearance.  Despite this tranquil facade, supernatural fear still penetrates into the core of your soul when you look at it.  {$self.C} is none other than the River Styx, one of the few ways spoken of in legends to forever destroy a soul."
+    object.keyword = "murky river"
+    object.equip = "none"
+    object.cost = 0
+    object.weight = 0
+    object.hidden = true
+    object.gettable = false
+    object.touchable = false
+    object.dropable = false
+    object.trashable = false
+    object.rotting = false
     entity.uid = <407>
   }
 }

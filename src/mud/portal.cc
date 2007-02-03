@@ -335,7 +335,7 @@ Portal::is_valid () const
 }
 
 void
-Portal::save (File::Writer& writer)
+Portal::save_data (File::Writer& writer)
 {
 	if (!name.empty())
 		writer.attr(S("portal"), S("name"), name.get_name());
@@ -343,7 +343,7 @@ Portal::save (File::Writer& writer)
 	if (!desc.empty())
 		writer.attr(S("portal"), S("desc"), desc);
 	
-	Entity::save (writer);
+	Entity::save_data (writer);
 
 	for (StringList::const_iterator i = keywords.begin(); i != keywords.end(); ++i)
 		writer.attr(S("portal"), S("keyword"), *i);
@@ -558,3 +558,7 @@ Portal::deactivate ()
 			room->unregister_portal(this);
 	}
 }
+
+BEGIN_EFACTORY(Portal)
+	return new Portal();
+END_EFACTORY

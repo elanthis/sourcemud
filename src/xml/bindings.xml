@@ -27,6 +27,7 @@
     #include "mud/hooks.h"
     #include "common/strbuf.h"
     #include "mud/http.h"
+    #include "mud/shadow-object.h"
 
     using namespace std;
   ]]></header>
@@ -2143,22 +2144,6 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
       <doc>The base name of an entity includes an article.  For example, "a longsword," "the Mjolnir," "an hourglass," and "some britches."  If a name with no article is passed to this function, the function will make some probably inaccurate guesses as to what the correct article should be.</doc>
     </method>
 
-    <!-- Misc -->
-    <method>
-      <name>isBlueprint</name>
-      <invoke>is_blueprint</invoke>
-      <arg>
-        <type>String</type>
-        <name>name</name>
-        <doc>Name of a blueprint.</doc>
-      </arg>
-      <return>
-        <type>Boolean</type>
-        <doc>True if the object descends from the named blueprint, or false if not.</doc>
-      </return>
-      <doc>Use this method to determine if the object descends from a given blueprint.  You might use this, for example, to see if the object is a 'bank_note' blueprint, or one of its derivatives.</doc>
-    </method>
-
     <!-- Weight -->
     <method>
       <name>getWeight</name>
@@ -2289,9 +2274,29 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
     </arg>
     <doc>Loads an object from the given blueprint name.  Returns nil if there is no such name.</doc>
     <code><![CDATA[
-      _return = Object::load_blueprint(_arg_name);
+      _return = ShadowObject::load_blueprint(_arg_name);
     ]]></code>
   </function>
+
+  <type>
+    <name>ShadowObject</name>
+    <parent>Object</parent>
+    <doc>An Object which is derived from an ObjectBP instance.</doc>
+    <method>
+      <name>isBlueprint</name>
+      <invoke>is_blueprint</invoke>
+      <arg>
+        <type>String</type>
+        <name>name</name>
+        <doc>Name of a blueprint.</doc>
+      </arg>
+      <return>
+        <type>Boolean</type>
+        <doc>True if the object descends from the named blueprint, or false if not.</doc>
+      </return>
+      <doc>Use this method to determine if the object descends from a given blueprint.  You might use this, for example, to see if the object is a 'bank_note' blueprint, or one of its derivatives.</doc>
+    </method>
+   </type>
 
   <type>
     <name>ObjectBP</name>
@@ -2305,15 +2310,6 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
         <doc>The blueprint's unique ID.</doc>
       </return>
       <invoke>get_id</invoke>
-    </method>
-    <method>
-      <name>getParent</name>
-      <return>
-        <type>ObjectBP</type>
-        <doc>The blueprint this blueprint derives from, or nil if there is no parent.</doc>
-      </return>
-      <doc>Blueprints can derive from other blueprints, forming an inheritance.  Modifications to a parent blueprint affect all child blueprints, and any entity that derives from the blueprint or its children.</doc>
-      <invoke>get_parent</invoke>
     </method>
     <method>
       <name>getName</name>
@@ -2348,7 +2344,7 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
         <doc>A new Object derived from the blueprint.</doc>
       </return>
       <doc>This function creates a new Object instance, which is derived from the blueprint.</doc>
-      <code>_return = new Object(_self);</code>
+      <code>_return = new ShadowObject(_self);</code>
     </method>
   </type>
   <function>

@@ -26,6 +26,8 @@
 #include "mud/clock.h"
 #include "mud/object.h"
 #include "mud/hooks.h"
+#include "mud/shadow-object.h"
+#include "mud/unique-object.h"
 
 // ----- CreatureStatID -----
 
@@ -134,9 +136,9 @@ CreaturePosition::lookup (String name)
 // ----- Creature -----
 
 void
-Creature::save (File::Writer& writer)
+Creature::save_data (File::Writer& writer)
 {
-	Entity::save(writer);
+	Entity::save_data(writer);
 
 	if (dead)
 		writer.attr(S("creature"), S("dead"), S("yes"));
@@ -149,29 +151,24 @@ Creature::save (File::Writer& writer)
 	writer.attr(S("creature"), S("hp"), health.cur);
 
 	if (equipment.right_held) {
-		writer.begin(S("equip_right_hand"));
+		writer.begin_open(S("creature"), S("equip_rhand"));
 		equipment.right_held->save(writer);
-		writer.end();
 	}
 	if (equipment.left_held) {
-		writer.begin(S(S("equip_left_hand")));
+		writer.begin_open(S("creature"), S("equip_lhand"));
 		equipment.left_held->save(writer);
-		writer.end();
 	}
 	if (equipment.body_worn) {
-		writer.begin(S("equip_body"));
+		writer.begin_open(S("creature"), S("equip_body"));
 		equipment.body_worn->save(writer);
-		writer.end();
 	}
 	if (equipment.back_worn) {
-		writer.begin(S("equip_back"));
+		writer.begin_open(S("creature"), S("equip_back"));
 		equipment.back_worn->save(writer);
-		writer.end();
 	}
 	if (equipment.waist_worn) {
-		writer.begin(S("equip_waist"));
+		writer.begin_open(S("creature"), S("equip_waist"));
 		equipment.waist_worn->save(writer);
-		writer.end();
 	}
 }
 
@@ -195,30 +192,26 @@ Creature::load_node (File::Reader& reader, File::Node& node)
 			coins = node.get_int();
 		FO_ATTR("creature", "hp")
 			health.cur = node.get_int();
-		FO_OBJECT("equip_right_hand")
-			equipment.right_held = new Object();
-			if (equipment.right_held->load (reader))
-				throw File::Error(S("failed to load object"));
+
+		FO_ENTITY("creature", "equip_rhand")
+			if (OBJECT(entity) == NULL) throw File::Error(S("Equipment is not an Object"));
+			equipment.right_held = OBJECT(entity);
 			equipment.right_held->set_owner(this);
-		FO_OBJECT("equip_left_hand")
-			equipment.left_held = new Object();
-			if (equipment.left_held->load (reader))
-				throw File::Error(S("failed to load object"));
+		FO_ENTITY("creature", "equip_lhand")
+			if (OBJECT(entity) == NULL) throw File::Error(S("Equipment is not an Object"));
+			equipment.left_held = OBJECT(entity);
 			equipment.left_held->set_owner(this);
-		FO_OBJECT("equip_body")
-			equipment.body_worn = new Object();
-			if (equipment.body_worn->load (reader))
-				throw File::Error(S("failed to load object"));
+		FO_ENTITY("creature", "equip_body")
+			if (OBJECT(entity) == NULL) throw File::Error(S("Equipment is not an Object"));
+			equipment.body_worn = OBJECT(entity);
 			equipment.body_worn->set_owner(this);
-		FO_OBJECT("equip_back")
-			equipment.back_worn = new Object();
-			if (equipment.back_worn->load (reader))
-				throw File::Error(S("failed to load object"));
+		FO_ENTITY("creature", "equip_back")
+			if (OBJECT(entity) == NULL) throw File::Error(S("Equipment is not an Object"));
+			equipment.back_worn = OBJECT(entity);
 			equipment.back_worn->set_owner(this);
-		FO_OBJECT("equip_waist")
-			equipment.waist_worn = new Object();
-			if (equipment.waist_worn->load (reader))
-				throw File::Error(S("failed to load object"));
+		FO_ENTITY("creature", "equip_waist")
+			if (OBJECT(entity) == NULL) throw File::Error(S("Equipment is not an Object"));
+			equipment.waist_worn = OBJECT(entity);
 			equipment.waist_worn->set_owner(this);
 	FO_NODE_END
 }

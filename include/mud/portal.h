@@ -129,6 +129,8 @@ class Portal : public Entity
 	public:
 	Portal ();
 
+	virtual String factory_type () const { return S("portal"); }
+
 	// name information
 	virtual EntityName get_name () const;
 	bool set_name (String s_name) { return name.set_name(s_name); }
@@ -212,7 +214,7 @@ class Portal : public Entity
 	void set_disabled (bool v) { flags.disabled = v; }
 
 	// IO
-	virtual void save (File::Writer& writer);
+	virtual void save_data (File::Writer& writer);
 	virtual void save_hook (class ScriptRestrictedWriter* writer);
 	virtual int load_node(File::Reader& reader, File::Node& node);
 	virtual int load_finish ();

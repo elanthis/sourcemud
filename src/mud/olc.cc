@@ -19,6 +19,7 @@
 #include "mud/telnet.h"
 #include "mud/account.h"
 #include "mud/zmp.h"
+#include "mud/shadow-object.h"
 
 enum OLCMode {
 	OLC_MODE_SET,
@@ -218,7 +219,7 @@ OLC_BEGIN_TYPE(Creature)
 	OLC_END_ATTR
 OLC_END_TYPE
 
-OLC_BEGIN_TYPE(Object)
+OLC_BEGIN_TYPE(ShadowObject)
 	OLC_BEGIN_ATTR(blueprint)
 		OLC_GET
 			OLC_DISPLAY(edit->get_blueprint()->get_id())
