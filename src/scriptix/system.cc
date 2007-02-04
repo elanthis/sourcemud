@@ -39,35 +39,6 @@ namespace Scriptix {
 	SScriptManager ScriptManager;
 }
 
-namespace Scriptix {
-	extern const TypeDef ScriptString_Type;
-	extern const TypeDef Number_Type;
-	extern const TypeDef Iterator_Type;
-	extern const TypeDef Function_Type;
-	extern const TypeDef Array_Type;
-	extern const TypeDef TypeValue_Type;
-	extern const TypeDef Struct_Type;
-	extern const TypeDef Stream_Type;
-	extern const TypeDef Nil_Type;
-}
-
-int
-SScriptManager::initialize ()
-{
-	t_value = add_type(&IValue_Type);
-	t_string = add_type(&ScriptString_Type);
-	t_number = add_type(&Number_Type);
-	t_function = add_type(&Function_Type);
-	t_iterator = add_type(&Iterator_Type);
-	t_array = add_type(&Array_Type);
-	t_type = add_type(&TypeValue_Type);
-	t_struct = add_type(&Scriptix::Struct_Type);
-	t_stream = add_type(&Scriptix::Stream_Type);
-	t_nil = add_type(&Scriptix::Nil_Type);
-
-	return 0;
-}
-
 void
 SScriptManager::shutdown ()
 {

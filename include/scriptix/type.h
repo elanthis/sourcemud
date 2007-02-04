@@ -38,31 +38,15 @@ namespace Scriptix {
 // type def for callbacks
 typedef class Value (*sx_cfunc)(size_t argc, class Value argv[]);
 
-class MethodDef {
-	public:
-	String name;
-	size_t argc;
-	bool varg;
-	void* method;
-};
-
-class TypeDef {
-	public:
-	String name;		///< Name of type.
-	const TypeDef* parent;		///< Parent type.
-	const MethodDef* methods;	///< Array of methods.
-};
-
 class TypeInfo : public GCType::GC {
 	public:
-	TypeInfo (const TypeDef* base, const TypeInfo* parent);
-
 	TypeInfo (Atom name, const TypeInfo* parent);
 
 	Atom get_name (void) const { return name; }
 	const TypeInfo* get_parent (void) const { return parent; }
 	class Function* get_method (Atom id) const;
 	int add_method (Atom id, class Function* method);
+	int add_method (class Function* method);
 
 	private:
 	Atom name;			///< Name of type.
@@ -93,25 +77,6 @@ class TypeValue : public IValue
 	private:
 	TypeInfo* type;
 };
-
-// Root typedef
-extern const TypeDef IValue_Type;
-
-// Nil typedef
-extern const TypeDef Nil_Type;
-
-// Creating new types
-#define SX_TYPEIMPL(CPPNAME, SXNAME, CPPPARENT) \
-	extern const Scriptix::TypeDef CPPNAME ## _Type; \
-	const Scriptix::TypeDef CPPNAME ## _Type = { \
-		S(SXNAME) , \
-		&CPPPARENT ## _Type, \
-		CPPNAME ## _Methods, \
-	}; 
-#define SX_NOMETHODS(CPPNAME) namespace { Scriptix::MethodDef CPPNAME ## _Methods[] = { { String(), 0, 0, NULL } }; }
-#define SX_BEGINMETHODS(CPPNAME) namespace { Scriptix::MethodDef CPPNAME ## _Methods[] = {
-#define SX_ENDMETHODS { String(), 0, 0, NULL } }; }
-#define SX_DEFMETHOD(CPPNAME, SXNAME, ARGC, VARARG) { S(SXNAME), ARGC, VARARG, (void*)CPPNAME }, 
 
 } // namespace Scriptix
 

@@ -75,19 +75,6 @@ Array::method_iter (size_t argc, Value argv[])
 	return self->get_iter();
 }
 
-// Our methods
-SX_BEGINMETHODS(Array)
-	SX_DEFMETHOD(Array::method_length, "length", 0, 0)
-	SX_DEFMETHOD(Array::method_append, "append", 1, 0)
-	SX_DEFMETHOD(Array::method_remove, "remove", 1, 0)
-	SX_DEFMETHOD(Array::method_iter, "iter", 0, 0)
-SX_ENDMETHODS
-
-// Define type parameters
-namespace Scriptix {
-	SX_TYPEIMPL(Array, "Array", IValue)
-}
-
 Array::Array () : IValue(), list() { }
 
 Array::Array (size_t n_size, Value n_list[]) : IValue(), list(n_size)

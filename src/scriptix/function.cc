@@ -68,13 +68,6 @@ SScriptManager::get_function (Atom id)
 		return NULL;
 }
 
-// FUNCTION IMPLEMENTATION
-SX_NOMETHODS(Function)
-
-namespace Scriptix {
-	SX_TYPEIMPL(Function, "Function", IValue)
-}
-
 Function::Function (Atom s_id, size_t s_argc) : IValue(),
 	id(s_id), nodes(NULL), cfunc(NULL), file(), debug(NULL),
 	argc(s_argc), varc(s_argc), count(0), size(0)

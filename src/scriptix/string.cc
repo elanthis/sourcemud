@@ -36,20 +36,6 @@
 
 using namespace Scriptix;
 
-SX_BEGINMETHODS(ScriptString)
-	SX_DEFMETHOD(ScriptString::method_length, "length", 0, 0)
-	SX_DEFMETHOD(ScriptString::method_to_int, "toInt", 0, 0)
-	SX_DEFMETHOD(ScriptString::method_upper, "upper", 0, 0)
-	SX_DEFMETHOD(ScriptString::method_lower, "lower", 0, 0)
-	SX_DEFMETHOD(ScriptString::method_substr, "substr", 2, 0)
-	SX_DEFMETHOD(ScriptString::method_split, "split", 1, 0)
-	SX_DEFMETHOD(ScriptString::method_trim, "trim", 0, 0)
-SX_ENDMETHODS
-
-namespace Scriptix {
-	SX_TYPEIMPL(ScriptString, "String", IValue)
-}
-
 const TypeInfo*
 ScriptString::get_type () const {
 	return ScriptManager.get_string_type();

@@ -44,11 +44,3 @@ Number::method_to_string (size_t argc, Value argv[])
 	snprintf (buf, 20, "%d", Number::to_int(argv[0]));
 	return String(buf);
 }
-
-SX_BEGINMETHODS(Number)
-	SX_DEFMETHOD(Number::method_to_string, "toString", 0, 0)
-SX_ENDMETHODS
-
-namespace Scriptix {
-	SX_TYPEIMPL(Number, "Int", IValue)
-}

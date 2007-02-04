@@ -57,13 +57,3 @@ Iterator::method_next(size_t argc, Value* argv)
 	// no more, return nil
 	return Nil;
 }
-
-// Our methods
-SX_BEGINMETHODS(Iterator)
-	SX_DEFMETHOD(Iterator::method_next, "next", 0, 0)
-SX_ENDMETHODS
-
-// Define type parameters
-namespace Scriptix {
-	SX_TYPEIMPL(Iterator, "Iterator", IValue)
-}

@@ -60,7 +60,7 @@ class SScriptManager : public IManager {
 	virtual void handle_error (String file, size_t lineno, String msg);
 
 	// Add/check types
-	TypeInfo* add_type (const TypeDef* type);
+	TypeInfo* add_type (TypeInfo* type);
 	const TypeInfo* get_type (Atom id) const;
 	TypeInfo* get_type (Atom id);
 
@@ -143,16 +143,16 @@ class SScriptManager : public IManager {
 	TypeList types;
 
 	// built-in types
-	const TypeInfo* t_value;
-	const TypeInfo* t_number;
-	const TypeInfo* t_string;
-	const TypeInfo* t_array;
-	const TypeInfo* t_function;
-	const TypeInfo* t_type;
-	const TypeInfo* t_struct;
-	const TypeInfo* t_iterator;
-	const TypeInfo* t_stream;
-	const TypeInfo* t_nil;
+	TypeInfo* t_value;
+	TypeInfo* t_number;
+	TypeInfo* t_string;
+	TypeInfo* t_array;
+	TypeInfo* t_function;
+	TypeInfo* t_type;
+	TypeInfo* t_struct;
+	TypeInfo* t_iterator;
+	TypeInfo* t_stream;
+	TypeInfo* t_nil;
 };
 
 extern SScriptManager ScriptManager;

@@ -181,7 +181,7 @@ Player::save_data (File::Writer& writer)
 	for (TraitMap::const_iterator i = pdesc.traits.begin(); i != pdesc.traits.end(); ++i) {
 		GCType::vector<File::Value> list;
 		list.push_back(File::Value(File::Value::TYPE_STRING, CreatureTraitID::nameof(i->first))); 
-		list.push_back(File::Value(File::Value::TYPE_INT, i->second.get_name()));
+		list.push_back(File::Value(File::Value::TYPE_STRING, i->second.get_name()));
 		writer.attr(S("player"), S("trait"), list);
 	}
 

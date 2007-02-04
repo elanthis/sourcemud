@@ -38,15 +38,6 @@
 using namespace std;
 using namespace Scriptix;
 
-// Our methods
-SX_BEGINMETHODS(Stream)
-SX_ENDMETHODS
-
-// Define type parameters
-namespace Scriptix {
-	SX_TYPEIMPL(Stream, "Stream", IValue)
-}
-
 Stream::Stream (IStreamSink* sink) : control (sink) {}
 
 const TypeInfo*

@@ -1,3 +1,11 @@
+2007-02-04 07:59:59  Sean Middleditch <elanthis@awesomeplay.com>
+
+  * Scriptix initialization no longer uses the static TypeDef
+    structures, but instead relies on the type and method
+    registration functions called from initializations routines.
+  * Fixed bug in Player saving of traits which caused invalid
+    player files to be written.
+
 2007-02-03 09:38:02  Sean Middleditch <elanthis@awesomeplay.com>
 
   * Object blueprints cannot be inherited.  Too many problems,

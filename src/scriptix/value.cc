@@ -35,11 +35,6 @@
 
 using namespace Scriptix;
 
-// Root typedef
-namespace { const MethodDef No_Methods[] = { { String(), 0, 0, } }; }
-const TypeDef Scriptix::IValue_Type = { S("Value"), NULL, No_Methods };
-const TypeDef Scriptix::Nil_Type = { S("Nil"), NULL, No_Methods };
-
 // CONSTRUCTORS
 Value::Value (String s_value)
 {

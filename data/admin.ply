@@ -1,5 +1,5 @@
 # Player file: Admin
-# Timestamp: Sat Feb  3 04:32:15 2007
+# Timestamp: Sun Feb  4 02:52:20 2007
 # 
 
 entity.uid = <1>
@@ -18,7 +18,7 @@ creature.equip_back = sobject {
   entity.uid = <23>
 }
 player.created = "2000-01-01 00:00:00"
-player.lastlogin = "2007-02-03 04:32:10"
+player.lastlogin = "2007-02-04 02:52:18"
 player.playtime = 2113
 player.race = "human"
 player.birthday = "0001/06/10 09.14"
@@ -29,11 +29,11 @@ player.stat = [ "Fortitude", 100 ]
 player.stat = [ "Intellect", 100 ]
 player.stat = [ "Spirit", 100 ]
 player.stat = [ "Willpower", 100 ]
-player.trait = [ "hair style", long ]
-player.trait = [ "skin color", fair ]
-player.trait = [ "build", lean ]
-player.trait = [ "hair color", silver ]
-player.trait = [ "eye color", gold ]
+player.trait = [ "hair style", "long" ]
+player.trait = [ "skin color", "fair" ]
+player.trait = [ "build", "lean" ]
+player.trait = [ "hair color", "silver" ]
+player.trait = [ "eye color", "gold" ]
 player.gender = "male"
 player.height = 74
 player.location = "catacomb_2_2"

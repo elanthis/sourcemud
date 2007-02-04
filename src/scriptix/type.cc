@@ -32,49 +32,14 @@
 
 using namespace Scriptix;
 
-TypeInfo::TypeInfo (const TypeDef* base, const TypeInfo* s_parent) : parent(s_parent)
-{
-	name = Atom(base->name);
-
-	for (size_t i = 0; !base->methods[i].name.empty(); ++i) {
-		Function* method = new Function(
-			Atom(base->methods[i].name),
-			base->methods[i].argc + 1,
-			(sx_cfunc)base->methods[i].method);
-		methods[method->id] = method;
-	}
-}
-
 TypeInfo::TypeInfo (Atom s_name, const TypeInfo* s_parent) : name(s_name), parent(s_parent)
 {
 }
 
 TypeInfo*
-SScriptManager::add_type (const TypeDef* typed)
+SScriptManager::add_type (TypeInfo* type)
 {
-	// generate name
-	Atom tname = Atom(typed->name);
-
-	// have we the type already?
-	TypeInfo* type;
-	if ((type = get_type(tname)) != NULL)
-		return type;
-
-	// get parent
-	TypeInfo* parent = NULL;
-	if (typed->parent)
-		parent = get_type(Atom(typed->parent->name));
-
-	// copy type
-	type = new TypeInfo(typed, parent);
-	if (type == NULL) {
-		return NULL;
-	}
-		
-	// add type
-	types[tname] = type;
-	
-	return type;
+	return types[type->get_name()] = type;
 }
 
 const TypeInfo* 
@@ -127,21 +92,23 @@ TypeInfo::add_method (Atom id, Function* method)
 	return SXE_OK;
 }
 
+int
+TypeInfo::add_method (Function* method)
+{
+	if (method == NULL)
+		return SXE_INVALID;
+	
+	methods[method->id] = method;
+
+	return SXE_OK;
+}
+
 TypeValue::TypeValue(TypeInfo* s_type) : IValue(), type(s_type) {}
 
 const TypeInfo*
 TypeValue::get_type () const
 {
 	return ScriptManager.get_type_value_type();
-}
-
-SX_BEGINMETHODS(TypeValue)
-	SX_DEFMETHOD(TypeValue::method_name, "name", 0, 0)
-	SX_DEFMETHOD(TypeValue::method_add_method, "addMethod", 2, 0)
-SX_ENDMETHODS
-
-namespace Scriptix {
-	SX_TYPEIMPL(TypeValue, "TypeInfo", IValue)
 }
 	
 Value

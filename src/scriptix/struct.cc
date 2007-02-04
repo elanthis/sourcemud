@@ -40,13 +40,6 @@ Struct::get_type () const {
 	return ScriptManager.get_struct_type();
 }
 
-SX_NOMETHODS(Struct);
-
-// type definition
-namespace Scriptix {
-SX_TYPEIMPL(Struct, "Struct", IValue);
-}
-
 // Default undefinedined property operations
 void
 Struct::set_undefined_property (Atom id, Value value)

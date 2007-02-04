@@ -578,9 +578,11 @@ File::Writer::attr (String klass, String name, const GCType::vector<Value>& list
 			case Value::TYPE_STRING:
 				out << EscapeString(i->get_value());
 				break;
+			case Value::TYPE_ID:
+				out  << '<' << i->get_value() << '>';
+				break;
 			case Value::TYPE_INT:
 			case Value::TYPE_BOOL:
-			case Value::TYPE_ID:
 				out << i->get_value();
 				break;
 		}
