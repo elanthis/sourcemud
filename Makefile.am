@@ -335,6 +335,7 @@ SCRIPTIX_SOURCES=\
 	src/scriptix/function.cc \
 	src/scriptix/global.cc \
 	src/scriptix/grammar.cc \
+	src/scriptix/init_types.cc \
 	src/scriptix/iter.cc \
 	src/scriptix/lexer.cc \
 	src/scriptix/number.cc \

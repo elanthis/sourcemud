@@ -39,6 +39,9 @@ namespace Scriptix {
 	SScriptManager ScriptManager;
 }
 
+SScriptManager::SScriptManager () {}
+SScriptManager::~SScriptManager () {}
+
 void
 SScriptManager::shutdown ()
 {

@@ -52,6 +52,9 @@ class CompilerHandler : public GCType::GC {
 
 class SScriptManager : public IManager {
 	public:
+	SScriptManager ();
+	~SScriptManager ();
+
 	// setup/destroy
 	int initialize ();
 	void shutdown ();

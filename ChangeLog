@@ -1,3 +1,8 @@
+2007-02-05 06:18:03  Sean Middleditch <elanthis@awesomeplay.com>
+
+  * Build fixes; no clue how I got things to build and run before.
+    Yay C++.
+
 2007-02-04 07:59:59  Sean Middleditch <elanthis@awesomeplay.com>
 
   * Scriptix initialization no longer uses the static TypeDef
