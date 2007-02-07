@@ -4,7 +4,7 @@
 # Additions by Gary Mix copyright 2004
 # See COPYING for details
 
-object_blueprint {
+blueprint.object {
   blueprint.id = "ar_chain_mail"
   blueprint.equip = "torso"
   blueprint.name = "some chain mail"
@@ -14,7 +14,7 @@ object_blueprint {
   blueprint.tag = "armor"
   user.defend = 14
 }
-object_blueprint {
+blueprint.object {
   blueprint.id = "ar_chain_shirt"
   blueprint.equip = "torso"
   blueprint.name = "a chain shirt"
@@ -24,7 +24,7 @@ object_blueprint {
   blueprint.tag = "armor"
   user.defend = 10
 }
-object_blueprint {
+blueprint.object {
   blueprint.id = "ar_leather_armor"
   blueprint.name = "some leather armor"
   blueprint.desc = "The leather armor is a full set of protective wear, crafted of leather."
@@ -33,7 +33,7 @@ object_blueprint {
   blueprint.tag = "armor"
   user.defend = 7
 }
-object_blueprint {
+blueprint.object {
   blueprint.id = "ar_leather_tunic"
   blueprint.equip = "torso"
   blueprint.name = "a leather tunic"
@@ -43,7 +43,7 @@ object_blueprint {
   blueprint.tag = "armor"
   user.defend = 3
 }
-object_blueprint {
+blueprint.object {
   blueprint.id = "ar_helm"
   blueprint.equip = "head"
   blueprint.name = "a helm"
@@ -53,7 +53,7 @@ object_blueprint {
   blueprint.tag = "armor"
   user.defend = 5
 }
-object_blueprint {
+blueprint.object {
   blueprint.id = "ar_chain_leggings"
   blueprint.equip = "legs"
   blueprint.name = "some chain leggings"
@@ -63,7 +63,7 @@ object_blueprint {
   blueprint.tag = "armor"
   user.defend = 6
 }
-object_blueprint {
+blueprint.object {
   blueprint.id = "ar_leather_bracer"
   blueprint.equip = "wrist"
   blueprint.name = "a leather bracer"
@@ -73,7 +73,7 @@ object_blueprint {
   blueprint.tag = "armor"
   user.defend = 2
 }
-object_blueprint {
+blueprint.object {
   blueprint.id = "ar_casting_robe"
   blueprint.equip = "torso"
   blueprint.name = "some casting robes"
@@ -84,7 +84,7 @@ object_blueprint {
   blueprint.tag = "magician"
   user.defend = 6
 }
-object_blueprint {
+blueprint.object {
   blueprint.id = "ar_leather_choker"
   blueprint.equip = "neck"
   blueprint.name = "a leather chocker"
@@ -94,7 +94,7 @@ object_blueprint {
   blueprint.tag = "clothing"
   user.defend = 2
 }
-object_blueprint {
+blueprint.object {
   blueprint.id = "ar_hunting_boots"
   blueprint.equip = "feet"
   blueprint.name = "some hunting boots"
@@ -104,7 +104,7 @@ object_blueprint {
   blueprint.tag = "clothing"
   user.defend = 4
 }
-object_blueprint {
+blueprint.object {
   blueprint.id = "ar_hunting_gloves"
   blueprint.equip = "hands"
   blueprint.name = "some hunting gloves"
@@ -114,7 +114,7 @@ object_blueprint {
   blueprint.tag = "clothing"
   user.defend = 3
 }
-object_blueprint {
+blueprint.object {
   blueprint.id = "ar_ruby_earring"
   blueprint.equip = "ear"
   blueprint.name = "a ruby earring"
@@ -123,7 +123,7 @@ object_blueprint {
   blueprint.tag = "jewelry"
   user.defend = 0
 }
-object_blueprint {
+blueprint.object {
   blueprint.id = "ar_diamond_earring"
   blueprint.equip = "ear"
   blueprint.name = "a diamond earring"
@@ -132,7 +132,7 @@ object_blueprint {
   blueprint.tag = "jewelry"
   user.defend = 0
 }
-object_blueprint {
+blueprint.object {
   blueprint.id = "ar_turquoise_anklet"
   blueprint.equip = "ankle"
   blueprint.name = "a turquoise anklet"
@@ -141,7 +141,7 @@ object_blueprint {
   blueprint.tag = "jewelry"
   user.defend = 0
 }
-object_blueprint {
+blueprint.object {
   blueprint.id = "ar_gold_anklet"
   blueprint.equip = "ankle"
   blueprint.name = "a gold anklet"

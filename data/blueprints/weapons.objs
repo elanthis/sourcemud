@@ -2,7 +2,7 @@
 # Copyright (C) 2003-2005  AwesomePlay Productions Inc.
 # Sean Middleditch <elanthis@awemud.net>
 
-object_blueprint {
+blueprint.object {
   blueprint.id = "ma_iron"
   blueprint.name = "an iron mace"
   blueprint.desc = "A simple soldier's mace."
@@ -15,7 +15,7 @@ object_blueprint {
   user.attack_damage = 10
 }
 
-object_blueprint {
+blueprint.object {
   blueprint.id = "sw_long"
   blueprint.name = "long sword"
   blueprint.keyword = "longsword"
@@ -29,7 +29,7 @@ object_blueprint {
   user.combat_damage = 14
 }
 
-object_blueprint {
+blueprint.object {
   blueprint.id = "sw_short"
   blueprint.name = "a short sword"
   blueprint.keyword = "shortsword"
@@ -43,7 +43,7 @@ object_blueprint {
   user.combat_damage = 10
 }
 
-object_blueprint {
+blueprint.object {
   blueprint.id = "sw_great"
   blueprint.name = "a great sword"
   blueprint.keyword = "greatsword"
@@ -58,7 +58,7 @@ object_blueprint {
   user.combat_hands = 2
 }
 
-object_blueprint {
+blueprint.object {
   blueprint.id = "claws"
   blueprint.name = "some claws"
   blueprint.desc = "Sharp, pointy claws."
@@ -73,7 +73,7 @@ object_blueprint {
   user.combat_hands = 1
 }
 
-object_blueprint {
+blueprint.object {
   blueprint.id = "fist"
   blueprint.name = "a fist"
   blueprint.desc = "Bunched fist."

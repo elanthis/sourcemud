@@ -126,22 +126,16 @@ Room::save_data (File::Writer& writer)
 		writer.attr(S("room"), S("coins"), coins);
 
 	for (GCType::map<PortalDir,Portal*>::const_iterator i = portals.begin(); i != portals.end(); ++i) {
-		if (i->second->get_owner() == this) {
-			writer.begin_open(S("room"), S("child"));
-			i->second->save(writer);
-		}
+		if (i->second->get_owner() == this)
+			i->second->save(writer, S("room"), S("child"));
 	}
 
-	for (EList<Object>::const_iterator i = objects.begin(); i != objects.end(); ++i) {
-		writer.begin_open(S("room"), S("child"));
-		(*i)->save (writer);
-	}
+	for (EList<Object>::const_iterator i = objects.begin(); i != objects.end(); ++i)
+		(*i)->save(writer, S("room"), S("child"));
 
 	for (EList<Creature>::const_iterator i = creatures.begin(); i != creatures.end(); ++i) {
-		if (NPC(*i)) {
-			writer.begin_open(S("room"), S("child"));
-			(*i)->save(writer);
-		}
+		if (NPC(*i))
+			(*i)->save(writer, S("room"), S("child"));
 	}
 }
 

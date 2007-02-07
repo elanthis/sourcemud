@@ -1,3 +1,14 @@
+2007-02-07 07:28:44  Sean Middleditch <elanthis@awesomeplay.com>
+
+  * Calendar file format now uses TabReader format instead of
+    FileObject.
+  * Updated FileObject format require a namespace and name for
+    every attribute.
+  * New easier to read and write help file format.  Along with
+    its own crappy poorly written parser.
+  * Fixed default help command to show help topic 'general' if
+    not topic is specified.
+
 2007-02-05 06:18:03  Sean Middleditch <elanthis@awesomeplay.com>
 
   * Build fixes; no clue how I got things to build and run before.

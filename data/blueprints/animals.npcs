@@ -2,7 +2,7 @@
 # Copyright (C) 2003-2005  AwesomePlay Productions Inc.
 # Sean Middleditch <elanthis@awemud.net>
 
-npc_blueprint {
+blueprint.npc {
   blueprint.id = "wolf"
   blueprint.name = "a wolf"
 
@@ -25,7 +25,7 @@ npc_blueprint {
   blueprint.stat = [ "Spirit", 30 ]
   blueprint.stat = [ "Willpower", 40 ]
 }
-npc_blueprint {
+blueprint.npc {
   blueprint.id = "wolf_large"
   blueprint.name = "a large wolf"
 
@@ -48,7 +48,7 @@ npc_blueprint {
   blueprint.stat = [ "Spirit", 30 ]
   blueprint.stat = [ "Willpower", 40 ]
 }
-npc_blueprint {
+blueprint.npc {
   blueprint.id = "wolf_dire"
   blueprint.name = "a dire wolf"
   blueprint.alignment = -700

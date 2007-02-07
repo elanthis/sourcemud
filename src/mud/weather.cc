@@ -40,21 +40,21 @@ WeatherRegion::load (File::Reader& reader)
 	ticks = 0;
 	
 	FO_READ_BEGIN
-		FO_OBJECT("state")
+		FO_OBJECT("weather", "state")
 			WeatherState state(node.get_name());
 			FO_READ_BEGIN
-				FO_ATTR("weather", "id")
+				FO_ATTR("state", "id")
 					state.id = node.get_string();
-				FO_ATTR("weather", "desc")
+				FO_ATTR("state", "desc")
 					state.descs.push_back(node.get_string());
-				FO_OBJECT("change")
+				FO_OBJECT("state", "change")
 					WeatherChange change;
 					FO_READ_BEGIN
-						FO_ATTR("weather", "target")
+						FO_ATTR("change", "target")
 							change.to = node.get_string();
-						FO_ATTR("weather", "chance")
+						FO_ATTR("change", "chance")
 							change.chance = node.get_int();
-						FO_ATTR("weather", "text")
+						FO_ATTR("change", "text")
 							change.desc = node.get_string();
 					FO_READ_ERROR
 						throw error;
@@ -64,7 +64,7 @@ WeatherRegion::load (File::Reader& reader)
 				throw error;
 			FO_READ_END
 			states.push_back(state);
-		FO_ATTR("weather", "state")
+		FO_ATTR("weather", "current")
 			state = get_state(node.get_string());
 			if (state < 0)
 				throw File::Error(S("Current state out of range"));
@@ -98,21 +98,21 @@ void
 WeatherRegion::save (File::Writer& writer) const
 {
 	for (GCType::vector<WeatherState>::const_iterator si = states.begin(); si != states.end(); ++si) {
-		writer.begin(S("state"));
-		writer.attr(S("weather"), S("id"), si->id);
+		writer.begin(S("weather"), S("state"));
+		writer.attr(S("state"), S("id"), si->id);
 		for (StringList::const_iterator di = si->descs.begin(); di != si->descs.end(); ++di)
-			writer.attr(S("weather"), S("desc"), *di);
+			writer.attr(S("state"), S("desc"), *di);
 		for (GCType::vector<WeatherChange>::const_iterator ci = si->changes.begin(); ci != si->changes.end(); ++ci) {
-			writer.begin(S("change"));
-			writer.attr(S("weather"), S("target"), ci->to);
-			writer.attr(S("weather"), S("chance"), ci->chance);
-			writer.attr(S("weather"), S("text"), ci->desc);
+			writer.begin(S("state"), S("change"));
+			writer.attr(S("change"), S("target"), ci->to);
+			writer.attr(S("change"), S("chance"), ci->chance);
+			writer.attr(S("change"), S("text"), ci->desc);
 			writer.end();
 		}
 		writer.end();
 	}
 
-	writer.attr(S("weather"), S("state"), states[state].id);
+	writer.attr(S("weather"), S("current"), states[state].id);
 	writer.attr(S("weather"), S("ticks"), ticks);
 }
 

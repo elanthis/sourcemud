@@ -2,7 +2,7 @@
 # Copyright (C) 2003-2005  AwesomePlay Productions Inc.
 # Sean Middleditch <elanthis@awemud.net>
 
-object_blueprint {
+blueprint.object {
   blueprint.id = "gem_ruby"
   blueprint.name = "a ruby"
   blueprint.desc = "A small, red gem."
@@ -11,7 +11,7 @@ object_blueprint {
   blueprint.tag = "gem"
 }
 
-object_blueprint {
+blueprint.object {
   blueprint.id = "gem_emerald"
   blueprint.name = "an emerald"
   blueprint.desc = "A small, green gem."

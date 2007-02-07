@@ -654,7 +654,7 @@ SNpcBPManager::initialize (void)
 		if (reader.open(*i))
 			return -1;
 		FO_READ_BEGIN
-			FO_OBJECT("npc_blueprint")
+			FO_OBJECT("blueprint", "npc")
 				NpcBP* blueprint = new NpcBP();
 				if (blueprint->load(reader)) {
 					Log::Warning << "Failed to load blueprint in " << reader.get_filename() << " at " << node.get_line();

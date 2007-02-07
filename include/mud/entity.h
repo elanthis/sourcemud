@@ -94,7 +94,7 @@ class Entity : public Scriptix::Native, public Parsable
 	int load (File::Reader& reader);
 	virtual int load_node (File::Reader& reader, File::Node& node);
 	virtual int load_finish () = 0;
-	void save (File::Writer& writer);
+	void save (File::Writer& writer, String ns, String name);
 	virtual void save_data (File::Writer& writer);
 	virtual void save_hook (class ScriptRestrictedWriter* writer);
 

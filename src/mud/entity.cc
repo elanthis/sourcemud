@@ -126,9 +126,9 @@ Entity::display_desc (const StreamControl& stream) const
 }
 
 void
-Entity::save (File::Writer& writer)
+Entity::save (File::Writer& writer, String ns, String name)
 {
-	writer.begin(factory_type());
+	writer.begin_attr(ns, name, factory_type());
 	save_data(writer);
 	writer.end();
 }
@@ -140,7 +140,7 @@ Entity::save_data (File::Writer& writer)
 
 	// event handler list
 	for (EventList::const_iterator i = events.begin (); i != events.end (); i ++) {
-		writer.begin(S("event"));
+		writer.begin(S("entity"), S("event"));
 		(*i)->save(writer);
 		writer.end();
 	}
@@ -208,7 +208,7 @@ Entity::load_node (File::Reader& reader, File::Node& node)
 			uid = node.get_id();
 		FO_ATTR("entity", "tag")
 			add_tag(TagID::create(node.get_string()));
-		FO_OBJECT("event")
+		FO_OBJECT("entity", "event")
 			EventHandler* event = new EventHandler();
 			if (!event->load(reader))
 					events.push_back(event);

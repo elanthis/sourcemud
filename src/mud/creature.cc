@@ -150,26 +150,16 @@ Creature::save_data (File::Writer& writer)
 
 	writer.attr(S("creature"), S("hp"), health.cur);
 
-	if (equipment.right_held) {
-		writer.begin_open(S("creature"), S("equip_rhand"));
-		equipment.right_held->save(writer);
-	}
-	if (equipment.left_held) {
-		writer.begin_open(S("creature"), S("equip_lhand"));
-		equipment.left_held->save(writer);
-	}
-	if (equipment.body_worn) {
-		writer.begin_open(S("creature"), S("equip_body"));
-		equipment.body_worn->save(writer);
-	}
-	if (equipment.back_worn) {
-		writer.begin_open(S("creature"), S("equip_back"));
-		equipment.back_worn->save(writer);
-	}
-	if (equipment.waist_worn) {
-		writer.begin_open(S("creature"), S("equip_waist"));
-		equipment.waist_worn->save(writer);
-	}
+	if (equipment.right_held)
+		equipment.right_held->save(writer, S("creature"), S("equip_rhand"));
+	if (equipment.left_held)
+		equipment.left_held->save(writer, S("creature"), S("equip_lhand"));
+	if (equipment.body_worn)
+		equipment.body_worn->save(writer, S("creature"), S("equip_body"));
+	if (equipment.back_worn)
+		equipment.back_worn->save(writer, S("creature"), S("equip_back"));
+	if (equipment.waist_worn)
+		equipment.waist_worn->save(writer, S("creature"), S("equip_waist"));
 }
 
 void

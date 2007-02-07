@@ -132,7 +132,7 @@ SRaceManager::initialize(void)
 
 	// load
 	FO_READ_BEGIN
-		FO_OBJECT("race")
+		FO_OBJECT("races", "race")
 			// load race
 			Race *race = new Race (node.get_name(), head);
 			if (race->load (reader))

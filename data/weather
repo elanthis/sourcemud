@@ -2,22 +2,22 @@
 # Copyright (C) 2003-2005  AwesomePlay Productions Inc.
 # Sean Middleditch <elanthis@awemud.net>
 
-state {
-  weather.id = "clear"
-  weather.desc = "The sky is perfectly clear."
-  change {
-    weather.target = "rain"
-    weather.chance = 10
-    weather.text = "Rain begins to fall."
+weather.state {
+  state.id = "clear"
+  state.desc = "The sky is perfectly clear."
+  state.change {
+    change.target = "rain"
+    change.chance = 10
+    change.text = "Rain begins to fall."
   }
 }
-state {
-  weather.id = "rain"
-  weather.desc = "Rain is pouring steadily."
-  change {
-    weather.target = "clear"
-    weather.chance = 20
-    weather.text = "The rain ceases."
+weather.state {
+  state.id = "rain"
+  state.desc = "Rain is pouring steadily."
+  state.change {
+    change.target = "clear"
+    change.chance = 20
+    change.text = "The rain ceases."
   }
 }
 

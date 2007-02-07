@@ -64,16 +64,16 @@ namespace File
 	{
 		public:
 		enum Type {
-			ATTR,  // normal class.name = data
-			BEGIN, // object form type { data }
-			ABEGIN, // object form class.name = type { data }
-			END,   // } after a BEGIN or ABEGIN
+			ATTR,  // normal ns.name = data
+			BEGIN_UNTYPED, // object form ns.name { data }
+			BEGIN_TYPED, // object form ns.name = type { data }
+			END,   // } after a BEGIN_UNTYPED or BEGIN_TYPED
 			ERROR // error
 		};
 
 		Node (class Reader& s_reader) : reader(s_reader) {}
 
-		inline String get_class () const { return klass; }
+		inline String get_ns () const { return ns; }
 		inline String get_name () const { return name; }
 		inline Value::Type get_value_type () const { return value.get_type(); }
 
@@ -96,14 +96,15 @@ namespace File
 		// type of node
 		inline bool is_attr () const { return type == ATTR; }
 		inline bool is_end () const { return type == END; }
-		inline bool is_begin () const { return type == BEGIN; }
-		inline bool is_abegin () const { return type == ABEGIN; }
+		inline bool is_begin () const { return type == BEGIN_UNTYPED || type == BEGIN_TYPED; }
+		inline bool is_begin_untyped () const { return type == BEGIN_UNTYPED; }
+		inline bool is_begin_typed () const { return type == BEGIN_TYPED; }
 		inline Type get_node_type () const { return type; }
 
 		private:
 		Type type;
 		class Reader& reader;
-		String klass;
+		String ns;
 		String name;
 		Value value;
 		size_t line; // line node came from
@@ -147,8 +148,8 @@ namespace File
 	class Writer : public Cleanup
 	{
 		public:
-		Writer () : out(), indent(0), is_begin_open(false) {}
-		Writer (String file) : out(), indent(0), is_begin_open(false) { open(file); }
+		Writer () : out(), indent(0) {}
+		Writer (String file) : out(), indent(0) { open(file); }
 		~Writer () { close(); }
 
 		int open (String file);
@@ -156,26 +157,26 @@ namespace File
 		void close ();
 
 		// attributes
-		void attr (String klass, String name, String data);
-		void attr (String klass, String name, long data);
-		void attr (String klass, String name, bool data);
-		void attr (String klass, String name, const UniqueID& data);
-		void attr (String klass, String name, const GCType::vector<Value>& list);
+		void attr (String ns, String name, String data);
+		void attr (String ns, String name, long data);
+		void attr (String ns, String name, bool data);
+		void attr (String ns, String name, const UniqueID& data);
+		void attr (String ns, String name, const GCType::vector<Value>& list);
 
-		inline void attr (String klass, String name, unsigned long data) { attr(klass, name, (long)data); }
-		inline void attr (String klass, String name, int data) { attr(klass, name, (long)data); }
-		inline void attr (String klass, String name, unsigned int data) { attr(klass, name, (long)data); }
-		inline void attr (String klass, String name, short data) { attr(klass, name, (long)data); }
-		inline void attr (String klass, String name, unsigned short data) { attr(klass, name, (long)data); }
+		inline void attr (String ns, String name, unsigned long data) { attr(ns, name, (long)data); }
+		inline void attr (String ns, String name, int data) { attr(ns, name, (long)data); }
+		inline void attr (String ns, String name, unsigned int data) { attr(ns, name, (long)data); }
+		inline void attr (String ns, String name, short data) { attr(ns, name, (long)data); }
+		inline void attr (String ns, String name, unsigned short data) { attr(ns, name, (long)data); }
 
 		// output a data block
-		void block (String klass, String name, String data);
+		void block (String ns, String name, String data);
 
 		// begin a new section
-		void begin (String type);
+		void begin (String ns, String name);
 
 		// open begin... MUST be followed by a regular begin
-		void begin_open (String klass, String name);
+		void begin_attr (String ns, String name, String type);
 
 		// end a section
 		void end ();
@@ -189,7 +190,6 @@ namespace File
 		private:
 		std::ofstream out;
 		size_t indent;
-		bool is_begin_open;
 
 		void do_indent();
 	};
@@ -231,22 +231,22 @@ class ScriptRestrictedWriter : public Scriptix::Native
 	do { \
 	const bool _x_is_read = false; \
 	if (false && _x_is_read) {
-#define FO_ATTR(klass,name) \
-		} else if (node.is_attr() && node.get_class() == klass && node.get_name() == name) {
-#define FO_WILD(klass) \
-		} else if (node.is_attr() && node.get_class() == klass) {
-#define FO_OBJECT(klass) \
-		} else if (node.is_begin() && node.get_class() == klass) {
-#define FO_ENTITY(klass,name) \
-		} else if (node.is_abegin() && node.get_class() == klass && node.get_name() == name) { \
+#define FO_ATTR(ns,name) \
+		} else if (node.is_attr() && node.get_ns() == ns && node.get_name() == name) {
+#define FO_WILD(ns) \
+		} else if (node.is_attr() && node.get_ns() == ns) {
+#define FO_OBJECT(ns,name) \
+		} else if (node.is_begin_untyped() && node.get_ns() == ns && node.get_name() == name) {
+#define FO_ENTITY(ns,name) \
+		} else if (node.is_begin_typed() && node.get_ns() == ns && node.get_name() == name) { \
 			Entity* entity = Entity::load(node.get_string(), reader); \
 			if (entity == NULL) throw File::Error();
-#define FO_PARENT(klass) \
-		} else if (klass::load_node(reader, node) == FO_SUCCESS_CODE) { \
+#define FO_PARENT(ns) \
+		} else if (ns::load_node(reader, node) == FO_SUCCESS_CODE) { \
 			/* no-op */
 #define FO_READ_ERROR \
 		} else { \
-			if (node.is_begin() || node.is_abegin()) \
+			if (node.is_begin()) \
 				reader.consume(); \
 			Log::Error << node << ": Unrecognized attribute"; \
 			throw File::Error(); \

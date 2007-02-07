@@ -2,7 +2,7 @@
 # Copyright (C) 2003-2005  AwesomePlay Productions Inc.
 # Sean Middleditch <elanthis@awemud.net>
 
-object_blueprint {
+blueprint.object {
   blueprint.id = "co_leather_backpack"
   blueprint.equip = "back"
   blueprint.name = "a leather backpack"
@@ -11,7 +11,7 @@ object_blueprint {
   blueprint.container = "in"
   blueprint.tag = "adventurer"
 }
-object_blueprint {
+blueprint.object {
   blueprint.id = "bank_note"
   blueprint.name = "a bank note"
   blueprint.desc = "The bank note is signed by the First Bank of the Lands, and is worth {1.cost} coins with any merchant who accepts bank notes."
@@ -19,7 +19,7 @@ object_blueprint {
   blueprint.cost = 1000
   blueprint.tag = "banknote"
 }
-object_blueprint {
+blueprint.object {
   blueprint.id = "npc_corpse"
   blueprint.name = "a corpse"
   blueprint.desc = "{$self.D} appears fresh.  It is laying motionless on the ground, as every good corpse should."
@@ -30,7 +30,7 @@ object_blueprint {
   blueprint.tag = "corpse"
 }
 
-object_blueprint {
+blueprint.object {
   blueprint.id = "cave_waterfall_portal"
   blueprint.name = "a glowing portal"
   blueprint.desc = "The glowing portal's ovoid, smooth surface gives off a faint blue light as it rests against the northern cavern wall.  The various hues of blue that make up the swirling pattern on the portal's face seem almost at battle, with tides of darker blue giving way to hordes of pale blue, only to resurge and drive back the onslaught."
@@ -38,7 +38,7 @@ object_blueprint {
   blueprint.gettable = false
 }
 
-##object_blueprint {
+##blueprint.object {
 ##  blueprint.id = "raise_undead_talisman"
 ##  blueprint.name = "a skull talisman"
 ##  blueprint.desc = "The talisman is a small golden amulet in the shape of a skull.  Though hard to tell, the eyes appear to faintly glow red."

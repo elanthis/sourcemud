@@ -6,9 +6,9 @@
  */
 
 #include "mud/gametime.h"
-#include "mud/fileobj.h"
 #include "mud/settings.h"
 #include "common/log.h"
+#include "mud/filetab.h"
 
 int
 GameCalendar::load (void)
@@ -16,105 +16,75 @@ GameCalendar::load (void)
 	String path = SettingsManager.get_misc_path() + "/calendar";
 
 	// open
-	File::Reader reader;
+	File::TabReader reader;
 	if (reader.open(path)) {
 		Log::Error << "Failed to open " << path << ": " << strerror(errno);
 		return -1;
 	}
-
-	// do read
-	FO_READ_BEGIN
-		// a month
-		FO_OBJECT("month")
-			GameCalendar::Month month;
-
-			// read month attribute
-			FO_READ_BEGIN
-				FO_ATTR("month", "name")
-					month.name = node.get_string();
-				// days in month
-				FO_ATTR("month", "days")
-					month.day_count = node.get_int();
-				// leap year count
-				FO_ATTR("month", "leap")
-					month.leap_years = node.get_int();
-			FO_READ_ERROR
-				return -1;
-			FO_READ_END
-
-			// must have a name
-			if (!month.name) {
-				Log::Error << "Month has no name at " << reader.get_filename() << ':' << node.get_line();
-				return -1;
-			}
-
-			// add month
-			months.push_back (month);
-
-		// holiday?
-		FO_OBJECT("holiday")
-			GameCalendar::Holiday holiday;
-
-			// read holiday attrs
-			FO_READ_BEGIN
-				FO_ATTR("holiday", "name")
-					holiday.name = node.get_name();
-				// day of month
-				FO_ATTR("holiday", "day")
-					holiday.day = node.get_int();
-				// month?
-				FO_ATTR("holiday", "month")
-					holiday.month = find_month(node.get_string());
-					if (holiday.month < 0) {
-						holiday.month = 0;
-						Log::Error << "Unknown month '" << node.get_string() << "' at " << reader.get_filename() << ':' << node.get_line();
-						return -1;
-					}
-				// years repeat?
-				FO_ATTR("holiday", "years")
-					holiday.year = node.get_int();
-				// day of week?
-				FO_ATTR("holiday", "weekday")
-					holiday.weekday = find_weekday(node.get_string());
-					if (holiday.weekday < 0) {
-						holiday.weekday = 0;
-						Log::Error << "Unknown weekday '" << node.get_string() << "' at " << reader.get_filename() << ':' << node.get_line();
-						return -1;
-					}
-				// weekday index?  (like 2nd tuesday)
-				FO_ATTR("holiday", "wdindex")
-					holiday.wdindex = node.get_int();
-			FO_READ_ERROR
-				return -1;
-			FO_READ_END
-
-			// must have a name
-			if (!holiday.name) {
-				Log::Error << "Holiday has no name at " << reader.get_filename() << ':' << node.get_line();
-				return -1;
-			}
-
-			// add holiday
-			holidays.push_back (holiday);
-		
-		// weekday?
-		FO_ATTR("calendar", "weekday")
-			weekdays.push_back(node.get_string());
-		// daytyime desc text?
-		FO_ATTR("calendar", "day")
-			day_text.push_back(node.get_string());
-		// nighttime desc text?
-		FO_ATTR("calendar", "night")
-			night_text.push_back(node.get_string());
-		// sun-rising text?
-		FO_ATTR("calendar", "sunrise")
-			sunrise_text.push_back(node.get_string());
-		// sun-setting text?
-		FO_ATTR("calendar", "sunset")
-			sunset_text.push_back(node.get_string());
-	FO_READ_ERROR
+	if (reader.load()) {
+		Log::Error << "Failed to open " << path << ": " << strerror(errno);
 		return -1;
-	FO_READ_END
+	}
+
+	// read each entry
+	for (size_t i = 0; i < reader.size(); ++i) {
+		String type = reader.get(i, 0);
+
+		// day time description
+		if (type == "daytime") {
+			String time = reader.get(i, 1);
+			String data = reader.get(i, 2);
+			if (data.empty()) {
+				Log::Error << "Parse error: " << path << ',' << reader.get_line(i) << ": Missing data for daytime entry";
+				return -1;
+			}
+
+			if (time == "day")
+				day_text.push_back(reader.get(i, 1));
+			else if (time == "night")
+				night_text.push_back(reader.get(i, 1));
+			else if (time == "sunrise")
+				sunrise_text.push_back(reader.get(i, 1));
+			else if (time == "sunset")
+				sunset_text.push_back(reader.get(i, 1));
+			else {
+				Log::Error << "Parse error: " << path << ',' << reader.get_line(i) << ": Unknown time '" << time << "' for daytime entry";
+				return -1;
+			}
+
+		// weekday
+		} else if (type == "weekday") {
+			String name = reader.get(i, 1);
+			if (name.empty()) {
+				Log::Error << "Parse error: " << path << ',' << reader.get_line(i) << ": Missing name for weekday entry";
+				return -1;
+			}
+
+			weekdays.push_back(name);
+
+		// month
+		} else if (type == "month") {
+			String name = reader.get(i, 1);
+			ulong days = tolong(reader.get(i, 2));
+			ulong leap = tolong(reader.get(i, 3));
+
+			if (name.empty()) {
+				Log::Error << "Parse error: " << path << ',' << reader.get_line(i) << ": Missing name for month entry";
+				return -1;
+			}
+
+			GameCalendar::Month month;
+			month.name = name;
+			month.day_count = days;
+			month.leap_years = leap;
+			months.push_back(month);
+
+		// unknown
+		} else {
+			Log::Error << "Parse error: " << path << ',' << reader.get_line(i) << ": Unknown entry type";
+			return -1;
+		}
+	}
 
 	// CHECK MONTHS
 	if (!months.size()) {

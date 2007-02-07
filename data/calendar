@@ -3,112 +3,53 @@
 # Sean Middleditch <elanthis@awemud.net>
 
 # Various day/night texts
-calendar.day = "The Sun is casting its light about the world."
-calendar.day = "The Sun's golden rays are illuminating the lands."
-calendar.day = "Shadows creep away as the Sun slowly travels overhead."
-calendar.night = "The moon is making its trek across the night sky."
-calendar.night = "The lands are dark, save for the silver light of the moon."
-calendar.night = "Night's darkness enshrouds the lands."
-calendar.sunrise = "The Sun rises in the East."
-calendar.sunrise = "Glorious light banishes the darkness as it crests the eastern horizon."
-calendar.sunrise = "Night fades into day."
-calendar.sunset = "The Sun sets on the Western horiron."
-calendar.sunset = "Darkness creeps across the lands as night embraces the world."
-calendar.sunset = "The day is conquered by night, and warm light fades into cool darkness."
+daytime day "The Sun is casting its light about the world."
+daytime day "The Sun's golden rays are illuminating the lands."
+daytime day "Shadows creep away as the Sun slowly travels overhead."
+daytime night "The moon is making its trek across the night sky."
+daytime night "The lands are dark, save for the silver light of the moon."
+daytime night "Night's darkness enshrouds the lands."
+daytime sunrise "The Sun rises in the East."
+daytime sunrise "Glorious light banishes the darkness as it crests the eastern horizon."
+daytime sunrise "Night fades into day."
+daytime sunset "The Sun sets on the Western horiron."
+daytime sunset "Darkness creeps across the lands as night embraces the world."
+daytime sunset "The day is conquered by night, and warm light fades into cool darkness."
 
 # Enumerate weekday names
-calendar.weekday = "Ra'din"
-calendar.weekday = "Din"
-calendar.weekday = "Jara"
-calendar.weekday = "So'jin"
-calendar.weekday = "Thrala"
-calendar.weekday = "Rathul"
-calendar.weekday = "Ra'long"
+weekday "Ra'din"
+weekday "Din"
+weekday "Jara"
+weekday "So'jin"
+weekday "Thrala"
+weekday "Rathul"
+weekday "Ra'long"
 
 # Months
-month {
-	month.name = "Snowfall"
-	month.days = 61
-}
-month {
-	month.name = "Rainfall"
-	month.days = 61
-}
-month {
-	month.name = "First Planting"
-	month.days = 61
-}
-month {
-	month.name = "Tides"
-	month.days = 61
-	month.leap = 4
-}
-month {
-	month.name = "Second Planting"
-	month.days = 61
-}
-month {
-	month.name = "Harvest"
-	month.days = 61
-}
+month "Snowfall" 61
+month "Rainfall" 61
+month "First Planting" 61
+month "Tides" 61 4
+month "Second Planting" 61
+month "Harvest" 61
 
 ### The following are the settings used in real-life
-#calendar.weekday = "Sunday"
-#calendar.weekday = "Monday"
-#calendar.weekday = "Tuesday"
-#calendar.weekday = "Wednesday"
-#calendar.weekday = "Thursday"
-#calendar.weekday = "Friday"
-#calendar.weekday = "Saturday"
-#
-## Define months
-#month {
-#  month.name = "January"
-#  month.days = 31
-#}
-#month {
-#  month.name = "February"
-#  month.days = 28
-#  # leap day, once per 4 years
-#  month.leap = 4
-#}
-#month {
-#  month.name = "March"
-#  month.days = 31
-#}
-#month {
-#  month.name = "April"
-#  month.days = 30
-#}
-#month {
-#  month.name = "May"
-#  month.days = 31
-#}
-#month {
-#  month.name = "June"
-#  month.days = 30
-#}
-#month {
-#  month.name = "July"
-#  month.days = 31
-#}
-#month {
-#  month.name = "August"
-#  month.days = 31
-#}
-#month {
-#  month.name = "September"
-#  month.days = 30
-#}
-#month {
-#  month.name = "October"
-#  month.days = 31
-#}
-#month {
-#  month.name = "November"
-#  month.days = 30
-#}
-#month {
-#  month.name = "December"
-#  month.days = 31
-#}
+#weekday "Sunday"
+#weekday "Monday"
+#weekday "Tuesday"
+#weekday "Wednesday"
+#weekday "Thursday"
+#weekday "Friday"
+#weekday "Saturday"
+#month "January" 31
+#month "February" 28 4
+#month "March" 31
+#month "April" 30
+#month "May" 31
+#month "June" 30
+#month "July" 31
+#month "August" 31
+#month "September" 30
+#month "October" 31
+#month "November" 30
+#month "December" 31

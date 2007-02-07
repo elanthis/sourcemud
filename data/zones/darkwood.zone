@@ -7,7 +7,7 @@ zone.desc = "An eerie, dark wood."
 entity.uid = <1441>
 
 # --- SPAWNS ---
-spawn {
+zone.spawn {
   spawn.tag = "darkwood_wolf"
   spawn.count = 1
   spawn.delay = 50

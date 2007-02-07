@@ -3,7 +3,7 @@
 # Sean Middleditch <elanthis@awemud.net>
 
 # Human race
-race {
+races.race {
   race.name = "human"
 
   # basics
@@ -62,7 +62,7 @@ race {
 }
 
 # Elven race
-race {
+races.race {
   race.name = "elf"
 
   # basics
@@ -127,7 +127,7 @@ race {
 }
 
 # Kalruan race (cat-people)
-race {
+races.race {
   race.name = "kalruan"
 
   # basics
@@ -190,7 +190,7 @@ race {
 }
 
 # Dwarvish race
-race {
+races.race {
   race.name = "dwarf"
 
   # basics

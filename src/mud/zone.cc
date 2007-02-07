@@ -125,7 +125,7 @@ Spawn::load (File::Reader& reader)
 void
 Spawn::save (File::Writer& writer) const
 {
-	writer.begin(S("spawn"));
+	writer.begin(S("zone"), S("spawn"));
 
 	writer.attr(S("spawn"), S("tag"), TagID::nameof(tag));
 	writer.attr(S("spawn"), S("count"), min);
@@ -182,7 +182,7 @@ Zone::load_node (File::Reader& reader, File::Node& node)
 		FO_ENTITY("zone", "child")
 			if (ROOM(entity) == NULL) throw File::Error(S("Zone child is not a Room"));
 			add_room(ROOM(entity));
-		FO_OBJECT("spawn")
+		FO_OBJECT("zone", "spawn")
 			Spawn spawn;
 			if (!spawn.load (reader))
 				spawns.push_back(spawn);
@@ -215,10 +215,8 @@ Zone::save_data (File::Writer& writer)
 	// rooms
 	writer.bl();
 	writer.comment(S("--- ROOMS ---"));
-	for (RoomList::iterator i = rooms.begin(); i != rooms.end(); ++i) {
-		writer.begin_open(S("zone"), S("child"));
-		(*i)->save(writer);
-	}
+	for (RoomList::iterator i = rooms.begin(); i != rooms.end(); ++i)
+		(*i)->save(writer, S("zone"), S("child"));
 
 	writer.bl();
 	writer.comment (S(" --- EOF ---"));

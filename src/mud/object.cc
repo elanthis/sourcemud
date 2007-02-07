@@ -212,8 +212,7 @@ Object::save_data (File::Writer& writer)
 
 	// save children objects
 	for (EList<Object>::const_iterator e = children.begin (); e != children.end(); ++e) {
-		writer.begin_open(S("object"), S("child"));
-		(*e)->save(writer);
+		(*e)->save(writer, S("object"), S("child"));
 	}
 
 	// parent data
@@ -257,17 +256,8 @@ void
 ShadowObject::save_data (File::Writer& writer)
 {
 	// save blueprint
-	if (get_blueprint()) {
-		// real blueprint
-		if (get_blueprint()->get_id()) {
-			writer.attr(S("object"), S("blueprint"), get_blueprint()->get_id());
-		// anonymous blueprint
-		} else {
-			writer.begin(S("blueprint"));
-			get_blueprint()->save(writer);
-			writer.end();
-		}
-	}
+	if (get_blueprint())
+		writer.attr(S("object"), S("blueprint"), get_blueprint()->get_id());
 
 	// save name, if set
 	if (!name.empty())
@@ -325,12 +315,6 @@ int
 ShadowObject::load_node(File::Reader& reader, File::Node& node)
 {
 	FO_NODE_BEGIN
-		FO_OBJECT("blueprint")
-			// creates a new anonymous blueprint
-			ObjectBP* blueprint = new ObjectBP();
-			if (blueprint->load(reader))
-				throw File::Error(S("Failed to load anonymous blueprint"));
-			set_blueprint(blueprint);
 		FO_ATTR("object", "blueprint")
 			// sets a real blueprint
 			ObjectBP* blueprint = NULL;
@@ -772,7 +756,7 @@ SObjectBPManager::initialize ()
 			if (reader.open(*i))
 				return -1;
 			FO_READ_BEGIN
-				FO_OBJECT("object_blueprint")
+				FO_OBJECT("blueprint", "object")
 					ObjectBP* blueprint = new ObjectBP();
 					if (blueprint->load(reader)) {
 						Log::Warning << "Failed to load blueprint in " << reader.get_filename() << " at " << node.get_line();
