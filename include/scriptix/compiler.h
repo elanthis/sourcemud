@@ -124,8 +124,6 @@ enum {
 	SXP_SETINDEX,
 	SXP_GETINDEX,
 	SXP_ARRAY,
-	SXP_PREOP,
-	SXP_POSTOP,
 	SXP_RETURN,
 	SXP_BREAK,
 	SXP_METHOD,
@@ -253,8 +251,6 @@ extern const char* sxp_compiler_inbuf;
 #define sxp_new_declare(info,name,value) (new CompilerNode((info), SXP_DECLARE, (value), NULL, NULL, NULL, Atom(name), 0, Nil, 0))
 #define sxp_new_assign(info,name,value) (new CompilerNode((info), SXP_ASSIGN, (value), NULL, NULL, NULL, Atom(name), 0, Nil, 0))
 #define sxp_new_cast(info,type,node) (new CompilerNode((info), SXP_CAST, (node), NULL, NULL, NULL, Atom(), (type), Nil, 0))
-#define sxp_new_preop(info,expr,op,value) (new CompilerNode((info), SXP_PREOP, (expr), (value), NULL, NULL, Atom(), 0, Nil, (op)))
-#define sxp_new_postop(info,expr,op,value) (new CompilerNode((info), SXP_POSTOP, (expr), (value), NULL, NULL, Atom(), 0, Nil, (op)))
 #define sxp_new_negate(info,node) (new CompilerNode((info), SXP_NEGATE, (node), NULL, NULL, NULL, Atom(), 0, Nil, 0))
 #define sxp_new_copy(info,loc) (new CompilerNode((info), SXP_COPY, NULL, NULL, NULL, NULL, Atom(), 0, Nil, (loc)))
 #define sxp_new_streamop(info,lookup,args) (new CompilerNode((info), SXP_STREAM_OP, (lookup), (args), NULL, NULL, Atom(), 0, Nil, 0))

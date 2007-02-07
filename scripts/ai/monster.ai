@@ -23,7 +23,7 @@ event.heartbeat = begin
 		if (self.getRoundTime() > 0)
 			return;
 
-		self.ai_wander -= 1;
+		self.ai_wander = self.ai_wander - 1;
 		if (self.ai_wander <= 0) {
 			self.ai_wander = 200 + getRandom(500);
 			self.goRandomPortal();

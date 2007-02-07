@@ -84,10 +84,6 @@
 %token TLTE "<="
 %token TNE "!="
 %token TFOREACH "foreach"
-%token TADDASSIGN "+="
-%token TSUBASSIGN "-="
-%token TINCREMENT "++"
-%token TDECREMENT "--"
 %token TUNTIL "until"
 %token TNIL "nil"
 %token TIN "in"
@@ -95,8 +91,6 @@
 %token TCONTINUE "continue"
 %token TYIELD "yield"
 %token TPUBLIC "public"
-%token TMULASSIGN "*="
-%token TDIVASSIGN "/="
 %token TVAR "var"
 %token TDEREFERENCE "."
 %token TCONCAT ".."
@@ -240,17 +234,6 @@ expr: expr '+' expr { $$ = sxp_new_math (compiler, OP_ADD, $1, $3); }
 	| expr '[' expr ']' '=' expr %prec '=' { $$ = sxp_new_setindex (compiler, $1, $3, $6); }
 	| expr TDEREFERENCE name '=' expr { $$ = sxp_new_set_property(compiler, $1, Atom::create($3), $5); }
 
-	| lval TADDASSIGN expr { $$ = sxp_new_preop (compiler, $1, OP_ADD, $3); }
-	| lval TSUBASSIGN expr { $$ = sxp_new_preop (compiler, $1, OP_SUBTRACT, $3); }
-	| lval TMULASSIGN expr { $$ = sxp_new_preop (compiler, $1, OP_MULTIPLY, $3); }
-	| lval TDIVASSIGN expr { $$ = sxp_new_preop (compiler, $1, OP_DIVIDE, $3); }
-	| lval TINCREMENT { $$ = sxp_new_postop (compiler, $1, OP_ADD, sxp_new_data (compiler, Value (1))); }
-	| lval TDECREMENT { $$ = sxp_new_postop (compiler, $1, OP_SUBTRACT, sxp_new_data (compiler, Value (1))); }
-
-	// FIXME: problem lines: reduce/reduce errors, can't figure out why or out to fix
-	| TINCREMENT lval { $$ = sxp_new_preop (compiler, $2, OP_ADD, sxp_new_data (compiler, Value (1))); }
-	| TDECREMENT lval { $$ = sxp_new_preop (compiler, $2, OP_SUBTRACT, sxp_new_data (compiler, Value (1))); }
-	
 	| type '(' expr ')' %prec TCAST { $$ = sxp_new_cast (compiler, $1, $3); }
 
 	| name '(' func_args ')' { $$ = sxp_new_invoke (compiler, sxp_new_lookup(compiler, Atom::create($1)), $3); }

@@ -117,7 +117,7 @@ function price_item (player, argv)
 	if (rate <= 0)
 		rate = 100;
 	rate = 10000 / rate; // invert rate; i.e., 125% => 80%
-	rate -= 20;
+	rate = rate - 20;
 	if (rate < 0)
 		rate = 0;
 	
@@ -174,7 +174,7 @@ function sell_item (player, argv)
 	if (rate <= 0)
 		rate = 100;
 	rate = 10000 / rate; // invert rate; i.e., 125% => 80%
-	rate -= 20;
+	rate = rate - 20;
 	if (rate < 0)
 		rate = 0;
 	

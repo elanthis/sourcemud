@@ -125,12 +125,6 @@
 [<]= { return TLTE; }
 == { return TEQUALS; }
 "." { return TDEREFERENCE; }
-"+=" { return TADDASSIGN; }
-"-=" { return TSUBASSIGN; }
-"*=" { return TMULASSIGN; }
-"/=" { return TDIVASSIGN; }
-"++" { return TINCREMENT; }
-"--" { return TDECREMENT; }
 ".." { return TCONCAT; }
 "<<" { return TSTREAM; }
 "||" { return OR; }

@@ -20,7 +20,7 @@ function playerHeartbeat(player)
 	var decay = Int(player.decay_rounds);
 	if (player.isDead() && decay != nil) {
 		// decayed?
-		if (--decay <= 0) {
+		if (decay == 0) {
 			// find the city of the dead
 			var city_of_dead = getRoom('city_of_dead');
 			if (city_of_dead) {
@@ -33,7 +33,7 @@ function playerHeartbeat(player)
 			player.decay_rounds = nil;
 			return;
 		}
-		player.decay_rounds = decay;
+		player.decay_rounds = decay - 1;
 	}
 }
 

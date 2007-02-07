@@ -15,8 +15,8 @@ function makeSpaces(count)
 
 	// add sets of ten
 	while (count >= 10) {
-		count -= 10;
-		string += spaces;
+		count = count - 10;
+		string = string .. spaces;
 	}
 
 	// add left-overs	

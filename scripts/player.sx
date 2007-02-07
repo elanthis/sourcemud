@@ -18,7 +18,7 @@ function playerShowExp(self)
 function playerShowStats(self)
 {
 	self << "Your statistics: \n";
-	for (var i = 0; i < STAT_COUNT; ++i) {
+	for (var i = 0; i < STAT_COUNT; i=i+1) {
 		var stat = self.getEffectiveStat(i);
 		var mod = self.getStatModifier(i);
 
