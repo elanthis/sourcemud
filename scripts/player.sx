@@ -3,22 +3,23 @@
 
 // show experience
 function playerShowExp(self)
-{
 	self << "Experiance chart:\n";
-	if (self.getExp(EXP_WARRIOR))
+	if self.getExp(EXP_WARRIOR) then
 		printInfo(self, "Warrior", self.getExp(EXP_WARRIOR));
-	if (self.getExp(EXP_ROGUE))
+	end
+	if self.getExp(EXP_ROGUE) then
 		printInfo(self, "Rogue", self.getExp(EXP_ROGUE));
-	if (self.getExp(EXP_CASTER))
+	end
+	if self.getExp(EXP_CASTER) then
 		printInfo(self, "Caster", self.getExp(EXP_CASTER));
+	end
 	printInfo(self, "General", self.getExp(EXP_GENERAL));
-}
+end
 
 // show stats
 function playerShowStats(self)
-{
 	self << "Your statistics: \n";
-	for (var i = 0; i < STAT_COUNT; i=i+1) {
+	for i : STAT_COUNT do
 		var stat = self.getEffectiveStat(i);
 		var mod = self.getStatModifier(i);
 
@@ -30,62 +31,61 @@ function playerShowStats(self)
 
 		// value/+mod
 		var plus = '';
-		if (mod >= 0) plus = '+';
+		if mod >= 0 then plus = '+'; end
 		self << @indent(25) << '(' << stat << '/' << plus << mod << ")\n";
-	}
+	end
 	self.setIndent(0);
-}
+end
 	
 // show all player info
 function playerShowInfo(self)
-{
 	// basics
 	self << "Your status:\n";
 	printInfo(self, "Name", self.getName());
 	printInfo(self, "Race", capwords(self.getRace().getName()));
-	if (self.getGender() == GENDER_MALE)
+	if self.getGender() == GENDER_MALE then
 		printInfo(self, "Gender", "Male");
-	else if (self.getGender() == GENDER_FEMALE)
+	elif self.getGender() == GENDER_FEMALE then
 		printInfo(self, "Gender", "Female");
 	else
 		printInfo(self, "Gender", "Neuter");
+	end
 
 	// age
 	printInfo(self, "Age", self.getAge() .. " years (born on " .. self.getBirthday().getDate() .. ")");
 
 	// appearance
-	printInfo(self, "Appearance", strParse('{$self.Desc}', 'self', self));
+	printInfo(self, "Appearance", strParse('{$self.Descend', 'self', self));
 
 	// alignment
-	if (self.isNeutral()) {
-		if (self.isGood())
+	if self.isNeutral() then
+		if self.isGood() then
 			printInfo(self, "Alignment", "Neutral (with good tendancies)");
-		else if (self.isEvil())
+		elif self.isEvil() then
 			printInfo(self, "Alignment", "Neutral (with evil tendancies)");
 		else
 			printInfo(self, "Alignment", "Neutral");
-	} else if (self.isGood()) {
+		end
+	elif self.isGood() then
 		printInfo(self, "Alignment", "Good");
-	} else if (self.isEvil()) {
+	elif self.isEvil() then
 		printInfo(self, "Alignment", "Evil");
-	} else {
+	else
 		printInfo(self, "Alignment", "Unknown");
-	}
+	end
 
 	self << "\n";
 	self.showExp();
-}
+end
 
 // helper function
 function printInfo(player, label, data)
-{
 	player << '  ' << label << ': ' << @indent(14) << data << "\n" << @indent(0);
-}
+end
 
 // extend Player
 function init()
-{
 	Player.addMethod('showExp', playerShowExp);
 	Player.addMethod('showStats', playerShowStats);
 	Player.addMethod('showInfo', playerShowInfo);
-}
+end

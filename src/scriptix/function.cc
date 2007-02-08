@@ -164,7 +164,7 @@ ScriptFunction::compile (String name, String code, String args, String filename,
 		else if (isspace(*i))
 			cname << '_';
 	}
-	String source = S("function ") + cname.str() + S(" (") + args + S(") {\n") + code + S("\n}");
+	String source = S("function ") + cname.str() + S(" (") + args + S(")\n") + code + S("\nend");
 
 	CatchHandler handler;
 

@@ -51,7 +51,7 @@ blueprint.object {
 ##    user << @name(user, EN_INDEF, true) << ' raises ' << @name(self, EN_INDEF, false) << ' into the air, and ' << @name(self, EN_DEF, false) << ' flashes an evil red.\n';
 ##
 ##    // find all corpses in the room
-##    foreach (var object in room.objects()) {
+##    for (var object in room.objects()) {
 ##      // only if its a corpse
 ##      if (object.isBlueprint('npc_corpse')) {
 ##        

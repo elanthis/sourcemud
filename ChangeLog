@@ -1,3 +1,19 @@
+2007-02-08 10:05:46  Sean Middleditch <elanthis@awesomeplay.com>
+
+  * Cleanup of Scriptix grammar.
+  * Removed foreach statement, for now includes that functionality.
+  * Added a basic number iterator loop.  for (var i : amount) and
+    for (var i : start, amount).  ex: for (var i : 10) message(i);
+    would print 0 through 9.
+  * Removed C-style for loop support.
+  * Changes Scriptix to no longer user { and } for code blocks.
+    If statements are now if/then/elif/else/end blocks, and loops
+    require do/end.  Functions don't need any symbols after the
+    argument list and require an end symbol at the end.
+  * Updated Fileobj format to use %begin and %end for marking
+    blocks so as to not conflict with Scriptix.
+  * Scriptix globals must be defined with a value now.
+
 2007-02-07 07:53:16  Sean Middleditch <elanthis@awesomeplay.com>
 
   * Removed support for postop and preop syntax in Scriptix.

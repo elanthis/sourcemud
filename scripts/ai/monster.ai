@@ -5,52 +5,56 @@
 ai.id = "monster"
 
 # initialize after loading up
-event.load = begin
+event.load = %begin
 	self.setState('wander');
 	self.ai_wander = 120 + getRandom(300);
-end
+%end
 
 # save data
-event.save = begin
-	if (String(self.ai_state))
+event.save = %begin
+	if String(self.ai_state) then
 		writer.setString('ai_state', self.ai_state);
-end
+	end
+%end
 
 # heartbeat
-event.heartbeat = begin
+event.heartbeat = %begin
 	// wander
-	if (self.ai_state == 'wander') {
-		if (self.getRoundTime() > 0)
+	if self.ai_state == 'wander' then
+		if self.getRoundTime() > 0 then
 			return;
+		end
 
 		self.ai_wander = self.ai_wander - 1;
-		if (self.ai_wander <= 0) {
+		if self.ai_wander <= 0 then
 			self.ai_wander = 200 + getRandom(500);
 			self.goRandomPortal();
-		}
-	}
-end
+		end
+	end
+%end
 
 # someone new to toy with
-event.EnterRoom = begin
+event.EnterRoom = %begin
 	self.setState('attack');
-end
+%end
 
 # ready to act
-event.ready = begin
-	if (self.ai_state == 'attack') {
+event.ready = %begin
+	if self.ai_state == 'attack' then
 		// if there's nothing to attack, go to wander state
-		if (!self.attackRandomPlayer())
+		if !self.attackRandomPlayer() then
 			self.setState('wander');
-	}
-end
+		end
+	end
+%end
 
 # state changes
-event.pump = begin
-	if (data == 'state') {
-		if (self.ai_state == 'attack')
+event.pump = %begin
+	if data == 'state' then
+		if self.ai_state == 'attack' then
 			self.attackRandomPlayer();
-	}
-end
+		end
+	end
+%end
 
 # vim: set filetype=scriptix :

@@ -3,11 +3,12 @@
 
 // Pause for X ticks
 public function pause (ticks)
-{
 	// check ticks is a valid, >0 integer
 	ticks = Int(ticks);
-	if (!ticks || ticks < 0)
+
+	if !ticks || ticks < 0 then
 		return;
+	end
 	
 	// starting time
 	var start = getTicks();
@@ -16,9 +17,9 @@ public function pause (ticks)
 	yield;
 
 	// yield until enough ticks have passed
-	while ((getTicks() - start) < ticks) {
+	while ((getTicks() - start) < ticks) do
 		yield;
-	}
+	end
 
 	// all set
-}
+end

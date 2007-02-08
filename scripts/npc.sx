@@ -3,50 +3,58 @@
 
 // random portal walking for NPCs
 function goRandomPortal(self)
-{
 	// round time?
-	if (self.getRoundTime() > 0)
+	if self.getRoundTime() > 0 then
 		return false;
+	end
 
 	// get room
 	var room = self.room();
-	if (!room)
+	if !room then
 		return false;
+	end
 
 	// get count
 	var portals = array();
-	foreach(var portal in room.portals())
-		if (self.canUsePortal(portal))
+	for portal in room.portals() do
+		if self.canUsePortal(portal) then
 			portals.append(portal);
-	if (!portals)
+		end
+	end
+	if !portals then
 		return false;
+	end
 
 	// random selection
 	var rand = getRandom(portals.length());
 	self.doGo(portals[rand]);
 	return true;
-}
+end
 
 // attack a random player
 function attackRandomPlayer(self)
-{
 	var room = self.getRoom();
-	if (!room)
+	if !room then
 		return;
+	end
 
 	// round time?  cancel
-	if (self.getRoundTime() > 0)
+	if self.getRoundTime() > 0 then
 		return;
+	end
 
 	// get list of all players in the room
 	var players = array();
-	foreach(var cr in room.creatures())
-		if (!cr.isDead())
-			if (Player(cr))
+	for cr in room.creatures() do
+		if !cr.isDead() then
+			if Player(cr) then
 				players.append(cr);
+			end
+		end
+	end
 
-	// if there are any players...
-	if (players) {
+	// if there are any players... then
+	if players then
 		// get target
 		var i = getRandom(0, players.length());
 		var target = players[i];
@@ -54,73 +62,75 @@ function attackRandomPlayer(self)
 		// attack!
 		self.attack(target);
 		return true;
-	}
+	end
 
 	// nothing to attack
 	return false;
-}
+end
 
 // AI state handling
 function setState(self, state)
-{
 	state = String(state);
-	if (self.ai_state != state) {
+	if self.ai_state != state then
 		self.ai_state = state;
 		self.pumpAI('state');
-	}
-}
+	end
+end
 
 // generate a corpse
 function makeCorpse(npc)
-{
 	// npc must be in a room
 	var room = npc.getRoom();
-	if (!room)
+	if !room then
 		return;
+	end
 
 	// make the corpse object
 	var corpse = createObjectFromBlueprint('npc_corpse');
-	if (!corpse) {
+	if !corpse then
 		error('Failed to find npc_corpse blueprint');
 		return;
-	}
+	end
 
 	// note npc blueprint
 	corpse.npc_blueprint = npc.getBlueprint().getId();
 
 	// rename corpse
 	var cname = npc.corpse_name;
-	if (cname)
+	if cname then
 		corpse.setBaseName(cname);
 	else
 		corpse.setBaseName(npc.getBaseName() .. ' corpse');
+	end
 
 	// move equipment over
-	while (var obj = npc.getEquipAt(0))
-		if (obj.isDropable())
+	while var obj = npc.getEquipAt(0) do
+		if obj.isDropable() then
 			corpse.addObject(obj, CON_ON);
 		else
 			obj.destroy();
+		end
+	end
 
 	// add corpse to room
 	room.addObject(corpse);
 
 	// destroy npc
 	npc.destroy();
-}
+end
 
 // save NPC blueprint on corpse
 function saveCorpseBlueprint(object, writer)
-{
-	if (String(object.npc_blueprint))
+	if String(object.npc_blueprint) then
 		writer.setString('npc_blueprint', object.npc_blueprint);
-}
+	end
+end
 
-function init() {
+function init()
 	registerHook('save_object', saveCorpseBlueprint);
 	registerHook('npc_death', makeCorpse);
 
 	NPC.addMethod('goRandomPortal', goRandomPortal);
 	NPC.addMethod('attackRandomPlayer', attackRandomPlayer);
 	NPC.addMethod('setState', setState);
-}
+end

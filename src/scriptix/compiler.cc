@@ -265,49 +265,14 @@ Scriptix::Compiler::Compiler::CompileNode (CompilerFunction* func, CompilerNode 
 			// a kind of loop
 			case SXP_LOOP:
 				push_block(func->func);
-				switch (node->parts.op) {
-					case SXP_LOOP_WHILE:
-						// while... do - test true, loop
-						_test(CompileNode (func, node->parts.nodes[0]))
-						func->func->add_opcode(OP_TEST);
-						func->func->add_opcode(OP_POP);
-						_test(add_breakOnFalse())
-						_test(CompileNode (func, node->parts.nodes[1]))
-						_test(add_continue())
-						break;
-					case SXP_LOOP_UNTIL:
-						// until... do - test false, loop
-						_test(CompileNode (func, node->parts.nodes[0]))
-						func->func->add_opcode(OP_TEST);
-						func->func->add_opcode(OP_POP);
-						_test(add_breakOnTrue())
-						_test(CompileNode (func, node->parts.nodes[1]))
-						_test(add_continue())
-						break;
-					case SXP_LOOP_DOWHILE:
-						// do... while - loop, test true
-						_test(CompileNode (func, node->parts.nodes[1]))
-						_test(CompileNode (func, node->parts.nodes[0]))
-						func->func->add_opcode(OP_TEST);
-						func->func->add_opcode(OP_POP);
-						func->func->add_opcode(OP_TJUMP);
-						func->func->add_oparg(BlockStart() - func->func->count);
-						break;
-					case SXP_LOOP_DOUNTIL:
-						// do... until - loop, test false
-						_test(CompileNode (func, node->parts.nodes[1]))
-						_test(CompileNode (func, node->parts.nodes[0]))
-						func->func->add_opcode(OP_TEST);
-						func->func->add_opcode(OP_POP);
-						func->func->add_opcode(OP_FJUMP);
-						func->func->add_oparg(BlockStart() - func->func->count);
-						break;
-					case SXP_LOOP_FOREVER:
-						// permanent loop - loop
-						_test(CompileNode (func, node->parts.nodes[1]))
-						_test(add_continue())
-						break;
+				if (!node->parts.op) { // ignore test; always true
+					_test(CompileNode (func, node->parts.nodes[0]))
+					func->func->add_opcode(OP_TEST);
+					func->func->add_opcode(OP_POP);
+					_test(add_breakOnFalse())
 				}
+				_test(CompileNode (func, node->parts.nodes[1]))
+				_test(add_continue())
 				pop_block();
 				break;
 			// set a value in an array
@@ -361,31 +326,6 @@ Scriptix::Compiler::Compiler::CompileNode (CompilerFunction* func, CompilerNode 
 				func->func->add_value(new TypeValue(node->parts.type));
 				func->func->add_opcode(OP_TYPECAST);
 				break;
-			// special loop with a setup section, test, post-body expression
-			case SXP_FOR:
-				// setup
-				_test(CompileNode (func, node->parts.nodes[0]))
-				// skip first increment
-				func->func->add_opcode(OP_JUMP);
-				pos = func->func->count;
-				func->func->add_oparg(0);
-				// begin loop
-				_test(push_block(func->func));
-				// increment
-				_test(CompileNode (func, node->parts.nodes[2]))
-				func->func->nodes[pos] = func->func->count - pos;
-				// loop test
-				_test(CompileNode (func, node->parts.nodes[1]))
-				func->func->add_opcode(OP_TEST);
-				func->func->add_opcode(OP_POP);
-				_test(add_breakOnFalse())
-				// body
-				_test(CompileNode (func, node->parts.nodes[3]))
-				// loop
-				_test(add_continue())
-				// end
-				pop_block();
-				break;
 			// return to start of current loop/block
 			case SXP_CONTINUE:
 				_test(add_continue())
@@ -427,6 +367,47 @@ Scriptix::Compiler::Compiler::CompileNode (CompilerFunction* func, CompilerNode 
 				func->func->add_opcode(OP_GET_PROPERTY);
 				func->func->add_oparg(node->parts.name.value());
 				break;
+			// loop through a range of values
+			case SXP_FORRANGE:
+			{
+				// set variable
+				long index = get_var(func, node->parts.name);
+				if (index < 0) {
+					index = add_var(func, node->parts.name);
+				}
+
+				// initialize
+				_test(CompileNode (func, node->parts.nodes[0]))
+				func->func->add_opcode(OP_ASSIGN);
+				func->func->add_oparg(index);
+				// skip first increment
+				func->func->add_opcode(OP_JUMP);
+				pos = func->func->count;
+				func->func->add_oparg(0);
+				// begin loop
+				_test(push_block(func->func));
+				// increment
+				func->func->add_opcode(OP_LOOKUP);
+				func->func->add_oparg(index);
+				func->func->add_value(Value(1));
+				func->func->add_opcode(OP_ADD);
+				func->func->add_opcode(OP_ASSIGN);
+				func->func->add_oparg(index);
+				func->func->nodes[pos] = func->func->count - pos; // jump position for skipping first increment
+				// loop test
+				_test(CompileNode (func, node->parts.nodes[1]))
+				func->func->add_opcode(OP_LT);
+				func->func->add_opcode(OP_TEST);
+				func->func->add_opcode(OP_POP);
+				_test(add_breakOnFalse())
+				// body
+				_test(CompileNode (func, node->parts.nodes[2]))
+				// loop
+				_test(add_continue())
+				// end
+				pop_block();
+				break;
+			}
 			// iterate over the items in a specialized list
 			case SXP_FOREACH:
 			{
@@ -466,8 +447,8 @@ Scriptix::Compiler::Compiler::CompileNode (CompilerFunction* func, CompilerNode 
 				break;
 			// copy a value
 			case SXP_COPY:
-				func->func->add_oparg(node->parts.op);
 				func->func->add_opcode(OP_COPY);
+				func->func->add_oparg(node->parts.op);
 				break;
 			// concatenate two strings
 			case SXP_CONCAT:

@@ -5,140 +5,147 @@
 ai.id = "animal"
 
 # initialize after loading up
-event.load = begin
+event.load = %begin
 	self.ai_targets = array(); 
 	self.ai_group = String(self.ai_group);
 	self.ai_flee = Int(self.ai_flee) || 30;
 	self.setState('wander');
 	self.ai_wander = 120 + getRandom(300);
-end
+%end
 
 # save data
-event.save = begin
-	if (String(self.ai_group))
+event.save = %begin
+	if String(self.ai_group) then
 		writer.setString('ai_group', self.ai_group);
-	if (String(self.ai_state))
+	end
+	if String(self.ai_state) then
 		writer.setString('ai_state', self.ai_state);
-	if (Int(self.ai_flee))
+	end
+	if Int(self.ai_flee) then
 		writer.setInt('ai_flee', self.ai_flee);
-	if (Int(self.ai_foodchain))
+	end
+	if Int(self.ai_foodchain) then
 		writer.setInt('ai_foodchain', self.ai_foodchain);
-end
+	end
+%end
 
 # attacked!?
-event.attack = begin
+event.attack = %begin
 	// is it ourself?
 	if (actor == self)
 		return;
 
 	// set new target
 	self.ai_target = actor;
-end
+%end
 
 # heartbeat
-event.heartbeat = begin
+event.heartbeat = %begin
 	// wander
-	if (self.ai_state == 'wander') {
-		if (self.getRoundTime() > 0)
+	if self.ai_state == 'wander' then
+		if self.getRoundTime() > 0 then
 			return;
+		end
 
 		self.ai_wander = self.ai_wander - 1;
-		if (self.ai_wander == 0) {
+		if self.ai_wander == 0 then
 			self.ai_wander = 200 + getRandom(500);
 			self.goRandomExit();
-		}
-	}
-end
+		end
+	end
+%end
 
 # someone new to toy with
-event.enter = begin
+event.enter = %begin
 	// automatically flee if we're injured
-	if (actor != self && self.getHpPercent() < 20) {
+	if actor != self && self.getHpPercent() < 20 then
 		self.setState('flee');
 		return;
-	}
+	end
 
 	// if *we* entered, search to see if we should fight or run
-	if (actor == self && self.getHpPercent() < 20) {
-		foreach (var npc in self.getRoom().characters()) {
+	if actor == self && self.getHpPercent() < 20 then
+		for npc in self.getRoom().characters()) then
 			// run if they're scary
-			if (npc.foodchain() >= self.foodchain()) {
+			if npc.foodchain() >= self.foodchain() then
 				self.setState('flee');
 			// or attack if they're easy pickins
-			} else if (self.ai_state == 'wander' && npc.foodchain() < self.foodchain()) {
+			end elif self.ai_state == 'wander' && npc.foodchain() < self.foodchain() then
 				self.ai_target = npc; 
 				self.setState('attack');
-			}
-		}
+			end
+		end
 		return;
-	}
+	end
 
 	// run if they're scary
-	if (actor.foodchain() > self.foodchain()) {
+	if actor.foodchain() > self.foodchain() then
 		self.setState('flee');
 	// or attack if they're easy pickins
-	} else if (self.ai_state == 'wander' && actor.foodchain() < actor.foodchain()) {
+	end elif self.ai_state == 'wander' && actor.foodchain() < actor.foodchain() then
 		self.ai_target = actor;
 		self.setState('attack');
-	}
-end
+	end
+%end
 
 # ready to act
-event.ready = begin
-	if (self.ai_state == 'attack') {
+event.ready = %begin
+	if self.ai_state == 'attack' then
 		// attacker still here?
-		if (!self.ai_target.isDead() && self.ai_target.room() == self.room()) {
+		if !self.ai_target.isDead() && self.ai_target.room() == self.room() then
 			// kill him!
 			self.attack(self.ai_target);
 			return;
-		}
+		end
 
 		// find another target
 		var target = nil;
-		foreach (var attacker in self.ai_targets) {
-			if (!attacker.isDead() && attacker.room() == self.room()) {
+		for attacker in self.ai_targets do
+			if !attacker.isDead() && attacker.room() == self.room() then
 				target = attacker;
 				break;
-			}
-		}
+			end
+		end
 
 		// got an attacker?
-		if (target) {
+		if target then
 			// kill!
 			self.ai_target = target;
 			self.attack(target);
 			return;
-		}
+		end
 
 		// calm down
 		self.ai_target = nil; 
 		self.setState('wander');
-	} else if (self.ai_state == 'flee') {
+	elif self.ai_state == 'flee' then
 		// run if there's danger
 		attacker = nil;
-		foreach (var person in self.room().characters()) {
-			if (person.foodchain() > self.foodchain()) {
+
+		for person in self.room().characters() do
+			if person.foodchain() > self.foodchain() then
 				attacker = person; 
 				break;
-			}
-		}
+			end
+		end
 
-		if (attacker && !self.goRandomExit()) {
+		if attacker && !self.goRandomExit() then
 			self.attack(attacker);
-		} else {
+		else
 			self.setState('wander');
-		}
-	}
-end
+		end
+	end
+%end
 
 # state changes
-event.pump = begin
-	if (data == 'state') {
-		if (self.ai_state == 'attack')
+event.pump = %begin
+	if data == 'state' then
+		if self.ai_state == 'attack' then
 			self.attack(self.ai_target);
-		else if (self.ai_state == 'flee')
+		elif self.ai_state == 'flee' then
 			self.goRandomExit();
-	}
-end
+		end
+	end
+%end
 
 # vim: set filetype=scriptix :

@@ -84,17 +84,17 @@ room {
       blueprint.gettable = false
       blueprint.trashable = false
       blueprint.container = "on"
-      action.touch = begin
+      action.touch = %begin
         // user kneeling?
-        if (user.position() == POS_KNEEL) {
+        if user.position() == POS_KNEEL then
           // messages
           user << "You feel a warmth spread across your body.\n";
           user.room() << @ignore(user) << " glows faintly, then returns to normal.\n";
           // heal player
           var amount = user.getMaxhp() - user.getHp();
           user.heal(amount);
-        }
-      end
+        end
+      %end
     }
     entity.uid = <11>
     object {
@@ -394,10 +394,10 @@ room {
       blueprint.hidden = true
       blueprint.gettable = false
       blueprint.trashable = false
-      action.touch = begin
+      action.touch = %begin
         user << "Dear " << @name(user, EN_NONE, false) << ",\n  Look, do you even know what this river is?  Don't touch it, alright?\n  -- The Management\n";
         return 0;
-      end
+      %end
     }
     entity.uid = <56>
   }

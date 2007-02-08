@@ -135,15 +135,13 @@ sxp_do_transform (CompilerNode** node_ptr)
 			break;
 		/* while/until/do loops - test is true, perma loop, false, noop */
 		case SXP_LOOP:
-			if (node->parts.op != SXP_LOOP_FOREVER) {
-				if (node->parts.nodes[0]->type == SXP_DATA) {
-					/* is always true */
-					if (node->parts.nodes[0]->parts.value.is_true()) {
-						node->parts.op = SXP_LOOP_FOREVER;
-					/* always false */
-					} else {
-						node->type = SXP_NOOP;
-					}
+			if (node->parts.nodes[0]->type == SXP_DATA) {
+				/* is always true */
+				if (node->parts.nodes[0]->parts.value.is_true()) {
+					node->parts.op = 1;
+				/* always false */
+				} else {
+					node->type = SXP_NOOP;
 				}
 			}
 			break;

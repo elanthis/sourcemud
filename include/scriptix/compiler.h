@@ -135,6 +135,7 @@ enum {
 	SXP_IN,
 	SXP_SETPROPERTY,
 	SXP_GETPROPERTY,
+	SXP_FORRANGE,
 	SXP_FOREACH,
 	SXP_STRINGCAST,
 	SXP_INTCAST,
@@ -143,14 +144,6 @@ enum {
 	SXP_STREAM,
 	SXP_STREAM_ITEM,
 	SXP_STREAM_OP
-};
-
-enum {
-	SXP_LOOP_WHILE,
-	SXP_LOOP_DOWHILE,
-	SXP_LOOP_UNTIL,
-	SXP_LOOP_DOUNTIL,
-	SXP_LOOP_FOREVER,
 };
 
 struct CompilerBlock : public GCType::GC {
@@ -233,9 +226,10 @@ extern const char* sxp_compiler_inbuf;
 #define sxp_new_math(info,op,left,right) (new CompilerNode((info), SXP_MATH, (left), (right), NULL, NULL, Atom(), 0, Nil, (op)))
 #define sxp_new_concat(info,left,right) (new CompilerNode((info), SXP_CONCAT, (left), (right), NULL, NULL, Atom(), 0, Nil, 0))
 #define sxp_new_data(info,data) (new CompilerNode((info), SXP_DATA, NULL, NULL, NULL, NULL, Atom(), 0, (data), 0))
-#define sxp_new_loop(info,type,test,body) (new CompilerNode((info), SXP_LOOP, (test), (body), NULL, NULL, Atom(), 0, Nil, (type)))
+#define sxp_new_while(info,test,body) (new CompilerNode((info), SXP_LOOP, (test), (body), NULL, NULL, Atom(), 0, Nil, 0))
 #define sxp_new_if(info,test,then,els) (new CompilerNode((info), SXP_IF, (test), (then), (els), NULL, Atom(), 0, Nil, 0))
 #define sxp_new_for(info,start,test,inc,body) (new CompilerNode((info), SXP_FOR, (start), (test), (inc), (body), Atom(), 0, Nil, 0))
+#define sxp_new_forrange(info,name,start,end,body) (new CompilerNode((info), SXP_FORRANGE, (start), (end), (body), NULL, Atom(name), 0, Nil, 0))
 #define sxp_new_foreach(info,name,list,body) (new CompilerNode((info), SXP_FOREACH, (list), (body), NULL, NULL, Atom(name), 0, Nil, 0))
 #define sxp_new_statement(info,node) (new CompilerNode((info), SXP_STATEMENT, (node), NULL, NULL, NULL, Atom(), 0, Nil, 0))
 #define sxp_new_not(info,node) (new CompilerNode((info), SXP_NOT, (node), NULL, NULL, NULL, Atom(), 0, Nil, 0))

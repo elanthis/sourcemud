@@ -196,11 +196,10 @@ File::Reader::read_token (String& outstr)
 
 		return TOKEN_ID;
 
-	// name
-	} else if (isalpha(test) || test == '_') {
+	// %begin
+	} else if (test == '%') {
 		StringBuffer data;
 		// read in name
-		data << (char)test;
 		while (in) {
 			test = in.peek();
 			if (!isalnum(test) && test != '_')
@@ -209,12 +208,6 @@ File::Reader::read_token (String& outstr)
 		}
 
 		outstr = data.str();
-
-		// true or false?  we're a bool
-		if (outstr == "true")
-			return TOKEN_TRUE;
-		if (outstr == "false")
-			return TOKEN_FALSE;
 
 		// begin?  we're a block
 		if (outstr == "begin") {
@@ -241,7 +234,7 @@ File::Reader::read_token (String& outstr)
 
 				// line end pattern?
 				String tstr = data.str();
-				if (strstr(tstr, "end") && strip(tstr) == "end") // see if the string exists, if so, see if that's all there is
+				if (strstr(tstr, "%end") && strip(tstr) == "%end") // see if the string exists, if so, see if that's all there is
 					break;
 
 				// add data
@@ -249,7 +242,29 @@ File::Reader::read_token (String& outstr)
 			}
 
 			return TOKEN_STRING;
+		} else {
+			throw File::Error(S("Syntax error: unknown symbol: ") + outstr);
 		}
+
+	// name
+	} else if (isalpha(test) || test == '_') {
+		StringBuffer data;
+		// read in name
+		data << (char)test;
+		while (in) {
+			test = in.peek();
+			if (!isalnum(test) && test != '_')
+				break;
+			data << (char)in.get();
+		}
+
+		outstr = data.str();
+
+		// true or false?  we're a bool
+		if (outstr == "true")
+			return TOKEN_TRUE;
+		if (outstr == "false")
+			return TOKEN_FALSE;
 
 		// we're a gneric name token
 		return TOKEN_NAME;
@@ -549,14 +564,14 @@ File::Writer::block (String ns, String name, String data)
 	do_indent();
 
 	// beginning
-	out << ns << "." << name << " = begin\n" << data;
+	out << ns << "." << name << " = %begin\n" << data;
 	// we need to add a newline if we don't have one on end already
 	// FIXME: escape if data includes end line
 	if (data.empty() || data[data.size()-1] != '\n')
 		out << '\n';
 	// ending
 	do_indent();
-	out << "end\n";
+	out << "%end\n";
 }
 
 void

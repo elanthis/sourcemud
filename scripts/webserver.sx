@@ -3,39 +3,38 @@
 
 // display site statistics
 function pageStats(page, http)
-{
 	http.header();
 	http.displayTemplate('stats');
 	http.footer();
-}
+end
 
 // demo
 function pageDemoScript(page, http)
-{
 	http.header();
 
-	if (page == '/demo/session') {
-		if (!http.isSession())
+	if page == '/demo/session' then
+		if !http.isSession() then
 			http << '<p>You must login for this demo to work.</p>';
+		end
 
-		if (http.getPOST('action') == 'Save')
+		if http.getPOST('action') == 'Save' then
 			http.setVar('val', http.getPOST('val'));
+		end
 
 		http << '<form action="/demo/session" method="post">';
 		http << '<input type="text" name="val" value="' << http.getVar('val') << '" /> <input type="submit" name="action" value="Save" />';
 		http << '</form>';
-	} else {
+	else
 		http << '<p>Demos:</p><ul>';
 		http << '<li><a href="/demo/session">session variables</a></li>';
 		http << '</ul>';
-	}
+	end
 
 	http.footer();
-}
+end
 
 function init()
-{
 	registerPage('/stats', pageStats);
 	registerPage('/demo', pageDemoScript);
 	registerPage('/demo/session', pageDemoScript);
-}
+end

@@ -5,37 +5,31 @@
 
 // View player experience pools
 function experience (player)
-{
 	// experience chart
 	player.showExp();
-}
+end
 
 // Show player stats
 function stats (player, argv)
-{
 	player.showStats();
-}
+end
 
 // Show player attributes
 function info (player, argv)
-{
 	player.showInfo();
-}
+end
 function self (player, argv)
-{
 	player.showInfo();
-}
+end
 function score (player, argv)
-{
 	player.showInfo();
-}
+end
 function status (player, argv)
-{
 	player.showInfo();
-}
+end
 
 // register command
-function init() {
+function init()
 	registerCommand(
 		"experience",
 		"experience\n",
@@ -54,4 +48,4 @@ function init() {
 		["score","self","info","status"],
 		score,
 		nil);
-}
+end

@@ -2,227 +2,226 @@
 // Copyright (C) 2003  AwesomePlay Productions, Inc.
 
 function show_menu (player)
-{
 	// get room
 	var room = player.room();
-	if (!room) {
+	if !room then
 		player << 'You are not in a room.\n';
 		return;
-	}
+	end
 
 	// is there a menu?
 	var list = room.store_list;
-	if (!String(list)) {
+	if !String(list) then
 		player << 'There is no store here.\n';
 		return;
-	}
+	end
 
 	// get rate
 	var rate = Int(room.store_rate);
-	if (rate <= 0)
+	if rate <= 0 then
 		rate = 100;
+	end
 
 	// show the menu
 	player << 'Items for Sale:\n' << @indent(2) << '-name-' << @indent(20) << ' -costs-\n' << @indent(0);
-	foreach (var item in list.split(',')) {
+	for item in list.split(',') do
 		var blueprint = getObjectBP(item);
-		if (blueprint) {
+		if blueprint then
 			player << @ignore(2) << blueprint.getName().substr(0, 18) << @ignore(20) << pad(String(blueprint.getCost() * rate / 100), 7) << '\n' << @indent(0);
-		}
-	}
-}
+		end
+	end
+end
 
 function buy_item (player, argv)
-{
 	// get room
 	var room = player.room();
-	if (!room) {
+	if !room then
 		player << 'You are not in a room.\n';
 		return;
-	}
+	end
 
 	// is there a menu?
 	var list = room.store_list;
-	if (!String(list)) {
+	if !String(list) then
 		player << 'There is no store here.\n';
 		return;
-	}
+	end
 
 	// get rate
 	var rate = Int(room.store_rate);
-	if (rate <= 0)
+	if rate <= 0 then
 		rate = 100;
+	end
 
 	// find the item (blueprint)
 	var purchase = nil;
-	foreach (var item in list.split(',')) {
+	for item in list.split(',') do
 		var blueprint = getObjectBP(item);
-		if (blueprint && strMatch(argv[0], blueprint.getName())) {
+		if blueprint && strMatch(argv[0], blueprint.getName()) then
 			purchase = blueprint;
 			break;
-		}
-	}
-	if (!purchase) {
+		end
+	end
+	if !purchase then
 		player << 'There is no \'' <<  argv[0] << '\' for sale here.\n';
 		return;
-	}
+	end
 
 	// check cost
 	var cost = purchase.getCost() * rate / 100;
-	if (cost > player.getCoins()) {
+	if cost > player.getCoins() then
 		player << 'You don\'t have enough money to purchase that.\n';
 		return;
-	}
+	end
 
 	// have a free hand?
-	if (!player.freeHands()) {
+	if !player.freeHands() then
 		player << 'Your hands are full.\n';
 		return;
-	}
+	end
 
 	// create the item
 	var object = purchase.create();
-	if (!object) {
+	if !object then
 		message('Store in ', room, ' has invalid item \'', purchase.getId(), '\'');
 		player << 'The store is currently out of stock.\n';
 		return;
-	}
+	end
 
 	// do transaction
 	player.takeCoins(cost);
 	player.hold(object);
 	player << 'You pay ' << cost << ' coins in exchange for ' << object.getNamef(EN_INDEF, false) << '.\n';
 	player.room() << @ignore(player) << @name(player, EN_INDEF, true) << ' exchanges some coins for a ' << @name(object, EN_INDEF, false) << '.\n';
-}
+end
 
 function price_item (player, argv)
-{
 	// get room
 	var room = player.room();
-	if (!room) {
+	if !room then
 		player << 'You are not in a room.\n';
 		return;
-	}
+	end
 
 	// is there a store buy list?
 	var buys = room.store_buys;
-	if (!buys) {
+	if !buys then
 		player << 'You cannot sell items here.\n';
 		return;
-	}
+	end
 	buys = buys.split(',');
 
 	// get rate
 	var rate = Int(room.store_rate);
-	if (rate <= 0)
-		rate = 100;
+	if rate <= 0 then rate = 100; end
 	rate = 10000 / rate; // invert rate; i.e., 125% => 80%
 	rate = rate - 20;
-	if (rate < 0)
+	if rate < 0 then
 		rate = 0;
+	end
 	
 	// get item
 	var object = player.clFindObject(argv[0], GOC_HELD, false);
-	if (!object)
+	if !object then
 		return;
+	end
 
 	// check item class
 	var ok = false;
-	foreach (var class in buys) {
-		if (object.isBlueprint(class)) {
+	for class in buys do
+		if object.isBlueprint(class) then
 			ok = true;
 			break;
-		}
-	}
-	if (!ok) {
+		end
+	end
+	if !ok then
 		player << 'You cannot sell ' << @name(object, EN_DEF, false) << '.\n';
 		return;
-	}
+	end
 
 	// determine sell cost of item
 	var cost = object.getCost();
 	cost = cost * rate / 100;
-	if (cost <= 0) {
+	if cost <= 0 then
 		player << 'That item is worthless here.\n';
 		return;
-	} else if (cost == 1) {
+	elif cost == 1 then
 		player << @name(object, EN_DEF, true) << ' can be sold for one coin.\n';
-	} else if (cost > 0) {
+	elif cost > 0 then
 		player << @name(object, EN_DEF, true) << ' can be sold for ' << cost << ' coins.\n';
-	}
-}
+	end
+end
 
 function sell_item (player, argv)
-{
 	// get room
 	var room = player.room();
-	if (!room) {
+	if !room then
 		player << 'You are not in a room.\n';
 		return;
-	}
+	end
 
 	// is there a store buy list?
 	var buys = room.store_buys;
-	if (!buys) {
+	if !buys then
 		player << 'You cannot sell items here.\n';
 		return;
-	}
+	end
 	buys = buys.split(',');
 
 	// get rate
 	var rate = Int(room.store_rate);
-	if (rate <= 0)
-		rate = 100;
+	if rate <= 0 then rate = 100; end
 	rate = 10000 / rate; // invert rate; i.e., 125% => 80%
 	rate = rate - 20;
-	if (rate < 0)
-		rate = 0;
+	if rate < 0 then rate = 0; end
 	
 	// get item
 	var object = player.clFindObject(argv[0], GOC_HELD, false);
-	if (!object)
+	if !object then
 		return;
+	end
 
 	// check item class
 	var ok = false;
-	foreach (var class in buys) {
-		if (object.isBlueprint(class)) {
+	for class in buys do
+		if object.isBlueprint(class) then
 			ok = true;
 			break;
-		}
-	}
-	if (!ok) {
+		end
+	end
+	if !ok then
 		player << 'You cannot sell ' << @name(object, EN_DEF, false) << '.\n';
 		return;
-	}
+	end
 
 	// determine sell cost of item
 	var cost = object.getCost();
 	cost = cost * rate / 100;
-	if (cost <= 0) {
+	if cost <= 0 then
 		player << 'That item is worthless here.\n';
 		return;
-	}
+	end
 
 	// do transaction
 	player.giveCoins(cost);
 	object.remove();
 	player << 'You receive ' << cost << ' coins in exchange for ' << @name(object, EN_DEF, false) << '.\n';
 	player.room() << @ignore(player) << @name(player, EN_INDEF, true) << ' receives some coins in exchange for ' << @name(object, EN_INDEF, false) << '.\n';
-}
+end
 
 function save_store (room, writer)
-{
-	if (String(room.store_list))
+	if String(room.store_list) then
 		writer.setString('store_list', room.store_list);
-	if (String(room.store_buys))
+	end
+	if String(room.store_buys) then
 		writer.setString('store_buys', room.store_buys);
-	if (Int(room.store_rate))
+	end
+	if Int(room.store_rate) then
 		writer.setInt('store_rate', room.store_rate);
-}
+	end
+end
 
 function init ()
-{
 	registerHook('save_room', save_store);
 
 	registerCommand(
@@ -249,4 +248,4 @@ function init ()
 		"price :0*",
 		price_item,
 		nil);
-}
+end

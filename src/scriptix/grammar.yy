@@ -83,8 +83,6 @@
 %token TGTE ">="
 %token TLTE "<="
 %token TNE "!="
-%token TFOREACH "foreach"
-%token TUNTIL "until"
 %token TNIL "nil"
 %token TIN "in"
 %token TFOR "for"
@@ -92,6 +90,9 @@
 %token TYIELD "yield"
 %token TPUBLIC "public"
 %token TVAR "var"
+%token TTHEN "then"
+%token TELIF "elif"
+%token TEND "end"
 %token TDEREFERENCE "."
 %token TCONCAT ".."
 %token TBREAK "break"
@@ -106,7 +107,7 @@
 %left TNE TEQUALS
 %left '+' '-' TCONCAT
 %left '*' '/'
-%nonassoc WHILE TUNTIL DO
+%nonassoc WHILE
 %nonassoc '!' CUNARY
 %nonassoc TINCREMENT TDECREMENT
 %left TCAST
@@ -116,8 +117,8 @@
 %nonassoc IF
 %nonassoc ELSE
 
-%type<node> args block stmts stmt expr func_args lval
-%type<node> stream stream_item
+%type<node> args block stmt expr func_args elif body ctrl
+%type<node> stream stream_item rval assign call declare
 %type<names> arg_names_list arg_names
 %type<value> data
 %type<id> name
@@ -130,46 +131,54 @@ program:
 	| program error
 	;
 
-function: TFUNCTION name '(' arg_names ')' '{' block '}' { compiler->add_func(Atom::create($2), ($4 ? *$4 : NameList()), $7, false); }
-	| TPUBLIC TFUNCTION name '(' arg_names ')' '{' block '}' { compiler->add_func(Atom::create($3), ($5 ? *$5 : NameList()), $8, true); }
+function: TFUNCTION name '(' arg_names ')' body { compiler->add_func(Atom::create($2), ($4 ? *$4 : NameList()), $6, false); }
+	| TPUBLIC TFUNCTION name '(' arg_names ')' body { compiler->add_func(Atom::create($3), ($5 ? *$5 : NameList()), $7, true); }
 	;
 
 global: TVAR name '=' data ';' { compiler->set_global(Atom::create($2), $4); }
-	| TVAR name ';' { compiler->set_global(Atom::create($2), Nil); }
 	;
 
-block: { $$ = NULL; }
-	| stmts { $$ = $1; }
+body: TEND { $$ = NULL; }
+	| block TEND { $$ = $1; }
 	;
 
-stmts:	stmt { $$ = $1; }
-	| stmts stmt { if ($1 != NULL) { $$ = $1; $$->Append($2); } else { $$ = $2; } }
+block: stmt ';' { $$ = $1; }
+	| ctrl { $$ = $1; }
+	| block stmt ';' { if ($1 != NULL) { $$ = $1; $$->Append($2); } else { $$ = $2; } }
+	| block ctrl { if ($1 != NULL) { $$ = $1; $$->Append($2); } else { $$ = $2; } }
 	;
 
-stmt:	expr ';' { $$ = sxp_new_statement(compiler, $1); }
-	| TRETURN expr ';' { $$ = sxp_new_return (compiler, $2); }
-	| TRETURN ';' { $$ = sxp_new_return (compiler, NULL); }
-	| TBREAK ';' { $$ = sxp_new_break (compiler); }
-	| TCONTINUE ';' { $$ = sxp_new_continue (compiler); }
-	| TYIELD ';' { $$ = sxp_new_yield (compiler); }
+stmt: assign { $$ = sxp_new_statement(compiler, $1); }
+	| declare { $$ = sxp_new_statement(compiler, $1); }
+	| call { $$ = sxp_new_statement(compiler, $1); }
 
-	| expr stream ';' { $$ = sxp_new_stream(compiler, $1, $2); }
+	| TRETURN expr { $$ = sxp_new_return (compiler, $2); }
+	| TRETURN { $$ = sxp_new_return (compiler, NULL); }
+	| TBREAK { $$ = sxp_new_break (compiler); }
+	| TCONTINUE { $$ = sxp_new_continue (compiler); }
+	| TYIELD { $$ = sxp_new_yield (compiler); }
 
-	| IF '(' expr ')' stmt %prec IF { $$ = sxp_new_if (compiler, $3, $5, NULL); }
-	| IF '(' expr ')' stmt ELSE stmt %prec ELSE { $$ = sxp_new_if (compiler, $3, $5, $7); }
-	| WHILE '(' expr ')' stmt { $$ = sxp_new_loop (compiler, SXP_LOOP_WHILE, $3, $5); }
-	| TUNTIL '(' expr ')' stmt { $$ = sxp_new_loop (compiler, SXP_LOOP_UNTIL, $3, $5); }
-	| DO stmt WHILE '(' expr ')' ';' { $$ = sxp_new_loop (compiler, SXP_LOOP_DOWHILE, $5, $2); }
-	| DO stmt TUNTIL '(' expr ')' ';' { $$ = sxp_new_loop (compiler, SXP_LOOP_DOUNTIL, $5, $2); }
-	| DO stmt { $$ = sxp_new_loop (compiler, SXP_LOOP_FOREVER, NULL, $2); }
-	
-	| TFOR '(' expr ';' expr ';' expr ')' stmt { $$ = sxp_new_for (compiler, sxp_new_statement(compiler, $3), $5, sxp_new_statement(compiler, $7), $9); }
-/*	| TFOREACH '(' name TIN expr ')' stmt { $$ = sxp_new_foreach (compiler, $3, $5, $7); } */
-	| TFOREACH '(' TVAR name TIN expr ')' stmt { $$ = sxp_new_foreach (compiler, Atom::create($4), $6, $8); }
-
-	| '{' block '}' { $$ = $2; }
+	| expr stream { $$ = sxp_new_stream(compiler, $1, $2); }
 
 	| error { $$ = NULL; }
+	;
+
+ctrl: IF expr TTHEN block TEND { $$ = sxp_new_if (compiler, $2, $4, NULL); }
+	| IF expr TTHEN block elif TEND { $$ = sxp_new_if (compiler, $2, $4, $5); }
+	| IF expr TTHEN block ELSE block TEND { $$ = sxp_new_if (compiler, $2, $4, $6); }
+	| IF expr TTHEN block elif ELSE block TEND { $$ = sxp_new_if (compiler, $2, $4, $5); $5->parts.nodes[2] = $7; }
+	| WHILE expr DO block TEND { $$ = sxp_new_while (compiler, $2, $4); }
+	| WHILE declare DO block TEND { $$ = sxp_new_while (compiler, $2, $4); }
+	
+	| TFOR name ':' expr DO block TEND { $$ = sxp_new_forrange (compiler, Atom::create($2), sxp_new_data(compiler, Value(0)), $4, $6); }
+	| TFOR name ':' expr ',' expr DO block TEND { $$ = sxp_new_forrange (compiler, Atom::create($2), $4, $6, $8); }
+	| TFOR name TIN expr DO block TEND { $$ = sxp_new_foreach (compiler, Atom::create($2), $4, $6); }
+
+	| error { $$ = NULL; }
+	;
+
+elif: TELIF expr TTHEN block { $$ = sxp_new_if (compiler, $2, $4, NULL); }
+	| elif TELIF expr TTHEN block { $$ = $1; $1->parts.nodes[2] = sxp_new_if (compiler, $3, $5, NULL); }
 	;
 
 stream: stream_item { $$ = $1; }
@@ -196,9 +205,31 @@ func_args: args { $$ = $1; }
 	| { $$ = NULL; }
 	;
 
+/*
 lval: name { $$ = sxp_new_lookup(compiler, Atom::create($1)); }
 	| expr '[' expr ']' { $$ = sxp_new_getindex(compiler, $1, $3); }
 	| expr TDEREFERENCE name { $$ = sxp_new_get_property(compiler, $1, Atom::create($3)); }
+	;
+*/
+
+rval: name { $$ = sxp_new_lookup(compiler, Atom::create($1)); }
+	| expr '[' expr ']' { $$ = sxp_new_getindex(compiler, $1, $3); }
+	| expr TDEREFERENCE name { $$ = sxp_new_get_property(compiler, $1, Atom::create($3)); }
+	| data { $$ = sxp_new_data (compiler, $1); }
+	;
+
+declare: TVAR name '=' expr { $$ = sxp_new_declare (compiler, Atom::create($2), $4); }
+/*	| TVAR name { $$ = sxp_new_declare (compiler, Atom::create($2), NULL); } */
+	;
+
+assign: name '=' expr { $$ = sxp_new_assign (compiler, Atom::create($1), $3); }
+	| expr '[' expr ']' '=' expr %prec '=' { $$ = sxp_new_setindex (compiler, $1, $3, $6); }
+	| expr TDEREFERENCE name '=' expr { $$ = sxp_new_set_property(compiler, $1, Atom::create($3), $5); }
+	;
+
+call: name '(' func_args ')' { $$ = sxp_new_invoke (compiler, sxp_new_lookup(compiler, Atom::create($1)), $3); }
+	| '(' expr ')' '(' func_args ')' { $$ = sxp_new_invoke (compiler, $2, $5); }
+	| expr TDEREFERENCE name '(' func_args ')' { $$ = sxp_new_method (compiler, $1, Atom::create($3), $5); }
 	;
 
 expr: expr '+' expr { $$ = sxp_new_math (compiler, OP_ADD, $1, $3); }
@@ -228,25 +259,16 @@ expr: expr '+' expr { $$ = sxp_new_math (compiler, OP_ADD, $1, $3); }
 	| expr TLTE expr { $$ = sxp_new_math (compiler, OP_LTE, $1, $3); }
 	| expr TEQUALS expr { $$ = sxp_new_math (compiler, OP_EQUAL, $1, $3); }
 
-	| TVAR name { $$ = sxp_new_declare (compiler, Atom::create($2), NULL); }
-	| TVAR name '=' expr { $$ = sxp_new_declare (compiler, Atom::create($2), $4); }
-	| name '=' expr { $$ = sxp_new_assign (compiler, Atom::create($1), $3); }
-	| expr '[' expr ']' '=' expr %prec '=' { $$ = sxp_new_setindex (compiler, $1, $3, $6); }
-	| expr TDEREFERENCE name '=' expr { $$ = sxp_new_set_property(compiler, $1, Atom::create($3), $5); }
+	| assign { $$ = $1; }
+
+	| call { $$ = $1; }
 
 	| type '(' expr ')' %prec TCAST { $$ = sxp_new_cast (compiler, $1, $3); }
-
-	| name '(' func_args ')' { $$ = sxp_new_invoke (compiler, sxp_new_lookup(compiler, Atom::create($1)), $3); }
-	| '(' expr ')' '(' func_args ')' { $$ = sxp_new_invoke (compiler, $2, $5); }
-
-	| expr TDEREFERENCE name '(' func_args ')' { $$ = sxp_new_method (compiler, $1, Atom::create($3), $5); }
 
 	| '[' args ']' { $$ = sxp_new_array (compiler, $2); }
 	| '[' ']' { $$ = sxp_new_array (compiler, NULL); }
 
-	| data { $$ = sxp_new_data (compiler, $1); }
-
-	| lval { $$ = $1; }
+	| rval { $$ = $1; }
 	;
 
 	

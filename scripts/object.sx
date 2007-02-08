@@ -2,24 +2,28 @@
 // Copyright (C) 2002  AwesomePlay Productions, Inc.
 
 function saveObjectBlueprint(blueprint, writer)
-{
-	if (String(blueprint.read_text))
+	if String(blueprint.read_text) then
 		writer.setString('read_text', blueprint.read_text);
-	if (String(blueprint.read_room))
+	end
+	if String(blueprint.read_room) then
 		writer.setString('read_room', blueprint.read_room);
+	end
 
-	if (String(blueprint.eat_text))
+	if String(blueprint.eat_text) then
 		writer.setString('eat_text', blueprint.eat_text);
-	if (String(blueprint.eat_room))
+	end
+	if String(blueprint.eat_room) then
 		writer.setString('eat_room', blueprint.eat_room);
+	end
 
-	if (String(blueprint.drink_text))
+	if String(blueprint.drink_text) then
 		writer.setString('drink_text', blueprint.drink_text);
-	if (String(blueprint.drink_room))
+	end
+	if String(blueprint.drink_room) then
 		writer.setString('drink_room', blueprint.drink_room);
-}
+	end
+end
 
 function init()
-{
 	registerHook('save_object_blueprint', saveObjectBlueprint);
-}
+end

@@ -3,43 +3,43 @@
 
 // add matches() to String
 function init()
-{
 	String.addMethod('matches', strMatch);
-}
+end
 
 // make spaces
 function makeSpaces(count)
-{
 	var spaces = '          ';  // ten spaces
 	var string = '';
 
 	// add sets of ten
-	while (count >= 10) {
+	while (count >= 10) do
 		count = count - 10;
 		string = string .. spaces;
-	}
+	end
 
 	// add left-overs	
-	if (count > 0)
+	if count > 0 then
 		string = string .. spaces.substr(0, count);
+	end
 
 	return string;
-}
+end
 
 // left pad a string
 public function pad(string, length)
-{
 	// get str len
 	var slen = string.length();
 
 	// just right?  return
-	if (slen == length)
+	if slen == length then
 		return string;
+	end
 
 	// too long?  cut and return
-	if (slen > length)
+	if slen > length then
 		return string.substr(0,length);
+	end
 
 	// not long enough, so we pad and return
 	return makeSpaces(length - slen) .. string;
-}
+end

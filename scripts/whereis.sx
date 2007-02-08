@@ -8,44 +8,42 @@
 
 // whereis command
 function whereis(who, argv)
-{
 	// player?
-	if (argv[1] == 'player') {
+	if argv[1] == 'player' then
 		var player = getPlayer(argv[0]);
-		if (!player) {
+		if !player then
 			who << "Player '" << argv[0] << "' is not logged in.\n";
 			return;
-		}
+		end
 
-		if (!player.room()) {
+		if !player.room() then
 			who << "The player " << player << " isn't in any room.\n";
 			return;
-		}
+		end
 
 		who << "The player " << player << " is in room " << player.room() << " <" << player.room().getId() << ">, in zone " << player.room().zone() << " <" << player.room().zone().getId() << ">.\n";
 	// uname
-	} else {
+	else
 		var elist = getEntitiesByTag(argv[0]);
-		if (!elist) {
+		if !elist then
 			who << "No entity with tag '" << argv[0] << "' exists.\n";
 			return;
-		}
+		end
 
-		foreach(var entity in elist) {
+		for entity in elist do
 			var room = entity.getRoom();
-			if (!room) {
+			if !room then
 				who << @name(entity, EN_DEF, true) << " is not in a room.\n";
 				return;
-			}
+			end
 
 			who << @name(entity, EN_DEF, true) << " is in room " << room << " <" << room.getId() << "> in zone " << room.zone() << " <" << room.zone().getId() << ">.\n";
-		}
-	}
-}
+		end
+	end
+end
 
 // register command
 function init ()
-{
 	registerCommand(
 		"whereis",
 		"whereis player <player>\n" ..
@@ -54,4 +52,4 @@ function init ()
 		"whereis :1uname :0*"],
 		whereis,
 		"gm");
-}
+end
