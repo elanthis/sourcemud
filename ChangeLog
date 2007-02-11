@@ -1,3 +1,9 @@
+2007-02-11 07:11:33  Sean Middleditch <elanthis@awesomeplay.com>
+
+  * New character login was crashing because the character had no
+    prior room, and the enter_room function incorrectly passed in
+    events with no room.
+
 2007-02-08 10:05:46  Sean Middleditch <elanthis@awesomeplay.com>
 
   * Cleanup of Scriptix grammar.

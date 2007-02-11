@@ -93,6 +93,8 @@ bool
 SEventManager::request (EventID id, Room* room, Entity *actor, Entity* target, Entity* aux, Scriptix::Value data1, Scriptix::Value data2, Scriptix::Value data3, Scriptix::Value data4, Scriptix::Value data5)
 {
 	assert (id.valid());
+	assert (room != NULL);
+	assert (actor != NULL);
 
 	// manage nesting
 	if (nest == EVENT_MAX_NEST) {
@@ -143,6 +145,8 @@ bool
 SEventManager::command (EventID id, Room* room, Entity *actor, Entity* target, Entity* aux, Scriptix::Value data1, Scriptix::Value data2, Scriptix::Value data3, Scriptix::Value data4, Scriptix::Value data5)
 {
 	assert (id.valid());
+	assert (room != NULL);
+	assert (actor != NULL);
 
 	// manage nesting
 	if (nest == EVENT_MAX_NEST) {
@@ -171,6 +175,8 @@ void
 SEventManager::notify (EventID id, Room* room, Entity *actor, Entity* target, Entity* aux, Scriptix::Value data1, Scriptix::Value data2, Scriptix::Value data3, Scriptix::Value data4, Scriptix::Value data5)
 {
 	assert (id.valid());
+	assert (room != NULL);
+	assert (actor != NULL);
 
 	// create event
 	Event event(EVENT_NOTIFY, id, room, actor, target, aux);
@@ -216,6 +222,7 @@ SEventManager::process (void)
 		*/
 
 		// send event
-		event.get_room()->broadcast_event(event);
+		if (event.get_room())
+			event.get_room()->broadcast_event(event);
 	}
 }

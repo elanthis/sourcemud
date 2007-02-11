@@ -405,7 +405,7 @@ Creature::enter (Room *new_room, Portal *old_portal)
 	if (!Events::requestEnterRoom(new_room, this, enter_portal, old_room)) return false;
 	if (old_room && old_zone != new_zone)
 		if (!Events::requestLeaveZone(old_room, this, new_zone)) return false;
-	if (old_zone != new_zone)
+	if (old_room && old_zone != new_zone)
 		if (!Events::requestEnterZone(old_room, this, old_zone)) return false;
 
 	// did we go thru an portal?
@@ -431,7 +431,7 @@ Creature::enter (Room *new_room, Portal *old_portal)
 	Events::notifyEnterRoom(new_room, this, enter_portal, old_room);
 	if (old_room && old_zone != new_zone)
 		Events::notifyLeaveZone(old_room, this, new_zone);
-	if (old_zone != new_zone)
+	if (old_room && old_zone != new_zone)
 		Events::notifyEnterZone(old_room, this, old_zone);
 
 	do_look();
