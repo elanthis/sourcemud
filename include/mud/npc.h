@@ -55,11 +55,6 @@ NpcBP : public Scriptix::Native
 	inline void set_gender (GenderType s_gender) { gender = s_gender; set_flags.gender = true; }
 	void reset_gender ();
 
-	// alignment
-	inline CreatureAlign get_alignment () const { return alignment; }
-	inline void set_alignment (CreatureAlign s_align) { alignment = s_align; set_flags.alignment = true; }
-	void reset_alignment ();
-
 	// combat
 	inline uint get_combat_dodge () const { return combat.dodge; }
 	inline uint get_combat_attack () const { return combat.attack; }
@@ -80,7 +75,6 @@ NpcBP : public Scriptix::Native
 	String desc;
 	StringList keywords;
 	GenderType gender;
-	CreatureAlign alignment;
 	CreatureStatArray base_stats;
 	NpcBP* parent;
 	StringList equip_list;
@@ -96,13 +90,12 @@ NpcBP : public Scriptix::Native
 		int	name:1,
 			desc:1,
 			gender:1,
-			alignment:1,
 			dodge:1,
 			attack:1,
 			damage:1,
 			stats:1;
 		inline SetFlags () : name(false), desc(false),
-			gender(false), alignment(false), dodge(false), attack(false),
+			gender(false), dodge(false), attack(false),
 			damage(false), stats(false) {}
 	} set_flags;
 
@@ -137,9 +130,6 @@ class Npc : public Creature
 
 	// stats
 	virtual int get_base_stat (CreatureStatID stat) const;
-
-	// alignment
-	virtual CreatureAlign get_alignment () const;
 
 	// save and load
 	virtual int load_node (File::Reader& reader, File::Node& node);

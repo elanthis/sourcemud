@@ -1,3 +1,10 @@
+2007-02-11 08:01:53  Sean Middleditch <elanthis@awesomeplay.com>
+
+  * Remove creature alignment.  Complexity we don't need right now.
+  * Remove experience pools, replace with a single experience total.
+    I still have no good way to decide when to award different
+    types of XP.  Or even when to award regular XP, for that matter.
+
 2007-02-11 07:11:33  Sean Middleditch <elanthis@awesomeplay.com>
 
   * New character login was crashing because the character had no

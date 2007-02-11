@@ -1,5 +1,5 @@
 # Player file: Admin
-# Timestamp: Thu Feb  8 04:07:32 2007
+# Timestamp: Sun Feb 11 03:00:22 2007
 # 
 
 entity.uid = <1>
@@ -18,11 +18,10 @@ creature.equip_back = sobject {
   entity.uid = <23>
 }
 player.created = "2000-01-01 00:00:00"
-player.lastlogin = "2007-02-08 04:07:30"
+player.lastlogin = "2007-02-11 03:00:22"
 player.playtime = 2113
 player.race = "human"
 player.birthday = "0001/06/10 09.14"
-player.alignment = 0
 player.stat = [ "Strength", 100 ]
 player.stat = [ "Agility", 100 ]
 player.stat = [ "Fortitude", 100 ]
@@ -37,10 +36,7 @@ player.trait = [ "eye color", "gold" ]
 player.gender = "male"
 player.height = 74
 player.location = "catacomb_2_2"
-player.general_xp = 90
-player.warrior_xp = 306
-player.rogue_xp = 0
-player.caster_xp = 0
+player.experience = 10000
 player.skill = [ "Agility", 0 ]
 player.skill = [ "Arcane Barrier", 0 ]
 player.skill = [ "Balance", 0 ]

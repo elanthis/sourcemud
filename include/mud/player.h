@@ -38,14 +38,6 @@
 #define PLAYER_NAME_MIN_LEN 3
 #define PLAYER_NAME_MAX_LEN 15
 
-enum exp_spec {
-	EXP_GENERAL = 0,
-	EXP_WARRIOR,
-	EXP_ROGUE,
-	EXP_CASTER,
-	NUM_EXPS
-};
-
 class Player : public Creature
 {
 	public:
@@ -67,11 +59,6 @@ class Player : public Creature
 	// gender
 	virtual inline GenderType get_gender () const { return pdesc.gender; }
 	inline void set_gender (GenderType s_gender) { pdesc.gender = s_gender; }
-
-	// alignment
-	virtual inline CreatureAlign get_alignment () const { return alignment; }
-	inline void set_alignment (CreatureAlign s_align) { alignment = s_align; }
-	inline CreatureAlign adjust_alignment (int mod) { set_alignment(CreatureAlign(get_alignment() + mod)); return get_alignment(); }
 
 	// save and load
 	virtual void save_data (File::Writer& writer);
@@ -130,8 +117,8 @@ class Player : public Creature
 	virtual uint get_combat_damage () const;
 
 	// class/exp
-	inline uint get_exp (uint type) const { if (type < NUM_EXPS) return exp[type]; else return 0; }
-	void grant_exp (uint type, uint amount);
+	inline uint get_exp () const { return experience; }
+	void grant_exp (uint amount);
 
 	// stats
 	virtual inline int get_base_stat (CreatureStatID stat) const { return base_stats[stat.get_value()]; }
@@ -180,8 +167,7 @@ class Player : public Creature
 	} pdesc;
 	CreatureStatArray base_stats;
 	class Race *race;
-	CreatureAlign alignment;
-	uint exp[NUM_EXPS];
+	uint32 experience;
 	time_t time_created;
 	time_t time_lastlogin;
 	uint32 total_playtime;

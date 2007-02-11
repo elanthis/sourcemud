@@ -51,7 +51,6 @@ blueprint.npc {
 blueprint.npc {
   blueprint.id = "wolf_dire"
   blueprint.name = "a dire wolf"
-  blueprint.alignment = -700
 
   blueprint.desc = "Demonic in appearnace, {$self.D} is larger than any wolf could be through natural means.  Its eyes glow red, and its near-black fur is broken in places, where spiked ridges run along its body.  {$self.D} has as sinister a nature as any animal could have."
 

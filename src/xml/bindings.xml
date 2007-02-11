@@ -128,32 +128,6 @@ if (value == false) { ... }</example>
     </global>
   </global-group>
 
-  <!-- Global constants - EXPERIENCE -->
-  <global-group>
-    <name>Experience Pools</name>
-
-    <global>
-      <name>EXP_GENERAL</name>
-      <type>Integer</type>
-      <doc>General experience pool.</doc>
-    </global>
-    <global>
-      <name>EXP_WARRIOR</name>
-      <type>Integer</type>
-      <doc>Warrior experience pool.</doc>
-    </global>
-    <global>
-      <name>EXP_ROGUE</name>
-      <type>Integer</type>
-      <doc>Rogue experience pool.</doc>
-    </global>
-    <global>
-      <name>EXP_CASTER</name>
-      <type>Integer</type>
-      <doc>Caster experience pool.</doc>
-    </global>
-  </global-group>
-
   <!-- Global constants - STATS -->
   <global-group>
     <name>Creature Stats</name>
@@ -1074,40 +1048,6 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
       ]]></code>
     </method>
 
-    <!-- Alignment -->
-    <method>
-      <name>getAlignment</name>
-      <invoke>get_alignment</invoke>
-      <return>
-        <type>Integer</type>
-      </return>
-      <doc>Return the alignment value of the creature.  &lt;= -250 is evil.  &gt;= 250 is good.  &lt;= 300 and &gt;= -300 is neutral.</doc>
-    </method>
-    <method>
-      <name>isEvil</name>
-      <return>
-        <type>Boolean</type>
-      </return>
-      <code>_return = _self->get_alignment().is_evil();</code>
-      <doc>Return true if the creature is evil.</doc>
-    </method>
-    <method>
-      <name>isGood</name>
-      <return>
-        <type>Boolean</type>
-      </return>
-      <code>_return = _self->get_alignment().is_good();</code>
-      <doc>Return true if the creature is good.</doc>
-    </method>
-    <method>
-      <name>isNeutral</name>
-      <return>
-        <type>Boolean</type>
-      </return>
-      <code>_return = _self->get_alignment().is_neutral();</code>
-      <doc>Return true if the creature is neutral.</doc>
-    </method>
-
     <!-- Build and inventory -->
     <method>
       <name>freeHands</name>
@@ -1692,10 +1632,6 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
       <name>grantExp</name>
       <invoke>grant_exp</invoke>
       <arg>
-        <name>type</name>
-        <type>Integer</type>
-      </arg>
-      <arg>
         <name>amount</name>
         <type>Integer</type>
       </arg>
@@ -1707,15 +1643,6 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
       <return>
         <type>Integer</type>
       </return>
-      <arg>
-        <name>type</name>
-        <type>Integer</type>
-      </arg>
-      <code><![CDATA[
-        if (_arg_type >= 0 && _arg_type < NUM_EXPS) {
-          _return = _self->get_exp (_arg_type);
-        }
-      ]]></code>
       <doc>Returns the available experience in the given pool.</doc>
     </method>
 
@@ -1899,27 +1826,6 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
         if (_arg_stat >= 0 && _arg_stat < CreatureStatID::COUNT)
           _self->set_base_stat(_arg_stat, _arg_value);
       ]]></code>
-    </method>
-    <method>
-      <name>adjustAlignment</name>
-      <invoke>adjust_alignment</invoke>
-      <return>
-        <type>Integer</type>
-      </return>
-      <arg>
-        <name>adjustment</name>
-        <type>Integer</type>
-      </arg>
-      <doc>Modified the alignment by the given amount, and return the result.</doc>
-    </method>
-    <method>
-      <name>setAlignment</name>
-      <invoke>set_alignment</invoke>
-      <arg>
-        <name>value</name>
-        <type>Integer</type>
-      </arg>
-      <doc>Set the creature's alignment to the given value.</doc>
     </method>
     <method>
       <name>setGender</name>

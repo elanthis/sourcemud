@@ -62,19 +62,6 @@ NpcBP::reset_gender (void)
 }
 
 void
-NpcBP::reset_alignment (void)
-{
-	// reset
-	alignment = 0;
-	set_flags.alignment = false;
-
-	// get parent value
-	const NpcBP* data = get_parent();
-	if (data != NULL)
-		alignment = data->get_alignment();
-}
-
-void
 NpcBP::reset_combat_dodge (void)
 {
 	// reset
@@ -137,8 +124,6 @@ NpcBP::refresh (void)
 		reset_desc();
 	if (!set_flags.gender)
 		reset_gender();
-	if (!set_flags.alignment)
-		reset_alignment();
 	if (!set_flags.dodge)
 		reset_combat_dodge();
 	if (!set_flags.attack)
@@ -198,8 +183,6 @@ NpcBP::load (File::Reader& reader)
 			set_desc(node.get_string());
 		FO_ATTR("blueprint", "gender")
 			set_gender(GenderType::lookup(node.get_string()));
-		FO_ATTR("blueprint", "alignment")
-			set_alignment(node.get_int());
 		FO_ATTR("combat", "dodge")
 			combat.dodge = node.get_int();
 			set_flags.dodge = true;
@@ -232,9 +215,6 @@ NpcBP::save (File::Writer& writer)
 
 	if (set_flags.desc)
 		writer.attr(S("blueprint"), S("desc"), desc);
-
-	if (set_flags.alignment)
-		writer.attr(S("blueprint"), S("alignment"), alignment);
 
 	if (set_flags.gender)
 		writer.attr(S("blueprint"), S("gender"), gender.get_name());
@@ -381,13 +361,6 @@ Npc::get_base_stat (CreatureStatID stat) const
 {
 	assert(blueprint != NULL);
 	return blueprint->get_stat(stat);
-}
-
-CreatureAlign
-Npc::get_alignment (void) const
-{
-	assert(blueprint != NULL);
-	return blueprint->get_alignment();
 }
 
 uint

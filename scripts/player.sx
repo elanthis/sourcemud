@@ -3,17 +3,7 @@
 
 // show experience
 function playerShowExp(self)
-	self << "Experiance chart:\n";
-	if self.getExp(EXP_WARRIOR) then
-		printInfo(self, "Warrior", self.getExp(EXP_WARRIOR));
-	end
-	if self.getExp(EXP_ROGUE) then
-		printInfo(self, "Rogue", self.getExp(EXP_ROGUE));
-	end
-	if self.getExp(EXP_CASTER) then
-		printInfo(self, "Caster", self.getExp(EXP_CASTER));
-	end
-	printInfo(self, "General", self.getExp(EXP_GENERAL));
+	self << "Experiance: " << self.getExp() << "\n";
 end
 
 // show stats

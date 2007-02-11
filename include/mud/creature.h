@@ -26,27 +26,6 @@ class IAction;
 #define GOC_ROOM (GOC_FLOOR|GOC_SUB)
 #define GOC_ANY (GOC_ROOM|GOC_EQUIP)
 
-// alignment bounds
-#define ALIGN_BOUND 200
-#define ALIGN_NEUTRAL 300
-
-// Creature alignment
-class CreatureAlign {
-	private:
-	int align;
-
-	public:
-	inline CreatureAlign (int s_value) : align(s_value) {}
-	inline CreatureAlign () : align(0) {}
-
-	inline int get_value () const { return align; }
-
-	inline bool is_evil () const { return align < -ALIGN_BOUND; }
-	inline bool is_good () const { return align > ALIGN_BOUND; }
-	inline bool is_neutral () const { return align > -ALIGN_NEUTRAL && align < ALIGN_NEUTRAL; }
-	inline operator int () const { return align; }
-};
-
 // Creature statistic ID
 class CreatureStatID {
 	public:
@@ -156,9 +135,6 @@ Creature : public Entity, public IStreamSink
 
 	// gender
 	virtual GenderType get_gender () const = 0;
-
-	// alignment
-	virtual CreatureAlign get_alignment () const = 0;
 
 	// stats
 	virtual int get_base_stat (CreatureStatID stat) const = 0;

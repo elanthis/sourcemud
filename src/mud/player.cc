@@ -131,9 +131,7 @@ Player::Player (class Account* s_account, String s_id) : Creature (AweMUD_Player
 
 	race = NULL;
 
-	for (int i = 0; i < NUM_EXPS; ++ i) {
-		exp[i] = 0;
-	}
+	experience = 0;
 
 	time_created = time(NULL);
 	time_lastlogin = (time_t)0;
@@ -169,8 +167,6 @@ Player::save_data (File::Writer& writer)
 
 	writer.attr(S("player"), S("birthday"), birthday.encode());
 
-	writer.attr(S("player"), S("alignment"), alignment);
-
 	for (int i = 0; i < CreatureStatID::COUNT; ++i) {
 		GCType::vector<File::Value> list;
 		list.push_back(File::Value(File::Value::TYPE_STRING, CreatureStatID(i).get_name())); 
@@ -191,10 +187,7 @@ Player::save_data (File::Writer& writer)
 	if (get_room()) 
 		writer.attr(S("player"), S("location"), get_room()->get_id());
 
-	writer.attr(S("player"), S("general_xp"), exp[EXP_GENERAL]);
-	writer.attr(S("player"), S("warrior_xp"), exp[EXP_WARRIOR]);
-	writer.attr(S("player"), S("rogue_xp"), exp[EXP_ROGUE]);
-	writer.attr(S("player"), S("caster_xp"), exp[EXP_CASTER]);
+	writer.attr(S("player"), S("experience"), experience);
 
 	for (SSkillManager::SkillList::const_iterator i = SkillManager.get_skills().begin(); i != SkillManager.get_skills().end(); ++i) {
 		GCType::vector<File::Value> list;
@@ -260,8 +253,6 @@ Player::load_node (File::Reader& reader, File::Node& node)
 			set_desc(node.get_string());
 		FO_ATTR("player", "gender")
 			set_gender(GenderType::lookup(node.get_string()));
-		FO_ATTR("player", "alignment")
-			set_alignment(node.get_int());
 		FO_ATTR("player", "race")
 			race = RaceManager.get (node.get_string());
 			if (race == NULL) {
@@ -291,14 +282,8 @@ Player::load_node (File::Reader& reader, File::Node& node)
 				Log::Error << node << ": Unknown room";
 				throw File::Error();
 			}
-		FO_ATTR("player", "general_xp")
-			exp[EXP_GENERAL] = node.get_int();
-		FO_ATTR("player", "warrior_xp")
-			exp[EXP_WARRIOR] = node.get_int();
-		FO_ATTR("player", "rogue_xp")
-			exp[EXP_ROGUE] = node.get_int();
-		FO_ATTR("player", "caster_xp")
-			exp[EXP_CASTER] = node.get_int();
+		FO_ATTR("player", "experience")
+			experience = node.get_int();
 		FO_ATTR("player", "stat")
 			CreatureStatID stat = CreatureStatID::lookup(node.get_string(0));
 			if (stat) {
@@ -516,18 +501,8 @@ Player::display_skills ()
 }
 
 void
-Player::grant_exp (uint type, uint amount) {
-	assert ( type < NUM_EXPS );
-	if (amount == 0)
-		return;
-
-	// figure out the general exp to grant - 25%
-	uint general = amount / 4;
-	amount -= general;
-
-	// increase the specified and general pool accordingly
-	exp[EXP_GENERAL] += general;
-	exp[type] += amount;
+Player::grant_exp (uint amount) {
+	experience += amount;
 }
 
 void

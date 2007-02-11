@@ -157,16 +157,6 @@ class ActionAttackCreature : public IAction
 		if (rounds < 5)
 			rounds = 5;
 
-		// grant warrior experience
-		if (total_damage && PLAYER(attacker)) {
-			// exp is average damage by level percent modifier
-			int exp = total_damage / hits;
-			// minimum 10 exp
-			if (exp < 10)
-				exp = 10;
-			((Player*)attacker)->grant_exp(EXP_WARRIOR, exp);
-		}
-
 		// no attacks
 		if (!attacks) {
 			// message
