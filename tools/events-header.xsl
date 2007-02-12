@@ -11,21 +11,50 @@
 #ifndef EVENT_IDS_H
 #define EVENT_IDS_H
 
-#include "mud/event.h"
-
 class Room;
 class Entity;
 class Object;
 class Portal;
 class Zone;
 
+class EventID {
+	public:
+	typedef enum {
+		NONE = 0,
+	]]></xsl:text>
+	<xsl:for-each select="event">
+  		<xsl:value-of select="@name"/><xsl:text>,</xsl:text>
+	</xsl:for-each>
+	<xsl:text><![CDATA[
+		COUNT,
+	} type_t;
+	
+	EventID (int s_value) : value((type_t)s_value) {}
+	EventID () : value(NONE) {}
+
+	String get_name() const { return names[value]; }
+
+	type_t get_value () const { return value; }
+
+	static EventID lookup (String name);
+
+	bool valid () const { return value != NONE; }
+
+	bool operator == (EventID dir) const { return dir.value == value; }
+	bool operator != (EventID dir) const { return dir.value != value; }
+	bool operator < (EventID dir) const { return value < dir.value; }
+
+	private:
+	type_t value;
+
+	static String names[];
+};
+
 namespace Events {
 ]]></xsl:text>
 
 <!-- event ids -->
 <xsl:for-each select="event">
-  <xsl:text>extern EventID ON_</xsl:text><xsl:value-of select="translate(@name, 'abcdefghijklmnopqrstuvwxyz', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"/><xsl:text>;</xsl:text>
-
   <xsl:if test="type/@request='1'">
     <xsl:text>bool request</xsl:text><xsl:value-of select="@name" />
     <xsl:text>(Room* room</xsl:text>

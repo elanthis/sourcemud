@@ -28,6 +28,7 @@
     #include "common/strbuf.h"
     #include "mud/http.h"
     #include "mud/shadow-object.h"
+    #include "mud/event.h"
 
     using namespace std;
   ]]></header>
@@ -432,7 +433,7 @@ number = roll_dice(3, 6);]]></example>
     </return>
     <doc>Returns the current game time.</doc>
     <code><![CDATA[
-      _return = new Time(AweMUD_TimeType, TimeManager.time);
+      _return = TimeManager.time;
     ]]></code>
   </function>
 
@@ -864,22 +865,23 @@ number = roll_dice(3, 6);]]></example>
     <!-- tags -->
     <method>
       <name>addTag</name>
+      <invoke>add_tag</invoke>
       <arg>
         <name>tag</name>
         <type>Tag</type>
       </arg>
-      <code>_self->add_tag(_arg_tag->data());</code>
     </method>
     <method>
       <name>removeTag</name>
+      <invoke>remove_tag</invoke>
       <arg>
         <name>tag</name>
         <type>Tag</type>
       </arg>
-      <code>_self->remove_tag(_arg_tag->data());</code>
     </method>
     <method>
       <name>hasTag</name>
+      <invoke>has_tag</invoke>
       <arg>
         <name>tag</name>
         <type>Tag</type>
@@ -888,7 +890,6 @@ number = roll_dice(3, 6);]]></example>
         <type>Boolean</type>
         <doc>True if the Entity has the named tag, false if it does not.</doc>
       </return>
-      <code>_return = _self->has_tag(_arg_tag->data());</code>
     </method>
 
     <!-- Formatted names -->
@@ -980,7 +981,7 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
       <doc>The tag to search for.</doc>
     </arg>
     <code><![CDATA[
-      std::pair<TagTable::const_iterator, TagTable::const_iterator> list = EntityManager.tag_list(_arg_tag->data());
+      std::pair<TagTable::const_iterator, TagTable::const_iterator> list = EntityManager.tag_list(_arg_tag);
       if (list.first != list.second) {
         uint count = 0;
         for (TagTable::const_iterator i = list.first; i != list.second; ++i)
@@ -1671,24 +1672,20 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
     <!-- Birthday/age -->
     <method>
       <name>getBirthday</name>
+      <invoke>get_birthday</invoke>
       <return>
         <type>Time</type>
       </return>
       <doc>Returns the birthday of the player.  The returned object is a copy of the data stored in the player.  Modifying the returned object will not alter the birthday of the player.  Altered birthday objects must be passed back to set_birthday() to take effect.</doc>
-      <code><![CDATA[
-        _return = new Time(AweMUD_TimeType, _self->get_birthday());
-      ]]></code>
     </method>
     <method>
       <name>setBirthday</name>
+      <invoke>set_birthday</invoke>
       <arg>
         <name>time</name>
         <type>Time</type>
       </arg>
       <doc>Sets the birthday of the player to the value of the given Time object.</doc>
-      <code><![CDATA[
-        _self->set_birthday(_arg_time->data());
-      ]]></code>
     </method>
     <method>
       <name>getAge</name>
@@ -2905,6 +2902,13 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
     <doc>Returns an iterator for all defined player races.</doc>
   </function>
 
+  <!-- Event IDs -->
+  <type>
+    <name>EventID</name>
+    <cppwrap>EventID</cppwrap>
+    <doc>Event IDs represent individual types of events.</doc>
+  </type>
+
   <!-- Entity Tag -->
   <type>
     <name>Tag</name>
@@ -2913,15 +2917,16 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
 
     <method>
       <name>getName</name>
+      <invoke>name</invoke>
       <return>
         <type>String</type>
         <doc>The name of the tag.</doc>
       </return>
-      <code>_return = TagID::nameof(_self->data());</code>
     </method>
   </type>
   <function>
     <name>getTag</name>
+    <invoke>TagID::lookup</invoke>
     <return>
       <type>Tag</type>
     </return>
@@ -2930,10 +2935,10 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
       <type>String</type>
     </arg>
     <doc>Looks up an existing tag with the given name.</doc>
-    <code>_return = new Tag(TagID::lookup(_arg_name));</code>
   </function>
   <function>
     <name>createTag</name>
+    <invoke>TagID::create</invoke>
     <return>
       <type>Tag</type>
     </return>
@@ -2942,7 +2947,6 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
       <type>String</type>
     </arg>
     <doc>creates a new tag from the given name, or returns an existing tag if one already exists with the name.</doc>
-    <code>_return = new Tag(TagID::create(_arg_name));</code>
   </function>
 
   <!-- GameTime -->
@@ -2959,23 +2963,22 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
       </return>
       <doc>creates a new, separate copy of the Time object. This copy can be modified without altering the values of the original object.</doc>
       <code><![CDATA[
-        _return = new Time (AweMUD_TimeType, _self->data());
+        _return = *_self;
       ]]></code>
     </method>
 
     <!-- Operate -->
     <method>
       <name>getYear</name>
+      <invoke>get_year</invoke>
       <return>
         <type>Integer</type>
       </return>
       <doc>Fetch stored year.</doc>
-      <code><![CDATA[
-        _return = _self->data().get_year();
-      ]]></code>
     </method>
     <method>
       <name>setYear</name>
+      <invoke>set_year</invoke>
       <return>
         <type>Integer</type>
       </return>
@@ -2984,22 +2987,18 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
         <type>Integer</type>
       </arg>
       <doc>Set year.  Returns the value after clipping/updating the time structure to match the calendar.</doc>
-      <code><![CDATA[
-        _return = _self->data().set_year(_arg_year);
-      ]]></code>
     </method>
     <method>
       <name>getMonth</name>
+      <invoke>get_month</invoke>
       <return>
         <type>Integer</type>
       </return>
       <doc>Fetch stored month.</doc>
-      <code><![CDATA[
-        _return = _self->data().get_month();
-      ]]></code>
     </method>
     <method>
       <name>setMonth</name>
+      <invoke>set_month</invoke>
       <return>
         <type>Integer</type>
       </return>
@@ -3008,22 +3007,18 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
         <type>Integer</type>
       </arg>
       <doc>Set month.  Returns the value after clipping/updating the time structure to match the calendar.</doc>
-      <code><![CDATA[
-        _return = _self->data().set_month(_arg_month);
-      ]]></code>
     </method>
     <method>
       <name>getDay</name>
+      <invoke>get_day</invoke>
       <return>
         <type>Integer</type>
       </return>
       <doc>Fetch stored day.</doc>
-      <code><![CDATA[
-        _return = _self->data().get_day();
-      ]]></code>
     </method>
     <method>
       <name>setDay</name>
+      <invoke>set_day</invoke>
       <return>
         <type>Integer</type>
       </return>
@@ -3032,22 +3027,18 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
         <type>Integer</type>
       </arg>
       <doc>Set day.  Returns the value after clipping/updating the time structure to match the calendar.</doc>
-      <code><![CDATA[
-        _return = _self->data().set_day(_arg_day);
-      ]]></code>
     </method>
     <method>
       <name>getHour</name>
+      <invoke>get_hour</invoke>
       <return>
         <type>Integer</type>
       </return>
       <doc>Fetch stored hour.</doc>
-      <code><![CDATA[
-        _return = _self->data().get_hour();
-      ]]></code>
     </method>
     <method>
       <name>setHour</name>
+      <invoke>set_hour</invoke>
       <return>
         <type>Integer</type>
       </return>
@@ -3056,22 +3047,18 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
         <type>Integer</type>
       </arg>
       <doc>Set hour.  Returns the value after clipping/updating the time structure to match the calendar.</doc>
-      <code><![CDATA[
-        _return = _self->data().set_hour(_arg_hour);
-      ]]></code>
     </method>
     <method>
       <name>getTicks</name>
+      <invoke>get_ticks</invoke>
       <return>
         <type>Integer</type>
       </return>
       <doc>Fetch stored ticks.</doc>
-      <code><![CDATA[
-        _return = _self->data().get_ticks();
-      ]]></code>
     </method>
     <method>
       <name>setTicks</name>
+      <invoke>set_ticks</invoke>
       <return>
         <type>Integer</type>
       </return>
@@ -3080,9 +3067,6 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
         <type>Integer</type>
       </arg>
       <doc>Set ticks.  Returns the value after clipping/updating the time structure to match the calendar.</doc>
-      <code><![CDATA[
-        _return = _self->data().set_ticks(_arg_ticks);
-      ]]></code>
     </method>
 
     <method>
@@ -3093,7 +3077,7 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
       <doc>Return the current date as a string.</doc>
       <code><![CDATA[
         char date_buf[40]; // should be big enough
-        _self->data().date_str (date_buf, sizeof (date_buf));
+        _self->date_str (date_buf, sizeof (date_buf));
         _return = String(date_buf);
       ]]></code>
     </method>
@@ -3106,7 +3090,7 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
       <doc>Return the current time as a string.</doc>
       <code><![CDATA[
         char time_buf[40]; // should be big enough
-        _self->data().time_str (time_buf, sizeof (time_buf));
+        _self->time_str (time_buf, sizeof (time_buf));
         _return = String(time_buf);
       ]]></code>
     </method>

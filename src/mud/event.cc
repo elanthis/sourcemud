@@ -38,7 +38,9 @@ EventHandler::load (File::Reader& reader) {
 				return -1;
 			}
 		FO_ATTR("event", "id")
-			event = EventID::create(node.get_string());
+			event = EventID::lookup(node.get_string());
+			if (!event.valid()) 
+				Log::Warning << node << ": Unknown event '" << node.get_string() << "'";
 		FO_ATTR("event", "script")
 			sxfunc = NULL;
 			if (node.get_string())
@@ -53,7 +55,7 @@ EventHandler::load (File::Reader& reader) {
 void
 EventHandler::save (File::Writer& writer) const {
 	writer.attr(S("event"), S("type"), type == EVENT_REQUEST ? S("request") : type == EVENT_NOTIFY ? S("notify") : S("command"));
-	writer.attr(S("event"), S("id"), EventID::nameof(event));
+	writer.attr(S("event"), S("id"), event.get_name());
 	if (script)
 		writer.block(S("event"), S("script"), script);
 }
@@ -61,7 +63,7 @@ EventHandler::save (File::Writer& writer) const {
 bool
 Entity::handle_event (const Event& event)
 {
-	Scriptix::Value argv[12] = { this, event.get_type(), event.get_id().name(), event.get_room(), event.get_actor(), event.get_target(), event.get_aux(), event.get_data(0), event.get_data(1), event.get_data(2), event.get_data(3), event.get_data(4) };
+	Scriptix::Value argv[12] = { this, event.get_type(), event.get_id().get_name(), event.get_room(), event.get_actor(), event.get_target(), event.get_aux(), event.get_data(0), event.get_data(1), event.get_data(2), event.get_data(3), event.get_data(4) };
 	for (EventList::const_iterator i = events.begin (); i != events.end (); ++ i)
 		if (event.get_type() == (*i)->get_type() && event.get_id() == (*i)->get_event ()) {
 			if (!(*i)->get_func().empty()) {
@@ -76,9 +78,7 @@ Entity::handle_event (const Event& event)
 int
 SEventManager::initialize (void)
 {
-	count = 0;
 	nest = 0;
-	initialize_ids();
 
 	return 0;
 }
@@ -98,7 +98,7 @@ SEventManager::request (EventID id, Room* room, Entity *actor, Entity* target, E
 
 	// manage nesting
 	if (nest == EVENT_MAX_NEST) {
-		Log::Error << "Event system exceeded maximum nested events of " << EVENT_MAX_NEST << " sending request event " << id.name();
+		Log::Error << "Event system exceeded maximum nested events of " << EVENT_MAX_NEST << " sending request event " << id.get_name();
 		return false;
 	}
 
@@ -150,7 +150,7 @@ SEventManager::command (EventID id, Room* room, Entity *actor, Entity* target, E
 
 	// manage nesting
 	if (nest == EVENT_MAX_NEST) {
-		Log::Error << "Event system exceeded maximum nested events of " << EVENT_MAX_NEST << " sending command event " << id.name();
+		Log::Error << "Event system exceeded maximum nested events of " << EVENT_MAX_NEST << " sending command event " << id.get_name();
 		return false;
 	}
 
@@ -188,7 +188,6 @@ SEventManager::notify (EventID id, Room* room, Entity *actor, Entity* target, En
 
 	// just queue it, doesn't need to happen now
 	events.push_back(event);
-	++count;
 }
 
 void
@@ -198,14 +197,13 @@ SEventManager::process (void)
 	// this way, events which trigger more events
 	// won't cause an infinite loop, because we'll
 	// only process the initial batch
-	size_t processing = count;
+	size_t processing = events.size();
 
 	// as long as we have events...
-	while (processing >= 0 && !events.empty()) {
+	while (processing > 0 && !events.empty()) {
 		// get event
 		Event event = events.front();
 		events.pop_front();
-		--count;
 		--processing;
 
 		// DEBUG:

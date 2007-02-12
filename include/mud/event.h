@@ -11,10 +11,10 @@
 #include <deque>
 
 #include "mud/fileobj.h"
-#include "mud/idmap.h"
 #include "common/imanager.h"
 #include "scriptix/native.h"
 #include "scriptix/function.h"
+#include "mud/eventids.h"
 
 /* external classes */
 class Entity;
@@ -26,7 +26,6 @@ enum EventType {
 	EVENT_COMMAND
 };
 
-DECLARE_IDMAP(Event)
 
 class EventHandler : public GC {
 	protected:
@@ -55,7 +54,7 @@ class Event : public GC
 
 	EventType get_type () const { return type; }
 	EventID get_id () const { return id; }
-	String get_name () const { return EventID::nameof(id); }
+	String get_name () const { return id.get_name(); }
 	
 	Room* get_room () const { return room; }
 	Entity* get_actor () const { return actor; }
@@ -98,11 +97,8 @@ class SEventManager : public IManager
 
 	private:
 	size_t nest;
-	size_t count;
 	typedef std::deque<Event, gc_allocator<Event> > EQueue;
 	EQueue events;
-
-	void initialize_ids ();
 };
 extern SEventManager EventManager;
 

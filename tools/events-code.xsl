@@ -14,6 +14,23 @@
 #include "mud/object.h"
 #include "mud/zone.h"
 
+String EventID::names[] = {
+  S("None"),
+]]></xsl:text>
+<xsl:for-each select="event">
+  <xsl:text>S("</xsl:text><xsl:value-of select="@name" /><xsl:text>"),</xsl:text>
+</xsl:for-each>
+<xsl:text><![CDATA[
+};
+
+EventID
+EventID::lookup (String name) {
+  for (size_t i = 0; i < COUNT; ++i)
+    if (name == names[i])
+      return EventID(i);
+  return EventID();
+}
+
 namespace Events {
   // hack
   namespace {
@@ -25,8 +42,6 @@ namespace Events {
 
 <!-- event ids -->
 <xsl:for-each select="event">
-  <xsl:text>EventID ON_</xsl:text><xsl:value-of select="translate(@name, 'abcdefghijklmnopqrstuvwxyz', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"/><xsl:text>;</xsl:text>
-
   <xsl:if test="type/@request='1'">
     <xsl:text>bool request</xsl:text><xsl:value-of select="@name" />
     <xsl:text>(Room* room</xsl:text>
@@ -34,7 +49,7 @@ namespace Events {
     <xsl:if test="target"><xsl:text>, </xsl:text><xsl:value-of select="target/@type" />* target</xsl:if>
     <xsl:if test="aux"><xsl:text>, </xsl:text><xsl:value-of select="aux/@type" />* aux</xsl:if>
     <xsl:apply-templates select="arg" />
-    <xsl:text>){return EventManager.request(ON_</xsl:text><xsl:value-of select="translate(@name, 'abcdefghijklmnopqrstuvwxyz', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')" /><xsl:text>,room,actor,target,aux</xsl:text>
+    <xsl:text>){return EventManager.request(EventID::</xsl:text><xsl:value-of select="@name" /><xsl:text>,room,actor,target,aux</xsl:text>
     <xsl:for-each select="arg"><xsl:text>,arg_</xsl:text><xsl:value-of select="@name" /></xsl:for-each>
     <xsl:text>);}</xsl:text>
   </xsl:if>
@@ -46,7 +61,7 @@ namespace Events {
     <xsl:if test="target"><xsl:text>, </xsl:text><xsl:value-of select="target/@type" />* target</xsl:if>
     <xsl:if test="aux"><xsl:text>, </xsl:text><xsl:value-of select="aux/@type" />* aux</xsl:if>
     <xsl:apply-templates select="arg" />
-    <xsl:text>){EventManager.notify(ON_</xsl:text><xsl:value-of select="translate(@name, 'abcdefghijklmnopqrstuvwxyz', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')" /><xsl:text>,room,actor,target,aux</xsl:text>
+    <xsl:text>){EventManager.notify(EventID::</xsl:text><xsl:value-of select="@name" /><xsl:text>,room,actor,target,aux</xsl:text>
     <xsl:for-each select="arg"><xsl:text>,arg_</xsl:text><xsl:value-of select="@name" /></xsl:for-each>
     <xsl:text>);}</xsl:text>
   </xsl:if>
@@ -58,7 +73,7 @@ namespace Events {
     <xsl:if test="target"><xsl:text>, </xsl:text><xsl:value-of select="target/@type" />* target</xsl:if>
     <xsl:if test="aux"><xsl:text>, </xsl:text><xsl:value-of select="aux/@type" />* aux</xsl:if>
     <xsl:apply-templates select="arg" />
-    <xsl:text>){return EventManager.command(ON_</xsl:text><xsl:value-of select="translate(@name, 'abcdefghijklmnopqrstuvwxyz', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')" /><xsl:text>,room,actor,target,aux</xsl:text>
+    <xsl:text>){return EventManager.command(EventID::</xsl:text><xsl:value-of select="@name" /><xsl:text>,room,actor,target,aux</xsl:text>
     <xsl:for-each select="arg"><xsl:text>,arg_</xsl:text><xsl:value-of select="@name" /></xsl:for-each>
     <xsl:text>);}</xsl:text>
   </xsl:if>
@@ -69,18 +84,11 @@ namespace Events {
 } // namespace Events
 ]]></xsl:text>
 
-<!-- Initialize -->
-<xsl:text>void SEventManager::initialize_ids () {</xsl:text>
-<xsl:for-each select="event">
-    <xsl:text>Events::ON_</xsl:text><xsl:value-of select="translate(@name, 'abcdefghijklmnopqrstuvwxyz', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"/><xsl:text> = EventID::create(S("</xsl:text><xsl:value-of select="@name"/><xsl:text>"));</xsl:text>
-</xsl:for-each>
-<xsl:text>}</xsl:text>
-
 <!-- Compiler -->
 <xsl:text>Scriptix::ScriptFunction SEventManager::compile (EventID id, String source, String filename, unsigned long fileline) {</xsl:text>
 <xsl:for-each select="event">
-  <xsl:text>if(id == Events::ON_</xsl:text>
-  <xsl:value-of select="translate(@name, 'abcdefghijklmnopqrstuvwxyz', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')" />
+  <xsl:text>if(id == EventID::</xsl:text>
+  <xsl:value-of select="@name" />
   <xsl:text>) return Scriptix::ScriptFunction::compile(S("event </xsl:text>
   <xsl:value-of select="@name"/>
   <xsl:text>"), source, S("self,event,room,actor,target,aux</xsl:text>
@@ -91,7 +99,7 @@ namespace Events {
   <xsl:text>"), filename, fileline);</xsl:text>
 </xsl:for-each>
 
-<xsl:text>return Scriptix::ScriptFunction::compile(S("event ") + EventID::nameof(id), source, S("self,event,room,actor,target,aux,data1,data2,data3,data4,data5"), filename, fileline); }</xsl:text>
+<xsl:text>return Scriptix::ScriptFunction::compile(S("event ") + id.get_name(), source, S("self,event,room,actor,target,aux,data1,data2,data3,data4,data5"), filename, fileline); }</xsl:text>
 
 <xsl:text>
 </xsl:text>

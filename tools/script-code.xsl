@@ -93,27 +93,6 @@ SScriptBindings::shutdown()
 {
 }
 
-// struct wrapper
-//  wrap a class or struct that won't be made into its own manageable
-//  type, like GameTime
-#define SCRIPT_WRAP(TYPE,NAME) \
-class NAME : public Scriptix::Native \
-{ \
-	private: \
-	TYPE our_data; \
-	public: \
-	inline NAME (const Scriptix::TypeInfo* type) : Scriptix::Native(type), our_data() {} \
-	inline NAME (const Scriptix::TypeInfo* type, const TYPE& s_data) : Scriptix::Native(type), our_data(s_data) {} \
-	inline NAME (const TYPE& s_data) : Scriptix::Native(AweMUD_ ## NAME ## Type), our_data(s_data) {} \
-	inline NAME& operator = (const TYPE& s_data) { our_data = s_data; return *this; } \
-	inline TYPE& data() { return our_data; } \
-	inline const TYPE& data () const { return our_data; } \
-	protected: \
-	inline bool equal (const Scriptix::Value& other) const \
-		{ if (other.is_a(AweMUD_ ## NAME ## Type)) return our_data == ((NAME*)other.get())->our_data; \
-		else return false; } \
-};
-
 // ------------- BEGIN GENERATED BINDINGS ---------------
 
 ]]></xsl:text>
@@ -123,7 +102,27 @@ class NAME : public Scriptix::Native \
     <xsl:for-each select="type">
       const Scriptix::TypeInfo* AweMUD_<xsl:value-of select="name"/>Type = NULL;
       <xsl:if test="cppwrap">
-        namespace { SCRIPT_WRAP(<xsl:value-of select="cppwrap"/>, <xsl:value-of select="name"/>) }
+        namespace {
+          class Script<xsl:value-of select="name" /> : public Scriptix::Native
+          {
+            private:
+            typedef ::<xsl:value-of select="cppwrap" /> our_type;
+            our_type our_data;
+            public:
+            <!--
+            <xsl:value-of select="name" /> (const Scriptix::TypeInfo* type) : Scriptix::Native(type), our_data() {}
+            <xsl:value-of select="name" /> (const Scriptix::TypeInfo* type, const our_type&amp; s_data) : Scriptix::Native(type), our_data(s_data) {}
+            -->
+            Script<xsl:value-of select="name" /> (const our_type&amp; s_data) : Scriptix::Native(AweMUD_<xsl:value-of select="name" />Type), our_data(s_data) {}
+            Script<xsl:value-of select="name" />&amp; operator = (const our_type&amp; s_data) { our_data = s_data; return *this; }
+            our_type&amp; data() { return our_data; }
+            const our_type&amp; data () const { return our_data; }
+            protected:
+            bool equal (const Scriptix::Value&amp; other) const
+              { if (other.is_a(AweMUD_<xsl:value-of select="name" />Type)) return our_data == ((Script<xsl:value-of select="name" />*)other.get())->our_data;
+              else return false; }
+          };
+        }
       </xsl:if>
     </xsl:for-each>
 
@@ -230,7 +229,14 @@ class NAME : public Scriptix::Native \
       <xsl:for-each select="method[not(code) or string-length(code)!=0]">
       Scriptix::Value
         _inter_method_<xsl:value-of select="../name"/>_<xsl:value-of select="name"/> (size_t _argc, Scriptix::Value _argv[]) {
-        <xsl:apply-templates select=".." mode="cppname"/>* _self = (<xsl:apply-templates select=".." mode="cppname"/>*)_argv[0].get();
+        <xsl:choose>
+          <xsl:when test="../cppwrap">
+            <xsl:value-of select="../cppwrap"/>* _self = &amp;((Script<xsl:value-of select="../name"/>*)_argv[0].get())->data();
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:apply-templates select=".." mode="cppname"/>* _self = (<xsl:apply-templates select=".." mode="cppname"/>*)_argv[0].get();
+          </xsl:otherwise>
+        </xsl:choose>
         <xsl:apply-templates select="arg" mode="define"/>
         <xsl:apply-templates select="." mode="define-ret"/>
         <xsl:call-template name="args-get">
@@ -302,7 +308,15 @@ class NAME : public Scriptix::Native \
         Scriptix::Value _arg_<xsl:value-of select="name"/>;
       </xsl:when>
       <xsl:otherwise>
-        <xsl:apply-templates select="." mode="cppname"/>* _arg_<xsl:value-of select="name"/> = NULL;
+        <xsl:variable name="type" select="type" />
+        <xsl:choose>
+          <xsl:when test="//type[name=$type]/cppwrap">
+            <xsl:value-of select="//type[name=$type]/cppwrap" /> _arg_<xsl:value-of select="name" />;
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:apply-templates select="//type[name=$type]" mode="cppname"/>* _arg_<xsl:value-of select="name"/> = NULL;
+          </xsl:otherwise>
+        </xsl:choose>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
@@ -351,7 +365,16 @@ class NAME : public Scriptix::Native \
             Scriptix::ScriptManager.raise_error(Scriptix::SXE_BADTYPE, "Argument '<xsl:value-of select="name"/>' is not a <xsl:value-of select="type"/>");
             return Scriptix::Nil;
           }
-          _arg_<xsl:value-of select="name"/> = (<xsl:apply-templates select="." mode="cppname"/>*)_argv[<xsl:value-of select="position()-1"/> + <xsl:value-of select="$arg-offset" />].get();
+
+          <xsl:variable name="type" select="type"/>
+          <xsl:choose>
+            <xsl:when test="//type[name=$type]/cppwrap">
+              _arg_<xsl:value-of select="name"/> = ((Script<xsl:value-of select="type"/>*)_argv[<xsl:value-of select="position()-1"/> + <xsl:value-of select="$arg-offset"/>].get())->data();
+            </xsl:when>
+            <xsl:otherwise>
+              _arg_<xsl:value-of select="name"/> = (<xsl:apply-templates select="." mode="cppname"/>*)_argv[<xsl:value-of select="position()-1"/> + <xsl:value-of select="$arg-offset" />].get();
+            </xsl:otherwise>
+          </xsl:choose>
         </xsl:otherwise>
       </xsl:choose>
       <xsl:if test="nullok">}</xsl:if>
@@ -366,6 +389,19 @@ class NAME : public Scriptix::Native \
   <!-- type cppname -->
   <xsl:template match="type" mode="cppname">
     <xsl:choose><xsl:when test="cppname"><xsl:value-of select="cppname"/></xsl:when><xsl:otherwise><xsl:value-of select="name"/></xsl:otherwise></xsl:choose>
+  </xsl:template>
+  <xsl:template match="type" mode="cpptype">
+    <xsl:choose>
+      <xsl:when test="cppwrap">
+        <xsl:value-of select="cppwrap" />
+      </xsl:when>
+      <xsl:when test="cppname">
+        <xsl:value-of select="cppname"/>*
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="name"/>*
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
   <xsl:template match="streamop|function|method" mode="cppname">
     <xsl:variable name="type"><xsl:value-of select="return/type"/></xsl:variable>
@@ -408,7 +444,15 @@ class NAME : public Scriptix::Native \
         </xsl:choose>
       </xsl:when>
       <xsl:when test="return/type">
-        <xsl:apply-templates select="." mode="cppname"/>* _return = NULL;
+        <xsl:variable name="type" select="return/type" />
+        <xsl:choose>
+          <xsl:when test="//type[name=$type]/cppwrap">
+            <xsl:value-of select="//type[name=$type]/cppwrap"/> _return;
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:apply-templates select="." mode="cppname"/>* _return = NULL;
+          </xsl:otherwise>
+        </xsl:choose>
       </xsl:when>
     </xsl:choose>
   </xsl:template>
@@ -422,20 +466,33 @@ class NAME : public Scriptix::Native \
       <xsl:when test="string(return/type)='Boolean'">
         if (_return)
           return Scriptix::Number::create(1);
+        else
+          return Scriptix::Nil;
       </xsl:when>
       <xsl:when test="string(return/type)='String'">
-        if (_return)
-          return Scriptix::Value(_return);
+        return Scriptix::Value(_return);
       </xsl:when>
       <xsl:when test="string(return/type)='Mixed'">
         return Scriptix::Value(_return);
       </xsl:when>
       <xsl:when test="return/type">
-        if (_return)
-          return Scriptix::Value(_return);
+        <xsl:variable name="type" select="return/type" />
+        <xsl:choose>
+          <xsl:when test="//type[name=$type]/cppwrap">
+            return new Script<xsl:value-of select="$type"/>(_return);
+          </xsl:when>
+          <xsl:otherwise>
+            if (_return)
+              return Scriptix::Value(_return);
+            else
+              return Scriptix::Nil;
+          </xsl:otherwise>
+        </xsl:choose>
       </xsl:when>
+      <xsl:otherwise>
+        return Scriptix::Nil;
+      </xsl:otherwise>
     </xsl:choose>
-    return Scriptix::Nil;
   </xsl:template>
 
   <!-- invoke function -->

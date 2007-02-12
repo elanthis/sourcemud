@@ -1,3 +1,13 @@
+2007-02-12 06:13:12  Sean Middleditch <elanthis@awesomeplay.com>
+
+  * Removed IDMAP use for Event IDs.  They are now hard-coded
+    from the events-list.xml source file.  No more registering
+    them at run-time.
+  * Updated the script binding generator so that we can use EventID
+    objects within scripts instead of string names or integers.
+  * The new EventID type in Scriptix is not yet used, as the API
+    headers don't allow for passing EventIDs into Scripts.
+
 2007-02-11 08:01:53  Sean Middleditch <elanthis@awesomeplay.com>
 
   * Remove creature alignment.  Complexity we don't need right now.
