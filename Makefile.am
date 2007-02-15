@@ -4,7 +4,7 @@ AUTOMAKE_OPTIONS = subdir-objects
 
 TOOL_FILES = tools/commit.sh tools/note.sh tools/parse-report.pl tools/new-version.sh
 
-XSL_FILES = tools/script-code.xsl tools/script-doc.xsl tools/events-code.xsl tools/events-doc.xsl tools/events-header.xsl tools/parse-code.xsl tools/hooks-doc.xsl tools/hooks-code.xsl tools/hooks-header.xsl
+XSL_FILES = tools/script-code.xsl tools/script-doc.xsl tools/events-code.xsl tools/events-doc.xsl tools/events-header.xsl tools/parse-code.xsl tools/hooks-doc.xsl tools/hooks-code.xsl tools/hooks-header.xsl tools/script-header.xsl
 
 bin_SCRIPTS = awemud
 
@@ -293,17 +293,21 @@ noinst_HEADERS=\
 	include/mud/zone.h
 
 if USE_XSLT
-include/mud/eventids.h: tools/events-header.xsl src/xml/event-list.xml
-	mkdir -p $(top_builddir)/include/mud
-	$(PATH_XSLTPROC) '$(top_srcdir)/tools/events-header.xsl' '$(top_srcdir)/src/xml/event-list.xml' > $(top_builddir)/include/mud/eventids.h
+include/generated/eventids.h: tools/events-header.xsl src/xml/event-list.xml
+	mkdir -p $(top_builddir)/include/generated
+	$(PATH_XSLTPROC) '$(top_srcdir)/tools/events-header.xsl' '$(top_srcdir)/src/xml/event-list.xml' > $(top_builddir)/include/generated/eventids.h
 
-include/mud/hooks.h: tools/hooks-header.xsl src/xml/hook-list.xml
-	mkdir -p $(top_builddir)/include/mud
-	$(PATH_XSLTPROC) '$(top_srcdir)/tools/hooks-header.xsl' '$(top_srcdir)/src/xml/hook-list.xml' > $(top_builddir)/include/mud/hooks.h
+include/generated/hooks.h: tools/hooks-header.xsl src/xml/hook-list.xml
+	mkdir -p $(top_builddir)/include/generated
+	$(PATH_XSLTPROC) '$(top_srcdir)/tools/hooks-header.xsl' '$(top_srcdir)/src/xml/hook-list.xml' > $(top_builddir)/include/generated/hooks.h
+
+include/generated/bindings.h: tools/script-header.xsl src/xml/bindings.xml
+	mkdir -p $(top_builddir)/include/generated
+	$(PATH_XSLTPROC) '$(top_srcdir)/tools/script-header.xsl' '$(top_srcdir)/src/xml/bindings.xml' > $(top_builddir)/$@
 endif
 
-EXTRA_DIST += include/mud/eventids.h include/mud/hooks.h
-BUILT_SOURCES = include/mud/eventids.h include/mud/hooks.h
+EXTRA_DIST += include/generated/eventids.h include/generated/hooks.h include/generated/bindings.h
+BUILT_SOURCES = include/generated/eventids.h include/generated/hooks.h include/generated/bindings.h
 
 ### EXECUTABLES ###
 
@@ -359,16 +363,39 @@ src/scriptix/lexer.cc: src/scriptix/lexer.ll src/scriptix/grammar.hh
 	@PATH_FLEX@ -osrc/scriptix/lexer.cc src/scriptix/lexer.ll
 endif
 
+GENERATED_SOURCES=\
+	src/generated/bindings.cc \
+	src/generated/eventids.cc \
+	src/generated/hooks.cc \
+	src/generated/parse_commands.cc
+
+if USE_XSLT
+src/generated/bindings.cc: tools/script-code.xsl src/xml/bindings.xml
+	$(PATH_XSLTPROC) '$(top_srcdir)/tools/script-code.xsl' '$(top_srcdir)/src/xml/bindings.xml' > src/generated/bindings.cc
+
+src/generated/parse_commands.cc: tools/parse-code.xsl src/xml/parse-intr.xml
+	$(PATH_XSLTPROC) '$(top_srcdir)/tools/parse-code.xsl' '$(top_srcdir)/src/xml/parse-intr.xml' > src/generated/parse_commands.cc
+
+src/generated/eventids.cc: tools/events-code.xsl src/xml/event-list.xml
+	$(PATH_XSLTPROC) '$(top_srcdir)/tools/events-code.xsl' '$(top_srcdir)/src/xml/event-list.xml' > src/generated/eventids.cc
+
+src/generated/hooks.cc: tools/hooks-code.xsl src/xml/hook-list.xml
+	$(PATH_XSLTPROC) '$(top_srcdir)/tools/hooks-code.xsl' '$(top_srcdir)/src/xml/hook-list.xml' > src/generated/hooks.cc
+endif
+
+EXTRA_DIST += src/generated/bindings.cc src/generated/parse_commands.cc src/generated/eventids.cc src/generated/hooks.cc
+BUILT_SOURCES += src/generated/bindings.cc src/generated/parse_commands.cc src/generated/eventids.cc src/generated/hooks.cc
+
 awemud_ctrl_SOURCES=\
 	src/util/awemud-ctrl.c
 
 awemud_bin_SOURCES=\
 	$(COMMON_SOURCES) \
 	$(SCRIPTIX_SOURCES) \
+	$(GENERATED_SOURCES) \
 	src/mud/account.cc \
 	src/mud/action.cc \
 	src/mud/ai.cc \
-	src/mud/bindings.cc \
 	src/mud/body.cc \
 	src/mud/caffect.cc \
 	src/mud/calendar.cc \
@@ -387,12 +414,10 @@ awemud_bin_SOURCES=\
 	src/mud/efactory.cc \
 	src/mud/entity.cc \
 	src/mud/event.cc \
-	src/mud/eventids.cc \
 	src/mud/fileobj.cc \
 	src/mud/filetab.cc \
 	src/mud/help.cc \
 	src/mud/http.cc \
-	src/mud/hooks.cc \
 	src/mud/idmap.cc \
 	src/mud/login.cc \
 	src/mud/mail.cc \
@@ -414,27 +439,9 @@ awemud_bin_SOURCES=\
 	src/mud/settings.cc \
 	src/mud/skill.cc \
 	src/mud/social.cc \
-	src/mud/parse_commands.cc \
 	src/mud/telnet.cc \
 	src/mud/time.cc \
 	src/mud/uniqid.cc \
 	src/mud/weather.cc \
 	src/mud/zmp.cc \
 	src/mud/zone.cc
-
-if USE_XSLT
-src/mud/bindings.cc: tools/script-code.xsl src/xml/bindings.xml
-	$(PATH_XSLTPROC) '$(top_srcdir)/tools/script-code.xsl' '$(top_srcdir)/src/xml/bindings.xml' > src/mud/bindings.cc
-
-src/mud/parse_commands.cc: tools/parse-code.xsl src/xml/parse-intr.xml
-	$(PATH_XSLTPROC) '$(top_srcdir)/tools/parse-code.xsl' '$(top_srcdir)/src/xml/parse-intr.xml' > src/mud/parse_commands.cc
-
-src/mud/eventids.cc: tools/events-code.xsl src/xml/event-list.xml
-	$(PATH_XSLTPROC) '$(top_srcdir)/tools/events-code.xsl' '$(top_srcdir)/src/xml/event-list.xml' > src/mud/eventids.cc
-
-src/mud/hooks.cc: tools/hooks-code.xsl src/xml/hook-list.xml
-	$(PATH_XSLTPROC) '$(top_srcdir)/tools/hooks-code.xsl' '$(top_srcdir)/src/xml/hook-list.xml' > src/mud/hooks.cc
-endif
-
-EXTRA_DIST += src/mud/bindings.cc src/mud/parse_commands.cc src/mud/eventids.cc src/mud/hooks.cc
-BUILT_SOURCES += src/mud/bindings.cc src/mud/parse_commands.cc src/mud/eventids.cc src/mud/hooks.cc

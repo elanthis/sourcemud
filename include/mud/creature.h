@@ -147,6 +147,10 @@ Creature : public Entity, public IStreamSink
 	virtual uint get_combat_attack () const = 0; // attack accuracy
 	virtual uint get_combat_damage () const = 0; // damage factor
 
+	// events
+	virtual void handle_event (const Event& event);
+	virtual void broadcast_event (const Event& event);
+
 	// equipment
 	int hold (class Object*);
 	int wear (class Object*);

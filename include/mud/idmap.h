@@ -43,28 +43,28 @@ template <typename tag>
 class BaseID
 {
 	private:
-	explicit inline BaseID (const String* s_id) : id(s_id) {}
+	explicit BaseID (const String* s_id) : id(s_id) {}
 
 	public:
-	inline BaseID () : id(NULL) {}
-	inline BaseID (const BaseID<tag>& s_id) : id(s_id.id) {}
+	BaseID () : id(NULL) {}
+	BaseID (const BaseID<tag>& s_id) : id(s_id.id) {}
 
-	inline bool valid () const { return id != 0; }
+	bool valid () const { return id != 0; }
 
-	inline static BaseID<tag> lookup (String idname) { return BaseID<tag>(get_manager().lookup(idname)); }
-	inline static BaseID<tag> create (String idname) { return BaseID<tag>(get_manager().create(idname)); }
-	inline String name () const { return id != NULL ? *id : String(); }
-	inline static String nameof (BaseID<tag> id) { return id.name(); }
+	static BaseID<tag> lookup (String idname) { return BaseID<tag>(get_manager().lookup(idname)); }
+	static BaseID<tag> create (String idname) { return BaseID<tag>(get_manager().create(idname)); }
+	String name () const { return id != NULL ? *id : String(); }
+	static String nameof (BaseID<tag> id) { return id.name(); }
 
 	static const IDManager::IDMap& get_all () { return get_manager().get_all(); }
 
-	inline bool operator< (const BaseID<tag>& cmp) const { return id < cmp.id; }
-	inline bool operator== (const BaseID<tag>& cmp) const { return id == cmp.id; }
+	bool operator< (const BaseID<tag>& cmp) const { return id < cmp.id; }
+	bool operator== (const BaseID<tag>& cmp) const { return id == cmp.id; }
 
-	private:
+	protected:
 	const String* id;
 
-	inline static IDManager& get_manager ();
+	static IDManager& get_manager ();
 };
 
 template <typename tag>
@@ -77,6 +77,12 @@ BaseID<tag>::get_manager ()
 
 #define DECLARE_IDMAP(name) \
 	struct idmap_tag_ ## name ## _t {}; \
-	typedef BaseID<idmap_tag_ ## name ## _t> name ## ID;
+	class name##ID : public BaseID<idmap_tag_ ## name ## _t> { \
+		public: \
+		typedef BaseID<idmap_tag_##name##_t> base_t; \
+		name##ID () : base_t() {} \
+		name##ID (const base_t& s_id) : base_t(s_id) {} \
+		name##ID (const name##ID& s_id) : base_t(s_id) {} \
+	};
 
 #endif

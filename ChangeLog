@@ -1,3 +1,19 @@
+2007-02-15 07:41:56  Sean Middleditch <elanthis@awesomeplay.com>
+
+  * Remove request and command events.
+  * Modify event structure to have only a single defined element,
+    the recipient Entity, and then auxillary data on top of that.
+  * All events are placed on a queue; no event will be immediately
+    processed.
+  * Broadcast events are broadcast immediately, but none of the
+    resulting events are processed immediately.
+  * Added missing NPC efactory.
+  * Moved generated headers sources into a separate destination
+    hierarchy, in include/generated/ and src/generated/.
+  * Added new header with toValue() function which can convert
+    any wrapped type to a Value so that they may be easily sent
+    to callback functions.
+
 2007-02-12 06:13:12  Sean Middleditch <elanthis@awesomeplay.com>
 
   * Removed IDMAP use for Event IDs.  They are now hard-coded

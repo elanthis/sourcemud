@@ -24,11 +24,17 @@
     #include "mud/object.h"
     #include "mud/portal.h"
     #include "mud/creature.h"
-    #include "mud/hooks.h"
+    #include "generated/hooks.h"
     #include "common/strbuf.h"
     #include "mud/http.h"
     #include "mud/shadow-object.h"
     #include "mud/event.h"
+    #include "mud/bindings.h"
+    #include "mud/settings.h"
+    #include "mud/command.h"
+    #include "common/log.h"
+    #include "mud/fileobj.h"
+    #include "common/manifest.h"
 
     using namespace std;
   ]]></header>

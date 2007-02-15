@@ -12,14 +12,14 @@
 #include "mud/room.h"
 #include "common/streams.h"
 #include "mud/parse.h"
-#include "mud/eventids.h"
 #include "mud/settings.h"
 #include "mud/object.h"
 #include "mud/skill.h"
-#include "mud/hooks.h"
+#include "generated/hooks.h"
 #include "mud/bindings.h"
 #include "common/manifest.h"
 #include "mud/shadow-object.h"
+#include "mud/efactory.h"
 
 void
 NpcBP::reset_name (void)
@@ -427,18 +427,16 @@ Npc::kill (Creature *killer)
 	}
 }
 
-bool
+void
 Npc::handle_event (const Event& event)
 {
 	// ai
 	AI* ai = get_ai();
-	if (ai) {
-		if (event.get_type() != EVENT_NOTIFY && !ai->do_event (this, event))
-			return false;
-	}
+	if (ai)
+		ai->do_event(this, event);
 
 	// normal event handler
-	return Entity::handle_event (event);
+	Entity::handle_event (event);
 }
 
 void
@@ -662,3 +660,7 @@ SNpcBPManager::lookup (String id)
 	else
 		return iter->second;
 }
+
+BEGIN_EFACTORY(NPC)
+	return new Npc();
+END_EFACTORY

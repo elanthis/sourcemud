@@ -29,7 +29,7 @@
 #include "mud/object.h"
 #include "mud/creature.h"
 #include "mud/portal.h"
-#include "mud/hooks.h"
+#include "generated/hooks.h"
 #include "mud/efactory.h"
 #include "mud/shadow-object.h"
 #include "mud/unique-object.h"
@@ -539,31 +539,25 @@ Room::count_players () const
 }
 
 void
+Room::handle_event (const Event& event)
+{
+	Entity::handle_event(event);
+}
+
+void
 Room::broadcast_event (const Event& event)
 {
-	// handle in self first
-	Entity::handle_event (event);
-
-	// temporary, stable vector of children
-	EList<Entity> children(objects.size() + creatures.size() + portals.size());
-	size_t index = 0;
-
 	// propogate to objects
 	for (EList<Object>::const_iterator i = objects.begin(); i != objects.end(); ++i)
-		children[index++] = *i;
+		EventManager.resend(event, *i);
 
 	// propogate to creatures
 	for (EList<Creature>::const_iterator i = creatures.begin(); i != creatures.end(); ++i)
-		children[index++] = *i;
+		EventManager.resend(event, *i);
 
 	// propogate to portals
 	for (GCType::map<PortalDir,Portal*>::const_iterator i = portals.begin(); i != portals.end(); ++i)
-		children[index++] = i->second;
-
-	// do event sending
-	for (EList<Entity>::const_iterator i = children.begin(); i != children.end(); ++i) {
-		(*i)->handle_event(event);
-	}
+		EventManager.resend(event, i->second);
 }
 
 // StreamSink for room buffering

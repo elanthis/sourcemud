@@ -11,11 +11,6 @@
 
 #include "common/gcbase.h"
 #include "common/string.h"
-#include "mud/bindings.h"
-#include "mud/settings.h"
-#include "mud/command.h"
-#include "common/log.h"
-#include "mud/fileobj.h"
 #include "scriptix/number.h"
 #include "scriptix/array.h"
 #include "scriptix/system.h"
@@ -24,6 +19,10 @@
 #include "scriptix/stream.h"
 #include "scriptix/vimpl.h"
 #include "common/manifest.h"
+#include "mud/bindings.h"
+]]></xsl:text>
+<xsl:value-of select="header"/>
+<xsl:text><![CDATA[
 
 #define SCRIPTIX_MAX_ARGV 32
 
@@ -96,7 +95,6 @@ SScriptBindings::shutdown()
 // ------------- BEGIN GENERATED BINDINGS ---------------
 
 ]]></xsl:text>
-    <xsl:value-of select="header"/>
 
     <!-- generate global static class type holders -->
     <xsl:for-each select="type">
@@ -122,6 +120,10 @@ SScriptBindings::shutdown()
               { if (other.is_a(AweMUD_<xsl:value-of select="name" />Type)) return our_data == ((Script<xsl:value-of select="name" />*)other.get())->our_data;
               else return false; }
           };
+        }
+        Scriptix::Value
+        toValue(const <xsl:value-of select="cppwrap"/>&amp; data) {
+          return new Script<xsl:value-of select="name"/>(data);
         }
       </xsl:if>
     </xsl:for-each>

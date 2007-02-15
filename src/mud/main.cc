@@ -41,7 +41,7 @@
 #include "mud/clock.h"
 #include "mud/parse.h"
 #include "mud/bindings.h"
-#include "mud/hooks.h"
+#include "generated/hooks.h"
 #include "mud/server.h"
 #include "mud/settings.h"
 #include "mud/login.h"

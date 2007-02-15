@@ -47,18 +47,13 @@ Frequently Asked Questions
    operating systems.  For the Boehm GC, make sure you have the development
    packages installed in addition to the core library package.
 
-3. AweMUD won't compile with GCC 2.9x!?
-   ====================================
-
-   AweMUD only supports GCC versions 3.3 and higher.
-
-4. How come AweMUD doesn't work after 'make install'?
+3. How come AweMUD doesn't work after 'make install'?
    ==================================================
 
    Make sure that the settings in the installed awemud.conf file are
    correct for your system.
 
-5. How can I help?
+4. How can I help?
    ===============
 
    AweMUD is in a constant state of development, and could its developers

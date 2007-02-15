@@ -22,7 +22,6 @@
 #include "mud/uniqid.h"
 #include "mud/event.h"
 #include "mud/color.h"
-#include "mud/event.h"
 #include "mud/tag.h"
 #include "mud/server.h"
 #include "mud/clock.h"
@@ -102,7 +101,8 @@ class Entity : public Scriptix::Native, public Parsable
 	virtual bool name_match (String name) const;
 
 	// event triggers
-	virtual bool handle_event (const Event& event);
+	virtual void handle_event (const Event& event);
+	virtual void broadcast_event (const Event& event) = 0;
 
 	// for parsing, pull a property based on a char
 	virtual int parse_property (const class StreamControl& stream, String method, const ParseList& argv) const;

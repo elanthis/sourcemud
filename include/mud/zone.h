@@ -71,6 +71,10 @@ class Zone : public Entity
 	// manage rooms
 	void add_room (class Room*);
 
+	// events
+	virtual void handle_event (const Event& event);
+	virtual void broadcast_event (const Event& event);
+
 	// load/save
 	using Entity::load;
 	virtual int load_node(File::Reader& reader, File::Node& node);

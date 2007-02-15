@@ -158,6 +158,10 @@ class Portal : public Entity
 	virtual void owner_release (Entity*);
 	virtual class Room *get_room () const { return parent_room; }
 
+	// events
+	virtual void handle_event (const Event& event);
+	virtual void broadcast_event (const Event& event);
+
 	// activate/deactivtee
 	virtual void activate ();
 	virtual void deactivate ();

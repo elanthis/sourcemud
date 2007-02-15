@@ -17,7 +17,7 @@
 #include "mud/gametime.h"
 #include "mud/weather.h"
 #include "mud/object.h"
-#include "mud/hooks.h"
+#include "generated/hooks.h"
 #include "mud/bindings.h"
 #include "common/manifest.h"
 #include "mud/shadow-object.h"
@@ -329,6 +329,19 @@ Zone::destroy ()
 		ZoneManager.zones.erase(i);
 
 	Entity::destroy();
+}
+
+void
+Zone::handle_event (const Event& event)
+{
+	Entity::handle_event(event);
+}
+
+void
+Zone::broadcast_event (const Event& event)
+{
+	for (RoomList::iterator i = rooms.begin(); i != rooms.end(); ++i)
+		EventManager.resend(event, *i);
 }
 
 int

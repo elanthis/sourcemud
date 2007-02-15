@@ -20,12 +20,11 @@
 #include "mud/player.h"
 #include "mud/parse.h"
 #include "common/streams.h"
-#include "mud/eventids.h"
 #include "mud/action.h"
 #include "mud/caffect.h"
 #include "mud/clock.h"
 #include "mud/object.h"
-#include "mud/hooks.h"
+#include "generated/hooks.h"
 #include "mud/shadow-object.h"
 #include "mud/unique-object.h"
 
@@ -399,15 +398,6 @@ Creature::enter (Room *new_room, Portal *old_portal)
 		old_zone = old_room->get_zone();
 	Zone* new_zone = new_room->get_zone();
 
-	// event checks
-	if (old_room)
-		if (!Events::requestLeaveRoom(old_room, this, old_portal, new_room)) return false;
-	if (!Events::requestEnterRoom(new_room, this, enter_portal, old_room)) return false;
-	if (old_room && old_zone != new_zone)
-		if (!Events::requestLeaveZone(old_room, this, new_zone)) return false;
-	if (old_room && old_zone != new_zone)
-		if (!Events::requestEnterZone(old_room, this, old_zone)) return false;
-
 	// did we go thru an portal?
 	if (old_portal) {
 		// "You go..." message
@@ -427,12 +417,12 @@ Creature::enter (Room *new_room, Portal *old_portal)
 	new_room->add_creature (this);
 
 	if (old_room)
-		Events::notifyLeaveRoom(old_room, this, old_portal, new_room);
-	Events::notifyEnterRoom(new_room, this, enter_portal, old_room);
+		Events::sendLeaveRoom(old_room, this, old_portal, new_room);
+	Events::sendEnterRoom(new_room, this, enter_portal, old_room);
 	if (old_room && old_zone != new_zone)
-		Events::notifyLeaveZone(old_room, this, new_zone);
+		Events::sendLeaveZone(old_room, this, new_zone);
 	if (old_room && old_zone != new_zone)
-		Events::notifyEnterZone(old_room, this, old_zone);
+		Events::sendEnterZone(old_room, this, old_zone);
 
 	do_look();
 
@@ -770,4 +760,26 @@ Creature::add_affect (CreatureAffectGroup* affect)
 
 	affects.push_back(affect);
 	return 0;
+}
+
+// events
+void
+Creature::handle_event (const Event& event)
+{
+	Entity::handle_event(event);
+}
+
+void
+Creature::broadcast_event (const Event& event)
+{
+	if (equipment.right_held)
+		EventManager.resend(event, equipment.right_held);
+	if (equipment.left_held)
+		EventManager.resend(event, equipment.left_held);
+	if (equipment.body_worn)
+		EventManager.resend(event, equipment.body_worn);
+	if (equipment.back_worn)
+		EventManager.resend(event, equipment.back_worn);
+	if (equipment.waist_worn)
+		EventManager.resend(event, equipment.waist_worn);
 }

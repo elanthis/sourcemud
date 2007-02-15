@@ -45,6 +45,18 @@ zone.child = room {
     portal.dir = "southwest"
     portal.target = "darkwood_cave"
   }
+  room.child = npc {
+    npc.blueprint = "wolf"
+    entity.uid = <3521>
+    entity.tag = "darkwood_wolf"
+    creature.position = "stand"
+    creature.hp = 100
+    creature.equip_rhand = sobject {
+      object.blueprint = "claws"
+      entity.uid = <3522>
+    }
+    npc.zonelock = true
+  }
 }
 zone.child = room {
   room.id = "darkwood_saladhin"

@@ -8,7 +8,6 @@
 #include "mud/player.h"
 #include "mud/object.h"
 #include "mud/server.h"
-#include "mud/eventids.h"
 #include "mud/room.h"
 #include "common/rand.h"
 #include "mud/parse.h"

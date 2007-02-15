@@ -20,7 +20,7 @@
 #include "mud/player.h"
 #include "common/streams.h"
 #include "mud/settings.h"
-#include "mud/hooks.h"
+#include "generated/hooks.h"
 #include "common/manifest.h"
 #include "mud/shadow-object.h"
 #include "mud/unique-object.h"
@@ -676,6 +676,20 @@ Object::parse_property (const StreamControl& stream, String comm, const ParseLis
 	}
 	// try the entity
 	return Entity::parse_property(stream, comm, argv);
+}
+
+// event handling
+void
+Object::handle_event (const Event& event)
+{
+	Entity::handle_event(event);
+}
+
+void
+Object::broadcast_event (const Event& event)
+{
+	for (EList<Object>::const_iterator i = children.begin(); i != children.end(); ++i)
+		EventManager.resend(event, *i);
 }
 
 void

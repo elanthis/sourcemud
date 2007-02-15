@@ -42,41 +42,15 @@ namespace Events {
 
 <!-- event ids -->
 <xsl:for-each select="event">
-  <xsl:if test="type/@request='1'">
-    <xsl:text>bool request</xsl:text><xsl:value-of select="@name" />
-    <xsl:text>(Room* room</xsl:text>
-    <xsl:if test="actor"><xsl:text>, </xsl:text><xsl:value-of select="actor/@type" />* actor</xsl:if>
-    <xsl:if test="target"><xsl:text>, </xsl:text><xsl:value-of select="target/@type" />* target</xsl:if>
-    <xsl:if test="aux"><xsl:text>, </xsl:text><xsl:value-of select="aux/@type" />* aux</xsl:if>
-    <xsl:apply-templates select="arg" />
-    <xsl:text>){return EventManager.request(EventID::</xsl:text><xsl:value-of select="@name" /><xsl:text>,room,actor,target,aux</xsl:text>
-    <xsl:for-each select="arg"><xsl:text>,arg_</xsl:text><xsl:value-of select="@name" /></xsl:for-each>
-    <xsl:text>);}</xsl:text>
-  </xsl:if>
-
-  <xsl:if test="type/@notify='1'">
-    <xsl:text>void notify</xsl:text><xsl:value-of select="@name" />
-    <xsl:text>(Room* room</xsl:text>
-    <xsl:if test="actor"><xsl:text>, </xsl:text><xsl:value-of select="actor/@type" />* actor</xsl:if>
-    <xsl:if test="target"><xsl:text>, </xsl:text><xsl:value-of select="target/@type" />* target</xsl:if>
-    <xsl:if test="aux"><xsl:text>, </xsl:text><xsl:value-of select="aux/@type" />* aux</xsl:if>
-    <xsl:apply-templates select="arg" />
-    <xsl:text>){EventManager.notify(EventID::</xsl:text><xsl:value-of select="@name" /><xsl:text>,room,actor,target,aux</xsl:text>
-    <xsl:for-each select="arg"><xsl:text>,arg_</xsl:text><xsl:value-of select="@name" /></xsl:for-each>
-    <xsl:text>);}</xsl:text>
-  </xsl:if>
-
-  <xsl:if test="type/@command='1'">
-    <xsl:text>bool do</xsl:text><xsl:value-of select="@name" />
-    <xsl:text>(Room* room</xsl:text>
-    <xsl:if test="actor"><xsl:text>, </xsl:text><xsl:value-of select="actor/@type" />* actor</xsl:if>
-    <xsl:if test="target"><xsl:text>, </xsl:text><xsl:value-of select="target/@type" />* target</xsl:if>
-    <xsl:if test="aux"><xsl:text>, </xsl:text><xsl:value-of select="aux/@type" />* aux</xsl:if>
-    <xsl:apply-templates select="arg" />
-    <xsl:text>){return EventManager.command(EventID::</xsl:text><xsl:value-of select="@name" /><xsl:text>,room,actor,target,aux</xsl:text>
-    <xsl:for-each select="arg"><xsl:text>,arg_</xsl:text><xsl:value-of select="@name" /></xsl:for-each>
-    <xsl:text>);}</xsl:text>
-  </xsl:if>
+  <xsl:text>void send</xsl:text><xsl:value-of select="@name" />
+  <xsl:text>(Room* room</xsl:text>
+  <xsl:if test="actor"><xsl:text>, </xsl:text><xsl:value-of select="actor/@type" />* actor</xsl:if>
+  <xsl:if test="target"><xsl:text>, </xsl:text><xsl:value-of select="target/@type" />* target</xsl:if>
+  <xsl:if test="aux"><xsl:text>, </xsl:text><xsl:value-of select="aux/@type" />* aux</xsl:if>
+  <xsl:apply-templates select="arg" />
+  <xsl:text>){EventManager.send(EventID::</xsl:text><xsl:value-of select="@name" /><xsl:text>,room,actor,target,aux</xsl:text>
+  <xsl:for-each select="arg"><xsl:text>,arg_</xsl:text><xsl:value-of select="@name" /></xsl:for-each>
+  <xsl:text>);}</xsl:text>
 </xsl:for-each>
 
 <!-- footer -->

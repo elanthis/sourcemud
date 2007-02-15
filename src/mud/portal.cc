@@ -19,7 +19,7 @@
 #include "mud/player.h"
 #include "common/streams.h"
 #include "mud/zone.h"
-#include "mud/hooks.h"
+#include "generated/hooks.h"
 #include "scriptix/function.h"
 #include "mud/efactory.h"
 
@@ -557,6 +557,17 @@ Portal::deactivate ()
 		if (room != NULL)
 			room->unregister_portal(this);
 	}
+}
+
+void
+Portal::handle_event (const Event& event)
+{
+	Entity::handle_event(event);
+}
+
+void
+Portal::broadcast_event (const Event& event)
+{
 }
 
 BEGIN_EFACTORY(Portal)

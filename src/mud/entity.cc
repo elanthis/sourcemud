@@ -20,7 +20,7 @@
 #include "mud/color.h"
 #include "mud/player.h"
 #include "mud/clock.h"
-#include "mud/hooks.h"
+#include "generated/hooks.h"
 
 // ----- Entity -----
 

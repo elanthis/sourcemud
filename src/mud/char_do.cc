@@ -13,7 +13,6 @@
 #include "mud/social.h"
 #include "common/streams.h"
 #include "mud/parse.h"
-#include "mud/eventids.h"
 #include "mud/action.h"
 #include "mud/object.h"
 #include "mud/npc.h"
@@ -196,10 +195,8 @@ Creature::do_look ()
 	if (!check_see()) return;
 	if (!PLAYER(this)) return;
 
-	if (!Events::requestLook(get_room(), this, get_room()))
-		return;
 	get_room()->show(StreamControl(*this), this);
-	Events::notifyLook(get_room(), this, get_room());
+	Events::sendLook(get_room(), this, get_room());
 }
 
 void
@@ -209,9 +206,6 @@ Creature::do_look (Creature *ch)
 
 	// check
 	if (!check_see()) return;
-
-	if (!Events::requestLook(get_room(), this, ch))
-		return;
 
 	// send message to receiver
 	if (this != ch && PLAYER(ch) != NULL)
@@ -226,7 +220,7 @@ Creature::do_look (Creature *ch)
 	// finish
 	*this << "\n";
 
-	Events::notifyLook(get_room(), this, ch);
+	Events::sendLook(get_room(), this, ch);
 }
 
 void
@@ -236,9 +230,6 @@ Creature::do_look (Object *obj, ObjectLocation type)
 
 	// check
 	if (!check_see()) return;
-
-	if (!Events::requestLook(get_room(), this, obj))
-		return;
 
 	// specific container type
 	if (type != 0) {
@@ -261,16 +252,13 @@ Creature::do_look (Object *obj, ObjectLocation type)
 			*this << "\n";
 	}
 
-	Events::notifyLook(get_room(), this, obj);
+	Events::sendLook(get_room(), this, obj);
 }
 
 void
 Creature::do_look (Portal *portal)
 {
 	assert (portal != NULL);
-
-	if (!Events::requestLook(get_room(), this, portal))
-		return;
 
 	// get target room
 	Room* target_room = NULL;
@@ -297,12 +285,12 @@ Creature::do_look (Portal *portal)
 	// finish off line
 	*this << "\n";
 
-	Events::notifyLook(get_room(), this, portal);
+	Events::sendLook(get_room(), this, portal);
 
 	// display target room if possible
-	if (target_room && Events::requestLook(get_room(), this, target_room)) {
+	if (target_room) {
 		target_room->show(*this, this);
-		Events::notifyLook(get_room(), this, target_room);
+		Events::sendLook(get_room(), this, target_room);
 	}
 }
 
@@ -371,11 +359,6 @@ class ActionGet : public IAction
 			*get_actor() << "Your hands are full.\n";
 			return 1;
 		} else {
-			// send a request event
-			if (!Events::requestTouchItem(get_actor()->get_room(), get_actor(), obj)) return 1;
-			if (!Events::requestGraspItem(get_actor()->get_room(), get_actor(), obj)) return 1;
-			if (!Events::requestPickupItem(get_actor()->get_room(), get_actor(), obj)) return 1;
-
 			// get the object
 			if (container) {
 				*get_actor() << "You get " << StreamName(*obj, DEFINITE) << " from " << StreamName(container, DEFINITE) << ".\n";
@@ -386,9 +369,9 @@ class ActionGet : public IAction
 			}
 
 			// notification
-			Events::notifyTouchItem(get_actor()->get_room(), get_actor(), obj);
-			Events::notifyGraspItem(get_actor()->get_room(), get_actor(), obj);
-			Events::notifyPickupItem(get_actor()->get_room(), get_actor(), obj);
+			Events::sendTouchItem(get_actor()->get_room(), get_actor(), obj);
+			Events::sendGraspItem(get_actor()->get_room(), get_actor(), obj);
+			Events::sendPickupItem(get_actor()->get_room(), get_actor(), obj);
 			return 0;
 		}
 	}
@@ -605,10 +588,6 @@ class ActionDrop : public IInstantAction
 			return;
 		}
 
-		// request event
-		if (!Events::requestReleaseItem(get_actor()->get_room(), get_actor(), obj)) return;
-		if (!Events::requestDropItem(get_actor()->get_room(), get_actor(), obj)) return;
-
 		// do drop
 		*get_actor() << "You drop " << StreamName(*obj, DEFINITE) << ".\n";
 		if (get_actor()->get_room())
@@ -617,8 +596,8 @@ class ActionDrop : public IInstantAction
 		get_actor()->get_room()->add_object (obj);
 
 		// send notification
-		Events::notifyReleaseItem(get_actor()->get_room(), get_actor(), obj);
-		Events::notifyDropItem(get_actor()->get_room(), get_actor(), obj);
+		Events::sendReleaseItem(get_actor()->get_room(), get_actor(), obj);
+		Events::sendDropItem(get_actor()->get_room(), get_actor(), obj);
 		return;
 	}
 

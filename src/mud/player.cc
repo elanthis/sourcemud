@@ -29,11 +29,10 @@
 #include "mud/account.h"
 #include "common/log.h"
 #include "mud/zmp.h"
-#include "mud/eventids.h"
 #include "mud/race.h"
 #include "mud/caffect.h"
 #include "mud/object.h"
-#include "mud/hooks.h"
+#include "generated/hooks.h"
 #include "mud/efactory.h"
 
 // manager of players

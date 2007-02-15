@@ -113,6 +113,10 @@ Object : public Entity
 	virtual void set_owner (Entity* s_owner);
 	virtual void owner_release (Entity* child);
 
+	// events
+	virtual void handle_event (const Event& event);
+	virtual void broadcast_event (const Event& event);
+
 	// returns the room the object is in (tracing through parents) or the
 	// character holding the object (again, tracing through parenst)
 	class Creature* get_holder () const;

@@ -9,7 +9,6 @@
 #include "mud/creature.h"
 #include "mud/ai.h"
 #include "mud/room.h"
-#include "mud/eventids.h"
 #include "mud/bindings.h"
 #include "common/manifest.h"
 
@@ -74,9 +73,7 @@ AI::do_event (Creature* self, const Event& event) const
 	// get handler
 	EventList::const_iterator i = event_cb.find(event.get_id());
 	if (i != event_cb.end()) {
-		bool res = i->second.run(self, event.get_id().get_name(), event.get_actor(), event.get_room(), event.get_data(0), event.get_data(1), event.get_data(2), event.get_data(3), event.get_data(4)).is_true();
-		if (event.get_type() != EVENT_NOTIFY && !res)
-			return false;
+		i->second.run(self, event.get_id().get_name(), event.get_recipient(), event.get_aux1(), event.get_aux2(), event.get_data1(), event.get_data2(), event.get_data3(), event.get_data4());
 	}
 	return true;
 }
