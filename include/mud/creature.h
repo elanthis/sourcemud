@@ -251,7 +251,7 @@ Creature : public Entity, public IStreamSink
 	virtual void recalc ();
 
 	// parsing
-	virtual int parse_property (const class StreamControl& stream, String method, const ParseList& argv) const;
+	virtual int macro_property (const class StreamControl& stream, String method, const MacroList& argv) const;
 
 	// output description of character or equipment lsit
 	void display_equip (const class StreamControl& stream) const;

@@ -27,7 +27,7 @@
 #include "common/error.h"
 #include "mud/server.h"
 #include "mud/network.h"
-#include "mud/parse.h"
+#include "mud/macro.h"
 #include "mud/command.h"
 #include "mud/room.h"
 #include "mud/zmp.h"

@@ -39,7 +39,7 @@
 #include "mud/account.h"
 #include "common/log.h"
 #include "mud/clock.h"
-#include "mud/parse.h"
+#include "mud/macro.h"
 #include "mud/bindings.h"
 #include "generated/hooks.h"
 #include "mud/server.h"
@@ -277,7 +277,7 @@ namespace {
 			"Visit http://www.awemud.net for more details.\n";
 
 		// connect message
-		*telnet << StreamParse(MessageManager.get(S("connect")));
+		*telnet << StreamMacro(MessageManager.get(S("connect")));
 
 		// init login
 		telnet->set_mode(new TelnetModeLogin(telnet));

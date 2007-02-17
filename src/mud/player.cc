@@ -20,7 +20,7 @@
 #include "mud/body.h"
 #include "mud/settings.h"
 #include "mud/room.h"
-#include "mud/parse.h"
+#include "mud/macro.h"
 #include "common/streams.h"
 #include "mud/color.h"
 #include "mud/zone.h"
@@ -314,7 +314,7 @@ Player::start_session ()
 {
 	// login message
 	clear_scr();
-	*this << "\n" << StreamParse (MessageManager.get(S("login")), S("player"), this) << "\n";
+	*this << "\n" << StreamMacro (MessageManager.get(S("login")), S("player"), this) << "\n";
 
 	// not already active?  add to room...
 	if (!is_active()) {
@@ -582,7 +582,7 @@ Player::show_prompt ()
 }
 
 int
-Player::parse_property (const StreamControl& stream, String comm, const ParseList& argv) const
+Player::macro_property (const StreamControl& stream, String comm, const MacroList& argv) const
 {
 	// RACE
 	if (str_eq(comm, S("race"))) {
@@ -621,7 +621,7 @@ Player::parse_property (const StreamControl& stream, String comm, const ParseLis
 	}
 	// default...
 	else {
-		return Creature::parse_property(stream, comm, argv);
+		return Creature::macro_property(stream, comm, argv);
 	}
 }
 
@@ -711,7 +711,7 @@ Player::clear_scr ()
 void
 Player::display_desc (const StreamControl& stream) const
 {
-	stream << StreamParse(get_race()->get_desc(), S("self"), this);
+	stream << StreamMacro(get_race()->get_desc(), S("self"), this);
 }
 
 // get player trait

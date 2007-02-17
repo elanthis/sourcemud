@@ -15,7 +15,7 @@
 #include "common/error.h"
 #include "common/string.h"
 #include "mud/server.h"
-#include "mud/parse.h"
+#include "mud/macro.h"
 #include "common/streams.h"
 #include "mud/color.h"
 #include "mud/player.h"
@@ -122,7 +122,7 @@ Entity::name_match (String match) const
 void
 Entity::display_desc (const StreamControl& stream) const
 {
-	stream << StreamParse(get_desc(), S("self"), this);
+	stream << StreamMacro(get_desc(), S("self"), this);
 }
 
 void
@@ -225,7 +225,7 @@ Entity::load_node (File::Reader& reader, File::Node& node)
 }
 
 int
-Entity::parse_property (const StreamControl& stream, String comm, const ParseList& argv) const
+Entity::macro_property (const StreamControl& stream, String comm, const MacroList& argv) const
 {
 	// SPECIAL: one-letter name commands
 	if (comm.size() == 1) {
@@ -269,7 +269,7 @@ Entity::parse_property (const StreamControl& stream, String comm, const ParseLis
 }
 
 void
-Entity::parse_default (const StreamControl& stream) const
+Entity::macro_default (const StreamControl& stream) const
 {
 	stream << StreamName(*this);
 }

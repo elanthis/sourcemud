@@ -1,3 +1,9 @@
+2007-02-17 20:34:21  Sean Middleditch <elanthis@awesomeplay.com>
+
+  * Renamed the parse system to the macro system, which is far
+    less confusing.
+  * Clean up of XML source file names and generated file names.
+
 2007-02-15 07:41:56  Sean Middleditch <elanthis@awesomeplay.com>
 
   * Remove request and command events.

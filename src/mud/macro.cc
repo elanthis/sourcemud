@@ -9,20 +9,20 @@
 
 #include <ctype.h>
 
-#include "mud/parse.h"
+#include "mud/macro.h"
 #include "common/streams.h"
 #include "mud/gametime.h"
 #include "common/strbuf.h"
 
-#define PARSE_OUT_SIZE 2048
-#define PARSE_BUFFER_SIZE 4096
+#define MACRO_OUT_SIZE 2048
+#define MACRO_BUFFER_SIZE 4096
 #define MAX_COMM_NAME 32
 #define MAX_COMM_DATA 128
-#define PARSE_MAX_DEPTH 8
+#define MACRO_MAX_DEPTH 8
 
 #define CHUNK_LEN(start, end) ((end)-(start)+1)
 
-// parse value
+// macro value
 namespace {
 	// if statements
 	enum if_state {
@@ -59,17 +59,17 @@ namespace {
 
 	typedef std::vector<char> IfStack;
 
-	struct ParseState {
+	struct MacroState {
 		IfStack if_stack;
-		const ParseArgs& argv;
+		const MacroArgs& argv;
 		int disable;
 
-		inline ParseState (const ParseArgs& s_argv) : if_stack(), argv(s_argv), disable(0) {}
+		inline MacroState (const MacroArgs& s_argv) : if_stack(), argv(s_argv), disable(0) {}
 	};
 
-	class ParseIn {
+	class MacroIn {
 		public:
-		ParseIn (const char* s_cur, const char* s_end) : cur(s_cur), end(s_end) {}
+		MacroIn (const char* s_cur, const char* s_end) : cur(s_cur), end(s_end) {}
 
 		char get () { if (cur == end) return 0; else return *cur++; }
 		char peek () const { if (cur == end) return 0; else return *cur; }
@@ -83,21 +83,21 @@ namespace {
 
 	token_type get_token (const char** in, const char* end, StringBuffer& namebuf);
 	void skip (const char** in, const char* end);
-	String get_arg (ParseArgs& argv, uint index);
-	int invoke_method (const StreamControl& stream, ParseValue self, String method, ParseList& argv);
-	int do_command (const char** in, const char* end, ParseState& state, const StreamControl& stream, int depth, bool if_allowed);
-	int do_text(const StreamControl& stream, String in, ParseState& state, int depth);
+	String get_arg (MacroArgs& argv, uint index);
+	int invoke_method (const StreamControl& stream, MacroValue self, String method, MacroList& argv);
+	int do_macro (const char** in, const char* end, MacroState& state, const StreamControl& stream, int depth, bool if_allowed);
+	int do_text(const StreamControl& stream, String in, MacroState& state, int depth);
 }
 
-// externally defined in parse_commands.cc, generated from gen/parse-intr.xml
-namespace parse {
-	extern int exec_command (const StreamControl& stream, String command, ParseList& argv);
+// externally defined in macro_macros.cc, generated from gen/macro-intr.xml
+namespace macro {
+	extern int exec_macro (const StreamControl& stream, String macro, MacroList& argv);
 }
 
 // function definitions
 namespace {
 	// get a token
-	token_type get_token (ParseIn& in, StringBuffer& namebuf)
+	token_type get_token (MacroIn& in, StringBuffer& namebuf)
 	{
 		// clear buffer
 		namebuf.reset();
@@ -172,7 +172,7 @@ namespace {
 	}
 
 	// skip to end of processing
-	void skip (ParseIn& in)
+	void skip (MacroIn& in)
 	{
 		int nest = 0;
 		char quote = 0;
@@ -210,7 +210,7 @@ namespace {
 	}
 
 	// get an argument as a string
-	String get_arg (ParseList& argv, uint index)
+	String get_arg (MacroList& argv, uint index)
 	{
 		// bounds check
 		if (index >= argv.size())
@@ -221,11 +221,11 @@ namespace {
 	}
 
 	// invoke a method
-	int invoke_method (const StreamControl& stream, ParseValue self, String method, ParseList& argv)
+	int invoke_method (const StreamControl& stream, MacroValue self, String method, MacroList& argv)
 	{
-		// if it's an object, invoke Entity::parse_property();
+		// if it's an object, invoke Entity::macro_property();
 		if (self.is_object()) {
-			return self.get_object()->parse_property(stream, method, argv);
+			return self.get_object()->macro_property(stream, method, argv);
 		}
 		
 		// it's a string, so process it ourself
@@ -242,19 +242,19 @@ namespace {
 		return -1;
 	}
 
-	// handle a command
-	int do_command (ParseIn& in, ParseState& state, const StreamControl& stream, int depth, bool if_allowed)
+	// handle a macro
+	int do_macro (MacroIn& in, MacroState& state, const StreamControl& stream, int depth, bool if_allowed)
 	{
 		token_type token;
 		bool is_if = false;
 		bool is_bang = false;
-		ParseValue value;
+		MacroValue value;
 		String method;
 		StringBuffer buffer;
-		ParseList argv;
+		MacroList argv;
 
 		// max depth
-		if (depth > PARSE_MAX_DEPTH) {
+		if (depth > MACRO_MAX_DEPTH) {
 			skip(in);
 			stream << "{error: overflow}";
 			return -1;
@@ -373,8 +373,8 @@ namespace {
 			}
 
 			// get value of variable, error if no such variable
-			value = ParseValue();
-			ParseArgs::const_iterator i = state.argv.find(buffer.str());
+			value = MacroValue();
+			MacroArgs::const_iterator i = state.argv.find(buffer.str());
 			if (i != state.argv.end())
 				value = i->second;
 
@@ -419,17 +419,17 @@ namespace {
 			// string
 			if (token == TOK_STRING) {
 				argv.push_back(buffer.str());
-			// sub-command
+			// sub-macro
 			} else if (token == TOK_BEGIN) {
-				if (do_command(in, state, buffer, depth + 1, false)) {
-					stream << "{error: unknown command}";
+				if (do_macro(in, state, buffer, depth + 1, false)) {
+					stream << "{error: unknown macro}";
 					return -1;
 				}
 				argv.push_back(buffer.str());
 			// something else
 			} else {
 				skip(in);
-				stream << "{error: parse error}";
+				stream << "{error: macro error}";
 				return -1;
 			}
 			// another token
@@ -453,12 +453,12 @@ namespace {
 				if (value.is_string())
 					buffer << value.get_string();
 				else if (value.is_object())
-					value.get_object()->parse_default(buffer);
+					value.get_object()->macro_default(buffer);
 			}
 		// just a function?
 		} else if (method) {
-			if (parse::exec_command(buffer, method, argv)) {
-				stream << "{error: command failed}";
+			if (macro::exec_macro(buffer, method, argv)) {
+				stream << "{error: macro failed}";
 				return -1;
 			}
 		}
@@ -478,7 +478,7 @@ namespace {
 			}
 		// or expand bang
 		} else if (is_bang) {
-			ParseState bstate(state.argv);
+			MacroState bstate(state.argv);
 			StringBuffer bbuffer;
 			if (do_text(bbuffer, buffer.str(), bstate, depth + 1)) {
 				stream << bbuffer;
@@ -494,12 +494,12 @@ namespace {
 		return 0;
 	}
 
-	// parse text
+	// macro text
 	int
-	do_text(const StreamControl& stream, String text, ParseState& state, int depth)
+	do_text(const StreamControl& stream, String text, MacroState& state, int depth)
 	{
 		// declarations
-		ParseIn in(text.c_str(), text.c_str() + text.size());
+		MacroIn in(text.c_str(), text.c_str() + text.size());
 
 		// iterate over input
 		while (!in.eof()) {
@@ -517,15 +517,15 @@ namespace {
 					// newline
 					else if (c == 'n')
 						stream << '\n';
-					// begin-parse
+					// begin-macro
 					else if (c == '{')
 						stream << '{';
 					// anything else is unsupported, ignore
 				}
 
-			// begin parse command
+			// begin macro macro
 			} else if (c == '{') {
-				do_command(in, state, stream, depth, true);
+				do_macro(in, state, stream, depth, true);
 			// just text
 			} else if (!state.disable) {
 				stream << c;
@@ -537,12 +537,12 @@ namespace {
 }
 
 // parsing
-namespace parse {
-	// parse text
+namespace macro {
+	// macro text
 	const StreamControl&
-	text(const StreamControl& stream, String in, const ParseArgs& argv)
+	text(const StreamControl& stream, String in, const MacroArgs& argv)
 	{
-		ParseState state(argv);
+		MacroState state(argv);
 
 		if (do_text(stream, in, state, 1))
 			stream << in;

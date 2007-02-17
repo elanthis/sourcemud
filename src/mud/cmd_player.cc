@@ -7,7 +7,7 @@
 
 #include "mud/player.h"
 #include "mud/server.h"
-#include "mud/parse.h"
+#include "mud/macro.h"
 #include "mud/command.h"
 #include "common/streams.h"
 #include "common/mail.h"

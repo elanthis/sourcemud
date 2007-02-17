@@ -16,7 +16,7 @@
 #include "mud/server.h"
 #include "common/imanager.h"
 #include "mud/idmap.h"
-#include "mud/parse.h"
+#include "mud/macro.h"
 
 // account name length requirements
 #define ACCOUNT_NAME_MIN_LEN 3
@@ -28,7 +28,7 @@
 DECLARE_IDMAP(Access)
 typedef GCType::set<AccessID> AccessList;
 
-class Account : public Cleanup, public Parsable
+class Account : public Cleanup, public IMacroObject
 {
 	public:
 	// the ID
@@ -87,8 +87,8 @@ class Account : public Cleanup, public Parsable
 	void grant_builder () { grant_access(AccessID::lookup(S("builder"))); }
 
 	// parsing
-	virtual int parse_property (const class StreamControl& stream, String method, const ParseList& argv) const;
-	virtual void parse_default (const class StreamControl& stream) const;
+	virtual int macro_property (const class StreamControl& stream, String method, const MacroList& argv) const;
+	virtual void macro_default (const class StreamControl& stream) const;
 
 	private:
 	String id;

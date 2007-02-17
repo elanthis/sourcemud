@@ -11,7 +11,7 @@
 #include "mud/npc.h"
 #include "mud/room.h"
 #include "common/streams.h"
-#include "mud/parse.h"
+#include "mud/macro.h"
 #include "mud/settings.h"
 #include "mud/object.h"
 #include "mud/skill.h"
@@ -507,7 +507,7 @@ void
 Npc::display_desc (const StreamControl& stream)
 {
 	if (get_desc ())
-		stream << StreamParse(get_desc(), S("npc"), this); // FIXME: re-enable 'actor'(looker)
+		stream << StreamMacro(get_desc(), S("npc"), this); // FIXME: re-enable 'actor'(looker)
 	else
 		stream << StreamName(this, DEFINITE, true) << " doesn't appear very interesting.";
 }

@@ -173,7 +173,7 @@ Account::revoke_access(AccessID id)
 }
 
 int
-Account::parse_property (const StreamControl& stream, String method, const ParseList& argv) const
+Account::macro_property (const StreamControl& stream, String method, const MacroList& argv) const
 {
 	if (method == "id") {
 		stream << id;
@@ -190,7 +190,7 @@ Account::parse_property (const StreamControl& stream, String method, const Parse
 }
 
 void
-Account::parse_default (const StreamControl& stream) const
+Account::macro_default (const StreamControl& stream) const
 {
 	stream << id;
 }

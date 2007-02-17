@@ -12,7 +12,7 @@
 #include "mud/player.h"
 #include "mud/social.h"
 #include "common/streams.h"
-#include "mud/parse.h"
+#include "mud/macro.h"
 #include "mud/action.h"
 #include "mud/object.h"
 #include "mud/npc.h"
@@ -52,8 +52,8 @@ Creature::do_social (const Social* social, Entity* target, String adverb)
 		}
 
 		// do social
-		*this << StreamParse(social->ghost.self, S("actor"), this) << "\n";
-		if (get_room()) *get_room() << StreamIgnore(this) << StreamParse(social->ghost.others, S("actor"), this) << "\n";
+		*this << StreamMacro(social->ghost.self, S("actor"), this) << "\n";
+		if (get_room()) *get_room() << StreamIgnore(this) << StreamMacro(social->ghost.others, S("actor"), this) << "\n";
 		return;
 	}
 
@@ -68,25 +68,25 @@ Creature::do_social (const Social* social, Entity* target, String adverb)
 	// have we a target?
 	if (target == NULL) {
 		if (social->action.self) {
-			*this << StreamParse(social->action.self, S("actor"), this) << "\n";
-			if (get_room()) *get_room() << StreamIgnore(this) << StreamParse(social->action.others, S("actor"), this) << "\n";
+			*this << StreamMacro(social->action.self, S("actor"), this) << "\n";
+			if (get_room()) *get_room() << StreamIgnore(this) << StreamMacro(social->action.others, S("actor"), this) << "\n";
 		} else {
 			*this << "You can't do that without a target person or object.\n";
 		}
 	// target a creature?
 	} else if (social->person.self && CHARACTER(target)) {
-		*this << StreamParse(social->person.self, S("actor"), this, S("target"), target) << "\n";
+		*this << StreamMacro(social->person.self, S("actor"), this, S("target"), target) << "\n";
 		if (PLAYER(target)) {
-			*PLAYER(target) << StreamParse(social->person.target, S("actor"), this, S("target"), target) << "\n";
+			*PLAYER(target) << StreamMacro(social->person.target, S("actor"), this, S("target"), target) << "\n";
 		}
-		if (get_room()) *get_room() << StreamIgnore(this) << StreamIgnore(CHARACTER(target)) << StreamParse(social->person.others, S("actor"), this, S("target"), target) << "\n";
+		if (get_room()) *get_room() << StreamIgnore(this) << StreamIgnore(CHARACTER(target)) << StreamMacro(social->person.others, S("actor"), this, S("target"), target) << "\n";
 	// target an object?
 	} else if (social->thing.self && OBJECT(target)) {
 		if (!((Object*)(target))->is_touchable() && social->social->need_touch()) {
 			*this << "You cannot touch " << StreamName(*target, DEFINITE, false) << ".\n";
 		} else {
-			*this << StreamParse(social->thing.self, S("actor"), this, S("target"), target) << "\n";
-			if (get_room()) *get_room() << StreamIgnore(this) << StreamParse(social->thing.others, S("actor"), this, S("target"), target) << "\n";
+			*this << StreamMacro(social->thing.self, S("actor"), this, S("target"), target) << "\n";
+			if (get_room()) *get_room() << StreamIgnore(this) << StreamMacro(social->thing.others, S("actor"), this, S("target"), target) << "\n";
 		}
 	// um...
 	} else {
@@ -244,7 +244,7 @@ Creature::do_look (Object *obj, ObjectLocation type)
 	} else {
 		// generic - description and on or in contents
 		if (obj->get_desc())
-			*this << StreamParse(obj->get_desc(), S("self"), obj, S("actor"), this) << "  ";
+			*this << StreamMacro(obj->get_desc(), S("self"), obj, S("actor"), this) << "  ";
 		// on contents?
 		if (obj->has_location(ObjectLocation::ON))
 			obj->show_contents(PLAYER(this), ObjectLocation::ON);
@@ -267,7 +267,7 @@ Creature::do_look (Portal *portal)
 
 	// basic description
 	if (portal->get_desc() && strlen(portal->get_desc()))
-		*this << StreamParse(portal->get_desc(), S("portal"), portal, S("actor"), this) << "  ";
+		*this << StreamMacro(portal->get_desc(), S("portal"), portal, S("actor"), this) << "  ";
 	else if (target_room == NULL)
 		*this << "There is nothing remarkable about " << StreamName(*portal, DEFINITE) << ".  ";
 
@@ -632,7 +632,7 @@ class ActionRead : public IInstantAction
 		}
 
 		// show text
-		*get_actor() << StreamParse(text, S("object"), obj, S("get_actor()"), get_actor()) << "\n";
+		*get_actor() << StreamMacro(text, S("object"), obj, S("get_actor()"), get_actor()) << "\n";
 			
 		// room text
 		if (get_actor()->get_room()) {
@@ -640,7 +640,7 @@ class ActionRead : public IInstantAction
 			if (!text)
 				*get_actor()->get_room() << StreamIgnore(get_actor()) << StreamName(get_actor(), INDEFINITE, true) << " reads " << StreamName(obj) << ".\n";
 			else
-				*get_actor()->get_room() << StreamIgnore(get_actor()) << StreamParse(text, S("object"), obj, S("get_actor()"), get_actor()) << "\n";
+				*get_actor()->get_room() << StreamIgnore(get_actor()) << StreamMacro(text, S("object"), obj, S("get_actor()"), get_actor()) << "\n";
 		}
 
 		// FIXME EVENT
@@ -681,7 +681,7 @@ class ActionEat : public IAction
 		}
 
 		// show text
-		*get_actor() << StreamParse(text, S("object"), obj, S("get_actor()"), get_actor()) << "\n";
+		*get_actor() << StreamMacro(text, S("object"), obj, S("get_actor()"), get_actor()) << "\n";
 			
 		// room text
 		if (get_actor()->get_room()) {
@@ -689,7 +689,7 @@ class ActionEat : public IAction
 			if (!text)
 				*get_actor()->get_room() << StreamIgnore(get_actor()) << StreamName(get_actor(), INDEFINITE, true) << " eats " << StreamName(obj) << ".\n";
 			else
-				*get_actor()->get_room() << StreamIgnore(get_actor()) << StreamParse(text, S("object"), obj, S("get_actor()"), get_actor()) << "\n";
+				*get_actor()->get_room() << StreamIgnore(get_actor()) << StreamMacro(text, S("object"), obj, S("get_actor()"), get_actor()) << "\n";
 		}
 
 		// FIXME EVENT
@@ -731,7 +731,7 @@ class ActionDrink : public IAction
 		}
 
 		// show text
-		*get_actor() << StreamParse(text, S("object"), obj, S("get_actor()"), get_actor()) << "\n";
+		*get_actor() << StreamMacro(text, S("object"), obj, S("get_actor()"), get_actor()) << "\n";
 			
 		// room text
 		if (get_actor()->get_room()) {
@@ -739,7 +739,7 @@ class ActionDrink : public IAction
 			if (!text)
 				*get_actor()->get_room() << StreamIgnore(get_actor()) << StreamName(get_actor(), INDEFINITE, true) << " drinks " << StreamName(obj) << ".\n";
 			else
-				*get_actor()->get_room() << StreamIgnore(get_actor()) << StreamParse(text, S("object"), obj, S("get_actor()"), get_actor()) << "\n";
+				*get_actor()->get_room() << StreamIgnore(get_actor()) << StreamMacro(text, S("object"), obj, S("get_actor()"), get_actor()) << "\n";
 		}
 
 		// FIXME EVENT

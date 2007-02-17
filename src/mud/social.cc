@@ -212,10 +212,10 @@ Social::perform (Creature* actor, Entity* target, String adverb) const
 			}
 
 			// do the action
-			*actor << StreamParse(i->self, S("actor"), actor, S("target"), target, S("room"), actor->get_room()) << "\n";
+			*actor << StreamMacro(i->self, S("actor"), actor, S("target"), target, S("room"), actor->get_room()) << "\n";
 			if (CHARACTER(target))
-				*CHARACTER(target) << StreamParse(i->self, S("actor"), actor, S("target"), target, S("room"), actor->get_room()) << "\n";
-			*actor->get_room() << StreamIgnore(actor) << StreamIgnore(CHARACTER(target)) << StreamParse(i->self, S("actor"), actor, S("target"), target, S("room"), actor->get_room()) << "\n";
+				*CHARACTER(target) << StreamMacro(i->self, S("actor"), actor, S("target"), target, S("room"), actor->get_room()) << "\n";
+			*actor->get_room() << StreamIgnore(actor) << StreamIgnore(CHARACTER(target)) << StreamMacro(i->self, S("actor"), actor, S("target"), target, S("room"), actor->get_room()) << "\n";
 			return 0;
 		}
 	}

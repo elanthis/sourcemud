@@ -23,7 +23,7 @@
 #include "common/error.h"
 #include "mud/server.h"
 #include "mud/network.h"
-#include "mud/parse.h"
+#include "mud/macro.h"
 #include "common/streams.h"
 #include "mud/http.h"
 #include "mud/settings.h"
@@ -368,9 +368,9 @@ void
 HTTPHandler::page_index()
 {
 	*this << "HTTP/1.0 200 OK\nContent-type: text/html\n\n"
-		<< StreamParse(HTTPManager.get_template(S("header")), S("account"), get_account())
-		<< StreamParse(HTTPManager.get_template(S("index")), S("account"), get_account())
-		<< StreamParse(HTTPManager.get_template(S("footer")));
+		<< StreamMacro(HTTPManager.get_template(S("header")), S("account"), get_account())
+		<< StreamMacro(HTTPManager.get_template(S("index")), S("account"), get_account())
+		<< StreamMacro(HTTPManager.get_template(S("footer")));
 }
 
 void
@@ -393,9 +393,9 @@ HTTPHandler::page_login()
 	}
 
 	*this << "\n"
-		<< StreamParse(HTTPManager.get_template(S("header")), S("msg"), msg, S("account"), get_account())
-		<< StreamParse(HTTPManager.get_template(S("login")), S("account"), get_account())
-		<< StreamParse(HTTPManager.get_template(S("footer")));
+		<< StreamMacro(HTTPManager.get_template(S("header")), S("msg"), msg, S("account"), get_account())
+		<< StreamMacro(HTTPManager.get_template(S("login")), S("account"), get_account())
+		<< StreamMacro(HTTPManager.get_template(S("footer")));
 }
 
 void
@@ -405,9 +405,9 @@ HTTPHandler::page_logout()
 		HTTPManager.destroy_session(session);
 
 	*this << "HTTP/1.0 200 OK\nContent-type: text/html\nSet-cookie: AWEMUD_SESSION=\n\n"
-		<< StreamParse(HTTPManager.get_template(S("header")))
-		<< StreamParse(HTTPManager.get_template(S("logout")))
-		<< StreamParse(HTTPManager.get_template(S("footer")));
+		<< StreamMacro(HTTPManager.get_template(S("header")))
+		<< StreamMacro(HTTPManager.get_template(S("logout")))
+		<< StreamMacro(HTTPManager.get_template(S("footer")));
 }
 
 void
@@ -446,9 +446,9 @@ HTTPHandler::page_account()
 
 	// did they try to save changes?
 	*this << "HTTP/1.0 200 OK\nContent-type: text/html\n\n"
-		<< StreamParse(HTTPManager.get_template(S("header")), S("account"), get_account(), S("msg"), msg)
-		<< StreamParse(HTTPManager.get_template(S("account")), S("account"), get_account())
-		<< StreamParse(HTTPManager.get_template(S("footer")));
+		<< StreamMacro(HTTPManager.get_template(S("header")), S("account"), get_account(), S("msg"), msg)
+		<< StreamMacro(HTTPManager.get_template(S("account")), S("account"), get_account())
+		<< StreamMacro(HTTPManager.get_template(S("footer")));
 }
 
 void
@@ -470,9 +470,9 @@ HTTPHandler::http_error (int error, String msg)
 
 	// display error page
 	*this << "HTTP/1.0 " << error << " " << http_msg << "\nContent-type: text/html\n\n"
-		<< StreamParse(HTTPManager.get_template(S("header")), S("account"), get_account())
-		<< StreamParse(HTTPManager.get_template(S("error")), S("error"), tostr(error), S("http_msg"), http_msg, S("msg"), msg)
-		<< StreamParse(HTTPManager.get_template(S("footer")));
+		<< StreamMacro(HTTPManager.get_template(S("header")), S("account"), get_account())
+		<< StreamMacro(HTTPManager.get_template(S("error")), S("error"), tostr(error), S("http_msg"), http_msg, S("msg"), msg)
+		<< StreamMacro(HTTPManager.get_template(S("footer")));
 
 	// log error
 	Log::Network << (reqtype == GET ? "GET" : reqtype == POST ? "POST" : "-") << " " << (url ? url : S("-")) << " " << error << " " << (get_account() ? get_account()->get_id() : S("-")) << " " << Network::get_addr_name(addr) << " <" << msg << ">";
@@ -500,7 +500,7 @@ HTTPHandler::get_post (String id) const
 }
 
 int
-HTTPHandler::parse_property (const StreamControl& stream, String method, const ParseList& argv) const
+HTTPHandler::macro_property (const StreamControl& stream, String method, const MacroList& argv) const
 {
 	if (method == "post" && argv.size() == 1) {
 		stream.stream_put(get_post(argv[0].get_string()));
@@ -511,7 +511,7 @@ HTTPHandler::parse_property (const StreamControl& stream, String method, const P
 }
 
 void
-HTTPHandler::parse_default (const StreamControl& stream) const
+HTTPHandler::macro_default (const StreamControl& stream) const
 {
 	stream << "<HTTP>";
 }

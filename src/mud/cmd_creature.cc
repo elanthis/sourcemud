@@ -12,7 +12,7 @@
 #include "mud/command.h"
 #include "mud/body.h"
 #include "mud/player.h"
-#include "mud/parse.h"
+#include "mud/macro.h"
 #include "common/streams.h"
 #include "mud/object.h"
 

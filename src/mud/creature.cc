@@ -18,7 +18,7 @@
 #include "mud/room.h"
 #include "common/rand.h"
 #include "mud/player.h"
-#include "mud/parse.h"
+#include "mud/macro.h"
 #include "common/streams.h"
 #include "mud/action.h"
 #include "mud/caffect.h"
@@ -401,16 +401,16 @@ Creature::enter (Room *new_room, Portal *old_portal)
 	// did we go thru an portal?
 	if (old_portal) {
 		// "You go..." message
-		*this << StreamParse(old_portal->get_go()).add(S("actor"), this).add(S("portal"), old_portal) << "\n";
+		*this << StreamMacro(old_portal->get_go()).add(S("actor"), this).add(S("portal"), old_portal) << "\n";
 
 		// "So-and-so leaves thru..." message
 		if (old_room)
-			*old_room << StreamIgnore(this) << StreamParse(old_portal->get_leaves()).add(S("actor"), this).add( S("portal"), old_portal) << "\n";
+			*old_room << StreamIgnore(this) << StreamMacro(old_portal->get_leaves()).add(S("actor"), this).add( S("portal"), old_portal) << "\n";
 	}
 
 	// valid portal?
 	if (enter_portal)
-		*new_room << StreamParse(enter_portal->get_enters()).add(S("actor"), this).add(S("portal"), enter_portal) << "\n";
+		*new_room << StreamMacro(enter_portal->get_enters()).add(S("actor"), this).add(S("portal"), enter_portal) << "\n";
 	else
 		*new_room << StreamName(this, INDEFINITE, true) << " arrives.\n";
 
@@ -558,7 +558,7 @@ Creature::deactivate (void)
 }
 
 int
-Creature::parse_property (const StreamControl& stream, String comm, const ParseList& argv) const
+Creature::macro_property (const StreamControl& stream, String comm, const MacroList& argv) const
 {
 	// HE / SHE
 	if (str_eq(comm, S("he"))) {
@@ -597,7 +597,7 @@ Creature::parse_property (const StreamControl& stream, String comm, const ParseL
 	}
 	// default...
 	else {
-		return Entity::parse_property(stream, comm, argv);
+		return Entity::macro_property(stream, comm, argv);
 	}
 
 	return 0;
@@ -650,7 +650,7 @@ Creature::display_equip (const StreamControl& stream) const
 			if (didshow) {
 				stream << ", ";
 			} else {
-				stream << StreamParse(S("  {$self.He} is wearing "), S("self"), this);
+				stream << StreamMacro(S("  {$self.He} is wearing "), S("self"), this);
 				didshow = true;
 			}
 			// do show
@@ -665,7 +665,7 @@ Creature::display_equip (const StreamControl& stream) const
 		if (didshow) {
 			stream << " and ";
 		} else {
-			stream << StreamParse(S("  {$self.He} is wearing "), S("self"), this);
+			stream << StreamMacro(S("  {$self.He} is wearing "), S("self"), this);
 			didshow = true;
 		}
 		// show it
@@ -686,7 +686,7 @@ Creature::display_equip (const StreamControl& stream) const
 			if (didshow) {
 				stream << ", ";
 			} else {
-				stream << StreamParse(S("  {$self.He} is holding "), S("self"), this);
+				stream << StreamMacro(S("  {$self.He} is holding "), S("self"), this);
 				didshow = true;
 			}
 			// show
@@ -700,7 +700,7 @@ Creature::display_equip (const StreamControl& stream) const
 		if (didshow) {
 			stream << " and ";
 		} else {
-			stream << StreamParse(S("  {$self.He} is holding "), S("self"), this);
+			stream << StreamMacro(S("  {$self.He} is holding "), S("self"), this);
 			didshow = true;
 		}
 		// show it
@@ -709,18 +709,18 @@ Creature::display_equip (const StreamControl& stream) const
 
 	// dead or position
 	if (is_dead())
-		stream << StreamParse(S("  {$self.He} is laying on the ground, dead."), S("self"), this);
+		stream << StreamMacro(S("  {$self.He} is laying on the ground, dead."), S("self"), this);
 	else if (get_pos() != CreaturePosition::STAND)
-		stream << StreamParse(S("  {$self.He} is {$self.position}."), S("self"), this);
+		stream << StreamMacro(S("  {$self.He} is {$self.position}."), S("self"), this);
 
 	// health
 	if (!is_dead() && get_max_hp() > 0) {
 		if (get_hp() * 100 / get_max_hp() <= 25)
-			stream << StreamParse(S("  {$self.He} appears severely wounded."), S("self"), this);
+			stream << StreamMacro(S("  {$self.He} appears severely wounded."), S("self"), this);
 		else if (get_hp() * 100 / get_max_hp() <= 75)
-			stream << StreamParse(S("  {$self.He} appears wounded."), S("self"), this);
+			stream << StreamMacro(S("  {$self.He} appears wounded."), S("self"), this);
 		else
-			stream << StreamParse(S("  {$self.He} appears to be in good health."), S("self"), this);
+			stream << StreamMacro(S("  {$self.He} appears to be in good health."), S("self"), this);
 	}
 }
 

@@ -35,7 +35,7 @@ GameCalendar::load (void)
 			String time = reader.get(i, 1);
 			String data = reader.get(i, 2);
 			if (data.empty()) {
-				Log::Error << "Parse error: " << path << ',' << reader.get_line(i) << ": Missing data for daytime entry";
+				Log::Error << "Macro error: " << path << ',' << reader.get_line(i) << ": Missing data for daytime entry";
 				return -1;
 			}
 
@@ -48,7 +48,7 @@ GameCalendar::load (void)
 			else if (time == "sunset")
 				sunset_text.push_back(reader.get(i, 1));
 			else {
-				Log::Error << "Parse error: " << path << ',' << reader.get_line(i) << ": Unknown time '" << time << "' for daytime entry";
+				Log::Error << "Macro error: " << path << ',' << reader.get_line(i) << ": Unknown time '" << time << "' for daytime entry";
 				return -1;
 			}
 
@@ -56,7 +56,7 @@ GameCalendar::load (void)
 		} else if (type == "weekday") {
 			String name = reader.get(i, 1);
 			if (name.empty()) {
-				Log::Error << "Parse error: " << path << ',' << reader.get_line(i) << ": Missing name for weekday entry";
+				Log::Error << "Macro error: " << path << ',' << reader.get_line(i) << ": Missing name for weekday entry";
 				return -1;
 			}
 
@@ -69,7 +69,7 @@ GameCalendar::load (void)
 			ulong leap = tolong(reader.get(i, 3));
 
 			if (name.empty()) {
-				Log::Error << "Parse error: " << path << ',' << reader.get_line(i) << ": Missing name for month entry";
+				Log::Error << "Macro error: " << path << ',' << reader.get_line(i) << ": Missing name for month entry";
 				return -1;
 			}
 
@@ -81,7 +81,7 @@ GameCalendar::load (void)
 
 		// unknown
 		} else {
-			Log::Error << "Parse error: " << path << ',' << reader.get_line(i) << ": Unknown entry type";
+			Log::Error << "Macro error: " << path << ',' << reader.get_line(i) << ": Unknown entry type";
 			return -1;
 		}
 	}

@@ -22,7 +22,7 @@
 #include "scriptix/native.h"
 #include "scriptix/function.h"
 #include "mud/account.h"
-#include "mud/parse.h"
+#include "mud/macro.h"
 
 class HTTPSession : public GC
 {
@@ -47,7 +47,7 @@ class HTTPSession : public GC
 	GCType::map<String,String> vars;
 };
 
-class HTTPHandler : public Scriptix::Native, public SocketConnection, public IStreamSink, public Parsable
+class HTTPHandler : public Scriptix::Native, public SocketConnection, public IStreamSink, public IMacroObject
 {
 	public:
 	HTTPHandler (int s_sock, const SockStorage& s_netaddr);
@@ -83,9 +83,9 @@ class HTTPHandler : public Scriptix::Native, public SocketConnection, public ISt
 	virtual void sock_hangup ();
 	virtual void sock_flush ();
 
-	// parse values
-	int parse_property (const StreamControl& stream, String method, const ParseList& argv) const;
-	void parse_default (const StreamControl& stream) const;
+	// macro values
+	int macro_property (const StreamControl& stream, String method, const MacroList& argv) const;
+	void macro_default (const StreamControl& stream) const;
 
 	protected:
 	~HTTPHandler () {}

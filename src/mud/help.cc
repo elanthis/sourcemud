@@ -12,7 +12,7 @@
 #include "common/streams.h"
 #include "mud/color.h"
 #include "mud/fileobj.h"
-#include "mud/parse.h"
+#include "mud/macro.h"
 #include "mud/help.h"
 #include "mud/telnet.h"
 #include "common/manifest.h"
@@ -47,7 +47,7 @@ SHelpManager::print (StreamControl& stream, String name)
 	HelpTopic* topic = name.empty() ? get_topic(S("general")) : get_topic(name);
 	if (topic) {
 		stream << CSPECIAL "Help: " CNORMAL << topic->name << "\n\n";
-		stream << StreamIndent(2) << StreamParse(topic->about) << StreamIndent(0) << "\n";
+		stream << StreamIndent(2) << StreamMacro(topic->about) << StreamIndent(0) << "\n";
 		return;
 	}
 

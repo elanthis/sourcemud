@@ -13,7 +13,7 @@
 #include "common/string.h"
 #include "mud/server.h"
 #include "mud/room.h"
-#include "generated/eventids.h"
+#include "generated/events.h"
 #include "scriptix/native.h"
 #include "generated/bindings.h"
 

@@ -6,26 +6,26 @@
  */
 
 #include "common/streams.h"
-#include "mud/parse.h"
+#include "mud/macro.h"
 
-StreamParse::StreamParse(String s_text)
+StreamMacro::StreamMacro(String s_text)
 	: text(s_text), argv()
 {}
 
-StreamParse::StreamParse(String s_text, String s_name, ParseValue s_value)
+StreamMacro::StreamMacro(String s_text, String s_name, MacroValue s_value)
 	: text(s_text)
 {
 	argv[s_name] = s_value;
 }
 
-StreamParse::StreamParse(String s_text, String s_name1, ParseValue s_value1, String s_name2, ParseValue s_value2)
+StreamMacro::StreamMacro(String s_text, String s_name1, MacroValue s_value1, String s_name2, MacroValue s_value2)
 	: text(s_text)
 {
 	argv[s_name1] = s_value1;
 	argv[s_name2] = s_value2;
 }
 
-StreamParse::StreamParse(String s_text, String s_name1, ParseValue s_value1, String s_name2, ParseValue s_value2, String s_name3, ParseValue s_value3)
+StreamMacro::StreamMacro(String s_text, String s_name1, MacroValue s_value1, String s_name2, MacroValue s_value2, String s_name3, MacroValue s_value3)
 	: text(s_text)
 {
 	argv[s_name1] = s_value1;
@@ -33,8 +33,8 @@ StreamParse::StreamParse(String s_text, String s_name1, ParseValue s_value1, Str
 	argv[s_name3] = s_value3;
 }
 
-StreamParse&
-StreamParse::add (String s_name, ParseValue s_value)
+StreamMacro&
+StreamMacro::add (String s_name, MacroValue s_value)
 {
 	argv[s_name] = s_value;
 	return *this;

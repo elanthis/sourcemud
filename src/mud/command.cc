@@ -16,7 +16,7 @@
 #include "common/streams.h"
 #include "mud/color.h"
 #include "mud/account.h"
-#include "mud/parse.h"
+#include "mud/macro.h"
 #include "mud/help.h"
 #include "scriptix/array.h"
 #include "mud/telnet.h"
@@ -308,7 +308,7 @@ Command::show_man (StreamControl& stream)
 		stream << StreamIndent(2);
 		stream << CSPECIAL "About:" CNORMAL "\n";
 		stream << StreamIndent(4);
-		stream << StreamParse(topic->about) << S("\n");
+		stream << StreamMacro(topic->about) << S("\n");
 	}
 	stream << StreamIndent(2);
 	stream << CSPECIAL "Usage:" CNORMAL "\n";

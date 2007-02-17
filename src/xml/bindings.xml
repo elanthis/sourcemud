@@ -18,7 +18,7 @@
     #include "mud/telnet.h"
     #include "mud/zmp.h"
     #include "mud/account.h"
-    #include "mud/parse.h"
+    #include "mud/macro.h"
     #include "mud/race.h"
     #include "common/rand.h"
     #include "mud/object.h"
@@ -525,7 +525,7 @@ number = roll_dice(3, 6);]]></example>
         return Scriptix::Nil;
       }
 
-      ParseArgs vlist;
+      MacroArgs vlist;
       String name;
       for (size_t i = 1; i < _argc; i += 2) {
         name = _argv[1].get_string();
@@ -539,7 +539,7 @@ number = roll_dice(3, 6);]]></example>
       }
 
       StringBuffer buffer;
-      parse::text(buffer, _arg_format, vlist);
+      macro::text(buffer, _arg_format, vlist);
       _return = buffer.str();
     ]]></code>
   </function>
@@ -1341,7 +1341,7 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
           return Scriptix::Nil;
         }
 
-        ParseArgs vlist;
+        MacroArgs vlist;
         String name;
         for (size_t i = 2; i < _argc; i += 2) {
           name = _argv[1].get_string();
@@ -1354,7 +1354,7 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
           }
         }
 
-        parse::text(*_self, _arg_format, vlist);
+        macro::text(*_self, _arg_format, vlist);
       ]]></code>
       <doc>This is a convenience function that calls <link function="strParse"/> on the arguments and <link method="Creature.put"/> on the result.  Additional arguments to the function are given as argument to the strParse call.  The first argument given to strParse is automatically the Creature instance itself.</doc>
     </method>
@@ -2466,7 +2466,7 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
           return Scriptix::Nil;
         }
 
-        ParseArgs vlist;
+        MacroArgs vlist;
         String name;
         for (size_t i = 2; i < _argc; i += 2) {
           name = _argv[1].get_string();
@@ -2479,7 +2479,7 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
           }
         }
 
-        parse::text(*_self, _arg_format, vlist);
+        macro::text(*_self, _arg_format, vlist);
       ]]></code>
       <doc>This is a convenience function that calls <link function="strParse"/> on the arguments and <link method="Room.put"/> on the result.  Additional arguments to the function are given as argument to the strParse call.  The first argument given to strParse is automatically the Room instance itself.</doc>
     </method>
@@ -3175,14 +3175,14 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
       <doc>Display the default page header.</doc>
       <code><![CDATA[
         *_self << "HTTP/1.0 200 OK\nContent-type: text/html\n\n";
-        *_self << StreamParse(HTTPManager.get_template(S("header")), S("account"), _self->get_account());
+        *_self << StreamMacro(HTTPManager.get_template(S("header")), S("account"), _self->get_account());
       ]]></code>
     </method>
     <method>
       <name>footer</name>
       <doc>Display the default page footer.</doc>
       <code><![CDATA[
-        *_self << StreamParse(HTTPManager.get_template(S("footer")), S("account"), _self->get_account());
+        *_self << StreamMacro(HTTPManager.get_template(S("footer")), S("account"), _self->get_account());
       ]]></code>
     </method>
 
@@ -3245,9 +3245,9 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
       <code><![CDATA[
         if (!_self->get_account() || !_self->get_account()->has_access(AccessID::lookup(_arg_privilege))) {
           *_self << "HTTP/1.0 403 Access Denied\nContent-type: text/html\n\n";
-          *_self << StreamParse(HTTPManager.get_template(S("header")), S("account"), _self->get_account());
-          *_self << StreamParse(HTTPManager.get_template(S("noaccess")), S("account"), _self->get_account(), S("priv"), _arg_privilege);
-          *_self << StreamParse(HTTPManager.get_template(S("footer")));
+          *_self << StreamMacro(HTTPManager.get_template(S("header")), S("account"), _self->get_account());
+          *_self << StreamMacro(HTTPManager.get_template(S("noaccess")), S("account"), _self->get_account(), S("priv"), _arg_privilege);
+          *_self << StreamMacro(HTTPManager.get_template(S("footer")));
           _return = false;
         } else {
           _return = true;
@@ -3332,7 +3332,7 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
           return Scriptix::Nil;
         }
 
-        ParseArgs vlist;
+        MacroArgs vlist;
         String name;
         vlist[S("http")] = _self;
         if (_self->get_session() != NULL)
@@ -3347,7 +3347,7 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
               vlist[name] = _argv[i + 1].get_string();
           }
         }
-        parse::text(*_self, HTTPManager.get_template(_arg_name), vlist);
+        macro::text(*_self, HTTPManager.get_template(_arg_name), vlist);
       ]]></code>
     </method>
   </type>

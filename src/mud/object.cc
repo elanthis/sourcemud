@@ -662,7 +662,7 @@ ShadowObject::is_rotting () const
 
 // get parsable member values
 int
-Object::parse_property (const StreamControl& stream, String comm, const ParseList& argv) const
+Object::macro_property (const StreamControl& stream, String comm, const MacroList& argv) const
 {
 	// COST
 	if (!strcmp(comm, "cost")) {
@@ -675,7 +675,7 @@ Object::parse_property (const StreamControl& stream, String comm, const ParseLis
 		return 0;
 	}
 	// try the entity
-	return Entity::parse_property(stream, comm, argv);
+	return Entity::macro_property(stream, comm, argv);
 }
 
 // event handling

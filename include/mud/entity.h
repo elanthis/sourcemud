@@ -25,7 +25,7 @@
 #include "mud/tag.h"
 #include "mud/server.h"
 #include "mud/clock.h"
-#include "mud/parse.h"
+#include "mud/macro.h"
 #include "scriptix/native.h"
 #include "mud/name.h"
 
@@ -46,7 +46,7 @@ typedef std::map<UniqueID, Entity*> UniqueIDMap; // NOTE: also non-GC scanning
 // --- Entity Definiton ---
 
 // entity control
-class Entity : public Scriptix::Native, public Parsable
+class Entity : public Scriptix::Native, public IMacroObject
 {
 	public:
 	Entity (const Scriptix::TypeInfo* type);
@@ -105,8 +105,8 @@ class Entity : public Scriptix::Native, public Parsable
 	virtual void broadcast_event (const Event& event) = 0;
 
 	// for parsing, pull a property based on a char
-	virtual int parse_property (const class StreamControl& stream, String method, const ParseList& argv) const;
-	virtual void parse_default (const class StreamControl& stream) const;
+	virtual int macro_property (const class StreamControl& stream, String method, const MacroList& argv) const;
+	virtual void macro_default (const class StreamControl& stream) const;
 
 	// heartbeat
 	virtual void heartbeat () = 0;

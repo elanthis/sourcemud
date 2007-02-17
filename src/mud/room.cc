@@ -23,7 +23,7 @@
 #include "mud/npc.h"
 #include "mud/weather.h"
 #include "common/streams.h"
-#include "mud/parse.h"
+#include "mud/macro.h"
 #include "common/rand.h"
 #include "mud/zone.h"
 #include "mud/object.h"
@@ -317,7 +317,7 @@ Room::show (const StreamControl& stream, Creature* viewer)
 
 	// basic info
 	stream << "[ " << StreamName(*this, NONE, true) << " ]\n";
-	stream << CDESC "  " << StreamParse(get_desc(), S("room"), this, S("actor"), viewer) << CNORMAL;
+	stream << CDESC "  " << StreamMacro(get_desc(), S("room"), this, S("actor"), viewer) << CNORMAL;
 
 	// we're outdoors - do that stuff
 	if (is_outdoors ()) {

@@ -126,7 +126,7 @@ Object : public Entity
 	virtual String ncolor () const { return S(CITEM); }
 
 	// for parsing, pull a property based on a char*
-	virtual int parse_property (const class StreamControl& stream, String method, const ParseList& argv) const;
+	virtual int macro_property (const class StreamControl& stream, String method, const MacroList& argv) const;
 
 	// object properties
 	virtual uint get_cost () const = 0;

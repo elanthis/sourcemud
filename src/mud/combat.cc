@@ -10,7 +10,7 @@
 #include "mud/server.h"
 #include "mud/room.h"
 #include "common/rand.h"
-#include "mud/parse.h"
+#include "mud/macro.h"
 #include "mud/action.h"
 
 // attack command

@@ -14,7 +14,7 @@
 #include "common/imanager.h"
 #include "scriptix/native.h"
 #include "scriptix/function.h"
-#include "generated/eventids.h"
+#include "generated/events.h"
 
 /* external classes */
 class Entity;

@@ -10,7 +10,7 @@
 #include "mud/creature.h"
 #include "mud/server.h"
 #include "mud/player.h"
-#include "mud/parse.h"
+#include "mud/macro.h"
 #include "common/streams.h"
 #include "mud/message.h"
 #include "mud/telnet.h"

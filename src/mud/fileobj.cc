@@ -311,18 +311,18 @@ File::Reader::get (Node& node)
 
 	// expect a name
 	if (op != TOKEN_NAME)
-		throw File::Error(S("Parse error: name expected"));
+		throw File::Error(S("Macro error: name expected"));
 	node.ns = opstr;
 
 	// expect name separator
 	op = read_token(opstr);
 	if (op != TOKEN_KEY)
-		throw File::Error(S("Parse error: expected ."));
+		throw File::Error(S("Macro error: expected ."));
 
 	// read name
 	op = read_token(opstr);
 	if (op != TOKEN_NAME && op != TOKEN_STRING)
-		throw File::Error(S("Parse error: name expected after ."));
+		throw File::Error(S("Macro error: name expected after ."));
 	node.name = opstr;
 
 	// object?
@@ -344,7 +344,7 @@ File::Reader::get (Node& node)
 			node.value = Value(Value::TYPE_STRING, data);
 			type = read_token(data);
 			if (type != TOKEN_BEGIN)
-				throw File::Error(S("Parse error: { expected after name"));
+				throw File::Error(S("Macro error: { expected after name"));
 			node.type = Node::BEGIN_TYPED;
 			return true;
 	
@@ -356,11 +356,11 @@ File::Reader::get (Node& node)
 		// no value
 		} else {
 			// unknown type
-			throw File::Error(S("Parse error: value expected after ="));
+			throw File::Error(S("Macro error: value expected after ="));
 		}
 
 	} else {
-		throw File::Error(S("Parse error: expected { or = after name"));
+		throw File::Error(S("Macro error: expected { or = after name"));
 	}
 }
 
