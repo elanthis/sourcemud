@@ -4,7 +4,7 @@ AUTOMAKE_OPTIONS = subdir-objects
 
 TOOL_FILES = tools/commit.sh tools/note.sh tools/parse-report.pl tools/new-version.sh
 
-XSL_FILES = tools/script-code.xsl tools/script-doc.xsl tools/events-code.xsl tools/events-doc.xsl tools/events-header.xsl tools/macros-code.xsl tools/hooks-doc.xsl tools/hooks-code.xsl tools/hooks-header.xsl tools/script-header.xsl
+XSL_FILES = tools/script-code.xsl tools/script-doc.xsl tools/events-code.xsl tools/events-doc.xsl tools/events-header.xsl tools/macros-code.xsl tools/hooks-doc.xsl tools/hooks-code.xsl tools/hooks-header.xsl tools/script-header.xsl tools/skills-header.xsl tools/skills-help.xsl
 
 bin_SCRIPTS = awemud
 
@@ -153,7 +153,7 @@ ZONES = \
 	data/zones/darkwood.zone \
 	data/zones/example.zone
 
-HELP = data/help/manifest.txt data/help/awemud.help data/help/commands.help data/help/olc.help
+HELP = data/help/manifest.txt data/help/awemud.help data/help/commands.help data/help/olc.help data/help/skills.help
 GAMEDATA = data/messages data/races data/socials data/calendar data/skills data/uniqid data/traits
 BLUEPRINTS = \
 	data/blueprints/manifest.txt \
@@ -172,6 +172,11 @@ HTML_TPL = \
 	data/html/logout.tpl \
 	data/html/account.tpl \
 	data/html/stats.tpl
+
+if USE_XSLT
+data/help/skills.help: tools/skills-help.xsl src/xml/skills.xml
+	$(PATH_XSLTPROC) '$(top_srcdir)/tools/skills-help.xsl' '$(top_srcdir)/src/xml/skills.xml' > $(top_builddir)/data/help/skills.help
+endif
 
 DATAFILES = $(WORLD) $(HELP) $(GAMEDATA) $(BLUEPRINTS) $(HTML_TPL)
 
@@ -297,6 +302,10 @@ include/generated/events.h: tools/events-header.xsl src/xml/events.xml
 	mkdir -p $(top_builddir)/include/generated
 	$(PATH_XSLTPROC) '$(top_srcdir)/tools/events-header.xsl' '$(top_srcdir)/src/xml/events.xml' > $(top_builddir)/include/generated/events.h
 
+include/generated/skills.h: tools/skills-header.xsl src/xml/skills.xml
+	mkdir -p $(top_builddir)/include/generated
+	$(PATH_XSLTPROC) '$(top_srcdir)/tools/skills-header.xsl' '$(top_srcdir)/src/xml/skills.xml' > $(top_builddir)/include/generated/skills.h
+
 include/generated/hooks.h: tools/hooks-header.xsl src/xml/hooks.xml
 	mkdir -p $(top_builddir)/include/generated
 	$(PATH_XSLTPROC) '$(top_srcdir)/tools/hooks-header.xsl' '$(top_srcdir)/src/xml/hooks.xml' > $(top_builddir)/include/generated/hooks.h
@@ -306,8 +315,8 @@ include/generated/bindings.h: tools/script-header.xsl src/xml/bindings.xml
 	$(PATH_XSLTPROC) '$(top_srcdir)/tools/script-header.xsl' '$(top_srcdir)/src/xml/bindings.xml' > $(top_builddir)/$@
 endif
 
-EXTRA_DIST += include/generated/events.h include/generated/hooks.h include/generated/bindings.h
-BUILT_SOURCES = include/generated/events.h include/generated/hooks.h include/generated/bindings.h
+EXTRA_DIST += include/generated/events.h include/generated/hooks.h include/generated/bindings.h include/generated/skills.h
+BUILT_SOURCES = include/generated/events.h include/generated/hooks.h include/generated/bindings.h include/generated/skills.h
 
 ### EXECUTABLES ###
 
@@ -367,7 +376,8 @@ GENERATED_SOURCES=\
 	src/generated/bindings.cc \
 	src/generated/events.cc \
 	src/generated/hooks.cc \
-	src/generated/macros.cc
+	src/generated/macros.cc \
+	src/generated/skills.cc
 
 if USE_XSLT
 src/generated/bindings.cc: tools/script-code.xsl src/xml/bindings.xml
@@ -379,12 +389,15 @@ src/generated/macros.cc: tools/macros-code.xsl src/xml/macros.xml
 src/generated/events.cc: tools/events-code.xsl src/xml/events.xml
 	$(PATH_XSLTPROC) '$(top_srcdir)/tools/events-code.xsl' '$(top_srcdir)/src/xml/events.xml' > src/generated/events.cc
 
+src/generated/skills.cc: tools/skills-code.xsl src/xml/skills.xml
+	$(PATH_XSLTPROC) '$(top_srcdir)/tools/skills-code.xsl' '$(top_srcdir)/src/xml/skills.xml' > src/generated/skills.cc
+
 src/generated/hooks.cc: tools/hooks-code.xsl src/xml/hooks.xml
 	$(PATH_XSLTPROC) '$(top_srcdir)/tools/hooks-code.xsl' '$(top_srcdir)/src/xml/hooks.xml' > src/generated/hooks.cc
 endif
 
-EXTRA_DIST += src/generated/bindings.cc src/generated/macros.cc src/generated/events.cc src/generated/hooks.cc
-BUILT_SOURCES += src/generated/bindings.cc src/generated/macros.cc src/generated/events.cc src/generated/hooks.cc
+EXTRA_DIST += src/generated/bindings.cc src/generated/macros.cc src/generated/events.cc src/generated/hooks.cc src/generated/skills.cc
+BUILT_SOURCES += src/generated/bindings.cc src/generated/macros.cc src/generated/events.cc src/generated/hooks.cc src/generated/skills.cc
 
 awemud_ctrl_SOURCES=\
 	src/util/awemud-ctrl.c

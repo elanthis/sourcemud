@@ -1,5 +1,5 @@
 # Player file: Admin
-# Timestamp: Thu Feb 15 02:27:12 2007
+# Timestamp: Tue Feb 20 22:51:46 2007
 # 
 
 entity.uid = <1>
@@ -18,7 +18,7 @@ creature.equip_back = sobject {
   entity.uid = <23>
 }
 player.created = "2000-01-01 00:00:00"
-player.lastlogin = "2007-02-15 02:27:11"
+player.lastlogin = "2007-02-20 22:51:45"
 player.playtime = 2113
 player.race = "human"
 player.birthday = "0001/06/10 09.14"
@@ -28,27 +28,13 @@ player.stat = [ "Fortitude", 100 ]
 player.stat = [ "Intellect", 100 ]
 player.stat = [ "Spirit", 100 ]
 player.stat = [ "Willpower", 100 ]
-player.trait = [ "hair color", "silver" ]
-player.trait = [ "eye color", "gold" ]
 player.trait = [ "hair style", "long" ]
 player.trait = [ "skin color", "fair" ]
 player.trait = [ "build", "lean" ]
+player.trait = [ "hair color", "silver" ]
+player.trait = [ "eye color", "gold" ]
 player.gender = "male"
 player.height = 74
 player.location = "saladhin_rosewood_armorer"
 player.experience = 10000
-player.skill = [ "Agility", 0 ]
-player.skill = [ "Arcane Barrier", 0 ]
-player.skill = [ "Balance", 0 ]
-player.skill = [ "Dodge", 0 ]
-player.skill = [ "Health", 0 ]
-player.skill = [ "Intellect", 0 ]
-player.skill = [ "Light", 0 ]
-player.skill = [ "Luck", 0 ]
-player.skill = [ "Magic Lore", 0 ]
-player.skill = [ "Melee", 0 ]
-player.skill = [ "Shield", 0 ]
-player.skill = [ "Spirit", 0 ]
-player.skill = [ "Strength", 0 ]
-player.skill = [ "Will Power", 0 ]
 # vim: set shiftwidth=2 tabstop=2 expandtab:

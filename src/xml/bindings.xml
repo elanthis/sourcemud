@@ -697,20 +697,6 @@ number = roll_dice(3, 6);]]></example>
     </arg>
     <doc>Returns a textual description for how good or bad a statistic's value is.</doc>
   </function>
-  <function>
-    <name>getIntrinsicSkill</name>
-    <return>
-      <type>Array</type>
-      <doc>An array of <link type="Skill" /> entries for all intrinsic skills.  (Also know as stats.)</doc>
-    </return>
-    <code><![CDATA[
-      _return = new Scriptix::Array();
-      const SSkillManager::SkillList& skills = SkillManager.get_skills();
-      for (SSkillManager::SkillList::const_iterator i = skills.begin(); i != skills.end(); ++i)
-        if ((*i)->is_intrinsic())
-          _return->append(*i);
-    ]]></code>
-  </function>
 
   <!-- Game announcements -->
   <function>
@@ -2915,6 +2901,13 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
     <doc>Event IDs represent individual types of events.</doc>
   </type>
 
+  <!-- Skill IDs -->
+  <type>
+    <name>SkillID</name>
+    <cppwrap>SkillID</cppwrap>
+    <doc>Skill IDs represent individual skills.</doc>
+  </type>
+
   <!-- Entity Tag -->
   <type>
     <name>Tag</name>
@@ -3099,67 +3092,6 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
         _self->time_str (time_buf, sizeof (time_buf));
         _return = String(time_buf);
       ]]></code>
-    </method>
-  </type>
-
-  <!-- Skill -->
-  <type>
-    <name>Skill</name>
-    <cppname>SkillInfo</cppname>
-    <doc>Skill represents an in-game skill.</doc>
-
-    <method>
-      <name>getName</name>
-      <return>
-        <type>String</type>
-        <doc>Name of the skill.</doc>
-      </return>
-      <invoke>get_name</invoke>
-    </method>
-    <method>
-      <name>getDesc</name>
-      <invoke>get_desc</invoke>
-      <return>
-        <type>String</type>
-        <doc>Description of the skill.</doc>
-      </return>
-    </method>
-    
-    <method>
-      <name>isRestricted</name>
-      <invoke>is_restricted</invoke>
-      <return>
-        <type>Boolean</type>
-        <doc>True if the skill is restricted.</doc>
-      </return>
-      <doc>Restricted skills cannot be bought using the normal methods, although once a player has one or more ranks in the skill, the player may improve skill using the normal methods.</doc>
-    </method>
-    <method>
-      <name>isLocked</name>
-      <invoke>is_locked</invoke>
-      <return>
-        <type>Boolean</type>
-        <doc>True if the skill is locked.</doc>
-      </return>
-      <doc>Locked skills cannot be bought or improved by the player using the normal methods.  Any skill which isLocked returns true for will also return true for isRestricted.</doc>
-    </method>
-    <method>
-      <name>isIntrinsic</name>
-      <invoke>is_intrinsic</invoke>
-      <return>
-        <type>Boolean</type>
-        <doc>True if the skill is an instrinsic ability.</doc>
-      </return>
-      <doc>Intrinsic skills are usually called 'stats' or 'attributes' in other game systems.  Strength or intelligence are examples of intrinsic skills.  Intrinsic skills cannot be improved by the player using the normal methods.  They are also displayed separately from other skills and are handled differently during creature creation.  Any skill which isIntrinsic returns true for will also return for for isRestricted and isLocked.</doc>
-    </method>
-    <method>
-      <name>isSecret</name>
-      <invoke>is_secret</invoke>
-      <return>
-        <type>Boolean</type>
-        <doc>True if the skill is secret.</doc>
-      </return>
-      <doc>Secret skills are locked skills which are hidden from the player entirely.  Any skill which isIntrinsic returns true for will also return for for isRestricted and isLocked.</doc>
     </method>
   </type>
 

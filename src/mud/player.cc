@@ -188,11 +188,13 @@ Player::save_data (File::Writer& writer)
 
 	writer.attr(S("player"), S("experience"), experience);
 
-	for (SSkillManager::SkillList::const_iterator i = SkillManager.get_skills().begin(); i != SkillManager.get_skills().end(); ++i) {
-		GCType::vector<File::Value> list;
-		list.push_back(File::Value(File::Value::TYPE_STRING, (*i)->get_name())); 
-		list.push_back(File::Value(File::Value::TYPE_INT, tostr(skills.get_skill((*i)->get_id()))));
-		writer.attr(S("player"), S("skill"), list);
+	for (int i = 1; i < SkillID::COUNT; ++i) {
+		if (skills.has_skill(SkillID(i))) {
+			GCType::vector<File::Value> list;
+			list.push_back(File::Value(File::Value::TYPE_STRING, SkillID(i).get_name())); 
+			list.push_back(File::Value(File::Value::TYPE_INT, tostr(skills.get_skill(SkillID(i)))));
+			writer.attr(S("player"), S("skill"), list);
+		}
 	}
 }
 
@@ -292,11 +294,11 @@ Player::load_node (File::Reader& reader, File::Node& node)
 				return -1;
 			}
 		FO_ATTR("player", "skill")
-			SkillInfo* info = SkillManager.get_by_name(node.get_string(0));
-			if (info != NULL) {
-				skills.set_skill(info->get_id(), node.get_int(1));
+			SkillID skill = SkillID::lookup(node.get_string(0));
+			if (skill.valid()) {
+				skills.set_skill(skill, node.get_int(1));
 			} else {
-				Log::Error << node << ": Unknown skill";
+				Log::Error << node << ": Unknown skill: " << node.get_string(0);
 				throw File::Error();
 			}
 		FO_ATTR("player", "created")
@@ -490,10 +492,9 @@ Player::display_skills ()
 
 	set_indent(2);
 
-	for (SSkillManager::SkillList::const_iterator i = SkillManager.get_skills().begin(); i != SkillManager.get_skills().end(); ++i) {
-		int ranks = skills.get_skill((*i)->get_id());
-		if (!(*i)->is_secret() && (!(*i)->is_restricted() || ranks > 0))
-			*this << (*i)->get_name() << " " << get_roman(ranks) << "\n";
+	for (int i = 1; i < SkillID::COUNT; ++i) {
+		if (skills.has_skill(SkillID(i)))
+			*this << SkillID(i).get_name() << " " << get_roman(skills.get_skill(SkillID(i))) << "\n";
 	}
 
 	set_indent(0);

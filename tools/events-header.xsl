@@ -29,7 +29,9 @@ class EventID {
 		COUNT,
 	} type_t;
 	
-	EventID (int s_value) : value((type_t)s_value) {}
+	explicit EventID (int s_value) : value((type_t)s_value) {}
+	EventID (type_t s_value) : value(s_value) {}
+	EventID (const EventID& event) : value(event.value) {}
 	EventID () : value(NONE) {}
 
 	String get_name() const { return names[value]; }

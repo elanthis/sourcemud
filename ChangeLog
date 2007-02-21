@@ -1,3 +1,10 @@
+2007-02-21 06:38:11  Sean Middleditch <elanthis@awesomeplay.com>
+
+  * Updates skill system to no longer load them from an external
+    file.  The C++ code needs access to the skills, so we need to
+    have IDs and such as compile time.  Skill definitions are now
+    located in src/xml/skills.xml.
+
 2007-02-17 20:34:21  Sean Middleditch <elanthis@awesomeplay.com>
 
   * Renamed the parse system to the macro system, which is far

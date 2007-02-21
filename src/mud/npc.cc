@@ -607,8 +607,6 @@ int
 SNpcBPManager::initialize (void)
 {
 	// requirements
-	if (require(SkillManager) != 0)
-		return 1;
 	if (require(AIManager) != 0)
 		return 1;
 	if (require(ObjectBPManager) != 0)
