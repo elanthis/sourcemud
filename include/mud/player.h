@@ -19,7 +19,7 @@
 #include "mud/creature.h"
 #include "mud/color.h"
 #include "mud/network.h"
-#include "mud/pdesc.h"
+#include "mud/form.h"
 #include "mud/gametime.h"
 #include "common/gcbase.h"
 #include "mud/skill.h"
@@ -57,8 +57,8 @@ class Player : public Creature
 	virtual inline void set_desc (String s_desc) {}
 
 	// gender
-	virtual inline GenderType get_gender () const { return pdesc.gender; }
-	inline void set_gender (GenderType s_gender) { pdesc.gender = s_gender; }
+	virtual inline GenderType get_gender () const { return form.gender; }
+	inline void set_gender (GenderType s_gender) { form.gender = s_gender; }
 
 	// save and load
 	virtual void save_data (File::Writer& writer);
@@ -103,13 +103,20 @@ class Player : public Creature
 	inline class Race* get_race () const { return race; }
 	inline class Race* set_race (class Race* race_in) { return race = race_in; }
 
-	// height in centimeters
-	inline uint8 get_height () const { return pdesc.height; }
-	inline void set_height (uint8 height) { pdesc.height = height; }
-
 	// character traits
-	CreatureTraitValue get_trait(CreatureTraitID) const;
-	void set_trait (CreatureTraitID, CreatureTraitValue);
+	FormColor get_eye_color () const { return form.eye_color; }
+	FormColor get_hair_color () const { return form.hair_color; }
+	FormColor get_skin_color () const { return form.skin_color; }
+	FormHairStyle get_hair_style () const { return form.hair_style; }
+	FormBuild get_build () const { return form.build; }
+	FormHeight get_height () const { return form.height; }
+
+	void set_eye_color (FormColor value) { form.eye_color = value; }
+	void set_hair_color (FormColor value) { form.hair_color = value; }
+	void set_skin_color (FormColor value) { form.skin_color = value; }
+	void set_hair_style (FormHairStyle value) { form.hair_style = value; }
+	void set_build (FormBuild value) { form.build = value; }
+	void set_height (FormHeight value) { form.height = value; }
 
 	// combat
 	virtual uint get_combat_dodge () const;
@@ -153,8 +160,6 @@ class Player : public Creature
 	void do_reply (String what);
 
 	protected:
-	typedef GCType::map<CreatureTraitID, CreatureTraitValue> TraitMap;
-
 	EntityName name;
 	IPlayerConnection* conn;
 	Account* account;
@@ -162,9 +167,13 @@ class Player : public Creature
 	String last_tell;
 	struct PDesc {
 		GenderType gender;
-		uint8 height; // centimeters;
-		TraitMap traits;
-	} pdesc;
+		FormColor eye_color;
+		FormColor hair_color;
+		FormColor skin_color;
+		FormHairStyle hair_style;
+		FormBuild build;
+		FormHeight height;
+	} form;
 	CreatureStatArray base_stats;
 	class Race *race;
 	uint32 experience;

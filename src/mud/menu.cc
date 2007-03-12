@@ -136,9 +136,9 @@ TelnetModeMainMenu::process (char* line)
 					*get_handler() << "You already have the maximum number of characters allowed.\n\n";
 				} else {
 					// create
-					ITelnetMode* mode = new TelnetModeNewCharacter(get_handler(), account);
+					ITelnetMode* mode = TelnetModeNewCharacter::create(get_handler(), account);
 					if (mode != NULL)
-						get_handler()->set_mode(new TelnetModeNewCharacter(get_handler(), account));
+						get_handler()->set_mode(mode);
 				}
 			// account?
 			} else if (input == "3" || prefix_match("account", input)) {

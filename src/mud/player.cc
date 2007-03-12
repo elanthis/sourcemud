@@ -121,8 +121,6 @@ Player::Player (class Account* s_account, String s_id) : Creature (AweMUD_Player
 
 	conn = NULL;
 
-	pdesc.height = 68;
-
 	ninfo.last_rt = 0;
 	ninfo.last_max_rt = 0;
 	ninfo.last_hp = 0;
@@ -172,16 +170,14 @@ Player::save_data (File::Writer& writer)
 		list.push_back(File::Value(File::Value::TYPE_INT, tostr(base_stats[i])));
 		writer.attr(S("player"), S("stat"), list);
 	}
-	
-	for (TraitMap::const_iterator i = pdesc.traits.begin(); i != pdesc.traits.end(); ++i) {
-		GCType::vector<File::Value> list;
-		list.push_back(File::Value(File::Value::TYPE_STRING, CreatureTraitID::nameof(i->first))); 
-		list.push_back(File::Value(File::Value::TYPE_STRING, i->second.get_name()));
-		writer.attr(S("player"), S("trait"), list);
-	}
 
-	writer.attr(S("player"), S("gender"), pdesc.gender.get_name());
-	writer.attr(S("player"), S("height"), pdesc.height);
+	writer.attr(S("player"), S("gender"), form.gender.get_name());
+	writer.attr(S("player"), S("build"), form.build.get_name());
+	writer.attr(S("player"), S("height"), form.height.get_name());
+	writer.attr(S("player"), S("skin_color"), form.skin_color.get_name());
+	writer.attr(S("player"), S("eye_color"), form.eye_color.get_name());
+	writer.attr(S("player"), S("hair_color"), form.hair_color.get_name());
+	writer.attr(S("player"), S("hair_style"), form.hair_style.get_name());
 
 	if (get_room()) 
 		writer.attr(S("player"), S("location"), get_room()->get_id());
@@ -254,6 +250,18 @@ Player::load_node (File::Reader& reader, File::Node& node)
 			set_desc(node.get_string());
 		FO_ATTR("player", "gender")
 			set_gender(GenderType::lookup(node.get_string()));
+		FO_ATTR("player", "build")
+			form.build = FormBuild::lookup(node.get_string());
+		FO_ATTR("player", "height")
+			form.height = FormHeight::lookup(node.get_string());
+		FO_ATTR("player", "skin_color")
+			form.skin_color = FormColor::create(node.get_string());
+		FO_ATTR("player", "eye_color")
+			form.eye_color = FormColor::create(node.get_string());
+		FO_ATTR("player", "hair_color")
+			form.hair_color = FormColor::create(node.get_string());
+		FO_ATTR("player", "hair_style")
+			form.hair_style = FormHairStyle::lookup(node.get_string());
 		FO_ATTR("player", "race")
 			race = RaceManager.get (node.get_string());
 			if (race == NULL) {
@@ -263,20 +271,6 @@ Player::load_node (File::Reader& reader, File::Node& node)
 		FO_ATTR("player", "birthday")
 			if (birthday.decode(node.get_string()))
 				throw File::Error (S("Invalid birthday"));
-		FO_ATTR("player", "trait")
-			CreatureTraitID trait = CreatureTraitID::lookup(node.get_string(0));
-			if (!trait.valid()) {
-				Log::Error << node << ": Unknown trait";
-				throw File::Error();
-			}
-			CreatureTraitValue value = CreatureTraitManager.get_trait(node.get_string(1));
-			if (!value.valid()) {
-				Log::Error << node << ": Unknown trait value";
-				throw File::Error();
-			}
-			pdesc.traits[trait] = value;
-		FO_ATTR("player", "height")
-			pdesc.height = node.get_int();
 		FO_ATTR("player", "location")
 			location = ZoneManager.get_room(node.get_string());
 			if (location == NULL) {
@@ -589,41 +583,29 @@ Player::macro_property (const StreamControl& stream, String comm, const MacroLis
 	if (str_eq(comm, S("race"))) {
 		if (get_race())
 			stream << get_race()->get_name();
-		return 0;
-	}
 	// RACE ADJECTIVE
-	else if (str_eq(comm, S("race-adj"))) {
+	} else if (str_eq(comm, S("race-adj"))) {
 		if (get_race())
 			stream << get_race()->get_adj();
-		return 0;
-	}
-	// TRAIT NAME
-	else if (str_eq(comm, S("trait-name")) && argv.size() == 1) {
-		stream << get_trait(CreatureTraitID::lookup(argv[0].get_string())).get_name();
-		return 0;
-	}
-	// TRAIT DESC
-	else if (str_eq(comm, S("trait")) && argv.size() == 1) {
-		stream << get_trait(CreatureTraitID::lookup(argv[0].get_string())).get_desc();
-		return 0;
-	}
-	// HEIGHT
-	else if (str_eq(comm, S("height"))) {
-		int feet = get_height() / 12;
-		if (feet > 0)
-			stream << feet << '\'';
-		stream << get_height() % 12 << '"';
-		return 0;
-	}
-	// HEIGHT (RAW)
-	else if (str_eq(comm, S("raw-height"))) {
-		stream << get_height();
-		return 0;
-	}
+	// PHYSICAL FORM
+	} else if (str_eq(comm, S("build"))) {
+		stream << form.build.get_name();
+	} else if (str_eq(comm, S("skin_color"))) {
+		stream << form.skin_color.get_name();
+	} else if (str_eq(comm, S("eye_color"))) {
+		stream << form.eye_color.get_name();
+	} else if (str_eq(comm, S("hair_color"))) {
+		stream << form.hair_color.get_name();
+	} else if (str_eq(comm, S("hair_style"))) {
+		stream << form.hair_style.get_name();
+	} else if (str_eq(comm, S("height"))) {
+		stream << form.height.get_name();
 	// default...
-	else {
+	} else {
 		return Creature::macro_property(stream, comm, argv);
 	}
+
+	return 0;
 }
 
 // connect to a telnet handler
@@ -713,21 +695,4 @@ void
 Player::display_desc (const StreamControl& stream) const
 {
 	stream << StreamMacro(get_race()->get_desc(), S("self"), this);
-}
-
-// get player trait
-CreatureTraitValue
-Player::get_trait (CreatureTraitID id) const
-{
-	TraitMap::const_iterator i = pdesc.traits.find(id);
-	if (i != pdesc.traits.end())
-		return i->second;
-	return CreatureTraitValue();
-}
-
-// set player trait
-void
-Player::set_trait (CreatureTraitID id, CreatureTraitValue value)
-{
-	pdesc.traits[id] = value;
 }

@@ -20,12 +20,74 @@ const int STAT_TOKEN_INC = 5; // the increment by which stats are advanced durin
 const int STAT_BASE = 30; // base value of all stats, before point distribution
 const int STAT_MAX = 90; // maximum stat can be raised to in character creation
 
-bool TelnetModeNewCharacter::is_match (String test, String operand)
+class TelnetModeRealNewCharacter : public TelnetModeNewCharacter
+{
+	public:
+	enum state_t {
+		STATE_BEGIN = 0,
+		STATE_NAME = 0,
+		STATE_NAME_CONFIRM,
+		STATE_RACE,
+		STATE_RACE_CONFIRM,
+		STATE_GENDER,
+		STATE_HEIGHT,
+		STATE_BUILD,
+		STATE_SKINCOLOR,
+		STATE_EYECOLOR,
+		STATE_HAIRCOLOR,
+		STATE_HAIRSTYLE,
+		STATE_FORM_CONFIRM,
+		STATE_STATS,
+		STATE_STATS_CONFIRM,
+		STATE_FINAL_CONFIRM,
+		STATE_CONTINUE,
+		STATE_RENAME,
+		STATE_RENAME_CONFIRM
+	};
+
+	TelnetModeRealNewCharacter (TelnetHandler* s_handler, Account* s_account) : TelnetModeNewCharacter (s_handler), account(s_account), state(STATE_BEGIN) {}
+
+	virtual int initialize ();
+	virtual void prompt ();
+	virtual void process (char* line);
+	virtual void shutdown ();
+	virtual void finish ();
+
+	private:
+	void display ();
+	void create ();
+	void show_error (String msg);
+	void enter_state (state_t state);
+
+	static bool is_match (String test, String operand);
+
+	Account* account;
+	String name;
+	state_t state;
+	int tokens;
+	int stats[CreatureStatID::COUNT];
+	Race* race;
+	GenderType gender;
+	FormBuild build;
+	FormHeight height;
+	FormColor eye_color;
+	FormColor hair_color;
+	FormColor skin_color;
+	FormHairStyle hair_style;
+};
+
+TelnetModeNewCharacter*
+TelnetModeNewCharacter::create (TelnetHandler* handler, Account* account)
+{
+	return new TelnetModeRealNewCharacter (handler, account);
+}
+
+bool TelnetModeRealNewCharacter::is_match (String test, String operand)
 {
 	return !operand.empty() && !strncasecmp(test.c_str(), operand.c_str(), operand.size());
 }
 
-int TelnetModeNewCharacter::initialize ()
+int TelnetModeRealNewCharacter::initialize ()
 {
 	// clear all variables
 	name.clear();
@@ -35,12 +97,12 @@ int TelnetModeNewCharacter::initialize ()
 	return 0;
 }
 
-void TelnetModeNewCharacter::shutdown ()
+void TelnetModeRealNewCharacter::shutdown ()
 {
 }
 
 // DISPLAY CURRENT STATE'S PROMPT
-void TelnetModeNewCharacter::prompt ()
+void TelnetModeRealNewCharacter::prompt ()
 {
 	switch (state) {
 		case STATE_NAME:
@@ -56,23 +118,27 @@ void TelnetModeNewCharacter::prompt ()
 		case STATE_HEIGHT:
 			*get_handler() << "Choose thy stature:";
 			break;
-		case STATE_TRAITS:
-		{
-			const RaceTraitMap& all = race->get_traits();
-			for (RaceTraitMap::const_iterator i = all.begin(); i != all.end(); ++i) {
-				if (traits.find(i->first) == traits.end()) {
-					*get_handler() << "Choose thy " << i->first.name() << ':';
-					break;
-				}
-			}
-	  		break;
-		}
+		case STATE_BUILD:
+			*get_handler() << "Choose thy physical build:";
+			break;
+		case STATE_SKINCOLOR:
+			*get_handler() << "Choose thy skin color:";
+			break;
+		case STATE_EYECOLOR:
+			*get_handler() << "Choose thy eye color:";
+			break;
+		case STATE_HAIRCOLOR:
+			*get_handler() << "Choose thy hair color:";
+			break;
+		case STATE_HAIRSTYLE:
+			*get_handler() << "Choose thy hair style:";
+			break;
 		case STATE_STATS:
 			*get_handler() << "Which attribute shall thee increase?";
 			break;
 		case STATE_NAME_CONFIRM:
 		case STATE_RACE_CONFIRM:
-		case STATE_TRAITS_CONFIRM:
+		case STATE_FORM_CONFIRM:
 		case STATE_STATS_CONFIRM:
 		case STATE_FINAL_CONFIRM:
 		case STATE_RENAME_CONFIRM:
@@ -85,7 +151,7 @@ void TelnetModeNewCharacter::prompt ()
 }
 
 // PROCESS INPUT FOR CURRENT STATE
-void TelnetModeNewCharacter::process (char* line)
+void TelnetModeRealNewCharacter::process (char* line)
 {
 	String input = strlower(S(line));
 	int numeric = tolong(input);
@@ -164,56 +230,66 @@ void TelnetModeNewCharacter::process (char* line)
 			}
 			break;
 		case STATE_HEIGHT:
-		{
-			// determine input
-			if (numeric == 2 || is_match(S("short"), input)) {
-				height = HEIGHT_SHORT;
-			} else if (numeric == 1 || is_match(S("very short"), input)) {
-				height = HEIGHT_VERY_SHORT;
-			} else if (numeric == 4 || is_match(S("tall"), input)) {
-				height = HEIGHT_TALL;
-			} else if (numeric == 5 || is_match(S("very tall"), input)) {
-				height = HEIGHT_VERY_TALL;
-			} else if (numeric == 3 || is_match(S("average"), input)) {
-				height = HEIGHT_AVERAGE;
-			} else {
-				show_error(S("I do not understand they response."));
-				break;
-			}
-
-			// go to last step
-			enter_state(STATE_TRAITS);
-			break;
-		}
-		case STATE_TRAITS:
-		{
-			// determine current trait
-			const RaceTraitMap& all = race->get_traits();
-			RaceTraitMap::const_iterator trait;
-			for (trait = all.begin(); trait != all.end(); ++trait) {
-				if (traits.find(trait->first) == traits.end())
-					break;
-			}
-			assert(trait != all.end());
-
-			// set trait
-			int index = 1;
-			for (GCType::set<CreatureTraitValue>::const_iterator i = trait->second.begin(); i != trait->second.end(); ++i, ++index) {
-				if (numeric == index || is_match(i->get_name(), input)) {
-					traits.insert(std::pair<CreatureTraitID,CreatureTraitValue>(trait->first, *i));
-					++trait; // now we need the next trait
-					break;
+			for (int i = 1; i < FormHeight::COUNT; ++i) {
+				if (i == numeric || is_match(FormHeight(i).get_name(), input)) {
+					height = FormHeight(i);
+					enter_state(STATE_BUILD);
+					return;
 				}
 			}
-
-			// if we found/set the trait, and are now out of traits, go to confirmation
-			if (trait == all.end())
-				enter_state(STATE_TRAITS_CONFIRM);
-			else
-				display();
+			show_error(S("I do not understand thy response."));
+			break;
+		case STATE_BUILD:
+			for (int i = 1; i < FormBuild::COUNT; ++i) {
+				if (i == numeric || is_match(FormBuild(i).get_name(), input)) {
+					build = FormBuild(i);
+					enter_state(STATE_SKINCOLOR);
+					return;
+				}
+			}
+			show_error(S("I do not understand thy response."));
+			break;
+		case STATE_SKINCOLOR:
+			for (GCType::vector<FormColor>::const_iterator i = race->get_skin_colors().begin(); i != race->get_skin_colors().end(); ++i) {
+				if ((--numeric) == 0 || is_match(i->get_name(), input)) {
+					skin_color = *i;
+					enter_state(STATE_EYECOLOR);
+					return;
+				}
+			}
+			show_error(S("I do not understand thy response."));
+			break;
+		case STATE_EYECOLOR:
+			for (GCType::vector<FormColor>::const_iterator i = race->get_eye_colors().begin(); i != race->get_eye_colors().end(); ++i) {
+				if ((--numeric) == 0 || is_match(i->get_name(), input)) {
+					eye_color = *i;
+					enter_state(STATE_HAIRCOLOR);
+					return;
+				}
+			}
+			show_error(S("I do not understand thy response."));
+			break;
+		case STATE_HAIRCOLOR:
+			for (GCType::vector<FormColor>::const_iterator i = race->get_hair_colors().begin(); i != race->get_hair_colors().end(); ++i) {
+				if ((--numeric) == 0 || is_match(i->get_name(), input)) {
+					hair_color = *i;
+					enter_state(STATE_HAIRSTYLE);
+					return;
+				}
+			}
+			show_error(S("I do not understand thy response."));
+			break;
+		case STATE_HAIRSTYLE:
+			for (int i = 1; i < FormHairStyle::COUNT; ++i) {
+				if (i == numeric || is_match(FormHairStyle(i).get_name(), input)) {
+					hair_style = FormHairStyle(i);
+					enter_state(STATE_FORM_CONFIRM);
+					return;
+				}
+			}
+			show_error(S("I do not understand thy response."));
 	  		break;
-		}
-		case STATE_TRAITS_CONFIRM:
+		case STATE_FORM_CONFIRM:
 			if (!input || is_match(S("yes"), input))
 				enter_state(STATE_STATS);
 			else if (is_match(S("no"), input))
@@ -287,24 +363,52 @@ void TelnetModeNewCharacter::process (char* line)
 	}
 }
 
-void TelnetModeNewCharacter::display ()
+void TelnetModeRealNewCharacter::display ()
 {
 	get_handler()->clear_scr();
-	*get_handler() << 	S("Character Creation\n------------------\n");
-	if (name)
-		*get_handler() << "Name: " << name << "\n";
-	if (race)
-		*get_handler() << "Race: " << capwords(race->get_name()) << "\n";
-	if (state > STATE_GENDER)
-		*get_handler() << "Gender: " << capwords(gender.get_name()) << "\n";
+	*get_handler() << "Character Creation\n------------------\n";
+	if (name) {
+		if (race)
+			*get_handler() << name << " (" << capwords(race->get_name()) << ")\n";
+		else
+			*get_handler() << name << "\n";
+	}
+	if (gender.get_value() != 0) {
+		*get_handler() << capwords(gender.get_name());
+		if (height.valid())
+			*get_handler() << ", " << height.get_name();
+		if (build.valid())
+			*get_handler() << ", " << build.get_name();
+		*get_handler() << "\n";
+	}
+	if (skin_color.valid()) {
+		*get_handler() << "Skin: " << skin_color.get_name();
+		if (eye_color.valid())
+			*get_handler() << ", eyes: " << eye_color.get_name();
+		if (hair_color.valid()) {
+			*get_handler() << ", hair: " << hair_color.get_name();
+			if (hair_style.valid())
+				*get_handler() << " (" << hair_style.get_name() << ")";
+		}
+		*get_handler() << "\n";
+	}
+	if (state > STATE_STATS_CONFIRM) {
+		for (int i = 0; i < CreatureStatID::COUNT; ++i) {
+			if (i > 0)
+				*get_handler() << ", ";
+			*get_handler() << CreatureStatID(i).get_short_name() << ':' << stats[i];
+		}
+		*get_handler() << '\n';
+	}
+
 	*get_handler() << "\n";
 
 	switch (state) {
 		case STATE_NAME:
-			*get_handler() << "Choose the name ye would like thy new charater to be called.\n\n";
+			*get_handler() << "Choose the name thy new charater shalle be called.\n\n";
 			break;
 		case STATE_RENAME:
-			*get_handler() << "Thy chosen name has been taken by another.  Choose ye a new name.\n\n";
+			*get_handler() << "Thy chosen name has been taken by another.  Choose a new name.\n\n";
 			break;
 		case STATE_RACE:
 		{
@@ -349,26 +453,39 @@ void TelnetModeNewCharacter::display ()
 		case STATE_GENDER:
 			*get_handler() << "1) Female\n2) Male\n\n";
 			break;
-		case STATE_TRAITS:
+		case STATE_BUILD:
+			for (size_t i = 1; i < FormBuild::COUNT; ++i)
+				*get_handler() << i << ") " << capwords(FormBuild(i).get_name()) << "\n";
+			*get_handler() << "\n";
+			break;
+		case STATE_SKINCOLOR:
 		{
-			const RaceTraitMap& all = race->get_traits();
-			for (RaceTraitMap::const_iterator i = all.begin(); i != all.end(); ++i) {
-				if (traits.find(i->first) == traits.end()) {
-					int index = 1;
-					*get_handler() << capwords(i->first.name()) << ":\n";
-					for (GCType::set<CreatureTraitValue>::const_iterator ii = i->second.begin(); ii != i->second.end(); ++ii, ++index) {
-						*get_handler() << index << ") " << capwords(ii->get_name()) << "\n";
-					}
-					*get_handler() << "\n";
-					break;
-				}
-			}
-	  		break;
+			size_t c = 1;
+			for (GCType::vector<FormColor>::const_iterator i = race->get_skin_colors().begin(); i != race->get_skin_colors().end(); ++i)
+				*get_handler() << c++ << ") " << capwords(i->get_name()) << "\n";
+			*get_handler() << "\n";
+			break;
 		}
-		case STATE_TRAITS_CONFIRM:
-			for (TraitMap::const_iterator i = traits.begin(); i != traits.end(); ++i) {
-				*get_handler() << capwords(i->first.name()) << ": " << capwords(i->second.get_name()) << "\n";
-			}
+		case STATE_EYECOLOR:
+		{
+			size_t c = 1;
+			for (GCType::vector<FormColor>::const_iterator i = race->get_eye_colors().begin(); i != race->get_eye_colors().end(); ++i)
+				*get_handler() << c++ << ") " << capwords(i->get_name()) << "\n";
+			*get_handler() << "\n";
+			break;
+		}
+		case STATE_HAIRCOLOR:
+		{
+			size_t c = 1;
+			for (GCType::vector<FormColor>::const_iterator i = race->get_hair_colors().begin(); i != race->get_hair_colors().end(); ++i)
+				*get_handler() << c++ << ") " << capwords(i->get_name()) << "\n";
+			*get_handler() << "\n";
+			break;
+		}
+		case STATE_HAIRSTYLE:
+			for (size_t i = 1; i < FormHairStyle::COUNT; ++i)
+				*get_handler() << i << ") " << capwords(FormHairStyle(i).get_name()) << "\n";
+			*get_handler() << "\n";
 			break;
 		case STATE_STATS:
 		case STATE_STATS_CONFIRM:
@@ -409,48 +526,12 @@ void TelnetModeNewCharacter::display ()
 			break;
 		}
 		case STATE_HEIGHT:
-			*get_handler() <<
-				"1) Very short\n"
-				"2) Short\n"
-				"3) Average\n"
-				"4) Tall\n"
-				"5) Very Tall\n\n";
+			for (size_t i = 1; i < FormHeight::COUNT; ++i)
+				*get_handler() << i << ") " << capwords(FormHeight(i).get_name()) << "\n";
+			*get_handler() << "\n";
 			break;
 		case STATE_FINAL_CONFIRM:
 		case STATE_RENAME_CONFIRM:
-			// display all details
-			if (state > STATE_HEIGHT) {
-				switch (height) {
-					case HEIGHT_VERY_SHORT:
-						*get_handler() << "Stature: Very short\n";
-						break;
-					case HEIGHT_SHORT:
-						*get_handler() << "Stature: Short\n";
-						break;
-					case HEIGHT_AVERAGE:
-						*get_handler() << "Stature: Average\n";
-						break;
-					case HEIGHT_TALL:
-						*get_handler() << "Stature: Tall\n";
-						break;
-					case HEIGHT_VERY_TALL:
-						*get_handler() << "Stature: Very tall\n";
-						break;
-				}
-			}
-			for (TraitMap::const_iterator i = traits.begin(); i != traits.end(); ++i) {
-				*get_handler() << capwords(i->first.name()) << ": " << capwords(i->second.get_name()) << "\n";
-			}
-			if (state > STATE_STATS_CONFIRM) {
-				*get_handler() << "Attributes: ";
-				for (int i = 0; i < CreatureStatID::COUNT; ++i) {
-					if (i > 0)
-						*get_handler() << ", ";
-					*get_handler() << CreatureStatID(i).get_name() << '(' << stats[i] << ')';
-				}
-				*get_handler() << '\n';
-			}
-
 			*get_handler() << "Is it thy wish for me to create this profile?\n\n";
 			break;
 		case STATE_CONTINUE:
@@ -461,13 +542,13 @@ void TelnetModeNewCharacter::display ()
 	}
 }
 
-void TelnetModeNewCharacter::show_error (String msg)
+void TelnetModeRealNewCharacter::show_error (String msg)
 {
 	display();
 	*get_handler() << CWARNING << msg << CNORMAL << "\n\n";
 }
 
-void TelnetModeNewCharacter::enter_state (state_t new_state)
+void TelnetModeRealNewCharacter::enter_state (state_t new_state)
 {
 	state = new_state;
 
@@ -478,20 +559,9 @@ void TelnetModeNewCharacter::enter_state (state_t new_state)
 		case STATE_RACE:
 			race = NULL;
 			break;
-		case STATE_TRAITS:
-		{
+		case STATE_BUILD:
 			// clear all traits
-			traits.clear();
-
-			// set any traits with only one option
-			const RaceTraitMap& all = race->get_traits();
-			for (RaceTraitMap::const_iterator i = all.begin(); i != all.end(); ++i) {
-				if (i->second.size() == 1) {
-					traits.insert(std::pair<CreatureTraitID,CreatureTraitValue>(i->first, *i->second.begin()));
-				}
-			}
 			break;
-		}
 		case STATE_STATS:
 		{
 			tokens = STAT_TOKENS;
@@ -508,7 +578,7 @@ void TelnetModeNewCharacter::enter_state (state_t new_state)
 	display();
 }
 
-void TelnetModeNewCharacter::create ()
+void TelnetModeRealNewCharacter::create ()
 {
 	Player* player;
 
@@ -525,21 +595,13 @@ void TelnetModeNewCharacter::create ()
 	birthday.set_year(birthday.get_year() - age);
 	player->set_birthday(birthday);
 
-	// set height
-	int adjust;
-	switch (height) {
-		case HEIGHT_VERY_SHORT: adjust = -12; break;
-		case HEIGHT_SHORT: adjust = -6; break;
-		case HEIGHT_AVERAGE: adjust = 0; break;
-		case HEIGHT_TALL: adjust = -6; break;
-		case HEIGHT_VERY_TALL: adjust = -12; break;
-	}
-	player->set_height (race->get_average_height(gender) - 3 + get_random(7) + adjust);
-
-	// set traits
-	for (TraitMap::const_iterator i = traits.begin(); i != traits.end(); ++i) {
-		player->set_trait(i->first, i->second);
-	}
+	// set form
+	player->set_height(height);
+	player->set_build(build);
+	player->set_eye_color(eye_color);
+	player->set_skin_color(skin_color);
+	player->set_hair_color(hair_color);
+	player->set_hair_style(hair_style);
 
 	// set stats
 	for (int i = 0; i < CreatureStatID::COUNT; ++i)
@@ -562,7 +624,7 @@ void TelnetModeNewCharacter::create ()
 }
 
 // RETURN TO THE MAIN MENU
-void TelnetModeNewCharacter::finish ()
+void TelnetModeRealNewCharacter::finish ()
 {
 	get_handler()->set_mode(new TelnetModeMainMenu(get_handler(), account));
 }

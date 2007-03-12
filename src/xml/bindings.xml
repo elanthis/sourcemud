@@ -709,21 +709,6 @@ number = roll_dice(3, 6);]]></example>
     <code>ZoneManager.announce(_arg_text);</code>
   </function>
 
-  <!-- Player traits -->
-  <function>
-    <name>getTraits</name>
-    <return>
-      <type>Array</type>
-      <doc>Array of all valid trait names.</doc>
-    </return>
-    <code><![CDATA[
-      const IDManager::IDMap& traits = CreatureTraitID::get_all();
-      _return = new Scriptix::Array(traits.size(), NULL);
-      for (IDManager::IDMap::const_iterator i = traits.begin(); i != traits.end(); ++i)
-        _return->append(Scriptix::Value(*i));
-    ]]></code>
-  </function>
-
   <!-- Hooks -->
   <function>
     <name>registerHook</name>
@@ -1690,33 +1675,6 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
 
     <!-- Description details -->
     <method>
-      <name>getTrait</name>
-      <arg>
-        <name>trait</name>
-        <type>String</type>
-        <doc>Trait value to retrieve.</doc>
-      </arg>
-      <return>
-        <type>String</type>
-        <doc>The trait's description, normally processed with the text parsing engine before displaying.</doc>
-      </return>
-      <code><![CDATA[_return = _self->get_trait(CreatureTraitID::lookup(_arg_trait)).get_desc();]]></code>
-    </method>
-    <method>
-      <name>setTrait</name>
-      <arg>
-        <name>trait</name>
-        <type>String</type>
-        <doc>Trait value to set.</doc>
-      </arg>
-      <arg>
-        <name>value</name>
-        <type>String</type>
-        <doc>Name of a specific trait value to set the trait to.</doc>
-      </arg>
-      <code><![CDATA[_self->set_trait(CreatureTraitID::lookup(_arg_trait), CreatureTraitValue::lookup(_arg_value));]]></code>
-    </method>
-    <method>
       <name>hisHer</name>
       <invoke>his_her</invoke>
       <return>
@@ -1735,23 +1693,6 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
       </return>
       <code/>
       <doc>Note how the feminine result of this method is "hers".  In cases where "her" would be appropriate, use <link method="Player.hisHer"/>.</doc>
-    </method>
-    <method>
-      <name>getHeight</name>
-      <invoke>get_height</invoke>
-      <return>
-        <type>Integer</type>
-        <doc>Player height.  Default is in inches, game designers may choose to use centimeters.</doc>
-      </return>
-    </method>
-    <method>
-      <name>setHeight</name>
-      <invoke>set_height</invoke>
-      <arg>
-        <name>height</name>
-        <type>Integer</type>
-        <doc>New player height.  Default is in inches, game designers may choose to use centimeters.  Should not be higher than 255.</doc>
-      </arg>
     </method>
 
     <!-- Processors/IO -->

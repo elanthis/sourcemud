@@ -40,23 +40,25 @@ class CreatureStatID {
 		COUNT,
 	} type_t;
 	
-	inline CreatureStatID (int s_value) : value((type_t)s_value) {}
-	inline CreatureStatID () : value(NONE) {}
+	CreatureStatID (int s_value) : value((type_t)s_value) {}
+	CreatureStatID () : value(NONE) {}
 
-	inline String get_name() const { return names[value]; }
+	String get_name() const { return names[value]; }
+	String get_short_name() const { return short_names[value]; }
 
-	inline type_t get_value () const { return value; }
+	type_t get_value () const { return value; }
 
 	static CreatureStatID lookup (String name);
 
-	inline bool operator == (CreatureStatID dir) const { return dir.value == value; }
-	inline bool operator != (CreatureStatID dir) const { return dir.value != value; }
-	inline operator bool () const { return value != NONE; }
+	bool operator == (CreatureStatID dir) const { return dir.value == value; }
+	bool operator != (CreatureStatID dir) const { return dir.value != value; }
+	operator bool () const { return value != NONE; }
 
 	private:
 	type_t value;
 
 	static String names[];
+	static String short_names[];
 };
 
 // character stat array

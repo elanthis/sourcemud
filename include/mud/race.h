@@ -20,12 +20,10 @@
 #include "common/string.h"
 #include "mud/fileobj.h"
 #include "mud/creature.h"
-#include "mud/pdesc.h"
+#include "mud/form.h"
 #include "mud/server.h"
 #include "common/imanager.h"
 #include "scriptix/native.h"
-
-typedef GCType::map<CreatureTraitID, GCType::set<CreatureTraitValue> > RaceTraitMap;
 
 /* store information about a race */
 class
@@ -38,23 +36,25 @@ Race : public Scriptix::Native
 
 	int load (File::Reader&);
 
-	inline int get_life_span () const { return life_span; }
-	inline int get_age_min () const { return age_min; }
-	inline int get_age_max () const { return age_max; }
+	int get_life_span () const { return life_span; }
+	int get_age_min () const { return age_min; }
+	int get_age_max () const { return age_max; }
 
-	inline int get_stat (int i) const { if (i >= 0 && i < CreatureStatID::COUNT) return stats[i] ; else return 0; }
+	int get_stat (int i) const { if (i >= 0 && i < CreatureStatID::COUNT) return stats[i] ; else return 0; }
 
-	inline int get_average_height (GenderType gender) const { return height[gender.get_value()]; }
+	int get_average_height (GenderType gender) const { return height[gender.get_value()]; }
 
-	inline const String& get_name () const { return name; }
-	inline const String& get_adj () const { return adj; }
-	inline const String& get_body () const { return body; }
-	inline const String& get_about () const { return about; }
-	inline const String& get_desc () const { return desc; }
+	String get_name () const { return name; }
+	String get_adj () const { return adj; }
+	String get_body () const { return body; }
+	String get_about () const { return about; }
+	String get_desc () const { return desc; }
 
-	const RaceTraitMap& get_traits () const { return traits; }
-	
-	inline Race* get_next () const { return next; }
+	const GCType::vector<FormColor>& get_eye_colors() const { return eye_colors; }
+	const GCType::vector<FormColor>& get_skin_colors() const { return skin_colors; }
+	const GCType::vector<FormColor>& get_hair_colors() const { return hair_colors; }
+
+	Race* get_next () const { return next; }
 
 	// ---- data ----
 	protected:
@@ -64,13 +64,15 @@ Race : public Scriptix::Native
 	String about;
 	String desc;
 
-	RaceTraitMap traits;
-
 	int age_min, age_max, life_span;
 
 	int height[GenderType::COUNT];
 
 	int stats[CreatureStatID::COUNT];
+
+	GCType::vector<FormColor> eye_colors;
+	GCType::vector<FormColor> hair_colors;
+	GCType::vector<FormColor> skin_colors;
 
 	Race* next;
 };
@@ -78,7 +80,7 @@ Race : public Scriptix::Native
 class SRaceManager : public IManager
 {
 	public:
-	inline SRaceManager () : head(NULL) {}
+	SRaceManager () : head(NULL) {}
 
 	int initialize ();
 
@@ -86,7 +88,7 @@ class SRaceManager : public IManager
 
 	Race* get (String name);
 
-	inline Race* first () { return head; }
+	Race* first () { return head; }
 
 	private:
 	Race* head;

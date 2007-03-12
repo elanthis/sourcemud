@@ -16,14 +16,14 @@ EXTRA_DIST = awemud.in startup bootstrap $(TOOL_FILES) $(XSL_FILES)
 
 ### XML SOURCES ###
 
-noinst_DATA += src/xml/bindings.xml src/xml/events.xml src/xml/macros.xml src/xml/hooks.xml
+noinst_DATA += src/xml/bindings.xml src/xml/events.xml src/xml/macros.xml src/xml/hooks.xml src/xml/skills.xml
 
-EXTRA_DIST += src/xml/bindings.xml src/xml/events.xml src/xml/macros.xml src/xml/hooks.xml
+EXTRA_DIST += src/xml/bindings.xml src/xml/events.xml src/xml/macros.xml src/xml/hooks.xml src/xml/skills.xml
 
 ### GAME SCRIPTS ###
 
 SX_FILES=\
-	scripts/manifest.txt
+	scripts/manifest.txt \
 	scripts/awemud.sx \
 	scripts/string.sx \
 	scripts/corerules.sx \
@@ -267,6 +267,7 @@ noinst_HEADERS=\
 	include/mud/event.h \
 	include/mud/fileobj.h \
 	include/mud/filetab.h \
+	include/mud/form.h \
 	include/mud/gametime.h \
 	include/mud/help.h \
 	include/mud/http.h \
@@ -280,7 +281,6 @@ noinst_HEADERS=\
 	include/mud/object.h \
 	include/mud/olc.h \
 	include/mud/pconn.h \
-	include/mud/pdesc.h \
 	include/mud/player.h \
 	include/mud/portal.h \
 	include/mud/race.h \
@@ -429,6 +429,7 @@ awemud_bin_SOURCES=\
 	src/mud/event.cc \
 	src/mud/fileobj.cc \
 	src/mud/filetab.cc \
+	src/mud/form.cc \
 	src/mud/help.cc \
 	src/mud/http.cc \
 	src/mud/idmap.cc \
@@ -443,7 +444,6 @@ awemud_bin_SOURCES=\
 	src/mud/npc.cc \
 	src/mud/object.cc \
 	src/mud/olc.cc \
-	src/mud/pdesc.cc \
 	src/mud/player.cc \
 	src/mud/pmanager.cc \
 	src/mud/portal.cc \

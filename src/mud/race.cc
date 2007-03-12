@@ -15,7 +15,7 @@
 #include "mud/fileobj.h"
 #include "common/log.h"
 #include "mud/creature.h"
-#include "mud/pdesc.h"
+#include "mud/form.h"
 
 SRaceManager RaceManager;
 
@@ -36,7 +36,6 @@ Race::load (File::Reader& reader)
 	age_max = 0;
 	life_span = 0;
 	body = S("human");
-	traits.clear();
 	height[GenderType::NONE] = 72;
 	height[GenderType::FEMALE] = 65;
 	height[GenderType::MALE] = 68;
@@ -54,6 +53,12 @@ Race::load (File::Reader& reader)
 			desc = node.get_string();
 		FO_ATTR("race", "about")
 			about = node.get_string();
+		FO_ATTR("race", "eye_color")
+			eye_colors.push_back(FormColor::create(node.get_string()));
+		FO_ATTR("race", "hair_color")
+			hair_colors.push_back(FormColor::create(node.get_string()));
+		FO_ATTR("race", "skin_color")
+			skin_colors.push_back(FormColor::create(node.get_string()));
 		FO_ATTR("race", "min_age")
 			age_min = node.get_int();
 		FO_ATTR("race", "max_age")
@@ -66,23 +71,6 @@ Race::load (File::Reader& reader)
 			height[GenderType::FEMALE] = node.get_int();
 		FO_ATTR("race", "male_height")
 			height[GenderType::MALE] = node.get_int();
-		FO_ATTR("race", "trait")
-			CreatureTraitID trait = CreatureTraitID::lookup(node.get_string(0));
-			if (!trait.valid())
-				throw File::Error(S("Invalid trait"));
-			CreatureTraitValue value = CreatureTraitValue::lookup(node.get_string(1));
-			if (!value.valid())
-				throw File::Error(S("Invalid trait value"));
-
-			GCType::map<CreatureTraitID, GCType::set<CreatureTraitValue> >::iterator i = traits.find(trait);
-			if (i == traits.end()) {
-				GCType::set<CreatureTraitValue> values;
-				values.insert(value);
-				traits[trait] = values;
-				i = traits.find(trait);
-			} else {
-				std::pair<GCType::set<CreatureTraitValue>::iterator, bool> ret = i->second.insert(value);
-			}
 		FO_ATTR("race", "stat_bonus")
 			CreatureStatID stat = CreatureStatID::lookup(node.get_string(0));
 			if (stat)
@@ -120,8 +108,6 @@ SRaceManager::get (String name)
 int
 SRaceManager::initialize(void)
 {
-	require(CreatureTraitManager);
-
 	File::Reader reader;
 	String path = SettingsManager.get_misc_path() + "/races";
 

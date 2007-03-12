@@ -90,7 +90,7 @@ hostname = @HOSTNAME@
 #backup_players = true
 
 ## Run in the background as a server daemon.
-daemon = true
+#daemon = false
 
 ## Lock server into a directory, increasing security.
 #chroot = /home/awemud/jail

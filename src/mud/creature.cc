@@ -39,6 +39,15 @@ String CreatureStatID::names[CreatureStatID::COUNT] = {
 	S("Willpower"),
 };
 
+String CreatureStatID::short_names[CreatureStatID::COUNT] = {
+	S("ST"),
+	S("AG"),
+	S("FO"),
+	S("IN"),
+	S("SP"),
+	S("WI"),
+};
+
 CreatureStatID
 CreatureStatID::lookup (String name)
 {

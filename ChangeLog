@@ -1,3 +1,9 @@
+2007-03-12 08:12:05  Sean Middleditch <elanthis@awesomeplay.com>
+
+  * Makefile wasn't include skills.xml - fix that.
+  * Fixed make install for script files.
+  * Moved character traits into C++.
+
 2007-02-21 06:38:11  Sean Middleditch <elanthis@awesomeplay.com>
 
   * Updates skill system to no longer load them from an external
