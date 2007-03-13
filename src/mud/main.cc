@@ -33,7 +33,6 @@
 #include "mud/weather.h"
 #include "common/streams.h"
 #include "mud/zone.h"
-#include "mud/control.h"
 #include "mud/message.h"
 #include "mud/telnet.h"
 #include "mud/account.h"
@@ -62,14 +61,6 @@ namespace {
 	{
 		public:
 		inline HTTPListener (int s_sock) : SocketListener(s_sock) {}
-
-		virtual void sock_in_ready ();
-	};
-
-	class ControlListener : public SocketListener
-	{
-		public:
-		inline ControlListener (int s_sock) : SocketListener(s_sock) {}
 
 		virtual void sock_in_ready ();
 	};
@@ -170,13 +161,10 @@ namespace {
 	{
 		// remember paths
 		String pid_path = SettingsManager.get_pid_file();
-		String ctrl_path = SettingsManager.get_control_sock();
 
 		// remove files
 		if (pid_path)
 			unlink (pid_path);
-		if (ctrl_path)
-			unlink (ctrl_path);
 
 		// cleanup
 		GC_gcollect();
@@ -335,50 +323,6 @@ namespace {
 			NetworkManager.connections.remove(addr);
 			return;
 		}
-	}
-
-	void
-	ControlListener::sock_in_ready ()
-	{
-		// accept client
-		uid_t uid;
-		int client = Network::accept_unix(sock, uid);
-		if (client == -1) {
-			Log::Error << "accept() failed: " << strerror(errno);
-			return;
-		}
-
-		// deny blocked users
-		if (!ControlManager.has_user_access(uid)) {
-			fdprintf(client, "+NOACCESS Access Denied\n");
-			Log::Network << "Control interface client rejected: " << uid << ": user not allowed";
-			close(client);
-			return;
-		}
-
-		// log connection
-		Log::Network << "Control interface client connected: " << uid;
-
-		// create a new connection
-		ControlHandler* conn = new ControlHandler(client, uid);
-		if (conn == NULL) {
-			fdprintf(client, "+INTERNAL Internal server error.\n");
-			Log::Warning << "ControlHandler() failed, closing connection.";
-			close(client);
-			return;
-		}
-
-		// add to poll manager
-		if (NetworkManager.add_socket(conn)) {
-			fdprintf(client, "Internal server error.\r\n");
-			Log::Error << "PollSystem::add_socket() failed, closing connection.";
-			close(client);
-			conn = NULL;
-			return;
-		}
-
-		// banner
-		fdprintf(client, "+OK Welcome\n");
 	}
 }
 
@@ -595,16 +539,6 @@ main (int argc, char **argv)
 	int player_ipv6 = -1;
 	int http_ipv6 = -1;
 	int http_ipv4 = -1;
-	int control_unix = -1;
-
-	// control interface
-	String ctrl_path = SettingsManager.get_control_sock();
-	if (ctrl_path) {
-		control_unix = Network::listen_unix(ctrl_path);
-		if (control_unix == -1)
-			return 1;
-		Log::Info << "Control interface active on " << ctrl_path;
-	}
 
 	// get port
 	int accept_port = SettingsManager.get_port();
@@ -690,12 +624,6 @@ main (int argc, char **argv)
 	}
 	if (http_ipv6 != -1) {
 		if (NetworkManager.add_socket(new HTTPListener(http_ipv6))) {
-			Log::Error << "NetworkManager.add_socket() failed";
-			return 1;
-		}
-	}
-	if (control_unix != -1) {
-		if (NetworkManager.add_socket(new ControlListener(control_unix))) {
 			Log::Error << "NetworkManager.add_socket() failed";
 			return 1;
 		}

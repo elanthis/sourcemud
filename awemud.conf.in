@@ -38,15 +38,6 @@ misc_dir = @DATADIR@/lib/awemud/data/
 ## Directory holding HTML .tpl files.
 html_dir = @DATADIR@/lib/awemud/data/html/
 
-## Path of the control interface UNIX socket.
-#control_sock = @DATADIR@/run/awemud-ctrl.sock
-
-## Users who can perform read-only ops on the control interface.
-#control_users = awemud,www-data
-
-## Users who can perform edit ops on the control interface.
-#control_admins = 
-
 ## Port to listen on for both IPv4 and IPv6 clients.
 #port = 4545
 

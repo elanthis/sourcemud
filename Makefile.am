@@ -258,7 +258,6 @@ noinst_HEADERS=\
 	include/mud/clock.h \
 	include/mud/color.h \
 	include/mud/command.h \
-	include/mud/control.h \
 	include/mud/creation.h \
 	include/mud/creature.h \
 	include/mud/efactory.h \
@@ -320,7 +319,7 @@ BUILT_SOURCES = include/generated/events.h include/generated/hooks.h include/gen
 
 ### EXECUTABLES ###
 
-bin_PROGRAMS=awemud-ctrl awemud-bin
+bin_PROGRAMS=awemud-bin
 
 INCLUDES=-I@top_srcdir@/include
 
@@ -399,9 +398,6 @@ endif
 EXTRA_DIST += src/generated/bindings.cc src/generated/macros.cc src/generated/events.cc src/generated/hooks.cc src/generated/skills.cc
 BUILT_SOURCES += src/generated/bindings.cc src/generated/macros.cc src/generated/events.cc src/generated/hooks.cc src/generated/skills.cc
 
-awemud_ctrl_SOURCES=\
-	src/util/awemud-ctrl.c
-
 awemud_bin_SOURCES=\
 	$(COMMON_SOURCES) \
 	$(SCRIPTIX_SOURCES) \
@@ -421,7 +417,6 @@ awemud_bin_SOURCES=\
 	src/mud/cmd_player.cc \
 	src/mud/combat.cc \
 	src/mud/command.cc \
-	src/mud/control.cc \
 	src/mud/creation.cc \
 	src/mud/creature.cc \
 	src/mud/efactory.cc \

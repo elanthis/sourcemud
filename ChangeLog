@@ -1,3 +1,8 @@
+2007-03-13 08:09:52  Sean Middleditch <elanthis@awesomeplay.com>
+
+  * Removed control interace.  We don't use it, why bother keeping
+    the cruft?
+
 2007-03-12 08:12:05  Sean Middleditch <elanthis@awesomeplay.com>
 
   * Makefile wasn't include skills.xml - fix that.
