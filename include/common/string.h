@@ -68,8 +68,12 @@ class String : public GC
 	size_t size () const { return strlen(string); }
 
 	// get a character
+	template <typename I> const char operator[] (I i) const { return string[i]; }
+	/*
 	const char operator[] (size_t index) const { return string[index]; }
+	const char operator[] (long index) const { return string[index]; }
 	const char operator[] (int index) const { return string[index]; }
+	*/
 
 	// iterators
 	typedef CString iterator;

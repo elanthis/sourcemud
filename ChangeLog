@@ -1,3 +1,8 @@
+2007-04-15 01:39:37  Sean Middleditch <elanthis@awesomeplay.com>
+
+  * Fixes for compiling on amd64.  Wouldn't be half surprised if
+    it stopped compiling on ia32 now.
+
 2007-03-13 08:09:52  Sean Middleditch <elanthis@awesomeplay.com>
 
   * Removed control interace.  We don't use it, why bother keeping

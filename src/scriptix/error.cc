@@ -84,10 +84,5 @@ SScriptManager::raise_arg_error (const char* func, const char* arg, const char* 
 const char *
 Scriptix::str_error (sx_err_type err)
 {
-	/* out of bounds */
-	if (err < 0 || (size_t)err >= sizeof(error_names)/sizeof(error_names[0]))
-		return NULL;
-
-	/* return name */
 	return error_names[err];
 }
