@@ -3,8 +3,6 @@
 # --- BASICS ---
 zone.id = "example"
 zone.name = "Exampe Forest and Darlet"
-zone.desc = ""
-entity.uid = <2>
 
 # --- SPAWNS ---
 spawn {

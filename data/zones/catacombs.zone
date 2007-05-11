@@ -3,8 +3,6 @@
 # --- BASICS ---
 zone.id = "catacombs"
 zone.name = "Saladhin Catacombs"
-zone.desc = "Labyrithine catacombs under the metropolis of Saladhin."
-entity.uid = <1440>
 
 # --- SPAWNS ---
 

@@ -141,7 +141,7 @@ Spawn::save (File::Writer& writer) const
 }
 
 SCRIPT_TYPE(Zone);
-Zone::Zone () : Entity(AweMUD_ZoneType), rooms() {}
+Zone::Zone () : Scriptix::Native(AweMUD_ZoneType) {}
 
 Room*
 Zone::get_room (String id) const
@@ -170,13 +170,15 @@ Zone::get_room_count () const
 }
 
 int
-Zone::load_node (File::Reader& reader, File::Node& node)
+Zone::load (String path)
 {
-	FO_NODE_BEGIN
+	File::Reader reader;
+	if (reader.open(path))
+		return -1;
+
+	FO_READ_BEGIN
 		FO_ATTR("zone", "name")
 			set_name(node.get_string());
-		FO_ATTR("zone", "desc")
-			set_desc(node.get_string());
 		FO_ATTR("zone", "id")
 			id = node.get_string();
 		FO_ENTITY("zone", "child")
@@ -188,56 +190,9 @@ Zone::load_node (File::Reader& reader, File::Node& node)
 				spawns.push_back(spawn);
 			else
 				throw File::Error(S("Failed to load room"));
-		FO_PARENT(Entity)
-	FO_NODE_END
-}
-
-void
-Zone::save_data (File::Writer& writer)
-{
-	// header
-	writer.comment(S("Zone: ") + get_id());
-
-	// basics
-	writer.bl();
-	writer.comment (S("--- BASICS ---"));
-	writer.attr(S("zone"), S("id"), id);
-	writer.attr(S("zone"), S("name"), name.get_name());
-	writer.attr(S("zone"), S("desc"), desc);
-	Entity::save_data(writer);
-
-	// spawns
-	writer.bl();
-	writer.comment (S("--- SPAWNS ---"));
-	for (SpawnList::const_iterator i = spawns.begin(); i != spawns.end(); ++i)
-		i->save(writer);
-
-	// rooms
-	writer.bl();
-	writer.comment(S("--- ROOMS ---"));
-	for (RoomList::iterator i = rooms.begin(); i != rooms.end(); ++i)
-		(*i)->save(writer, S("zone"), S("child"));
-
-	writer.bl();
-	writer.comment (S(" --- EOF ---"));
-}
-
-void
-Zone::save_hook (ScriptRestrictedWriter* writer)
-{
-	Entity::save_hook(writer);
-	Hooks::save_zone(this, writer);
-}
-
-int
-Zone::load (String path)
-{
-	File::Reader reader;
-	if (reader.open(path))
+	FO_READ_ERROR
 		return -1;
-
-	if (Entity::load(reader))
-		return -1;
+	FO_READ_END
 
 	return 0;
 }
@@ -263,7 +218,30 @@ Zone::save ()
 		Log::Error << "Failed to open " << path << " for writing";
 		return;
 	}
-	save_data(writer);
+
+	// header
+	writer.comment(S("Zone: ") + get_id());
+
+	// basics
+	writer.bl();
+	writer.comment (S("--- BASICS ---"));
+	writer.attr(S("zone"), S("id"), id);
+	writer.attr(S("zone"), S("name"), name);
+
+	// spawns
+	writer.bl();
+	writer.comment (S("--- SPAWNS ---"));
+	for (SpawnList::const_iterator i = spawns.begin(); i != spawns.end(); ++i)
+		i->save(writer);
+
+	// rooms
+	writer.bl();
+	writer.comment(S("--- ROOMS ---"));
+	for (RoomList::iterator i = rooms.begin(); i != rooms.end(); ++i)
+		(*i)->save(writer, S("zone"), S("child"));
+
+	writer.bl();
+	writer.comment (S(" --- EOF ---"));
 }
 
 void
@@ -271,7 +249,7 @@ Zone::add_room (Room *room)
 {
 	assert (room != NULL);
 
-	room->set_owner(this);
+	room->set_zone(this);
 	rooms.push_back(room);
 }
 
@@ -289,8 +267,6 @@ Zone::heartbeat ()
 void
 Zone::activate ()
 {
-	Entity::activate();
-
 	for (RoomList::iterator i = rooms.begin(); i != rooms.end(); ++i)
 		(*i)->activate();
 }
@@ -300,25 +276,6 @@ Zone::deactivate ()
 {
 	for (RoomList::iterator i = rooms.begin(); i != rooms.end(); ++i)
 		(*i)->deactivate();
-
-	Entity::deactivate();
-}
-
-void
-Zone::set_owner (Entity* s_owner)
-{
-	// we never have an owner
-	assert(false);
-}
-
-void
-Zone::owner_release (Entity* child)
-{
-	assert(ROOM(child));
-
-	RoomList::iterator i = std::find(rooms.begin(), rooms.end(), (Room*)child);
-	if (i != rooms.end())
-		rooms.erase(i);
 }
 
 void
@@ -328,13 +285,10 @@ Zone::destroy ()
 	if (i != ZoneManager.zones.end())
 		ZoneManager.zones.erase(i);
 
-	Entity::destroy();
-}
+	rooms.clear();
+	spawns.clear();
 
-void
-Zone::handle_event (const Event& event)
-{
-	Entity::handle_event(event);
+	deactivate();
 }
 
 void
@@ -485,7 +439,7 @@ void
 SZoneManager::list_rooms (const StreamControl& stream)
 {
 	for (ZoneList::iterator i = zones.begin(); i != zones.end(); ++i) {
-		stream << " " << StreamName(*i) << " <" << (*i)->get_id() << ">\n";
+		stream << " " << (*i)->get_name() << " <" << (*i)->get_id() << ">\n";
 		for (Zone::RoomList::iterator ii = (*i)->rooms.begin(); ii != (*i)->rooms.end(); ++ii)
 			stream << "   " << StreamName(*ii) << " <" << (*ii)->get_id() << ">\n";
 	}

@@ -114,6 +114,8 @@ class Room : public Entity
 	virtual void set_owner (Entity* owner);
 	virtual void owner_release (Entity* child);
 	virtual class Entity* get_owner () const;
+
+	void set_zone (Zone* s_zone) { zone = s_zone; }
 	inline class Zone* get_zone () const { return zone; }
 
 	protected:

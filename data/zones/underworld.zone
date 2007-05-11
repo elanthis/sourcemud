@@ -3,8 +3,6 @@
 # --- BASICS ---
 zone.id = "underworld"
 zone.name = "The Underworld"
-zone.desc = "The world of the dead."
-entity.uid = <404>
 
 # --- SPAWNS ---
 

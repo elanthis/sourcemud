@@ -1,3 +1,7 @@
+2007-05-11 07:11:58  Sean Middleditch <elanthis@awesomeplay.com>
+
+  * Zone no longer derives from Entity.
+
 2007-04-15 01:39:37  Sean Middleditch <elanthis@awesomeplay.com>
 
   * Fixes for compiling on amd64.  Wouldn't be half surprised if

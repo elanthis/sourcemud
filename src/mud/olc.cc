@@ -168,6 +168,7 @@ namespace OLC {
 		}
 
 		// find zone?
+		/* FIXME
 		if (type == tZone) {
 			Zone* zone = NULL;
 			if (!name.empty())
@@ -182,6 +183,7 @@ namespace OLC {
 				return false;
 			}
 		}
+		*/
 
 		// none found
 		*builder << "Cannot find '" << name << "'.\n";

@@ -564,7 +564,7 @@ Creature*
 Object::get_holder () const
 {
 	Entity* owner = get_owner();
-	while (owner != NULL && !CHARACTER(owner))
+	while (owner != NULL && OBJECT(owner))
 		owner = owner->get_owner();
 	return CHARACTER(owner);
 }

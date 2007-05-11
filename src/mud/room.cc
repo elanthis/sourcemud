@@ -267,15 +267,12 @@ Room::deactivate ()
 void
 Room::set_owner (Entity* s_owner)
 {
-	assert(ZONE(s_owner));
-	Entity::set_owner(s_owner);
-	zone = (Zone*)s_owner;
 }
 
 Entity*
 Room::get_owner () const
 {
-	return zone;
+	return NULL;
 }
 
 void

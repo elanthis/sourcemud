@@ -176,6 +176,7 @@ void command_destroy (Player* builder, String argv[])
 	}
 
 	// find zone?
+	/* FIXME
 	if (ZONE(entity)) {
 		if (builder->get_room() && builder->get_room()->get_zone() == ZONE(entity)) {
 			*builder << "You cannot delete the zone you are in.\n";
@@ -186,6 +187,7 @@ void command_destroy (Player* builder, String argv[])
 		*builder << "Zone '" << ZONE(entity)->get_id () << "' destroyed.\n";
 		return;
 	}
+	*/
 }
 
 void command_portallist (Player *builder, String argv[])

@@ -44,24 +44,18 @@ class Spawn
 	void save (File::Writer& writer) const;
 };
 
-class Zone : public Entity
+class Zone : public Scriptix::Native
 {
 	public:
 	Zone ();
-
-	virtual String factory_type () const { return S("zone"); }
 
 	// zone ID
 	String get_id () const { return id; }
 	void set_id (String new_id) { id = new_id; }
 
 	// name information
-	virtual EntityName get_name () const { return name; }
-	virtual void set_name (String s_name) { name.set_name(s_name); }
-
-	// description information
-	virtual String get_desc () const { return desc; }
-	virtual void set_desc (String s_desc) { desc = s_desc; }
+	String get_name () const { return name; }
+	void set_name (String s_name) { name = s_name; }
 
 	// find rooms
 	class Room* get_room (String name) const;
@@ -72,47 +66,34 @@ class Zone : public Entity
 	void add_room (class Room*);
 
 	// events
-	virtual void handle_event (const Event& event);
-	virtual void broadcast_event (const Event& event);
+	void broadcast_event (const Event& event);
 
 	// load/save
-	using Entity::load;
-	virtual int load_node(File::Reader& reader, File::Node& node);
-	virtual int load_finish () { return 0; }
 	int load (String path);
-	virtual void save_data (File::Writer& writer);
-	virtual void save_hook (class ScriptRestrictedWriter* writer);
 	void save ();
 
 	// announce to all rooms
 	void announce (String text, AnnounceFlags type = ANFL_NONE) const;
 
 	// update zone
-	virtual void heartbeat ();
+	void heartbeat ();
 
 	// (de)activate children rooms
-	virtual void activate ();
-	virtual void deactivate ();
+	void activate ();
+	void deactivate ();
 
-	// owner manager - see entity.h - we have no owner
-	virtual Entity* get_owner () const { return NULL; }
-	virtual void set_owner (Entity* owner);
-	virtual void owner_release (Entity* child);
-
-	virtual void destroy ();
+	// delete the zone
+	void destroy ();
 
 	protected:
 	String id;
-	EntityName name;
-	String desc;
+	String name;
 
 	typedef GCType::vector<class Room*> RoomList;
 	RoomList rooms;
 
 	typedef GCType::vector<Spawn> SpawnList;
 	SpawnList spawns;
-
-	E_TYPE(Zone)
 
 	friend class SZoneManager;
 };

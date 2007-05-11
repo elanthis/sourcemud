@@ -3,8 +3,6 @@
 # --- BASICS ---
 zone.id = "saladhin"
 zone.name = "Metropolis of Saladhin"
-zone.desc = "The sprawling metropolis of Saladhin is the seat of power in the northern lands."
-entity.uid = <408>
 
 # --- SPAWNS ---
 
