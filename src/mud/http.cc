@@ -9,10 +9,6 @@
 #define HTTP_HEADER_LINE_MAX 2048 // arbitrary max line length
 #define HTTP_POST_BODY_MAX (16*1024) // 16K
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
 #include <stdio.h>
 #include <unistd.h>
 #include <ctype.h>
@@ -30,6 +26,8 @@
 #include "common/log.h"
 #include "common/md5.h"
 #include "common/manifest.h"
+
+#include "config.h"
 
 SHTTPManager HTTPManager;
 

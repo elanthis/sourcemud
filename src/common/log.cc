@@ -16,10 +16,7 @@
 #include "common/string.h"
 #include "mud/server.h"
 #include "mud/settings.h"
-
-#ifdef HAVE_CONFIG_H
 #include "config.h"
-#endif
 
 SLogManager LogManager;
 

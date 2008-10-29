@@ -5,10 +5,6 @@
  * http://www.awemud.net
  */
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
 #ifdef HAVE_SENDMAIL
 
 #include <sys/types.h>
@@ -19,6 +15,8 @@
 #include "common/mail.h"
 #include "common/log.h"
 #include "mud/settings.h"
+
+#include "config.h"
 
 void
 MailMessage::append (String data)

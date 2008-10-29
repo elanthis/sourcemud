@@ -5,10 +5,6 @@
  * http://www.awemud.net
  */
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
 #include "common/rand.h"
 #include "mud/race.h"
 #include "mud/settings.h"
@@ -16,6 +12,8 @@
 #include "common/log.h"
 #include "mud/creature.h"
 #include "mud/form.h"
+
+#include "config.h"
 
 SRaceManager RaceManager;
 

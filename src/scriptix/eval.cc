@@ -25,10 +25,6 @@
  * DAMAGE.
  */
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
 #undef HAVE_ALLOCA
 
 // AIX requires this to be the first thing in the file. 
@@ -58,6 +54,8 @@ char *alloca ();
 #include "scriptix/vimpl.h"
 #include "scriptix/stream.h"
 #include "common/log.h"
+
+#include "config.h"
 
 using namespace Scriptix;
 

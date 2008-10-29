@@ -17,9 +17,9 @@ include/generated/
 include/stamp-h1
 install-sh
 Makefile
-Makefile.in
 missing
 *.o
+src/cmd/commands.h
 src/generated/
 src/scriptix/grammar.cc
 src/scriptix/grammar.hh

@@ -20,6 +20,9 @@
 #include "mud/help.h"
 #include "scriptix/array.h"
 #include "mud/telnet.h"
+#include "mud/room.h"
+#include "mud/object.h"
+#include "mud/creature.h"
 
 SCommandManager CommandManager;
 
@@ -656,4 +659,508 @@ SCommandManager::show_man (StreamControl& stream, String name, bool quiet)
 	}
 
 	return match;
+}
+
+void
+Creature::process_command (String line)
+{
+	CommandManager.call (this, line);
+}
+
+// Helper functions for the Creature::cl_find_* functions
+namespace {
+	// skip a word and following white space
+	void skip_word (CString& ptr)
+	{
+		// skip the word
+		while (*ptr != 0 && !isspace(*ptr))
+			++ptr;
+
+		// skip the whitespace
+		while (*ptr != 0 && isspace(*ptr))
+			++ptr;
+	}
+
+	// return true if the string matches 'test' followed by a space or NUL
+	bool word_match (CString string, CString test)
+	{
+		// if there's no match, it's false
+		if (strncasecmp(string, test, strlen(test)))
+			return false;
+
+		// byte following the match must be a space or NULL
+		return isspace(string[strlen(test)]) || string[strlen(test)] == 0;
+	}
+
+	// return true if a string has no more creatures
+	inline bool str_empty (CString string)
+	{
+		return string[0] == 0;
+	}
+
+	// return a numeric value of the next word in the input
+	uint str_value (CString string)
+	{
+		// first, check for simple number
+		char* end;
+		int value = strtoul (string, &end, 10);
+		if (end != NULL) {
+			// just a number:
+			if (*end == 0 || isspace(*end))
+				return value;
+
+			// find out if it's a number followed by st, nd, rd, or th
+			if (value % 10 == 1 && value != 11 && word_match(end, "st"))
+				return value;
+			else if (value % 10 == 2 && value != 12 && word_match(end, "nd"))
+				return value;
+			else if (value % 10 == 3 && value != 13 && word_match(end, "rd"))
+				return value;
+			else if ((value % 10 > 3 || value % 10 == 0 || (value >= 10 && value <= 13)) && word_match(end, "th"))
+				return value;
+		}
+
+		// next, look for "other" or "second"
+		if (prefix_match("other", string) || prefix_match("second", string))
+			return 2;
+
+		// try third
+		if (prefix_match("third", string))
+			return 3;
+
+		// nobodies going to go higher than that with words, and if they do, fuck 'em
+		return 0;
+	}
+}
+
+// parse a command line to get an object
+Object* 
+Creature::cl_find_object (String line, int type, bool silent)
+{
+	uint matches;
+	Object* object;
+	const char* text = line.c_str();
+
+	// check for arg
+	if (str_empty(text)) {
+		if (!silent)
+			*this << "What?\n";
+		return NULL;
+	}
+
+	// do we have a my keyword?
+	if (word_match (text, "my")) {
+		type &= ~GOC_FLOOR; // clear floor flag
+		skip_word(text);
+	} else if (word_match(text, "the")) {
+		skip_word(text);
+	}
+
+	// get index
+	uint index = str_value(text);
+	if (index)
+		skip_word(text);
+	else
+		index = 1;
+
+	// check for arg
+	if (str_empty(text)) {
+		if (!silent)
+			*this << "What?\n";
+		return NULL;
+	}
+
+	// store name
+	String name (text);
+
+	// search room
+	if (type & GOC_FLOOR && get_room() != NULL) {
+		object = get_room()->find_object (name, index, &matches);
+		if (object)
+			return object;
+		if (matches >= index) {
+			*this << "You do not see '" << name << "'.\n";
+			return NULL;
+		}
+		index -= matches; // update count; subtract matches
+	}
+
+	// do a sub search for on containers in the room, like tables
+	if (type & GOC_SUB && get_room() != NULL) {
+		for (EList<Object>::iterator iter = get_room()->objects.begin(); iter != get_room()->objects.end(); ++iter) {
+			// have an ON container - search inside
+			if (*iter != NULL && (*iter)->has_location(ObjectLocation::ON)) {
+				if ((object = (*iter)->find_object (name, index, ObjectLocation::ON, &matches))) {
+					return object;
+				}
+				if (matches >= index) {
+					*this << "You do not see '" << name << "'.\n";
+					return NULL;
+				}
+				index -= matches; // update count; subtract matches
+			}
+		}
+	}
+
+	// FIXME: these aren't handling the matches/index stuff:
+
+	// try held
+	if (type & GOC_HELD)
+		if ((object = find_held (name)) != NULL)
+			return object;
+
+	// try worn
+	if (type & GOC_WORN)
+		if ((object = find_worn (name)) != NULL)
+			return object;
+
+	// print error
+	if (!silent) {
+		if (type & GOC_ROOM)
+			*this << "You do not see '" << name << "'.\n";
+		else if ((type & GOC_HELD) && !(type & GOC_WORN))
+			*this << "You are not holding '" << name << "'.\n";
+		else if ((type & GOC_WORN) && !(type & GOC_HELD))
+			*this << "You are not wearing '" << name << "'.\n";
+		else if ((type & GOC_HELD) && (type & GOC_WORN))
+			*this << "You don't have '" << name << "'.\n";
+	}
+	return NULL;
+}
+
+// find an object inside a particular container
+Object*
+Creature::cl_find_object (String line, Object* container, ObjectLocation type, bool silent)
+{
+	const char* text = line.c_str();
+
+	// check for arg
+	if (str_empty(text)) {
+		if (!silent)
+			*this << "What?\n";
+		return NULL;
+	}
+
+	// ignore both 'my' and 'the'
+	if (word_match (text, "my") || word_match(text, "the"))
+		skip_word(text);
+	
+	// get index
+	uint index = str_value(text);
+	if (index)
+		skip_word(text);
+	else
+		index = 1;
+
+	// check for arg
+	if (str_empty(text)) {
+		if (!silent)
+			*this << "What?\n";
+		return NULL;
+	}
+
+	// store name
+	String name (text);
+
+	// search room
+	Object* object = container->find_object (name, index, type);
+	if (object)
+		return object;
+
+	// type name
+	*this << "You do not see '" << name << "' " << type.name() << " " << StreamName(container, DEFINITE) << ".\n";
+	return NULL;
+}
+
+
+// parse a command line to get a creature
+Creature* 
+Creature::cl_find_creature (String line, bool silent)
+{
+	const char* text = line.c_str();
+
+	// check for arg
+	if (str_empty(text)) {
+		if (!silent)
+			*this << "What?\n";
+		return NULL;
+	}
+
+	if (get_room() == NULL) {
+		if (!silent)
+			*this << "You are not in a room.\n";
+		return NULL;
+	}
+
+	if (word_match(text, "the"))
+		skip_word(text);
+
+	uint index = str_value (text);
+	if (index)
+		skip_word(text);
+	else
+		index = 1;
+
+	if (str_empty(text)) {
+		if (!silent)
+			*this << "What?\n";
+		return NULL;
+	}
+
+	Creature* ch = get_room()->find_creature (String(text), index);
+	if (ch == NULL && !silent)
+		*this << "You do not see '" << text << "'.\n";
+
+	return ch;
+}
+
+/* parse a command line to get an portal*/
+Portal* 
+Creature::cl_find_portal (String line, bool silent)
+{
+	const char* text = line.c_str();
+
+	if (str_empty(text)) {
+		if (!silent)
+			*this << "What?\n";
+		return NULL;
+	}
+
+	if (get_room() == NULL) {
+		if (!silent)
+			*this << "You are not in a room.\n";
+		return NULL;
+	}
+
+	if (word_match(text, "the"))
+		skip_word(text);
+
+	uint index = str_value(text);
+	if (index)
+		skip_word(text);
+	else
+		index = 1;
+
+	if (str_empty(text)) {
+		if (!silent)
+			*this << "What?\n";
+		return NULL;
+	}
+
+	String name(text);
+	Portal* portal;
+	do {
+		portal = get_room()->find_portal (name, index++);
+	} while (portal != NULL && portal->is_disabled());
+
+	if (portal == NULL && !silent) {
+		*this << "You do not see '" << text << "'.\n";
+	}
+
+	return portal;
+}
+
+// parse a command line to get a creature, object, or portal
+Entity* 
+Creature::cl_find_any (String line, bool silent)
+{
+	uint matches;
+
+	const char* text = line.c_str();
+
+	// check for arg
+	if (str_empty(text)) {
+		if (!silent)
+			*this << "What?\n";
+		return NULL;
+	}
+
+	// do we have a my keyword?
+	if (word_match(text, "my")) {
+		// do 'my' object search
+		skip_word(text);
+		return cl_find_object(String(text), GOC_EQUIP, silent);
+	} else if (word_match(text, "the")) {
+		skip_word(text);
+	}
+
+	// determine our index
+	uint index = str_value(text);
+	if (index)
+		skip_word(text);
+	else
+		index = 1;
+
+	// check for arg
+	if (str_empty(text)) {
+		if (!silent)
+			*this << "What?\n";
+		return NULL;
+	}
+
+	String name(text);
+
+	// look for a creature
+	if (get_room()) {
+		Creature* ch = get_room()->find_creature (name, index, &matches);
+		if (ch != NULL)
+			return ch;
+		if (matches >= index) {
+			if (!silent)
+				*this << "You do not see '" << name << "'.\n";
+			return NULL;
+		}
+		index -= matches;
+	}
+
+	// search room for object
+	if (get_room() != NULL) {
+		Object* obj = get_room()->find_object (name, index, &matches);
+		if (obj)
+			return obj;
+		if (matches >= index) {
+			if (!silent)
+				*this << "You do not see '" << name << "'.\n";
+			return NULL;
+		}
+		index -= matches; // update count; subtract matches
+
+		// do a sub search for on containers, like tables
+		for (EList<Object>::iterator iter = get_room()->objects.begin(); index > 0 && iter != get_room()->objects.end(); ++iter) {
+			if (*iter != NULL) {
+				// have an ON container - search inside
+				if ((*iter)->has_location(ObjectLocation::ON)) {
+					if ((obj = (*iter)->find_object (name, index, ObjectLocation::ON, &matches))) {
+						return obj;
+					}
+					if (matches >= index) {
+						*this << "You do not see '" << name << "'.\n";
+						return NULL;
+					}
+					index -= matches; // update count; subtract matches
+				}
+			}
+		}
+	}
+
+	// try held
+	for (uint i = 0;; ++i) {
+		Object* obj = get_held_at(i);
+		// end of list?
+		if (!obj)
+			break;
+		// matched and index was 1?
+		if (obj->name_match(name)) {
+			if(--index == 0)
+				return obj;
+		}
+	}
+
+	// try worn
+	for (uint i = 0;; ++i) {
+		Object* obj = get_worn_at(i);
+		// end of list?
+		if (!obj)
+			break;
+		// matched and index was 1?
+		if (obj->name_match(name)) {
+			if(--index == 0)
+				return obj;
+		}
+	}
+
+	// try an portal
+	if (get_room()) {
+		Portal* portal = NULL;
+		do {
+			portal = get_room()->find_portal (name, index++);
+		} while (portal != NULL && portal->is_disabled());
+
+		if (portal != NULL)
+			return portal;
+	}
+
+	// print error
+	if (!silent)
+		*this << "You do not see '" << name << "'.\n";
+	return NULL;
+}
+
+void
+Player::process_command (String line)
+{
+	if (str_eq(line, S("quit"))) {
+		end_session();
+		return;
+	}
+
+	if (line.empty())
+		return;
+
+	if (line[0] == '#')
+		line = last_command;
+	else
+		last_command = line;
+
+	/* check for talking with \", a special case */
+	if (line[0] == '\"' || line[0] == '\'')
+	{
+		if (line[1] == '\0')
+			*this << "Say what?\n";
+		else
+			do_say (String(line.c_str() + 1)); // FIXME: make this more efficient
+		return;
+	}
+
+	/* check for emote'ing with :, a special case */
+	if (line[0] == ':' || line[0] == ';')
+	{
+		if (line[1] == '\0')
+			*this << "Do what?\n";
+		else
+			do_emote (String(line.c_str() + 1)); // FIXME: make this more efficient
+		return;
+	}
+
+	CommandManager.call (this, line);
+}
+
+namespace {
+	template <typename TYPE>
+	void
+	add_format (Command* command, String format, void(*func)(TYPE*, String[]), int priority)
+	{
+		CommandFormat* cformat = new CommandFormat(command, priority);
+		cformat->set_callback(func);
+		cformat->build (format);
+		command->add_format (cformat);
+	}
+}
+
+#define COMMAND(name,usage,func,access,klass) \
+	{ \
+		extern void func (klass*, String[]); \
+		void (*fptr)(klass*, String[]) = func; \
+		Command* command = new Command(S(name),S(usage),access);
+#define FORMAT(priority, format) add_format(command, S(format), fptr, (priority));
+#define END_COMM add(command); }
+		
+int
+SCommandManager::initialize (void)
+{
+	// access IDs
+	AccessID ACCESS_ALL;
+	AccessID ACCESS_GM = AccessID::create(S("gm"));
+	AccessID ACCESS_BUILDER = AccessID::create(S("builder"));
+	AccessID ACCESS_ADMIN = AccessID::create(S("admin"));
+
+#include "src/cmd/commands.h"
+
+	return 0;
+}
+
+void
+SCommandManager::shutdown (void)
+{
+	commands.resize(0);
 }

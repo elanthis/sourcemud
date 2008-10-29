@@ -21,7 +21,25 @@
 
 using namespace OLC;
 
-void command_create (Player* builder, String argv[])
+/* BEGIN COMMAND
+ *
+ * name: olc create
+ * usage: olc create [npc|object] [<template>]
+ * usage: olc create room <name> [<zone>]
+ * usage: olc create zone <name>
+ * usage: olc create portal <dir> <target>
+ *
+ * format: olc create :0npc :1%? (80)
+ * format: olc create :0object :1%? (80)
+ * format: olc create :0room :1% :2%? (80)
+ * format: olc create :0zone :1%? (80)
+ * format: olc create :0portal :1% :2% (80)
+ *
+ * access: GM
+ *
+ * END COMMAND */
+
+void command_olc_create (Player* builder, String argv[])
 {
 	// create npc from blueprint
 	if (str_eq (argv[0], S("npc"))) {
@@ -125,90 +143,4 @@ void command_create (Player* builder, String argv[])
 		ZoneManager.add_zone (zone);
 		*builder << "Zone '" << zone->get_id () << "' added.\n";
 	}
-}
-
-void command_destroy (Player* builder, String argv[])
-{
-	Entity* entity;
-
-	// valid form?
-	if (!lookup_editable(builder, argv[0], argv[1], entity)) {
-		return;
-	}
-
-	// players not allowed
-	if (PLAYER(entity)) {
-		*builder << "You cannot destroy players.\n";
-		return;
-	}
-
-	// find creature?
-	if (NPC(entity)) {
-		entity->destroy();
-		*builder << "NPC " << StreamName(NPC(entity)) << " destroyed.\n";
-		return;
-	}
-
-	// find object?
-	if (OBJECT(entity)) {
-		entity->destroy();
-		*builder << "Object " << StreamName(OBJECT(entity)) << " destroyed.\n";
-		return;
-	}
-
-	// find portal?
-	if (PORTAL(entity)) {
-		entity->destroy();
-		*builder << "Portal " << StreamName(PORTAL(entity)) << " destroyed.\n";
-		return;
-	}
-
-	// find room?
-	if (ROOM(entity)) {
-		if (ROOM(entity) == builder->get_room ()) {
-			*builder << "You cannot delete the room you are in.\n";
-			return;
-		}
-
-		entity->destroy();
-		*builder << "Room '" << ROOM(entity)->get_id () << "' destroyed.\n";
-		return;
-	}
-
-	// find zone?
-	/* FIXME
-	if (ZONE(entity)) {
-		if (builder->get_room() && builder->get_room()->get_zone() == ZONE(entity)) {
-			*builder << "You cannot delete the zone you are in.\n";
-			return;
-		}
-
-		entity->destroy();
-		*builder << "Zone '" << ZONE(entity)->get_id () << "' destroyed.\n";
-		return;
-	}
-	*/
-}
-
-void command_portallist (Player *builder, String argv[])
-{
-	Room *room = NULL;
-	
-	if (argv[0].empty()) {
-		room = ROOM(builder->get_room ());
-		if (room == NULL) {
-			*builder << "You are not in a room.\n";
-			return;
-		}
-	} else {
-		room = ZoneManager.get_room(argv[0]);
-		if (room == NULL) {
-			*builder << "Could not find room '" << argv[0] << "'.\n";
-			return;
-		}
-	}
-
-	*builder << "Portal list:\n";
-
-	room->show_portals (*builder);
 }

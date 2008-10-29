@@ -51,8 +51,8 @@ aiscript_DATA = $(AI_FILES)
 
 ### DOCUMENTATION ###
 
-DOCBOOK := doc/awemud-manual.xml
-MANUAL_CHAPTERS := \
+DOCBOOK = doc/awemud-manual.xml
+MANUAL_CHAPTERS = \
 	doc/ch-introduction.xml \
 	doc/ch-installation.xml \
 	doc/ch-accounts.xml \
@@ -61,15 +61,15 @@ MANUAL_CHAPTERS := \
 	doc/ch-scripting.xml
 
 if BUILD_DOCS
-DOCBOOK_TXT := $(DOCBOOK:%.xml=%.txt)
-DOCBOOK_HTML := $(DOCBOOK:%.xml=%.html)
+DOCBOOK_TXT = $(DOCBOOK:%.xml=%.txt)
+DOCBOOK_HTML = $(DOCBOOK:%.xml=%.html)
 if BUILD_PDFDOCS
-DOCBOOK_PDF := $(DOCBOOK:%.xml=%.pdf)
+DOCBOOK_PDF = $(DOCBOOK:%.xml=%.pdf)
 endif
 endif
 
-DOCS := $(DOCBOOK_HTML) $(DOCBOOK_PDF) $(DOCBOOK_TXT)
-USER_DOCS := doc/parse.txt doc/zmp-x-awemud.txt doc/ruleset.txt
+DOCS = $(DOCBOOK_HTML) $(DOCBOOK_PDF) $(DOCBOOK_TXT)
+USER_DOCS = doc/parse.txt doc/zmp-x-awemud.txt doc/ruleset.txt
 
 docdir = ${datadir}/doc/@PACKAGE_TARNAME@-@VERSION@
 doc_DATA = README NEWS COPYING AUTHORS FAQ $(DOCBOOK_TXT) $(USER_DOCS)
@@ -409,12 +409,7 @@ awemud_bin_SOURCES=\
 	src/mud/caffect.cc \
 	src/mud/calendar.cc \
 	src/mud/char_do.cc \
-	src/mud/cmd_admin.cc \
-	src/mud/cmd_builder.cc \
-	src/mud/cmd_creature.cc \
-	src/mud/cmd_gm.cc \
-	src/mud/cmd_init.cc \
-	src/mud/cmd_player.cc \
+	$(COMMAND_SOURCES) \
 	src/mud/combat.cc \
 	src/mud/command.cc \
 	src/mud/creation.cc \

@@ -5,10 +5,6 @@
  * http://www.awemud.net
  */
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
 #include <stdlib.h>
 #include <signal.h>
 #include <errno.h>
@@ -46,6 +42,8 @@
 #include "mud/login.h"
 #include "common/fdprintf.h"
 #include "mud/http.h"
+
+#include "config.h"
 
 // DECLARATIONS
 namespace {

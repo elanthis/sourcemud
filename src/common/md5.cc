@@ -13,14 +13,12 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <inttypes.h>
 
 #include "common/md5.h"
 #include "common/rand.h"
 #include "common/types.h"
-
-#ifdef HAVE_CONFIG_H
 #include "config.h"
-#endif
 
 // make private
 namespace {

@@ -94,8 +94,8 @@ class String : public GC
 
 // concatenation
 String operator+ (String, String);
-String operator+ (String, CString );
-String operator+ (CString , String);
+String operator+ (String, CString);
+String operator+ (CString, String);
 
 // comparison with C strings
 inline bool operator== (String left, CString right) { return strcmp(left.c_str(), right) == 0; }

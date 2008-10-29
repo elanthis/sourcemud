@@ -5,10 +5,6 @@
  * http://www.awemud.net
  */
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -30,6 +26,8 @@
 #include "mud/network.h"
 
 #include <vector>
+
+#include "config.h"
 
 /********************
  * Misc Helper Code *

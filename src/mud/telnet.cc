@@ -5,10 +5,6 @@
  * http://www.awemud.net
  */
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
 #define TELCMDS
 #define TELOPTS
 #define SLC_NAMES
@@ -36,6 +32,8 @@
 #include "mud/message.h"
 #include "mud/telnet.h"
 #include "mud/settings.h"
+
+#include "config.h"
 
 #define TELOPT_MCCP2 86
 

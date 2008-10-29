@@ -27,11 +27,9 @@
 
 #include <iostream>
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
 #include "scriptix/system.h"
+
+#include "config.h"
 
 using namespace Scriptix;
 
