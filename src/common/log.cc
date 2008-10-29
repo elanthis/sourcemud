@@ -76,7 +76,7 @@ void
 SLogManager::print (LogClass klass, String msg)
 {
 	char tbuf[41];
-	char* prefix;
+	const char* prefix;
 	time_t t;
 	struct tm local;
 	time (&t);

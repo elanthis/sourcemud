@@ -8,6 +8,7 @@
 #include <sys/time.h>
 #include <unistd.h>
 #include <errno.h>
+#include <cstdlib>
 
 #include "mud/settings.h"
 #include "mud/uniqid.h"

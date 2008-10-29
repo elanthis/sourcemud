@@ -223,7 +223,7 @@ Creature : public Entity, public IStreamSink
 
 	// command processing utility funcs
 	class Object* cl_find_object (String name, int type, bool silent = false);
-	class Object* cl_find_object (String name, class Object* container, class ObjectLocation container, bool silent = false);
+	class Object* cl_find_object (String name, class Object* container, class ObjectLocation loc, bool silent = false);
 
 	class Creature* cl_find_creature (String name, bool silent = false);
 	class Portal* cl_find_portal (String name, bool silent = false);

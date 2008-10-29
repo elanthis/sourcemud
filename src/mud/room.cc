@@ -11,6 +11,7 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <ctype.h>
+#include <climits>
 
 #include <algorithm>
 

@@ -1,5 +1,5 @@
 # Player file: Admin
-# Timestamp: Mon Mar 12 04:07:52 2007
+# Timestamp: Wed Oct 29 02:35:12 2008
 # 
 
 entity.uid = <1>
@@ -18,7 +18,7 @@ creature.equip_back = sobject {
   entity.uid = <23>
 }
 player.created = "2000-01-01 00:00:00"
-player.lastlogin = "2007-03-12 04:05:58"
+player.lastlogin = "2008-10-29 02:35:07"
 player.playtime = 2115
 player.race = "human"
 player.birthday = "0001/06/10 09.14"

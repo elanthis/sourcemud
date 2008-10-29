@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <ctype.h>
+#include <climits>
 
 #include "mud/entity.h"
 #include "mud/creature.h"

@@ -191,7 +191,7 @@ struct CompilerNode : public GCType::GC {
 		CompilerNode* node3,
 		CompilerNode* node4,
 		Atom name,
-		TypeInfo* type,
+		TypeInfo* typeinfo,
 		Value value,
 		int op);
 	// append a new node to the list

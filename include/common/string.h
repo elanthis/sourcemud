@@ -10,6 +10,7 @@
 
 #include <string>
 #include <sstream>
+#include <cstring>
 
 #include "gcbase.h"
 #include "gcvector.h"

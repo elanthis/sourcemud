@@ -26,10 +26,10 @@ SSettingsManager SettingsManager;
 
 namespace {
 	struct SettingInfo {
-		char* name;
+		const char* name;
 		char short_opt;
-		char* long_opt;
-		char* file_opt;
+		const char* long_opt;
+		const char* file_opt;
 		int* val_int;
 		String* val_string;
 		bool* val_bool;

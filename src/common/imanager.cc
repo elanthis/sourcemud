@@ -5,6 +5,8 @@
  * http://www.awemud.net
  */
 
+#include <algorithm>
+
 #include "common/gcmap.h"
 #include "common/imanager.h"
 
