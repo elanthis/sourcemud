@@ -37,7 +37,6 @@ for file in src/cmd/*.cc; do
 	if grep -q "^void command_$cmd *(Player" "$file"; then
 		echo "Player)"
 	else
-		echo $file CREATURE >&2
 		echo "Creature)"
 	fi
 
