@@ -118,7 +118,7 @@ if [ "x$CHANGELOG" = "xyes" ] ; then
   fi
 fi
 
-if ! git commit -F .commit.tmp  ; then
+if ! git commit -a -F .commit.tmp  ; then
   # failed - revert changes
   [ "x$CHANGELOG" = "xyes" ] && mv -f .ChangeLog~ ChangeLog
   exit 1
