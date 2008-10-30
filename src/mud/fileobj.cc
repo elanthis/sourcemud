@@ -1,8 +1,8 @@
 /*
- * AweMUD NG - Next Generation AwesomePlay MUD
- * Copyright (C) 2000-2005  AwesomePlay Productions, Inc.
+ * Source MUD
+ * Copyright (C) 2000-2005  Sean Middleditch
  * See the file COPYING for license details
- * http://www.awemud.net
+ * http://www.sourcemud.org
  */
 
 #include <iostream>
@@ -810,6 +810,6 @@ operator<< (const StreamControl& stream, const File::Node& node)
 
 SCRIPT_TYPE(RestrictedWriter)
 ScriptRestrictedWriter::ScriptRestrictedWriter (File::Writer* s_writer) :
-    Scriptix::Native(AweMUD_RestrictedWriterType),
+    Scriptix::Native(MUD_RestrictedWriterType),
     writer(s_writer)
 {}

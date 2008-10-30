@@ -1,8 +1,8 @@
 /*
- * AweMUD NG - Next Generation AwesomePlay MUD
- * Copyright (C) 2000-2005  AwesomePlay Productions, Inc.
+ * Source MUD
+ * Copyright (C) 2000-2005  Sean Middleditch
  * See the file COPYING for license details
- * http://www.awemud.net
+ * http://www.sourcemud.org
  */
 
 #include <unistd.h>
@@ -114,7 +114,7 @@ namespace {
 }
 
 SCRIPT_TYPE(Player);
-Player::Player (class Account* s_account, String s_id) : Creature (AweMUD_PlayerType), birthday()
+Player::Player (class Account* s_account, String s_id) : Creature (MUD_PlayerType), birthday()
 {
 	// initialize
 	account = s_account;

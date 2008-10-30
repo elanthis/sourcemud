@@ -1,15 +1,15 @@
 <?php
-	// AweMUD NG - Next Generation AwesomePlay MUD
-	// Copyright (C) 2000-2005  AwesomePlay Productions, Inc.
+	// Source MUD
+	// Copyright (C) 2000-2005  Sean Middleditch
 	// See the file COPYING for license details
-	// http://www.awemud.net
+	// http://www.sourcemud.org
 
-	// This module makes it easy to issue commands to AweMUD over the control
+	// This module makes it easy to issue commands to MUD over the control
 	// socket interface.
 
-	// AweMUD_Connect (path)
-	//  Connects to the AweMUD socket at the given path
-	function AweMUD_Connect($socket_path)
+	// MUD_Connect (path)
+	//  Connects to the MUD socket at the given path
+	function MUD_Connect($socket_path)
 	{
 		// Connect
 		$socket = socket_create(AF_UNIX, SOCK_STREAM, 0);
@@ -17,7 +17,7 @@
 		return $socket;
 	}
 
-	// AweMUD_Command (socket, command, args)
+	// MUD_Command (socket, command, args)
 	//  Issues the given command to the socket.  The args paramater is to be
 	//  an array of arguments to pass in, which are automatically escaped.
 	//  
@@ -26,7 +26,7 @@
 	//  errcode: a string representing the error code (OK means no //  error)
 	//  errmsg: a string giving more information about the error code
 	//  response: an array of lines of data returned by the command
-	function AweMUD_Command($socket, $command, $args) {
+	function MUD_Command($socket, $command, $args) {
 		// format output line
 		$line = str_replace('\n', '\\n', addslashes($command)); foreach($args as $arg)
 		$line .= ' "' . addslashes($arg) . '"';
@@ -53,9 +53,9 @@
 		return array('NETWORK', 'Connection lost', array());
 	}
 
-	// AweMUD_Close (socket)
+	// MUD_Close (socket)
 	//  Closes the connection to the control socket.
-	function AweMUD_Control($socket)
+	function MUD_Control($socket)
 	{
 		socket_close($socket);
 	}

@@ -1,3 +1,8 @@
+2008-10-30 08:28:14  Sean Middleditch <elanthis@awesomeplay.com>
+
+  * Renamed to Source MUD
+  * Reassigned copyright from AwesomePlay to Sean Middleditch
+
 2007-05-11 07:11:58  Sean Middleditch <elanthis@awesomeplay.com>
 
   * Zone no longer derives from Entity.

@@ -1,8 +1,8 @@
 /*
- * AweMUD NG - Next Generation AwesomePlay MUD
- * Copyright (C) 2000-2005  AwesomePlay Productions, Inc.
+ * Source MUD
+ * Copyright (C) 2000-2005  Sean Middleditch
  * See the file COPYING for license details
- * http://www.awemud.net
+ * http://www.sourcemud.org
  */
 
 #define TELCMDS
@@ -239,7 +239,7 @@ TextBuffer::release ()
 }
 
 SCRIPT_TYPE(Telnet);
-TelnetHandler::TelnetHandler (int s_sock, const SockStorage& s_netaddr) : Scriptix::Native (AweMUD_TelnetType), SocketConnection(s_sock)
+TelnetHandler::TelnetHandler (int s_sock, const SockStorage& s_netaddr) : Scriptix::Native (MUD_TelnetType), SocketConnection(s_sock)
 {
 	addr = s_netaddr;
 
@@ -369,7 +369,7 @@ TelnetHandler::toggle_echo (bool v)
 
 /* output a data of text -
  * deal with formatting new-lines and such, and also
- * escaping/removing/translating AweMUD commands
+ * escaping/removing/translating Source MUD commands
  */
 void
 TelnetHandler::stream_put (const char *text, size_t len) 
@@ -799,11 +799,11 @@ TelnetHandler::sock_input (char* buffer, size_t size)
 						// enable ZMP support
 						io_flags.zmp = true;
 						// send zmp.ident command
-						String argv[4] = {S("zmp.ident"), S("AweMUD"), S(PACKAGE_VERSION), S("Powerful C++ MUD server software") };
+						String argv[4] = {S("zmp.ident"), S("Source MUD"), S(PACKAGE_VERSION), S("Powerful C++ MUD server software") };
 						send_zmp(4, argv);
-						// check for net.awemud package
+						// check for net.sourcemud package
 						argv[0] = S("zmp.check");
-						argv[1] = S("net.awemud.");
+						argv[1] = S("net.sourcemud.");
 						send_zmp(2, argv);
 						// check for color.define command
 						argv[0] = S("zmp.check");
@@ -992,7 +992,7 @@ TelnetHandler::process_sb ()
 				// set xterm title
 				if (io_flags.xterm) {
 					send_data (3, '\033', ']', ';');
-					add_output ("AweMUD NG", 9);
+					add_output ("Source MUD NG", 9);
 					send_data (1, '\a');
 				}
 			}
@@ -1006,8 +1006,8 @@ TelnetHandler::process_sb ()
 					// value is windows?
 					if (sb_cnt >= 19 && data[13] == 1 && !memcmp(&data[14], "WIN32", 5)) {
 						// we're running windows telnet, most likely
-						*this << "\n---\n" CADMIN "Warning:" CNORMAL " AweMUD has detected that "
-							"you are using the standard Windows telnet program.  AweMUD will "
+						*this << "\n---\n" CADMIN "Warning:" CNORMAL " Source MUD has detected that "
+							"you are using the standard Windows telnet program.  Source MUD will "
 							"enable the slower server-side echoing.  You may disable this by "
 							"typing " CADMIN "!echo off" CNORMAL " at any time.\n---\n";
 						io_flags.force_echo = true;

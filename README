@@ -1,19 +1,19 @@
-AweMUD Next Generation
+Source MUD
 Copyright (C) 2002,2003  AwesomePlay Productions, Inc.
 Sean Middleditch <elanthis@awesomeplay.com>
-Basic AweMUD Information
+Basic Source MUD Information
 ------------------------------------------------------
 
 
 1. Introduction
    ============
-   AweMUD is a MUD (Multi-User Dungeon) game server.  Players connect to the
-   server using telnet, or a MUD client application, to play in a fantasy world
-   with other players.
+   Source MUD is a MUD (Multi-User Dungeon) game server.  Players connect to
+   the server using telnet, or a MUD client application, to play in a fantasy
+   world with other players.
 
-   AweMUD is a new codebase; it is not derived from any older codebases like
-   many other popular MUDs.  One consequence of this is that many terms and
-   systems found in most other MUDs are different in AweMUD.
+   Source MUD is a new codebase; it is not derived from any older codebases
+   like many other popular MUDs.  One consequence of this is that many terms
+   and systems found in most other MUDs are different in Source MUD.
 
    The Scriptix scripting language is used to extending and modifying the
    engine core features.
@@ -22,9 +22,9 @@ Basic AweMUD Information
 2. Documentation
    =============
    The files in the doc/ directory contain lots of useful information.  If you
-   received AweMUD in a pre-packaged form, there should be both plain text and
-   HTML versions of all the documents.  If those files are not present, and you
-   have tools for DocBook XML processing installed, the files will be built
+   received Source MUD in a pre-packaged form, there should be both plain text
+   and HTML versions of all the documents.  If those files are not present, and
+   you have tools for DocBook XML processing installed, the files will be built
    when you run 'make'.
 
    Please note that the coders tend to get out of sync with the document
@@ -35,37 +35,38 @@ Basic AweMUD Information
 3. Support
    =======
    If the documentation doesn't provide an answer, or just confused you more,
-   you can find support in several place.  The AweMUD website
-   (http://www.awemud.net) has both user forums and a bug tracking system.  The
-   website also has information on the AweMUD mailing lists.
+   you can find support in several place.  The Source MUD website
+   (http://www.sourcemud.org) has both user forums and a bug tracking system.
+   The website also has information on the Source MUD mailing lists.
 
 
 4. Upgrading
    =========
-   If you are upgrading from a previous AweMUD release, please keep these
+   If you are upgrading from a previous Source MUD release, please keep these
    points in mind:
 
    * Be warned that 'make install' will overwrite several key files in the
-     target directory, including awemud.conf, and all the files in data/*.  You
-     should back up your modified copies, or manually install the AweMUD files
-     you wish to upgrade.
-   * Read the ChangeLog and script documentation before running the new AweMUD
-     with your old scripts.  Pre-1.0 AweMUD releases are very likely to change
-     the API exposed the scripts.
+	 target directory, including sourcemud.conf, and all the files in data/*.
+	 You should back up your modified copies, or manually install the Source
+	 MUD files you wish to upgrade.
+   * Read the ChangeLog and script documentation before running the new Source
+   * MUD
+	 with your old scripts.  Pre-1.0 Source MUD releases are very likely to
+	 change the API exposed the scripts.
    * Data files may very likely need to be modified, converted, or flat out
-     rewritten.  While we try to stay compatible between pre-1.0 release, it
-     doesn't make sense to limit development of features for compatibility
-     reasons in alpha software.
+	 rewritten.  While we try to stay compatible between pre-1.0 release, it
+	 doesn't make sense to limit development of features for compatibility
+	 reasons in alpha software.
 
 
 5. Legal
    =====
-   AweMUD comes with no warranty.  If something bad happens to you because of
-   your use of AweMUD, we (the authors, distributors, builders, and testers)
-   are not responsible for your misfortune and/or mistakes.  See the disclaimer
-   section below.
+   Source MUD comes with no warranty.  If something bad happens to you because
+   of your use of Source MUD, we (the authors, distributors, builders, and
+   testers) are not responsible for your misfortune and/or mistakes.  See the
+   disclaimer section below.
 
-   AweMUD is licensed under the BSD license.  See the COPYING file for more
+   Source MUD is licensed under the BSD license.  See the COPYING file for more
    details.  As a summary, the BSD license gives you rights to do whatever you
    want with the code.  Note: you can NOT change the license of our code, or
    modify copyrights.  Our code is our code, and it is released under the BSD

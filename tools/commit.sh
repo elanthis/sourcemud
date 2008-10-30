@@ -13,17 +13,11 @@ CHANGELOG="yes"
 # update version
 VERSION="yes"
 
-# do push
-PUSH="yes"
-
 # remove data dir if asked
 while [ -n "$1" ] ; do
   case "$1" in
     -c)
       CHANGELOG="no"
-      ;;
-    -p)
-      PUSH="no"
       ;;
     -v)
       VERSION="no"
@@ -124,12 +118,10 @@ if [ "x$CHANGELOG" = "xyes" ] ; then
   fi
 fi
 
-if ! cg-commit < .commit.tmp  ; then
+if ! git commit -F .commit.tmp  ; then
   # failed - revert changes
   [ "x$CHANGELOG" = "xyes" ] && mv -f .ChangeLog~ ChangeLog
   exit 1
 fi
 
 mv -f .commit.log .commit.log~
-
-[ "x$PUSH" = "xyes" ] && cg-push

@@ -1,8 +1,8 @@
 /*
- * AweMUD NG - Next Generation AwesomePlay MUD
- * Copyright (C) 2000-2005  AwesomePlay Productions, Inc.
+ * Source MUD
+ * Copyright (C) 2000-2005  Sean Middleditch
  * See the file COPYING for license details
- * http://www.awemud.net
+ * http://www.sourcemud.org
  */
 
 #include <time.h>
@@ -141,7 +141,7 @@ Spawn::save (File::Writer& writer) const
 }
 
 SCRIPT_TYPE(Zone);
-Zone::Zone () : Scriptix::Native(AweMUD_ZoneType) {}
+Zone::Zone () : Scriptix::Native(MUD_ZoneType) {}
 
 Room*
 Zone::get_room (String id) const

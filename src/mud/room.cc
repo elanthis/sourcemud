@@ -1,8 +1,8 @@
 /*
- * AweMUD NG - Next Generation AwesomePlay MUD
- * Copyright (C) 2000-2005  AwesomePlay Productions, Inc.
+ * Source MUD
+ * Copyright (C) 2000-2005  Sean Middleditch
  * See the file COPYING for license details
- * http://www.awemud.net
+ * http://www.sourcemud.org
  */
 
 
@@ -37,7 +37,7 @@
 
 /* constructor */
 SCRIPT_TYPE(Room);
-Room::Room () : Entity (AweMUD_RoomType)
+Room::Room () : Entity (MUD_RoomType)
 {
 	/* clear de values */
 	zone = NULL;

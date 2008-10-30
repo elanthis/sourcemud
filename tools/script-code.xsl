@@ -98,7 +98,7 @@ SScriptBindings::shutdown()
 
     <!-- generate global static class type holders -->
     <xsl:for-each select="type">
-      const Scriptix::TypeInfo* AweMUD_<xsl:value-of select="name"/>Type = NULL;
+      const Scriptix::TypeInfo* MUD_<xsl:value-of select="name"/>Type = NULL;
       <xsl:if test="cppwrap">
         namespace {
           class Script<xsl:value-of select="name" /> : public Scriptix::Native
@@ -111,13 +111,13 @@ SScriptBindings::shutdown()
             <xsl:value-of select="name" /> (const Scriptix::TypeInfo* type) : Scriptix::Native(type), our_data() {}
             <xsl:value-of select="name" /> (const Scriptix::TypeInfo* type, const our_type&amp; s_data) : Scriptix::Native(type), our_data(s_data) {}
             -->
-            Script<xsl:value-of select="name" /> (const our_type&amp; s_data) : Scriptix::Native(AweMUD_<xsl:value-of select="name" />Type), our_data(s_data) {}
+            Script<xsl:value-of select="name" /> (const our_type&amp; s_data) : Scriptix::Native(MUD_<xsl:value-of select="name" />Type), our_data(s_data) {}
             Script<xsl:value-of select="name" />&amp; operator = (const our_type&amp; s_data) { our_data = s_data; return *this; }
             our_type&amp; data() { return our_data; }
             const our_type&amp; data () const { return our_data; }
             protected:
             bool equal (const Scriptix::Value&amp; other) const
-              { if (other.is_a(AweMUD_<xsl:value-of select="name" />Type)) return our_data == ((Script<xsl:value-of select="name" />*)other.get())->our_data;
+              { if (other.is_a(MUD_<xsl:value-of select="name" />Type)) return our_data == ((Script<xsl:value-of select="name" />*)other.get())->our_data;
               else return false; }
           };
         }
@@ -269,7 +269,7 @@ SScriptBindings::shutdown()
     Scriptix::Atom atom;
     Scriptix::TypeInfo* type;
     <xsl:for-each select="type[not(doconly)]">
-      AweMUD_<xsl:value-of select="name"/>Type = type = Scriptix::ScriptManager.add_type(new Scriptix::TypeInfo(Scriptix::Atom(S("<xsl:value-of select="name"/>")), <xsl:choose><xsl:when test="parent">AweMUD_<xsl:value-of select="parent"/>Type</xsl:when><xsl:otherwise>ScriptManager.get_struct_type()</xsl:otherwise></xsl:choose>));
+      MUD_<xsl:value-of select="name"/>Type = type = Scriptix::ScriptManager.add_type(new Scriptix::TypeInfo(Scriptix::Atom(S("<xsl:value-of select="name"/>")), <xsl:choose><xsl:when test="parent">MUD_<xsl:value-of select="parent"/>Type</xsl:when><xsl:otherwise>ScriptManager.get_struct_type()</xsl:otherwise></xsl:choose>));
       <xsl:for-each select="method[not(code) or string-length(code)!=0]">
         atom = Scriptix::Atom(S("<xsl:value-of select="name"/>"));
         type->add_method(atom, new Function(atom, <xsl:value-of select="count(arg)" />, _inter_method_<xsl:value-of select="../name"/>_<xsl:value-of select="name"/>));
@@ -363,7 +363,7 @@ SScriptBindings::shutdown()
           _arg_<xsl:value-of select="name"/> = _argv[<xsl:value-of select="position()-1"/> + <xsl:value-of select="$arg-offset" />].get();
         </xsl:when>
         <xsl:otherwise>
-          if (!_argv[<xsl:value-of select="position()-1"/> + <xsl:value-of select="$arg-offset" />].is_a(AweMUD_<xsl:value-of select="type"/>Type)) {
+          if (!_argv[<xsl:value-of select="position()-1"/> + <xsl:value-of select="$arg-offset" />].is_a(MUD_<xsl:value-of select="type"/>Type)) {
             Scriptix::ScriptManager.raise_error(Scriptix::SXE_BADTYPE, "Argument '<xsl:value-of select="name"/>' is not a <xsl:value-of select="type"/>");
             return Scriptix::Nil;
           }

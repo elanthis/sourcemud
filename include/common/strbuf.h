@@ -1,12 +1,12 @@
 /*
- * AweMUD NG - Next Generation AwesomePlay MUD
- * Copyright (C) 2000-2005  AwesomePlay Productions, Inc.
+ * Source MUD
+ * Copyright (C) 2000-2005  Sean Middleditch
  * See the file COPYING for license details
- * http://www.awemud.net
+ * http://www.sourcemud.org
  */
 
-#ifndef AWEMUD_COMMON_STRBUF_H
-#define AWEMUD_COMMON_STRBUF_H
+#ifndef SOURCEMUD_COMMON_STRBUF_H
+#define SOURCEMUD_COMMON_STRBUF_H
 
 #include "common/string.h"
 #include "common/streams.h"

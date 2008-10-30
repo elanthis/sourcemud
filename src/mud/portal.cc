@@ -1,8 +1,8 @@
 /*
- * AweMUD NG - Next Generation AwesomePlay MUD
- * Copyright (C) 2000-2005  AwesomePlay Productions, Inc.
+ * Source MUD
+ * Copyright (C) 2000-2005  Sean Middleditch
  * See the file COPYING for license details
- * http://www.awemud.net
+ * http://www.sourcemud.org
  */
 
 #include <stdlib.h>
@@ -246,7 +246,7 @@ PortalDetail::lookup (String name)
 }
 
 SCRIPT_TYPE(Portal);
-Portal::Portal() : Entity(AweMUD_PortalType), name(),
+Portal::Portal() : Entity(MUD_PortalType), name(),
 	target(), dir(), usage(), detail(), parent_room(NULL),
 	flags()
 {}

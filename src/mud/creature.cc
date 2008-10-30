@@ -1,8 +1,8 @@
 /*
- * AweMUD NG - Next Generation AwesomePlay MUD
- * Copyright (C) 2000-2005  AwesomePlay Productions, Inc.
+ * Source MUD
+ * Copyright (C) 2000-2005  Sean Middleditch
  * See the file COPYING for license details
- * http://www.awemud.net
+ * http://www.sourcemud.org
  */
 
 #include <stdlib.h>
@@ -526,7 +526,7 @@ Creature::heartbeat (void)
 	}
 
 	// healing
-	if (!is_dead() && (AweMUD::get_rounds() % (50 - get_effective_stat(CreatureStatID::FORTITUDE) / 5)) == 0) {
+	if (!is_dead() && (MUD::get_rounds() % (50 - get_effective_stat(CreatureStatID::FORTITUDE) / 5)) == 0) {
 		heal(1);
 	}
 

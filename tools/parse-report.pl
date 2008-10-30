@@ -1,8 +1,8 @@
 #!/usr/bin/env perl
-# AweMUD NG - Next Generation AwesomePlay MUD
-# Copyright (C) 2000-2004  AwesomePlay Productions, Inc.
+# Source MUD
+# Copyright (C) 2000-2004  Sean Middleditch
 # See the file COPYING for license details
-# http://www.awemud.net
+# http://www.sourcemud.org
 #
 # Set this up to receive email for ingame sent bug reports,
 # abuse reports, and so on.  Them modify the end to use the

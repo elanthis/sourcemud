@@ -1,4 +1,4 @@
-AweMUD Next Generation
+Source MUD
 Copyright (C) 2003-2005 AwesomePlay Productions, Inc.
 Sean Middleditch <elanthis@awesomeplay.com>
 Frequently Asked Questions
@@ -8,18 +8,18 @@ Frequently Asked Questions
    ===================================
 
    Please report any bugs to the Bugs Forum, which can be found at
-   http://forums.awemud.net.
+   http://forums.sourcemud.org.
 
-2. What are the software does AweMUD require?
+2. What are the software does Source MUD require?
    ==========================================
 
-   In order to build AweMUD, you need very little external software.  Your
+   In order to build Source MUD, you need very little external software.  Your
    standard build tools (compiler, make tool, UNIX shell tools, etc.) are a
    necessity.  Specifically, you need a GNU Make compatible make program, and
    the GCC C++ compiler (version 3.3 or higher), with an up-to-date STL
    implementation.
 
-   The only external library required by AweMUD is the Boehm GC.  When
+   The only external library required by Source MUD is the Boehm GC.  When
    compiling and installing the Boehm GC, be sure to pass the
    --enable-cplusplus option to the ./configure script.
 
@@ -29,10 +29,10 @@ Frequently Asked Questions
    In order to build the documentation, you will need a properly installed
    xmlto with a full set of DocBook XML stylesheets.
 
-   If you want to work on AweMUD as a coder, you'll likely also need the GNU
-   autotools, specifically automake and autoconf.  You'll also need xsltproc
-   for building the scripting interface.  Finally, you'll need GNU Bison and
-   Flex.
+   If you want to work on Source MUD as a coder, you'll likely also need the
+   GNU autotools, specifically automake and autoconf.  You'll also need
+   xsltproc for building the scripting interface.  Finally, you'll need GNU
+   Bison and Flex.
 
    Package Websites:
    GNU Autoconf... http://www.gnu.org/software/autoconf/
@@ -47,19 +47,19 @@ Frequently Asked Questions
    operating systems.  For the Boehm GC, make sure you have the development
    packages installed in addition to the core library package.
 
-3. How come AweMUD doesn't work after 'make install'?
+3. How come Source MUD doesn't work after 'make install'?
    ==================================================
 
-   Make sure that the settings in the installed awemud.conf file are
+   Make sure that the settings in the installed sourcemud.conf file are
    correct for your system.
 
 4. How can I help?
    ===============
 
-   AweMUD is in a constant state of development, and could its developers
+   Source MUD is in a constant state of development, and could its developers
    could use assistance in many areas.  Coders, testers, and documentation
-   writers are all welcome to join the AweMUD project.
+   writers are all welcome to join the Source MUD project.
 
-   Feel free to ask for guidance or suggestions on the AweMUD forums at
-   http://forums.awemud.net or on the AweMUD development mailing list at
-   http://groups.google.com/group/awemud-devel.
+   Feel free to ask for guidance or suggestions on the Source MUD forums at
+   http://forums.sourcemud.org or on the Source MUD development mailing list at
+   http://groups.google.com/group/sourcemud-devel.

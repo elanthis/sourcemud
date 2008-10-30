@@ -30,7 +30,7 @@
   </macro>
   <macro name="uptime">
     <code><![CDATA[
-      stream << AweMUD::get_uptime();
+      stream << MUD::get_uptime();
     ]]></code>
   </macro>
   <macro name="player-count">

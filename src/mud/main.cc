@@ -1,8 +1,8 @@
 /*
- * AweMUD NG - Next Generation AwesomePlay MUD
- * Copyright (C) 2000-2005  AwesomePlay Productions, Inc.
+ * Source MUD
+ * Copyright (C) 2000-2005  Sean Middleditch
  * See the file COPYING for license details
- * http://www.awemud.net
+ * http://www.sourcemud.org
  */
 
 #include <stdlib.h>
@@ -130,7 +130,7 @@ namespace {
 		if (fcntl(fd, F_SETLK, &lockinfo) < 0) {
 			// fatal error
 			Log::Error << "Failed to lock PID file '" << path << "': " << strerror(errno);
-			Log::Error << "AweMUD appears to already be running.";
+			Log::Error << "Source MUD appears to already be running.";
 			return -1;
 		}
 
@@ -258,9 +258,9 @@ namespace {
 		// banner
 		telnet->clear_scr();
 		*telnet <<
-			"\n ----===[ AweMUD V" PACKAGE_VERSION " ]===----\n\n"
-			"AweMUD Copyright (C) 2000-2005  AwesomePlay Productions, Inc.\n"
-			"Visit http://www.awemud.net for more details.\n";
+			"\n ----===[ Source MUD V" PACKAGE_VERSION " ]===----\n\n"
+			"Source MUD Copyright (C) 2000-2005  Sean Middleditch\n"
+			"Visit http://www.sourcemud.org for more details.\n";
 
 		// connect message
 		*telnet << StreamMacro(MessageManager.get(S("connect")));
@@ -325,26 +325,26 @@ namespace {
 }
 
 void
-AweMUD::shutdown ()
+MUD::shutdown ()
 {
 	Log::Info << "Shutting down server";
 	running = false;
 }
 
 ulong
-AweMUD::get_ticks ()
+MUD::get_ticks ()
 {
 	return game_ticks;
 }
 
 ulong
-AweMUD::get_rounds ()
+MUD::get_rounds ()
 {
 	return TICKS_TO_ROUNDS(game_ticks);
 }
 
 String
-AweMUD::get_uptime ()
+MUD::get_uptime ()
 {
 	StringBuffer uptime;
 	uint secs = (::time (NULL) - start_time); 
@@ -383,9 +383,9 @@ int
 main (int argc, char **argv)
 {
 	// print out information
-	printf("AweMUD server V" PACKAGE_VERSION "\n"
-		"Copyright (C) 2000-2005, AwesomePlay Productions, Inc.\n"
-		"AweMUD comes with ABSOLUTELY NO WARRANTY; see COPYING for details.\n"
+	printf("Source MUD server V" PACKAGE_VERSION "\n"
+		"Copyright (C) 2000-2005, Sean Middleditch\n"
+		"Source MUD comes with ABSOLUTELY NO WARRANTY; see COPYING for details.\n"
 		"This is free software, and you are welcome to redistribute it\n"
 		"under certain conditions; for details, see the file COPYING.\n");
 
@@ -707,7 +707,7 @@ main (int argc, char **argv)
 		if (signaled_shutdown == true) {
 			signaled_shutdown = false;
 			Log::Info << "Server received a terminating signal";
-			AweMUD::shutdown();
+			MUD::shutdown();
 		}
 
 		// force run of GC

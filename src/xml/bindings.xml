@@ -43,7 +43,7 @@
   <!-- Global constants - SYSTEM STUFF -->
   <global-group>
     <name>System Values</name>
-    <doc>Various internal system values.  These are used in all parts of AweMUD.</doc>
+    <doc>Various internal system values.  These are used in all parts of Source MUD.</doc>
 
     <global>
       <name>TICKS_PER_ROUND</name>
@@ -418,7 +418,7 @@ number = roll_dice(3, 6);]]></example>
       <doc>The number of ticks passed since the server started.</doc>
     </return>
     <code><![CDATA[
-      _return = AweMUD::get_ticks();
+      _return = MUD::get_ticks();
     ]]></code>
     <doc>This function returns the current tick count of the server.</doc>
   </function>
@@ -529,7 +529,7 @@ number = roll_dice(3, 6);]]></example>
       String name;
       for (size_t i = 1; i < _argc; i += 2) {
         name = _argv[1].get_string();
-        if (_argv[i + 1].is_a(AweMUD_EntityType)) {
+        if (_argv[i + 1].is_a(MUD_EntityType)) {
           vlist[name] = ((Entity*)_argv[i + 1].get());
         } else {
           _argv[i + 1] = _argv[i + 1].to_string();
@@ -592,7 +592,7 @@ number = roll_dice(3, 6);]]></example>
           buffer << Scriptix::Number::to_int(val);
         } else if (val.is_string()) {
           buffer << val.get_string();
-        } else if (val.is_a(AweMUD_EntityType)) {
+        } else if (val.is_a(MUD_EntityType)) {
           Entity* entity = (Entity*)val.get();
           buffer << entity;
         } else {
@@ -617,7 +617,7 @@ number = roll_dice(3, 6);]]></example>
           buffer << Scriptix::Number::to_int(val);
         } else if (val.is_string()) {
           buffer << val.get_string();
-        } else if (val.is_a(AweMUD_EntityType)) {
+        } else if (val.is_a(MUD_EntityType)) {
           Entity* entity = (Entity*)val.get();
           buffer << entity;
         }
@@ -640,7 +640,7 @@ number = roll_dice(3, 6);]]></example>
           buffer << Scriptix::Number::to_int(val);
         } else if (val.is_string()) {
           buffer << val.get_string();
-        } else if (val.is_a(AweMUD_EntityType)) {
+        } else if (val.is_a(MUD_EntityType)) {
           Entity* entity = (Entity*)val.get();
           buffer << entity;
         }
@@ -810,7 +810,7 @@ number = roll_dice(3, 6);]]></example>
   <!-- Entity base class -->
   <type>
     <name>Entity</name>
-    <doc>Base class for all entities in AweMUD.</doc>
+    <doc>Base class for all entities in Source MUD.</doc>
 
     <!-- Basics -->
     <method>
@@ -1291,7 +1291,7 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
             *_self << Scriptix::Number::to_int(val);
           } else if (val.is_string()) {
             *_self << val.get_string();
-          } else if (val.is_a(AweMUD_EntityType)) {
+          } else if (val.is_a(MUD_EntityType)) {
             Entity* entity = (Entity*)val.get();
             *_self << StreamName(entity);
           }
@@ -1316,7 +1316,7 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
         String name;
         for (size_t i = 2; i < _argc; i += 2) {
           name = _argv[1].get_string();
-          if (_argv[i + 1].is_a(AweMUD_EntityType)) {
+          if (_argv[i + 1].is_a(MUD_EntityType)) {
             vlist[name] = ((Entity*)_argv[i + 1].get());
           } else {
             _argv[i + 1] = _argv[i + 1].to_string();
@@ -1343,7 +1343,7 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
               stream << Scriptix::Number::to_int(val);
             } else if (val.is_string()) {
               stream << val.get_string();
-            } else if (val.is_a(AweMUD_EntityType)) {
+            } else if (val.is_a(MUD_EntityType)) {
               Entity* entity = (Entity*)val.get();
               stream << StreamName(entity);
             }
@@ -1367,7 +1367,7 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
 
           for (size_t i = 0; i < _arg_ignore->get_count(); ++i) {
             Scriptix::Value val = _arg_ignore->get_index(i);
-            if (!val.is_a(AweMUD_CreatureType)) {
+            if (!val.is_a(MUD_CreatureType)) {
               Scriptix::ScriptManager.raise_error(Scriptix::SXE_BADARGS, "Value in ignore list to Creature.riprint() is not a Creature");
               return Scriptix::Nil;
             }
@@ -1380,7 +1380,7 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
               stream << Scriptix::Number::to_int(val);
             } else if (val.is_int()) {
               stream << val.get_string();
-            } else if (val.is_a(AweMUD_EntityType)) {
+            } else if (val.is_a(MUD_EntityType)) {
               Entity* entity = (Entity*)val.get();
               stream << StreamName(entity);
             }
@@ -2372,7 +2372,7 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
             stream << Scriptix::Number::to_int(val);
           } else if (val.is_int()) {
             stream << val.get_string();
-          } else if (val.is_a(AweMUD_EntityType)) {
+          } else if (val.is_a(MUD_EntityType)) {
             Entity* entity = (Entity*)val.get();
             stream << StreamName(entity);
           }
@@ -2397,7 +2397,7 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
         String name;
         for (size_t i = 2; i < _argc; i += 2) {
           name = _argv[1].get_string();
-          if (_argv[i + 1].is_a(AweMUD_EntityType)) {
+          if (_argv[i + 1].is_a(MUD_EntityType)) {
             vlist[name] = ((Entity*)_argv[i + 1].get());
           } else {
             _argv[i + 1] = _argv[i + 1].to_string();
@@ -3040,7 +3040,7 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
   <type>
     <name>HTTP</name>
     <cppname>HTTPHandler</cppname>
-    <doc>The HTTP object represents an HTTP connection.  This are one-off requests, which are used to script the AweMUD Portal interface.</doc>
+    <doc>The HTTP object represents an HTTP connection.  This are one-off requests, which are used to script the Source MUD Portal interface.</doc>
 
     <!-- Display the page header/footer -->
     <method>
@@ -3212,7 +3212,7 @@ player.print("Your ", entity.get_namef(EN_NONE, false), " decays in your hand!\n
           vlist[S("account")] = _self->get_session()->get_account();
         for (size_t i = 2; i < _argc; i += 2) {
           name = _argv[1].get_string();
-          if (_argv[i + 1].is_a(AweMUD_EntityType)) {
+          if (_argv[i + 1].is_a(MUD_EntityType)) {
             vlist[name] = ((Entity*)_argv[i + 1].get());
           } else {
             _argv[i + 1] = _argv[i + 1].to_string();

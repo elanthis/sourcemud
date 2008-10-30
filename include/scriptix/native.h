@@ -1,7 +1,7 @@
 
 /*
  * Scriptix - Lite-weight scripting interface
- * Copyright (c) 2002, 2003, 2004, 2005  AwesomePlay Productions, Inc.
+ * Copyright (c) 2002, 2003, 2004, 2005  Sean Middleditch
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -48,6 +48,6 @@ class Native : public Scriptix::Struct
 
 } // namespace Scriptix
 
-#define SCRIPT_TYPE(name) extern Scriptix::TypeInfo* AweMUD_ ## name ## Type;
+#define SCRIPT_TYPE(name) extern Scriptix::TypeInfo* MUD_ ## name ## Type;
 
 #endif

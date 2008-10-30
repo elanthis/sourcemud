@@ -213,9 +213,9 @@ TOOLS = \
 	tools/skills-header.xsl \
 	tools/skills-help.xsl
 
-BINARIES = awemud-bin
+BINARIES = sourcemud-bin
 BUILD = Makefile configure
-DIST = configure configure.ac Makefile.in install-sh awemud.in include/config.h.in src/scriptix/grammar.yy src/scriptix/lexer.ll
+DIST = configure configure.ac Makefile.in install-sh sourcemud.in include/config.h.in src/scriptix/grammar.yy src/scriptix/lexer.ll
 
 OBJECTS = $(SOURCES:%.cc=.build/%.o)
 
@@ -236,7 +236,7 @@ clean:
 -include .deps/*
 
 # BINARIES
-awemud-bin: $(OBJECTS)
+sourcemud-bin: $(OBJECTS)
 	@echo Linking $@
 	@$(CXX) -o $@ $^ $(LFLAGS)
 
@@ -247,57 +247,59 @@ src/generated/commands.cc: tools/parse-commands.pl $(wildcard src/cmd/*.cc)
 
 include/generated/bindings.h: tools/script-header.xsl src/xml/bindings.xml
 	@echo Generating $@
-	@mkdir -p include/generated
+	@-mkdir -p include/generated
 	@$(XSLTPROC) tools/script-header.xsl src/xml/bindings.xml > $@ 
 
 src/generated/bindings.cc: tools/script-code.xsl src/xml/bindings.xml
 	@echo Generating $@
-	@mkdir -p include/generated
+	@-mkdir -p include/generated
 	@$(XSLTPROC) tools/script-code.xsl src/xml/bindings.xml > $@ 
 
 include/generated/skills.h: tools/skills-header.xsl src/xml/skills.xml
 	@echo Generating $@
-	@mkdir -p include/generated
+	@-mkdir -p include/generated
 	@$(XSLTPROC) tools/skills-header.xsl src/xml/skills.xml > $@ 
 
 src/generated/skills.cc: tools/skills-code.xsl src/xml/skills.xml
 	@echo Generating $@
-	@mkdir -p include/generated
+	@-mkdir -p include/generated
 	@$(XSLTPROC) tools/skills-code.xsl src/xml/skills.xml > $@ 
 
 include/generated/hooks.h: tools/hooks-header.xsl src/xml/hooks.xml
 	@echo Generating $@
-	@mkdir -p include/generated
+	@-mkdir -p include/generated
 	@$(XSLTPROC) tools/hooks-header.xsl src/xml/hooks.xml > $@ 
 
 src/generated/hooks.cc: tools/hooks-code.xsl src/xml/hooks.xml
 	@echo Generating $@
-	@mkdir -p include/generated
+	@-mkdir -p include/generated
 	@$(XSLTPROC) tools/hooks-code.xsl src/xml/hooks.xml > $@ 
 
 include/generated/events.h: tools/events-header.xsl src/xml/events.xml
 	@echo Generating $@
-	@mkdir -p include/generated
+	@-mkdir -p include/generated
 	@$(XSLTPROC) tools/events-header.xsl src/xml/events.xml > $@ 
 
 src/generated/events.cc: tools/events-code.xsl src/xml/events.xml
 	@echo Generating $@
-	@mkdir -p include/generated
+	@-mkdir -p include/generated
 	@$(XSLTPROC) tools/events-code.xsl src/xml/events.xml > $@ 
 
 src/generated/macros.cc: tools/macros-code.xsl src/xml/macros.xml
 	@echo Generating $@
-	@mkdir -p include/generated
+	@-mkdir -p include/generated
 	@$(XSLTPROC) tools/macros-code.xsl src/xml/macros.xml > $@ 
 
 src/generated/grammar.cc include/generated/grammar.h: src/scriptix/grammar.yy
 	@echo Generating $@
+	@-mkdir -p src/generated
 	@$(BISON) -y -d -o src/generated/grammar.cc src/scriptix/grammar.yy
 	@-[ -f src/generated/grammar.cc.h ] && mv -f src/generated/grammar.cc.h include/generated/grammar.h
 	@-[ -f src/generated/grammar.hh ] && mv -f src/generated/grammar.hh include/generated/grammar.h
 
 src/generated/lexer.cc: src/scriptix/lexer.ll include/generated/grammar.h
 	@echo Generating $@
+	@-mkdir -p src/generated
 	@$(FLEX) -osrc/generated/lexer.cc src/scriptix/lexer.ll
 
 # BUILD FILES

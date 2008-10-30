@@ -1,8 +1,8 @@
 /*
- * AweMUD NG - Next Generation AwesomePlay MUD
- * Copyright (C) 2000-2005  AwesomePlay Productions, Inc.
+ * Source MUD
+ * Copyright (C) 2000-2005  Sean Middleditch
  * See the file COPYING for license details
- * http://www.awemud.net
+ * http://www.sourcemud.org
  */
 
 #include <stdlib.h>
@@ -36,7 +36,7 @@ String ObjectLocation::names[] = {
 // ----- ObjectBP -----
 
 SCRIPT_TYPE(ObjectBP);
-ObjectBP::ObjectBP () : Scriptix::Native(AweMUD_ObjectBPType)
+ObjectBP::ObjectBP () : Scriptix::Native(MUD_ObjectBPType)
 {
 	weight = 0;
 	cost = 0;
@@ -181,7 +181,7 @@ ObjectBP::load (File::Reader& reader)
 // ----- Object -----
 
 SCRIPT_TYPE(Object);
-Object::Object () : Entity (AweMUD_ObjectType)
+Object::Object () : Entity (MUD_ObjectType)
 {
 	owner = NULL;
 	calc_weight = 0;

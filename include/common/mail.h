@@ -1,12 +1,12 @@
 /*
- * AweMUD NG - Next Generation AwesomePlay MUD
- * Copyright (C) 2000-2005  AwesomePlay Productions, Inc.
+ * Source MUD
+ * Copyright (C) 2000-2005  Sean Middleditch
  * See the file COPYING for license details
- * http://www.awemud.net
+ * http://www.sourcemud.org
  */
 
-#ifndef __AWEMUD_MAIL_H__
-#define __AWEMUD_MAIL_H__
+#ifndef __SOURCEMUD_MAIL_H__
+#define __SOURCEMUD_MAIL_H__
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"

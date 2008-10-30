@@ -1,42 +1,42 @@
-## -- awemud.conf --
+## -- sourcemud.conf --
 ## Configuration file for AweMUD
 ## @VERSION@
 
 ## Log file.
-log_file = @DATADIR@/log/awemud.log
+log_file = @DATADIR@/log/sourcemud.log
 
 ## PID file
-pid_file = @DATADIR@/run/awemud.pid
+pid_file = @DATADIR@/run/sourcemud.pid
 
 ## Directory holding player files.
-player_dir = @DATADIR@/lib/awemud/players/
+player_dir = @DATADIR@/lib/sourcemud/players/
 
 ## Directory holding account files.
-account_dir = @DATADIR@/lib/awemud/accounts/
+account_dir = @DATADIR@/lib/sourcemud/accounts/
 
 ## Directory holding zones.
-zone_dir = @DATADIR@/lib/awemud/world/
+zone_dir = @DATADIR@/lib/sourcemud/world/
 
 ## Directory holding world state.
-world_dir = @DATADIR@/lib/awemud/world/
+world_dir = @DATADIR@/lib/sourcemud/world/
 
 ## Directory holding scripts.
-script_dir = @DATADIR@/lib/awemud/scripts/
+script_dir = @DATADIR@/lib/sourcemud/scripts/
 
 ## Directory holding AI definitions.
-ai_dir = @DATADIR@/lib/awemud/scripts/
+ai_dir = @DATADIR@/lib/sourcemud/scripts/
 
 ## Directory holding blueprints.
-blueprint_dir = @DATADIR@/lib/awemud/blueprints/
+blueprint_dir = @DATADIR@/lib/sourcemud/blueprints/
 
 ## Directory holding help files.
-help_dir = @DATADIR@/lib/awemud/help/
+help_dir = @DATADIR@/lib/sourcemud/help/
 
 ## Directory holding misc. data.
-misc_dir = @DATADIR@/lib/awemud/data/
+misc_dir = @DATADIR@/lib/sourcemud/data/
 
 ## Directory holding HTML .tpl files.
-html_dir = @DATADIR@/lib/awemud/data/html/
+html_dir = @DATADIR@/lib/sourcemud/data/html/
 
 ## Port to listen on for both IPv4 and IPv6 clients.
 #port = 4545
@@ -57,7 +57,7 @@ html_dir = @DATADIR@/lib/awemud/data/html/
 #ipv6 = true
 
 ## List of denies hosts and networks.
-#denied_hosts_file = @DATADIR@/etc/awemud/hosts.deny
+#denied_hosts_file = @DATADIR@/etc/sourcemud/hosts.deny
 
 ## The host name of the server.
 hostname = @HOSTNAME@
@@ -84,10 +84,10 @@ hostname = @HOSTNAME@
 #daemon = false
 
 ## Lock server into a directory, increasing security.
-#chroot = /home/awemud/jail
+#chroot = /home/sourcemud/jail
 
 ## Always run as the given user.  (Server must be started as root.)
-#user = awemud
+#user = sourcemud
 
 ## Always run as the given group.  (Server must be started as root.)
 #group = daemon
@@ -96,13 +96,13 @@ hostname = @HOSTNAME@
 sendmail = @SENDMAIL@
 
 ## Address to send admin notifications to.
-#admin_mail = awemud-admin@@HOSTNAME@
+#admin_mail = sourcemud-admin@@HOSTNAME@
 
 ## Address to send bug reports to.
-#bug_mail = awemud-bugs@@HOSTNAME@
+#bug_mail = sourcemud-bugs@@HOSTNAME@
 
 ## Address to send player abuse reports to.
-#abuse_mail = awemud-abuse@@HOSTNAME@
+#abuse_mail = sourcemud-abuse@@HOSTNAME@
 
 ## Address to send typo reports to.
-#typo_mail = awemud-typo@@HOSTNAME@
+#typo_mail = sourcemud-typo@@HOSTNAME@

@@ -1,8 +1,8 @@
 /*
- * AweMUD NG - Next Generation AwesomePlay MUD
- * Copyright (C) 2000-2005  AwesomePlay Productions, Inc.
+ * Source MUD
+ * Copyright (C) 2000-2005  Sean Middleditch
  * See the file COPYING for license details
- * http://www.awemud.net
+ * http://www.sourcemud.org
  */
 
 #include "common/string.h"
@@ -28,5 +28,5 @@ void command_admin_shutdown (Player* admin, String[]) {
 	*admin << CADMIN "Shutdown issued." CNORMAL "\n";
 	Log::Admin << "Shutdown issued by " << admin->get_account()->get_id();
 	ZoneManager.announce (S("Shutting down, NOW!"));
-	AweMUD::shutdown();
+	MUD::shutdown();
 }

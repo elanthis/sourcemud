@@ -1,8 +1,8 @@
 /*
- * AweMUD NG - Next Generation AwesomePlay MUD
- * Copyright (C) 2000-2005  AwesomePlay Productions, Inc.
+ * Source MUD
+ * Copyright (C) 2000-2005  Sean Middleditch
  * See the file COPYING for license details
- * http://www.awemud.net
+ * http://www.sourcemud.org
  */
 
 #include <unistd.h>
@@ -137,7 +137,7 @@ NpcBP::refresh (void)
 // ----- NpcBP -----
 
 SCRIPT_TYPE(NPCBlueprint);
-NpcBP::NpcBP (void) : Scriptix::Native(AweMUD_NPCBlueprintType), parent(NULL) {}
+NpcBP::NpcBP (void) : Scriptix::Native(MUD_NPCBlueprintType), parent(NULL) {}
 
 void
 NpcBP::set_parent (NpcBP* blueprint)
@@ -242,12 +242,12 @@ NpcBP::get_undefined_property (Scriptix::Atom id) const
 // ----- Npc -----
 
 SCRIPT_TYPE(NPC);
-Npc::Npc (void) : Creature (AweMUD_NPCType)
+Npc::Npc (void) : Creature (MUD_NPCType)
 {
 	initialize();
 }
 
-Npc::Npc (NpcBP* s_blueprint) : Creature (AweMUD_NPCType)
+Npc::Npc (NpcBP* s_blueprint) : Creature (MUD_NPCType)
 {
 	initialize();
 	blueprint = NULL;

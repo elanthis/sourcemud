@@ -1,6 +1,6 @@
 /*
  * Scriptix - Lite-weight scripting interface
- * Copyright (c) 2002, AwesomePlay Productions, Inc.
+ * Copyright (c) 2002, Sean Middleditch
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without

@@ -1,10 +1,10 @@
 /*
  * ZMP Example Implementation Library
- * *Heavily* modified for AweMUD usage
- * http://www.awemud.net/zmp/
+ * *Heavily* modified for Source MUD usage
+ * http://www.sourcemud.org/zmp/
  */
  
-/* Copyright (C) 2004  AwesomePlay Productions, Inc.
+/* Copyright (C) 2004  Sean Middleditch
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without

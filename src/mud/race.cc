@@ -1,8 +1,8 @@
 /*
- * AweMUD NG - Next Generation AwesomePlay MUD
- * Copyright (C) 2000-2005  AwesomePlay Productions, Inc.
+ * Source MUD
+ * Copyright (C) 2000-2005  Sean Middleditch
  * See the file COPYING for license details
- * http://www.awemud.net
+ * http://www.sourcemud.org
  */
 
 #include "common/rand.h"
@@ -19,7 +19,7 @@ SRaceManager RaceManager;
 
 SCRIPT_TYPE(PlayerRace);
 Race::Race (String s_name, Race *s_next) :
-	Scriptix::Native(AweMUD_PlayerRaceType),
+	Scriptix::Native(MUD_PlayerRaceType),
 	name(s_name.c_str()),
 	next(s_next) {}
 
@@ -28,7 +28,7 @@ Race::load (File::Reader& reader)
 {
 	// clear and/or defaults
 	adj.clear();
-	about = S("AweMUD player race.");
+	about = S("Source MUD player race.");
 	desc.clear();
 	age_min = 0;
 	age_max = 0;

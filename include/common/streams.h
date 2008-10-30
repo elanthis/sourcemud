@@ -1,12 +1,12 @@
 /*
- * AweMUD NG - Next Generation AwesomePlay MUD
- * Copyright (C) 2000-2005  AwesomePlay Productions, Inc.
+ * Source MUD
+ * Copyright (C) 2000-2005  Sean Middleditch
  * See the file COPYING for license details
- * http://www.awemud.net
+ * http://www.sourcemud.org
  */
 
-#ifndef AWEMUD_STREAMS_H
-#define AWEMUD_STREAMS_H
+#ifndef SOURCEMUD_STREAMS_H
+#define SOURCEMUD_STREAMS_H
 
 #include "common/gcbase.h"
 #include "common/string.h"
@@ -26,7 +26,7 @@ class IStreamSink : public GC {
 	inline virtual void stream_end () {}
 };
 
-// base awemud stream type
+// base stream type
 class
 StreamControl {
 	public:
@@ -145,4 +145,4 @@ const StreamControl& operator << (const StreamControl& stream, const char ch)
 	return stream.stream_put(buf, 1);
 }
 
-#endif // AWEMUD_STREAMS
+#endif // SOURCEMUD_STREAMS

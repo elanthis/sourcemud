@@ -1,8 +1,8 @@
 /*
- * AweMUD NG - Next Generation AwesomePlay MUD
- * Copyright (C) 2000-2005  AwesomePlay Productions, Inc.
+ * Source MUD
+ * Copyright (C) 2000-2005  Sean Middleditch
  * See the file COPYING for license details
- * http://www.awemud.net
+ * http://www.sourcemud.org
  */
 
 #include <stdio.h>
@@ -40,7 +40,7 @@ namespace {
 
 	SettingInfo settings[] = {
 		SETTING_STRING(log_file, 'l', "log", "log_file", "")
-		SETTING_STRING(pid_file, 'p', "pid", "pid_file", "awemud.pid")
+		SETTING_STRING(pid_file, 'p', "pid", "pid_file", "sourcemud.pid")
 		SETTING_STRING(deny_file, 0, "deny", "denied_hosts_file", "")
 		SETTING_STRING(account_path, 0, NULL, "account_dir", "data")
 		SETTING_STRING(blueprint_path, 0, NULL, "blueprint_dir", "data/blueprints")
@@ -52,10 +52,10 @@ namespace {
 		SETTING_STRING(world_path, 0, NULL, "world_dir", "data")
 		SETTING_STRING(misc_path, 0, NULL, "misc_dir", "data")
 		SETTING_STRING(html_path, 0, NULL, "html_dir", "data/html")
-		SETTING_STRING(db_path, 'D', "db", "db", "data/awemud.db")
-		SETTING_STRING(abuse_email, 0, NULL, "abuse_mail", "awemud@localhost")
-		SETTING_STRING(bugs_email, 0, NULL, "bug_mail", "awemud@localhost")
-		SETTING_STRING(admin_email, 0, NULL, "admin_mail", "awemud@localhost")
+		SETTING_STRING(db_path, 'D', "db", "db", "data/sourcemud.db")
+		SETTING_STRING(abuse_email, 0, NULL, "abuse_mail", "sourcemud@localhost")
+		SETTING_STRING(bugs_email, 0, NULL, "bug_mail", "sourcemud@localhost")
+		SETTING_STRING(admin_email, 0, NULL, "admin_mail", "sourcemud@localhost")
 		SETTING_STRING(hostname, 0, NULL, "hostname", "")
 		SETTING_STRING(user, 'u', "user", "user", "")
 		SETTING_STRING(group, 'g', "group", "group", "")
@@ -101,7 +101,7 @@ void
 SSettingsManager::print_usage (void)
 {
 	// FIXME - don't use fprintf
-	fprintf(stderr, "./awemud");
+	fprintf(stderr, "./sourcemud");
 
 	for (int i = 0; settings[i].name != NULL; ++i) {
 		if (settings[i].short_opt != 0 || settings[i].long_opt != NULL) {

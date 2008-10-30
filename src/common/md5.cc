@@ -1,12 +1,11 @@
 /*
- * AweMUD NG - Next Generation AwesomePlay MUD
- * Copyright (C) 2000-2005  AwesomePlay Productions, Inc.
+ * Source MUD
+ * Copyright (C) 2000-2005  Sean Middleditch
  * See the file COPYING for license details
- * http://www.awemud.net
+ * http://www.sourcemud.org
  *
- * Many bits of the following code are not copyrighted by AwesomePlay
- * Productions, Inc.  Each section of code carries its own copyright and
- * licensing headers.
+ * Many bits of the following code are not copyrighted by Sean Middleditch
+ * Each section of code carries its own copyright and licensing headers.
  */
 
 #include <sys/types.h>
@@ -313,7 +312,7 @@ void MD5Transform(uint32 buf[4], uint32 const in[16])
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
  * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- *  Modified 2002 by Sean Middleditch for AweMUD NG
+ *  Modified 2002 by Sean Middleditch for Source MUD NG
  */
 
 #include <sys/types.h>
@@ -341,7 +340,7 @@ _crypt_to64(char *s, u_long v, int n)
  * this stuff is worth it, you can buy me a beer in return.   Poul-Henning Kamp
  * ----------------------------------------------------------------------------
  *
- * Modified 2002 by Sean Middleditch for AweMUD NG
+ * Modified 2002 by Sean Middleditch for Source MUD NG
  */
 
 
@@ -475,8 +474,8 @@ MD5Crypt(const char *pw, const char *salt)
 } // namespace
 
 /*
- * The following code is original AweMUD NG code.
- * Copyright (C) 2003  AwesomePlay Productions, Inc.
+ * The following code is original Source MUD NG code.
+ * Copyright (C) 2003  Sean Middleditch
  */
 
 namespace MD5 {

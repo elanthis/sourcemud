@@ -1,9 +1,9 @@
-# AweMUD NG
+# Source MUD
 # Configuration script
-BASE_VERSION=0.25
-VERSION=0.25.20070511
+BASE_VERSION=0.01
+VERSION=0.01.20081030
 
-AC_INIT([AweMUD], 0.25.20070511, [http://bugs.awemud.net/submit.php])
+AC_INIT([Source MUD], 0.01.20081030, [http://sourcemud.org/bugs])
 AC_CONFIG_SRCDIR(src/mud/main.cc)
 AC_CONFIG_HEADERS(include/config.h)
 AC_CONFIG_AUX_DIR(.)
@@ -174,15 +174,15 @@ AC_SUBST(LIBS)
 
 AC_OUTPUT([
 Makefile
-awemud
+sourcemud
 tools/replace.sh
 ])
 
-chmod +x awemud
+chmod +x sourcemud
 
 echo
-echo "AweMUD NG - The Next Generation of the AwesomePlay MUD"
-echo "Copyright (C) 2000,2001,2002,2003,2004  AwesomePlay Productions, Inc."
+echo "Source MUD"
+echo "Copyright (C) 2000,2001,2002,2003,2004,2008  Sean Middleditch"
 echo "See COPYING for license details."
 
 echo
@@ -210,5 +210,5 @@ echo "  Bison      ... $PATH_BISON"
 echo "  Flex       ... $PATH_FLEX"
 
 echo
-echo "Now type \"make\" to build AweMUD NG"
+echo "Now type \"make\" to build Source MUD NG"
 echo

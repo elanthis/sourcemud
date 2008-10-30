@@ -1,8 +1,8 @@
 /*
- * AweMUD NG - Next Generation AwesomePlay MUD
- * Copyright (C) 2000-2005  AwesomePlay Productions, Inc.
+ * Source MUD
+ * Copyright (C) 2000-2005  Sean Middleditch
  * See the file COPYING for license details
- * http://www.awemud.net
+ * http://www.sourcemud.org
  */
 
 #define HTTP_REQUEST_TIMEOUT 30 // 30 seconds
@@ -32,7 +32,7 @@
 SHTTPManager HTTPManager;
 
 SCRIPT_TYPE(HTTP);
-HTTPHandler::HTTPHandler (int s_sock, const SockStorage& s_netaddr) : Scriptix::Native(AweMUD_HTTPType), SocketConnection(s_sock)
+HTTPHandler::HTTPHandler (int s_sock, const SockStorage& s_netaddr) : Scriptix::Native(MUD_HTTPType), SocketConnection(s_sock)
 {
 	addr = s_netaddr;
 	state = REQ;
@@ -53,7 +53,7 @@ HTTPHandler::disconnect ()
 
 /* output a data of text -
  * deal with formatting new-lines and such, and also
- * escaping/removing/translating AweMUD commands
+ * escaping/removing/translating Source MUD commands
  */
 void
 HTTPHandler::stream_put (const char *text, size_t len) 
@@ -218,9 +218,9 @@ HTTPHandler::process ()
 					http_error(413, S("Form data length overflow."));
 				}
 			} else if (!strncasecmp("Cookie", line.c_str(), c - line.c_str())) {
-				// Cookie; look for AWEMUD_SESSION
+				// Cookie; look for session
 				const char* sid_start;
-				if ((sid_start = strstr(c + 2, "AWEMUD_SESSION=")) != NULL) {
+				if ((sid_start = strstr(c + 2, "session=")) != NULL) {
 					sid_start = strchr(sid_start, '=') + 1;
 					const char* sid_end = strchr(sid_start, ';');
 					String sid;
@@ -384,7 +384,7 @@ HTTPHandler::page_login()
 		if (account != NULL && account->check_passphrase(get_post(S("password")))) {
 			session = HTTPManager.create_session(account);
 			msg = S("Login successful!");
-			*this << "Set-cookie: AWEMUD_SESSION=" << session->get_id() << "\n";
+			*this << "Set-cookie: session=" << session->get_id() << "\n";
 		} else {
 			msg = S("Incorrect username or passphrase.");
 		}
@@ -402,7 +402,7 @@ HTTPHandler::page_logout()
 	if (session != NULL)
 		HTTPManager.destroy_session(session);
 
-	*this << "HTTP/1.0 200 OK\nContent-type: text/html\nSet-cookie: AWEMUD_SESSION=\n\n"
+	*this << "HTTP/1.0 200 OK\nContent-type: text/html\nSet-cookie: session=\n\n"
 		<< StreamMacro(HTTPManager.get_template(S("header")))
 		<< StreamMacro(HTTPManager.get_template(S("logout")))
 		<< StreamMacro(HTTPManager.get_template(S("footer")));
@@ -524,7 +524,7 @@ HTTPSession::HTTPSession (Account* account)
 
 	// generate session ID
 	StringBuffer buf;
-	buf << "AweMUD";
+	buf << "Source MUD";
 	buf << account->get_id();
 	buf << account->get_name();
 	buf << rand();

@@ -1,8 +1,8 @@
 /*
- * AweMUD NG - Next Generation AwesomePlay MUD
- * Copyright (C) 2000-2005  AwesomePlay Productions, Inc.
+ * Source MUD
+ * Copyright (C) 2000-2005  Sean Middleditch
  * See the file COPYING for license details
- * http://www.awemud.net
+ * http://www.sourcemud.org
  */
 
 #ifdef HAVE_SENDMAIL
@@ -66,7 +66,7 @@ MailMessage::send (void) const
 		close (2); // stderr
 		dup2(files[0], 0);
 		// exec sendmail
-		if (execl(sendmail.c_str(), sendmail.c_str(), "-oi", "-t", "-FAweMUD", NULL))
+		if (execl(sendmail.c_str(), sendmail.c_str(), "-oi", "-t", "-FSource MUD", NULL))
 			exit(1);
 	}
 	close(files[0]);
@@ -92,7 +92,7 @@ MailMessage::send (void) const
 	// print
 	fprintf(fout, "Subject: %s\n", subject.c_str());
 	fprintf(fout, "To: %s\n", to.c_str());
-	fprintf(fout, "X-AweMUD: YES\n");
+	fprintf(fout, "X-Source MUD: YES\n");
 	for (GCType::vector<Header>::const_iterator i = headers.begin(); i != headers.end(); ++i)
 		fprintf (fout, "%s: %s\n", i->name.c_str(), i->value.c_str());
 	fprintf(fout, "\n%s\n", body.c_str());
