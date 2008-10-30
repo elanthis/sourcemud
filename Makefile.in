@@ -4,6 +4,7 @@ LFLAGS = -lgc
 
 VERSION = @PACKAGE_VERSION@
 PACKAGE = @PACKAGE_TARNAME@-$(VERSION)
+PERL = @PATH_PERL@
 
 # FILES
 BINARIES = awemud-bin
@@ -93,8 +94,7 @@ HEADERS = \
 	include/mud/uniqid.h \
 	include/mud/weather.h \
 	include/mud/zmp.h \
-	include/mud/zone.h \
-	src/cmd/commands.h
+	include/mud/zone.h
 
 SOURCES = \
 	src/common/error.cc \
@@ -131,6 +131,7 @@ SOURCES = \
 	src/scriptix/type.cc \
 	src/scriptix/value.cc \
 	src/generated/bindings.cc \
+	src/generated/commands.cc \
 	src/generated/events.cc \
 	src/generated/hooks.cc \
 	src/generated/macros.cc \
@@ -206,8 +207,8 @@ awemud-bin: $(OBJECTS)
 	@$(CXX) -o $@ $^ $(LFLAGS)
 
 # GENERATED SOURCE
-src/cmd/commands.h: tools/parse-commands.sh $(wildcard src/cmd/*.cc)
-	sh tools/parse-commands.sh
+src/generated/commands.cc: tools/parse-commands.pl $(wildcard src/cmd/*.cc)
+	$(PERL) tools/parse-commands.pl
 
 # BUILD FILES
 Makefile: Makefile.in configure

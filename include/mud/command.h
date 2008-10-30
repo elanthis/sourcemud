@@ -113,7 +113,9 @@ class Command : public GC
 	AccessID get_access (void) const { return access; }
 
 	// add a new format
-	inline void add_format (CommandFormat* format) { formats.push_back(format); }
+	void add_format (String format, void(*func)(class Creature*, String[]), int priority);
+	void add_format (String format, void(*func)(class Player*, String[]), int priority);
+	void add_format (CommandFormat* format) { formats.push_back(format); }
 
 	// display help
 	void show_man (class StreamControl& player);
@@ -161,5 +163,13 @@ namespace commands {
 	char *fix_arg (char *, char **); /* give an arg and current pointer, it moves pointer back and unsets the null bit, making it reparsable/complete */
 	char *restore (char *, char **); /* like fix_arg, but fixes from a start location to the current location, restoring possibly multiple arguments */
 }
+
+#define COMMAND(name,usage,func,access,klass) \
+	{ \
+		extern void func (klass*, String[]); \
+		void (*fptr)(klass*, String[]) = func; \
+		Command* command = new Command(S(name),S(usage),access);
+#define FORMAT(priority, format) command->add_format(S(format), (fptr), (priority));
+#define END_COMM add(command); }
 
 #endif

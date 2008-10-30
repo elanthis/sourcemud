@@ -44,9 +44,25 @@ AC_SUBST(PATH_XSLTPROC)
 AC_ARG_WITH(sendmail,[  --with-sendmail=<path>  Path of your sendmail bianry],[PATH_SENDMAIL="$withval"],[AC_PATH_PROG(PATH_SENDMAIL, sendmail, none, [$PATH:/usr/sbin:/sbin])])
 if test "x$PATH_SENDMAIL" != "xnone" ; then
 	AC_DEFINE(HAVE_SENDMAIL, 1, [Sendmail binary is available])
-	SENDMAIL=yes
 	AC_SUBST(PATH_SENDMAIL)
 fi
+
+# Look for perl
+AC_ARG_WITH(
+	perl,
+	[  --with-perl=<path>      Path of your perl bianry],
+	[PATH_PERL="$withval"],
+	[AC_PATH_PROG(
+		PATH_PERL,
+		perl,
+		none,
+		[$PATH:/bin:/usr/bin]
+	)]
+)
+if test "x$PATH_PERL" = "xnone"; then
+	AC_MSG_ERROR([Can't find perl])
+fi
+AC_SUBST(PATH_PERL)
 
 # Backtrace generation
 AC_CHECK_HEADER(execinfo.h,[
@@ -170,11 +186,12 @@ if test "x$ZLIB" = "xyes" ; then
 else
 	echo "  MCCPv2     ... disabled"
 fi
-if test "x$ZLIB" = "xyes" ; then
-	echo "  Sendmail   ... enabled"
+if test "x$PATH_SENDMAIL" != "xnone" ; then
+	echo "  Sendmail   ... $PATH_SENDMAIL"
 else
-	echo "  Sendmail   ... disabled"
+	echo "  Sendmail   ... not found"
 fi
+echo "  Perl       ... $PATH_PERL"
 if test -n "$PATH_BISON" -a -n "$PATH_FLEX" ; then
 	echo "  Bison/Flex ... enabled"
 else

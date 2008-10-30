@@ -1125,38 +1125,22 @@ Player::process_command (String line)
 	CommandManager.call (this, line);
 }
 
-namespace {
-	template <typename TYPE>
-	void
-	add_format (Command* command, String format, void(*func)(TYPE*, String[]), int priority)
-	{
-		CommandFormat* cformat = new CommandFormat(command, priority);
-		cformat->set_callback(func);
-		cformat->build (format);
-		command->add_format (cformat);
-	}
+void
+Command::add_format (String format, void(*func)(Creature*, String[]), int priority)
+{
+	CommandFormat* cformat = new CommandFormat(this, priority);
+	cformat->set_callback(func);
+	cformat->build (format);
+	formats.push_back(cformat);
 }
 
-#define COMMAND(name,usage,func,access,klass) \
-	{ \
-		extern void func (klass*, String[]); \
-		void (*fptr)(klass*, String[]) = func; \
-		Command* command = new Command(S(name),S(usage),access);
-#define FORMAT(priority, format) add_format(command, S(format), fptr, (priority));
-#define END_COMM add(command); }
-		
-int
-SCommandManager::initialize (void)
+void
+Command::add_format (String format, void(*func)(Player*, String[]), int priority)
 {
-	// access IDs
-	AccessID ACCESS_ALL;
-	AccessID ACCESS_GM = AccessID::create(S("gm"));
-	AccessID ACCESS_BUILDER = AccessID::create(S("builder"));
-	AccessID ACCESS_ADMIN = AccessID::create(S("admin"));
-
-#include "src/cmd/commands.h"
-
-	return 0;
+	CommandFormat* cformat = new CommandFormat(this, priority);
+	cformat->set_callback(func);
+	cformat->build (format);
+	formats.push_back(cformat);
 }
 
 void

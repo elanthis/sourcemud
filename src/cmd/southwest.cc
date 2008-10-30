@@ -18,8 +18,7 @@
  *
  * END COMMAND */
 
-void
-command_southwest (Creature* ch, String argv[]) {
+void command_southwest (Creature* ch, String argv[]) {
 	// must be in a room
 	if (!ch->get_room()) {
 		*ch << "You are not in a room.\n";
