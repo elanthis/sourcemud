@@ -54,7 +54,7 @@ SLogManager::initialize (void)
 		}
 	}
 
-	Log::Info << "<--- AweMUD V" VERSION " --->";
+	Log::Info << "<--- AweMUD V" PACKAGE_VERSION " --->";
 
 	if (!path.empty())
 		Log::Info << "Logging to " << path;

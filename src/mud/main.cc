@@ -258,7 +258,7 @@ namespace {
 		// banner
 		telnet->clear_scr();
 		*telnet <<
-			"\n ----===[ AweMUD V" VERSION " ]===----\n\n"
+			"\n ----===[ AweMUD V" PACKAGE_VERSION " ]===----\n\n"
 			"AweMUD Copyright (C) 2000-2005  AwesomePlay Productions, Inc.\n"
 			"Visit http://www.awemud.net for more details.\n";
 
@@ -383,7 +383,7 @@ int
 main (int argc, char **argv)
 {
 	// print out information
-	printf("AweMUD server V" VERSION "\n"
+	printf("AweMUD server V" PACKAGE_VERSION "\n"
 		"Copyright (C) 2000-2005, AwesomePlay Productions, Inc.\n"
 		"AweMUD comes with ABSOLUTELY NO WARRANTY; see COPYING for details.\n"
 		"This is free software, and you are welcome to redistribute it\n"

@@ -25,5 +25,5 @@
 
 void command_server (Player *player, String[])
 {
-	*player << "AweMUD V" VERSION "\nBuild: " __DATE__ " " __TIME__ "\nUptime: " << AweMUD::get_uptime() << "\n";
+	*player << "AweMUD V" PACKAGE_VERSION "\nBuild: " __DATE__ " " __TIME__ "\nUptime: " << AweMUD::get_uptime() << "\n";
 }

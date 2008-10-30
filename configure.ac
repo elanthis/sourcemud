@@ -5,6 +5,7 @@ VERSION=0.25.20070511
 
 AC_INIT([AweMUD], 0.25.20070511, [http://bugs.awemud.net/submit.php])
 AC_CONFIG_SRCDIR(src/mud/main.cc)
+AC_CONFIG_HEADERS(include/config.h)
 AC_CONFIG_AUX_DIR(.)
 
 if test -z "$VERSION" ; then
@@ -205,11 +206,8 @@ else
 fi
 echo "  Perl       ... $PATH_PERL"
 echo "  XSLT       ... $PATH_XSLTPROC"
-if test -n "$PATH_BISON" -a -n "$PATH_FLEX" ; then
-	echo "  Bison/Flex ... enabled"
-else
-	echo "  Bison/Flex ... disabled (do not edit Scriptix grammar)"
-fi
+echo "  Bison      ... $PATH_BISON"
+echo "  Flex       ... $PATH_FLEX"
 
 echo
 echo "Now type \"make\" to build AweMUD NG"

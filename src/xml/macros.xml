@@ -20,7 +20,7 @@
   </macro>
   <macro name="version">
     <code><![CDATA[
-      stream << VERSION;
+      stream << PACKAGE_VERSION;
     ]]></code>
   </macro>
   <macro name="build">

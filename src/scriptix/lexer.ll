@@ -38,7 +38,7 @@
 	using namespace Scriptix;
 	using namespace Scriptix::Compiler;
 
-	#include "grammar.hh"
+	#include "generated/grammar.h"
 
 	#define SX_LEX_STR_MAX 1024
 

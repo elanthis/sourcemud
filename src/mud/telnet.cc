@@ -799,7 +799,7 @@ TelnetHandler::sock_input (char* buffer, size_t size)
 						// enable ZMP support
 						io_flags.zmp = true;
 						// send zmp.ident command
-						String argv[4] = {S("zmp.ident"), S("AweMUD"), S(VERSION), S("Powerful C++ MUD server software") };
+						String argv[4] = {S("zmp.ident"), S("AweMUD"), S(PACKAGE_VERSION), S("Powerful C++ MUD server software") };
 						send_zmp(4, argv);
 						// check for net.awemud package
 						argv[0] = S("zmp.check");

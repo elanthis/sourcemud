@@ -6,12 +6,10 @@ VERSION = @PACKAGE_VERSION@
 PACKAGE = @PACKAGE_TARNAME@-$(VERSION)
 PERL = @PATH_PERL@
 XSLTPROC = @PATH_XSLTPROC@
+BISON = @PATH_BISON@
+FLEX = @PATH_FLEX@
 
 # FILES
-BINARIES = awemud-bin
-
-BUILD = Makefile configure
-
 HEADERS = \
 	include/common/bitset.h \
 	include/common/error.h \
@@ -33,6 +31,11 @@ HEADERS = \
 	include/common/string.h \
 	include/common/time.h \
 	include/common/types.h \
+	include/generated/bindings.h \
+	include/generated/events.h \
+	include/generated/grammar.h \
+	include/generated/hooks.h \
+	include/generated/skills.h \
 	include/scriptix/array.h \
 	include/scriptix/atom.h \
 	include/scriptix/compiler.h \
@@ -79,6 +82,8 @@ HEADERS = \
 	include/mud/network.h \
 	include/mud/npc.h \
 	include/mud/object.h \
+	include/mud/unique-object.h \
+	include/mud/shadow-object.h \
 	include/mud/olc.h \
 	include/mud/pconn.h \
 	include/mud/player.h \
@@ -118,10 +123,8 @@ SOURCES = \
 	src/scriptix/eval.cc \
 	src/scriptix/function.cc \
 	src/scriptix/global.cc \
-	src/scriptix/grammar.cc \
 	src/scriptix/init_types.cc \
 	src/scriptix/iter.cc \
-	src/scriptix/lexer.cc \
 	src/scriptix/number.cc \
 	src/scriptix/optimize.cc \
 	src/scriptix/parser.cc \
@@ -134,7 +137,9 @@ SOURCES = \
 	src/generated/bindings.cc \
 	src/generated/commands.cc \
 	src/generated/events.cc \
+	src/generated/grammar.cc \
 	src/generated/hooks.cc \
+	src/generated/lexer.cc \
 	src/generated/macros.cc \
 	src/generated/skills.cc \
 	src/mud/account.cc \
@@ -184,10 +189,38 @@ SOURCES = \
 	src/mud/zone.cc \
 	$(wildcard src/cmd/*.cc)
 
+XML = \
+	src/xml/bindings.xml \
+	src/xml/events.xml \
+	src/xml/hooks.xml \
+	src/xml/macros.xml \
+	src/xml/skills.xml
+
+TOOLS = \
+	tools/parse-commands.pl \
+	tools/replace.sh.in \
+	tools/events-code.xsl \
+	tools/events-doc.xsl \
+	tools/events-header.xsl \
+	tools/hooks-code.xsl \
+	tools/hooks-doc.xsl \
+	tools/hooks-header.xsl \
+	tools/macros-code.xsl \
+	tools/script-code.xsl \
+	tools/script-doc.xsl \
+	tools/script-header.xsl \
+	tools/skills-code.xsl \
+	tools/skills-header.xsl \
+	tools/skills-help.xsl
+
+BINARIES = awemud-bin
+BUILD = Makefile configure
+DIST = configure configure.ac Makefile.in install-sh awemud.in include/config.h.in src/scriptix/grammar.yy src/scriptix/lexer.ll
+
 OBJECTS = $(SOURCES:%.cc=.build/%.o)
 
 # CORE BUILD
-all: $(HEADERS) $(SOURCES) $(OBJECTS) $(BINARIES) $(BUILD)
+all: $(BUILD) $(TOOLS) $(XML) $(HEADERS) $(SOURCES) $(OBJECTS) $(BINARIES)
 
 clean:
 	rm -fr $(BINARIES) $(OBJECTS) .deps build
@@ -257,6 +290,16 @@ src/generated/macros.cc: tools/macros-code.xsl src/xml/macros.xml
 	@mkdir -p include/generated
 	@$(XSLTPROC) tools/macros-code.xsl src/xml/macros.xml > $@ 
 
+src/generated/grammar.cc include/generated/grammar.h: src/scriptix/grammar.yy
+	@echo Generating $@
+	@$(BISON) -y -d -o src/generated/grammar.cc src/scriptix/grammar.yy
+	@-[ -f src/generated/grammar.cc.h ] && mv -f src/generated/grammar.cc.h include/generated/grammar.h
+	@-[ -f src/generated/grammar.hh ] && mv -f src/generated/grammar.hh include/generated/grammar.h
+
+src/generated/lexer.cc: src/scriptix/lexer.ll include/generated/grammar.h
+	@echo Generating $@
+	@$(FLEX) -osrc/generated/lexer.cc src/scriptix/lexer.ll
+
 # BUILD FILES
 Makefile: Makefile.in configure
 	@echo Recreating Makefile
@@ -267,9 +310,10 @@ configure: configure.ac
 	@autoconf && ./config.status --recheck
 
 # DISTRIBUTION
-dist:
-	[ ! -d $(PACKAGE) ] || rm -fr $(PACKAGE)
-	mkdir $(PACKAGE)
-	for file in $(SOURCES); do install -D $$file $(PACKAGE)/$$file; done
-	tar -zcf $(PACKAGE).tar.gz $(PACKAGE)
-	rm -fr $(PACKAGE)
+dist: all
+	@echo Building distribution tarball $(PACKAGE).tar.gz
+	@[ ! -d $(PACKAGE) ] || rm -fr $(PACKAGE)
+	@mkdir $(PACKAGE)
+	@for file in configure $(DIST) $(TOOLS) $(XML) $(HEADERS) $(SOURCES); do install -D $$file $(PACKAGE)/$$file; done
+	@tar -zcf $(PACKAGE).tar.gz $(PACKAGE)
+	@rm -fr $(PACKAGE)
