@@ -1,9 +1,9 @@
 .*
 aclocal.m4
-awemud
-awemud-bin
-awemud.conf
-awemud-ctrl
+sourcemud
+sourcemud-bin
+sourcemud.conf
+sourcemud-ctrl
 compile
 config.*
 configure
