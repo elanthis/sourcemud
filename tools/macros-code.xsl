@@ -7,6 +7,7 @@
 // DO NOT EDIT
 
 #include "mud/macro.h"
+#include "config.h"
 
     <!-- includes -->
     <xsl:for-each select="include">

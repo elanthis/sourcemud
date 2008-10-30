@@ -35,11 +35,6 @@ fi
 #AM_CONDITIONAL(BUILD_DOCS, test "x$BUILD_DOCS" != "xno")
 #AM_CONDITIONAL(BUILD_PDFDOCS, test "x$BUILD_PDFDOCS" != "xno")
 
-# XSLT processor
-AC_PATH_PROG(PATH_XSLTPROC,xsltproc)
-#AM_CONDITIONAL(USE_XSLT, test -n "$PATH_XSLTPROC")
-AC_SUBST(PATH_XSLTPROC)
-
 # Look for sendmail
 AC_ARG_WITH(sendmail,[  --with-sendmail=<path>  Path of your sendmail bianry],[PATH_SENDMAIL="$withval"],[AC_PATH_PROG(PATH_SENDMAIL, sendmail, none, [$PATH:/usr/sbin:/sbin])])
 if test "x$PATH_SENDMAIL" != "xnone" ; then
@@ -63,6 +58,23 @@ if test "x$PATH_PERL" = "xnone"; then
 	AC_MSG_ERROR([Can't find perl])
 fi
 AC_SUBST(PATH_PERL)
+
+# Look for xsltproc
+AC_ARG_WITH(
+	xsltproc,
+	[  --with-xsltproc=<path>      Path of your xsltproc bianry],
+	[PATH_XSLTPROC="$withval"],
+	[AC_PATH_PROG(
+		PATH_XSLTPROC,
+		xsltproc,
+		none,
+		[$PATH:/bin:/usr/bin]
+	)]
+)
+if test "x$PATH_XSLTPROC" = "xnone"; then
+	AC_MSG_ERROR([Can't find xsltproc])
+fi
+AC_SUBST(PATH_XSLTPROC)
 
 # Backtrace generation
 AC_CHECK_HEADER(execinfo.h,[
@@ -192,15 +204,11 @@ else
 	echo "  Sendmail   ... not found"
 fi
 echo "  Perl       ... $PATH_PERL"
+echo "  XSLT       ... $PATH_XSLTPROC"
 if test -n "$PATH_BISON" -a -n "$PATH_FLEX" ; then
 	echo "  Bison/Flex ... enabled"
 else
 	echo "  Bison/Flex ... disabled (do not edit Scriptix grammar)"
-fi
-if test -n "$PATH_XSLTPROC" ; then
-	echo "  XSLT       ... enabled"
-else
-	echo "  XSLT       ... disabled (do not edit files in src/xml/)"
 fi
 
 echo

@@ -5,6 +5,7 @@ LFLAGS = -lgc
 VERSION = @PACKAGE_VERSION@
 PACKAGE = @PACKAGE_TARNAME@-$(VERSION)
 PERL = @PATH_PERL@
+XSLTPROC = @PATH_XSLTPROC@
 
 # FILES
 BINARIES = awemud-bin
@@ -208,14 +209,62 @@ awemud-bin: $(OBJECTS)
 
 # GENERATED SOURCE
 src/generated/commands.cc: tools/parse-commands.pl $(wildcard src/cmd/*.cc)
-	$(PERL) tools/parse-commands.pl
+	@echo Generating $@
+	@$(PERL) tools/parse-commands.pl
+
+include/generated/bindings.h: tools/script-header.xsl src/xml/bindings.xml
+	@echo Generating $@
+	@mkdir -p include/generated
+	@$(XSLTPROC) tools/script-header.xsl src/xml/bindings.xml > $@ 
+
+src/generated/bindings.cc: tools/script-code.xsl src/xml/bindings.xml
+	@echo Generating $@
+	@mkdir -p include/generated
+	@$(XSLTPROC) tools/script-code.xsl src/xml/bindings.xml > $@ 
+
+include/generated/skills.h: tools/skills-header.xsl src/xml/skills.xml
+	@echo Generating $@
+	@mkdir -p include/generated
+	@$(XSLTPROC) tools/skills-header.xsl src/xml/skills.xml > $@ 
+
+src/generated/skills.cc: tools/skills-code.xsl src/xml/skills.xml
+	@echo Generating $@
+	@mkdir -p include/generated
+	@$(XSLTPROC) tools/skills-code.xsl src/xml/skills.xml > $@ 
+
+include/generated/hooks.h: tools/hooks-header.xsl src/xml/hooks.xml
+	@echo Generating $@
+	@mkdir -p include/generated
+	@$(XSLTPROC) tools/hooks-header.xsl src/xml/hooks.xml > $@ 
+
+src/generated/hooks.cc: tools/hooks-code.xsl src/xml/hooks.xml
+	@echo Generating $@
+	@mkdir -p include/generated
+	@$(XSLTPROC) tools/hooks-code.xsl src/xml/hooks.xml > $@ 
+
+include/generated/events.h: tools/events-header.xsl src/xml/events.xml
+	@echo Generating $@
+	@mkdir -p include/generated
+	@$(XSLTPROC) tools/events-header.xsl src/xml/events.xml > $@ 
+
+src/generated/events.cc: tools/events-code.xsl src/xml/events.xml
+	@echo Generating $@
+	@mkdir -p include/generated
+	@$(XSLTPROC) tools/events-code.xsl src/xml/events.xml > $@ 
+
+src/generated/macros.cc: tools/macros-code.xsl src/xml/macros.xml
+	@echo Generating $@
+	@mkdir -p include/generated
+	@$(XSLTPROC) tools/macros-code.xsl src/xml/macros.xml > $@ 
 
 # BUILD FILES
 Makefile: Makefile.in configure
-	./config.status
+	@echo Recreating Makefile
+	@./config.status
 
 configure: configure.ac
-	autoconf && ./config.status --recheck
+	@echo Recreating ./configure
+	@autoconf && ./config.status --recheck
 
 # DISTRIBUTION
 dist:
