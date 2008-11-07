@@ -1,5 +1,5 @@
 account.name = "Administrator"
-account.email = "awemud@localhost"
+account.email = "sourcemud@localhost"
 account.passphrase = "$1$tNUNjzkD$F.tONxYNdR8hpYwuekqr7/"
 account.character = "Admin"
 account.created = "2000-01-01 00:00:00"

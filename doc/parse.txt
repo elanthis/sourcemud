@@ -1,13 +1,13 @@
 Description and text parsing documentation.
-AweMUD Next Generation
+Source MUD
 Copyright (C) 2005  AwesomePlay Productions, Inc.
-Sean Middleditch <elanthis@awemud.net>
+Sean Middleditch <elanthis@sourcemud.org>
 -------------------------------------------------
 
 1. Introduction
    ============
 
-   AweMUD features a text parsing system that is used for room descriptions
+   Source MUD features a text parsing system that is used for room descriptions
    and many other areas of the engine where complex output is required.
 
    The text parsing system is designed to allow several important features:

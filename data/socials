@@ -1,6 +1,6 @@
-# AweMUD Next Generation - Social commands list
+# Source MUD - Social commands list
 # Copyright (C) 2003-2005  AwesomePlay Productions Inc.
-# Sean Middleditch <elanthis@awemud.net>
+# Sean Middleditch <elanthis@sourcemud.org>
 
 # FORMAT:
 # <verb> <adverb> <flags> <self> <room> <target>

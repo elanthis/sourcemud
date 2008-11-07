@@ -1,6 +1,6 @@
-# AweMUD Next Generation - Help data
+# Source MUD - Help data
 # Copyright (C) 2003-2005  AwesomePlay Productions Inc.
-# Sean Middleditch <elanthis@awemud.net>
+# Sean Middleditch <elanthis@sourcemud.org>
 
 %begin general
   To view help on a specific topic, type
@@ -24,7 +24,7 @@
 
 
 %begin talking
-  Talking in AweMUD is very simple.  You need to merely type {bold 'say'} followed by what you wish your character to speak.  For example, to say {bold 'Hi'} to a someone, you'd type:
+  Talking in Source MUD is very simple.  You need to merely type {bold 'say'} followed by what you wish your character to speak.  For example, to say {bold 'Hi'} to a someone, you'd type:
     say Hi
 
   You may also make use of the quotation symbol (") to speak.  You do _not_ need to put an end-quote on your text.  For example:
@@ -32,7 +32,7 @@
 %end
 
 %begin moving
-  Moving around in AweMUD is very simple.  In every area (or room) on the MUD, you will see a list of visible exits.  You only need to type {bold 'go'} followed by the exit, in most cases.  For example, to go thru an open door, type:
+  Moving around in Source MUD is very simple.  In every area (or room) on the MUD, you will see a list of visible exits.  You only need to type {bold 'go'} followed by the exit, in most cases.  For example, to go thru an open door, type:
     go door
 
   Additionally, most exits have a direction associated with them.  Many exits will simply be labelled as their direction.  (Such as north, or south.)  By typing in a direction (like east), you will use the exit in that direction, if one exists.
@@ -57,7 +57,7 @@
 %end
 
 %begin login
-  Please enter your character name and password to login to AweMUD.
+  Please enter your character name and password to login to Source MUD.
 
   If you wish to create a new character, just type in the name you wish to use.  If the character name is available, you'll be asked if you wish to create a new character.  If the character is not available
 %end
@@ -99,7 +99,7 @@
 %end
 
 %begin license
-  AweMUD Engine
+  Source MUD Engine
   Copyright (c) 2000,2001,2003-2005  AwesomePlay Productions, Inc. and contributors.  All rights reserved.
 
   Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:

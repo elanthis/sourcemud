@@ -1,6 +1,6 @@
-# AweMUD Next Generation - Player race definitions
+# Source MUD - Player race definitions
 # Copyright (C) 2003-2005  AwesomePlay Productions Inc."
-# Sean Middleditch <elanthis@awemud.net>
+# Sean Middleditch <elanthis@sourcemud.org>
 
 # Human race
 races.race {

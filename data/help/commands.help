@@ -1,6 +1,6 @@
-# AweMUD Next Generation - Command help data
+# Source MUD - Command help data
 # Copyright (C) 2003-2005  AwesomePlay Productions Inc.
-# Sean Middleditch <elanthis@awemud.net>
+# Sean Middleditch <elanthis@sourcemud.org>
 
 %begin quit
   Returns you to the main menu.
@@ -79,7 +79,7 @@
 %end
 
 %begin server
-  Give general information about the AweMUD server.
+  Give general information about the Source MUD server.
 %end
 
 %begin open

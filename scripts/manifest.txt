@@ -1,4 +1,4 @@
-awemud.sx
+sourcemud.sx
 string.sx
 corerules.sx
 npc.sx

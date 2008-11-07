@@ -1,4 +1,4 @@
-// Stores for AweMUD
+// Stores for Source MUD
 // Copyright (C) 2003  AwesomePlay Productions, Inc.
 
 function show_menu (player)

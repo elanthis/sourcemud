@@ -6,10 +6,10 @@ exec_prefix="@exec_prefix@"
 bindir="@bindir@"
 tarname='@PACKAGE_TARNAME@'
 
-if ! test -x "$bindir/awemud-bin" || ! test -f "$sysconfdir/$tarname/awemud.conf" ; then
+if ! test -x "$bindir/sourcemud-bin" || ! test -f "$sysconfdir/$tarname/sourcemud.conf" ; then
 	echo "You must first 'make install' to use this utility."
-	echo "To run AweMUD from the source directory, use './awemud-bin'"
+	echo "To run Source MUD from the source directory, use './sourcemud-bin'"
 	exit 1
 fi
 
-"$bindir/awemud-bin" -C "$sysconfdir/awemud.conf"
+"$bindir/sourcemud-bin" -C "$sysconfdir/sourcemud.conf"

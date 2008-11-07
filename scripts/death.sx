@@ -1,9 +1,9 @@
 /*
- * AweMUD NG - Next Generation AwesomePlay MUD
- * death.sx - Death hangling for AweMUD
+ * Source MUD - Next Generation AwesomePlay MUD
+ * death.sx - Death hangling for Source MUD
  * Copyright (C) 2000-2003	AwesomePlay Productions, Inc.
  * See the file COPYING for license details
- * http://www.awemud.net
+ * http://www.sourcemud.org
  */
 
 var death_time_minutes = 5;

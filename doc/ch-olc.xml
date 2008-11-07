@@ -3,13 +3,13 @@
   <title>On-Line Creation</title>
   <section>
     <title>Blueprints</title>
-    <para>Npcs and objects within AweMUD are based on a blueprint system.  A blueprint is a description of an npc or object.</para>
+    <para>Npcs and objects within Source MUD are based on a blueprint system.  A blueprint is a description of an npc or object.</para>
     <para>The blueprint system makes it easy to create new versions of npcs and objects.  For example, to create a new longsword in the game, a builder needs only to create a new object with the longsword blueprint.  In order to change a property on every longsword in the game, the builder must only update the longsword blueprint.</para>
     <para>Blueprint are hierarchial.  That is, one blueprint may include another.  This allows builders to create targetted versions of a particular blueprint.  For example, a builder might make an orc blueprint describing a basic orc monster.  The builder might then might derivate blueprints for an orc warrior and an orc scout.  By changing the orc blueprint, all orc warriors and orc scouts will be updated with the new properties.  By changing the orc scout blueprint, only orc scouts will be updated.</para>
   </section>
   <section>
     <title>Zones</title>
-    <para>AweMUD breaks the game world into zones.  A zone contains a collection of rooms.</para>
+    <para>Source MUD breaks the game world into zones.  A zone contains a collection of rooms.</para>
   </section>
   <section>
     <title>OLC Commands</title>

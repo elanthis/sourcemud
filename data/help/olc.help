@@ -1,11 +1,11 @@
-# AweMUD Next Generation - Help data
+# Source MUD - Help data
 # Copyright (C) 2003-2005  AwesomePlay Productions Inc.
-# Sean Middleditch <elanthis@awemud.net>
+# Sean Middleditch <elanthis@sourcemud.org>
 
 %begin building
-  AweMUD currently has very limited building support.  Much of the information in AweMUD can only be modified by editing the data files.
+  Source MUD currently has very limited building support.  Much of the information in Source MUD can only be modified by editing the data files.
 
-  There are no plans to support on-line editing of things such as races, classes, help files, blueprints, or server settings.  These will have to be changed by modifying their respective files.  Races and classes will not be able to be changed without an AweMUD reboot.  The help data is read on the fly, so a change to the help file will take affect immediately.  Templates are occasionally re-read as well (there are plans to support a forces flush of in-memory blueprints).
+  There are no plans to support on-line editing of things such as races, classes, help files, blueprints, or server settings.  These will have to be changed by modifying their respective files.  Races and classes will not be able to be changed without an Source MUD reboot.  The help data is read on the fly, so a change to the help file will take affect immediately.  Templates are occasionally re-read as well (there are plans to support a forces flush of in-memory blueprints).
 
   The {bold 'create'} command allows you to make a new object or npc from a blueprint, or to create a new room or zone, or to create a new exit.  In order to modify an existing entity, you must use the {bold 'modify'} command.  In order to view the attributes of an entity, use the {bold 'display'} command.  To remove existing entities, use the {bold 'destroy'} command.  A special command, {bold 'description'}, is used to edit the long description of an entity.
 
@@ -67,7 +67,7 @@
 
   When you run the command, you are put in a special description input mode.  You keep entering the lines of the description, until you have the whole thing entered.  You then must put a single @ (at sign) on a line all by itself; this signifies the end of your input.
 
-  Remember that AweMUD doesn't allow lines that are very long (usually around 100 to 200 characters), so you must break up your description.  AweMUD will automatically reform the lines into a single paragraph with proper spacing.  (Two spaces after a ., !, or ?, and one space after anything else.)
+  Remember that Source MUD doesn't allow lines that are very long (usually around 100 to 200 characters), so you must break up your description.  Source MUD will automatically reform the lines into a single paragraph with proper spacing.  (Two spaces after a ., !, or ?, and one space after anything else.)
 %end
 
 %begin olc_edit_commands

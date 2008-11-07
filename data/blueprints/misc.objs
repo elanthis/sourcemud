@@ -1,6 +1,6 @@
-# AweMUD Next Generation - Misc object blueprints
+# Source MUD - Misc object blueprints
 # Copyright (C) 2003-2005  AwesomePlay Productions Inc.
-# Sean Middleditch <elanthis@awemud.net>
+# Sean Middleditch <elanthis@sourcemud.org>
 
 blueprint.object {
   blueprint.id = "co_leather_backpack"

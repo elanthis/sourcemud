@@ -1,17 +1,17 @@
 <!DOCTYPE chatper PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN" "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd">
 <chapter id="ch_installation">
   <title>Installation</title>
-  <para>AweMUD uses the standard GNU method of building and installating applications, <command>./configure &amp;&amp; make &amp;&amp; make install</command>.</para>
-  <screen>tar -zxf awemud-0.25.tar.gz
-cd awemud-0.25.tar.gz
+  <para>Source MUD uses the standard GNU method of building and installating applications, <command>./configure &amp;&amp; make &amp;&amp; make install</command>.</para>
+  <screen>tar -zxf sourcemud-0.25.tar.gz
+cd sourcemud-0.25.tar.gz
 ./configure &amp;&amp; make &amp;&amp; make install</screen>
   <section>
     <title>Dependencies</title>
-    <para>AweMUD depends on a single external library, <ulink url="http://www.hpl.hp.com/personal/Hans_Boehm/gc/">Boehm-Demers-Weiser Garbage Collector</ulink>.  This library must be installed in order to build AweMUD.  The BDW libgc uses the standard build and install commands.  However, AweMUD requires that libgc be built with C++, which can be done by passing the --enable-cplusplus switch to the ./configure script.</para>
+    <para>Source MUD depends on a single external library, <ulink url="http://www.hpl.hp.com/personal/Hans_Boehm/gc/">Boehm-Demers-Weiser Garbage Collector</ulink>.  This library must be installed in order to build Source MUD.  The BDW libgc uses the standard build and install commands.  However, Source MUD requires that libgc be built with C++, which can be done by passing the --enable-cplusplus switch to the ./configure script.</para>
     <screen>tar -zxf gc6.6.tar.gz
 cd gc6.6
 ./configure --enable-cpluplus &amp;&amp; make &amp;&amp; make install</screen>
-    <para>If you plan on hacking on the AweMUD source code, you will also need all of the following utilities.  You will not need these utilities if you only want to build and install AweMUD.</para>
+    <para>If you plan on hacking on the Source MUD source code, you will also need all of the following utilities.  You will not need these utilities if you only want to build and install Source MUD.</para>
     <itemizedlist>
       <listitem><ulink url="http://www.gnu.org/software/autoconf/">GNU Autoconf 2.53</ulink></listitem>
       <listitem><ulink url="http://www.gnu.org/software/automake/">GNU Automake 1.8</ulink></listitem>
@@ -19,7 +19,7 @@ cd gc6.6
       <listitem><ulink url="http://www.gnu.org/software/flex/">GNU Flex</ulink></listitem>
       <listitem><ulink url="http://www.xmlsoft.org">xsltproc</ulink></listitem>
     </itemizedlist>
-    <para>If you want to build the AweMUD Manual (this document), you will also need <ulink url="http://cyberelk.net/tim/xmlto/">xmlto</ulink>.</para>
+    <para>If you want to build the Source MUD Manual (this document), you will also need <ulink url="http://cyberelk.net/tim/xmlto/">xmlto</ulink>.</para>
     <para>All of the above software is generally available for Linux, BSD, and Cygwin.</para>
   </section>
 </chapter>

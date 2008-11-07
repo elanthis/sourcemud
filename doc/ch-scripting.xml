@@ -1,14 +1,14 @@
 <!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN" "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd">
 <chapter id="ch_scripting">
   <title>Scripting</title>
-  <para>AweMUD makes use of the Scriptix language to extend and modify the behaviour of the core engine.  This guide gives a short over-view of using Scriptix with AweMUD.  We do not attempt to teach the Scriptix language in this document (that is the job of yet-to-be-written Scritpix Programming Manual).</para>
+  <para>Source MUD makes use of the Scriptix language to extend and modify the behaviour of the core engine.  This guide gives a short over-view of using Scriptix with Source MUD.  We do not attempt to teach the Scriptix language in this document (that is the job of yet-to-be-written Scritpix Programming Manual).</para>
   <section>
     <title>Using Scriptix</title>
-    <para>When AweMUD boots up, it loads all the scripts listed in <filename>scripts/load</filename>.  Each of these scripts is compiled into bytecode for use by AweMUD.  You cannot, at this time, specify the order scripts are loaded, ignore scripts in the Scriptix folder, or load scripts after AweMUD has booted.</para>
+    <para>When Source MUD boots up, it loads all the scripts listed in <filename>scripts/load</filename>.  Each of these scripts is compiled into bytecode for use by Source MUD.  You cannot, at this time, specify the order scripts are loaded, ignore scripts in the Scriptix folder, or load scripts after Source MUD has booted.</para>
   </section>
   <section id="sect_commands">
     <title>Commands</title>
-    <para>One of the many abilities Scriptix has in AweMUD is to register new commands.  A command is what a player types in when playing to game to perform actions or query the server for information.</para>
+    <para>One of the many abilities Scriptix has in Source MUD is to register new commands.  A command is what a player types in when playing to game to perform actions or query the server for information.</para>
     <section>
       <title>Command Functions</title>
       <para>Functions used in Scriptix for commands will receive two parameters: the <link linkend="Creature">creature</link> who entered the command and an array of the command's parsed arguments, as strings.</para>
@@ -45,7 +45,7 @@
     </section>
     <section>
       <title>Registering Commands</title>
-      <para>In order to AweMUD to know about your command function, you must register the command with the command interpreter.  This is done using the <link linkend="registerCommand">registerCommand()</link> function.  This function is a little complex; it takes a number of arguments.</para>
+      <para>In order to Source MUD to know about your command function, you must register the command with the command interpreter.  This is done using the <link linkend="registerCommand">registerCommand()</link> function.  This function is a little complex; it takes a number of arguments.</para>
       <para>The first three are solely for documentation and book keeping purposes.  Each command must have an official name.  This is almost always the same as the first word of the command.  I.e., the <command>dance</command> example about would be named <userinput>"dance"</userinput>.  The second parameter is a short about string.  The about string should briefly describe what the command does.  The third argument is a list of usage lines.  Usage lines are in the format <userinput>"foo &lt;argument:&gt;\n"</userinput>.  The newline is mandatory.  You may put in multiple usage lines if your command has multiple formats.</para>
       <para>The next argument is the most complex.  The fourth argument is the format string for the command.  The format string tells the command parser how to interpret the command, and how to extract the interesting arguments for the argv[] array passed to the command function.  Formatting is described in more detail below.  You may pass in either a single string, or an array of strings, for the format argument.</para>
       <para>The final two bits are simple enough.  The fifth parameter is the actual function to call for the command.  The final parameter is the necessary permission level required to use the command.  The constants <constant>PRIV_PLAYER</constant> and friends can be used here.  If you want to allow any creature to use a command, use the permission level of 0 (zero).</para>

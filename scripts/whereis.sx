@@ -1,9 +1,9 @@
 /*
- * AweMUD NG - Next Generation AwesomePlay MUD
+ * Source MUD - Next Generation AwesomePlay MUD
  * whereis.sx - Whereis administration command
  * Copyright (C) 2000-2003  AwesomePlay Productions, Inc.
  * See the file COPYING for license details
- * http://www.awemud.net
+ * http://www.sourcemud.org
  */
 
 // whereis command

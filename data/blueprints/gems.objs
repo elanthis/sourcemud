@@ -1,6 +1,6 @@
-# AweMUD Next Generation - gem object blueprints
+# Source MUD - gem object blueprints
 # Copyright (C) 2003-2005  AwesomePlay Productions Inc.
-# Sean Middleditch <elanthis@awemud.net>
+# Sean Middleditch <elanthis@sourcemud.org>
 
 blueprint.object {
   blueprint.id = "gem_ruby"

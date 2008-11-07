@@ -1,12 +1,12 @@
-AweMUD Event System
-AweMUD Next Generation
+Source MUD Event System
+Source MUD
 Copyright (C) 2006  AwesomePlay Productions, Inc.
-Sean Middleditch <elanthis@awemud.net>
+Sean Middleditch <elanthis@sourcemud.org>
 -------------------------------------------------
 
 1. Introduction
    ============
-   AweMUD uses an event message system to control behavior of game entities.
+   Source MUD uses an event message system to control behavior of game entities.
 
 2. Event Types
    ===========

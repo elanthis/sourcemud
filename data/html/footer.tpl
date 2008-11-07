@@ -1,5 +1,5 @@
 		</div>
 
-		<div id="footer">AweMUD {version}<br /><a href="http://www.awemud.net">http://www.awemud.net</a></div>
+		<div id="footer">Source MUD {version}<br /><a href="http://www.sourcemud.org">http://www.sourcemud.org</a></div>
 	</body>
 </html>

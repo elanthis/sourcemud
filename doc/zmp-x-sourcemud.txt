@@ -1,15 +1,15 @@
-AweMUD ZMP Package
+Source MUD ZMP Package
 ==================
 
-Package Name: x-awemud
+Package Name: x-sourcemud
 
-x-awemud.name
+x-sourcemud.name
 -------------
 
 Sends the name of the game as a single argument.  Client can use this to
 display to the user or for saving the session information.
 
-x-awemud.status.create
+x-sourcemud.status.create
 ----------------------
 
 Create a new status bar.  Takes three arguments.
@@ -25,14 +25,14 @@ This indicates how the progress bar value is displayed to the user.  Fraction
 shows current/max (ex: 7/10).  Percent shows the fraction as a precent (ex:
 70%).  Count simply shows the current value, but not the max (ex: 7).
 
-x-awemud.status.set
+x-sourcemud.status.set
 -------------------
 
 Sets the value of a status bar previously defined by the server with
-x-awemud.status.create.  Takes three arguments.
+x-sourcemud.status.create.  Takes three arguments.
 
 First is the unique ID of a status bar as defined by the first argument of a
-previous x-awemud.status.create command.
+previous x-sourcemud.status.create command.
 
 Second is the current value of the status bar amount.  This number must be a
 non-negative integer.

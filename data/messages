@@ -1,6 +1,6 @@
-# AweMUD Next Generation - Editable messages
+# Source MUD - Editable messages
 # Copyright (C) 2003-2005  AwesomePlay Productions Inc.
-# Sean Middleditch <elanthis@awemud.net>
+# Sean Middleditch <elanthis@sourcemud.org>
 
 text.connect = %begin
 

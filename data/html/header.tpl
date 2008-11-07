@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <html>
 	<head>
-		<title>AweMUD Portal</title>
+		<title>Source MUD Portal</title>
 		<style type="text/css">
 			td \{
 				text-align: left;
@@ -51,7 +51,7 @@
 		</style>
 	</head>
 	<body>
-		<div id="title">AweMUD Portal</div>
+		<div id="title">Source MUD Portal</div>
 
 		<div id="menu">
 		{if $account}

@@ -1,4 +1,4 @@
-<p>Welcome to the AweMUD portal!</p>
+<p>Welcome to the Source MUD portal!</p>
 
 {if $account}
 <p>Welcome, {$account.name}!</p>

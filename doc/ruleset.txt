@@ -1,8 +1,8 @@
           /======================================================\
           ||  Game mechanics and rules                          ||
-          ||  AweMUD MUD Server Software                        ||
+          ||  Source MUD MUD Server Software                        ||
           ||  Copyright (C) 2006  AwesomePlay Productions, Inc. ||
-          ||  Sean Middleditch <elanthis@awemud.net>            ||
+          ||  Sean Middleditch <elanthis@sourcemud.org>            ||
           \======================================================/
 
  I    Introduction
@@ -18,7 +18,7 @@
  I     Introduction                                                        I
 -----------------------------------------------------------------------------
 
-This is the game mechanic ruleset used by AweMUD.
+This is the game mechanic ruleset used by Source MUD.
 
 One important aspect to keep in mind is that the ruleset internally uses
 numbers of a larger scale than what the players will see.  In general, all

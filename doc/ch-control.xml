@@ -3,12 +3,12 @@
 	<title>Control Socket Interface</title>
 	<section>
 		<title>Introduction</title>
-		<para>The new control interface feature of AweMUD allows a program to open a connection to the MUD using a UNIX domain socket, and issuing commands to the running AweMUD server.  These commands can be anything imaginable that is added to the code.  The basic intent, however, is to offer administration capabilities without needing to connect as a player.  The interface can also allow scripts and applications to programmatically control AweMUD.  This requires an easily parsable protocol.</para>
+		<para>The new control interface feature of Source MUD allows a program to open a connection to the MUD using a UNIX domain socket, and issuing commands to the running Source MUD server.  These commands can be anything imaginable that is added to the code.  The basic intent, however, is to offer administration capabilities without needing to connect as a player.  The interface can also allow scripts and applications to programmatically control Source MUD.  This requires an easily parsable protocol.</para>
 		<para>The protocl is line based.  The protocol is client driven.  The server only outputs information in response to a client command, or upon initial connection.  Clients send commands to the server as a single line, and the server responds with one or more lines of text.</para>
 		<para>The server may then send one or more lines of response.  Responses are either error messages or success messages.  Success messages may be preceded by data messages.</para>
 		<para>Upon first connecting, the server will return either a single success message, or an error message.  In the case of an error response, the client is immediately disconnected.</para>
-		<para>The tool awemud-ctrl (src/awemud-ctrl in the build directory) allows communications with the server for utilizing the CIP (Control Interface Protocol).  In order to enable the CIP mechanism, the server/control setting in the awemud.conf file must be un-commented-out.  If you use a different socket path than the default, you may pass the socket path to the awemud-ctrl utility as a command-line argument.</para>
-		<para>The socket will by default only be usable by the user who started the AweMUD server.  Note that if you configure AweMUD to switch user/group IDs after startup, the CIP socket will *not* use the specified IDs, but the original ID (root being the only option in this case for most OSes).</para>
+		<para>The tool sourcemud-ctrl (src/sourcemud-ctrl in the build directory) allows communications with the server for utilizing the CIP (Control Interface Protocol).  In order to enable the CIP mechanism, the server/control setting in the sourcemud.conf file must be un-commented-out.  If you use a different socket path than the default, you may pass the socket path to the sourcemud-ctrl utility as a command-line argument.</para>
+		<para>The socket will by default only be usable by the user who started the Source MUD server.  Note that if you configure Source MUD to switch user/group IDs after startup, the CIP socket will *not* use the specified IDs, but the original ID (root being the only option in this case for most OSes).</para>
 	</section>
 	<section>
 		<title>Commands</title>
@@ -27,7 +27,7 @@ command !@#\"\\ arg2</screen>
 		<title>Responses</title>
 		<para>A success or error message comes in the form of a plus (+) followed by an error code.  Error codes are single words formed of all uppercase characters.  Examples are OK, BADCOMMAND, NOTFOUND and BADPARAM.</para>
 		<para>If the error code is OK, the message is a success message.  For any other error code, the message is a failure (error) message.</para> 
-		<para>An optional human-friendly string may followed the error code.  The message and the code are separated by a single space.  These messages are not intended to be machine parsed, but may be presented to users of utilities or applications that use the protocol.  (The messages are also useful to users utilizing the awemud-ctrl utility directly.)</para>
+		<para>An optional human-friendly string may followed the error code.  The message and the code are separated by a single space.  These messages are not intended to be machine parsed, but may be presented to users of utilities or applications that use the protocol.  (The messages are also useful to users utilizing the sourcemud-ctrl utility directly.)</para>
 		<example>
 			<title>Response codes</title>
 			<screen>+NOACCESS You do not have permission to access this resource.
@@ -203,7 +203,7 @@ login admin wrongpass
 				<para>Sets the maximum number of characters an account is allowed to have
 				active at any given time.  The first paramater is the account name, and
 				the second parameter is the active character limit.  Use a limit of zero
-				(0) to set the limit to the default, as specified in the awemud.conf
+				(0) to set the limit to the default, as specified in the sourcemud.conf
 				configuration file.  Returns a NOTFOUND error if the account doesn't
 				exist.</para>
 
@@ -219,7 +219,7 @@ login admin wrongpass
 				<para>Sets the maximum number of characters an account is allowed to have.  The
 				first paramater is the account name, and the second parameter is the
 				character limit.  Use a limit of zero (0) to set the limit to the
-				default, as specified in the awemud.conf configuration file.  Returns a
+				default, as specified in the sourcemud.conf configuration file.  Returns a
 				NOTFOUND error if the account doesn't exist.</para>
 
 				<example><screen>setmaxchars admin 5
@@ -237,7 +237,7 @@ login admin wrongpass
 				<example><screen>showaccount admin
 -ID=admin
 -NAME=Administrator
--EMAIL=awemud@localhost
+-EMAIL=sourcemud@localhost
 -MAXCHARS=3
 -MAXACTIVE=1
 -DISABLED=NO

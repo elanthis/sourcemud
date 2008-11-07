@@ -1,6 +1,6 @@
-# AweMUD Next Generation - Default calendar definition
+# Source MUD - Default calendar definition
 # Copyright (C) 2003-2005  AwesomePlay Productions Inc.
-# Sean Middleditch <elanthis@awemud.net>
+# Sean Middleditch <elanthis@sourcemud.org>
 
 # Various day/night texts
 daytime day "The Sun is casting its light about the world."
