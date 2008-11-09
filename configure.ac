@@ -6,7 +6,6 @@ VERSION=0.01.20081030
 AC_INIT([Source MUD], 0.01.20081030, [http://sourcemud.org/bugs])
 AC_CONFIG_SRCDIR(src/mud/main.cc)
 AC_CONFIG_HEADERS(include/config.h)
-AC_CONFIG_AUX_DIR(.)
 
 if test -z "$VERSION" ; then
 	VERSION="$PACKAGE_VERSION"
@@ -33,8 +32,6 @@ if test "x$BUILD_DOCS" = "xyes" ; then
 	fi
 	AC_SUBST(PATH_XMLTO)
 fi
-#AM_CONDITIONAL(BUILD_DOCS, test "x$BUILD_DOCS" != "xno")
-#AM_CONDITIONAL(BUILD_PDFDOCS, test "x$BUILD_PDFDOCS" != "xno")
 
 # Look for sendmail
 AC_ARG_WITH(sendmail,[  --with-sendmail=<path>  Path of your sendmail bianry],[PATH_SENDMAIL="$withval"],[AC_PATH_PROG(PATH_SENDMAIL, sendmail, none, [$PATH:/usr/sbin:/sbin])])
@@ -87,7 +84,6 @@ AC_PATH_PROG(PATH_BISON,bison)
 AC_SUBST(PATH_BISON)
 AC_PATH_PROG(PATH_FLEX,flex)
 AC_SUBST(PATH_FLEX)
-#AM_CONDITIONAL(BUILD_GRAMMAR, test -n "$PATH_BISON" -a -n "$PATH_FLEX")
 
 # Networking libraries
 AC_CHECK_LIB(socket,connect)

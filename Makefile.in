@@ -215,7 +215,7 @@ TOOLS = \
 
 BINARIES = sourcemud-bin
 BUILD = Makefile configure
-DIST = configure configure.ac Makefile.in install-sh sourcemud.in include/config.h.in src/scriptix/grammar.yy src/scriptix/lexer.ll
+DIST = configure configure.ac Makefile.in sourcemud.in include/config.h.in src/scriptix/grammar.yy src/scriptix/lexer.ll
 
 OBJECTS = $(SOURCES:%.cc=.build/%.o)
 
