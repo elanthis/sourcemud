@@ -184,11 +184,11 @@ Player::save_data (File::Writer& writer)
 
 	writer.attr(S("player"), S("experience"), experience);
 
-	for (int i = 1; i < SkillID::COUNT; ++i) {
-		if (skills.has_skill(SkillID(i))) {
+	for (int i = 1; i < SkillID::size(); ++i) {
+		if (skills.hasSkill(SkillID(i))) {
 			GCType::vector<File::Value> list;
-			list.push_back(File::Value(File::Value::TYPE_STRING, SkillID(i).get_name())); 
-			list.push_back(File::Value(File::Value::TYPE_INT, tostr(skills.get_skill(SkillID(i)))));
+			list.push_back(File::Value(File::Value::TYPE_STRING, SkillID(i).getName())); 
+			list.push_back(File::Value(File::Value::TYPE_INT, tostr(skills.getSkill(SkillID(i)))));
 			writer.attr(S("player"), S("skill"), list);
 		}
 	}
@@ -289,8 +289,8 @@ Player::load_node (File::Reader& reader, File::Node& node)
 			}
 		FO_ATTR("player", "skill")
 			SkillID skill = SkillID::lookup(node.get_string(0));
-			if (skill.valid()) {
-				skills.set_skill(skill, node.get_int(1));
+			if (skill) {
+				skills.setSkill(skill, node.get_int(1));
 			} else {
 				Log::Error << node << ": Unknown skill: " << node.get_string(0);
 				throw File::Error();
@@ -486,9 +486,9 @@ Player::display_skills ()
 
 	set_indent(2);
 
-	for (int i = 1; i < SkillID::COUNT; ++i) {
-		if (skills.has_skill(SkillID(i)))
-			*this << SkillID(i).get_name() << " " << get_roman(skills.get_skill(SkillID(i))) << "\n";
+	for (int i = 1; i < SkillID::size(); ++i) {
+		if (skills.hasSkill(SkillID(i)))
+			*this << SkillID(i).getName() << " " << get_roman(skills.getSkill(SkillID(i))) << "\n";
 	}
 
 	set_indent(0);
