@@ -140,7 +140,6 @@ SOURCES = \
 	src/generated/grammar.cc \
 	src/generated/hooks.cc \
 	src/generated/lexer.cc \
-	src/generated/macros.cc \
 	src/generated/skills.cc \
 	src/mud/account.cc \
 	src/mud/action.cc \
@@ -193,7 +192,6 @@ XML = \
 	src/xml/bindings.xml \
 	src/xml/events.xml \
 	src/xml/hooks.xml \
-	src/xml/macros.xml \
 	src/xml/skills.xml
 
 TOOLS = \
@@ -205,7 +203,6 @@ TOOLS = \
 	tools/hooks-code.xsl \
 	tools/hooks-doc.xsl \
 	tools/hooks-header.xsl \
-	tools/macros-code.xsl \
 	tools/script-code.xsl \
 	tools/script-doc.xsl \
 	tools/script-header.xsl \
@@ -284,11 +281,6 @@ src/generated/events.cc: tools/events-code.xsl src/xml/events.xml
 	@echo Generating $@
 	@-mkdir -p include/generated
 	@$(XSLTPROC) tools/events-code.xsl src/xml/events.xml > $@ 
-
-src/generated/macros.cc: tools/macros-code.xsl src/xml/macros.xml
-	@echo Generating $@
-	@-mkdir -p include/generated
-	@$(XSLTPROC) tools/macros-code.xsl src/xml/macros.xml > $@ 
 
 src/generated/grammar.cc include/generated/grammar.h: src/scriptix/grammar.yy
 	@echo Generating $@

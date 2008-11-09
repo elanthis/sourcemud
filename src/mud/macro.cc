@@ -13,6 +13,9 @@
 #include "common/streams.h"
 #include "mud/gametime.h"
 #include "common/strbuf.h"
+#include "config.h"
+#include "mud/player.h"
+#include "mud/http.h"
 
 #define MACRO_OUT_SIZE 2048
 #define MACRO_BUFFER_SIZE 4096
@@ -89,9 +92,8 @@ namespace {
 	int do_text(const StreamControl& stream, String in, MacroState& state, int depth);
 }
 
-// externally defined in macro_macros.cc, generated from gen/macro-intr.xml
 namespace macro {
-	extern int exec_macro (const StreamControl& stream, String macro, MacroList& argv);
+	int exec_macro (const StreamControl& stream, String macro, MacroList& argv);
 }
 
 // function definitions
@@ -548,5 +550,96 @@ namespace macro {
 			stream << in;
 
 		return stream;
+	}
+
+	int exec_macro (const StreamControl& stream, String _cmd_name, MacroList& _cmd_argv)
+	{
+		if (str_eq(_cmd_name, S("eq"))) {
+			if (_cmd_argv.size() != 2)
+				return -1;
+			String s1 = _cmd_argv[0].get_string();
+			String s2 = _cmd_argv[1].get_string();
+			stream << (str_eq(s1, s2) ? "yes" : "");
+		} else if (str_eq(_cmd_name, S("ne"))) {
+			if (_cmd_argv.size() != 2)
+				return -1;
+			String s1 = _cmd_argv[0].get_string();
+			String s2 = _cmd_argv[1].get_string();
+			stream << (str_eq(s1, s2) ? "" : "yes");
+		} else if (str_eq(_cmd_name, S("version"))) {
+			if (_cmd_argv.size() != 0)
+				return -1;
+			stream << PACKAGE_VERSION;
+		} else if (str_eq(_cmd_name, S("build"))) {
+			if (_cmd_argv.size() != 0)
+				return -1;
+			stream << __DATE__ " " __TIME__;
+		} else if (str_eq(_cmd_name, S("uptime"))) {
+			if (_cmd_argv.size() != 0)
+				return -1;
+			stream << MUD::get_uptime();
+		} else if (str_eq(_cmd_name, S("player-count"))) {
+			if (_cmd_argv.size() != 0)
+				return -1;
+			stream << PlayerManager.count();
+		} else if (str_eq(_cmd_name, S("day-or-night"))) {
+			if (_cmd_argv.size() != 0)
+				return -1;
+			stream << (TimeManager.time.is_night() ? "night" : "day");
+		} else if (str_eq(_cmd_name, S("bold"))) {
+			if (_cmd_argv.size() != 1)
+				return -1;
+			String str = _cmd_argv[0].get_string();
+			stream << CBOLD << str << CNORMAL;
+		} else if (str_eq(_cmd_name, S("hostname"))) {
+			if (_cmd_argv.size() != 0)
+				return -1;
+			stream << NetworkManager.get_host();
+		} else if (str_eq(_cmd_name, S("date"))) {
+			if (_cmd_argv.size() != 0)
+				return -1;
+			stream << TimeManager.time.date_str();
+		} else if (str_eq(_cmd_name, S("time"))) {
+			if (_cmd_argv.size() != 0)
+				return -1;
+			stream << TimeManager.time.time_str();
+		} else if (str_eq(_cmd_name, S("date-year"))) {
+			if (_cmd_argv.size() != 0)
+				return -1;
+			stream << TimeManager.time.get_year();
+		} else if (str_eq(_cmd_name, S("date-month"))) {
+			if (_cmd_argv.size() != 0)
+				return -1;
+			stream << TimeManager.time.get_month();
+		} else if (str_eq(_cmd_name, S("date-day"))) {
+			if (_cmd_argv.size() != 0)
+				return -1;
+			stream << TimeManager.time.get_day();
+		} else if (str_eq(_cmd_name, S("time-hours24"))) {
+			if (_cmd_argv.size() != 0)
+				return -1;
+			stream << TimeManager.time.get_hour();
+		} else if (str_eq(_cmd_name, S("time-hours12"))) {
+			if (_cmd_argv.size() != 0)
+				return -1;
+			uint hours = TimeManager.time.get_hour();
+			stream << (hours == 0 ? 12 : (hours <= 12 ? hours : hours - 12));
+		} else if (str_eq(_cmd_name, S("time-ampm"))) {
+			if (_cmd_argv.size() != 0)
+				return -1;
+			stream << (TimeManager.time.get_hour() < 12 ? "am" : "pm");
+		} else if (str_eq(_cmd_name, S("time-minutes"))) {
+			if (_cmd_argv.size() != 0)
+				return -1;
+			stream << (TimeManager.time.get_minutes());
+		} else if (str_eq(_cmd_name, S("html"))) {
+			if (_cmd_argv.size() != 1)
+				return -1;
+			String str = _cmd_argv[0].get_string();
+			stream << StreamHTTPEscape(str); 
+		} else {
+			return -1;
+		}
+		return 0;
 	}
 }
