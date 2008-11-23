@@ -10,7 +10,6 @@
 #include "mud/room.h"
 #include "mud/body.h"
 #include "mud/player.h"
-#include "mud/social.h"
 #include "common/streams.h"
 #include "mud/macro.h"
 #include "mud/action.h"
@@ -22,77 +21,6 @@ Creature::do_emote (String action)
 {
 	if (get_room())
 		*get_room() << "(S(" << StreamName(this, DEFINITE, true) << ") " << action << ")\n";
-}
-
-void
-Creature::do_social (const Social* social, Entity* target, String adverb)
-{
-	// yourself?  you ijit
-	if (target == this) {
-		*this << "You can't do that to yourself.\n";
-		return;
-	}
-
-	// and do the social
-	social->perform(this, target, adverb);
-
-/*
-	// is a ghost?
-	if (PLAYER(this) && is_dead()) {
-		// no target?
-		if (target != NULL) {
-			*this << "Ghosts cannot do that.\n";
-			return;
-		}
-
-		// have we a ghost mode for social?
-		if (!social->ghost.self) {
-			*this << "Ghosts cannot do that.\n";
-			return;
-		}
-
-		// do social
-		*this << StreamMacro(social->ghost.self, S("actor"), this) << "\n";
-		if (get_room()) *get_room() << StreamIgnore(this) << StreamMacro(social->ghost.others, S("actor"), this) << "\n";
-		return;
-	}
-
-	// can't talk and need to?
-	if (social->social->need_speech() && !can_talk()) {
-		*this << "You cannot talk.\n";
-		return;
-	}
-	// can't move and need to?
-	if (social->social->need_movement() && !check_move()) return;
-
-	// have we a target?
-	if (target == NULL) {
-		if (social->action.self) {
-			*this << StreamMacro(social->action.self, S("actor"), this) << "\n";
-			if (get_room()) *get_room() << StreamIgnore(this) << StreamMacro(social->action.others, S("actor"), this) << "\n";
-		} else {
-			*this << "You can't do that without a target person or object.\n";
-		}
-	// target a creature?
-	} else if (social->person.self && CHARACTER(target)) {
-		*this << StreamMacro(social->person.self, S("actor"), this, S("target"), target) << "\n";
-		if (PLAYER(target)) {
-			*PLAYER(target) << StreamMacro(social->person.target, S("actor"), this, S("target"), target) << "\n";
-		}
-		if (get_room()) *get_room() << StreamIgnore(this) << StreamIgnore(CHARACTER(target)) << StreamMacro(social->person.others, S("actor"), this, S("target"), target) << "\n";
-	// target an object?
-	} else if (social->thing.self && OBJECT(target)) {
-		if (!((Object*)(target))->is_touchable() && social->social->need_touch()) {
-			*this << "You cannot touch " << StreamName(*target, DEFINITE, false) << ".\n";
-		} else {
-			*this << StreamMacro(social->thing.self, S("actor"), this, S("target"), target) << "\n";
-			if (get_room()) *get_room() << StreamIgnore(this) << StreamMacro(social->thing.others, S("actor"), this, S("target"), target) << "\n";
-		}
-	// um...
-	} else {
-		*this << "You can't do that with " << StreamName(*target, DEFINITE) << ".\n";
-	}
-*/
 }
 
 void
