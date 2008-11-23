@@ -50,7 +50,7 @@ for my $file (glob "src/cmd/*.cc") {
 
 			print OUT "\n// $file\nCOMMAND(\n";
 			print OUT "\t\"$name\",\n";
-			print OUT "\t\"", join("\"\n\t\"", @usage), "\",\n";
+			print OUT "\t\"", join("\\n\"\n\t\"", @usage), "\\n\",\n";
 			print OUT "\tcommand_$cmd,\n";
 			print OUT "\tACCESS_$access,\n";
 			print OUT "\t$type)\n";
