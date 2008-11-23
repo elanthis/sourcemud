@@ -149,7 +149,11 @@ void command_olc_create (Player* builder, String argv[])
  * name: olc destroy
  * usage: olc destroy [<type>] <entity>
  *
- * format: olc destroy:0(npc,object,room,portal)? :1* (80)
+ * format: olc destroy :1* (80)
+ * format: olc destroy :0npc :1* (80)
+ * format: olc destroy :0object :1* (80)
+ * format: olc destroy :0room :1* (80)
+ * format: olc destroy :0portal :1* (80)
  *
  * access: GM
  *

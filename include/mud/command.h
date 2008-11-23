@@ -57,40 +57,39 @@ class CommandFormat : public GC
 	inline int match (char** words, String argv[]) const { return trymatch(0, words, argv); }
 
 	private:
+	typedef GCType::vector<struct CommandFormatNode> NodeList;
+
 	class Command* command;
 	String format;
-	struct FormatNode : public GC
-	{
-		enum type_t { NONE, ONE, MANY, TEXT, LIST } type; // type
-		int arg; // argument index
-		bool opt; // optional, can skip?
-		StringList list; // text to match
-
-		// new TEXT node
-		FormatNode(int s_arg, bool s_opt, String s_text) :
-			type(TEXT), arg(s_arg), opt(s_opt), list() { list.push_back(s_text); }
-		// new LIST node
-		FormatNode(int s_arg, bool s_opt, const StringList& s_list) :
-			type(LIST), arg(s_arg), opt(s_opt), list(s_list) {}
-		// new WORD/STRING node
-		FormatNode(type_t s_type, int s_arg, bool s_opt) :
-			type(s_type), arg(s_arg), opt(s_opt), list() {}
-		// copy contrusctor
-		FormatNode(const FormatNode& node) :
-			type(node.type), arg(node.arg), opt(node.opt), list(node.list) {}
-	};
-	typedef GCType::vector<FormatNode> NodeList;
-	NodeList nodes;
 	Scriptix::ScriptFunction script;
 	CreatureCommandFunc ch_func;
 	PlayerCommandFunc ply_func;
 	int priority;
+	NodeList nodes;
 
 	// do the matching
 	int trymatch (int node, char** words, String argv[]) const;
 
 	// let command manager see us
 	friend class SCommandManager;
+};
+
+struct CommandFormatNode : public GC
+{
+	enum type_t { NONE, WORD, PHRASE, LITERAL } type; // type
+	int arg; // argument index
+	bool opt; // optional, can skip?
+	String literal; // text to match
+
+	// new LITERAL node
+	CommandFormatNode(int s_arg, bool s_opt, String s_literal) :
+		type(LITERAL), arg(s_arg), opt(s_opt), literal(s_literal) {}
+	// new WORD or PHRASE node
+	CommandFormatNode(type_t s_type, int s_arg, bool s_opt) :
+		type(s_type), arg(s_arg), opt(s_opt), literal() {}
+	// copy contrusctor
+	CommandFormatNode(const CommandFormatNode& node) :
+		type(node.type), arg(node.arg), opt(node.opt), literal(node.literal) {}
 };
 
 class Command : public GC

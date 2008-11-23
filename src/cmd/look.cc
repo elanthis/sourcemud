@@ -23,7 +23,11 @@
  * usage: look [at|in|on|under] <entity>
  *
  * format: look (20)
- * format: look :0(at,in,on,under)? :1* (20)
+ * format: look :1* (20)
+ * format: look :0at :1* (20)
+ * format: look :0in :1* (20)
+ * format: look :0on :1* (20)
+ * format: look :0under :1* (20)
  *
  * END COMMAND */
 

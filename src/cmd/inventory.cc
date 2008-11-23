@@ -18,7 +18,10 @@
  * usage: get <item> from [in|on|under] <container>
  *
  * format: get :0*
- * format: get :0* from :2(in,on,under)? :1*
+ * format: get :0* from :1*
+ * format: get :0* from :2in :1*
+ * format: get :0* from :2on :1*
+ * format: get :0* from :2under :1*
  *
  * END COMMAND */
 void command_get (Creature* ch, String argv[]) {
@@ -172,7 +175,9 @@ void command_drop (Creature* ch, String argv[])
  * name: put
  * usage: put <item> in|on|under <container>
  *
- * format: put :0* :2(in,on,under) :1*
+ * format: put :0* :2in :1*
+ * format: put :0* :2on :1*
+ * format: put :0* :2under :1*
  *
  * END COMMAND */
 void command_put (Creature* ch, String argv[]) {

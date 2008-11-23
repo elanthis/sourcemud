@@ -326,7 +326,7 @@ CommandFormat::build (String s_format)
 {
 	int arg;
 	bool opt;
-	FormatNode::type_t type;
+	CommandFormatNode::type_t type;
 	StringList words;
 
 	// set our format
@@ -343,7 +343,7 @@ CommandFormat::build (String s_format)
 		// reset
 		arg = -1;
 		opt = false;
-		type = FormatNode::NONE;
+		type = CommandFormatNode::NONE;
 		words.clear();
 
 		// parse the argument
@@ -354,10 +354,10 @@ CommandFormat::build (String s_format)
 				opt = true;
 			// word?
 			else if (*c == '%')
-				type = FormatNode::ONE;
+				type = CommandFormatNode::WORD;
 			// any-string?
 			else if (*c == '*')
-				type = FormatNode::MANY;
+				type = CommandFormatNode::PHRASE;
 			// arg index?
 			else if (*c == ':') {
 				arg = 0;
@@ -372,32 +372,8 @@ CommandFormat::build (String s_format)
 				// bounds modify arg
 				if (arg < 0) arg = 0;
 				if (arg >= MAX_COMMAND_ARGS) arg = MAX_COMMAND_ARGS - 1;
-			}
-			// list?
-			else if (*c == '(') {
-				// reset
-				words.clear();
-				// do lookup
-				char* sep;
-				++c;
-				while ((sep = strpbrk(c, ",)")) != NULL) {
-					if (sep > c)
-						words.push_back(String(c, sep - c));
-					if (*sep == ')') {
-						c = sep;
-						break;
-					} else {
-						c = sep + 1;
-					}
-				}
-				// push any remaining word
-				if (strlen(c))
-					words.push_back(String(c));
-				// type is words
-				type = FormatNode::LIST;
-			}
 			// text?
-			else if (isalpha(*c)) {
+			} else if (isalpha(*c)) {
 				// reset
 				StringBuffer buf;
 				do {
@@ -406,7 +382,7 @@ CommandFormat::build (String s_format)
 				--c;
 				words.resize(1);
 				words.back() = buf.str();
-				type = FormatNode::TEXT;
+				type = CommandFormatNode::LITERAL;
 			}
 
 			// check we're not at eof - happens in word/index/list/etc.
@@ -416,18 +392,15 @@ CommandFormat::build (String s_format)
 
 		// handle the type
 		switch (type) {
-			case FormatNode::NONE:
+			case CommandFormatNode::NONE:
 				// sanity check - have a type?
 				Log::Error << "Command format '" << format << "' has no type for chunk " << nodes.size()+1;
 				return -1;
-			case FormatNode::TEXT:
-				nodes.push_back(FormatNode(arg, opt, words.back()));
-				break;
-			case FormatNode::LIST:
-				nodes.push_back(FormatNode(arg, opt, words));
+			case CommandFormatNode::LITERAL:
+				nodes.push_back(CommandFormatNode(arg, opt, words.back()));
 				break;
 			default:
-				nodes.push_back(FormatNode(type, arg, opt));
+				nodes.push_back(CommandFormatNode(type, arg, opt));
 				break;
 		}
 	}
@@ -436,13 +409,12 @@ CommandFormat::build (String s_format)
 }
 
 // match command nodes
-int
-CommandFormat::trymatch (int node, char** words, String argv[]) const
+int CommandFormat::trymatch(int node, char** words, String argv[]) const
 {
 	int result;
 	int cnt;
 
-	// hit eol?
+	// hit end of nodes?
 	if (node >= (int)nodes.size()) {
 		// words left?  fail */
 		if (words[0])
@@ -451,114 +423,89 @@ CommandFormat::trymatch (int node, char** words, String argv[]) const
 			return -1;
 	}
 
-	// do matching
-	if (words[0]) {
-		switch (nodes[node].type) {
-			case FormatNode::NONE:
-				// auto-fail
-				return 0;
-			case FormatNode::ONE:
-				// store the word
-				if (nodes[node].arg >= 0)
-					argv[nodes[node].arg] = String(words[0]);
-				// try next match
-				result = trymatch(node + 1, &words[1], argv);
-				// match failed?
-				if (result >= 0) {
-					// clear out store
-					if (nodes[node].arg >= 0)
-						argv[nodes[node].arg].clear();
-					// were we optional?
-					if (nodes[node].opt) {
-						// try without us then
-						return trymatch(node + 1, words, argv);
-					} else {
-						return 1 + result;
-					}
-				} else {
-					return -1;
-				}
-				break;
-			case FormatNode::MANY:
-				// if we're optional, we need 0 words, otherwise we need 1 word
-				cnt = nodes[node].opt ? 0 : 1;
-				// try to find following match
-				while ((result = trymatch(node + 1, &words[cnt], argv)) >= 0) {
-					// was this the last word?  we fail!
-					if (words[cnt] == NULL)
-						return 1 + result;
-					++cnt;
-				}
-				// store word
-				if (nodes[node].arg >= 0)
-					argv[nodes[node].arg] = String(repair(words[0], cnt));
-				// not only are we now successful, but so too is everyone after us!
-				return -1;
-			case FormatNode::TEXT:
-				// have we a word that matches
-				if (phrase_match(nodes[node].list.front(), words[0])) {
-					// store the word
-					if (nodes[node].arg >= 0)
-						argv[nodes[node].arg] = nodes[node].list.front();
-					// try next match
-					result = trymatch(node + 1, &words[1], argv);
-					// match failed?
-					if (result >= 0) {
-						// clear out store
-						if (nodes[node].arg >= 0)
-							argv[nodes[node].arg].clear();
-						// were we optional?
-						if (nodes[node].opt) {
-							// try without us then
-							return trymatch(node + 1, words, argv);
-						} else {
-							return 1 + result;
-						}
-					} else {
-						return -1;
-					}
-				}
-				break;
-			case FormatNode::LIST:
-				// search list
-				cnt = 0;
-				for (StringList::const_iterator i = nodes[node].list.begin(); i != nodes[node].list.end(); ++i) {
-					if (phrase_match(*i, words[0]))
-						break;
-					++cnt;
-				}
-				if (cnt < (int)nodes[node].list.size()) {
-					// store the word
-					if (nodes[node].arg >= 0)
-						argv[nodes[node].arg] = nodes[node].list[cnt];
-					// try next match
-					result = trymatch(node + 1, &words[1], argv);
-					// match failed?
-					if (result >= 0) {
-						// clear out store
-						if (nodes[node].arg >= 0)
-							argv[nodes[node].arg].clear();
-						// were we optional?
-						if (nodes[node].opt) {
-							// try without us then
-							return trymatch(node + 1, words, argv);
-						} else {
-							return 1 + result;
-						}
-					} else {
-						return -1;
-					}
-				}
-				break;
-		}
+	// we're out of input words -- continue if arg is optional, otherwise
+	// we must now fail
+	if (words[0] == NULL) {
+		if (nodes[node].opt)
+			return trymatch(node + 1, words, argv);
+		else
+			return 0;
 	}
 
-	// no match, was it optional?
-	if (nodes[node].opt) {
-		// try next node
-		return trymatch(node + 1, words, argv);
-	} else {
-		return 0;
+	// do matching
+	switch (nodes[node].type) {
+		case CommandFormatNode::WORD:
+			// store the word
+			if (nodes[node].arg >= 0)
+				argv[nodes[node].arg] = String(words[0]);
+
+			// try the next node, return on success
+			result = trymatch(node + 1, &words[1], argv);
+			if (result == -1)
+				return -1;
+
+			// clear out stored argument
+			if (nodes[node].arg >= 0)
+				argv[nodes[node].arg].clear();
+
+			// if we're optional, then try the next node in the chain
+			// otherwise, fail with match count
+			if (nodes[node].opt)
+				return trymatch(node + 1, words, argv);
+			else
+				return 1 + result;
+
+		case CommandFormatNode::PHRASE:
+			// if we're optional, we need 0 words, otherwise we need 1 word
+			cnt = nodes[node].opt ? 0 : 1;
+
+			// match the remainder of the nodes.  if the match fails,
+			// then we move the input word index forward by one, and try
+			// again, until we either get a match or run out of input
+			// words to try
+			while ((result = trymatch(node + 1, &words[cnt], argv)) >= 0) {
+				// was this the last word?  we fail!
+				if (words[cnt] == NULL)
+					return cnt + result;
+				++cnt;
+			}
+
+			// store phrase
+			if (nodes[node].arg >= 0)
+				argv[nodes[node].arg] = String(repair(words[0], cnt));
+
+			// we have successfully matched all following nodes already,
+			// so we can just return the success code
+			return -1;
+
+		case CommandFormatNode::LITERAL:
+			// check for a match
+			if (!phrase_match(nodes[node].literal, words[0]))
+				return 0;
+
+			// store the full literal in the argument list
+			if (nodes[node].arg >= 0)
+				argv[nodes[node].arg] = nodes[node].literal;
+
+			// try the next node, return on success
+			result = trymatch(node + 1, &words[1], argv);
+			if (result == -1)
+				return -1;
+
+			// clear the stored argument
+			if (nodes[node].arg >= 0)
+				argv[nodes[node].arg].clear();
+
+			// if we're optional, then try the next node in the chain
+			// otherwise, fail with match count
+			if (nodes[node].opt)
+				return trymatch(node + 1, words, argv);
+			else
+				return 1 + result;
+
+		default:
+			// auto-fail
+			return 0;
 	}
 }
 
@@ -572,40 +519,49 @@ CommandFormat::operator< (const CommandFormat& format) const
 		return false;
 
 	// iterate over all our nodes, comparing with format
-	for (uint i = 0; i < nodes.size() && i < format.nodes.size(); ++i) {
-		// word list trumps all
-		if (nodes[i].type == FormatNode::LIST) {
-			if (format.nodes[i].type != FormatNode::LIST)
+	for (uint i = 0; i != nodes.size() && i != format.nodes.size(); ++i) {
+		// literal trumps variables
+		if (nodes[i].type == CommandFormatNode::LITERAL) {
+			if (format.nodes[i].type != CommandFormatNode::LITERAL)
 				return true;
-		// text trumps variables
-		} else if (nodes[i].type == FormatNode::TEXT) {
-			if (format.nodes[i].type == FormatNode::LIST)
-				return false;
-			else if (format.nodes[i].type != FormatNode::TEXT)
-				return true;
-			else if (!str_eq(nodes[i].list.front(), format.nodes[i].list.front()))
+			else if (!str_eq(nodes[i].literal, format.nodes[i].literal))
 				// normal string comparison
-				return nodes[i].list.front() < format.nodes[i].list.front();
+				return nodes[i].literal < format.nodes[i].literal;
 		// single word trumps many words
-		} else if (nodes[i].type == FormatNode::ONE) {
-			if (format.nodes[i].type == FormatNode::MANY)
+		} else if (nodes[i].type == CommandFormatNode::WORD) {
+			if (format.nodes[i].type == CommandFormatNode::PHRASE)
 				return true;
 				// no-op
-			else if (format.nodes[i].type != FormatNode::ONE)
+			else if (format.nodes[i].type != CommandFormatNode::WORD)
 				return false;
 		// if we're not both lists, format wins
 		} else {
-			if (format.nodes[i].type != FormatNode::MANY)
+			if (format.nodes[i].type != CommandFormatNode::PHRASE)
 				return false;
 		}
 	}
 
-	// matched so far; we're either equal or have extra terms.
-	// extra terms comes first
-	if (nodes.size() > format.nodes.size())
-		return true;
+	// matched so far; either we're equal, or one of us has
+	// extra nodes that need to be considered.  this is a bit
+	// tricky.  compare these two command formats:
+	//   verb *? at *   <-- want to try this one first
+	//   verb *?
+	// with these two command formats:
+	//   verb %? at? *
+	//   verb %         <-- want to try this one first
+	// so we can't just look at the length of the command
+	// formats.  this is because * will supercede all remaining
+	// nodes, while the others will not.  so... if the last
+	// node in both formats is a *, we want to give priority
+	// to whichever has extra nodes; otherwise, we give priority
+	// to whichever does NOT have extra nodes
+	if (nodes.size() > format.nodes.size()) {
+		return format.nodes.back().type == CommandFormatNode::PHRASE;
+	} else if (format.nodes.size() > nodes.size()) {
+		return nodes.back().type != CommandFormatNode::PHRASE;
+	}
 
-	// equal or he wins, so false
+	// identical formats (which we should hope never happens)
 	return false;
 }
 
@@ -719,16 +675,22 @@ namespace {
 			else if ((value % 10 > 3 || value % 10 == 0 || (value >= 10 && value <= 13)) && word_match(end, "th"))
 				return value;
 		}
-
-		// next, look for "other" or "second"
-		if (prefix_match("other", string) || prefix_match("second", string))
+		
+		// try the first, second (other), third, fourth, etc.
+		if (prefix_match("other", string))
 			return 2;
-
-		// try third
-		if (prefix_match("third", string))
+		else if (prefix_match("first", string))
+			return 1;
+		else if (prefix_match("second", string))
+			return 2;
+		else if (prefix_match("third", string))
 			return 3;
+		else if (prefix_match("fourth", string))
+			return 4;
+		else if (prefix_match("fifth", string))
+			return 5;
 
-		// nobodies going to go higher than that with words, and if they do, fuck 'em
+		// nobody's going to go higher than that with words, and if they do, fuck 'em
 		return 0;
 	}
 }
