@@ -9,6 +9,9 @@ XSLTPROC = @PATH_XSLTPROC@
 BISON = @PATH_BISON@
 FLEX = @PATH_FLEX@
 
+BUILDDIR = .build
+DEPDIR = .deps
+
 # FILES
 HEADERS = \
 	include/common/bitset.h \
@@ -92,7 +95,6 @@ HEADERS = \
 	include/mud/server.h \
 	include/mud/settings.h \
 	include/mud/skill.h \
-	include/mud/social.h \
 	include/mud/tag.h \
 	include/mud/telnet.h \
 	include/mud/timer.h \
@@ -177,7 +179,6 @@ SOURCES = \
 	src/mud/room.cc \
 	src/mud/settings.cc \
 	src/mud/skill.cc \
-	src/mud/social.cc \
 	src/mud/telnet.cc \
 	src/mud/time.cc \
 	src/mud/uniqid.cc \
@@ -208,23 +209,31 @@ BINARIES = sourcemud-bin
 BUILD = Makefile configure
 DIST = configure configure.ac Makefile.in sourcemud.in include/config.h.in src/scriptix/grammar.yy src/scriptix/lexer.ll
 
-OBJECTS = $(SOURCES:%.cc=.build/%.o)
+OBJECTS = $(SOURCES:%.cc=$(BUILDDIR)/%.o)
 
 # CORE BUILD
 all: $(BUILD) $(TOOLS) $(XML) $(HEADERS) $(SOURCES) $(OBJECTS) $(BINARIES)
 
 clean:
-	rm -fr $(BINARIES) $(OBJECTS) .deps build
+	@echo Cleaning
+	@rm -fr $(BINARIES) $(OBJECTS) $(DEPDIR) $(BUILDDIR)
 
-.build/%.o: %.cc
+$(BUILDDIR)/%.o: %.cc
 	@echo Compiling $<
 	@[ -d $(dir $@) ] || mkdir -p $(dir $@)
 	@$(CXX) -c -o $@ $(CXXFLAGS) $<
-	@[ -d .deps ] || mkdir .deps
-	@$(CXX) -MM -MT $@ -o .deps/$(shell echo "$@" | tr / _ | sed 's/.build_//').d $(CXXFLAGS) $<
+	@[ -d $(DEPDIR) ] || mkdir $(DEPDIR)
+	@depfile=$(DEPDIR)/$(shell echo "$@" | \
+			sed -e 's/\//_/g' -e 's/^\.build_//' -e 's/[.]o$$/.P/'); \
+		$(CXX) -MM -MT $@ -o "$$depfile" $(CXXFLAGS) $<; \
+		cp -f "$$depfile" "$$depfile.tmp"; \
+		sed -e 's/#.*//' -e 's/^[^:]*://' -e 's/^ *//' -e 's/ *\\$$//' \
+			-e '/^$$/ d' -e 's/$$/ :/' \
+			< "$$depfile.tmp" >> "$$depfile"; \
+		rm -f "$$depfile.tmp"
 
 # DEPENDENCIES
--include .deps/*
+-include $(DEPDIR)/*.P
 
 # BINARIES
 sourcemud-bin: $(OBJECTS)
@@ -270,8 +279,8 @@ src/generated/grammar.cc include/generated/grammar.h: src/scriptix/grammar.yy
 	@echo Generating $@
 	@-mkdir -p src/generated
 	@$(BISON) -y -d -o src/generated/grammar.cc src/scriptix/grammar.yy
-	@-[ -f src/generated/grammar.cc.h ] && mv -f src/generated/grammar.cc.h include/generated/grammar.h
-	@-[ -f src/generated/grammar.hh ] && mv -f src/generated/grammar.hh include/generated/grammar.h
+	@[ ! -f src/generated/grammar.cc.h ] || mv -f src/generated/grammar.cc.h include/generated/grammar.h
+	@[ ! -f src/generated/grammar.hh ] || mv -f src/generated/grammar.hh include/generated/grammar.h
 
 src/generated/lexer.cc: src/scriptix/lexer.ll include/generated/grammar.h
 	@echo Generating $@
