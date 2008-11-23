@@ -38,7 +38,6 @@ using namespace OLC;
  * access: GM
  *
  * END COMMAND */
-
 void command_olc_create (Player* builder, String argv[])
 {
 	// create npc from blueprint
@@ -143,4 +142,110 @@ void command_olc_create (Player* builder, String argv[])
 		ZoneManager.add_zone (zone);
 		*builder << "Zone '" << zone->get_id () << "' added.\n";
 	}
+}
+
+/* BEGIN COMMAND
+ *
+ * name: olc destroy
+ * usage: olc destroy [<type>] <entity>
+ *
+ * format: olc destroy:0(npc,object,room,portal)? :1* (80)
+ *
+ * access: GM
+ *
+ * END COMMAND */
+void command_olc_destroy (Player* builder, String argv[])
+{
+	Entity* entity;
+
+	// valid form?
+	if (!lookup_editable(builder, argv[0], argv[1], entity)) {
+		return;
+	}
+
+	// players not allowed
+	if (PLAYER(entity)) {
+		*builder << "You cannot destroy players.\n";
+		return;
+	}
+
+	// find creature?
+	if (NPC(entity)) {
+		entity->destroy();
+		*builder << "NPC " << StreamName(NPC(entity)) << " destroyed.\n";
+		return;
+	}
+
+	// find object?
+	if (OBJECT(entity)) {
+		entity->destroy();
+		*builder << "Object " << StreamName(OBJECT(entity)) << " destroyed.\n";
+		return;
+	}
+
+	// find portal?
+	if (PORTAL(entity)) {
+		entity->destroy();
+		*builder << "Portal " << StreamName(PORTAL(entity)) << " destroyed.\n";
+		return;
+	}
+
+	// find room?
+	if (ROOM(entity)) {
+		if (ROOM(entity) == builder->get_room ()) {
+			*builder << "You cannot delete the room you are in.\n";
+			return;
+		}
+
+		entity->destroy();
+		*builder << "Room '" << ROOM(entity)->get_id () << "' destroyed.\n";
+		return;
+	}
+
+	// find zone?
+	/* FIXME
+	if (ZONE(entity)) {
+		if (builder->get_room() && builder->get_room()->get_zone() == ZONE(entity)) {
+			*builder << "You cannot delete the zone you are in.\n";
+			return;
+		}
+
+		entity->destroy();
+		*builder << "Zone '" << ZONE(entity)->get_id () << "' destroyed.\n";
+		return;
+	}
+	*/
+}
+
+/* BEGIN COMMAND
+ *
+ * name: olc portals
+ * usage: olc portals [<room>]
+ *
+ * format: olc portals :0%? (80)
+ *
+ * access: GM
+ *
+ * END COMMAND */
+void command_olc_portals (Player *builder, String argv[])
+{
+	Room *room = NULL;
+	
+	if (argv[0].empty()) {
+		room = ROOM(builder->get_room ());
+		if (room == NULL) {
+			*builder << "You are not in a room.\n";
+			return;
+		}
+	} else {
+		room = ZoneManager.get_room(argv[0]);
+		if (room == NULL) {
+			*builder << "Could not find room '" << argv[0] << "'.\n";
+			return;
+		}
+	}
+
+	*builder << "Portal list:\n";
+
+	room->show_portals (*builder);
 }

@@ -18,6 +18,21 @@
 
 /* BEGIN COMMAND
  *
+ * name: gm announce
+ * usage: gm announce <message>
+ *
+ * format: gm announce :0* (80)
+ *
+ * access: GM
+ *
+ * END COMMAND */
+void command_gm_announce (Player* gm, String argv[])
+{
+	ZoneManager.announce (String(CADMIN "Announcement: " CNORMAL) + String(argv[0]));
+}
+
+/* BEGIN COMMAND
+ *
  * name: gm boot
  * usage: gm boot <player>
  *
@@ -26,7 +41,6 @@
  * access: GM
  *
  * END COMMAND */
-
 void command_gm_boot (Player* gm, String argv[])
 {
 	Player *cn = PlayerManager.get(argv[0]);
