@@ -42,7 +42,7 @@ for my $file (glob "src/cmd/*.cc") {
 			$cmd =~ tr/a-z/_/c;
 
 			push @usage, $name unless @usage;
-			push @format, $name unless @usage;
+			push @format, $name unless @format;
 			$access="ALL" unless $access;
 
 			die "$file has no name" unless $name ne "";
