@@ -312,7 +312,7 @@ void MD5Transform(uint32 buf[4], uint32 const in[16])
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
  * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- *  Modified 2002 by Sean Middleditch for Source MUD NG
+ *  Modified 2002 by Sean Middleditch for Source MUD
  */
 
 #include <sys/types.h>
@@ -340,7 +340,7 @@ _crypt_to64(char *s, u_long v, int n)
  * this stuff is worth it, you can buy me a beer in return.   Poul-Henning Kamp
  * ----------------------------------------------------------------------------
  *
- * Modified 2002 by Sean Middleditch for Source MUD NG
+ * Modified 2002 by Sean Middleditch for Source MUD
  */
 
 
@@ -474,7 +474,7 @@ MD5Crypt(const char *pw, const char *salt)
 } // namespace
 
 /*
- * The following code is original Source MUD NG code.
+ * The following code is original Source MUD code.
  * Copyright (C) 2003  Sean Middleditch
  */
 

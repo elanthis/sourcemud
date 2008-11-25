@@ -991,7 +991,7 @@ TelnetHandler::process_sb ()
 				// set xterm title
 				if (io_flags.xterm) {
 					send_data (3, '\033', ']', ';');
-					add_output ("Source MUD NG", 9);
+					add_output ("Source MUD", 10);
 					send_data (1, '\a');
 				}
 			}

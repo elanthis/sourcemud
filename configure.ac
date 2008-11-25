@@ -79,12 +79,6 @@ AC_CHECK_HEADER(execinfo.h,[
 	AC_DEFINE(HAVE_EXECINFO, 1, [The execinfo.h header is present])
 ])
 
-# don't use automake's yacc/lex support - it's totally broken for our needs
-AC_PATH_PROG(PATH_BISON,bison)
-AC_SUBST(PATH_BISON)
-AC_PATH_PROG(PATH_FLEX,flex)
-AC_SUBST(PATH_FLEX)
-
 # Networking libraries
 AC_CHECK_LIB(socket,connect)
 AC_CHECK_LIB(nsl,gethostbyname)
@@ -202,9 +196,7 @@ else
 fi
 echo "  Perl       ... $PATH_PERL"
 echo "  XSLT       ... $PATH_XSLTPROC"
-echo "  Bison      ... $PATH_BISON"
-echo "  Flex       ... $PATH_FLEX"
 
 echo
-echo "Now type \"make\" to build Source MUD NG"
+echo "Now type \"make\" to build Source MUD"
 echo
