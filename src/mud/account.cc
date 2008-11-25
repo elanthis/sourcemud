@@ -15,7 +15,7 @@
 
 SAccountManager AccountManager;
 
-Account::Account (String s_id) : id(s_id), active(0), maxcharacters(0), maxactive(0)
+Account::Account (String s_id) : id(s_id), active(0), maxcharacters(0), maxactive(0), timeout(0)
 {
 	flags.disabled = false;
 	time_created = time(NULL);
