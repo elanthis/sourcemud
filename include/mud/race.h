@@ -14,9 +14,9 @@
 
 #include <algorithm>
 
-#include "common/gcvector.h"
-#include "common/gcmap.h"
-#include "common/gcset.h"
+#include <vector>
+#include <map>
+#include <set>
 #include "common/string.h"
 #include "mud/fileobj.h"
 #include "mud/creature.h"
@@ -49,9 +49,9 @@ Race
 	String get_about () const { return about; }
 	String get_desc () const { return desc; }
 
-	const GCType::vector<FormColor>& get_eye_colors() const { return eye_colors; }
-	const GCType::vector<FormColor>& get_skin_colors() const { return skin_colors; }
-	const GCType::vector<FormColor>& get_hair_colors() const { return hair_colors; }
+	const std::vector<FormColor>& get_eye_colors() const { return eye_colors; }
+	const std::vector<FormColor>& get_skin_colors() const { return skin_colors; }
+	const std::vector<FormColor>& get_hair_colors() const { return hair_colors; }
 
 	Race* get_next () const { return next; }
 
@@ -69,9 +69,9 @@ Race
 
 	int stats[CreatureStatID::COUNT];
 
-	GCType::vector<FormColor> eye_colors;
-	GCType::vector<FormColor> hair_colors;
-	GCType::vector<FormColor> skin_colors;
+	std::vector<FormColor> eye_colors;
+	std::vector<FormColor> hair_colors;
+	std::vector<FormColor> skin_colors;
 
 	Race* next;
 };

@@ -7,7 +7,7 @@
 
 #include "mud/skill.h"
 
-GCType::vector<String> SkillID::names;
+std::vector<String> SkillID::names;
 
 const SkillID SKILL_DODGE = SkillID::create(S("dodge"));
 const SkillID SKILL_PERCEPTION = SkillID::create(S("perception"));

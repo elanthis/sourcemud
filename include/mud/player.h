@@ -13,6 +13,7 @@
 #endif // HAVE_CONFIG_H
 
 #include <vector>
+#include <map>
 #include <algorithm>
 
 #include "common/string.h"
@@ -21,10 +22,7 @@
 #include "mud/network.h"
 #include "mud/form.h"
 #include "mud/gametime.h"
-#include "common/gcbase.h"
 #include "mud/skill.h"
-#include "common/gcvector.h"
-#include "common/gcmap.h"
 #include "common/imanager.h"
 #include "mud/pconn.h"
 #include "common/time.h"

@@ -7,18 +7,18 @@
 
 #include <algorithm>
 
-#include "common/gcmap.h"
+#include <map>
 #include "common/imanager.h"
 
-GCType::vector<IManager*>* IManager::managers = NULL;
-GCType::vector<IManager*>* IManager::pending = NULL;
+std::vector<IManager*>* IManager::managers = NULL;
+std::vector<IManager*>* IManager::pending = NULL;
 
 // add manager to registry
 IManager::IManager ()
 {
 	// make managers vector
 	if (!pending)
-		pending = new GCType::vector<IManager*>;
+		pending = new std::vector<IManager*>;
 
 	// register
 	pending->push_back(this);
@@ -30,7 +30,7 @@ IManager::require (IManager& manager)
 {
 	// make managers vector
 	if (!managers)
-		managers = new GCType::vector<IManager*>;
+		managers = new std::vector<IManager*>;
 
 	// already initialized?
 	if (std::find(managers->begin(), managers->end(), &manager) != managers->end())
@@ -52,7 +52,7 @@ int
 IManager::initialize_all ()
 {
 	// load manager
-	for (GCType::vector<IManager*>::iterator i = pending->begin(); i != pending->end(); ++i)
+	for (std::vector<IManager*>::iterator i = pending->begin(); i != pending->end(); ++i)
 		if (IManager::require(**i))
 			return -1;
 
@@ -67,7 +67,7 @@ IManager::initialize_all ()
 void
 IManager::shutdown_all ()
 {
-	for (GCType::vector<IManager*>::reverse_iterator i = managers->rbegin(); i != managers->rend(); ++i)
+	for (std::vector<IManager*>::reverse_iterator i = managers->rbegin(); i != managers->rend(); ++i)
 		(*i)->shutdown();
 }
 
@@ -75,7 +75,7 @@ IManager::shutdown_all ()
 void
 IManager::save_all ()
 {
-	for (GCType::vector<IManager*>::reverse_iterator i = managers->rbegin(); i != managers->rend(); ++i)
+	for (std::vector<IManager*>::reverse_iterator i = managers->rbegin(); i != managers->rend(); ++i)
 		(*i)->save();
 }
 

@@ -108,7 +108,7 @@ GameCalendar::get_weekday (const GameTime &gt) const
 
 	// what the hell was this supposed to be doing again?
 
-	for (GCType::vector<GameCalendar::Month>::const_iterator i = months.begin (); i != months.end (); i ++)
+	for (std::vector<GameCalendar::Month>::const_iterator i = months.begin (); i != months.end (); i ++)
 	{
 		uint year = gt.get_year() - (gt.get_month() > months.end () - i + 1 ? 0 : 1);
 		total_days += i->day_count * year;
@@ -137,7 +137,7 @@ GameCalendar::days_in_month (const GameTime &gt) const
 String
 GameCalendar::get_holiday (const GameTime &gt) const
 {
-	for (GCType::vector<GameCalendar::Holiday>::const_iterator i = holidays.begin(); i != holidays.end(); ++i) {
+	for (std::vector<GameCalendar::Holiday>::const_iterator i = holidays.begin(); i != holidays.end(); ++i) {
 		// check year
 		if (i->year > 0 && (gt.get_year() % i->year) != 0)
 			continue;
@@ -158,7 +158,7 @@ int
 GameCalendar::find_month (String name)
 {
 	uint ii = 0;
-	for (GCType::vector<GameCalendar::Month>::const_iterator i = months.begin(); i != months.end(); ++i, ++ii) {
+	for (std::vector<GameCalendar::Month>::const_iterator i = months.begin(); i != months.end(); ++i, ++ii) {
 		if (name == i->name)
 			return ii;
 	}

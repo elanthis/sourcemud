@@ -13,12 +13,11 @@
 #include <algorithm>
 #include <map>
 
-#include "common/gcbase.h"
 #include "common/types.h"
 #include "common/error.h"
 #include "common/string.h"
 #include "common/imanager.h"
-#include "common/gcset.h"
+#include <set>
 #include "mud/uniqid.h"
 #include "mud/event.h"
 #include "mud/color.h"
@@ -37,9 +36,9 @@
 
 // for the global entity list
 typedef std::list<Entity*> EntityList; // NOTE: no gc_alloc, don't want GC to scan this
-typedef GCType::set<TagID> TagList;
+typedef std::set<TagID> TagList;
 typedef std::multimap<TagID, Entity*> TagTable; // NOTE: also non-GC scanning
-typedef GCType::vector<EventHandler*> EventList;
+typedef std::vector<EventHandler*> EventList;
 typedef std::map<UniqueID, Entity*> UniqueIDMap; // NOTE: also non-GC scanning
 
 // --- Entity Definiton ---

@@ -125,7 +125,7 @@ Room::save_data (File::Writer& writer)
 	if (coins)
 		writer.attr(S("room"), S("coins"), coins);
 
-	for (GCType::map<PortalDir,Portal*>::const_iterator i = portals.begin(); i != portals.end(); ++i) {
+	for (std::map<PortalDir,Portal*>::const_iterator i = portals.begin(); i != portals.end(); ++i) {
 		if (i->second->get_owner() == this)
 			i->second->save(writer, S("room"), S("child"));
 	}
@@ -154,7 +154,7 @@ Room::find_portal (String e_name, uint c, uint *matches)
 	if (matches)
 		*matches = 0;
 
-	for (GCType::map<PortalDir,Portal*>::const_iterator i = portals.begin(); i != portals.end(); ++i) {
+	for (std::map<PortalDir,Portal*>::const_iterator i = portals.begin(); i != portals.end(); ++i) {
 		if (i->second->name_match (e_name)) {
 			if (matches)
 				++ *matches;
@@ -168,7 +168,7 @@ Room::find_portal (String e_name, uint c, uint *matches)
 Portal *
 Room::get_portal_by_dir (PortalDir dir)
 {
-	GCType::map<PortalDir,Portal*>::iterator i = portals.find(dir);
+	std::map<PortalDir,Portal*>::iterator i = portals.find(dir);
 	if (i != portals.end())
 		return i->second;
 	else
@@ -195,7 +195,7 @@ Room::register_portal (Portal* portal)
 	assert(portal != NULL);
 	assert(portal->get_target() == get_id());
 
-	GCType::map<PortalDir,Portal*>::iterator i = portals.find(portal->get_dir().get_opposite());
+	std::map<PortalDir,Portal*>::iterator i = portals.find(portal->get_dir().get_opposite());
 	if (i == portals.end()) {
 		portals[portal->get_dir().get_opposite()] = portal;
 		return true;
@@ -211,7 +211,7 @@ Room::unregister_portal (Portal* portal)
 	assert(portal != NULL);
 	assert(portal->get_target() == get_id());
 
-	GCType::map<PortalDir,Portal*>::iterator i = portals.find(portal->get_dir().get_opposite());
+	std::map<PortalDir,Portal*>::iterator i = portals.find(portal->get_dir().get_opposite());
 	if (i != portals.end() && i->second == portal)
 		portals.erase(i);
 }
@@ -241,7 +241,7 @@ Room::activate ()
 {
 	Entity::activate ();
 
-	for (GCType::map<PortalDir,Portal*>::const_iterator i = portals.begin(); i != portals.end(); ++i)
+	for (std::map<PortalDir,Portal*>::const_iterator i = portals.begin(); i != portals.end(); ++i)
 		if (i->second->get_owner() == this)
 			i->second->activate();
 	for (EList<Creature>::const_iterator i = creatures.begin(); i != creatures.end(); ++i)
@@ -253,7 +253,7 @@ Room::activate ()
 void
 Room::deactivate ()
 {
-	for (GCType::map<PortalDir,Portal*>::const_iterator i = portals.begin(); i != portals.end(); ++i)
+	for (std::map<PortalDir,Portal*>::const_iterator i = portals.begin(); i != portals.end(); ++i)
 		if (i->second->get_owner() == this)
 			i->second->deactivate();
 	for (EList<Creature>::const_iterator i = creatures.begin(); i != creatures.end(); ++i)
@@ -295,7 +295,7 @@ Room::owner_release (Entity* child)
 	// Portal?
 	Portal* portal = PORTAL(child);
 	if (portal != NULL) {
-		GCType::map<PortalDir,Portal*>::iterator i = portals.find(portal->get_dir());
+		std::map<PortalDir,Portal*>::iterator i = portals.find(portal->get_dir());
 		if (i != portals.end() && i->second == portal)
 			portals.erase(i);
 	}
@@ -333,11 +333,11 @@ Room::show (const StreamControl& stream, Creature* viewer)
 	stream << "\n";
 
 	// lists of stuffs
-	GCType::vector<Entity*> ents;
+	std::vector<Entity*> ents;
 	ents.reserve(10);
 
 	// portals
-	for (GCType::map<PortalDir,Portal*>::const_iterator i = portals.begin(); i != portals.end(); ++i) {
+	for (std::map<PortalDir,Portal*>::const_iterator i = portals.begin(); i != portals.end(); ++i) {
 		// portal not hidden?
 		if (!i->second->is_hidden() && !i->second->is_disabled())
 			ents.push_back(i->second);
@@ -463,13 +463,13 @@ Room::show (const StreamControl& stream, Creature* viewer)
 void
 Room::show_portals (const StreamControl& stream)
 {
-	for (GCType::map<PortalDir,Portal*>::const_iterator i = portals.begin(); i != portals.end(); ++i)
+	for (std::map<PortalDir,Portal*>::const_iterator i = portals.begin(); i != portals.end(); ++i)
 		stream << StreamName(*i->second) << " <" << i->second->get_target() << ">\n";
 }
 
 /* broadcast a message to the Room */
 void
-Room::put (String msg, size_t len, GCType::vector<Creature*>* ignore_list)
+Room::put (String msg, size_t len, std::vector<Creature*>* ignore_list)
 {
 	// iterator
 	for (EList<Creature>::iterator i = creatures.begin(); i != creatures.end(); ++i) {
@@ -553,7 +553,7 @@ Room::broadcast_event (const Event& event)
 		EventManager.resend(event, *i);
 
 	// propogate to portals
-	for (GCType::map<PortalDir,Portal*>::const_iterator i = portals.begin(); i != portals.end(); ++i)
+	for (std::map<PortalDir,Portal*>::const_iterator i = portals.begin(); i != portals.end(); ++i)
 		EventManager.resend(event, i->second);
 }
 
@@ -570,7 +570,7 @@ RoomStreamSink : public IStreamSink {
 	private:
 	class Room& room;
 	StringBuffer buffer;
-	typedef GCType::vector<class Creature*> IgnoreList;
+	typedef std::vector<class Creature*> IgnoreList;
 	IgnoreList ignores;
 };
 

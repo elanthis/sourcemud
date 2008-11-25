@@ -10,7 +10,7 @@
 
 #include "common/types.h"
 #include "common/string.h"
-#include "common/gcvector.h"
+#include <vector>
 
 class SkillID {
 	public:
@@ -33,7 +33,7 @@ class SkillID {
 	private:
 	int value;
 
-	static GCType::vector<String> names;
+	static std::vector<String> names;
 };
 
 class SkillSet
@@ -46,7 +46,7 @@ class SkillSet
 	bool hasSkill (SkillID id) const { return getSkill(id) > 0; }
 
 	private:
-	GCType::vector<int> skills;
+	std::vector<int> skills;
 };
 
 extern const SkillID SKILL_DODGE;

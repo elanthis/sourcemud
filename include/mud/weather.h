@@ -8,7 +8,7 @@
 #ifndef SOURCEMUD_MUD_WEATHER_H
 #define SOURCEMUD_MUD_WEATHER_H
 
-#include "common/gcvector.h"
+#include <vector>
 #include "mud/fileobj.h"
 #include "common/string.h"
 #include "common/imanager.h"
@@ -28,7 +28,7 @@ struct WeatherState {
 	void save (File::Writer& writer) const;
 
 	String id;
-	GCType::vector<WeatherChange> changes;
+	std::vector<WeatherChange> changes;
 	StringList descs;
 };
 
@@ -48,7 +48,7 @@ class WeatherRegion {
 	void update ();
 
 	protected:
-	GCType::vector<WeatherState> states;
+	std::vector<WeatherState> states;
 	uint state;
 	uint ticks;
 

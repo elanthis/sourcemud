@@ -11,12 +11,11 @@
 #include <sys/stat.h>
 
 #include <fstream>
+#include <map>
+#include <vector>
 
 #include "common/string.h"
-#include "common/gcbase.h"
 #include "common/log.h"
-#include "common/gcmap.h"
-#include "common/gcvector.h"
 #include "mud/uniqid.h"
 
 namespace File
@@ -33,7 +32,7 @@ namespace File
 		inline String get_what () const { return what; }
 	};
 
-	class Value : public GC
+	class Value
 	{
 		public:
 		enum Type {
@@ -47,19 +46,19 @@ namespace File
 
 		Value () : type(TYPE_NONE), value(), list() {}
 		Value (Type s_type, String s_value) : type(s_type), value(s_value), list() {}
-		Value (const GCType::vector<Value>& s_list) : type(TYPE_LIST), value(), list(s_list) {}
+		Value (const std::vector<Value>& s_list) : type(TYPE_LIST), value(), list(s_list) {}
 
 		Type get_type () const { return type; }
 		String get_value () const { return value; }
-		const GCType::vector<Value>& get_list () const { return list; }
+		const std::vector<Value>& get_list () const { return list; }
 
 		private:
 		Type type;
 		String value;
-		GCType::vector<Value> list;
+		std::vector<Value> list;
 	};
 
-	class Node : public GC
+	class Node
 	{
 		public:
 		enum Type {
@@ -82,8 +81,8 @@ namespace File
 		int get_int () const;
 		UniqueID get_id () const;
 
-		const GCType::vector<Value>& get_list () const;
-		const GCType::vector<Value>& get_list (size_t size) const;
+		const std::vector<Value>& get_list () const;
+		const std::vector<Value>& get_list (size_t size) const;
 
 		String get_string (size_t index) const;
 		int get_int (size_t index) const;
@@ -111,7 +110,7 @@ namespace File
 		friend class Reader;
 	};
 
-	class Reader : public Cleanup
+	class Reader
 	{
 		public:
 		Reader () : in(), filename(), line(0) {}
@@ -144,7 +143,7 @@ namespace File
 		bool set_value (Token type, String data, Value& value);
 	};
 
-	class Writer : public Cleanup
+	class Writer
 	{
 		public:
 		Writer () : out(), indent(0) {}
@@ -160,7 +159,7 @@ namespace File
 		void attr (String ns, String name, long data);
 		void attr (String ns, String name, bool data);
 		void attr (String ns, String name, const UniqueID& data);
-		void attr (String ns, String name, const GCType::vector<Value>& list);
+		void attr (String ns, String name, const std::vector<Value>& list);
 
 		inline void attr (String ns, String name, unsigned long data) { attr(ns, name, (long)data); }
 		inline void attr (String ns, String name, int data) { attr(ns, name, (long)data); }

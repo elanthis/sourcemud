@@ -11,18 +11,18 @@
 #include <algorithm>
 
 #include "common/string.h"
-#include "common/gcvector.h"
+#include <vector>
 #include "common/error.h"
 
 // --- EList Definition ---
 template<class EntType>
-class EList : public GCType::vector<EntType*>
+class EList : public std::vector<EntType*>
 {
-	typedef GCType::vector<EntType*> vtype;
+	typedef std::vector<EntType*> vtype;
 
 	public:
-	EList<EntType> (void) : GCType::vector<EntType*>() {}
-	EList<EntType> (size_t size) : GCType::vector<EntType*>(size) {}
+	EList<EntType> (void) : std::vector<EntType*>() {}
+	EList<EntType> (size_t size) : std::vector<EntType*>(size) {}
 
 	void add (EntType* ent);
 	void remove (EntType* ent);

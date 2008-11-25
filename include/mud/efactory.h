@@ -10,7 +10,7 @@
 
 #include "common/string.h"
 #include "common/imanager.h"
-#include "common/gcmap.h"
+#include <map>
 
 class Entity;
 
@@ -34,7 +34,7 @@ class SEntityFactoryManager : public IManager
 	static void register_factory (const IEntityFactory*);
 
 	private:
-	typedef GCType::map<String, const IEntityFactory*> FactoryList;
+	typedef std::map<String, const IEntityFactory*> FactoryList;
 	static FactoryList* factories;
 };
 

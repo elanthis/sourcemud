@@ -2,7 +2,6 @@
 #include "mud/portal.h"
 #include "mud/object.h"
 #include "mud/zone.h"
-#include "common/gcvector.h"
 #include "mud/creature.h"
 #include "mud/player.h"
 #include "mud/npc.h"

@@ -15,7 +15,7 @@
 #include "mud/elist.h"
 #include "mud/server.h"
 #include "common/imanager.h"
-#include "common/gcmap.h"
+#include <map>
 #include "common/bitset.h"
 
 // Object flags

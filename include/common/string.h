@@ -11,9 +11,8 @@
 #include <string>
 #include <sstream>
 #include <cstring>
+#include <vector>
 
-#include "gcbase.h"
-#include "gcvector.h"
 #include "types.h"
 
 #define isvowel (ch) ((ch) == 'a' || (ch) == 'e' || (ch) == 'i' || (ch) == 'o' || (ch) == 'u' || (ch) == 'y')
@@ -39,7 +38,7 @@ class GCString {
 };
 
 /* hold a C++-style string in a less braind-dead way*/
-class String : public GC
+class String
 {
 	public:
 	String () : string("") {}
@@ -109,7 +108,7 @@ inline bool operator< (CString left, String right) { return strcmp(left, right.c
 inline std::ostream& operator << (std::ostream& stream, String str) { return stream << str.c_str(); }
 
 // a list of strings
-typedef GCType::vector<String> StringList;
+typedef std::vector<String> StringList;
 
 // return suffix of number, like 1=>st, 2=>nd, etc.
 String get_num_suffix (uint);

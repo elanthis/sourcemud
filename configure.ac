@@ -132,11 +132,6 @@ if test "x$ZLIB" = "xyes" ; then
 	AC_DEFINE(HAVE_ZLIB, 1, [We have zlib])
 fi
 
-# Boehm-Demer-Weiss GC
-AC_ARG_WITH(gc,[  --with-gc=<path>        Prefix of your GC library installation],[LDFLAGS="$LDFLAGS -L$withval/lib";CXXFLAGS="$CXXFLAGS -I$withval/include"])
-AC_CHECK_LIB(dl,dlopen,[LIBS="$LIBS -ldl"])
-AC_CHECK_LIB(gc,GC_malloc,,[AC_MSG_ERROR([Could not find suitable libgc])])
-
 # Debugging, always
 AC_DEFINE(DEBUG, 1, [Enable debugging features])
 

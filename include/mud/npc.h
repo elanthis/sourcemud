@@ -193,7 +193,7 @@ class Npc : public Creature
 
 class SNpcBPManager : public IManager
 {
-	typedef GCType::map<String,NpcBP*> BlueprintMap;
+	typedef std::map<String,NpcBP*> BlueprintMap;
 
 	public:
 	int initialize ();

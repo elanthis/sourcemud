@@ -14,11 +14,11 @@
 
 #ifdef HAVE_SENDMAIL
 
-#include "common/gcvector.h"
+#include <vector>
 #include "common/string.h"
 #include "common/strbuf.h"
 
-class MailMessage : public GC {
+class MailMessage {
 	private:
 	String to;
 	String subject;
@@ -27,7 +27,7 @@ class MailMessage : public GC {
 		String name;
 		String value;
 	};
-	GCType::vector<Header> headers;
+	std::vector<Header> headers;
 
 	public:
 	MailMessage (String s_to, String s_subj, String s_body) :

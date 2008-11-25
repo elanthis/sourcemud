@@ -11,10 +11,9 @@
 #include <sys/types.h>
 #include <regex.h>
 
-#include "common/gcbase.h"
 #include "common/string.h"
 
-class RegEx : public GCType::CleanupNonVirtual {
+class RegEx {
 	public:
 	RegEx (String pattern, bool nocase = false);
 	~RegEx ();

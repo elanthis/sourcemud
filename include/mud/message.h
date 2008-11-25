@@ -11,7 +11,7 @@
 #include "common/string.h"
 #include "mud/server.h"
 #include "common/imanager.h"
-#include "common/gcmap.h"
+#include <map>
 
 class SMessageManager : public IManager
 {
@@ -22,7 +22,7 @@ class SMessageManager : public IManager
 	String get (String id);
 
 	private:
-	typedef GCType::map<String, String> MessageMap;
+	typedef std::map<String, String> MessageMap;
 	MessageMap messages;
 };
 extern SMessageManager MessageManager;

@@ -162,9 +162,6 @@ namespace {
 		// remove files
 		if (pid_path)
 			unlink (pid_path);
-
-		// cleanup
-		GC_gcollect();
 	}
 
 	inline void
@@ -387,15 +384,6 @@ main (int argc, char **argv)
 		"Source MUD comes with ABSOLUTELY NO WARRANTY; see COPYING for details.\n"
 		"This is free software, and you are welcome to redistribute it\n"
 		"under certain conditions; for details, see the file COPYING.\n");
-
-#if (defined(sparc) || defined(__sparc)) && defined(sun)
-	// do nothing; GC_INIT() fails in C++ mode and is only necessary
-	// for older Solaris environment, which we aren't going to support
-	// anyhow.
-#else
-	// initialize GC
-	GC_INIT();
-#endif
 
 	// load settings
 	if (IManager::require(SettingsManager))

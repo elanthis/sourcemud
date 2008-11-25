@@ -137,7 +137,7 @@ ShadowObject : public Object
 
 class SObjectBPManager : public IManager
 {
-	typedef GCType::map<String,ObjectBP*> BlueprintMap;
+	typedef std::map<String,ObjectBP*> BlueprintMap;
 
 	public:
 	int initialize ();

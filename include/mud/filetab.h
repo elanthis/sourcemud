@@ -11,14 +11,13 @@
 #include <sys/stat.h>
 
 #include <fstream>
+#include <vector>
 
 #include "common/string.h"
-#include "common/gcbase.h"
-#include "common/gcvector.h"
 
 namespace File
 {
-	class TabReader : public Cleanup
+	class TabReader
 	{
 		public:
 		TabReader () : in(), filename(), line(0) {}
@@ -47,7 +46,7 @@ namespace File
 		size_t line;
 
 		typedef std::pair<size_t, StringList> Entry;
-		typedef GCType::vector<Entry> Entries;
+		typedef std::vector<Entry> Entries;
 
 		Entries entries;
 	};

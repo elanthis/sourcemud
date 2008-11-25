@@ -11,8 +11,8 @@
 #include <algorithm>
 
 #include "common/string.h"
-#include "common/gcset.h"
-#include "common/gcvector.h"
+#include <set>
+#include <vector>
 
 // NOTE:
 // The funky static methods to retrieve the name list and intptr_t map
@@ -24,7 +24,7 @@
 class IDManager
 {
 	public:
-	typedef GCType::set<String> IDMap;
+	typedef std::set<String> IDMap;
 
 	IDManager ();
 	~IDManager ();

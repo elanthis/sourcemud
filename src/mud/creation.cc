@@ -250,7 +250,7 @@ void TelnetModeRealNewCharacter::process (char* line)
 			show_error(S("I do not understand thy response."));
 			break;
 		case STATE_SKINCOLOR:
-			for (GCType::vector<FormColor>::const_iterator i = race->get_skin_colors().begin(); i != race->get_skin_colors().end(); ++i) {
+			for (std::vector<FormColor>::const_iterator i = race->get_skin_colors().begin(); i != race->get_skin_colors().end(); ++i) {
 				if ((--numeric) == 0 || is_match(i->get_name(), input)) {
 					skin_color = *i;
 					enter_state(STATE_EYECOLOR);
@@ -260,7 +260,7 @@ void TelnetModeRealNewCharacter::process (char* line)
 			show_error(S("I do not understand thy response."));
 			break;
 		case STATE_EYECOLOR:
-			for (GCType::vector<FormColor>::const_iterator i = race->get_eye_colors().begin(); i != race->get_eye_colors().end(); ++i) {
+			for (std::vector<FormColor>::const_iterator i = race->get_eye_colors().begin(); i != race->get_eye_colors().end(); ++i) {
 				if ((--numeric) == 0 || is_match(i->get_name(), input)) {
 					eye_color = *i;
 					enter_state(STATE_HAIRCOLOR);
@@ -270,7 +270,7 @@ void TelnetModeRealNewCharacter::process (char* line)
 			show_error(S("I do not understand thy response."));
 			break;
 		case STATE_HAIRCOLOR:
-			for (GCType::vector<FormColor>::const_iterator i = race->get_hair_colors().begin(); i != race->get_hair_colors().end(); ++i) {
+			for (std::vector<FormColor>::const_iterator i = race->get_hair_colors().begin(); i != race->get_hair_colors().end(); ++i) {
 				if ((--numeric) == 0 || is_match(i->get_name(), input)) {
 					hair_color = *i;
 					enter_state(STATE_HAIRSTYLE);
@@ -461,7 +461,7 @@ void TelnetModeRealNewCharacter::display ()
 		case STATE_SKINCOLOR:
 		{
 			size_t c = 1;
-			for (GCType::vector<FormColor>::const_iterator i = race->get_skin_colors().begin(); i != race->get_skin_colors().end(); ++i)
+			for (std::vector<FormColor>::const_iterator i = race->get_skin_colors().begin(); i != race->get_skin_colors().end(); ++i)
 				*get_handler() << c++ << ") " << capwords(i->get_name()) << "\n";
 			*get_handler() << "\n";
 			break;
@@ -469,7 +469,7 @@ void TelnetModeRealNewCharacter::display ()
 		case STATE_EYECOLOR:
 		{
 			size_t c = 1;
-			for (GCType::vector<FormColor>::const_iterator i = race->get_eye_colors().begin(); i != race->get_eye_colors().end(); ++i)
+			for (std::vector<FormColor>::const_iterator i = race->get_eye_colors().begin(); i != race->get_eye_colors().end(); ++i)
 				*get_handler() << c++ << ") " << capwords(i->get_name()) << "\n";
 			*get_handler() << "\n";
 			break;
@@ -477,7 +477,7 @@ void TelnetModeRealNewCharacter::display ()
 		case STATE_HAIRCOLOR:
 		{
 			size_t c = 1;
-			for (GCType::vector<FormColor>::const_iterator i = race->get_hair_colors().begin(); i != race->get_hair_colors().end(); ++i)
+			for (std::vector<FormColor>::const_iterator i = race->get_hair_colors().begin(); i != race->get_hair_colors().end(); ++i)
 				*get_handler() << c++ << ") " << capwords(i->get_name()) << "\n";
 			*get_handler() << "\n";
 			break;

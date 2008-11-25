@@ -12,9 +12,9 @@
 #include "config.h"
 #endif // HAVE_CONFIG_H
 
-#include "common/gcmap.h"
+#include <map>
+
 #include "common/types.h"
-#include "common/gcbase.h"
 #include "common/strbuf.h"
 #include "common/streams.h"
 #include "mud/network.h"
@@ -22,7 +22,7 @@
 #include "mud/account.h"
 #include "mud/macro.h"
 
-class HTTPSession : public GC
+class HTTPSession
 {
 	public:
 	HTTPSession (Account* s_account);
@@ -42,7 +42,7 @@ class HTTPSession : public GC
 	String id;
 	time_t timestamp;
 	Account* account;
-	GCType::map<String,String> vars;
+	std::map<String,String> vars;
 };
 
 class HTTPHandler : public SocketConnection, public IStreamSink, public IMacroObject
@@ -90,7 +90,7 @@ class HTTPHandler : public SocketConnection, public IStreamSink, public IMacroOb
 
 	protected:
 	// parse urlencoded data (GET/POST)
-	void parse_request_data (GCType::map<String,String>& map, const char* input) const;
+	void parse_request_data (std::map<String,String>& map, const char* input) const;
 
 
 	SockStorage addr;
@@ -104,11 +104,11 @@ class HTTPHandler : public SocketConnection, public IStreamSink, public IMacroOb
 	enum { REQ, HEADER, BODY, DONE, ERROR } state;
 	size_t content_length;
 	time_t timeout;
-	GCType::map<String, String> headers;
+	std::map<String, String> headers;
 
 	// request data
-	GCType::map<String, String> get;
-	GCType::map<String, String> post;
+	std::map<String, String> get;
+	std::map<String, String> post;
 
 	// the session
 	HTTPSession* session;
@@ -129,10 +129,10 @@ class SHTTPManager : public IManager
 	void check_timeouts ();
 
 	private:
-	typedef GCType::map<String, String> TemplateMap;
+	typedef std::map<String, String> TemplateMap;
 	TemplateMap templates;
 
-	typedef GCType::map<String, HTTPSession*> SessionMap;
+	typedef std::map<String, HTTPSession*> SessionMap;
 	SessionMap sessions;
 };
 extern SHTTPManager HTTPManager;

@@ -8,7 +8,6 @@
 #ifndef SOURCEMUD_STREAMS_H
 #define SOURCEMUD_STREAMS_H
 
-#include "common/gcbase.h"
 #include "common/string.h"
 
 // pre-defines
@@ -17,7 +16,7 @@ class Room;
 class StreamControl;
 
 // base stream type
-class IStreamSink : public GC {
+class IStreamSink {
 	public:
 	virtual ~IStreamSink () {}
 

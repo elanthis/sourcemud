@@ -255,7 +255,7 @@ HTTPHandler::process ()
 }
 	
 void
-HTTPHandler::parse_request_data (GCType::map<String,String>& map, const char* line) const
+HTTPHandler::parse_request_data (std::map<String,String>& map, const char* line) const
 {
 	// parse the data
 	StringBuffer value;
@@ -328,9 +328,9 @@ HTTPHandler::execute()
 
 	// DEBUG: Log request variables
 	/*
-	for (GCType::map<String,String>::iterator i = get.begin(); i != get.end(); ++i)
+	for (std::map<String,String>::iterator i = get.begin(); i != get.end(); ++i)
 		Log::Info << "GET: " << i->first << "=" << i->second;
-	for (GCType::map<String,String>::iterator i = post.begin(); i != post.end(); ++i)
+	for (std::map<String,String>::iterator i = post.begin(); i != post.end(); ++i)
 		Log::Info << "POST: " << i->first << "=" << i->second;
 	*/
 
@@ -475,7 +475,7 @@ HTTPHandler::http_error (int error, String msg)
 String
 HTTPHandler::get_request (String id) const
 {
-	GCType::map<String,String>::const_iterator i = get.find(id);
+	std::map<String,String>::const_iterator i = get.find(id);
 	if (i == get.end())
 		return String();
 	return i->second;
@@ -484,7 +484,7 @@ HTTPHandler::get_request (String id) const
 String
 HTTPHandler::get_post (String id) const
 {
-	GCType::map<String,String>::const_iterator i = post.find(id);
+	std::map<String,String>::const_iterator i = post.find(id);
 	if (i == post.end())
 		return String();
 	return i->second;
@@ -543,7 +543,7 @@ HTTPSession::check_timestamp ()
 String
 HTTPSession::get_var (String id) const
 {
-	GCType::map<String,String>::const_iterator i = vars.find(id);
+	std::map<String,String>::const_iterator i = vars.find(id);
 	if (i == vars.end())
 		return String();
 	return i->second;

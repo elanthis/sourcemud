@@ -16,9 +16,9 @@
 #include <zlib.h>
 #endif // HAVE_LIBZ
 
-#include "common/gcvector.h"
+#include <vector>
+
 #include "common/types.h"
-#include "common/gcbase.h"
 #include "common/streams.h"
 #include "mud/network.h"
 #include "mud/color.h"
@@ -39,14 +39,14 @@
 class TextBufferList
 {
 	private:
-	GCType::vector<char*> list;
+	std::vector<char*> list;
 	const size_t size;
 	size_t allocs, pallocs, out;
 
 	public:
 	TextBufferList (size_t s_size) : list (), size(s_size), allocs(0), pallocs(0), out(0) {}
 	~TextBufferList () {
-		for (GCType::vector<char*>::iterator i = list.begin(); i != list.end(); ++i)
+		for (std::vector<char*>::iterator i = list.begin(); i != list.end(); ++i)
 			if (*i)
 				delete[] *i;
 	}
@@ -99,7 +99,7 @@ class TextBuffer
 	}
 };
 
-class ITelnetMode : public GC
+class ITelnetMode
 {
 	public:
 	ITelnetMode (class TelnetHandler* s_handler) : handler(s_handler) {}
@@ -181,7 +181,7 @@ class TelnetHandler : public SocketConnection, public IStreamSink
 	uint timeout; // timeout length for this connection
 	time_t in_stamp; // last input time
 	int color_set[NUM_CTYPES]; // color codes
-	GCType::vector<int> colors; // current color stack
+	std::vector<int> colors; // current color stack
 #ifdef HAVE_LIBZ
 	z_stream* zstate; // compression
 #endif

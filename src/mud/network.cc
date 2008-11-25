@@ -189,7 +189,7 @@ SocketConnection::sock_out_ready ()
 
 	// if we sent everything, clear buffer
 	if (output.empty())
-		output = GCType::vector<char>();
+		output = std::vector<char>();
 }
 
 void
@@ -225,9 +225,9 @@ SocketConnection::sock_complete_disconnect ()
 
 SNetworkManager NetworkManager;
 
-struct PollData : public GC {
-	GCType::vector<ISocketHandler*> sockets;
-	GCType::vector<ISocketHandler*> addlist;
+struct PollData {
+	std::vector<ISocketHandler*> sockets;
+	std::vector<ISocketHandler*> addlist;
 };
 
 int
@@ -287,7 +287,7 @@ SNetworkManager::poll (long timeout)
 	FD_ZERO(&cread);
 	FD_ZERO(&cwrite);
 
-	GCType::vector<ISocketHandler*>::iterator i;
+	std::vector<ISocketHandler*>::iterator i;
 
 	// move the list of new sockets to the active socket list
 	for (i = p_data->addlist.begin(); i != p_data->addlist.end(); ++i)

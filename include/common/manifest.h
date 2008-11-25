@@ -8,7 +8,7 @@
 #ifndef SOURCEMUD_COMMON_MANIFEST_H
 #define SOURCEMUD_COMMON_MANIFEST_H
 
-#include "common/gcvector.h"
+#include <vector>
 #include "common/string.h"
 
 class ManifestFile

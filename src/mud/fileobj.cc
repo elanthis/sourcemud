@@ -283,7 +283,7 @@ File::Reader::get (Node& node)
 {
 	Token op;
 	String opstr;
-	GCType::vector<Value> list;
+	std::vector<Value> list;
 
 	// clear node
 	node.ns.clear();
@@ -377,7 +377,7 @@ File::Reader::set_value (File::Reader::Token type, String data, File::Value& val
 	} else if (type == TOKEN_ID) {
 		value = Value(Value::TYPE_ID, data);
 	} else if (type == TOKEN_START_LIST) {
-		GCType::vector<Value> list;
+		std::vector<Value> list;
 		while (true) {
 			type = read_token(data);
 			Value nvalue;
@@ -514,7 +514,7 @@ File::Writer::attr (String ns, String name, const UniqueID& data)
 }
 
 void
-File::Writer::attr (String ns, String name, const GCType::vector<Value>& list)
+File::Writer::attr (String ns, String name, const std::vector<Value>& list)
 {
 	if (!out)
 		return;
@@ -526,7 +526,7 @@ File::Writer::attr (String ns, String name, const GCType::vector<Value>& list)
 
 	out << ns << "." << name << " = [ ";
 
-	for (GCType::vector<Value>::const_iterator i = list.begin(); i != list.end(); ++i) {
+	for (std::vector<Value>::const_iterator i = list.begin(); i != list.end(); ++i) {
 		if (i != list.begin())
 			out << ", ";
 		switch (i->get_type()) {
@@ -709,7 +709,7 @@ File::Node::get_id () const
 	return UniqueIDManager.decode(value.get_value());
 }
 
-const GCType::vector<File::Value>&
+const std::vector<File::Value>&
 File::Node::get_list () const
 {
 	if (value.get_type() != Value::TYPE_LIST) {
@@ -719,7 +719,7 @@ File::Node::get_list () const
 	return value.get_list();
 }
 
-const GCType::vector<File::Value>&
+const std::vector<File::Value>&
 File::Node::get_list (size_t size) const
 {
 	if (value.get_type() != Value::TYPE_LIST) {

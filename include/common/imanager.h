@@ -8,8 +8,9 @@
 #ifndef IMANAGER_H
 #define IMANAGER_H
 
+#include <vector>
+
 #include "common/string.h"
-#include "common/gcvector.h"
 
 // all *Manager classes should derive from this...
 class IManager
@@ -40,8 +41,8 @@ class IManager
 	static void save_all ();
 
 	private:
-	static GCType::vector<IManager*>* managers;
-	static GCType::vector<IManager*>* pending;
+	static std::vector<IManager*>* managers;
+	static std::vector<IManager*>* pending;
 };
 
 #endif

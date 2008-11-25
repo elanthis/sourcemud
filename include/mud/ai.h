@@ -10,15 +10,14 @@
 
 #include "common/string.h"
 #include "common/imanager.h"
-#include "common/gcbase.h"
-#include "common/gcmap.h"
+#include <map>
 #include "mud/server.h"
 
 class Event;
 class Creature;
 class ScriptRestrictedWriter;
 
-class AI : public GC
+class AI
 {
 	public:
 	AI () {}
@@ -36,7 +35,7 @@ class AI : public GC
 
 	// data
 	protected:
-	typedef GCType::map<EventID, String> EventList;
+	typedef std::map<EventID, String> EventList;
 
 	String name;
 
@@ -61,7 +60,7 @@ class SAIManager : public IManager
 	AI* get (String name);
 
 	private:
-	typedef GCType::vector<AI*> AIList;
+	typedef std::vector<AI*> AIList;
 	AIList ai;
 	
 };

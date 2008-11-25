@@ -12,7 +12,7 @@
 #include "mud/account.h"
 #include "mud/server.h"
 #include "common/imanager.h"
-#include "common/gcvector.h"
+#include <vector>
 
 #define MAX_COMMAND_ARGS 10
 #define MAX_COMMAND_WORDS 25
@@ -24,7 +24,7 @@ typedef void (*CreatureCommandFunc) (class Creature*, String argv[]); // can man
 typedef void (*PlayerCommandFunc) (class Player*, String argv[]); // can manipulate argv
 
 // a parsable command format string
-class CommandFormat : public GC
+class CommandFormat
 {
 	public:
 	CommandFormat (class Command* s_command, int s_priority = 100) : command(s_command), nodes(), ch_func(NULL), ply_func(NULL), priority(s_priority) {}
@@ -55,7 +55,7 @@ class CommandFormat : public GC
 	inline int match (char** words, String argv[]) const { return trymatch(0, words, argv); }
 
 	private:
-	typedef GCType::vector<struct CommandFormatNode> NodeList;
+	typedef std::vector<struct CommandFormatNode> NodeList;
 
 	class Command* command;
 	String format;
@@ -71,7 +71,7 @@ class CommandFormat : public GC
 	friend class SCommandManager;
 };
 
-struct CommandFormatNode : public GC
+struct CommandFormatNode
 {
 	enum type_t { NONE, WORD, PHRASE, LITERAL } type; // type
 	int arg; // argument index
@@ -89,13 +89,13 @@ struct CommandFormatNode : public GC
 		type(node.type), arg(node.arg), opt(node.opt), literal(node.literal) {}
 };
 
-class Command : public GC
+class Command
 {
 	private:
 	// data
 	String name;
 	String usage;
-	typedef GCType::vector<CommandFormat*> FormatList;
+	typedef std::vector<CommandFormat*> FormatList;
 	FormatList formats;
 	AccessID access; // required permission
 
@@ -145,8 +145,8 @@ class SCommandManager : public IManager
 	void show_list (class Player* player);
 
 	private:
-	typedef GCType::vector<Command*> CommandList;
-	typedef GCType::vector<CommandFormat*> FormatList;
+	typedef std::vector<Command*> CommandList;
+	typedef std::vector<CommandFormat*> FormatList;
 	
 	CommandList commands;
 	FormatList formats;

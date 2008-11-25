@@ -5,7 +5,7 @@
  * http://www.sourcemud.org
  */
 
-#include "common/gcmap.h"
+#include <map>
 #include "mud/form.h"
 #include "common/string.h"
 

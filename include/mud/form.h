@@ -10,7 +10,7 @@
 
 #include "common/string.h"
 #include "common/types.h"
-#include "common/gcvector.h"
+#include <vector>
 
 class FormColor {
 	public:

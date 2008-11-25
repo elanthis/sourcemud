@@ -22,7 +22,6 @@
 #include "common/string.h"
 #include "mud/server.h"
 #include "common/imanager.h"
-#include "common/gcbase.h"
 #include "common/strbuf.h"
 
 #include <vector>
@@ -83,7 +82,7 @@ class IPConnList {
 	int total_conns;
 };
 
-class ISocketHandler : public GC {
+class ISocketHandler {
 	public:
 	virtual ~ISocketHandler () {}
 
@@ -143,7 +142,7 @@ class SocketConnection : public ISocketHandler {
 	virtual void sock_complete_disconnect ();
 
 	private:
-	GCType::vector<char> output;
+	std::vector<char> output;
 	int sock;
 	bool disconnect;
 };

@@ -18,7 +18,7 @@
 class Entity;
 class Room;
 
-class EventHandler : public GC {
+class EventHandler {
 	protected:
 	EventID event;
 	String script;
@@ -33,7 +33,7 @@ class EventHandler : public GC {
 };
 
 // should only be stack allocated
-class Event : public GC
+class Event
 {
 	public:
 	EventID get_id () const { return id; }
@@ -89,7 +89,7 @@ class SEventManager : public IManager
 	void process ();
 
 	private:
-	typedef std::deque<Event, gc_allocator<Event> > EQueue;
+	typedef std::deque<Event> EQueue;
 	EQueue events;
 };
 extern SEventManager EventManager;

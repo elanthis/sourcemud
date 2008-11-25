@@ -23,7 +23,7 @@ class Room : public Entity
 	// nasty public stuff
 	EList<Object> objects;
 	EList<Creature> creatures;
-	GCType::map<PortalDir, Portal*> portals;
+	std::map<PortalDir, Portal*> portals;
 
 	Room ();
 
@@ -88,7 +88,7 @@ class Room : public Entity
 	void show_portals (const class StreamControl& stream);
 
 	// output
-	void put (String text, size_t len, GCType::vector<class Creature*>* ignore = NULL);
+	void put (String text, size_t len, std::vector<class Creature*>* ignore = NULL);
 
 	// get entities
 	class Creature* find_creature (String name, uint c = 1, uint *matches = NULL);

@@ -9,7 +9,6 @@
 #define ACTION_H
 
 #include "common/types.h"
-#include "common/gcbase.h"
 
 class Creature;
 class StreamControl;
@@ -31,7 +30,7 @@ class StreamControl;
 //  int cancel()
 //      - called when the user cancels the actions
 //        return 1 to abort the cancellation (ouch, head hurts)
-class IAction : public GC
+class IAction
 {
 	public:
 	inline IAction (Creature* s_actor) : actor(s_actor) {}

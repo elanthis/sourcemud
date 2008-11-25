@@ -14,7 +14,7 @@
 #include "mud/server.h"
 #include "common/imanager.h"
 #include "mud/clock.h"
-#include "common/gcvector.h"
+#include <vector>
 
 #define TICKS_PER_HOUR ROUNDS_TO_TICKS((60 * 60) / GAME_TIME_SCALE)
 
@@ -23,10 +23,10 @@
 #define SUN_CHANGE_LENGTH ROUNDS_TO_TICKS(60 * 5)
 
 class
-GameCalendar : public GC
+GameCalendar
 {
 	public:
-	struct Month : public GC
+	struct Month
 	{
 		String name;
 		uint16 day_count;
@@ -34,7 +34,7 @@ GameCalendar : public GC
 
 		Month () : name(), day_count(0), leap_years(0) {}
 	};
-	struct Holiday : public GC
+	struct Holiday
 	{
 		String name;
 		int year; // year count it occurs (every year, every three years, etc.)
@@ -45,8 +45,8 @@ GameCalendar : public GC
 
 		Holiday () : name(), year(0), day(0), weekday(0), wdindex(0), month(0) {}
 	};
-	typedef GCType::vector<Holiday> HolidayList;
-	typedef GCType::vector<Month> MonthList;
+	typedef std::vector<Holiday> HolidayList;
+	typedef std::vector<Month> MonthList;
 	
 	MonthList months;
 	HolidayList holidays;

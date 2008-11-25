@@ -9,7 +9,7 @@
 #define SOURCEMUD_MUD_ZONE_H
 
 #include "mud/entity.h"
-#include "common/gcvector.h"
+#include <vector>
 #include "mud/server.h"
 #include "common/imanager.h"
 
@@ -89,10 +89,10 @@ class Zone
 	String id;
 	String name;
 
-	typedef GCType::vector<class Room*> RoomList;
+	typedef std::vector<class Room*> RoomList;
 	RoomList rooms;
 
-	typedef GCType::vector<Spawn> SpawnList;
+	typedef std::vector<Spawn> SpawnList;
 	SpawnList spawns;
 
 	friend class SZoneManager;
@@ -123,7 +123,7 @@ class SZoneManager : public IManager
 	void list_rooms (const class StreamControl& stream);
 
 	private:
-	typedef GCType::vector<Zone*> ZoneList;
+	typedef std::vector<Zone*> ZoneList;
 	ZoneList zones;
 
 	friend void Zone::destroy ();

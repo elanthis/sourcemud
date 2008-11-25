@@ -1,6 +1,5 @@
 # CONFIG
 CXXFLAGS = -I. -Iinclude
-LFLAGS = -lgc
 
 VERSION = @PACKAGE_VERSION@
 PACKAGE = @PACKAGE_TARNAME@-$(VERSION)
@@ -15,11 +14,6 @@ HEADERS = \
 	include/common/bitset.h \
 	include/common/error.h \
 	include/common/fdprintf.h \
-	include/common/gcbase.h \
-	include/common/gclist.h \
-	include/common/gcmap.h \
-	include/common/gcset.h \
-	include/common/gcvector.h \
 	include/common/imanager.h \
 	include/common/log.h \
 	include/common/mail.h \
@@ -84,7 +78,6 @@ HEADERS = \
 SOURCES = \
 	src/common/error.cc \
 	src/common/fdprintf.cc \
-	src/common/gc.cc \
 	src/common/imanager.cc \
 	src/common/log.cc \
 	src/common/manifest.cc \

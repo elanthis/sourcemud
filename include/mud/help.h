@@ -11,7 +11,7 @@
 #include "common/imanager.h"
 #include "common/streams.h"
 
-struct HelpTopic : public GC {
+struct HelpTopic {
 	String name;
 	String about;
 };
@@ -33,7 +33,7 @@ class SHelpManager : public IManager
 	HelpTopic* get_topic (String name);
 
 	private:
-	typedef GCType::vector<HelpTopic*> TopicList;
+	typedef std::vector<HelpTopic*> TopicList;
 	TopicList topics;
 };
 extern SHelpManager HelpManager;

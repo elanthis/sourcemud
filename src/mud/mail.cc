@@ -93,7 +93,7 @@ MailMessage::send (void) const
 	fprintf(fout, "Subject: %s\n", subject.c_str());
 	fprintf(fout, "To: %s\n", to.c_str());
 	fprintf(fout, "X-Source MUD: YES\n");
-	for (GCType::vector<Header>::const_iterator i = headers.begin(); i != headers.end(); ++i)
+	for (std::vector<Header>::const_iterator i = headers.begin(); i != headers.end(); ++i)
 		fprintf (fout, "%s: %s\n", i->name.c_str(), i->value.c_str());
 	fprintf(fout, "\n%s\n", body.c_str());
 	fclose(fout);

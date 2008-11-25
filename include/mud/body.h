@@ -9,8 +9,7 @@
 #define SOURCEMUD_MUD_BODY_H
 
 #include "common/string.h"
-#include "common/gcbase.h"
-#include "common/gcvector.h"
+#include <vector>
 #include "mud/fileobj.h"
 #include "mud/server.h"
 

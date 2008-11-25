@@ -8,9 +8,8 @@
 #ifndef SOURCEMUD_MUD_CAFFECT_H
 #define SOURCEMUD_MUD_CAFFECT_H
 
-#include "common/gcbase.h"
 #include "common/string.h"
-#include "common/gcvector.h"
+#include <vector>
 #include "mud/creature.h"
 
 class CreatureAffectType
@@ -46,7 +45,7 @@ class CreatureAffectType
 	static String names[];
 };
 
-class ICreatureAffect : public GC
+class ICreatureAffect
 {
 	public:
 	virtual int apply (Creature* character) const = 0;
@@ -57,7 +56,7 @@ class ICreatureAffect : public GC
 	virtual ~ICreatureAffect () {}
 };
 
-class CreatureAffectGroup : public GC
+class CreatureAffectGroup
 {
 	public:
 	CreatureAffectGroup (String s_title, CreatureAffectType s_type, uint s_duration);
@@ -74,7 +73,7 @@ class CreatureAffectGroup : public GC
 	inline uint get_time_left (void) const { return duration; }
 
 	private:
-	typedef GCType::vector<ICreatureAffect*> AffectList;
+	typedef std::vector<ICreatureAffect*> AffectList;
 
 	String title;
 	AffectList affects;

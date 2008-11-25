@@ -83,8 +83,8 @@ WeatherRegion::load (File::Reader& reader)
 	}
 
 	// state change rules must be valid
-	for (GCType::vector<WeatherState>::const_iterator si = states.begin(); si != states.end(); ++si)
-		for (GCType::vector<WeatherChange>::const_iterator ci = si->changes.begin(); ci != si->changes.end(); ++ci)
+	for (std::vector<WeatherState>::const_iterator si = states.begin(); si != states.end(); ++si)
+		for (std::vector<WeatherChange>::const_iterator ci = si->changes.begin(); ci != si->changes.end(); ++ci)
 			// have state?
 			if (get_state(ci->to) < 0) {
 				Log::Error << "Weather state " << si->id << " has a change rule to non-existant state " << ci->to << ".";
@@ -97,12 +97,12 @@ WeatherRegion::load (File::Reader& reader)
 void
 WeatherRegion::save (File::Writer& writer) const
 {
-	for (GCType::vector<WeatherState>::const_iterator si = states.begin(); si != states.end(); ++si) {
+	for (std::vector<WeatherState>::const_iterator si = states.begin(); si != states.end(); ++si) {
 		writer.begin(S("weather"), S("state"));
 		writer.attr(S("state"), S("id"), si->id);
 		for (StringList::const_iterator di = si->descs.begin(); di != si->descs.end(); ++di)
 			writer.attr(S("state"), S("desc"), *di);
-		for (GCType::vector<WeatherChange>::const_iterator ci = si->changes.begin(); ci != si->changes.end(); ++ci) {
+		for (std::vector<WeatherChange>::const_iterator ci = si->changes.begin(); ci != si->changes.end(); ++ci) {
 			writer.begin(S("state"), S("change"));
 			writer.attr(S("change"), S("target"), ci->to);
 			writer.attr(S("change"), S("chance"), ci->chance);
@@ -177,7 +177,7 @@ WeatherRegion::update () {
 
 		// check if it fall in under any of the state changes
 		// if it doesn't, then the chance just means 'don't change'
-		for (GCType::vector<WeatherChange>::const_iterator i = states[state].changes.begin(); i != states[state].changes.end(); ++i) {
+		for (std::vector<WeatherChange>::const_iterator i = states[state].changes.begin(); i != states[state].changes.end(); ++i) {
 			// yes, in range
 			if (random <= i->chance) {
 				// get state

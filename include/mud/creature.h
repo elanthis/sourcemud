@@ -303,8 +303,8 @@ Creature : public Entity, public IStreamSink
 
 	// == DATA ITEMS ==
 	protected:
-	typedef GCType::vector<IAction*> ActionList;
-	typedef GCType::vector<CreatureAffectGroup*> AffectStatusList;
+	typedef std::vector<IAction*> ActionList;
+	typedef std::vector<CreatureAffectGroup*> AffectStatusList;
 
 	struct {
 		class Object* left_held;

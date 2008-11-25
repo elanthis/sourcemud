@@ -8,14 +8,14 @@
 #ifndef SOURCEMUD_MUD_MACRO_H
 #define SOURCEMUD_MUD_MACRO_H
 
-#include "common/gcmap.h"
-#include "common/gcvector.h"
+#include <map>
+#include <vector>
 #include "common/streams.h"
 
 class MacroValue;
 
-typedef GCType::map<String, MacroValue> MacroArgs;
-typedef GCType::vector<MacroValue> MacroList;
+typedef std::map<String, MacroValue> MacroArgs;
+typedef std::vector<MacroValue> MacroList;
 
 class IMacroObject
 {
@@ -29,7 +29,7 @@ class IMacroObject
 	virtual void macro_default (const class StreamControl& stream) const = 0;
 };
 
-class MacroValue : public GC
+class MacroValue
 {
 	public:
 	enum Type { T_OBJECT, T_STRING, T_NULL };

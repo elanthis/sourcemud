@@ -35,7 +35,7 @@
 String::String (const char* src)
 {
 	assert(src != NULL);
-	char* tmp = (char*)GC_MALLOC(strlen(src) + 1);
+	char* tmp = new char[strlen(src) + 1];
 	strcpy(tmp, src);
 	string = tmp;
 }
@@ -43,7 +43,7 @@ String::String (const char* src)
 String::String (const char* src, size_t len)
 {
 	assert(src != NULL);
-	char* tmp = (char*)GC_MALLOC(len + 1);
+	char* tmp = new char[len + 1];
 	strncpy(tmp, src, len);
 	tmp[len] = 0;
 	string = tmp;
@@ -52,7 +52,7 @@ String::String (const char* src, size_t len)
 String
 operator+ (String left, String right)
 {
-	char* ret = (char*)GC_MALLOC(left.size() + right.size() + 1);
+	char* ret = new char[left.size() + right.size() + 1];
 	strcpy(ret, left.c_str());
 	strcpy(ret + left.size(), right.c_str());
 	return GCString(ret);
@@ -61,7 +61,7 @@ operator+ (String left, String right)
 String
 operator+ (String left, const char* right)
 {
-	char* ret = (char*)GC_MALLOC(left.size() + strlen(right) + 1);
+	char* ret = new char[left.size() + strlen(right) + 1];
 	strcpy(ret, left.c_str());
 	strcpy(ret + left.size(), right);
 	return GCString(ret);
@@ -70,7 +70,7 @@ operator+ (String left, const char* right)
 String
 operator+ (const char* left, String right)
 {
-	char* ret = (char*)GC_MALLOC(strlen(left) + right.size() + 1);
+	char* ret = new char[strlen(left) + right.size() + 1];
 	strcpy(ret, left);
 	strcpy(ret + strlen(left), right.c_str());
 	return GCString(ret);
@@ -382,7 +382,7 @@ strip (String string)
 String
 strupper (String string)
 {
-	char* ret = (char*)GC_MALLOC(string.size() + 1);
+	char* ret = new char[string.size() + 1];
 	for (size_t i = 0; i < string.size() + 1; ++i)
 		ret[i] = toupper(string[i]);
 	return GCString(ret);
@@ -391,7 +391,7 @@ strupper (String string)
 String
 strlower (String string)
 {
-	char* ret = (char*)GC_MALLOC(string.size() + 1);
+	char* ret = new char[string.size() + 1];
 	for (size_t i = 0; i < string.size() + 1; ++i)
 		ret[i] = tolower(string[i]);
 	return GCString(ret);

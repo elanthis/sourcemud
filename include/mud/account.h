@@ -10,8 +10,7 @@
 
 #include <time.h>
 
-#include "common/gcbase.h"
-#include "common/gcset.h"
+#include <set>
 #include "common/string.h"
 #include "mud/server.h"
 #include "common/imanager.h"
@@ -26,9 +25,9 @@
 #define ACCOUNT_PASS_MIN_LEN 6
 
 DECLARE_IDMAP(Access)
-typedef GCType::set<AccessID> AccessList;
+typedef std::set<AccessID> AccessList;
 
-class Account : public Cleanup, public IMacroObject
+class Account : public IMacroObject
 {
 	public:
 	// the ID
@@ -130,7 +129,7 @@ class SAccountManager : public IManager
 	bool exists (String name); // account already exists
 
 	private:
-	typedef std::vector<Account*> AccountList;  // NOTE: do not GC-store
+	typedef std::vector<Account*> AccountList;
 	AccountList accounts;
 
 	friend class Account;

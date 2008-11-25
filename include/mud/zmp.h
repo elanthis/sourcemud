@@ -32,7 +32,7 @@
 #if !defined(ZMP_H)
 #define ZMP_H 1
 
-#include "common/gcvector.h"
+#include <vector>
 #include "common/string.h"
 #include "common/types.h"
 #include "mud/telnet.h"
@@ -97,7 +97,7 @@ class SZMPManager : public IManager
 
 	private:
 	// the list of commands
-	typedef GCType::vector<ZMPCommand> ZMPCommandList;
+	typedef std::vector<ZMPCommand> ZMPCommandList;
 	ZMPCommandList commands;
 };
 extern SZMPManager ZMPManager;
