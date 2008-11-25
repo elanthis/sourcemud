@@ -70,7 +70,6 @@ namespace {
 // GLOBALS
 namespace {
 	// time
-	struct timeval last_time;
 	unsigned long int game_ticks;
 	time_t start_time;
 
@@ -660,12 +659,13 @@ main (int argc, char **argv)
 			TimeManager.time.update (1);
 
 			// change from day/night
-			if (is_day && !TimeManager.time.is_day ())
+			if (is_day && !TimeManager.time.is_day ()) {
 				if (!TimeManager.calendar.sunset_text.empty())
 					ZoneManager.announce(TimeManager.calendar.sunset_text[get_random(TimeManager.calendar.sunset_text.size())], ANFL_OUTDOORS);
-			else if (!is_day && TimeManager.time.is_day ())
+			} else if (!is_day && TimeManager.time.is_day ()) {
 				if (!TimeManager.calendar.sunrise_text.empty())
 					ZoneManager.announce(TimeManager.calendar.sunrise_text[get_random(TimeManager.calendar.sunrise_text.size())], ANFL_OUTDOORS);
+			}
 
 			// new hour
 			if (TimeManager.time.get_hour() != hour)

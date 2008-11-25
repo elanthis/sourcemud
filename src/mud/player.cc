@@ -183,7 +183,7 @@ Player::save_data (File::Writer& writer)
 
 	writer.attr(S("player"), S("experience"), experience);
 
-	for (int i = 1; i < SkillID::size(); ++i) {
+	for (size_t i = 1; i < SkillID::size(); ++i) {
 		if (skills.hasSkill(SkillID(i))) {
 			std::vector<File::Value> list;
 			list.push_back(File::Value(File::Value::TYPE_STRING, SkillID(i).getName())); 
@@ -485,7 +485,7 @@ Player::display_skills ()
 
 	set_indent(2);
 
-	for (int i = 1; i < SkillID::size(); ++i) {
+	for (size_t i = 1; i < SkillID::size(); ++i) {
 		if (skills.hasSkill(SkillID(i)))
 			*this << SkillID(i).getName() << " " << get_roman(skills.getSkill(SkillID(i))) << "\n";
 	}

@@ -20,7 +20,7 @@ uint8 SkillSet::getSkill(SkillID id) const
 {
 	if (!id)
 		return 0;
-	if (id >= skills.size())
+	if (id >= (int)skills.size())
 		return 0;
 
 	return skills[id.getValue() - 1];
