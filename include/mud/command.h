@@ -27,7 +27,7 @@ typedef void (*PlayerCommandFunc) (class Player*, String argv[]); // can manipul
 class CommandFormat
 {
 	public:
-	CommandFormat (class Command* s_command, int s_priority = 100) : command(s_command), nodes(), ch_func(NULL), ply_func(NULL), priority(s_priority) {}
+	CommandFormat (class Command* s_command, int s_priority = 100) : command(s_command), ch_func(NULL), ply_func(NULL), priority(s_priority) {}
 
 	// set command callback
 	inline void clear_callback (void) { ch_func = NULL; ply_func = NULL; }
