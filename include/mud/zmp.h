@@ -37,7 +37,6 @@
 #include "common/types.h"
 #include "mud/telnet.h"
 #include "common/imanager.h"
-#include "scriptix/function.h"
 
 /* --- DATA TYPES ---- */
 
@@ -49,7 +48,6 @@ struct ZMPCommand {
 	String name;	// name of command
 	bool wild;	// is this a wildcard match?
 	ZMPFunction function;	// function to invoke
-	Scriptix::ScriptFunction sx_function;  // Scriptix func to invoke
 };
 
 // build a ZMP pack to send
@@ -93,7 +91,6 @@ class SZMPManager : public IManager
 
 	// add a new command
 	int add (String name, ZMPFunction func);
-	int add (String name, Scriptix::ScriptFunction func);
 
 	// see if a specific command/package is supported
 	bool match (String pattern);

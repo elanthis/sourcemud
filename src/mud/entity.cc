@@ -20,11 +20,11 @@
 #include "mud/color.h"
 #include "mud/player.h"
 #include "mud/clock.h"
-#include "generated/hooks.h"
+#include "mud/hooks.h"
 
 // ----- Entity -----
 
-Entity::Entity (const Scriptix::TypeInfo* type) : Scriptix::Native(type)
+Entity::Entity()
 {
 	flags.active = false;
 }
@@ -212,15 +212,6 @@ Entity::load_node (File::Reader& reader, File::Node& node)
 			EventHandler* event = new EventHandler();
 			if (!event->load(reader))
 					events.push_back(event);
-		FO_WILD("user")
-			if (node.get_value_type() == File::Value::TYPE_INT)
-				set_property(node.get_name(), node.get_int());
-			else if (node.get_value_type() == File::Value::TYPE_STRING)
-				set_property(node.get_name(), node.get_string());
-			else if (node.get_value_type() == File::Value::TYPE_BOOL)
-				set_property(node.get_name(), node.get_bool());
-			else
-				throw File::Error(S("Invalid data type for script attribute"));
 	FO_NODE_END
 }
 

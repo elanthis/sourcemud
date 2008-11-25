@@ -41,8 +41,6 @@
 #include "mud/zmp.h"
 #include "mud/telnet.h"
 #include "common/log.h"
-#include "scriptix/function.h"
-#include "scriptix/array.h"
 
 SZMPManager ZMPManager;
 
@@ -153,30 +151,6 @@ SZMPManager::add (String name, ZMPFunction func)
 	ZMPCommand command;
 	command.name = name;
 	command.function = func;
-	command.sx_function = NULL;
-	command.wild = name[name.size()-1] == '.'; // ends in a . then its a wild-card match
-	commands.push_back(command);
-
-	return 0;
-}
-
-// register a new command
-int
-SZMPManager::add (String name, Scriptix::ScriptFunction func)
-{
-	// must have a name
-	if (!name)
-		return -1;
-
-	// must have a func
-	if (func.empty())
-		return -1;
-
-	// add command
-	ZMPCommand command;
-	command.name = name;
-	command.function = NULL;
-	command.sx_function = func;
 	command.wild = name[name.size()-1] == '.'; // ends in a . then its a wild-card match
 	commands.push_back(command);
 
@@ -270,16 +244,7 @@ TelnetHandler::process_zmp(size_t size, char* data)
 	}
 		
 	// invoke the proper command handler
-	if (command->function) {
-		// C++ function
-		command->function(this, argc, argv);
-	} else {
-		// Scriptix Function
-		Scriptix::Array* args = new Scriptix::Array(argc, NULL);
-		for (uint i = 0; i < argc; ++i)
-			Scriptix::Array::append(args, Scriptix::Value(argv[i]));
-		command->sx_function.run(this, args);
-	}
+	command->function(this, argc, argv);
 }
 
 // send an zmp command

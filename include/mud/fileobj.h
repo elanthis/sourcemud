@@ -15,7 +15,6 @@
 #include "common/string.h"
 #include "common/gcbase.h"
 #include "common/log.h"
-#include "scriptix/native.h"
 #include "common/gcmap.h"
 #include "common/gcvector.h"
 #include "mud/uniqid.h"
@@ -202,7 +201,7 @@ namespace File
 const StreamControl& operator<< (const StreamControl& stream, const File::Node& node);
 
 // can only write simply attributes, all with type "attr"
-class ScriptRestrictedWriter : public Scriptix::Native
+class ScriptRestrictedWriter
 {
 	public:
 	ScriptRestrictedWriter (File::Writer* s_writer);

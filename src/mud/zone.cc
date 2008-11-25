@@ -17,8 +17,7 @@
 #include "mud/gametime.h"
 #include "mud/weather.h"
 #include "mud/object.h"
-#include "generated/hooks.h"
-#include "mud/bindings.h"
+#include "mud/hooks.h"
 #include "common/manifest.h"
 #include "mud/shadow-object.h"
 
@@ -140,8 +139,8 @@ Spawn::save (File::Writer& writer) const
 	writer.end();
 }
 
-SCRIPT_TYPE(Zone);
-Zone::Zone () : Scriptix::Native(MUD_ZoneType) {}
+Zone::Zone()
+{}
 
 Room*
 Zone::get_room (String id) const
@@ -303,8 +302,6 @@ SZoneManager::initialize ()
 {
 	// modules we need
 	if (require(UniqueIDManager) != 0)
-		return 1;
-	if (require(ScriptBindings) != 0)
 		return 1;
 	if (require(EntityManager) != 0)
 		return 1;

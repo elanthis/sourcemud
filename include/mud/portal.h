@@ -10,7 +10,6 @@
 
 #include "mud/entity.h"
 #include "common/string.h"
-#include "scriptix/function.h"
 
 // Direction object
 class PortalDir {

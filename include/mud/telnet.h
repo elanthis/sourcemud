@@ -22,7 +22,6 @@
 #include "common/streams.h"
 #include "mud/network.h"
 #include "mud/color.h"
-#include "scriptix/native.h"
 
 // default window size
 #define TELNET_DEFAULT_WIDTH 80
@@ -120,7 +119,7 @@ class ITelnetMode : public GC
 	class TelnetHandler* handler;
 };
 
-class TelnetHandler : public Scriptix::Native, public SocketConnection, public IStreamSink
+class TelnetHandler : public SocketConnection, public IStreamSink
 {
 	public:
 	TelnetHandler (int s_sock, const SockStorage& s_netaddr);

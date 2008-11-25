@@ -23,11 +23,10 @@
 #include "mud/form.h"
 #include "mud/server.h"
 #include "common/imanager.h"
-#include "scriptix/native.h"
 
 /* store information about a race */
 class
-Race : public Scriptix::Native
+Race
 {
 	public:
 	// this is an ugly hack, but it lets us construct the linked

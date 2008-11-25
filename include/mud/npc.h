@@ -14,7 +14,7 @@
 
 // Npc blueprint
 class
-NpcBP : public Scriptix::Native
+NpcBP
 {
 	public:
 	NpcBP ();
@@ -99,8 +99,6 @@ NpcBP : public Scriptix::Native
 			damage(false), stats(false) {}
 	} set_flags;
 
-	virtual Scriptix::Value get_undefined_property (Scriptix::Atom id) const;
-
 	void set_parent (NpcBP* blueprint);
 };
 
@@ -159,7 +157,7 @@ class Npc : public Creature
 
 	// Manage AI
 	AI* get_ai () const;
-	void pump (Scriptix::Value arg = NULL); // call a generic 'pump' event in the AI
+	void pump (); // call a generic 'pump' event in the AI
 
 	// dead
 	void kill (Creature* killer);
@@ -190,8 +188,6 @@ class Npc : public Creature
 	} flags;
 
 	protected:
-	virtual Scriptix::Value get_undefined_property (Scriptix::Atom id) const;
-
 	E_SUBTYPE(Npc, Creature);
 };
 

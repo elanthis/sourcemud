@@ -12,8 +12,6 @@
 
 #include "mud/fileobj.h"
 #include "common/imanager.h"
-#include "scriptix/native.h"
-#include "scriptix/function.h"
 #include "generated/events.h"
 
 /* external classes */
@@ -24,7 +22,6 @@ class EventHandler : public GC {
 	protected:
 	EventID event;
 	String script;
-	Scriptix::ScriptFunction sxfunc;
 
 	public:
 	EventHandler ();
@@ -33,7 +30,6 @@ class EventHandler : public GC {
 	void save (File::Writer& writer) const;
 
 	EventID get_event () const { return event; }
-	Scriptix::ScriptFunction get_func () const { return sxfunc; }
 };
 
 // should only be stack allocated
@@ -45,20 +41,13 @@ class Event : public GC
 	Entity* get_recipient () const { return recipient; }
 	Entity* get_aux1 () const { return aux1; }
 	Entity* get_aux2 () const { return aux2; }
-	const Scriptix::Value& get_data1 () const { return data1; }
-	const Scriptix::Value& get_data2 () const { return data2; }
-	const Scriptix::Value& get_data3 () const { return data3; }
-	const Scriptix::Value& get_data4 () const { return data4; }
 
 	private:
 	EventID id;
 	Entity* recipient;
 	Entity* aux1;
 	Entity* aux2;
-	Scriptix::Value data1;
-	Scriptix::Value data2;
-	Scriptix::Value data3;
-	Scriptix::Value data4;
+	Entity* aux3;
 
 	friend class SEventManager;
 };
@@ -77,10 +66,7 @@ class SEventManager : public IManager
 		Entity* recipient,
 		Entity* aux1 = 0,
 		Entity* aux2 = 0,
-		Scriptix::Value data1 = Scriptix::Value(),
-		Scriptix::Value data2 = Scriptix::Value(),
-		Scriptix::Value data3 = Scriptix::Value(),
-		Scriptix::Value data4 = Scriptix::Value()
+		Entity* aux3 = 0
 	);
 
 	void resend (const Event& event, Entity* recipient);
@@ -90,17 +76,14 @@ class SEventManager : public IManager
 		Entity* recipient,
 		Entity* aux1 = 0,
 		Entity* aux2 = 0,
-		Scriptix::Value data1 = Scriptix::Value(),
-		Scriptix::Value data2 = Scriptix::Value(),
-		Scriptix::Value data3 = Scriptix::Value(),
-		Scriptix::Value data4 = Scriptix::Value()
+		Entity* aux3 = 0
 	);
 
 	// return true if there are pending events
 	bool events_pending () { return !events.empty(); }
 
 	// compile an event handler script
-	Scriptix::ScriptFunction compile (EventID id, String source, String filename, unsigned long fileline);
+	int compile (EventID id, String source, String filename, unsigned long fileline);
 
 	// process events
 	void process ();

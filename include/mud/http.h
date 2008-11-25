@@ -19,8 +19,6 @@
 #include "common/streams.h"
 #include "mud/network.h"
 #include "common/imanager.h"
-#include "scriptix/native.h"
-#include "scriptix/function.h"
 #include "mud/account.h"
 #include "mud/macro.h"
 
@@ -47,7 +45,7 @@ class HTTPSession : public GC
 	GCType::map<String,String> vars;
 };
 
-class HTTPHandler : public Scriptix::Native, public SocketConnection, public IStreamSink, public IMacroObject
+class HTTPHandler : public SocketConnection, public IStreamSink, public IMacroObject
 {
 	public:
 	HTTPHandler (int s_sock, const SockStorage& s_netaddr);
@@ -124,10 +122,6 @@ class SHTTPManager : public IManager
 
 	String get_template (String id);
 
-	Scriptix::ScriptFunction get_page (String id);
-
-	void register_page (String id, Scriptix::ScriptFunction func);
-
 	HTTPSession* create_session (Account* account);
 	void destroy_session (HTTPSession* session);
 	HTTPSession* get_session (String id);
@@ -137,9 +131,6 @@ class SHTTPManager : public IManager
 	private:
 	typedef GCType::map<String, String> TemplateMap;
 	TemplateMap templates;
-
-	typedef GCType::map<String, Scriptix::ScriptFunction> PageMap;
-	PageMap pages;
 
 	typedef GCType::map<String, HTTPSession*> SessionMap;
 	SessionMap sessions;

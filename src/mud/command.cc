@@ -18,7 +18,6 @@
 #include "mud/account.h"
 #include "mud/macro.h"
 #include "mud/help.h"
-#include "scriptix/array.h"
 #include "mud/telnet.h"
 #include "mud/room.h"
 #include "mud/object.h"
@@ -204,12 +203,6 @@ SCommandManager::call (Creature *ch, String comm) {
 					// call player function
 					format->ply_func(ply, argv);
 					return 0;
-				} else if (!format->script.empty()) {
-					// call Scriptix function
-					Scriptix::Array* arg_list = new Scriptix::Array(10, NULL);
-					for (int i = 0; i < MAX_COMMAND_ARGS; ++i)
-						Scriptix::Array::append(arg_list, argv[i] ? Scriptix::Value(argv[i]) : Scriptix::Value(Scriptix::Nil));
-					return format->script.run(ch, arg_list).to_int();
 				} else {
 					// damnit
 					return 1;

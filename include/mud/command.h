@@ -13,7 +13,6 @@
 #include "mud/server.h"
 #include "common/imanager.h"
 #include "common/gcvector.h"
-#include "scriptix/function.h"
 
 #define MAX_COMMAND_ARGS 10
 #define MAX_COMMAND_WORDS 25
@@ -31,10 +30,9 @@ class CommandFormat : public GC
 	CommandFormat (class Command* s_command, int s_priority = 100) : command(s_command), nodes(), ch_func(NULL), ply_func(NULL), priority(s_priority) {}
 
 	// set command callback
-	inline void clear_callback (void) { ch_func = NULL; ply_func = NULL; script = Scriptix::ScriptFunction(); }
+	inline void clear_callback (void) { ch_func = NULL; ply_func = NULL; }
 	inline void set_callback (CreatureCommandFunc s_func) { clear_callback(); ch_func = s_func; }
 	inline void set_callback (PlayerCommandFunc s_func) { clear_callback(); ply_func = s_func; }
-	inline void set_callback (Scriptix::ScriptFunction s_func) { clear_callback(); script = s_func; }
 
 	// get the basics
 	inline String get_format (void) const { return format; }
@@ -61,7 +59,6 @@ class CommandFormat : public GC
 
 	class Command* command;
 	String format;
-	Scriptix::ScriptFunction script;
 	CreatureCommandFunc ch_func;
 	PlayerCommandFunc ply_func;
 	int priority;

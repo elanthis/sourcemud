@@ -31,8 +31,7 @@
 
 SHTTPManager HTTPManager;
 
-SCRIPT_TYPE(HTTP);
-HTTPHandler::HTTPHandler (int s_sock, const SockStorage& s_netaddr) : Scriptix::Native(MUD_HTTPType), SocketConnection(s_sock)
+HTTPHandler::HTTPHandler (int s_sock, const SockStorage& s_netaddr) :  SocketConnection(s_sock)
 {
 	addr = s_netaddr;
 	state = REQ;
@@ -344,15 +343,9 @@ HTTPHandler::execute()
 		page_logout();
 	else if (path == "/account")
 		page_account();
-	// do a script page
 	else {
-		Scriptix::ScriptFunction func = HTTPManager.get_page(path);
-		if (func) {
-			func.run(path, this);
-		} else {
-			http_error(404, S("Page does not exist."));
-			return;
-		}
+		http_error(404, S("Page does not exist."));
+		return;
 	}
 
 	// log access
@@ -611,19 +604,6 @@ SHTTPManager::get_template (String id)
 {
 	TemplateMap::iterator i = templates.find(id);
 	return i != templates.end() ? i->second : String();
-}
-
-Scriptix::ScriptFunction
-SHTTPManager::get_page (String id)
-{
-	PageMap::iterator i = pages.find(id);
-	return i != pages.end() ? i->second : Scriptix::ScriptFunction();
-}
-
-void
-SHTTPManager::register_page (String id, Scriptix::ScriptFunction func)
-{
-	pages[id] = func;
 }
 
 HTTPSession*

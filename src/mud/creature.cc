@@ -25,7 +25,7 @@
 #include "mud/caffect.h"
 #include "mud/clock.h"
 #include "mud/object.h"
-#include "generated/hooks.h"
+#include "mud/hooks.h"
 #include "mud/shadow-object.h"
 #include "mud/unique-object.h"
 
@@ -224,7 +224,7 @@ Creature::load_finish (void)
 }
 
 // Creature
-Creature::Creature (const Scriptix::TypeInfo* type) : Entity (type)
+Creature::Creature()
 {
 	position = CreaturePosition::STAND;
 	location = NULL;

@@ -19,8 +19,7 @@
 #include "mud/player.h"
 #include "common/streams.h"
 #include "mud/zone.h"
-#include "generated/hooks.h"
-#include "scriptix/function.h"
+#include "mud/hooks.h"
 #include "mud/efactory.h"
 
 const String PortalDetail::names[] = {
@@ -245,10 +244,7 @@ PortalDetail::lookup (String name)
 	return NONE;
 }
 
-SCRIPT_TYPE(Portal);
-Portal::Portal() : Entity(MUD_PortalType), name(),
-	target(), dir(), usage(), detail(), parent_room(NULL),
-	flags()
+Portal::Portal() : parent_room(NULL)
 {}
 
 EntityName

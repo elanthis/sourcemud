@@ -9,6 +9,7 @@
 #include <ctype.h>
 #include <errno.h>
 #include <string.h>
+#include <stdlib.h>
 
 #include "common/string.h"
 #include "mud/settings.h"

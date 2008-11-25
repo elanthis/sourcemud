@@ -15,8 +15,7 @@
 #include "mud/settings.h"
 #include "mud/object.h"
 #include "mud/skill.h"
-#include "generated/hooks.h"
-#include "mud/bindings.h"
+#include "mud/hooks.h"
 #include "common/manifest.h"
 #include "mud/shadow-object.h"
 #include "mud/efactory.h"
@@ -136,8 +135,7 @@ NpcBP::refresh (void)
 
 // ----- NpcBP -----
 
-SCRIPT_TYPE(NPCBlueprint);
-NpcBP::NpcBP (void) : Scriptix::Native(MUD_NPCBlueprintType), parent(NULL) {}
+NpcBP::NpcBP (void) : parent(NULL) {}
 
 void
 NpcBP::set_parent (NpcBP* blueprint)
@@ -164,17 +162,6 @@ NpcBP::load (File::Reader& reader)
 				Log::Warning << "Undefined parent npc blueprint '" << node.get_string() << "' at " << reader.get_filename() << ':' << node.get_line();
 		FO_ATTR("blueprint", "equip")
 			equip_list.push_back(node.get_string());
-		FO_WILD("user")
-			if (node.get_value_type() == File::Value::TYPE_INT)
-				set_property(node.get_name(), node.get_int());
-			else if (node.get_value_type() == File::Value::TYPE_STRING)
-				set_property(node.get_name(), node.get_string());
-			else if (node.get_value_type() == File::Value::TYPE_BOOL)
-				set_property(node.get_name(), node.get_bool());
-			else {
-				Log::Error << "Invalid data type for script attribute at " << reader.get_filename() << ':' << node.get_line();
-				return -1;
-			}
 		FO_ATTR("blueprint", "name")
 			set_name(node.get_string());
 		FO_ATTR("blueprint", "keyword")
@@ -231,23 +218,14 @@ NpcBP::save (File::Writer& writer)
 		writer.attr(S("combat"), S("damage"), combat.damage);
 }
 
-Scriptix::Value
-NpcBP::get_undefined_property (Scriptix::Atom id) const
-{
-	if (parent == NULL)
-		return Scriptix::Nil;
-	return parent->get_property(id);
-}
-
 // ----- Npc -----
 
-SCRIPT_TYPE(NPC);
-Npc::Npc (void) : Creature (MUD_NPCType)
+Npc::Npc (void) : Creature()
 {
 	initialize();
 }
 
-Npc::Npc (NpcBP* s_blueprint) : Creature (MUD_NPCType)
+Npc::Npc (NpcBP* s_blueprint) : Creature()
 {
 	initialize();
 	blueprint = NULL;
@@ -403,11 +381,11 @@ Npc::get_ai (void) const
 }
 
 void
-Npc::pump (Scriptix::Value data)
+Npc::pump ()
 {
 	AI* ai = get_ai();
 	if (ai)
-		ai->do_pump(this, data);
+		ai->do_pump(this);
 }
 
 void
@@ -590,15 +568,6 @@ Npc::name_match (String match) const
 	return false;
 }
 
-Scriptix::Value
-Npc::get_undefined_property (Scriptix::Atom id) const
-{
-	const NpcBP* data = get_blueprint();
-	if (data == NULL)
-		return Scriptix::Nil;
-	return data->get_property(id);
-}
-
 // Npc Blueprint Manager
 
 SNpcBPManager NpcBPManager;
@@ -610,8 +579,6 @@ SNpcBPManager::initialize (void)
 	if (require(AIManager) != 0)
 		return 1;
 	if (require(ObjectBPManager) != 0)
-		return 1;
-	if (require(ScriptBindings) != 0)
 		return 1;
 	if (require(EventManager) != 0)
 		return 1;

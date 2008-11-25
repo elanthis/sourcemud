@@ -238,8 +238,7 @@ TextBuffer::release ()
 	}
 }
 
-SCRIPT_TYPE(Telnet);
-TelnetHandler::TelnetHandler (int s_sock, const SockStorage& s_netaddr) : Scriptix::Native (MUD_TelnetType), SocketConnection(s_sock)
+TelnetHandler::TelnetHandler (int s_sock, const SockStorage& s_netaddr) : SocketConnection(s_sock)
 {
 	addr = s_netaddr;
 

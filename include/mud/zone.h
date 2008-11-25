@@ -44,7 +44,7 @@ class Spawn
 	void save (File::Writer& writer) const;
 };
 
-class Zone : public Scriptix::Native
+class Zone
 {
 	public:
 	Zone ();

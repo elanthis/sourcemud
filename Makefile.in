@@ -34,31 +34,10 @@ HEADERS = \
 	include/common/string.h \
 	include/common/time.h \
 	include/common/types.h \
-	include/generated/bindings.h \
 	include/generated/events.h \
-	include/generated/grammar.h \
-	include/generated/hooks.h \
-	include/scriptix/array.h \
-	include/scriptix/atom.h \
-	include/scriptix/compiler.h \
-	include/scriptix/error.h \
-	include/scriptix/function.h \
-	include/scriptix/iterator.h \
-	include/scriptix/native.h \
-	include/scriptix/number.h \
-	include/scriptix/opcodes.h \
-	include/scriptix/stream.h \
-	include/scriptix/string.h \
-	include/scriptix/struct.h \
-	include/scriptix/system.h \
-	include/scriptix/thread.h \
-	include/scriptix/type.h \
-	include/scriptix/value.h \
-	include/scriptix/vimpl.h \
 	include/mud/account.h \
 	include/mud/action.h \
 	include/mud/ai.h \
-	include/mud/bindings.h \
 	include/mud/body.h \
 	include/mud/caffect.h \
 	include/mud/clock.h \
@@ -76,6 +55,7 @@ HEADERS = \
 	include/mud/gametime.h \
 	include/mud/help.h \
 	include/mud/http.h \
+	include/mud/hooks.h \
 	include/mud/idmap.h \
 	include/mud/login.h \
 	include/mud/macro.h \
@@ -117,30 +97,8 @@ SOURCES = \
 	src/common/strbuf.cc \
 	src/common/strings.cc \
 	src/common/time.cc \
-	src/scriptix/array.cc \
-	src/scriptix/atom.cc \
-	src/scriptix/compiler.cc \
-	src/scriptix/error.cc \
-	src/scriptix/eval.cc \
-	src/scriptix/function.cc \
-	src/scriptix/global.cc \
-	src/scriptix/init_types.cc \
-	src/scriptix/iter.cc \
-	src/scriptix/number.cc \
-	src/scriptix/optimize.cc \
-	src/scriptix/parser.cc \
-	src/scriptix/stream.cc \
-	src/scriptix/string.cc \
-	src/scriptix/struct.cc \
-	src/scriptix/system.cc \
-	src/scriptix/type.cc \
-	src/scriptix/value.cc \
-	src/generated/bindings.cc \
 	src/generated/commands.cc \
 	src/generated/events.cc \
-	src/generated/grammar.cc \
-	src/generated/hooks.cc \
-	src/generated/lexer.cc \
 	src/mud/account.cc \
 	src/mud/action.cc \
 	src/mud/ai.cc \
@@ -160,6 +118,7 @@ SOURCES = \
 	src/mud/form.cc \
 	src/mud/help.cc \
 	src/mud/http.cc \
+	src/mud/hooks.cc \
 	src/mud/idmap.cc \
 	src/mud/login.cc \
 	src/mud/macro.cc \
@@ -189,8 +148,7 @@ SOURCES = \
 
 XML = \
 	src/xml/bindings.xml \
-	src/xml/events.xml \
-	src/xml/hooks.xml
+	src/xml/events.xml
 
 TOOLS = \
 	tools/parse-commands.pl \
@@ -198,16 +156,13 @@ TOOLS = \
 	tools/events-code.xsl \
 	tools/events-doc.xsl \
 	tools/events-header.xsl \
-	tools/hooks-code.xsl \
-	tools/hooks-doc.xsl \
-	tools/hooks-header.xsl \
 	tools/script-code.xsl \
 	tools/script-doc.xsl \
 	tools/script-header.xsl
 
 BINARIES = sourcemud-bin
 BUILD = Makefile configure
-DIST = configure configure.ac Makefile.in sourcemud.in include/config.h.in src/scriptix/grammar.yy src/scriptix/lexer.ll
+DIST = configure configure.ac Makefile.in sourcemud.in include/config.h.in
 
 OBJECTS = $(SOURCES:%.cc=$(BUILDDIR)/%.o)
 
@@ -255,16 +210,6 @@ src/generated/bindings.cc: tools/script-code.xsl src/xml/bindings.xml
 	@-mkdir -p include/generated
 	@$(XSLTPROC) tools/script-code.xsl src/xml/bindings.xml > $@ 
 
-include/generated/hooks.h: tools/hooks-header.xsl src/xml/hooks.xml
-	@echo Generating $@
-	@-mkdir -p include/generated
-	@$(XSLTPROC) tools/hooks-header.xsl src/xml/hooks.xml > $@ 
-
-src/generated/hooks.cc: tools/hooks-code.xsl src/xml/hooks.xml
-	@echo Generating $@
-	@-mkdir -p include/generated
-	@$(XSLTPROC) tools/hooks-code.xsl src/xml/hooks.xml > $@ 
-
 include/generated/events.h: tools/events-header.xsl src/xml/events.xml
 	@echo Generating $@
 	@-mkdir -p include/generated
@@ -274,18 +219,6 @@ src/generated/events.cc: tools/events-code.xsl src/xml/events.xml
 	@echo Generating $@
 	@-mkdir -p include/generated
 	@$(XSLTPROC) tools/events-code.xsl src/xml/events.xml > $@ 
-
-src/generated/grammar.cc include/generated/grammar.h: src/scriptix/grammar.yy
-	@echo Generating $@
-	@-mkdir -p src/generated
-	@$(BISON) -y -d -o src/generated/grammar.cc src/scriptix/grammar.yy
-	@[ ! -f src/generated/grammar.cc.h ] || mv -f src/generated/grammar.cc.h include/generated/grammar.h
-	@[ ! -f src/generated/grammar.hh ] || mv -f src/generated/grammar.hh include/generated/grammar.h
-
-src/generated/lexer.cc: src/scriptix/lexer.ll include/generated/grammar.h
-	@echo Generating $@
-	@-mkdir -p src/generated
-	@$(FLEX) -osrc/generated/lexer.cc src/scriptix/lexer.ll
 
 # BUILD FILES
 Makefile: Makefile.in configure

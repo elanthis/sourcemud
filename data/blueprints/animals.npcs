@@ -9,10 +9,7 @@ blueprint.npc {
   blueprint.desc = "{$self.D} doesn't appear to be afraid of much."
 
   blueprint.ai = "monster"
-  user.ai_flee = 60
-  user.ai_foodchain = 45
 
-  user.raise_as = "wolf_skeleton"
 
   combat.dodge = 5
 
@@ -32,10 +29,7 @@ blueprint.npc {
   blueprint.desc = "{$self.D} is huge, larger than most other wolves by far.  Its gray fur is rough and coarse.  The wolf doesn't look friendly."
 
   blueprint.ai = "monster"
-  user.ai_flee = 60
-  user.ai_foodchain = 55
 
-  user.raise_as = "wolf_skeleton"
 
   combat.dodge = 4
 
@@ -55,10 +49,7 @@ blueprint.npc {
   blueprint.desc = "Demonic in appearnace, {$self.D} is larger than any wolf could be through natural means.  Its eyes glow red, and its near-black fur is broken in places, where spiked ridges run along its body.  {$self.D} has as sinister a nature as any animal could have."
 
   blueprint.ai = "monster"
-  user.ai_flee = 10
-  user.ai_foodchain = 70
 
-  user.raise_as = "wolf_skeleton"
 
   combat.dodge = 7
 

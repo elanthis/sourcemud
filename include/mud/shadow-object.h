@@ -12,7 +12,7 @@
 
 // Object blueprint
 class
-ObjectBP : public Scriptix::Native
+ObjectBP
 {
 	public:
 	ObjectBP ();
@@ -133,8 +133,6 @@ ShadowObject : public Object
 
 	protected:
 	virtual ~ShadowObject ();
-
-	virtual Scriptix::Value get_undefined_property (Scriptix::Atom id) const;
 };
 
 class SObjectBPManager : public IManager

@@ -30,14 +30,13 @@
 #include "mud/object.h"
 #include "mud/creature.h"
 #include "mud/portal.h"
-#include "generated/hooks.h"
+#include "mud/hooks.h"
 #include "mud/efactory.h"
 #include "mud/shadow-object.h"
 #include "mud/unique-object.h"
 
 /* constructor */
-SCRIPT_TYPE(Room);
-Room::Room () : Entity (MUD_RoomType)
+Room::Room ()
 {
 	/* clear de values */
 	zone = NULL;

@@ -552,26 +552,8 @@ class ActionRead : public IInstantAction
 		if (!get_actor()->check_see())
 			return;
 
-		// has plain text?
-		String text = obj->get_property(S("read_text")).get_string();
-		if (!text) {
-			*get_actor() << StreamName(*obj, DEFINITE, true) << " cannot be read.\n";
-			return;
-		}
-
-		// show text
-		*get_actor() << StreamMacro(text, S("object"), obj, S("get_actor()"), get_actor()) << "\n";
-			
-		// room text
-		if (get_actor()->get_room()) {
-			text = obj->get_property(S("read_room")).get_string();
-			if (!text)
-				*get_actor()->get_room() << StreamIgnore(get_actor()) << StreamName(get_actor(), INDEFINITE, true) << " reads " << StreamName(obj) << ".\n";
-			else
-				*get_actor()->get_room() << StreamIgnore(get_actor()) << StreamMacro(text, S("object"), obj, S("get_actor()"), get_actor()) << "\n";
-		}
-
-		// FIXME EVENT
+		// FIXME: add back text property, and an event
+		*get_actor() << StreamName(*obj, DEFINITE, true) << " cannot be read.\n";
 	}
 
 	private:
@@ -601,27 +583,9 @@ class ActionEat : public IAction
 		if (!get_actor()->check_move())
 			return 1;
 
-		// you eat text
-		String text = obj->get_property(S("eat_text")).get_string();
-		if (!text) {
-			*get_actor() << "You can't eat " << StreamName(*obj, DEFINITE) << ".\n";
-			return 1;
-		}
-
-		// show text
-		*get_actor() << StreamMacro(text, S("object"), obj, S("get_actor()"), get_actor()) << "\n";
-			
-		// room text
-		if (get_actor()->get_room()) {
-			text = obj->get_property(S("eat_room")).get_string();
-			if (!text)
-				*get_actor()->get_room() << StreamIgnore(get_actor()) << StreamName(get_actor(), INDEFINITE, true) << " eats " << StreamName(obj) << ".\n";
-			else
-				*get_actor()->get_room() << StreamIgnore(get_actor()) << StreamMacro(text, S("object"), obj, S("get_actor()"), get_actor()) << "\n";
-		}
-
-		// FIXME EVENT
-		return 0;
+		// FIXME: text and event
+		*get_actor() << "You can't eat " << StreamName(*obj, DEFINITE) << ".\n";
+		return 1;
 	}
 
 	private:
@@ -651,27 +615,9 @@ class ActionDrink : public IAction
 		if (!get_actor()->check_move())
 			return 1;
 
-		// you drink text
-		String text = obj->get_property(S("drink_text")).get_string();
-		if (!text) {
-			*get_actor() << "You can't drink " << StreamName(*obj, DEFINITE) << ".\n";
-			return 1;
-		}
-
-		// show text
-		*get_actor() << StreamMacro(text, S("object"), obj, S("get_actor()"), get_actor()) << "\n";
-			
-		// room text
-		if (get_actor()->get_room()) {
-			text = obj->get_property(S("drink_room")).get_string();
-			if (!text)
-				*get_actor()->get_room() << StreamIgnore(get_actor()) << StreamName(get_actor(), INDEFINITE, true) << " drinks " << StreamName(obj) << ".\n";
-			else
-				*get_actor()->get_room() << StreamIgnore(get_actor()) << StreamMacro(text, S("object"), obj, S("get_actor()"), get_actor()) << "\n";
-		}
-
-		// FIXME EVENT
-		return 0;
+		// FIXME: text and event
+		*get_actor() << "You can't drink " << StreamName(*obj, DEFINITE) << ".\n";
+		return 1;
 	}
 
 	private:

@@ -48,9 +48,10 @@ namespace Events {
   <xsl:if test="target"><xsl:text>, </xsl:text><xsl:value-of select="target/@type" />* target</xsl:if>
   <xsl:if test="aux"><xsl:text>, </xsl:text><xsl:value-of select="aux/@type" />* aux</xsl:if>
   <xsl:apply-templates select="arg" />
-  <xsl:text>){EventManager.send(EventID::</xsl:text><xsl:value-of select="@name" /><xsl:text>,room,actor,target,aux</xsl:text>
+  <xsl:text>){/*EventManager.send(EventID::</xsl:text><xsl:value-of select="@name" /><xsl:text>,room,actor,target,aux</xsl:text>
   <xsl:for-each select="arg"><xsl:text>,arg_</xsl:text><xsl:value-of select="@name" /></xsl:for-each>
-  <xsl:text>);}</xsl:text>
+  <xsl:text>);*/}
+</xsl:text>
 </xsl:for-each>
 
 <!-- footer -->
@@ -59,8 +60,9 @@ namespace Events {
 ]]></xsl:text>
 
 <!-- Compiler -->
-<xsl:text>Scriptix::ScriptFunction SEventManager::compile (EventID id, String source, String filename, unsigned long fileline) {</xsl:text>
+<xsl:text>int SEventManager::compile (EventID id, String source, String filename, unsigned long fileline) {</xsl:text>
 <xsl:for-each select="event">
+  <!--
   <xsl:text>if(id == EventID::</xsl:text>
   <xsl:value-of select="@name" />
   <xsl:text>) return Scriptix::ScriptFunction::compile(S("event </xsl:text>
@@ -71,9 +73,11 @@ namespace Events {
     <xsl:value-of select="@name" />
   </xsl:for-each>
   <xsl:text>"), filename, fileline);</xsl:text>
+  -->
 </xsl:for-each>
 
-<xsl:text>return Scriptix::ScriptFunction::compile(S("event ") + id.get_name(), source, S("self,event,room,actor,target,aux,data1,data2,data3,data4,data5"), filename, fileline); }</xsl:text>
+<!--<xsl:text>return Scriptix::ScriptFunction::compile(S("event ") + id.get_name(), source, S("self,event,room,actor,target,aux,data1,data2,data3,data4,data5"), filename, fileline);</xsl:text>-->
+<xsl:text>}</xsl:text>
 
 <xsl:text>
 </xsl:text>

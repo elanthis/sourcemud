@@ -13,7 +13,6 @@
 #include "common/gcbase.h"
 #include "common/gcmap.h"
 #include "mud/server.h"
-#include "scriptix/function.h"
 
 class Event;
 class Creature;
@@ -31,23 +30,23 @@ class AI : public GC
 	bool do_event (Creature* self, const Event& event) const;
 	void do_ready (Creature* self) const;
 	void do_heartbeat (Creature* self) const;
-	void do_pump (Creature* self, Scriptix::Value arg) const;
+	void do_pump (Creature* self) const;
 
 	String get_name (void) const { return name; }
 
 	// data
 	protected:
-	typedef GCType::map<EventID, Scriptix::ScriptFunction> EventList;
+	typedef GCType::map<EventID, String> EventList;
 
 	String name;
 
 	EventList event_cb;
 
-	Scriptix::ScriptFunction load_cb;
-	Scriptix::ScriptFunction save_cb;
-	Scriptix::ScriptFunction heartbeat_cb;
-	Scriptix::ScriptFunction ready_cb;
-	Scriptix::ScriptFunction pump_cb;
+	String load_cb;
+	String save_cb;
+	String heartbeat_cb;
+	String ready_cb;
+	String pump_cb;
 
 	friend class SAIManager;
 };

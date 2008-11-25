@@ -20,7 +20,7 @@
 #include "mud/player.h"
 #include "common/streams.h"
 #include "mud/settings.h"
-#include "generated/hooks.h"
+#include "mud/hooks.h"
 #include "common/manifest.h"
 #include "mud/shadow-object.h"
 #include "mud/unique-object.h"
@@ -35,8 +35,7 @@ String ObjectLocation::names[] = {
 
 // ----- ObjectBP -----
 
-SCRIPT_TYPE(ObjectBP);
-ObjectBP::ObjectBP () : Scriptix::Native(MUD_ObjectBPType)
+ObjectBP::ObjectBP ()
 {
 	weight = 0;
 	cost = 0;
@@ -158,17 +157,6 @@ ObjectBP::load (File::Reader& reader)
 				locations.set_on(ObjectLocation::IN);
 			} else
 				Log::Warning << "Unknown container type '" << node.get_string() << "' at " << reader.get_filename() << ':' << node.get_line();
-		FO_WILD("user")
-			if (node.get_value_type() == File::Value::TYPE_INT)
-				set_property(node.get_name(), node.get_int());
-			else if (node.get_value_type() == File::Value::TYPE_STRING)
-				set_property(node.get_name(), node.get_string());
-			else if (node.get_value_type() == File::Value::TYPE_BOOL)
-				set_property(node.get_name(), node.get_bool());
-			else {
-				Log::Error << "Invalid data type for script attribute at " << reader.get_filename() << ':' << node.get_line();
-				return -1;
-			}
 		FO_ATTR("blueprint", "tag")
 			tags.insert(TagID::create(node.get_string()));
 	FO_READ_ERROR
@@ -180,8 +168,7 @@ ObjectBP::load (File::Reader& reader)
 
 // ----- Object -----
 
-SCRIPT_TYPE(Object);
-Object::Object () : Entity (MUD_ObjectType)
+Object::Object ()
 {
 	owner = NULL;
 	calc_weight = 0;
@@ -738,15 +725,6 @@ ShadowObject::name_match (String match) const
 	return false;
 }
 
-Scriptix::Value
-ShadowObject::get_undefined_property (Scriptix::Atom id) const
-{
-	const ObjectBP* data = get_blueprint();
-	if (data == NULL)
-		return Scriptix::Nil;
-	return data->get_property(id);
-}
-
 // Object Blueprint Manager
 
 SObjectBPManager ObjectBPManager;
@@ -755,11 +733,8 @@ int
 SObjectBPManager::initialize ()
 {
 	// requirements
-	if (require(ScriptBindings) != 0)
-		return 1;
 	if (require(EventManager) != 0)
 		return 1;
-
 
 	ManifestFile man(SettingsManager.get_blueprint_path(), S(".objs"));
 	StringList files = man.get_files();;

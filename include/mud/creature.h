@@ -111,7 +111,7 @@ class
 Creature : public Entity, public IStreamSink
 {
 	public:
-	Creature (const Scriptix::TypeInfo* type);
+	Creature();
 
 	// save/load
 	virtual int load_node (File::Reader& reader, File::Node& node);
@@ -119,7 +119,7 @@ Creature : public Entity, public IStreamSink
 	virtual void save_data (File::Writer& writer);
 	virtual void save_hook (class ScriptRestrictedWriter* writer);
 
-	// streaming in Scriptix
+	// streaming
 	IStreamSink* get_stream () { return this; }
 
 	// positon

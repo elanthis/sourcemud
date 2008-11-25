@@ -26,7 +26,6 @@
 #include "common/gcvector.h"
 #include "common/gcmap.h"
 #include "common/imanager.h"
-#include "mud/bindings.h"
 #include "mud/pconn.h"
 #include "common/time.h"
 

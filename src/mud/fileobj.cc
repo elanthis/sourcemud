@@ -15,7 +15,6 @@
 #include "mud/fileobj.h"
 #include "common/log.h"
 #include "mud/uniqid.h"
-#include "scriptix/native.h"
 
 using namespace std;
 
@@ -808,8 +807,6 @@ operator<< (const StreamControl& stream, const File::Node& node)
 	return stream;
 }
 
-SCRIPT_TYPE(RestrictedWriter)
 ScriptRestrictedWriter::ScriptRestrictedWriter (File::Writer* s_writer) :
-    Scriptix::Native(MUD_RestrictedWriterType),
     writer(s_writer)
 {}

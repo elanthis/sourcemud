@@ -12,7 +12,6 @@ blueprint.object {
   blueprint.weight = 20
   blueprint.cost = 250
   blueprint.tag = "armor"
-  user.defend = 14
 }
 blueprint.object {
   blueprint.id = "ar_chain_shirt"
@@ -22,7 +21,6 @@ blueprint.object {
   blueprint.weight = 15
   blueprint.cost = 175
   blueprint.tag = "armor"
-  user.defend = 10
 }
 blueprint.object {
   blueprint.id = "ar_leather_armor"
@@ -31,7 +29,6 @@ blueprint.object {
   blueprint.weight = 10
   blueprint.cost = 140
   blueprint.tag = "armor"
-  user.defend = 7
 }
 blueprint.object {
   blueprint.id = "ar_leather_tunic"
@@ -41,7 +38,6 @@ blueprint.object {
   blueprint.weight = 8
   blueprint.cost = 79
   blueprint.tag = "armor"
-  user.defend = 3
 }
 blueprint.object {
   blueprint.id = "ar_helm"
@@ -51,7 +47,6 @@ blueprint.object {
   blueprint.weight = 5
   blueprint.cost = 30
   blueprint.tag = "armor"
-  user.defend = 5
 }
 blueprint.object {
   blueprint.id = "ar_chain_leggings"
@@ -61,7 +56,6 @@ blueprint.object {
   blueprint.weight = 5
   blueprint.cost = 89
   blueprint.tag = "armor"
-  user.defend = 6
 }
 blueprint.object {
   blueprint.id = "ar_leather_bracer"
@@ -71,7 +65,6 @@ blueprint.object {
   blueprint.weight = 3
   blueprint.cost = 15
   blueprint.tag = "armor"
-  user.defend = 2
 }
 blueprint.object {
   blueprint.id = "ar_casting_robe"
@@ -82,7 +75,6 @@ blueprint.object {
   blueprint.cost = 129
   blueprint.tag = "clothing"
   blueprint.tag = "magician"
-  user.defend = 6
 }
 blueprint.object {
   blueprint.id = "ar_leather_choker"
@@ -92,7 +84,6 @@ blueprint.object {
   blueprint.weight = 1
   blueprint.cost = 9
   blueprint.tag = "clothing"
-  user.defend = 2
 }
 blueprint.object {
   blueprint.id = "ar_hunting_boots"
@@ -102,7 +93,6 @@ blueprint.object {
   blueprint.weight = 3
   blueprint.cost = 79
   blueprint.tag = "clothing"
-  user.defend = 4
 }
 blueprint.object {
   blueprint.id = "ar_hunting_gloves"
@@ -112,7 +102,6 @@ blueprint.object {
   blueprint.weight = 1
   blueprint.cost = 25
   blueprint.tag = "clothing"
-  user.defend = 3
 }
 blueprint.object {
   blueprint.id = "ar_ruby_earring"
@@ -121,7 +110,6 @@ blueprint.object {
   blueprint.desc = "This earring has a beautiful ruby gemstone, affixed to a golden stud."
   blueprint.weight = 1
   blueprint.tag = "jewelry"
-  user.defend = 0
 }
 blueprint.object {
   blueprint.id = "ar_diamond_earring"
@@ -130,7 +118,6 @@ blueprint.object {
   blueprint.desc = "This earring has a beautiful diamond gemstone, affixed to a golden stud."
   blueprint.weight = 1
   blueprint.tag = "jewelry"
-  user.defend = 0
 }
 blueprint.object {
   blueprint.id = "ar_turquoise_anklet"
@@ -139,7 +126,6 @@ blueprint.object {
   blueprint.desc = "A shiny turquoise anklet."
   blueprint.weight = 1
   blueprint.tag = "jewelry"
-  user.defend = 0
 }
 blueprint.object {
   blueprint.id = "ar_gold_anklet"
@@ -148,7 +134,6 @@ blueprint.object {
   blueprint.desc = "A shiny gold anklet."
   blueprint.weight = 1
   blueprint.tag = "jewelry"
-  user.defend = 0
 }
 
 # vim: set shiftwidth=2 tabstop=2 expandtab:

@@ -9,7 +9,6 @@
 #include "mud/creature.h"
 #include "mud/ai.h"
 #include "mud/room.h"
-#include "mud/bindings.h"
 #include "common/manifest.h"
 
 SAIManager AIManager;
@@ -21,34 +20,34 @@ AI::load (File::Reader& reader)
 		FO_ATTR("ai", "id")
 			name = node.get_string();
 		FO_ATTR("event", "load")
-			load_cb = Scriptix::ScriptFunction::compile(S("load"), node.get_string(), S("self"), reader.get_filename(), node.get_line());
+			load_cb = node.get_string();
 			
 			if (load_cb.empty())
 				throw File::Error(S("Script compile failed"));
 		FO_ATTR("event", "save")
-			save_cb = Scriptix::ScriptFunction::compile(S("save"), node.get_string(), S("self,writer"), reader.get_filename(), node.get_line());
+			save_cb = node.get_string();
 			
 			if (save_cb.empty())
 				throw File::Error(S("Script compile failed"));
 		FO_ATTR("event", "heartbeat")
-			heartbeat_cb = Scriptix::ScriptFunction::compile(S("heartbeat"), node.get_string(), S("self"), reader.get_filename(), node.get_line());
+			heartbeat_cb = node.get_string();
 			
 			if (heartbeat_cb.empty())
 				throw File::Error(S("Script compile failed"));
 		FO_ATTR("event", "ready")
-			ready_cb = Scriptix::ScriptFunction::compile(S("ready"), node.get_string(), S("self"), reader.get_filename(), node.get_line());
+			ready_cb = node.get_string();
 			
 			if (ready_cb.empty())
 				throw File::Error(S("Script compile failed"));
 		FO_ATTR("event", "pump")
-			pump_cb = Scriptix::ScriptFunction::compile(S("pump"), node.get_string(), S("self,data"), reader.get_filename(), node.get_line());
+			pump_cb = node.get_string();
 			
 			if (pump_cb.empty())
 				throw File::Error(S("Script compile failed"));
 		FO_WILD("event")
 			EventID event = EventID::lookup(node.get_name());
 			if (event.valid()) {
-				Scriptix::ScriptFunction handler = EventManager.compile(event, node.get_string(), reader.get_filename(), node.get_line());
+				String handler = node.get_string();
 
 				if (handler.empty())
 					throw File::Error(S("Script compile failed"));
@@ -73,7 +72,7 @@ AI::do_event (Creature* self, const Event& event) const
 	// get handler
 	EventList::const_iterator i = event_cb.find(event.get_id());
 	if (i != event_cb.end()) {
-		i->second.run(self, event.get_id().get_name(), event.get_recipient(), event.get_aux1(), event.get_aux2(), event.get_data1(), event.get_data2(), event.get_data3(), event.get_data4());
+//		i->second.run(self, event.get_id().get_name(), event.get_recipient(), event.get_aux1(), event.get_aux2(), event.get_data1(), event.get_data2(), event.get_data3(), event.get_data4());
 	}
 	return true;
 }
@@ -82,40 +81,50 @@ void
 AI::do_ready (Creature* self) const
 {
 	// call handler
+	/*
 	if (!ready_cb.empty())
 		ready_cb.run(self);
+	*/
 }
 
 void
 AI::do_heartbeat (Creature* self) const
 {
 	// call handler
+	/*
 	if (!heartbeat_cb.empty())
 		heartbeat_cb.run(self);
+	*/
 }
 
 void
 AI::do_load (Creature* self) const
 {
 	// call handler
+	/*
 	if (!load_cb.empty())
 		load_cb.run(self);
+	*/
 }
 
 void
-AI::do_pump (Creature* self, Scriptix::Value data) const
+AI::do_pump (Creature* self) const
 {
 	// call handler
+	/*
 	if (!pump_cb.empty())
 		pump_cb.run(self, data);
+	*/
 }
 
 void
 AI::do_save (Creature* self, ScriptRestrictedWriter* writer) const
 {
 	// call handler
+	/*
 	if (!save_cb.empty())
 		save_cb.run(self, writer);
+	*/
 }
 
 void
@@ -137,8 +146,6 @@ SAIManager::get (String name)
 int
 SAIManager::initialize (void)
 {
-	if (require(ScriptBindings) != 0)
-		return 1;
 	if (require(EventManager) != 0)
 		return 1;
 	

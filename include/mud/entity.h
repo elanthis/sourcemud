@@ -26,7 +26,6 @@
 #include "mud/server.h"
 #include "mud/clock.h"
 #include "mud/macro.h"
-#include "scriptix/native.h"
 #include "mud/name.h"
 
 #define E_SUBTYPE(name,par) \
@@ -46,10 +45,10 @@ typedef std::map<UniqueID, Entity*> UniqueIDMap; // NOTE: also non-GC scanning
 // --- Entity Definiton ---
 
 // entity control
-class Entity : public Scriptix::Native, public IMacroObject
+class Entity : public IMacroObject
 {
 	public:
-	Entity (const Scriptix::TypeInfo* type);
+	Entity();
 
 	// factory handling
 	virtual String factory_type () const = 0;

@@ -32,7 +32,7 @@
 #include "mud/race.h"
 #include "mud/caffect.h"
 #include "mud/object.h"
-#include "generated/hooks.h"
+#include "mud/hooks.h"
 #include "mud/efactory.h"
 
 // manager of players
@@ -113,8 +113,7 @@ namespace {
 	}
 }
 
-SCRIPT_TYPE(Player);
-Player::Player (class Account* s_account, String s_id) : Creature (MUD_PlayerType), birthday()
+Player::Player (class Account* s_account, String s_id)
 {
 	// initialize
 	account = s_account;

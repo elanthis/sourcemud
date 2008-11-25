@@ -11,8 +11,6 @@ blueprint.object {
   blueprint.tag = "weapon"
   blueprint.tag = "mace"
 
-  user.attack_speed = 5
-  user.attack_damage = 10
 }
 
 blueprint.object {
@@ -25,8 +23,6 @@ blueprint.object {
   blueprint.tag = "weapon"
   blueprint.tag = "sword"
 
-  user.combat_speed = 7
-  user.combat_damage = 14
 }
 
 blueprint.object {
@@ -39,8 +35,6 @@ blueprint.object {
   blueprint.tag = "weapon"
   blueprint.tag = "sword"
 
-  user.combat_speed = 5
-  user.combat_damage = 10
 }
 
 blueprint.object {
@@ -53,9 +47,6 @@ blueprint.object {
   blueprint.tag = "weapon"
   blueprint.tag = "sword"
 
-  user.combat_speed = 15
-  user.combat_damage = 30
-  user.combat_hands = 2
 }
 
 blueprint.object {
@@ -68,9 +59,6 @@ blueprint.object {
   blueprint.dropable = false
   blueprint.tag = "weapon"
 
-  user.combat_speed = 5
-  user.combat_damage = 5
-  user.combat_hands = 1
 }
 
 blueprint.object {
@@ -83,9 +71,6 @@ blueprint.object {
   blueprint.dropable = false
   blueprint.tag = "weapon"
 
-  user.combat_speed = 5
-  user.combat_damage = 2
-  user.combat_hands = 1
 }
 
 # vim: set shiftwidth=2 tabstop=2 expandtab:

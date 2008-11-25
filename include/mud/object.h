@@ -16,8 +16,6 @@
 #include "mud/server.h"
 #include "common/imanager.h"
 #include "common/gcmap.h"
-#include "scriptix/native.h"
-#include "scriptix/function.h"
 #include "common/bitset.h"
 
 // Object flags
