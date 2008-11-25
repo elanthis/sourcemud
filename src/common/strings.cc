@@ -32,14 +32,6 @@
 #define __va_copy(x, y) x = y
 #endif
 
-String::String (const char* src)
-{
-	assert(src != NULL);
-	char* tmp = new char[strlen(src) + 1];
-	strcpy(tmp, src);
-	string = tmp;
-}
-
 String::String (const char* src, size_t len)
 {
 	assert(src != NULL);
@@ -55,7 +47,7 @@ operator+ (String left, String right)
 	char* ret = new char[left.size() + right.size() + 1];
 	strcpy(ret, left.c_str());
 	strcpy(ret + left.size(), right.c_str());
-	return GCString(ret);
+	return TransferString(ret);
 }
 
 String
@@ -64,7 +56,7 @@ operator+ (String left, const char* right)
 	char* ret = new char[left.size() + strlen(right) + 1];
 	strcpy(ret, left.c_str());
 	strcpy(ret + left.size(), right);
-	return GCString(ret);
+	return TransferString(ret);
 }
 
 String
@@ -73,7 +65,16 @@ operator+ (const char* left, String right)
 	char* ret = new char[strlen(left) + right.size() + 1];
 	strcpy(ret, left);
 	strcpy(ret + strlen(left), right.c_str());
-	return GCString(ret);
+	return TransferString(ret);
+}
+
+void String::copy(CString src)
+{
+	assert(src != NULL);
+	if (string)
+		delete[] string;
+	string = new char[strlen(src) + 1];
+	strcpy((char*)string, src);
 }
 
 bool
@@ -385,7 +386,7 @@ strupper (String string)
 	char* ret = new char[string.size() + 1];
 	for (size_t i = 0; i < string.size() + 1; ++i)
 		ret[i] = toupper(string[i]);
-	return GCString(ret);
+	return String(ret);
 }
 
 String
@@ -394,7 +395,7 @@ strlower (String string)
 	char* ret = new char[string.size() + 1];
 	for (size_t i = 0; i < string.size() + 1; ++i)
 		ret[i] = tolower(string[i]);
-	return GCString(ret);
+	return String(ret);
 }
 
 namespace {

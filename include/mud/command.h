@@ -127,10 +127,10 @@ class SCommandManager : public IManager
 {
 	public:
 	// initialize
-	virtual int initialize (void);
+	virtual int initialize();
 
 	// shutdown
-	virtual void shutdown (void);
+	virtual void shutdown();
 
 	// add a new command
 	int add (Command* command);

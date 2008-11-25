@@ -25,6 +25,8 @@ template<typename E> class BitSet
 	public:
 	typedef E bit_t;
 
+	BitSet<E>() { clear(); }
+
 	void clear() { memset(bits, 0, sizeof(bits)); }
 
 	bool check(E n) const { return bits[BITSET_BYTE(n)] & BITSET_SHIFT(n); }

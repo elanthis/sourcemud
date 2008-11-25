@@ -77,7 +77,7 @@ namespace Events {
 </xsl:for-each>
 
 <!--<xsl:text>return Scriptix::ScriptFunction::compile(S("event ") + id.get_name(), source, S("self,event,room,actor,target,aux,data1,data2,data3,data4,data5"), filename, fileline);</xsl:text>-->
-<xsl:text>}</xsl:text>
+<xsl:text>return 0;}</xsl:text>
 
 <xsl:text>
 </xsl:text>

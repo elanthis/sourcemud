@@ -29,10 +29,10 @@ class StaticString {
 	CString string;
 };
 
-/* hold GC-allocated string */
-class GCString {
+/* transfer ownership to String */
+class TransferString {
 	public:
-	explicit GCString (CString str) : string(str) {}
+	explicit TransferString (CString str) : string(str) {}
 
 	CString string;
 };
@@ -41,15 +41,16 @@ class GCString {
 class String
 {
 	public:
-	String () : string("") {}
-	String (const String& str) : string(str.string) {}
-	explicit String (CString str);
-	String (StaticString str) : string(str.string) {}
-	String (GCString str) : string(str.string) {}
-	String (CString str, size_t len);
+	String() : string(NULL) { copy(""); }
+	String(const String& str) : string(NULL) { copy(str.string); }
+	explicit String(CString str) : string(NULL) { copy(str); }
+	String(StaticString str) : string(NULL) { copy(str.string); }
+	String(TransferString str) : string(str.string) {}
+	String(CString str, size_t len);
+	~String() { delete[] string; }
 	
 	// copy operator
-	String& operator = (const String &str) { string = str.string; return *this; }
+	String& operator = (const String &str) { copy(str.string); return *this; }
 
 	// comparison operators
 	bool operator == (const String &str) const { return strcmp(string, str.string) == 0; }
@@ -82,13 +83,15 @@ class String
 	iterator end () const { return c_str() + size(); }
 
 	// clear the string to zero
-	void clear () { string = ""; }
+	void clear () { copy(""); }
 
 	// get a substring
 	String substr (size_t begin, size_t end) const;
 
 	private:
 	CString string;
+
+	void copy(CString);
 };
 
 // concatenation

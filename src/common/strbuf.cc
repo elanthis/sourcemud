@@ -8,7 +8,13 @@
 #include "common/strbuf.h"
 #include "common/log.h"
 
-void StringBuffer::reset ()
+StringBuffer::~StringBuffer()
+{
+	if (buffer != stat_buffer)
+		delete[] buffer;
+}
+
+void StringBuffer::reset()
 {
 	if (buffer != stat_buffer)
 		delete[] buffer;
@@ -17,7 +23,7 @@ void StringBuffer::reset ()
 	buffer[0] = 0;
 }
 
-void StringBuffer::write (const char* bytes, size_t len)
+void StringBuffer::write(const char* bytes, size_t len)
 {
 	size_t cur_len = strlen(buffer);
 
