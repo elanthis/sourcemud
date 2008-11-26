@@ -62,13 +62,13 @@ zone.child = room {
   entity.uid = <1439>
   room.child = portal {
     portal.name = "the template gate"
-    entity.uid = <0>
+    entity.uid = <4555>
     portal.dir = "north"
     portal.detail = "through"
     portal.target = "saladhin_ranath_courtyard"
   }
   room.child = portal {
-    entity.uid = <0>
+    entity.uid = <4556>
     portal.dir = "east"
     portal.target = "saladhin_rosewood_park"
   }
@@ -85,7 +85,7 @@ zone.child = room {
   room.desc = "The road stretches from the city square to the west out towards the east in a desperate grasp for the city limits.  A sign hanging from the dingy building on the south side of the road proclaims the place to be an armorer's shop."
   entity.uid = <1443>
   room.child = portal {
-    entity.uid = <0>
+    entity.uid = <4557>
     portal.dir = "east"
     portal.target = "saladhin_rosewood_temple"
   }
@@ -96,13 +96,13 @@ zone.child = room {
   room.desc = "The central square of Saladhin is perhaps the busiest section of the city, night or day.  The city's major thoroughfares all come to this place.  A magnificent clock tower rises on the north edge of the square, standing atop a stone archway through which the gold road runs.  On the south edge of the square is an elaborate fountain, and next to it is a stone well."
   entity.uid = <1444>
   room.child = portal {
-    entity.uid = <0>
+    entity.uid = <4558>
     portal.dir = "east"
     portal.target = "saladhin_rosewood_armorer"
   }
   room.child = portal {
     portal.name = "a stone well"
-    entity.uid = <0>
+    entity.uid = <4559>
     portal.dir = "down"
     portal.usage = "climb"
     portal.detail = "down"
@@ -159,7 +159,7 @@ zone.child = room {
   room.desc = "The Kings' Row begins its journey from the city square here, with the Saladhin Bank nestled comfortably along the north side of the street.  Many small palaces, the homes of rich merchants and minor nobility line the King's Row for some distance to the west."
   entity.uid = <1461>
   room.child = portal {
-    entity.uid = <0>
+    entity.uid = <4560>
     portal.dir = "east"
     portal.target = "saladhin_square"
   }
@@ -170,7 +170,7 @@ zone.child = room {
   room.desc = "Ostentatious palaces line the Kings' Row, home of the wealthy or noble born.  To the east, between the parapets of one of the more gaudy of the places, can be seen the outline of the clock tower in the central city square.  To the west is the metropolis's western gate."
   entity.uid = <1462>
   room.child = portal {
-    entity.uid = <0>
+    entity.uid = <4561>
     portal.dir = "east"
     portal.target = "saladhin_kingsrow_bank"
   }
@@ -181,13 +181,13 @@ zone.child = room {
   room.desc = "The high wall of Saladhin nestles up against the Kings' Row and the palaces lining its fine cobblestones.  The western gate is housed here, providing passage to travellers and protection to city folk from the dangers of the dark wood beyond."
   entity.uid = <1463>
   room.child = portal {
-    entity.uid = <0>
+    entity.uid = <4562>
     portal.dir = "east"
     portal.target = "saladhin_kingsrow_empty"
   }
   room.child = portal {
     portal.name = "the west gate"
-    entity.uid = <0>
+    entity.uid = <4563>
     portal.dir = "west"
     portal.door = true
     portal.target = "darkwood_saladhin"

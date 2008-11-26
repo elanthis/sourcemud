@@ -13,18 +13,18 @@ zone.child = room {
   room.desc = "In the center of the cavern is a murky pool of water, into which hangs a rope from an opening in the center of the ceiling."
   entity.uid = <1448>
   room.child = portal {
-    entity.uid = <0>
+    entity.uid = <4564>
     portal.dir = "south"
     portal.target = "catacomb_3_3"
   }
   room.child = portal {
-    entity.uid = <0>
+    entity.uid = <4565>
     portal.dir = "southwest"
     portal.target = "catacomb_2_3"
   }
   room.child = portal {
     portal.name = "a rope"
-    entity.uid = <0>
+    entity.uid = <4566>
     portal.dir = "up"
     portal.usage = "climb"
     portal.detail = "up"
@@ -39,13 +39,13 @@ zone.child = room {
   room.desc = "{if eq {day-or-night} 'day'}Sunlight streams through the narrow cave opening at this point of the catacombs.  Beyond the gaping maw are ghastly trees, each seeming twisted in pain.  The cold darkness of the deeper caves seems inviting in comparison."
   entity.uid = <1449>
   room.child = portal {
-    entity.uid = <0>
+    entity.uid = <4567>
     portal.dir = "south"
     portal.target = "catacomb_1_2"
   }
   room.child = portal {
     portal.name = "the cave opening"
-    entity.uid = <0>
+    entity.uid = <4568>
     portal.dir = "northwest"
     portal.detail = "through"
     portal.oneway = true
@@ -58,17 +58,17 @@ zone.child = room {
   room.desc = "The moist walls of the catacomb are faintly illuminated by the purple moss growing in spotches across the ceiling.  Stalagmites make movement tricky, and the occassional puddle on the floor turns out to be deeper than it appears, adding another level of treachery to the uneven footing of the catacombs."
   entity.uid = <1450>
   room.child = portal {
-    entity.uid = <0>
+    entity.uid = <4569>
     portal.dir = "east"
     portal.target = "catacomb_3_1"
   }
   room.child = portal {
-    entity.uid = <0>
+    entity.uid = <4570>
     portal.dir = "southeast"
     portal.target = "catacomb_well"
   }
   room.child = portal {
-    entity.uid = <0>
+    entity.uid = <4571>
     portal.dir = "southwest"
     portal.target = "catacomb_1_2"
   }
@@ -79,7 +79,7 @@ zone.child = room {
   room.desc = "The moist walls of the catacomb are faintly illuminated by the purple moss growing in spotches across the ceiling.  Stalagmites make movement tricky, and the occassional puddle on the floor turns out to be deeper than it appears, adding another level of treachery to the uneven footing of the catacombs."
   entity.uid = <1451>
   room.child = portal {
-    entity.uid = <0>
+    entity.uid = <4572>
     portal.dir = "east"
     portal.target = "catacomb_4_1"
   }
@@ -90,7 +90,7 @@ zone.child = room {
   room.desc = "The moist walls of the catacomb are faintly illuminated by the purple moss growing in spotches across the ceiling.  Stalagmites make movement tricky, and the occassional puddle on the floor turns out to be deeper than it appears, adding another level of treachery to the uneven footing of the catacombs."
   entity.uid = <1452>
   room.child = portal {
-    entity.uid = <0>
+    entity.uid = <4573>
     portal.dir = "south"
     portal.target = "catacomb_4_2"
   }
@@ -101,7 +101,7 @@ zone.child = room {
   room.desc = "The moist walls of the catacomb are faintly illuminated by the purple moss growing in spotches across the ceiling.  Stalagmites make movement tricky, and the occassional puddle on the floor turns out to be deeper than it appears, adding another level of treachery to the uneven footing of the catacombs."
   entity.uid = <1453>
   room.child = portal {
-    entity.uid = <0>
+    entity.uid = <4574>
     portal.dir = "south"
     portal.target = "catacomb_1_3"
   }
@@ -112,7 +112,7 @@ zone.child = room {
   room.desc = "The moist walls of the catacomb are faintly illuminated by the purple moss growing in spotches across the ceiling.  Stalagmites make movement tricky, and the occassional puddle on the floor turns out to be deeper than it appears, adding another level of treachery to the uneven footing of the catacombs."
   entity.uid = <1454>
   room.child = portal {
-    entity.uid = <0>
+    entity.uid = <4575>
     portal.dir = "south"
     portal.target = "catacomb_2_3"
   }
@@ -123,12 +123,12 @@ zone.child = room {
   room.desc = "The moist walls of the catacomb are faintly illuminated by the purple moss growing in spotches across the ceiling.  Stalagmites make movement tricky, and the occassional puddle on the floor turns out to be deeper than it appears, adding another level of treachery to the uneven footing of the catacombs."
   entity.uid = <1455>
   room.child = portal {
-    entity.uid = <0>
+    entity.uid = <4576>
     portal.dir = "south"
     portal.target = "catacomb_4_3"
   }
   room.child = portal {
-    entity.uid = <0>
+    entity.uid = <4577>
     portal.dir = "southwest"
     portal.target = "catacomb_3_3"
   }
@@ -139,7 +139,7 @@ zone.child = room {
   room.desc = "The moist walls of the catacomb are faintly illuminated by the purple moss growing in spotches across the ceiling.  Stalagmites make movement tricky, and the occassional puddle on the floor turns out to be deeper than it appears, adding another level of treachery to the uneven footing of the catacombs."
   entity.uid = <1456>
   room.child = portal {
-    entity.uid = <0>
+    entity.uid = <4578>
     portal.dir = "east"
     portal.target = "catacomb_2_3"
   }
