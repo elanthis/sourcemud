@@ -1,3 +1,0 @@
-sourcemud.help
-commands.help
-olc.help

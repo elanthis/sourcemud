@@ -1,2 +1,0 @@
-animal.ai
-monster.ai

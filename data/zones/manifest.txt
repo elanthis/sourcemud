@@ -1,5 +1,0 @@
-#example.zone
-saladhin.zone
-catacombs.zone
-underworld.zone
-darkwood.zone

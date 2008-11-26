@@ -18,7 +18,6 @@ HEADERS = \
 	include/common/imanager.h \
 	include/common/log.h \
 	include/common/mail.h \
-	include/common/manifest.h \
 	include/common/md5.h \
 	include/common/rand.h \
 	include/common/regex.h \
@@ -81,7 +80,6 @@ SOURCES = \
 	src/common/file.cc \
 	src/common/imanager.cc \
 	src/common/log.cc \
-	src/common/manifest.cc \
 	src/common/md5.cc \
 	src/common/rand.cc \
 	src/common/regex.cc \
