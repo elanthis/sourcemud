@@ -1,0 +1,146 @@
+html.header = begin
+	<?xml version="1.0"?>
+	<html>
+		<head>
+			<title>Source MUD Portal</title>
+			<style type="text/css">
+				td \{
+					text-align: left;
+					vertical-top: top;
+				}
+				th \{
+					text-align: left;
+					vertical-top: top;
+					background: #666;
+					font-weight: bold;
+					color: #fff;
+					padding: 2px;
+				}
+				td.options \{
+					text-align: right;
+				}
+				a \{
+					color: #00C;
+				}
+				#title \{
+					background: #eee;
+					text-align: center;
+					padding: 8px;
+					-moz-border-radius: 6px;
+					font-size: 150%;
+					font-weight: bold;
+				}
+				#menu \{
+					padding: 4px;
+					border-bottom: 1px solid #eee;
+				}
+				#footer \{
+					padding: 4px;
+					text-align: center;
+					border-top: 1px solid #eee;
+					color: #ccc;
+					font-size: small;
+				}
+				#body \{
+					margin: 12px;
+				}
+				#msg \{
+					text-align: center;
+					font-weight: bold;
+					color: #c00;
+				}
+			</style>
+		</head>
+		<body>
+			<div id="title">Source MUD Portal</div>
+
+			<div id="menu">
+			{if $account}
+				<b>{$account.name}</b>
+				| <a href="/">Home</a>
+				| <a href="/account">Account</a>
+				| <a href="/logout">Logout</a>
+			{else}
+				<a href="/login">Login</a>
+				| <a href="/">Home</a>
+			{endif}
+				| <a href="/stats">Stats</a>
+			</div>
+
+			<div id="body">
+				{if $msg}<p id="msg">{$msg}</p>{endif}
+end
+
+html.footer = begin
+			</div>
+
+			<div id="footer">Source MUD {version}<br /><a href="http://www.sourcemud.org">http://www.sourcemud.org</a></div>
+		</body>
+	</html>
+end
+
+html.error = begin
+	<p id="msg">Error {$error}: {$http_msg}<br /><br />{$msg}</p>
+end
+
+html.index = begin
+	<p>Welcome to the Source MUD portal!</p>
+
+	{if $account}
+	<p>Welcome, {$account.name}!</p>
+	{else}
+	<p><a href="/login">Please Login</a></p>
+	{endif}
+end
+
+html.login = begin
+	{if eq {$account} ''}
+	<form action="/login" method="post">
+		<table align="center">
+			<tr><th colspan="2">Login</th></tr>
+			<tr>
+				<td><label for="username">Account:</label></td>
+				<td><input type="text" size="25" name="username" id="username" /></td>
+			</tr>
+			<tr>
+				<td><label for="password">Passphrase:</label></td>
+				<td><input type="password" size="25" name="password" id="password" /></td>
+			</tr>
+			<tr>
+				<td colspan="2" class="options"><input type="submit" name="action" value="Login" /></td>
+			</tr>
+		</table>
+	</form>
+	{endif}
+end
+
+html.logout = begin
+	<p style="text-align: center;">Good-bye!</p>
+	<p style="text-align: center;"><a href="/login">Login</a></p>
+end
+
+html.account = begin
+	<form action="/account" method="post">
+		<table align="center">
+			<tr><th colspan="2">Account Details</th></tr>
+			<tr><td><label>Account ID:</label></td><td>{html {$account.id}}</td></tr>
+			<tr><td><label for="acct_name">Your Name:</label></td><td><input type="text" name="acct_name" id="acct_name" size="30" value="{html {$account.name}}" /></td></tr>
+			<tr><td><label for="acct_email">Email Address:</label></td><td><input type="text" name="acct_email" id="acct_email" size="30" value="{html {$account.email}}" /></td></tr>
+			<tr><td colspan="2"><hr /></td></tr>
+			<tr><td><label for="new_pass1">New Passphrase:</label></td><td><input type="password" name="new_pass1" id="new_pass1" size="20" /> (optional)</td></tr>
+			<tr><td><label for="new_pass2">Retype Passphrase:</label></td><td><input type="password" name="new_pass2" id="new_pass2" size="20" /> (must match)</td></tr>
+			<tr><td class="options" colspan="2"><input type="submit" name="action" value="Save Changes" /></td></tr>
+		</table>
+	</form>
+end
+
+html.stats = begin
+	<table align="center">
+		<tr><th colspan="2">Site Statistics</th></tr>
+		<tr><td><label>Build:</label></td><td>{build}</td></tr>
+		<tr><td><label>Uptime:</label></td><td>{uptime}</td></tr>
+		<tr><td><label>Hostname:</label></td><td>{hostname}</td></tr>
+		<tr><td><label>Active Players:</label></td><td>{player-count}</td></tr>
+		<tr><td><label>Game Time:</label></td><td>{date} {time}</td></tr>
+	</table>
+end
