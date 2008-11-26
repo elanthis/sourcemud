@@ -386,7 +386,7 @@ strupper (String string)
 	char* ret = new char[string.size() + 1];
 	for (size_t i = 0; i < string.size() + 1; ++i)
 		ret[i] = toupper(string[i]);
-	return String(ret);
+	return TransferString(ret);
 }
 
 String
@@ -395,7 +395,7 @@ strlower (String string)
 	char* ret = new char[string.size() + 1];
 	for (size_t i = 0; i < string.size() + 1; ++i)
 		ret[i] = tolower(string[i]);
-	return String(ret);
+	return TransferString(ret);
 }
 
 namespace {
