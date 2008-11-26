@@ -534,6 +534,8 @@ Portal::name_match (String match) const
 void
 Portal::activate ()
 {
+	Entity::activate();
+
 	if (!is_oneway()) {
 		Room* room = ZoneManager.get_room(target);
 		if (room != NULL) {
@@ -553,6 +555,8 @@ Portal::deactivate ()
 		if (room != NULL)
 			room->unregister_portal(this);
 	}
+
+	Entity::deactivate();
 }
 
 void
