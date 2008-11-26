@@ -35,40 +35,40 @@ String ObjectLocation::names[] = {
 
 // ----- ObjectBP -----
 
-ObjectBP::ObjectBP ()
+ObjectBP::ObjectBP()
 {
 	weight = 0;
 	cost = 0;
 }
 
 bool
-ObjectBP::set_name (String s_name)
+ObjectBP::set_name(String s_name)
 {
 	bool ret = name.set_name(s_name);
 	return ret;
 }
 
 EntityName
-ObjectBP::get_name () const
+ObjectBP::get_name() const
 {
 	return name;
 }
 
 bool
-ObjectBP::has_tag (TagID tag) const
+ObjectBP::has_tag(TagID tag) const
 {
 	return tags.find(tag) != tags.end();
 }
 
 int
-ObjectBP::add_tag (TagID tag)
+ObjectBP::add_tag(TagID tag)
 {
 	tags.insert(tag);
 	return 0;
 }
 
 int
-ObjectBP::remove_tag (TagID tag)
+ObjectBP::remove_tag(TagID tag)
 {
 	// find
 	TagList::iterator ti = std::find(tags.begin(), tags.end(), tag);
@@ -82,7 +82,7 @@ ObjectBP::remove_tag (TagID tag)
 }
 
 void
-ObjectBP::save (File::Writer& writer)
+ObjectBP::save(File::Writer& writer)
 {
 	if (id)
 		writer.attr(S("blueprint"), S("id"), id);
@@ -118,7 +118,7 @@ ObjectBP::save (File::Writer& writer)
 }
 
 int
-ObjectBP::load (File::Reader& reader)
+ObjectBP::load(File::Reader& reader)
 {
 	FO_READ_BEGIN
 		FO_ATTR("blueprint", "id")
@@ -165,28 +165,28 @@ ObjectBP::load (File::Reader& reader)
 
 // ----- Object -----
 
-Object::Object ()
+Object::Object()
 {
 	owner = NULL;
 	calc_weight = 0;
 	trash_timer = 0;
 }
 
-ShadowObject::ShadowObject () : Object(), blueprint(0) { }
+ShadowObject::ShadowObject() : Object(), blueprint(0) { }
 
 ShadowObject::ShadowObject (ObjectBP* s_blueprint) : Object(), blueprint(0)
 {
 	set_blueprint(s_blueprint);
 }
 
-UniqueObject::UniqueObject () : Object() { }
+UniqueObject::UniqueObject() : Object() { }
 
-Object::~Object () { }
-ShadowObject::~ShadowObject () { }
-UniqueObject::~UniqueObject () { }
+Object::~Object() { }
+ShadowObject::~ShadowObject() { }
+UniqueObject::~UniqueObject() { }
 
 void
-Object::save_data (File::Writer& writer)
+Object::save_data(File::Writer& writer)
 {
 	// parent location
 	if (container == ObjectLocation::IN)
@@ -195,7 +195,7 @@ Object::save_data (File::Writer& writer)
 		writer.attr(S("object"), S("location"), S("on"));
 
 	// save children objects
-	for (EList<Object>::const_iterator e = children.begin (); e != children.end(); ++e) {
+	for (EList<Object>::const_iterator e = children.begin(); e != children.end(); ++e) {
 		(*e)->save(writer, S("object"), S("child"));
 	}
 
@@ -204,7 +204,7 @@ Object::save_data (File::Writer& writer)
 }
 
 void
-UniqueObject::save_data (File::Writer& writer)
+UniqueObject::save_data(File::Writer& writer)
 {
 	writer.attr(S("object"), S("name"), name.get_name());
 	writer.attr(S("object"), S("desc"), desc);
@@ -237,7 +237,7 @@ UniqueObject::save_data (File::Writer& writer)
 }
 
 void
-ShadowObject::save_data (File::Writer& writer)
+ShadowObject::save_data(File::Writer& writer)
 {
 	// save blueprint
 	if (get_blueprint())
@@ -252,7 +252,7 @@ ShadowObject::save_data (File::Writer& writer)
 }
 
 void
-Object::save_hook (File::Writer& writer)
+Object::save_hook(File::Writer& writer)
 {
 	Entity::save_hook(writer);
 	Hooks::save_object(this, writer);
@@ -266,7 +266,7 @@ Object::load_finish()
 }
 
 int
-ShadowObject::load_finish ()
+ShadowObject::load_finish()
 {
 	if (blueprint == NULL) {
 		Log::Error << "object has no blueprint";
@@ -313,7 +313,7 @@ ShadowObject::load_node(File::Reader& reader, File::Node& node)
 }
 
 int
-UniqueObject::load_node (File::Reader& reader, File::Node& node)
+UniqueObject::load_node(File::Reader& reader, File::Node& node)
 {
 	FO_NODE_BEGIN
 		FO_ATTR("object", "name")
@@ -352,7 +352,7 @@ UniqueObject::load_node (File::Reader& reader, File::Node& node)
 }
 
 void
-Object::set_owner (Entity* s_owner)
+Object::set_owner(Entity* s_owner)
 {
 	// type check
 	assert(OBJECT(s_owner) || ROOM(s_owner) || CHARACTER(s_owner));
@@ -363,7 +363,7 @@ Object::set_owner (Entity* s_owner)
 }
 
 void
-Object::owner_release (Entity* child)
+Object::owner_release(Entity* child)
 {
 	// we only own objects
 	Object* obj = OBJECT(child);
@@ -410,25 +410,25 @@ Object::heartbeat()
 }
 
 void
-Object::activate ()
+Object::activate()
 {
 	Entity::activate();
 
-	for (EList<Object>::iterator e = children.begin (); e != children.end(); ++e)
+	for (EList<Object>::iterator e = children.begin(); e != children.end(); ++e)
 		(*e)->activate();
 }
 
 void
-Object::deactivate ()
+Object::deactivate()
 {
-	for (EList<Object>::iterator e = children.begin (); e != children.end(); ++e)
+	for (EList<Object>::iterator e = children.begin(); e != children.end(); ++e)
 		(*e)->deactivate();
 
 	Entity::deactivate();
 }
 
 bool
-Object::add_object (Object *object, ObjectLocation container)
+Object::add_object(Object *object, ObjectLocation container)
 {
 	assert (object != NULL);
 
@@ -451,7 +451,7 @@ Object::add_object (Object *object, ObjectLocation container)
 }
 
 void
-Object::show_contents (Player *player, ObjectLocation container) const
+Object::show_contents(Player *player, ObjectLocation container) const
 {
 	*player << "You see ";
 	
@@ -459,7 +459,7 @@ Object::show_contents (Player *player, ObjectLocation container) const
 	int displayed = 0;
 
 	// show objects
-	for (EList<Object>::const_iterator i = children.begin (); i != children.end(); ++i) {
+	for (EList<Object>::const_iterator i = children.begin(); i != children.end(); ++i) {
 		// not right container?
 		if ((*i)->container != container)
 			continue;
@@ -497,7 +497,7 @@ Object::show_contents (Player *player, ObjectLocation container) const
 }
 
 Object *
-Object::find_object (String name, uint index, ObjectLocation container, uint *matches) const
+Object::find_object(String name, uint index, ObjectLocation container, uint *matches) const
 {
 	assert (index != 0);
 
@@ -505,7 +505,7 @@ Object::find_object (String name, uint index, ObjectLocation container, uint *ma
 	if (matches)
 		*matches = 0;
 	
-	for (EList<Object>::const_iterator i = children.begin (); i != children.end(); ++i) {
+	for (EList<Object>::const_iterator i = children.begin(); i != children.end(); ++i) {
 		// right container container
 		if ((*i)->container == container) {
 			// check name
@@ -524,7 +524,7 @@ Object::find_object (String name, uint index, ObjectLocation container, uint *ma
 
 // recalc weight of object
 void
-Object::recalc_weight ()
+Object::recalc_weight()
 {
 	calc_weight = 0;
 
@@ -535,7 +535,7 @@ Object::recalc_weight ()
 
 // find parent room
 Room*
-Object::get_room () const
+Object::get_room() const
 {
 	Entity* owner = get_owner();
 	while (owner != NULL && !ROOM(owner))
@@ -545,7 +545,7 @@ Object::get_room () const
 
 // find parent owner
 Creature* 
-Object::get_holder () const
+Object::get_holder() const
 {
 	Entity* owner = get_owner();
 	while (owner != NULL && OBJECT(owner))
@@ -554,14 +554,14 @@ Object::get_holder () const
 }
 
 bool
-ShadowObject::set_name (String s_name)
+ShadowObject::set_name(String s_name)
 {
 	bool ret = name.set_name(s_name);
 	return ret;
 }
 
 bool
-UniqueObject::set_name (String s_name)
+UniqueObject::set_name(String s_name)
 {
 	bool ret = name.set_name(s_name);
 	return ret;
@@ -569,7 +569,7 @@ UniqueObject::set_name (String s_name)
 
 // get object name information
 EntityName
-ShadowObject::get_name () const
+ShadowObject::get_name() const
 {
 	assert(blueprint != NULL);
 	if (name.empty())
@@ -580,7 +580,7 @@ ShadowObject::get_name () const
 
 // get object description
 String
-ShadowObject::get_desc () const
+ShadowObject::get_desc() const
 {
 	assert(blueprint != NULL);
 	return blueprint->get_desc();
@@ -588,19 +588,19 @@ ShadowObject::get_desc () const
 
 // get object properties
 uint
-ShadowObject::get_cost () const
+ShadowObject::get_cost() const
 {
 	assert(blueprint != NULL);
 	return blueprint->get_cost();
 }
 uint
-ShadowObject::get_real_weight () const
+ShadowObject::get_real_weight() const
 {
 	assert(blueprint != NULL);
 	return blueprint->get_weight();
 }
 EquipSlot
-ShadowObject::get_equip () const
+ShadowObject::get_equip() const
 {
 	assert(blueprint != NULL);
 	return blueprint->get_equip();
@@ -608,37 +608,37 @@ ShadowObject::get_equip () const
 
 // get flags
 bool
-ShadowObject::is_hidden () const
+ShadowObject::is_hidden() const
 {
 	assert(blueprint != NULL);
 	return blueprint->get_flag(ObjectFlag::HIDDEN);
 }
 bool
-ShadowObject::is_trashable () const
+ShadowObject::is_trashable() const
 {
 	assert(blueprint != NULL);
 	return blueprint->get_flag(ObjectFlag::TRASH);
 }
 bool
-ShadowObject::is_gettable () const
+ShadowObject::is_gettable() const
 {
 	assert(blueprint != NULL);
 	return blueprint->get_flag(ObjectFlag::GET);
 }
 bool
-ShadowObject::is_dropable () const
+ShadowObject::is_dropable() const
 {
 	assert(blueprint != NULL);
 	return blueprint->get_flag(ObjectFlag::DROP);
 }
 bool
-ShadowObject::is_touchable () const
+ShadowObject::is_touchable() const
 {
 	assert(blueprint != NULL);
 	return blueprint->get_flag(ObjectFlag::TOUCH);
 }
 bool
-ShadowObject::is_rotting () const
+ShadowObject::is_rotting() const
 {
 	assert(blueprint != NULL);
 	return blueprint->get_flag(ObjectFlag::ROT);
@@ -646,7 +646,7 @@ ShadowObject::is_rotting () const
 
 // get parsable member values
 int
-Object::macro_property (const StreamControl& stream, String comm, const MacroList& argv) const
+Object::macro_property(const StreamControl& stream, String comm, const MacroList& argv) const
 {
 	// COST
 	if (!strcmp(comm, "cost")) {
@@ -664,27 +664,27 @@ Object::macro_property (const StreamControl& stream, String comm, const MacroLis
 
 // event handling
 void
-Object::handle_event (const Event& event)
+Object::handle_event(const Event& event)
 {
 	Entity::handle_event(event);
 }
 
 void
-Object::broadcast_event (const Event& event)
+Object::broadcast_event(const Event& event)
 {
 	for (EList<Object>::const_iterator i = children.begin(); i != children.end(); ++i)
 		EventManager.resend(event, *i);
 }
 
 void
-ShadowObject::set_blueprint (ObjectBP* s_blueprint)
+ShadowObject::set_blueprint(ObjectBP* s_blueprint)
 {
 	blueprint = s_blueprint;
 }
 
 // load object from a blueprint
 Object*
-ShadowObject::load_blueprint (String name)
+ShadowObject::load_blueprint(String name)
 {
 	ObjectBP* blueprint = ObjectBPManager.lookup(name);
 	if (!blueprint)
@@ -694,7 +694,7 @@ ShadowObject::load_blueprint (String name)
 }
 
 bool
-ShadowObject::is_blueprint (String name) const
+ShadowObject::is_blueprint(String name) const
 {
 	ObjectBP* blueprint = get_blueprint();
 
@@ -705,7 +705,7 @@ ShadowObject::is_blueprint (String name) const
 }
 
 bool
-ShadowObject::name_match (String match) const
+ShadowObject::name_match(String match) const
 {
 	if (get_name().matches(match))
 		return true;
@@ -727,7 +727,7 @@ ShadowObject::name_match (String match) const
 SObjectBPManager ObjectBPManager;
 
 int
-SObjectBPManager::initialize ()
+SObjectBPManager::initialize()
 {
 	// requirements
 	if (require(EventManager) != 0)
@@ -765,12 +765,15 @@ SObjectBPManager::initialize ()
 }
 
 void
-SObjectBPManager::shutdown ()
+SObjectBPManager::shutdown()
 {
+	for (BlueprintMap::iterator i = blueprints.begin(), e = blueprints.end();
+			i != e; ++i)
+		delete i->second;
 }
 
 ObjectBP*
-SObjectBPManager::lookup (String id)
+SObjectBPManager::lookup(String id)
 {
 	BlueprintMap::iterator iter = blueprints.find(id);
 	if (iter == blueprints.end())

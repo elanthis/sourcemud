@@ -21,7 +21,7 @@
 #include "mud/efactory.h"
 
 void
-NpcBP::reset_name (void)
+NpcBP::reset_name()
 {
 	// clear
 	name.set_name(S("an npc"));
@@ -35,7 +35,7 @@ NpcBP::reset_name (void)
 }
 
 void
-NpcBP::reset_desc (void)
+NpcBP::reset_desc()
 {
 	// clear
 	desc = String("npc");
@@ -48,7 +48,7 @@ NpcBP::reset_desc (void)
 }
 
 void
-NpcBP::reset_gender (void)
+NpcBP::reset_gender()
 {
 	// reset
 	gender = GenderType::NONE;
@@ -61,46 +61,46 @@ NpcBP::reset_gender (void)
 }
 
 void
-NpcBP::reset_combat_dodge (void)
+NpcBP::reset_combat_dodge()
 {
 	// reset
 	combat.dodge = 0;
 	set_flags.dodge = false;
 
 	// get parent
-	const NpcBP* data = get_parent ();
+	const NpcBP* data = get_parent();
 	if (data != NULL)
 		combat.dodge = data->get_combat_dodge();
 }
 
 void
-NpcBP::reset_combat_attack (void)
+NpcBP::reset_combat_attack()
 {
 	// reset
 	combat.attack = 0;
 	set_flags.attack = false;
 
 	// get parent
-	const NpcBP* data = get_parent ();
+	const NpcBP* data = get_parent();
 	if (data != NULL)
 		combat.attack = data->get_combat_attack();
 }
 
 void
-NpcBP::reset_combat_damage (void)
+NpcBP::reset_combat_damage()
 {
 	// reset
 	combat.damage = 0;
 	set_flags.damage = false;
 
 	// get parent
-	const NpcBP* data = get_parent ();
+	const NpcBP* data = get_parent();
 	if (data != NULL)
 		combat.damage = data->get_combat_damage();
 }
 
 void
-NpcBP::reset_stats (void)
+NpcBP::reset_stats()
 {
 	// reset
 	for (int i = 0; i < CreatureStatID::COUNT; ++i)
@@ -108,14 +108,14 @@ NpcBP::reset_stats (void)
 	set_flags.stats = false;
 
 	// get parent
-	const NpcBP* data = get_parent ();
+	const NpcBP* data = get_parent();
 	if (data != NULL)
 		for (int i = 0; i < CreatureStatID::COUNT; ++i)
 			base_stats[i] = data->get_stat(i);
 }
 
 void
-NpcBP::refresh (void)
+NpcBP::refresh()
 {
 	if (!set_flags.name)
 		reset_name();
@@ -135,17 +135,17 @@ NpcBP::refresh (void)
 
 // ----- NpcBP -----
 
-NpcBP::NpcBP (void) : parent(NULL) {}
+NpcBP::NpcBP() : parent(NULL) {}
 
 void
-NpcBP::set_parent (NpcBP* blueprint)
+NpcBP::set_parent(NpcBP* blueprint)
 {
 	parent = blueprint;
 	refresh();
 }
 
 int
-NpcBP::load (File::Reader& reader)
+NpcBP::load(File::Reader& reader)
 {
 	FO_READ_BEGIN
 		FO_ATTR("blueprint", "id")
@@ -192,7 +192,7 @@ NpcBP::load (File::Reader& reader)
 }
 
 void
-NpcBP::save (File::Writer& writer)
+NpcBP::save(File::Writer& writer)
 {
 	if (set_flags.name)
 		writer.attr(S("blueprint"), S("name"), name.get_name());
@@ -220,7 +220,7 @@ NpcBP::save (File::Writer& writer)
 
 // ----- Npc -----
 
-Npc::Npc (void) : Creature()
+Npc::Npc() : Creature()
 {
 	initialize();
 }
@@ -233,7 +233,7 @@ Npc::Npc (NpcBP* s_blueprint) : Creature()
 }
 
 void
-Npc::initialize (void)
+Npc::initialize()
 {
 	ai = NULL;
 	blueprint = NULL;
@@ -242,12 +242,12 @@ Npc::initialize (void)
 	room_tag = TagID();
 }
 
-Npc::~Npc (void)
+Npc::~Npc()
 {
 }
 
 int
-Npc::load_finish (void)
+Npc::load_finish()
 {
 	if (Creature::load_finish())
 		return -1;
@@ -261,7 +261,7 @@ Npc::load_finish (void)
 }
 
 int
-Npc::load_node (File::Reader& reader, File::Node& node)
+Npc::load_node(File::Reader& reader, File::Node& node)
 {
 	FO_NODE_BEGIN
 		FO_ATTR("npc", "blueprint")
@@ -285,7 +285,7 @@ Npc::load_node (File::Reader& reader, File::Node& node)
 }
 
 void
-Npc::save_data (File::Writer& writer)
+Npc::save_data(File::Writer& writer)
 {
 	if (get_blueprint())
 		writer.attr(S("npc"), S("blueprint"), get_blueprint()->get_id());
@@ -304,7 +304,7 @@ Npc::save_data (File::Writer& writer)
 }
 
 void
-Npc::save_hook (File::Writer& writer)
+Npc::save_hook(File::Writer& writer)
 {
 	Creature::save_hook(writer);
 	Hooks::save_npc(this, writer);
@@ -314,56 +314,56 @@ Npc::save_hook (File::Writer& writer)
 }
 	
 EntityName
-Npc::get_name (void) const
+Npc::get_name() const
 {
 	assert(blueprint != NULL);
 	return blueprint->get_name();
 }
 
 String
-Npc::get_desc (void) const
+Npc::get_desc() const
 {
 	assert(blueprint != NULL);
 	return blueprint->get_desc();
 }
 
 GenderType
-Npc::get_gender (void) const
+Npc::get_gender() const
 {
 	assert(blueprint != NULL);
 	return blueprint->get_gender();
 }
 
 int
-Npc::get_base_stat (CreatureStatID stat) const
+Npc::get_base_stat(CreatureStatID stat) const
 {
 	assert(blueprint != NULL);
 	return blueprint->get_stat(stat);
 }
 
 uint
-Npc::get_combat_dodge (void) const
+Npc::get_combat_dodge() const
 {
 	assert(blueprint != NULL);
 	return blueprint->get_combat_dodge();
 }
 
 uint
-Npc::get_combat_attack (void) const
+Npc::get_combat_attack() const
 {
 	assert(blueprint != NULL);
 	return blueprint->get_combat_attack();
 }
 
 uint
-Npc::get_combat_damage (void) const
+Npc::get_combat_damage() const
 {
 	assert(blueprint != NULL);
 	return blueprint->get_combat_damage();
 }
 
 AI*
-Npc::get_ai (void) const
+Npc::get_ai() const
 {
 	// we have it?
 	if (ai)
@@ -381,7 +381,7 @@ Npc::get_ai (void) const
 }
 
 void
-Npc::pump ()
+Npc::pump()
 {
 	AI* ai = get_ai();
 	if (ai)
@@ -389,7 +389,7 @@ Npc::pump ()
 }
 
 void
-Npc::kill (Creature *killer)
+Npc::kill(Creature *killer)
 {
 	// death message
 	if (get_room())
@@ -406,7 +406,7 @@ Npc::kill (Creature *killer)
 }
 
 void
-Npc::handle_event (const Event& event)
+Npc::handle_event(const Event& event)
 {
 	// ai
 	AI* ai = get_ai();
@@ -414,11 +414,11 @@ Npc::handle_event (const Event& event)
 		ai->do_event(this, event);
 
 	// normal event handler
-	Entity::handle_event (event);
+	Entity::handle_event(event);
 }
 
 void
-Npc::heartbeat (void)
+Npc::heartbeat()
 {
 	// have rt and ai?
 	bool have_rt = get_round_time() > 0;
@@ -440,7 +440,7 @@ Npc::heartbeat (void)
 }
 
 void
-Npc::set_blueprint (NpcBP* s_blueprint)
+Npc::set_blueprint(NpcBP* s_blueprint)
 {
 	blueprint = s_blueprint;
 	for (int i = 0; i < CreatureStatID::COUNT; ++i)
@@ -450,7 +450,7 @@ Npc::set_blueprint (NpcBP* s_blueprint)
 
 // load npc from a blueprint
 Npc*
-Npc::load_blueprint (String name)
+Npc::load_blueprint(String name)
 {
 	// lookup the blueprint
 	NpcBP* blueprint = NpcBPManager.lookup(name);
@@ -482,16 +482,16 @@ Npc::load_blueprint (String name)
 
 // display NPC description
 void
-Npc::display_desc (const StreamControl& stream)
+Npc::display_desc(const StreamControl& stream)
 {
-	if (get_desc ())
+	if (get_desc())
 		stream << StreamMacro(get_desc(), S("npc"), this); // FIXME: re-enable 'actor'(looker)
 	else
 		stream << StreamName(this, DEFINITE, true) << " doesn't appear very interesting.";
 }
 
 bool
-Npc::can_use_portal (Portal* portal) const
+Npc::can_use_portal(Portal* portal) const
 {
 	assert(portal != NULL);
 
@@ -534,7 +534,7 @@ Npc::can_use_portal (Portal* portal) const
 }
 
 bool
-Npc::is_blueprint (String name) const
+Npc::is_blueprint(String name) const
 {
 	NpcBP* blueprint = get_blueprint();
 
@@ -549,7 +549,7 @@ Npc::is_blueprint (String name) const
 }
 
 bool
-Npc::name_match (String match) const
+Npc::name_match(String match) const
 {
 	if (get_name().matches(match))
 		return true;
@@ -573,7 +573,7 @@ Npc::name_match (String match) const
 SNpcBPManager NpcBPManager;
 
 int
-SNpcBPManager::initialize (void)
+SNpcBPManager::initialize()
 {
 	// requirements
 	if (require(AIManager) != 0)
@@ -612,12 +612,15 @@ SNpcBPManager::initialize (void)
 }
 
 void
-SNpcBPManager::shutdown (void)
+SNpcBPManager::shutdown()
 {
+	for (BlueprintMap::iterator i = blueprints.begin(), e = blueprints.end();
+			i != e; ++i)
+		delete i->second;
 }
 
 NpcBP*
-SNpcBPManager::lookup (String id)
+SNpcBPManager::lookup(String id)
 {
 	BlueprintMap::iterator iter = blueprints.find(id);
 	if (iter == blueprints.end())

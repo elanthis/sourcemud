@@ -196,9 +196,8 @@ class SNpcBPManager : public IManager
 	typedef std::map<String,NpcBP*> BlueprintMap;
 
 	public:
-	int initialize ();
-
-	void shutdown ();
+	int initialize();
+	void shutdown();
 
 	NpcBP* lookup (String id);
 
