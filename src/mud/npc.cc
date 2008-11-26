@@ -524,7 +524,7 @@ SNpcBPManager::initialize()
 		return 1;
 
 	StringList files = file::getFileList(SettingsManager.get_blueprint_path(),
-			S("npc"));
+			S("npcs"));
 	for (StringList::iterator i = files.begin(); i != files.end(); ++i) {
 		File::Reader reader;
 		if (reader.open(*i))

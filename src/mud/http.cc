@@ -25,7 +25,7 @@
 #include "mud/settings.h"
 #include "common/log.h"
 #include "common/md5.h"
-#include "common/manifest.h"
+#include "common/file.h"
 
 #include "config.h"
 
@@ -569,8 +569,8 @@ SHTTPManager::initialize (void)
 	StringBuffer buf;
 
 	// read templates
-	ManifestFile man(SettingsManager.get_html_path(), S(".tpl"));
-	StringList files = man.get_files();
+	StringList files = file::getFileList(SettingsManager.get_html_path(),
+			S("tpl"));
 	for (StringList::iterator i = files.begin(); i != files.end(); ++i) {
 		FILE* in = fopen(*i, "rt");
 		if (in == NULL) {
