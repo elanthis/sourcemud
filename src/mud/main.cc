@@ -562,7 +562,7 @@ main (int argc, char **argv)
 
 	// change user/group
 	if (grp) {
-		if (setregid (grp->gr_gid, grp->gr_gid)) {
+		if (setregid(grp->gr_gid, grp->gr_gid)) {
 			Log::Error << "Couldn't set group to '" << grp->gr_name << "': " << strerror(errno);
 			return 1;
 		}
@@ -571,7 +571,7 @@ main (int argc, char **argv)
 		setgroups(0, NULL);
 	}
 	if (usr) {
-		if (setreuid (usr->pw_uid, usr->pw_uid)) {
+		if (setreuid(usr->pw_uid, usr->pw_uid)) {
 			Log::Error << "Couldn't set user to '" << usr->pw_name << "': " << strerror(errno);
 			return 1;
 		}
@@ -654,15 +654,15 @@ main (int argc, char **argv)
 			HTTPManager.check_timeouts();
 
 			// update time
-			bool is_day = TimeManager.time.is_day ();
-			uint hour = TimeManager.time.get_hour ();
-			TimeManager.time.update (1);
+			bool is_day = TimeManager.time.is_day();
+			uint hour = TimeManager.time.get_hour();
+			TimeManager.time.update(1);
 
 			// change from day/night
-			if (is_day && !TimeManager.time.is_day ()) {
+			if (is_day && !TimeManager.time.is_day()) {
 				if (!TimeManager.calendar.sunset_text.empty())
 					ZoneManager.announce(TimeManager.calendar.sunset_text[get_random(TimeManager.calendar.sunset_text.size())], ANFL_OUTDOORS);
-			} else if (!is_day && TimeManager.time.is_day ()) {
+			} else if (!is_day && TimeManager.time.is_day()) {
 				if (!TimeManager.calendar.sunrise_text.empty())
 					ZoneManager.announce(TimeManager.calendar.sunrise_text[get_random(TimeManager.calendar.sunrise_text.size())], ANFL_OUTDOORS);
 			}
