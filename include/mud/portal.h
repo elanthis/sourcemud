@@ -152,10 +152,10 @@ class Portal : public Entity
 	String get_enters () const;
 
 	// ownership - see entity.h
-	virtual void set_owner (Entity*);
-	virtual Entity* get_owner () const;
-	virtual void owner_release (Entity*);
-	virtual class Room *get_room () const { return parent_room; }
+	virtual void set_owner(Entity*);
+	virtual Entity* get_owner() const;
+	virtual void owner_release(Entity*);
+	class Room* get_room() const { return parent_room; }
 
 	// events
 	virtual void handle_event (const Event& event);

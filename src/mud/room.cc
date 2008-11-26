@@ -229,33 +229,33 @@ Room::take_coins (uint amount)
 }
 
 /* update: one game tick */
-void
-Room::heartbeat ()
+void Room::heartbeat()
 {
 	// call update hook
 	Hooks::room_heartbeat(this);
 }
 
-void
-Room::activate ()
+void Room::activate()
 {
-	Entity::activate ();
+	Entity::activate();
 
 	for (std::map<PortalDir,Portal*>::const_iterator i = portals.begin(); i != portals.end(); ++i)
-		if (i->second->get_owner() == this)
+		if (i->second->get_room() == this)
 			i->second->activate();
+
 	for (EList<Creature>::const_iterator i = creatures.begin(); i != creatures.end(); ++i)
 		(*i)->activate();
+
 	for (EList<Object>::const_iterator i = objects.begin(); i != objects.end(); ++i)
 		(*i)->activate();
 }
 
-void
-Room::deactivate ()
+void Room::deactivate()
 {
-	for (std::map<PortalDir,Portal*>::const_iterator i = portals.begin(); i != portals.end(); ++i)
-		if (i->second->get_owner() == this)
+	for (std::map<PortalDir,Portal*>::const_iterator i = portals.begin(); i != portals.end(); ++i) {
+		if (i->second->get_room() == this)
 			i->second->deactivate();
+	}
 
 	for (EList<Creature>::const_iterator i = creatures.begin(); i != creatures.end(); ++i)
 		(*i)->deactivate();
