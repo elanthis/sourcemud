@@ -33,7 +33,7 @@ Spawn::check (const Zone* zone) const
 }
 
 bool
-Spawn::heartbeat ()
+Spawn::heartbeat()
 {
 	// ready for update?
 	if (++dcount >= delay) {
@@ -163,7 +163,7 @@ Zone::get_room_at (size_t index) const
 }
 
 size_t
-Zone::get_room_count () const
+Zone::get_room_count() const
 {
 	return rooms.size();
 }
@@ -197,7 +197,7 @@ Zone::load (String path)
 }
 
 void
-Zone::save ()
+Zone::save()
 {
 	String path = SettingsManager.get_zone_path() + "/" + get_id() + ".zone";
 
@@ -253,7 +253,7 @@ Zone::add_room (Room *room)
 }
 
 void
-Zone::heartbeat ()
+Zone::heartbeat()
 {
 	// spawn systems
 	for (SpawnList::iterator i = spawns.begin(); i != spawns.end(); ++i) {
@@ -264,21 +264,21 @@ Zone::heartbeat ()
 }
 
 void
-Zone::activate ()
+Zone::activate()
 {
 	for (RoomList::iterator i = rooms.begin(); i != rooms.end(); ++i)
 		(*i)->activate();
 }
 
 void
-Zone::deactivate ()
+Zone::deactivate()
 {
 	for (RoomList::iterator i = rooms.begin(); i != rooms.end(); ++i)
 		(*i)->deactivate();
 }
 
 void
-Zone::destroy ()
+Zone::destroy()
 {
 	SZoneManager::ZoneList::iterator i = find(ZoneManager.zones.begin(), ZoneManager.zones.end(), this);
 	if (i != ZoneManager.zones.end())
@@ -298,7 +298,7 @@ Zone::broadcast_event (const Event& event)
 }
 
 int
-SZoneManager::initialize ()
+SZoneManager::initialize()
 {
 	// modules we need
 	if (require(UniqueIDManager) != 0)
@@ -318,7 +318,7 @@ SZoneManager::initialize ()
 
 // load the world
 int
-SZoneManager::load_world ()
+SZoneManager::load_world()
 {
 	// read zones dir
 	ManifestFile man(SettingsManager.get_zone_path(), S(".zone"));
@@ -339,17 +339,27 @@ SZoneManager::load_world ()
 
 // close down zone manager
 void
-SZoneManager::shutdown ()
+SZoneManager::shutdown()
 {
-	while (!zones.empty()) {
-		zones.front()->deactivate();
-		zones.erase(zones.begin());
-	}
+	// deactive all zones, which deactives all entities.
+	// we don't delete them until a collection is run, in order to
+	// protect against any portals/rooms/whatever that might link
+	// back to the zone
+	for (ZoneList::iterator i = zones.begin(), e = zones.end(); i != e; ++i)
+		(*i)->deactivate();
+
+	// collect entities
+	EntityManager.collect();
+
+	// delete zones
+	for (ZoneList::iterator i = zones.begin(), e = zones.end(); i != e; ++i)
+		delete *i;
+	zones.clear();
 }
 
 // save zones
 void
-SZoneManager::save ()
+SZoneManager::save()
 {
 	for (ZoneList::iterator i = zones.begin(); i != zones.end(); ++i)
 		(*i)->save();
