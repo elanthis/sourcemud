@@ -1,6 +1,6 @@
 /*
  * Source MUD
- * Copyright (C) 2000-2005  Sean Middleditch
+ * Copyright(C) 2000-2005  Sean Middleditch
  * See the file COPYING for license details
  * http://www.sourcemud.org
  */
@@ -45,14 +45,14 @@ enum PollHandlerFlags {
 
 class IPDenyList {
 	public:
-	int load (String file);
-	int save (String file);
+	int load(String file);
+	int save(String file);
 
 	// these return -1 on invalid input, 1 on exist errors, 0 on success
-	int add (String addr);
-	int remove (String addr);
+	int add(String addr);
+	int remove(String addr);
 
-	bool exists (SockStorage& addr);
+	bool exists(SockStorage& addr);
 
 	private:
 	struct IPDeny {
@@ -71,11 +71,11 @@ class IPConnList {
 	typedef std::vector<IPTrack> ConnList;
 
 	// return -1 if at max total users, -2 if max per host, 0 on success
-	int add (SockStorage& addr);
-	void remove (SockStorage& addr);
+	int add(SockStorage& addr);
+	void remove(SockStorage& addr);
 
-	const ConnList& get_conn_list () const { return connections; }
-	inline uint get_total () { return total_conns; }
+	const ConnList& get_conn_list() const { return connections; }
+	inline uint get_total() { return total_conns; }
 
 	private:
 	ConnList connections;
@@ -84,33 +84,33 @@ class IPConnList {
 
 class ISocketHandler {
 	public:
-	virtual ~ISocketHandler () {}
+	virtual ~ISocketHandler() {}
 
-	virtual void sock_flush () = 0;
-	virtual void sock_in_ready () = 0;
-	virtual void sock_out_ready () = 0;
-	virtual void sock_hangup () = 0;
+	virtual void sock_flush() = 0;
+	virtual void sock_in_ready() = 0;
+	virtual void sock_out_ready() = 0;
+	virtual void sock_hangup() = 0;
 
-	virtual int sock_get_fd () = 0;
-	virtual bool sock_is_out_waiting () = 0;
-	virtual bool sock_is_disconnect_waiting () = 0;
-	virtual void sock_complete_disconnect () = 0;
+	virtual int sock_get_fd() = 0;
+	virtual bool sock_is_out_waiting() = 0;
+	virtual bool sock_is_disconnect_waiting() = 0;
+	virtual void sock_complete_disconnect() = 0;
 };
 
 class SocketListener : public ISocketHandler {
 	public:
-	inline SocketListener (int s_sock) : sock(s_sock) {}
+	inline SocketListener(int s_sock) : sock(s_sock) {}
 
 	// sub_classes provide sock_in_ready to accept() incoming connections
 
-	virtual void sock_flush () {}
-	virtual void sock_out_ready () {}
-	virtual void sock_hangup () {}
+	virtual void sock_flush() {}
+	virtual void sock_out_ready() {}
+	virtual void sock_hangup() {}
 
-	virtual inline int sock_get_fd () { return sock; }
-	virtual bool sock_is_out_waiting () { return false; }
-	virtual bool sock_is_disconnect_waiting () { return false; }
-	virtual void sock_complete_disconnect () {}
+	virtual inline int sock_get_fd() { return sock; }
+	virtual bool sock_is_out_waiting() { return false; }
+	virtual bool sock_is_disconnect_waiting() { return false; }
+	virtual void sock_complete_disconnect() {}
 
 	protected:
 	int sock;
@@ -118,28 +118,28 @@ class SocketListener : public ISocketHandler {
 
 class SocketConnection : public ISocketHandler {
 	public:
-	SocketConnection (int s_sock);
+	SocketConnection(int s_sock);
 
 	// called with input
-	virtual void sock_input (char* buffer, size_t size) = 0;
+	virtual void sock_input(char* buffer, size_t size) = 0;
 
 	// sub-classes must implement:
-	//  void sock_flush ()
-	//  void sock_hangup ()
+	//  void sock_flush()
+	//  void sock_hangup()
 
 	// request close
-	void sock_disconnect ();
+	void sock_disconnect();
 
 	// add data to the output buffer
-	void sock_buffer (const char* data, size_t size);
+	void sock_buffer(const char* data, size_t size);
 
 	// internal
-	virtual void sock_in_ready ();
-	virtual void sock_out_ready ();
-	virtual int sock_get_fd () { return sock; }
-	virtual bool sock_is_out_waiting () { return !output.empty(); }
-	virtual bool sock_is_disconnect_waiting () { return disconnect; }
-	virtual void sock_complete_disconnect ();
+	virtual void sock_in_ready();
+	virtual void sock_out_ready();
+	virtual int sock_get_fd() { return sock; }
+	virtual bool sock_is_out_waiting() { return !output.empty(); }
+	virtual bool sock_is_disconnect_waiting() { return disconnect; }
+	virtual void sock_complete_disconnect();
 
 	private:
 	std::vector<char> output;
@@ -149,14 +149,14 @@ class SocketConnection : public ISocketHandler {
 
 class SNetworkManager : public IManager {
 	public:
-	virtual int initialize ();
-	virtual void shutdown ();
+	virtual int initialize();
+	virtual void shutdown();
 
-	int add_socket (ISocketHandler* socket);
+	int add_socket(ISocketHandler* socket);
 
-	int poll (long timeout);
+	int poll(long timeout);
 
-	inline const String& get_host () const { return host; }
+	inline const String& get_host() const { return host; }
 
 	// track connections
 	IPConnList connections;
@@ -172,31 +172,31 @@ class SNetworkManager : public IManager {
 
 namespace Network {
 	// get the printable form of an IP address
-	String get_addr_name (const SockStorage& addr);
+	String get_addr_name(const SockStorage& addr);
 
 	// return 0 if the two addresses are the same
-	int addrcmp (const SockStorage& addr1, const SockStorage& addr2);
+	int addrcmp(const SockStorage& addr1, const SockStorage& addr2);
 
-	// compare addresses - with mask applied to *first* address (only)
-	int addrcmp_mask (const SockStorage& addr1, const SockStorage& addr2, uint mask);
+	// compare addresses - with mask applied to *first* address(only)
+	int addrcmp_mask(const SockStorage& addr1, const SockStorage& addr2, uint mask);
 
 	// return the UID of the peer connection on a UNIX socket
-	int get_peer_uid (int sock, uid_t& uid);
+	int get_peer_uid(int sock, uid_t& uid);
 
 	// return true if address is local
-	bool is_addr_local (const SockStorage& addr);
+	bool is_addr_local(const SockStorage& addr);
 
 	// listen on TCP
-	int listen_tcp (int port, int family);
+	int listen_tcp(int port, int family);
 
 	// listen on UNIX
-	int listen_unix (String path);
+	int listen_unix(String path);
 
 	// get socket from a tcp listener
-	int accept_tcp (int sock, SockStorage& addr);
+	int accept_tcp(int sock, SockStorage& addr);
 
 	// get socket from a UNIX listener
-	int accept_unix (int sock, uid_t& uid);
+	int accept_unix(int sock, uid_t& uid);
 };
 
 extern SNetworkManager NetworkManager;

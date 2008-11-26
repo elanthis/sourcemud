@@ -25,18 +25,18 @@
 class HTTPSession
 {
 	public:
-	HTTPSession (Account* s_account);
+	HTTPSession(Account* s_account);
 
-	String get_id () const { return id; }
-	Account* get_account () const { return account; }
+	String get_id() const { return id; }
+	Account* get_account() const { return account; }
 
-	String get_var (String id) const;
-	void set_var (String id, String value);
+	String get_var(String id) const;
+	void set_var(String id, String value);
 
 	void update_timestamp();
 	bool check_timestamp();
 
-	void clear ();
+	void clear();
 
 	private:
 	String id;
@@ -48,21 +48,21 @@ class HTTPSession
 class HTTPHandler : public SocketConnection, public IStreamSink, public IMacroObject
 {
 	public:
-	HTTPHandler (int s_sock, const SockStorage& s_netaddr);
+	HTTPHandler(int s_sock, const SockStorage& s_netaddr);
 
 	// output
-	virtual void stream_put (const char*, size_t len);
-	virtual IStreamSink* get_stream () { return this; }
+	virtual void stream_put(const char*, size_t len);
+	virtual IStreamSink* get_stream() { return this; }
 
 	// processing
-	void process ();
-	void execute ();
+	void process();
+	void execute();
 
 	// hard-coded pages
-	void page_index ();
-	void page_login ();
-	void page_logout ();
-	void page_account ();
+	void page_index();
+	void page_login();
+	void page_logout();
+	void page_account();
 
 	// error
 	void http_error (int error, String msg);
@@ -72,21 +72,21 @@ class HTTPHandler : public SocketConnection, public IStreamSink, public IMacroOb
 	String get_request (String name) const;
 
 	// get user account
-	HTTPSession* get_session () const { return session; }
-	Account* get_account () const { return session ? session->get_account() : NULL; }
+	HTTPSession* get_session() const { return session; }
+	Account* get_account() const { return session ? session->get_account() : NULL; }
 
 	// low-level IO
-	void disconnect ();
+	void disconnect();
 	virtual void sock_input (char* buffer, size_t size);
-	virtual void sock_hangup ();
-	virtual void sock_flush ();
+	virtual void sock_hangup();
+	virtual void sock_flush();
 
 	// macro values
 	int macro_property (const StreamControl& stream, String method, const MacroList& argv) const;
 	void macro_default (const StreamControl& stream) const;
 
 	protected:
-	~HTTPHandler () {}
+	~HTTPHandler() {}
 
 	protected:
 	// parse urlencoded data (GET/POST)
@@ -117,8 +117,8 @@ class HTTPHandler : public SocketConnection, public IStreamSink, public IMacroOb
 class SHTTPManager : public IManager
 {
 	public:
-	virtual int initialize (void);
-	virtual void shutdown (void);
+	virtual int initialize();
+	virtual void shutdown();
 
 	String get_template (String id);
 
@@ -126,7 +126,7 @@ class SHTTPManager : public IManager
 	void destroy_session (HTTPSession* session);
 	HTTPSession* get_session (String id);
 
-	void check_timeouts ();
+	void check_timeouts();
 
 	private:
 	typedef std::map<String, String> TemplateMap;

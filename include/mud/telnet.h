@@ -44,16 +44,16 @@ class TextBufferList
 	size_t allocs, pallocs, out;
 
 	public:
-	TextBufferList (size_t s_size) : list (), size(s_size), allocs(0), pallocs(0), out(0) {}
-	~TextBufferList () {
+	TextBufferList (size_t s_size) : list(), size(s_size), allocs(0), pallocs(0), out(0) {}
+	~TextBufferList() {
 		for (std::vector<char*>::iterator i = list.begin(); i != list.end(); ++i)
 			if (*i)
 				delete[] *i;
 	}
 
-	size_t get_size () const { return size; }
+	size_t get_size() const { return size; }
 
-	char* alloc ();
+	char* alloc();
 	void release (char* buf) {
 		-- out;
 		list.push_back(buf);
@@ -79,14 +79,14 @@ class TextBuffer
 	static TextBufferList lists[COUNT];
 
 	public:
-	TextBuffer () : bsize(EMPTY), bdata(NULL) {}
-	~TextBuffer () { release(); }
+	TextBuffer() : bsize(EMPTY), bdata(NULL) {}
+	~TextBuffer() { release(); }
 
 	size_t size() const { return bsize != EMPTY ? lists[bsize].get_size() : 0; }
 	char *data() const { return bdata; }
-	void release ();
+	void release();
 	int alloc(SizeType size);
-	int grow ();
+	int grow();
 
 	TextBuffer& copy (TextBuffer& buffer) {
 		if (bdata != NULL)
@@ -103,17 +103,17 @@ class ITelnetMode
 {
 	public:
 	ITelnetMode (class TelnetHandler* s_handler) : handler(s_handler) {}
-	virtual ~ITelnetMode () {}
+	virtual ~ITelnetMode() {}
 
 	// basics
-	virtual int initialize () = 0;
-	virtual void prompt () = 0;
+	virtual int initialize() = 0;
+	virtual void prompt() = 0;
 	virtual void process (char* line) = 0;
-	virtual void shutdown () = 0;
-	virtual void finish (); // disconnect session by default
+	virtual void shutdown() = 0;
+	virtual void finish(); // disconnect session by default
 
 	// the handler this mode is connected to
-	inline class TelnetHandler* get_handler () const { return handler; }
+	inline class TelnetHandler* get_handler() const { return handler; }
 
 	private:
 	class TelnetHandler* handler;
@@ -122,50 +122,50 @@ class ITelnetMode
 class TelnetHandler : public SocketConnection, public IStreamSink
 {
 	public:
-	TelnetHandler (int s_sock, const SockStorage& s_netaddr);
+	TelnetHandler(int s_sock, const SockStorage& s_netaddr);
 
 	// color info
-	inline uint get_color (uint i) const { return color_set[i] < 0 ? color_type_defaults[i] : color_set[i]; }
-	inline void set_color (uint i, uint v) { color_set[i] = v; }
-	inline void clear_color (uint i) { color_set[i] = -1; }
-	inline bool use_color () const { return io_flags.use_ansi; }
+	inline uint get_color(uint i) const { return color_set[i] < 0 ? color_type_defaults[i] : color_set[i]; }
+	inline void set_color(uint i, uint v) { color_set[i] = v; }
+	inline void clear_color(uint i) { color_set[i] = -1; }
+	inline bool use_color() const { return io_flags.use_ansi; }
 
 	// processing IO
-	void process ();
-	inline int get_width () const { return width; }
-	bool toggle_echo (bool value);
-	void process_command (char* cmd); // just as if typed in by user
-	void disconnect ();
-	void finish (); // tells the current mode to 'end', disconnects by default
+	void process();
+	inline int get_width() const { return width; }
+	bool toggle_echo(bool value);
+	void process_command(char* cmd); // just as if typed in by user
+	void disconnect();
+	void finish(); // tells the current mode to 'end', disconnects by default
 
 	// output
-	virtual void stream_put (const char*, size_t len);
-	void clear_scr (); // clear da screen
-	void set_indent (uint amount);
-	inline uint get_indent () const { return margin; }
-	void draw_bar (uint percent); // draws a 14 character width progress bar
-	inline void force_update () { io_flags.need_prompt = true; }
+	virtual void stream_put(const char*, size_t len);
+	void clear_scr(); // clear da screen
+	void set_indent(uint amount);
+	inline uint get_indent() const { return margin; }
+	void draw_bar(uint percent); // draws a 14 character width progress bar
+	inline void force_update() { io_flags.need_prompt = true; }
 
 	// change timeout
-	inline void set_timeout (uint s_timeout) { timeout = s_timeout; }
+	inline void set_timeout(uint s_timeout) { timeout = s_timeout; }
 
 	// ZMP
-	inline bool has_zmp () const { return io_flags.zmp; }
-	inline bool has_zmp_color () const { return io_flags.zmp_color; } // supports the color.define command?
-	void send_zmp (size_t argc, const String argv[]);
-	void zmp_support (String pkg, bool value);
+	inline bool has_zmp() const { return io_flags.zmp; }
+	inline bool has_zmp_color() const { return io_flags.zmp_color; } // supports the color.define command?
+	void send_zmp(size_t argc, const String argv[]);
+	void zmp_support(String pkg, bool value);
 
 	// mode
-	void set_mode (ITelnetMode* new_mode);
+	void set_mode(ITelnetMode* new_mode);
 
 	// low-level IO
-	virtual void sock_input (char* buffer, size_t size);
-	virtual void sock_hangup ();
-	virtual void sock_flush ();
+	virtual void sock_input(char* buffer, size_t size);
+	virtual void sock_hangup();
+	virtual void sock_flush();
 
 	protected:
 	// destructor
-	~TelnetHandler () {}
+	~TelnetHandler() {}
 
 	protected:
 	TextBuffer input; // player input buffer
@@ -220,28 +220,28 @@ class TelnetHandler : public SocketConnection, public IStreamSink
 
 #ifdef HAVE_LIBZ
 	// compression
-	bool begin_mccp ();
-	void end_mccp ();
+	bool begin_mccp();
+	void end_mccp();
 #endif // HAVE_LIBZ
 
 	// processing
-	void process_input ();
-	void process_sb ();
-	void process_zmp (size_t size, char* chunk);
+	void process_input();
+	void process_sb();
+	void process_zmp(size_t size, char* chunk);
 
 	// command handling
-	void process_telnet_command (char* cmd);
+	void process_telnet_command(char* cmd);
 
 	// data output
-	void add_output (const char* data, size_t len);
-	void add_to_chunk (const char* data, size_t len);
-	void end_chunk ();
-	void send_iac (uint, ...); // build iac
-	void send_data (uint, ...); // don't escape
-	void add_zmp (size_t argc, String argv[]);
+	void add_output(const char* data, size_t len);
+	void add_to_chunk(const char* data, size_t len);
+	void end_chunk();
+	void send_iac(uint, ...); // build iac
+	void send_data(uint, ...); // don't escape
+	void add_zmp(size_t argc, String argv[]);
 
 	// timeout handling
-	virtual void check_timeout (); // check to see if we should disconnect
+	virtual void check_timeout(); // check to see if we should disconnect
 };
 
 // indent stream

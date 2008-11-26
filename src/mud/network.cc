@@ -227,7 +227,7 @@ SNetworkManager NetworkManager;
 
 struct PollData {
 	std::vector<ISocketHandler*> sockets;
-	std::vector<ISocketHandler*> addlist;
+	std::vector<ISocketHandler*> add;
 };
 
 int
@@ -265,15 +265,23 @@ SNetworkManager::initialize ()
 void
 SNetworkManager::shutdown ()
 {
-	p_data->sockets.resize(0);
-	p_data->addlist.resize(0);
+	for (std::vector<ISocketHandler*>::iterator i = p_data->sockets.begin(),
+			e = p_data->sockets.end(); i != e; ++i)
+		delete *i;
+	p_data->sockets.clear();
+
+	for (std::vector<ISocketHandler*>::iterator i = p_data->add.begin(),
+			e = p_data->add.end(); i != e; ++i)
+		delete *i;
+	p_data->add.clear();
+
 	delete p_data;
 }
 
 int
 SNetworkManager::add_socket (ISocketHandler* socket)
 {
-	p_data->addlist.push_back(socket);
+	p_data->add.push_back(socket);
 	return 0;
 }
 
@@ -290,9 +298,9 @@ SNetworkManager::poll (long timeout)
 	std::vector<ISocketHandler*>::iterator i;
 
 	// move the list of new sockets to the active socket list
-	for (i = p_data->addlist.begin(); i != p_data->addlist.end(); ++i)
+	for (i = p_data->add.begin(); i != p_data->add.end(); ++i)
 		p_data->sockets.push_back(*i);
-	p_data->addlist.resize(0);
+	p_data->add.resize(0);
 
 	// run prepare loop
 	// build the cread and cwrite bit sets
@@ -306,6 +314,7 @@ SNetworkManager::poll (long timeout)
 
 		int sock = (*i)->sock_get_fd();
 		if (sock == -1) {
+			delete *i;
 			i = p_data->sockets.erase(i);
 			continue;
 		}

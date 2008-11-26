@@ -49,22 +49,22 @@ namespace {
 	class TelnetListener : public SocketListener
 	{
 		public:
-		inline TelnetListener (int s_sock) : SocketListener(s_sock) {}
+		inline TelnetListener(int s_sock) : SocketListener(s_sock) {}
 
-		virtual void sock_in_ready ();
+		virtual void sock_in_ready();
 	};
 
 	class HTTPListener : public SocketListener
 	{
 		public:
-		inline HTTPListener (int s_sock) : SocketListener(s_sock) {}
+		inline HTTPListener(int s_sock) : SocketListener(s_sock) {}
 
-		virtual void sock_in_ready ();
+		virtual void sock_in_ready();
 	};
 
-	void cleanup ();
-	int write_pid_file (String path);
-	double count_ticks (timeval& start, timeval& cur);
+	void cleanup();
+	int write_pid_file(String path);
+	double count_ticks(timeval& start, timeval& cur);
 }
 
 // GLOBALS
