@@ -14,6 +14,7 @@ HEADERS = \
 	include/common/bitset.h \
 	include/common/error.h \
 	include/common/fdprintf.h \
+	include/common/file.h \
 	include/common/imanager.h \
 	include/common/log.h \
 	include/common/mail.h \
@@ -77,6 +78,7 @@ HEADERS = \
 SOURCES = \
 	src/common/error.cc \
 	src/common/fdprintf.cc \
+	src/common/file.cc \
 	src/common/imanager.cc \
 	src/common/log.cc \
 	src/common/manifest.cc \
