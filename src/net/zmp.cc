@@ -38,9 +38,9 @@
 #include <ctype.h>
 #include <stdio.h>
 
-#include "mud/zmp.h"
-#include "mud/telnet.h"
 #include "common/log.h"
+#include "net/telnet.h"
+#include "net/zmp.h"
 
 SZMPManager ZMPManager;
 

@@ -20,8 +20,8 @@
 
 #include "common/types.h"
 #include "common/streams.h"
-#include "mud/network.h"
 #include "mud/color.h"
+#include "net/socket.h"
 
 // default window size
 #define TELNET_DEFAULT_WIDTH 80

@@ -21,17 +21,17 @@
 #include <stdarg.h>
 
 #include "common/error.h"
+#include "common/streams.h"
 #include "mud/server.h"
-#include "mud/network.h"
 #include "mud/macro.h"
 #include "mud/command.h"
 #include "mud/room.h"
-#include "mud/zmp.h"
-#include "common/streams.h"
 #include "mud/color.h"
 #include "mud/message.h"
-#include "mud/telnet.h"
 #include "mud/settings.h"
+#include "net/network.h"
+#include "net/telnet.h"
+#include "net/zmp.h"
 
 #include "config.h"
 

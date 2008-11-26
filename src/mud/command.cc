@@ -10,18 +10,18 @@
 #include <vector>
 
 #include "common/error.h"
+#include "common/streams.h"
 #include "mud/command.h"
 #include "mud/creature.h"
 #include "mud/player.h"
-#include "common/streams.h"
 #include "mud/color.h"
 #include "mud/account.h"
 #include "mud/macro.h"
 #include "mud/help.h"
-#include "mud/telnet.h"
 #include "mud/room.h"
 #include "mud/object.h"
 #include "mud/creature.h"
+#include "net/telnet.h"
 
 SCommandManager CommandManager;
 

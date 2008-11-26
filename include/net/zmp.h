@@ -33,10 +33,11 @@
 #define ZMP_H 1
 
 #include <vector>
+
 #include "common/string.h"
 #include "common/types.h"
-#include "mud/telnet.h"
 #include "common/imanager.h"
+#include "net/telnet.h"
 
 /* --- DATA TYPES ---- */
 

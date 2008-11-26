@@ -5,6 +5,7 @@
  * http://www.sourcemud.org
  */
 
+#include "common/streams.h"
 #include "mud/creature.h"
 #include "mud/server.h"
 #include "mud/room.h"
@@ -13,13 +14,11 @@
 #include "mud/npc.h"
 #include "mud/zone.h"
 #include "mud/object.h"
-#include "common/streams.h"
 #include "mud/help.h"
 #include "mud/olc.h"
-#include "mud/telnet.h"
 #include "mud/account.h"
-#include "mud/zmp.h"
 #include "mud/shadow-object.h"
+#include "net/telnet.h"
 
 enum OLCMode {
 	OLC_MODE_SET,

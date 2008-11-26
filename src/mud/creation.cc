@@ -5,12 +5,12 @@
  * http://www.sourcemud.org
  */
 
-#include "mud/telnet.h"
+#include "common/rand.h"
 #include "mud/player.h"
 #include "mud/login.h"
 #include "mud/creation.h"
 #include "mud/race.h"
-#include "common/rand.h"
+#include "net/telnet.h"
 
 // STAT ROLLING CONFIGURATION
 const int STAT_TOKENS = CreatureStatID::COUNT; // how many 'tokens' the player can spend on stats

@@ -6,16 +6,16 @@
  */
 
 #include "common/string.h"
+#include "common/streams.h"
+#include "common/file.h"
 #include "mud/player.h"
 #include "mud/command.h"
 #include "mud/settings.h"
-#include "common/streams.h"
 #include "mud/color.h"
 #include "mud/fileobj.h"
 #include "mud/macro.h"
 #include "mud/help.h"
-#include "mud/telnet.h"
-#include "common/file.h"
+#include "net/telnet.h"
 
 #include <iostream>
 

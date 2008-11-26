@@ -8,9 +8,9 @@
 #ifndef SOURCEMUD_MUD_LOGIN_H
 #define SOURCEMUD_MUD_LOGIN_H 1
 
-#include "mud/telnet.h"
 #include "mud/account.h"
 #include "mud/pconn.h"
+#include "net/telnet.h"
 
 class TelnetModeLogin : public ITelnetMode
 {

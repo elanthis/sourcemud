@@ -17,15 +17,15 @@
 #include <stdarg.h>
 
 #include "common/error.h"
-#include "mud/server.h"
-#include "mud/network.h"
-#include "mud/macro.h"
 #include "common/streams.h"
-#include "mud/http.h"
-#include "mud/settings.h"
 #include "common/log.h"
 #include "common/md5.h"
 #include "common/file.h"
+#include "mud/server.h"
+#include "mud/macro.h"
+#include "mud/settings.h"
+#include "net/http.h"
+#include "net/network.h"
 
 #include "config.h"
 

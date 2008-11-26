@@ -7,16 +7,16 @@
 
 #include <ctype.h>
 
+#include "common/streams.h"
 #include "mud/creature.h"
 #include "mud/server.h"
 #include "mud/player.h"
 #include "mud/macro.h"
-#include "common/streams.h"
 #include "mud/message.h"
-#include "mud/telnet.h"
 #include "mud/account.h"
 #include "mud/settings.h"
 #include "mud/login.h"
+#include "net/telnet.h"
 
 // --- ACCOUNT CREATION ---
 

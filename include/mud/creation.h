@@ -8,9 +8,8 @@
 #ifndef SOURCEMUD_MUD_CREATION_H
 #define SOURCEMUD_MUD_CREATION_H 1
 
-#include "mud/telnet.h"
 #include "mud/account.h"
-#include "mud/account.h"
+#include "net/telnet.h"
 
 class TelnetModeNewCharacter : public ITelnetMode
 {

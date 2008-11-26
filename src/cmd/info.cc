@@ -5,16 +5,16 @@
  * http://www.sourcemud.org
  */
 
+#include "common/streams.h"
+#include "common/mail.h"
 #include "mud/creature.h"
 #include "mud/command.h"
 #include "mud/player.h"
 #include "mud/server.h"
 #include "mud/macro.h"
-#include "common/streams.h"
-#include "common/mail.h"
 #include "mud/color.h"
-#include "mud/telnet.h"
 #include "mud/settings.h"
+#include "net/telnet.h"
 #include "config.h"
 
 /* BEGIN COMMAND

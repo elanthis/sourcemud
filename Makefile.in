@@ -45,7 +45,6 @@ HEADERS = \
 	include/mud/form.h \
 	include/mud/gametime.h \
 	include/mud/help.h \
-	include/mud/http.h \
 	include/mud/hooks.h \
 	include/mud/idmap.h \
 	include/mud/login.h \
@@ -67,12 +66,14 @@ HEADERS = \
 	include/mud/settings.h \
 	include/mud/skill.h \
 	include/mud/tag.h \
-	include/mud/telnet.h \
 	include/mud/timer.h \
 	include/mud/uniqid.h \
 	include/mud/weather.h \
-	include/mud/zmp.h \
-	include/mud/zone.h
+	include/mud/zone.h \
+	include/net/http.h \
+	include/net/socket.h \
+	include/net/telnet.h \
+	include/net/zmp.h
 
 SOURCES = \
 	src/common/error.cc \
@@ -106,7 +107,6 @@ SOURCES = \
 	src/mud/filetab.cc \
 	src/mud/form.cc \
 	src/mud/help.cc \
-	src/mud/http.cc \
 	src/mud/hooks.cc \
 	src/mud/idmap.cc \
 	src/mud/login.cc \
@@ -116,7 +116,6 @@ SOURCES = \
 	src/mud/menu.cc \
 	src/mud/message.cc \
 	src/mud/name.cc \
-	src/mud/network.cc \
 	src/mud/npc.cc \
 	src/mud/object.cc \
 	src/mud/olc.cc \
@@ -127,12 +126,15 @@ SOURCES = \
 	src/mud/room.cc \
 	src/mud/settings.cc \
 	src/mud/skill.cc \
-	src/mud/telnet.cc \
 	src/mud/time.cc \
 	src/mud/uniqid.cc \
 	src/mud/weather.cc \
-	src/mud/zmp.cc \
 	src/mud/zone.cc \
+	src/net/http.cc \
+	src/net/network.cc \
+	src/net/socket.cc \
+	src/net/telnet.cc \
+	src/net/zmp.cc \
 	$(wildcard src/cmd/*.cc)
 
 XML = \

@@ -17,15 +17,15 @@
 #include <algorithm>
 
 #include "common/string.h"
+#include "common/imanager.h"
+#include "common/time.h"
 #include "mud/creature.h"
 #include "mud/color.h"
-#include "mud/network.h"
 #include "mud/form.h"
 #include "mud/gametime.h"
 #include "mud/skill.h"
-#include "common/imanager.h"
 #include "mud/pconn.h"
-#include "common/time.h"
+#include "net/socket.h"
 
 #ifdef HAVE_LIBZ
 #include <zlib.h>

@@ -17,10 +17,10 @@
 #include "common/types.h"
 #include "common/strbuf.h"
 #include "common/streams.h"
-#include "mud/network.h"
 #include "common/imanager.h"
 #include "mud/account.h"
 #include "mud/macro.h"
+#include "net/socket.h"
 
 class HTTPSession
 {
