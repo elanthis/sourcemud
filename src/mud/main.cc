@@ -699,9 +699,6 @@ main (int argc, char **argv)
 			Log::Info << "Server received a terminating signal";
 			MUD::shutdown();
 		}
-
-		// force run of GC
-		// GC_gcollect();
 	}
 
 	// all done running - save the world
