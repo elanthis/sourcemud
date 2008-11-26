@@ -510,12 +510,6 @@ Room::add_creature (Creature* creature)
 
 	creature->set_owner(this);
 	creatures.add (creature);
-
-	// initialize NPC AI for new NPCs
-	if (NPC(creature)) {
-		if (((Npc*)creature)->get_ai())
-			((Npc*)creature)->get_ai()->do_load(creature);
-	}
 }
 
 void

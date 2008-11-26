@@ -150,10 +150,6 @@ NpcBP::load(File::Reader& reader)
 	FO_READ_BEGIN
 		FO_ATTR("blueprint", "id")
 			id = node.get_string();
-		FO_ATTR("blueprint", "ai")
-			ai = AIManager.get(node.get_string());
-			if (ai == NULL)
-				Log::Warning << "Unknown AI system '" << node.get_string() << "' at " << reader.get_filename() << ':' << node.get_line();
 		FO_ATTR("blueprint", "parent")
 			NpcBP* blueprint = NpcBPManager.lookup(node.get_string());
 			if (blueprint)
@@ -235,7 +231,6 @@ Npc::Npc (NpcBP* s_blueprint) : Creature()
 void
 Npc::initialize()
 {
-	ai = NULL;
 	blueprint = NULL;
 	flags.zonelock = false;
 	flags.revroomtag = false;
@@ -270,10 +265,6 @@ Npc::load_node(File::Reader& reader, File::Node& node)
 				Log::Error << "Could not find npc blueprint '" << node.get_string() << "'";
 			else
 				set_blueprint(blueprint);
-		FO_ATTR("npc", "ai")
-			ai = AIManager.get(node.get_string());
-			if (ai == NULL)
-				Log::Error << "Unknown AI system '" << node.get_string() << "' at " << reader.get_filename() << ':' << node.get_line();
 		FO_ATTR("npc", "roomtag")
 			room_tag = TagID::create(node.get_string());
 		FO_ATTR("npc", "zonelock")
@@ -292,9 +283,6 @@ Npc::save_data(File::Writer& writer)
 
 	Creature::save_data(writer);
 
-	if (ai != NULL)
-		writer.attr(S("npc"), S("ai"), ai->get_name());
-
 	if (room_tag.valid())
 		writer.attr(S("npc"), S("roomtag"), TagID::nameof(room_tag));
 	if (flags.zonelock)
@@ -308,9 +296,6 @@ Npc::save_hook(File::Writer& writer)
 {
 	Creature::save_hook(writer);
 	Hooks::save_npc(this, writer);
-
-	if (ai != NULL)
-		ai->do_save(this, writer);
 }
 	
 EntityName
@@ -362,32 +347,6 @@ Npc::get_combat_damage() const
 	return blueprint->get_combat_damage();
 }
 
-AI*
-Npc::get_ai() const
-{
-	// we have it?
-	if (ai)
-		return ai;
-
-	// blueprints
-	NpcBP* blueprint = get_blueprint();
-	while (blueprint != NULL) {
-		if (blueprint->get_ai())
-			return blueprint->get_ai();
-		blueprint = blueprint->get_parent();
-	}
-
-	return NULL;
-}
-
-void
-Npc::pump()
-{
-	AI* ai = get_ai();
-	if (ai)
-		ai->do_pump(this);
-}
-
 void
 Npc::kill(Creature *killer)
 {
@@ -408,11 +367,6 @@ Npc::kill(Creature *killer)
 void
 Npc::handle_event(const Event& event)
 {
-	// ai
-	AI* ai = get_ai();
-	if (ai)
-		ai->do_event(this, event);
-
 	// normal event handler
 	Entity::handle_event(event);
 }
@@ -420,20 +374,8 @@ Npc::handle_event(const Event& event)
 void
 Npc::heartbeat()
 {
-	// have rt and ai?
-	bool have_rt = get_round_time() > 0;
-
 	// do creature update
 	Creature::heartbeat();
-
-	// ai heartbeart
-	AI* ai = get_ai();
-	if (ai)
-		ai->do_heartbeat(this);
-
-	// round time ended? do AI
-	if (ai && have_rt && get_round_time() == 0)
-		ai->do_ready(this);
 
 	// update handler
 	Hooks::npc_heartbeat(this);
@@ -576,8 +518,6 @@ int
 SNpcBPManager::initialize()
 {
 	// requirements
-	if (require(AIManager) != 0)
-		return 1;
 	if (require(ObjectBPManager) != 0)
 		return 1;
 	if (require(EventManager) != 0)

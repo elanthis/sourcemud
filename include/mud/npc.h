@@ -9,7 +9,6 @@
 #define SOURCEMUD_MUD_NPC_H
 
 #include "mud/creature.h"
-#include "mud/ai.h"
 #include "common/imanager.h"
 
 // Npc blueprint
@@ -23,7 +22,6 @@ NpcBP
 	inline String get_id () const { return id; }
 
 	// npc
-	inline AI* get_ai () const { return ai; }
 	inline const StringList& get_equip_list () const { return equip_list; }
 
 	// load
@@ -78,7 +76,6 @@ NpcBP
 	CreatureStatArray base_stats;
 	NpcBP* parent;
 	StringList equip_list;
-	AI* ai;
 
 	struct CombatData {
 		uint dodge;
@@ -155,17 +152,13 @@ class Npc : public Creature
 	inline void set_room_tag (TagID s_room_tag) { room_tag = s_room_tag; }
 	bool can_use_portal (class Portal* portal) const;
 
-	// Manage AI
-	AI* get_ai () const;
-	void pump (); // call a generic 'pump' event in the AI
-
 	// dead
 	void kill (Creature* killer);
 
 	// heartbeat
 	void heartbeat ();
 
-	// handle vents - AI
+	// handle events
 	virtual void handle_event (const Event& event);
 
 	// display desc
@@ -180,7 +173,6 @@ class Npc : public Creature
 	private:
 	TagID room_tag; // tag needed in a room to enter it
 	NpcBP* blueprint;
-	AI* ai;
 
 	struct NPCFlags {
 		int zonelock:1, // can't leave the zone they're in

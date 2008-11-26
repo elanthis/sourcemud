@@ -6,8 +6,6 @@
 blueprint.npc {
   blueprint.id = "base_undead"
 
-  blueprint.ai = "animal"
-
   blueprint.equip = "claws"
   
   blueprint.stat = [ "Strength", 10 ]

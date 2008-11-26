@@ -8,9 +8,6 @@ blueprint.npc {
 
   blueprint.desc = "{$self.D} doesn't appear to be afraid of much."
 
-  blueprint.ai = "monster"
-
-
   combat.dodge = 5
 
   blueprint.equip = "claws"
@@ -28,9 +25,6 @@ blueprint.npc {
 
   blueprint.desc = "{$self.D} is huge, larger than most other wolves by far.  Its gray fur is rough and coarse.  The wolf doesn't look friendly."
 
-  blueprint.ai = "monster"
-
-
   combat.dodge = 4
 
   blueprint.equip = "claws"
@@ -47,9 +41,6 @@ blueprint.npc {
   blueprint.name = "a dire wolf"
 
   blueprint.desc = "Demonic in appearnace, {$self.D} is larger than any wolf could be through natural means.  Its eyes glow red, and its near-black fur is broken in places, where spiked ridges run along its body.  {$self.D} has as sinister a nature as any animal could have."
-
-  blueprint.ai = "monster"
-
 
   combat.dodge = 7
 

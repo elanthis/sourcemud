@@ -29,7 +29,6 @@ HEADERS = \
 	include/generated/events.h \
 	include/mud/account.h \
 	include/mud/action.h \
-	include/mud/ai.h \
 	include/mud/body.h \
 	include/mud/caffect.h \
 	include/mud/clock.h \
@@ -92,7 +91,6 @@ SOURCES = \
 	src/generated/events.cc \
 	src/mud/account.cc \
 	src/mud/action.cc \
-	src/mud/ai.cc \
 	src/mud/body.cc \
 	src/mud/caffect.cc \
 	src/mud/calendar.cc \
