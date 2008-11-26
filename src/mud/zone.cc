@@ -345,7 +345,6 @@ SZoneManager::shutdown ()
 		zones.front()->deactivate();
 		zones.erase(zones.begin());
 	}
-	zones.resize(0);
 }
 
 // save zones

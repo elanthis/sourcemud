@@ -675,6 +675,9 @@ main (int argc, char **argv)
 		// handle events
 		EventManager.process();
 
+		// free memory for dead entities
+		EntityManager.collect();
+
 		// do auto-save
 		if ((cur_ticks - last_autosave) >= (uint)SettingsManager.get_auto_save() * TICKS_PER_ROUND * 60) {
 			last_autosave = cur_ticks;
@@ -706,6 +709,9 @@ main (int argc, char **argv)
 
 	// shutdown all managers
 	IManager::shutdown_all();
+
+	// clean up all entities
+	EntityManager.collect();
 
 	return 0;
 }

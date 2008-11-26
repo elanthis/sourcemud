@@ -24,10 +24,7 @@
 
 // ----- Entity -----
 
-Entity::Entity()
-{
-	flags.active = false;
-}
+Entity::Entity() : state(FLOAT) {}
 
 EventHandler*
 Entity::get_event (EventID name)
@@ -42,8 +39,8 @@ Entity::get_event (EventID name)
 void
 Entity::activate (void)
 {
-	// must not already be active
-	assert(!is_active());
+	// must be in FLOAT state
+	assert(state == FLOAT && "state must be FLOAT to activate");
 
 	// assign unique ID if it has none
 	if (!uid)
@@ -59,21 +56,20 @@ Entity::activate (void)
 			eheartbeat = i;
 
 	// add to manager's big list
-	EntityManager.elist[eheartbeat].push_back(this);
-	eself = --EntityManager.elist[eheartbeat].end();
+	EntityManager.elist[eheartbeat].push_front(this);
 
 	// register tags
 	for (TagList::iterator i = tags.begin(); i != tags.end(); ++i) 
 		EntityManager.tag_map.insert(std::pair<TagID, Entity*> (*i, this));
 
-	flags.active = true;
+	state = ACTIVE;
 }
 
 void
 Entity::deactivate (void)
 {
 	// must be active
-	assert(is_active());
+	assert(state == ACTIVE && "state must be ACTIVE to deactivate");
 
 	// ID MAP
 	UniqueIDMap::iterator i = EntityManager.id_map.find(uid);
@@ -81,10 +77,7 @@ Entity::deactivate (void)
 		EntityManager.id_map.erase(i);
 
 	// BIG LIST
-	if (eself == EntityManager.ecur)
-		EntityManager.ecur = EntityManager.elist[eheartbeat].erase(eself);
-	else
-		EntityManager.elist[eheartbeat].erase(eself);
+	EntityManager.elist[eheartbeat].erase(std::find(EntityManager.elist[eheartbeat].begin(), EntityManager.elist[eheartbeat].end(), this));
 
 	// TAG MAP
 	for (TagList::iterator i = tags.begin(); i != tags.end(); ++i) {
@@ -97,7 +90,10 @@ Entity::deactivate (void)
 		}
 	}
 
-	flags.active = false;
+	// store for deletion
+	EntityManager.dead.push_front(this);
+
+	state = DEAD;
 }
 
 void
@@ -359,6 +355,7 @@ SEntityManager::shutdown (void)
 	for (uint8 i = 0; i < TICKS_PER_ROUND; ++i)
 		elist[i].clear();
 	tag_map.clear();
+	collect();
 }
 
 void
@@ -402,4 +399,13 @@ SEntityManager::get (const UniqueID& uid) const
 	if (i != id_map.end())
 		return i->second;
 	return NULL;
+}
+
+void SEntityManager::collect()
+{
+	while (!dead.empty()) {
+		Entity* e = dead.front();
+		dead.erase(dead.begin());
+		delete e;
+	}
 }

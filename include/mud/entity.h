@@ -12,12 +12,12 @@
 #include <vector>
 #include <algorithm>
 #include <map>
+#include <set>
 
 #include "common/types.h"
 #include "common/error.h"
 #include "common/string.h"
 #include "common/imanager.h"
-#include <set>
 #include "mud/uniqid.h"
 #include "mud/event.h"
 #include "mud/color.h"
@@ -67,7 +67,7 @@ class Entity : public IMacroObject
 	EventHandler* get_event (EventID event);
 
 	// active
-	inline bool is_active () const { return flags.active; }
+	inline bool is_active () const { return state == ACTIVE; }
 	virtual void activate (); // subclasses should call Entity::activate() first, then do custom code
 	virtual void deactivate (); // subclasses do custom code, then call Entity::deactivate last
 
@@ -143,16 +143,17 @@ class Entity : public IMacroObject
 	TagList tags;
 	EventList events;
 
-	// flags
-	struct Flags {
-		int active:1;
-	} flags;
+	// FLOAT: object created, not yet inserted into active world tree
+	// ACTIVE: object within active world tree
+	// DEAD: object removed from active world tree
+	enum State { FLOAT, ACTIVE, DEAD } state;
 
 	// event handler
 	int perform_event (EventHandler *ea, Entity* trigger, Entity* target);
 
 	// protected destructor
 	virtual ~Entity () {}
+	friend class SEntityManager;
 };
 
 // manage all entities
@@ -180,8 +181,12 @@ class SEntityManager : public IManager
 	// count by tag
 	size_t tag_count (TagID tag) const;
 
+	// free all dead entities
+	void collect();
+
 	private:
 	EntityList elist[TICKS_PER_ROUND]; // all entities in system
+	EntityList dead; // dead entities, to be freed
 	EntityList::iterator ecur; // current entity for update
 	uint8 eheartbeat; // current heartbeat
 

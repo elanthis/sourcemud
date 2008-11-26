@@ -256,8 +256,10 @@ Room::deactivate ()
 	for (std::map<PortalDir,Portal*>::const_iterator i = portals.begin(); i != portals.end(); ++i)
 		if (i->second->get_owner() == this)
 			i->second->deactivate();
+
 	for (EList<Creature>::const_iterator i = creatures.begin(); i != creatures.end(); ++i)
 		(*i)->deactivate();
+
 	for (EList<Object>::const_iterator i = objects.begin(); i != objects.end(); ++i)
 		(*i)->deactivate();
 
