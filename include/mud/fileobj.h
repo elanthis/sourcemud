@@ -186,6 +186,7 @@ namespace File
 		inline void bl () { if(out) out << "\n"; }
 
 		private:
+		String path;
 		std::ofstream out;
 		size_t indent;
 

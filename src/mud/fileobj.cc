@@ -426,8 +426,9 @@ File::Reader::consume ()
 int
 File::Writer::open (String filename)
 {
-	// open
-	out.open(filename.c_str());
+	// open and write to a temp file
+	path = filename;
+	out.open((filename + "~").c_str());
 	if (!out) {
 		Log::Error << "Failed to open " << filename;
 		return -1;
@@ -442,6 +443,9 @@ File::Writer::close ()
 	if (out) {
 		out << "# vim: set shiftwidth=2 tabstop=2 expandtab:\n";
 		out.close();
+
+		// move temp file to real file
+		rename((path + "~").c_str(), path.c_str());
 	}
 }
 
