@@ -114,10 +114,7 @@ ObjectBP::save (File::Writer& writer)
 		writer.attr(S("blueprint"), S("tag"), i->name());
 
 	// script hook
-	ScriptRestrictedWriter* swriter = new ScriptRestrictedWriter(&writer);
-	Hooks::save_object_blueprint(this, swriter);
-	swriter->release();
-	swriter = NULL;
+	Hooks::save_object_blueprint(this, writer);
 }
 
 int
@@ -255,7 +252,7 @@ ShadowObject::save_data (File::Writer& writer)
 }
 
 void
-Object::save_hook (ScriptRestrictedWriter* writer)
+Object::save_hook (File::Writer& writer)
 {
 	Entity::save_hook(writer);
 	Hooks::save_object(this, writer);

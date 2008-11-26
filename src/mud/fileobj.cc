@@ -806,7 +806,3 @@ operator<< (const StreamControl& stream, const File::Node& node)
 
 	return stream;
 }
-
-ScriptRestrictedWriter::ScriptRestrictedWriter (File::Writer* s_writer) :
-    writer(s_writer)
-{}

@@ -118,7 +118,7 @@ AI::do_pump (Creature* self) const
 }
 
 void
-AI::do_save (Creature* self, ScriptRestrictedWriter* writer) const
+AI::do_save (Creature* self, File::Writer& writer) const
 {
 	// call handler
 	/*

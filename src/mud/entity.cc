@@ -150,14 +150,11 @@ Entity::save_data (File::Writer& writer)
 		writer.attr(S("entity"), S("tag"), TagID::nameof(*i));
 
 	// call save hook
-	ScriptRestrictedWriter* swriter = new ScriptRestrictedWriter(&writer);
-	save_hook(swriter);
-	swriter->release();
-	swriter = NULL;
+	save_hook(writer);
 }
 
 void
-Entity::save_hook (ScriptRestrictedWriter* writer)
+Entity::save_hook (File::Writer& writer)
 {
 	Hooks::save_entity(this, writer);
 }

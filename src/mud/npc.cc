@@ -304,7 +304,7 @@ Npc::save_data (File::Writer& writer)
 }
 
 void
-Npc::save_hook (ScriptRestrictedWriter* writer)
+Npc::save_hook (File::Writer& writer)
 {
 	Creature::save_hook(writer);
 	Hooks::save_npc(this, writer);

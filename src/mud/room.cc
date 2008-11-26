@@ -140,7 +140,7 @@ Room::save_data (File::Writer& writer)
 }
 
 void
-Room::save_hook (ScriptRestrictedWriter* writer)
+Room::save_hook (File::Writer& writer)
 {
 	Entity::save_hook(writer);
 	Hooks::save_room(this, writer);

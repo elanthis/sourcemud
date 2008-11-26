@@ -371,7 +371,7 @@ Portal::save_data (File::Writer& writer)
 }
 
 void
-Portal::save_hook (ScriptRestrictedWriter* writer)
+Portal::save_hook (File::Writer& writer)
 {
 	Entity::save_hook(writer);
 	Hooks::save_portal(this, writer);

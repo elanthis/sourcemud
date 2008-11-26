@@ -229,7 +229,7 @@ Player::save ()
 }
 
 void
-Player::save_hook (ScriptRestrictedWriter* writer)
+Player::save_hook (File::Writer& writer)
 {
 	Creature::save_hook(writer);
 	Hooks::save_player(this, writer);

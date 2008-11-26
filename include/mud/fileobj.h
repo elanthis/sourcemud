@@ -199,20 +199,6 @@ namespace File
 // stream a node
 const StreamControl& operator<< (const StreamControl& stream, const File::Node& node);
 
-// can only write simply attributes, all with type "attr"
-class ScriptRestrictedWriter
-{
-	public:
-	ScriptRestrictedWriter (File::Writer* s_writer);
-
-	inline File::Writer* get_writer (void) const { return writer; }
-
-	inline void release (void) { writer = NULL; }
-
-	private:
-	File::Writer* writer;
-};
-
 // -- Special Easy Helpers - Yay --
 #define FO_ERROR_CODE -1
 #define FO_SUCCESS_CODE 0

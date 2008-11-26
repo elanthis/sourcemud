@@ -59,7 +59,7 @@ class Player : public Creature
 
 	// save and load
 	virtual void save_data (File::Writer& writer);
-	virtual void save_hook (class ScriptRestrictedWriter* writer);
+	virtual void save_hook (File::Writer& writer);
 	void save ();
 
 	int load_node (File::Reader& reader, File::Node& node);

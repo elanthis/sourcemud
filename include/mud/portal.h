@@ -218,7 +218,7 @@ class Portal : public Entity
 
 	// IO
 	virtual void save_data (File::Writer& writer);
-	virtual void save_hook (class ScriptRestrictedWriter* writer);
+	virtual void save_hook (File::Writer& writer);
 	virtual int load_node(File::Reader& reader, File::Node& node);
 	virtual int load_finish ();
 

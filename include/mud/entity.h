@@ -93,7 +93,7 @@ class Entity : public IMacroObject
 	virtual int load_finish () = 0;
 	void save (File::Writer& writer, String ns, String name);
 	virtual void save_data (File::Writer& writer);
-	virtual void save_hook (class ScriptRestrictedWriter* writer);
+	virtual void save_hook (File::Writer& writer);
 
 	// check name
 	virtual bool name_match (String name) const;

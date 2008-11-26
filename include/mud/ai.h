@@ -8,14 +8,15 @@
 #ifndef AI_H
 #define AI_H
 
+#include <map>
+
 #include "common/string.h"
 #include "common/imanager.h"
-#include <map>
 #include "mud/server.h"
+#include "mud/fileobj.h"
 
 class Event;
 class Creature;
-class ScriptRestrictedWriter;
 
 class AI
 {
@@ -25,7 +26,7 @@ class AI
 	int load (File::Reader& reader);
 
 	void do_load (Creature* self) const;
-	void do_save (Creature* self, ScriptRestrictedWriter* writer) const;
+	void do_save (Creature* self, File::Writer& writer) const;
 	bool do_event (Creature* self, const Event& event) const;
 	void do_ready (Creature* self) const;
 	void do_heartbeat (Creature* self) const;

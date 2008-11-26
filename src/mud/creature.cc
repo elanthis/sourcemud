@@ -172,7 +172,7 @@ Creature::save_data (File::Writer& writer)
 }
 
 void
-Creature::save_hook (ScriptRestrictedWriter* writer)
+Creature::save_hook (File::Writer& writer)
 {
 	Entity::save_hook(writer);
 	Hooks::save_creature(this, writer);
