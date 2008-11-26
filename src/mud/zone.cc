@@ -18,8 +18,8 @@
 #include "mud/weather.h"
 #include "mud/object.h"
 #include "mud/hooks.h"
-#include "common/manifest.h"
 #include "mud/shadow-object.h"
+#include "common/file.h"
 
 SZoneManager ZoneManager;
 
@@ -321,8 +321,8 @@ int
 SZoneManager::load_world()
 {
 	// read zones dir
-	ManifestFile man(SettingsManager.get_zone_path(), S(".zone"));
-	StringList files = man.get_files();;
+	StringList files = file::getFileList(SettingsManager.get_zone_path(),
+			S("zone"));
 	for (StringList::iterator i = files.begin(); i != files.end(); ++i) {
 		Zone* zone = new Zone();
 		if (zone->load (*i))
