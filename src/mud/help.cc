@@ -15,7 +15,7 @@
 #include "mud/macro.h"
 #include "mud/help.h"
 #include "mud/telnet.h"
-#include "common/manifest.h"
+#include "common/file.h"
 
 #include <iostream>
 
@@ -58,8 +58,8 @@ SHelpManager::print (StreamControl& stream, String name)
 int
 SHelpManager::initialize ()
 {
-	ManifestFile man(SettingsManager.get_help_path(), S(".help"));
-	StringList files = man.get_files();;
+	StringList files = file::getFileList(SettingsManager.get_help_path(),
+			S(".help"));
 	for (StringList::iterator i = files.begin(); i != files.end(); ++i) {
 		File::Reader reader;
 
