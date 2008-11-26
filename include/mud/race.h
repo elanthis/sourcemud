@@ -35,25 +35,25 @@ Race
 
 	int load (File::Reader&);
 
-	int get_life_span () const { return life_span; }
-	int get_age_min () const { return age_min; }
-	int get_age_max () const { return age_max; }
+	int get_life_span() const { return life_span; }
+	int get_age_min() const { return age_min; }
+	int get_age_max() const { return age_max; }
 
 	int get_stat (int i) const { if (i >= 0 && i < CreatureStatID::COUNT) return stats[i] ; else return 0; }
 
 	int get_average_height (GenderType gender) const { return height[gender.get_value()]; }
 
-	String get_name () const { return name; }
-	String get_adj () const { return adj; }
-	String get_body () const { return body; }
-	String get_about () const { return about; }
-	String get_desc () const { return desc; }
+	String get_name() const { return name; }
+	String get_adj() const { return adj; }
+	String get_body() const { return body; }
+	String get_about() const { return about; }
+	String get_desc() const { return desc; }
 
 	const std::vector<FormColor>& get_eye_colors() const { return eye_colors; }
 	const std::vector<FormColor>& get_skin_colors() const { return skin_colors; }
 	const std::vector<FormColor>& get_hair_colors() const { return hair_colors; }
 
-	Race* get_next () const { return next; }
+	Race* get_next() const { return next; }
 
 	// ---- data ----
 	protected:
@@ -79,15 +79,13 @@ Race
 class SRaceManager : public IManager
 {
 	public:
-	SRaceManager () : head(NULL) {}
+	SRaceManager() : head(NULL) {}
 
-	int initialize ();
-
-	void shutdown ();
+	int initialize();
+	void shutdown();
 
 	Race* get (String name);
-
-	Race* first () { return head; }
+	Race* first() { return head; }
 
 	private:
 	Race* head;

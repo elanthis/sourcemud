@@ -22,7 +22,7 @@ Race::Race (String s_name, Race *s_next) :
 	next(s_next) {}
 
 int
-Race::load (File::Reader& reader)
+Race::load(File::Reader& reader)
 {
 	// clear and/or defaults
 	adj.clear();
@@ -90,7 +90,7 @@ Race::load (File::Reader& reader)
 }
 
 Race *
-SRaceManager::get (String name)
+SRaceManager::get(String name)
 {
 	Race *race = head;
 	while (race != NULL) {
@@ -102,7 +102,7 @@ SRaceManager::get (String name)
 }
 
 int
-SRaceManager::initialize(void)
+SRaceManager::initialize()
 {
 	File::Reader reader;
 	String path = SettingsManager.get_misc_path() + "/races";
@@ -128,7 +128,11 @@ SRaceManager::initialize(void)
 }
 
 void
-SRaceManager::shutdown (void)
+SRaceManager::shutdown()
 {
-	head = NULL;
+	while (head != NULL) {
+		Race* r = head->get_next();
+		delete head;
+		head = r;
+	}
 }
