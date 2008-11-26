@@ -23,16 +23,29 @@ class Player;
 typedef void (*CreatureCommandFunc) (class Creature*, String argv[]); // can manipulate argv
 typedef void (*PlayerCommandFunc) (class Player*, String argv[]); // can manipulate argv
 
-// a parsable command format string
+struct CommandFormatNode
+{
+	enum type_t { NONE, WORD, PHRASE, LITERAL } type; // type
+	int arg; // argument index
+	bool opt; // optional, can skip?
+	String literal; // text to match
+
+	// new LITERAL node
+	CommandFormatNode(int s_arg, bool s_opt, String s_literal) :
+		type(LITERAL), arg(s_arg), opt(s_opt), literal(s_literal) {}
+	// new WORD or PHRASE node
+	CommandFormatNode(type_t s_type, int s_arg, bool s_opt) :
+		type(s_type), arg(s_arg), opt(s_opt), literal() {}
+	// copy contrusctor
+	CommandFormatNode(const CommandFormatNode& node) :
+		type(node.type), arg(node.arg), opt(node.opt), literal(node.literal) {}
+};
+
 class CommandFormat
 {
 	public:
-	CommandFormat (class Command* s_command, int s_priority = 100) : command(s_command), ch_func(NULL), ply_func(NULL), priority(s_priority) {}
-
-	// set command callback
-	inline void clear_callback (void) { ch_func = NULL; ply_func = NULL; }
-	inline void set_callback (CreatureCommandFunc s_func) { clear_callback(); ch_func = s_func; }
-	inline void set_callback (PlayerCommandFunc s_func) { clear_callback(); ply_func = s_func; }
+	CommandFormat (class Command* s_command, String format, CreatureCommandFunc s_func, int s_priority = 100) : command(s_command), ch_func(s_func), ply_func(NULL), priority(s_priority) { build(format); }
+	CommandFormat (class Command* s_command, String format, PlayerCommandFunc s_func, int s_priority = 100) : command(s_command), ch_func(NULL), ply_func(s_func), priority(s_priority) { build(format); }
 
 	// get the basics
 	inline String get_format (void) const { return format; }
@@ -55,14 +68,12 @@ class CommandFormat
 	inline int match (char** words, String argv[]) const { return trymatch(0, words, argv); }
 
 	private:
-	typedef std::vector<struct CommandFormatNode> NodeList;
-
 	class Command* command;
 	String format;
 	CreatureCommandFunc ch_func;
 	PlayerCommandFunc ply_func;
 	int priority;
-	NodeList nodes;
+	std::vector<CommandFormatNode> nodes;
 
 	// do the matching
 	int trymatch (int node, char** words, String argv[]) const;
@@ -71,47 +82,22 @@ class CommandFormat
 	friend class SCommandManager;
 };
 
-struct CommandFormatNode
-{
-	enum type_t { NONE, WORD, PHRASE, LITERAL } type; // type
-	int arg; // argument index
-	bool opt; // optional, can skip?
-	String literal; // text to match
-
-	// new LITERAL node
-	CommandFormatNode(int s_arg, bool s_opt, String s_literal) :
-		type(LITERAL), arg(s_arg), opt(s_opt), literal(s_literal) {}
-	// new WORD or PHRASE node
-	CommandFormatNode(type_t s_type, int s_arg, bool s_opt) :
-		type(s_type), arg(s_arg), opt(s_opt), literal() {}
-	// copy contrusctor
-	CommandFormatNode(const CommandFormatNode& node) :
-		type(node.type), arg(node.arg), opt(node.opt), literal(node.literal) {}
-};
-
 class Command
 {
 	private:
 	// data
 	String name;
 	String usage;
-	typedef std::vector<CommandFormat*> FormatList;
-	FormatList formats;
 	AccessID access; // required permission
 
 	public:
 	// constructor/destructor - virtual
-	inline Command (String s_name, String s_usage, AccessID s_access) : name(s_name), usage(s_usage), formats (), access (s_access)  {}
+	inline Command (String s_name, String s_usage, AccessID s_access) : name(s_name), usage(s_usage), access (s_access)  {}
 
 	// basics
 	const String& get_name (void) const { return name; }
 	const String& get_usage (void) const { return usage; }
 	AccessID get_access (void) const { return access; }
-
-	// add a new format
-	void add_format (String format, void(*func)(class Creature*, String[]), int priority);
-	void add_format (String format, void(*func)(class Player*, String[]), int priority);
-	void add_format (CommandFormat* format) { formats.push_back(format); }
 
 	// display help
 	void show_man (class StreamControl& player);
@@ -133,7 +119,8 @@ class SCommandManager : public IManager
 	virtual void shutdown();
 
 	// add a new command
-	int add (Command* command);
+	void add(Command* command);
+	void add(const CommandFormat& format) { formats.push_back(format); }
 
 	// invoke a command
 	int call (class Creature* character, String cmd_line);
@@ -146,10 +133,8 @@ class SCommandManager : public IManager
 
 	private:
 	typedef std::vector<Command*> CommandList;
-	typedef std::vector<CommandFormat*> FormatList;
-	
 	CommandList commands;
-	FormatList formats;
+	std::vector<CommandFormat> formats;
 };
 extern SCommandManager CommandManager;
 
@@ -165,7 +150,7 @@ namespace commands {
 		extern void func (klass*, String[]); \
 		void (*fptr)(klass*, String[]) = func; \
 		Command* command = new Command(S(name),S(usage),access);
-#define FORMAT(priority, format) command->add_format(S(format), (fptr), (priority));
+#define FORMAT(priority, format) add(CommandFormat(command, S(format), (fptr), (priority)));
 #define END_COMM add(command); }
 
 #endif

@@ -140,22 +140,13 @@ namespace {
 }
 
 // add a command to the list
-int
-SCommandManager::add (Command *command)
+void SCommandManager::add(Command *command)
 {
 	assert (command != NULL);
 
 	// add the command
 	CommandList::iterator ci = std::lower_bound(commands.begin(), commands.end(), command, DerefSort<Command>());
 	commands.insert(ci, command);
-
-	// add its formats
-	for (Command::FormatList::iterator i = command->formats.begin(); i != command->formats.end(); ++i) {
-		FormatList::iterator fi = std::lower_bound(formats.begin(), formats.end(), *i, DerefSort<CommandFormat>());
-		formats.insert(fi, *i);
-	}
-
-	return 0;
 }
 
 int
@@ -186,22 +177,21 @@ SCommandManager::call (Creature *ch, String comm) {
 	String argv[MAX_COMMAND_ARGS];
 	int best_score = -1, result = 0;
 	CommandList best_cmds;
-	for (FormatList::iterator fi = formats.begin(); fi != formats.end(); ++fi) {
-		CommandFormat* format = *fi;
-		Command* command = format->get_command();
+	for (std::vector<CommandFormat>::const_iterator f = formats.begin(), e = formats.end(); f != e; ++f) {
+		Command* command = f->get_command();
 		// must check privileges
 		if (!command->access.valid() || (ply != NULL && ply->get_account()->has_access(command->access))) {
 			// do match
-			result = format->match(words, argv);
+			result = f->match(words, argv);
 			if (result == -1) {
 				// all good - call function
-				if (format->ch_func) {
+				if (f->ch_func) {
 					// call char functions
-					format->ch_func (ch, argv);
+					f->ch_func (ch, argv);
 					return 0;
-				} else if (format->ply_func && ply) {
+				} else if (f->ply_func && ply) {
 					// call player function
-					format->ply_func(ply, argv);
+					f->ply_func(ply, argv);
 					return 0;
 				} else {
 					// damnit
@@ -1073,33 +1063,17 @@ Player::process_command (String line)
 		if (line[1] == '\0')
 			*this << "Do what?\n";
 		else
-			do_emote (String(line.c_str() + 1)); // FIXME: make this more efficient
+			do_emote(String(line.c_str() + 1)); // FIXME: make this more efficient
 		return;
 	}
 
-	CommandManager.call (this, line);
+	CommandManager.call(this, line);
 }
 
-void
-Command::add_format (String format, void(*func)(Creature*, String[]), int priority)
+void SCommandManager::shutdown()
 {
-	CommandFormat* cformat = new CommandFormat(this, priority);
-	cformat->set_callback(func);
-	cformat->build (format);
-	formats.push_back(cformat);
-}
-
-void
-Command::add_format (String format, void(*func)(Player*, String[]), int priority)
-{
-	CommandFormat* cformat = new CommandFormat(this, priority);
-	cformat->set_callback(func);
-	cformat->build (format);
-	formats.push_back(cformat);
-}
-
-void
-SCommandManager::shutdown (void)
-{
-	commands.resize(0);
+	for (std::vector<Command*>::iterator i = commands.begin(),
+			e = commands.end(); i != e; ++i)
+		delete *i;
+	commands.clear();
 }
