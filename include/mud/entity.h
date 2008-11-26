@@ -128,15 +128,13 @@ class Entity : public IMacroObject
 	// invalid owner types and to set an owner pointer - it *MUST* call
 	// Entity::set_owner() first.  get_owner() can be over-ridden to use a
 	// sub-classed return type.  owner_release() must be over-ridden.
-	virtual void set_owner (Entity* owner);
-	virtual Entity* get_owner () const = 0;
-	virtual void owner_release (Entity* child) = 0;
+	virtual void set_owner(Entity* owner);
+	virtual Entity* get_owner() const = 0;
+	virtual void owner_release(Entity* child) = 0;
 
 	// big list for updates
 	private:
 	UniqueID uid;
-	EntityList::iterator eself; // for super-quick removal from list
-	uint8 eheartbeat; // heart-beat index
 
 	// various data
 	protected:
@@ -148,9 +146,15 @@ class Entity : public IMacroObject
 	// DEAD: object removed from active world tree
 	enum State { FLOAT, ACTIVE, DEAD } state;
 
+	private:
+	// linked list tracking all entities
+	Entity* link_prev;
+	Entity* link_next;
+
 	// event handler
 	int perform_event (EventHandler *ea, Entity* trigger, Entity* target);
 
+	protected:
 	// protected destructor
 	virtual ~Entity () {}
 	friend class SEntityManager;
@@ -185,10 +189,14 @@ class SEntityManager : public IManager
 	void collect();
 
 	private:
-	EntityList elist[TICKS_PER_ROUND]; // all entities in system
-	EntityList dead; // dead entities, to be freed
-	EntityList::iterator ecur; // current entity for update
-	uint8 eheartbeat; // current heartbeat
+	Entity* all;
+	Entity* dead;
+
+	// next entity we will be running the heartbeat for.
+	// we track this so that if both the current and next
+	// entities end up being moved to the dead list, we
+	// still iterate to the proper entity.
+	Entity* next;
 
 	// lookup by uniqid
 	UniqueIDMap id_map;

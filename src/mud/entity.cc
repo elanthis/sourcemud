@@ -24,7 +24,16 @@
 
 // ----- Entity -----
 
-Entity::Entity() : state(FLOAT) {}
+Entity::Entity() : state(FLOAT)
+{
+	// add to the dead list; we move to the live list
+	// only if we get activated
+	link_prev = NULL;
+	link_next = EntityManager.dead;
+	if (link_next)
+		link_next->link_prev = this;
+	EntityManager.dead = this;
+}
 
 EventHandler*
 Entity::get_event (EventID name)
@@ -42,6 +51,9 @@ Entity::activate (void)
 	// must be in FLOAT state
 	assert(state == FLOAT && "state must be FLOAT to activate");
 
+	// set as active
+	state = ACTIVE;
+
 	// assign unique ID if it has none
 	if (!uid)
 		uid = UniqueIDManager.create();
@@ -49,20 +61,24 @@ Entity::activate (void)
 	// insert into unique ID table
 	EntityManager.id_map.insert(std::pair<UniqueID, Entity*>(uid, this));
 
-	// find best heartbeat
-	eheartbeat = 0;
-	for (uint8 i = 1; i < TICKS_PER_ROUND; ++i)
-		if (EntityManager.elist[i].size() < EntityManager.elist[eheartbeat].size())
-			eheartbeat = i;
+	// remove from dead list
+	if (link_next)
+		link_next->link_prev = link_prev;
+	if (link_prev)
+		link_prev->link_next = link_next;
+	if (this == EntityManager.dead)
+		EntityManager.dead = link_next;
 
-	// add to manager's big list
-	EntityManager.elist[eheartbeat].push_front(this);
+	// add to active list
+	link_prev = NULL;
+	link_next = EntityManager.all;
+	if (link_next)
+		link_next->link_prev = this;
+	EntityManager.all = this;
 
 	// register tags
 	for (TagList::iterator i = tags.begin(); i != tags.end(); ++i) 
 		EntityManager.tag_map.insert(std::pair<TagID, Entity*> (*i, this));
-
-	state = ACTIVE;
 }
 
 void
@@ -71,13 +87,32 @@ Entity::deactivate (void)
 	// must be active
 	assert(state == ACTIVE && "state must be ACTIVE to deactivate");
 
+	// quite dead, thank you
+	state = DEAD;
+
 	// ID MAP
 	UniqueIDMap::iterator i = EntityManager.id_map.find(uid);
 	if (i != EntityManager.id_map.end())
 		EntityManager.id_map.erase(i);
 
-	// BIG LIST
-	EntityManager.elist[eheartbeat].erase(std::find(EntityManager.elist[eheartbeat].begin(), EntityManager.elist[eheartbeat].end(), this));
+	// if we're the next heartbeat target, update the heartbeat pointer
+	if (this == EntityManager.next)
+		EntityManager.next = link_next;
+
+	// remove from active list
+	if (link_next)
+		link_next->link_prev = link_prev;
+	if (link_prev)
+		link_prev->link_next = link_next;
+	if (this == EntityManager.all)
+		EntityManager.all = link_next;
+
+	// add to dead list
+	link_prev = NULL;
+	link_next = EntityManager.dead;
+	if (link_next)
+		link_next->link_prev = this;
+	EntityManager.dead = this;
 
 	// TAG MAP
 	for (TagList::iterator i = tags.begin(); i != tags.end(); ++i) {
@@ -89,11 +124,6 @@ Entity::deactivate (void)
 				++mi.first;
 		}
 	}
-
-	// store for deletion
-	EntityManager.dead.push_front(this);
-
-	state = DEAD;
 }
 
 void
@@ -335,16 +365,16 @@ Entity::operator< (const Entity& ent) const
 
 SEntityManager EntityManager;
 
-SEntityManager::SEntityManager (void) : elist(), ecur(), eheartbeat(0)
+SEntityManager::SEntityManager()
 {
 }
 
-SEntityManager::~SEntityManager (void)
+SEntityManager::~SEntityManager()
 {
 }
 
 int
-SEntityManager::initialize (void)
+SEntityManager::initialize()
 {
 	return 0; // no error
 }
@@ -352,8 +382,6 @@ SEntityManager::initialize (void)
 void
 SEntityManager::shutdown (void)
 {
-	for (uint8 i = 0; i < TICKS_PER_ROUND; ++i)
-		elist[i].clear();
 	tag_map.clear();
 	collect();
 }
@@ -361,23 +389,18 @@ SEntityManager::shutdown (void)
 void
 SEntityManager::heartbeat (void)
 {
-	// loop
-	ecur = elist[eheartbeat].begin();
-	Entity* cur;
-	while (ecur != elist[eheartbeat].end()) {
-		// get current
-		cur = *ecur;
-
-		// move ptr
-		++ecur;
-
-		// update entity
+	// loop over all entities, running the heartbeat method.
+	// keep track of the next entity to be run, so that
+	// entity destruction won't screw us up.  also note that
+	// entity creation won't screw us up, because entities
+	// are always added to the front of the list.
+	Entity* next = NULL;
+	Entity* cur = all;
+	while (cur != NULL) {
+		next = cur->link_next;
 		cur->heartbeat();
+		cur = next;
 	}
-
-	// increment heartbeat
-	if (++eheartbeat == TICKS_PER_ROUND)
-		eheartbeat = 0;
 }
 
 size_t
@@ -403,9 +426,17 @@ SEntityManager::get (const UniqueID& uid) const
 
 void SEntityManager::collect()
 {
-	while (!dead.empty()) {
-		Entity* e = dead.front();
-		dead.erase(dead.begin());
+	// delete all dead entities
+	// we remove the entity from the list first, then we
+	// delete it, just incase the destructor kills some
+	// more entities; that shouldn't happen, but better
+	// safe than sorry.
+	while (dead != NULL) {
+		Entity* e = dead;
+		dead = dead->link_next;
+		if (dead != NULL)
+			dead->link_prev = NULL;
+
 		delete e;
 	}
 }
