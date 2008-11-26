@@ -8,7 +8,6 @@ sourcemud-ctrl
 compile
 config.*
 configure
-configure.*
 depcomp
 .deps
 .dirstamp
@@ -19,10 +18,10 @@ include/stamp-h1
 install-sh
 Makefile
 missing
-*.o
+.deps/
+.build/
 src/cmd/commands.h
 src/generated/
-src/scriptix/grammar.cc
-src/scriptix/grammar.hh
-src/scriptix/lexer.cc
 tools/replace.sh
+*~
+sourcemud.pid
