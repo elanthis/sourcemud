@@ -21,7 +21,7 @@
 #include "common/streams.h"
 #include "mud/settings.h"
 #include "mud/hooks.h"
-#include "common/manifest.h"
+#include "common/file.h"
 #include "mud/shadow-object.h"
 #include "mud/unique-object.h"
 #include "mud/efactory.h"
@@ -733,8 +733,8 @@ SObjectBPManager::initialize()
 	if (require(EventManager) != 0)
 		return 1;
 
-	ManifestFile man(SettingsManager.get_blueprint_path(), S(".objs"));
-	StringList files = man.get_files();;
+	StringList files = file::getFileList(SettingsManager.get_blueprint_path(),
+			S("objs"));
 	for (StringList::iterator i = files.begin(); i != files.end(); ++i) {
 		if (has_suffix(*i, S(".objs"))) {
 			// load from file

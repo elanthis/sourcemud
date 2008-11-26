@@ -16,7 +16,7 @@
 #include "mud/object.h"
 #include "mud/skill.h"
 #include "mud/hooks.h"
-#include "common/manifest.h"
+#include "common/file.h"
 #include "mud/shadow-object.h"
 #include "mud/efactory.h"
 
@@ -523,8 +523,8 @@ SNpcBPManager::initialize()
 	if (require(EventManager) != 0)
 		return 1;
 
-	ManifestFile man(SettingsManager.get_blueprint_path(), S(".npcs"));
-	StringList files = man.get_files();;
+	StringList files = file::getFileList(SettingsManager.get_blueprint_path(),
+			S("npc"));
 	for (StringList::iterator i = files.begin(); i != files.end(); ++i) {
 		File::Reader reader;
 		if (reader.open(*i))
