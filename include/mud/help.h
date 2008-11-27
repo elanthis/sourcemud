@@ -12,8 +12,8 @@
 #include "common/streams.h"
 
 struct HelpTopic {
-	String name;
-	String about;
+	std::string name;
+	std::string about;
 };
 
 class SHelpManager : public IManager
@@ -26,11 +26,11 @@ class SHelpManager : public IManager
 	virtual void shutdown (void);
 
 	// print out help to a player
-	void print (StreamControl& stream, String section);
+	void print (StreamControl& stream, std::string section);
 
 	// get a topic; category is optional, its use limits
 	// the topic search to topics in the given category
-	HelpTopic* get_topic (String name);
+	HelpTopic* get_topic (std::string name);
 
 	private:
 	typedef std::vector<HelpTopic*> TopicList;

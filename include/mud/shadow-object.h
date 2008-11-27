@@ -18,17 +18,17 @@ ObjectBP
 	ObjectBP ();
 
 	// blueprint id
-	inline String get_id () const { return id; }
+	inline std::string get_id () const { return id; }
 
 	// name
 	virtual EntityName get_name () const;
-	bool set_name (String s_name);
+	bool set_name (std::string s_name);
 
 	const StringList& get_keywords () const { return keywords; }
 
 	// description
-	const String& get_desc () const { return desc; }
-	void set_desc (String s_desc) { desc = s_desc; }
+	const std::string& get_desc () const { return desc; }
+	void set_desc (std::string s_desc) { desc = s_desc; }
 
 	// weight
 	uint get_weight () const { return weight; }
@@ -60,9 +60,9 @@ ObjectBP
 	void save (File::Writer& writer);
 
 	private:
-	String id;
+	std::string id;
 	EntityName name;
-	String desc;
+	std::string desc;
 	uint weight;
 	uint cost;
 	EquipSlot equip;
@@ -84,15 +84,15 @@ ShadowObject : public Object
 	ShadowObject ();
 	ShadowObject (ObjectBP* s_blueprint);
 
-	virtual String factory_type () const { return S("sobject"); }
+	virtual std::string factory_type () const { return S("sobject"); }
 
 	// name info
-	bool set_name (String);
+	bool set_name (std::string);
 	virtual EntityName get_name () const;
-	virtual bool name_match (String name) const;
+	virtual bool name_match (std::string name) const;
 
 	// description
-	virtual String get_desc () const;
+	virtual std::string get_desc () const;
 
 	// save/load
 	virtual int load_node (File::Reader& reader, File::Node& node);
@@ -116,12 +116,12 @@ ShadowObject : public Object
 	bool is_rotting () const;
 
 	// return ture if we derive from the named blueprint
-	bool is_blueprint (String blueprint) const;
+	bool is_blueprint (std::string blueprint) const;
 
 	// blueprint information
 	virtual ObjectBP* get_blueprint () const { return blueprint; }
 	void set_blueprint (ObjectBP* blueprint);
-	static Object* load_blueprint (String name);
+	static Object* load_blueprint (std::string name);
 
 	// containers
 	bool has_location (ObjectLocation type) const { return blueprint->has_location(type); }
@@ -137,14 +137,14 @@ ShadowObject : public Object
 
 class SObjectBPManager : public IManager
 {
-	typedef std::map<String,ObjectBP*> BlueprintMap;
+	typedef std::map<std::string,ObjectBP*> BlueprintMap;
 
 	public:
 	int initialize ();
 
 	void shutdown ();
 
-	ObjectBP* lookup (String id);
+	ObjectBP* lookup (std::string id);
 
 	private:
 	BlueprintMap blueprints;

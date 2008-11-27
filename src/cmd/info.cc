@@ -24,7 +24,7 @@
  * format: affects
  *
  * END COMMAND */
-void command_affects (Creature* ch, String argv[])
+void command_affects (Creature* ch, std::string argv[])
 {
 	ch->display_affects(*ch);
 }
@@ -34,7 +34,7 @@ void command_affects (Creature* ch, String argv[])
  * name: commands
  *
  * END COMMAND */
-void command_commands (Player *ply, String[])
+void command_commands (Player *ply, std::string[])
 {
 	CommandManager.show_list (ply);
 }
@@ -47,7 +47,7 @@ void command_commands (Player *ply, String[])
  * format: man :0*?
  *
  * END COMMAND */
-void command_man (Player* player, String argv[])
+void command_man (Player* player, std::string argv[])
 {
 	StreamControl stream(player);
 	CommandManager.show_man(stream, argv[0]);
@@ -58,7 +58,7 @@ void command_man (Player* player, String argv[])
  * name: server
  *
  * END COMMAND */
-void command_server (Player *player, String[])
+void command_server (Player *player, std::string[])
 {
 	*player << "Source MUD V" PACKAGE_VERSION "\nBuild: " __DATE__ " " __TIME__ "\nUptime: " << MUD::get_uptime() << "\n";
 }
@@ -68,7 +68,7 @@ void command_server (Player *player, String[])
  * name: skills
  *
  * END COMMAND */
-void command_skills (Player* player, String[])
+void command_skills (Player* player, std::string[])
 {
 	player->display_skills ();
 }
@@ -78,7 +78,7 @@ void command_skills (Player* player, String[])
  * name: time
  *
  * END COMMAND */
-void command_time (Player *player, String[])
+void command_time (Player *player, std::string[])
 {
 	char time_str[40];
 	char date_str[120];
@@ -96,7 +96,7 @@ void command_time (Player *player, String[])
  * name: who
  *
  * END COMMAND */
-void command_who (Player *player, String[])
+void command_who (Player *player, std::string[])
 {
 	PlayerManager.list (*player);
 }

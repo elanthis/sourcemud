@@ -21,14 +21,14 @@
 
 SHelpManager HelpManager;
 
-void command_help (Player* player, String argv[])
+void command_help (Player* player, std::string argv[])
 {
 	StreamControl stream(player);
 	HelpManager.print (stream, argv[0]);
 }
 
 HelpTopic*
-SHelpManager::get_topic (String name)
+SHelpManager::get_topic (std::string name)
 {
 	for (TopicList::iterator i = topics.begin(); i != topics.end(); ++i)
 		if (phrase_match((*i)->name, name))
@@ -37,7 +37,7 @@ SHelpManager::get_topic (String name)
 }
 
 void
-SHelpManager::print (StreamControl& stream, String name)
+SHelpManager::print (StreamControl& stream, std::string name)
 {
 	// try a man page
 	if (!name.empty() && CommandManager.show_man(stream, name, true))
@@ -65,7 +65,7 @@ SHelpManager::initialize ()
 
 		// open file
 		std::ifstream in;
-		in.open(*i);
+		in.open(i->c_str());
 		if (!in) {
 			Log::Error << "Failed to open " << *i;
 			return -1;
@@ -141,7 +141,7 @@ SHelpManager::initialize ()
 				}
 				++line;
 
-				String name = strip(buf.str());
+				std::string name = strip(buf.str());
 
 				// read data
 				buf.clear();
@@ -222,7 +222,7 @@ SHelpManager::initialize ()
 				} while (!in.eof() && c != '\n');
 				++line;
 
-				String body = buf.str();
+				std::string body = buf.str();
 
 				HelpTopic* topic = new HelpTopic();
 				topic->name = name;

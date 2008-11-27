@@ -15,8 +15,8 @@ IDManager::~IDManager ()
 {
 }
 
-const String*
-IDManager::lookup (String idname)
+const std::string*
+IDManager::lookup (std::string idname)
 {
 	IDMap::iterator i = id_map.find(idname);
 	if (i != id_map.end())
@@ -24,8 +24,8 @@ IDManager::lookup (String idname)
 	return NULL;
 }
 
-const String*
-IDManager::create (String idname)
+const std::string*
+IDManager::create (std::string idname)
 {
 	if (idname.empty())
 		return NULL;

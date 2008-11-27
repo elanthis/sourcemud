@@ -38,12 +38,12 @@ using namespace OLC;
  * access: GM
  *
  * END COMMAND */
-void command_olc_create (Player* builder, String argv[])
+void command_olc_create (Player* builder, std::string argv[])
 {
 	// create npc from blueprint
 	if (str_eq (argv[0], S("npc"))) {
 		Npc *new_npc = NULL;
-		if (argv[1]) {
+		if (!argv[1].empty()) {
 			new_npc = Npc::load_blueprint(argv[1]);
 			if (!new_npc) {
 				*builder << "Failed to load blueprint '" << argv[1] << "'.\n";
@@ -58,7 +58,7 @@ void command_olc_create (Player* builder, String argv[])
 	// creat object from blueprint
 	} else if (str_eq (argv[0], S("object"))) {
 		Object* new_object = NULL;
-		if (argv[1]) {
+		if (!argv[1].empty()) {
 			new_object = ShadowObject::load_blueprint(argv[1]);
 			if (!new_object) {
 				*builder << "Failed to load blueprint '" << argv[1] << "'.\n";
@@ -158,7 +158,7 @@ void command_olc_create (Player* builder, String argv[])
  * access: GM
  *
  * END COMMAND */
-void command_olc_destroy (Player* builder, String argv[])
+void command_olc_destroy (Player* builder, std::string argv[])
 {
 	Entity* entity;
 
@@ -231,7 +231,7 @@ void command_olc_destroy (Player* builder, String argv[])
  * access: GM
  *
  * END COMMAND */
-void command_olc_portals (Player *builder, String argv[])
+void command_olc_portals (Player *builder, std::string argv[])
 {
 	Room *room = NULL;
 	

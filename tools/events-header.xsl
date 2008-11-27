@@ -34,11 +34,11 @@ class EventID {
 	EventID (const EventID& event) : value(event.value) {}
 	EventID () : value(NONE) {}
 
-	String get_name() const { return names[value]; }
+	std::string get_name() const { return names[value]; }
 
 	type_t get_value () const { return value; }
 
-	static EventID lookup (String name);
+	static EventID lookup (std::string name);
 
 	bool valid () const { return value != NONE; }
 
@@ -49,7 +49,7 @@ class EventID {
 	private:
 	type_t value;
 
-	static String names[];
+	static std::string names[];
 };
 
 namespace Events {
@@ -79,7 +79,7 @@ namespace Events {
     <xsl:text>, </xsl:text>
     <xsl:choose>
       <xsl:when test="@type='String'">
-        <xsl:text>String </xsl:text>
+        <xsl:text>const std::string&amp; </xsl:text>
       </xsl:when>
       <xsl:when test="@type='Integer'">
         <xsl:text>long </xsl:text>

@@ -40,8 +40,8 @@ class SUniqueIDManager : public IManager
 	virtual void save ();
 
 	UniqueID create ();
-	String encode (UniqueID uid);
-	UniqueID decode (String string);
+	std::string encode (UniqueID uid);
+	UniqueID decode (std::string string);
 	int reserve ();
 
 	private:

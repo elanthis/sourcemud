@@ -31,7 +31,7 @@
 
 // ----- CreatureStatID -----
 
-String CreatureStatID::names[CreatureStatID::COUNT] = {
+std::string CreatureStatID::names[CreatureStatID::COUNT] = {
 	S("Strength"),
 	S("Agility"),
 	S("Fortitude"),
@@ -40,7 +40,7 @@ String CreatureStatID::names[CreatureStatID::COUNT] = {
 	S("Willpower"),
 };
 
-String CreatureStatID::short_names[CreatureStatID::COUNT] = {
+std::string CreatureStatID::short_names[CreatureStatID::COUNT] = {
 	S("ST"),
 	S("AG"),
 	S("FO"),
@@ -50,7 +50,7 @@ String CreatureStatID::short_names[CreatureStatID::COUNT] = {
 };
 
 CreatureStatID
-CreatureStatID::lookup (String name)
+CreatureStatID::lookup (std::string name)
 {
 	for (uint i = 0; i < COUNT; ++i)
 		if (str_eq(name, names[i]))
@@ -58,7 +58,7 @@ CreatureStatID::lookup (String name)
 	return NONE;
 }
 
-String stat_levels[] = {
+std::string stat_levels[] = {
 	S("Wretched"),
 	S("Horrible"),
 	S("Bad"),
@@ -70,7 +70,7 @@ String stat_levels[] = {
 	S("Awesome"),
 };
 
-String
+std::string
 get_stat_level (uint stat) {
 	if (stat <= 15)
 		return stat_levels[0];
@@ -92,7 +92,7 @@ get_stat_level (uint stat) {
 		return stat_levels[8];
 }
 
-String
+std::string
 get_stat_color (uint stat) {
 	if (stat <= 35)
 		return S(CSTAT_BAD2);
@@ -108,25 +108,25 @@ get_stat_color (uint stat) {
 
 // ----- CreaturePosition -----
 
-String CreaturePosition::names[CreaturePosition::COUNT] = {
+std::string CreaturePosition::names[CreaturePosition::COUNT] = {
 	S("stand"),
 	S("sit"),
 	S("lay"),
 	S("kneel"),
 };
-String CreaturePosition::verbs[CreaturePosition::COUNT] = {
+std::string CreaturePosition::verbs[CreaturePosition::COUNT] = {
 	S("stand up"),
 	S("sit down"),
 	S("lay down"),
 	S("kneel"),
 };
-String CreaturePosition::sverbs[CreaturePosition::COUNT] = {
+std::string CreaturePosition::sverbs[CreaturePosition::COUNT] = {
 	S("stands up"),
 	S("sits down"),
 	S("lays down"),
 	S("kneels"),
 };
-String CreaturePosition::verbings[CreaturePosition::COUNT] = {
+std::string CreaturePosition::verbings[CreaturePosition::COUNT] = {
 	S("standing"),
 	S("sitting"),
 	S("laying down"),
@@ -134,7 +134,7 @@ String CreaturePosition::verbings[CreaturePosition::COUNT] = {
 };
 
 CreaturePosition
-CreaturePosition::lookup (String name)
+CreaturePosition::lookup (std::string name)
 {
 	for (uint i = 0; i < COUNT; ++i)
 		if (str_eq(name, names[i]))
@@ -184,7 +184,7 @@ Creature::load_node (File::Reader& reader, File::Node& node)
 	FO_NODE_BEGIN
 		FO_PARENT(Entity)
 		FO_ATTR("creature", "dead")
-			dead = node.get_string();
+			dead = node.get_bool();
 		FO_ATTR("creature", "position")
 			position = CreaturePosition::lookup(node.get_string());
 		FO_ATTR("creature", "coins")
@@ -568,7 +568,7 @@ Creature::deactivate (void)
 }
 
 int
-Creature::macro_property (const StreamControl& stream, String comm, const MacroList& argv) const
+Creature::macro_property (const StreamControl& stream, std::string comm, const MacroList& argv) const
 {
 	// HE / SHE
 	if (str_eq(comm, S("he"))) {

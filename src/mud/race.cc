@@ -17,7 +17,7 @@
 
 SRaceManager RaceManager;
 
-Race::Race (String s_name, Race *s_next) :
+Race::Race (std::string s_name, Race *s_next) :
 	name(s_name.c_str()),
 	next(s_next) {}
 
@@ -76,7 +76,7 @@ Race::load(File::Reader& reader)
 	FO_READ_END
 
 	// fixup adjective
-	if (!adj)
+	if (adj.empty())
 		adj = name;
 
 	// sanity check age/lifespan
@@ -90,7 +90,7 @@ Race::load(File::Reader& reader)
 }
 
 Race *
-SRaceManager::get(String name)
+SRaceManager::get(std::string name)
 {
 	Race *race = head;
 	while (race != NULL) {
@@ -105,7 +105,7 @@ int
 SRaceManager::initialize()
 {
 	File::Reader reader;
-	String path = SettingsManager.get_misc_path() + "/races";
+	std::string path = SettingsManager.get_misc_path() + "/races";
 
 	if (reader.open(path)) {
 		Log::Error << "Failed to open " << path;

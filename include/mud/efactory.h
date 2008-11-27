@@ -18,9 +18,9 @@ class Entity;
 class IEntityFactory
 {
 	public:
-	virtual String get_name () const = 0;
-	virtual ~IEntityFactory () {}
-	virtual Entity* create () const = 0;
+	virtual const char* get_name() const = 0;
+	virtual ~IEntityFactory() {}
+	virtual Entity* create() const = 0;
 };
 
 class SEntityFactoryManager : public IManager
@@ -29,12 +29,12 @@ class SEntityFactoryManager : public IManager
 	int initialize ();
 	void shutdown ();
 
-	Entity* create (String name) const;
+	Entity* create (std::string name) const;
 
 	static void register_factory (const IEntityFactory*);
 
 	private:
-	typedef std::map<String, const IEntityFactory*> FactoryList;
+	typedef std::map<std::string, const IEntityFactory*> FactoryList;
 	static FactoryList* factories;
 };
 
@@ -45,11 +45,11 @@ extern SEntityFactoryManager EntityFactoryManager;
 		namespace _Factory##name { \
 			class _Factory##name : public IEntityFactory { \
 				public: \
-				virtual String get_name () const { return S(#name); } \
+				virtual const char* get_name() const { return #name; } \
 				_Factory##name () { \
 					SEntityFactoryManager::register_factory(this); \
 				} \
-				virtual Entity* create () const {
+				virtual Entity* create() const {
 #define END_EFACTORY \
 				} \
 			} _factory; \

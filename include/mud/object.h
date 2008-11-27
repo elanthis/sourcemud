@@ -53,8 +53,8 @@ struct ObjectLocation {
 	ObjectLocation () : v(NONE) {}
 	operator bits () const { return v; }
 
-	String name() const { return names[v-1]; }
-	static String names[MAX];
+	std::string name() const { return names[v-1]; }
+	static std::string names[MAX];
 
 	bits v;
 };
@@ -90,11 +90,11 @@ Object : public Entity
 	Object ();
 
 	// name info
-	virtual bool set_name (String) = 0;
+	virtual bool set_name (std::string) = 0;
 	virtual EntityName get_name () const = 0;
 
 	// description
-	virtual String get_desc () const = 0;
+	virtual std::string get_desc () const = 0;
 
 	// save/load
 	virtual int load_node (File::Reader& reader, File::Node& node);
@@ -121,10 +121,10 @@ Object : public Entity
 	class Room* get_room () const;
 
 	// name color
-	virtual String ncolor () const { return S(CITEM); }
+	virtual std::string ncolor () const { return S(CITEM); }
 
 	// for parsing, pull a property based on a char*
-	virtual int macro_property (const class StreamControl& stream, String method, const MacroList& argv) const;
+	virtual int macro_property (const class StreamControl& stream, std::string method, const MacroList& argv) const;
 
 	// object properties
 	virtual uint get_cost () const = 0;
@@ -150,7 +150,7 @@ Object : public Entity
 	virtual bool has_location (ObjectLocation type) const = 0;
 	bool add_object (Object *sub, ObjectLocation type);
 	void remove_object (Object *sub, ObjectLocation type);
-	Object *find_object (String name, uint index, ObjectLocation type, uint *matches = NULL) const;
+	Object *find_object (std::string name, uint index, ObjectLocation type, uint *matches = NULL) const;
 	void show_contents (class Player *player, ObjectLocation type) const;
 
 	// data

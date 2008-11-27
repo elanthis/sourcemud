@@ -15,7 +15,7 @@
 
 SAccountManager AccountManager;
 
-Account::Account (String s_id) : id(s_id), active(0), maxcharacters(0), maxactive(0), timeout(0)
+Account::Account (std::string s_id) : id(s_id), active(0), maxcharacters(0), maxactive(0), timeout(0)
 {
 	flags.disabled = false;
 	time_created = time(NULL);
@@ -33,7 +33,7 @@ Account::~Account ()
 int
 Account::save () const
 {
-	String path = SettingsManager.get_account_path() + "/" + strlower(id) + ".acct";
+	std::string path = SettingsManager.get_account_path() + "/" + strlower(id) + ".acct";
 
 	// open
 	File::Writer writer;
@@ -66,14 +66,14 @@ Account::save () const
 
 // password management
 void
-Account::set_passphrase (String s_pass)
+Account::set_passphrase (std::string s_pass)
 {
 	// encrypt
 	char enc_pass[MD5_BUFFER_SIZE];
 	MD5::encrypt (s_pass.c_str(), enc_pass);
 
 	// store
-	pass = String(enc_pass);
+	pass = std::string(enc_pass);
 
 	// force save
 	save();
@@ -81,10 +81,10 @@ Account::set_passphrase (String s_pass)
 
 // check password
 bool
-Account::check_passphrase (String s_pass) const
+Account::check_passphrase (std::string s_pass) const
 {
 	// empty?  auto-fail
-	if (!s_pass)
+	if (s_pass.empty())
 		return false;
 
 	// do compare
@@ -93,7 +93,7 @@ Account::check_passphrase (String s_pass) const
 
 // add a new character
 void
-Account::add_character (String name)
+Account::add_character (std::string name)
 {
 	// not already in list?
 	if (find(characters.begin(), characters.end(), name) != characters.end())
@@ -105,7 +105,7 @@ Account::add_character (String name)
 
 // remove a character
 void
-Account::del_character (String name)
+Account::del_character (std::string name)
 {
 	// find in list
 	StringList::iterator i;
@@ -173,7 +173,7 @@ Account::revoke_access(AccessID id)
 }
 
 int
-Account::macro_property (const StreamControl& stream, String method, const MacroList& argv) const
+Account::macro_property (const StreamControl& stream, std::string method, const MacroList& argv) const
 {
 	if (method == "id") {
 		stream << id;
@@ -211,7 +211,7 @@ SAccountManager::shutdown ()
 }
 
 bool
-SAccountManager::valid_name (String name)
+SAccountManager::valid_name (std::string name)
 {
 	// length
 	if (name.size() < ACCOUNT_NAME_MIN_LEN || name.size() > ACCOUNT_NAME_MAX_LEN)
@@ -227,7 +227,7 @@ SAccountManager::valid_name (String name)
 }
 
 bool
-SAccountManager::valid_passphrase (String pass)
+SAccountManager::valid_passphrase (std::string pass)
 {
 	// length
 	if (pass.size() < ACCOUNT_PASS_MIN_LEN)
@@ -247,10 +247,10 @@ SAccountManager::valid_passphrase (String pass)
 }
 
 Account*
-SAccountManager::get (String in_name)
+SAccountManager::get (std::string in_name)
 {
 	// force lower-case
-	String name = strlower(in_name);
+	std::string name = strlower(in_name);
 
 	// check validity
 	if (!valid_name(name))
@@ -309,7 +309,7 @@ SAccountManager::get (String in_name)
 }
 
 Account*
-SAccountManager::create (String name)
+SAccountManager::create (std::string name)
 {
 	// check validity
 	if (!valid_name(name))
@@ -334,7 +334,7 @@ SAccountManager::create (String name)
 }
 
 bool
-SAccountManager::exists (String name)
+SAccountManager::exists (std::string name)
 {
 	// must be lower-case
 	strlower(name);
@@ -350,7 +350,7 @@ SAccountManager::exists (String name)
 	}
 
 	// check if player file exists
-	String path = SettingsManager.get_account_path() + "/" + name + ".acct";
+	std::string path = SettingsManager.get_account_path() + "/" + name + ".acct";
 	struct stat st;
 	int res = stat (path.c_str(), &st);
 	if (res == 0)

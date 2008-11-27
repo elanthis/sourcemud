@@ -147,7 +147,7 @@ Room::save_hook (File::Writer& writer)
 }
 
 Portal *
-Room::find_portal (String e_name, uint c, uint *matches)
+Room::find_portal (std::string e_name, uint c, uint *matches)
 {
 	assert (c != 0);
 
@@ -471,7 +471,7 @@ Room::show_portals (const StreamControl& stream)
 
 /* broadcast a message to the Room */
 void
-Room::put (String msg, size_t len, std::vector<Creature*>* ignore_list)
+Room::put (std::string msg, size_t len, std::vector<Creature*>* ignore_list)
 {
 	// iterator
 	for (EList<Creature>::iterator i = creatures.begin(); i != creatures.end(); ++i) {
@@ -481,13 +481,13 @@ Room::put (String msg, size_t len, std::vector<Creature*>* ignore_list)
 				continue;
 		}
 		// output
-		(*i)->stream_put(msg, len);
+		(*i)->stream_put(msg.c_str(), len);
 	}
 }
 
 /* find a Creature by name */
 Creature *
-Room::find_creature (String cname, uint c, uint *matches)
+Room::find_creature (std::string cname, uint c, uint *matches)
 {
 	assert (c != 0);
 	
@@ -496,7 +496,7 @@ Room::find_creature (String cname, uint c, uint *matches)
 
 /* find an object by name */
 Object *
-Room::find_object (String oname, uint c, uint *matches)
+Room::find_object (std::string oname, uint c, uint *matches)
 {
 	assert (c != 0);
 
@@ -574,8 +574,8 @@ RoomStreamSink : public IStreamSink {
 void
 RoomStreamSink::stream_end () {
 	// send output
-	String text = buffer.str();
-	if (text) {
+	std::string text = buffer.str();
+	if (!text.empty()) {
 		if (ignores.empty())
 			room.put(text, text.size());
 		else

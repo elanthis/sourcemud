@@ -20,24 +20,24 @@
 
 class MailMessage {
 	private:
-	String to;
-	String subject;
+	std::string to;
+	std::string subject;
 	StringBuffer body;
 	struct Header {
-		String name;
-		String value;
+		std::string name;
+		std::string value;
 	};
 	std::vector<Header> headers;
 
 	public:
-	MailMessage (String s_to, String s_subj, String s_body) :
+	MailMessage (std::string s_to, std::string s_subj, std::string s_body) :
 		to(s_to), subject(s_subj), body(), headers() { body << s_body; }
-	MailMessage (String s_to, String s_subj) :
+	MailMessage (std::string s_to, std::string s_subj) :
 		to(s_to), subject(s_subj), body(), headers() {}
 
-	void append (String data);
+	void append (std::string data);
 
-	void header (String name, String value);
+	void header (std::string name, std::string value);
 
 	int send (void) const;
 };

@@ -27,11 +27,11 @@ class HTTPSession
 	public:
 	HTTPSession(Account* s_account);
 
-	String get_id() const { return id; }
+	std::string get_id() const { return id; }
 	Account* get_account() const { return account; }
 
-	String get_var(String id) const;
-	void set_var(String id, String value);
+	std::string get_var(std::string id) const;
+	void set_var(std::string id, std::string value);
 
 	void update_timestamp();
 	bool check_timestamp();
@@ -39,10 +39,10 @@ class HTTPSession
 	void clear();
 
 	private:
-	String id;
+	std::string id;
 	time_t timestamp;
 	Account* account;
-	std::map<String,String> vars;
+	std::map<std::string,std::string> vars;
 };
 
 class HTTPHandler : public SocketConnection, public IStreamSink, public IMacroObject
@@ -65,11 +65,11 @@ class HTTPHandler : public SocketConnection, public IStreamSink, public IMacroOb
 	void page_account();
 
 	// error
-	void http_error (int error, String msg);
+	void http_error (int error, std::string msg);
 
 	// get post data
-	String get_post (String name) const;
-	String get_request (String name) const;
+	std::string get_post (std::string name) const;
+	std::string get_request (std::string name) const;
 
 	// get user account
 	HTTPSession* get_session() const { return session; }
@@ -82,7 +82,7 @@ class HTTPHandler : public SocketConnection, public IStreamSink, public IMacroOb
 	virtual void sock_flush();
 
 	// macro values
-	int macro_property (const StreamControl& stream, String method, const MacroList& argv) const;
+	int macro_property (const StreamControl& stream, std::string method, const MacroList& argv) const;
 	void macro_default (const StreamControl& stream) const;
 
 	protected:
@@ -90,25 +90,25 @@ class HTTPHandler : public SocketConnection, public IStreamSink, public IMacroOb
 
 	protected:
 	// parse urlencoded data (GET/POST)
-	void parse_request_data (std::map<String,String>& map, const char* input) const;
+	void parse_request_data (std::map<std::string,std::string>& map, const char* input) const;
 
 
 	SockStorage addr;
 
 	// HTTP parsing
 	StringBuffer line;
-	String url;
-	String path;
+	std::string url;
+	std::string path;
 	enum { NONE, URLENCODED } posttype;
 	enum { GET, POST } reqtype;
 	enum { REQ, HEADER, BODY, DONE, ERROR } state;
 	size_t content_length;
 	time_t timeout;
-	std::map<String, String> headers;
+	std::map<std::string, std::string> headers;
 
 	// request data
-	std::map<String, String> get;
-	std::map<String, String> post;
+	std::map<std::string, std::string> get;
+	std::map<std::string, std::string> post;
 
 	// the session
 	HTTPSession* session;
@@ -120,30 +120,30 @@ class SHTTPManager : public IManager
 	virtual int initialize();
 	virtual void shutdown();
 
-	String get_template (String id);
+	std::string get_template (std::string id);
 
 	HTTPSession* create_session (Account* account);
 	void destroy_session (HTTPSession* session);
-	HTTPSession* get_session (String id);
+	HTTPSession* get_session (std::string id);
 
 	void check_timeouts();
 
 	private:
-	typedef std::map<String, String> TemplateMap;
+	typedef std::map<std::string, std::string> TemplateMap;
 	TemplateMap templates;
 
-	typedef std::map<String, HTTPSession*> SessionMap;
+	typedef std::map<std::string, HTTPSession*> SessionMap;
 	SessionMap sessions;
 };
 extern SHTTPManager HTTPManager;
 
 struct StreamHTTPEscape {
 	inline
-	explicit StreamHTTPEscape(String s_text) : text(s_text) {}
+	explicit StreamHTTPEscape(std::string s_text) : text(s_text) {}
 
 	friend const class StreamControl& operator << (const class StreamControl& stream, const StreamHTTPEscape& esc);
 
-	String text;
+	std::string text;
 };
 typedef StreamHTTPEscape StreamXMLEscape;
 

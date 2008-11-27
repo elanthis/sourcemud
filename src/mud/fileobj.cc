@@ -23,12 +23,12 @@ using namespace std;
 namespace {
 	struct EscapeString
 	{
-		inline EscapeString (const String& s_string) : string(s_string) {}
+		inline EscapeString (const std::string& s_string) : string(s_string) {}
 
 		inline friend ostream& operator << (ostream& os, const EscapeString& esc)
 		{
 			os << '"';
-			for (String::const_iterator i = esc.string.begin(); i != esc.string.end(); ++i) {
+			for (std::string::const_iterator i = esc.string.begin(); i != esc.string.end(); ++i) {
 				switch (*i) {
 					case '\t':
 						os << "\\t";
@@ -53,17 +53,17 @@ namespace {
 			return os;
 		}
 
-		const String& string;
+		const std::string& string;
 	};
 
 	struct ScrubString
 	{
-		inline ScrubString (const String& s_string) : string(s_string) {}
+		inline ScrubString (const std::string& s_string) : string(s_string) {}
 
 		inline friend ostream& operator << (ostream& os, const ScrubString& esc)
 		{
 			os << '"';
-			for (String::const_iterator i = esc.string.begin(); i != esc.string.end(); ++i) {
+			for (std::string::const_iterator i = esc.string.begin(); i != esc.string.end(); ++i) {
 				if (isalpha(*i) || (isdigit(*i) && i != esc.string.begin()) || *i == '_')
 					os << *i;
 			}
@@ -71,12 +71,12 @@ namespace {
 			return os;
 		}
 
-		const String& string;
+		const std::string& string;
 	};
 }
 
 int
-File::Reader::open (String filename)
+File::Reader::open (std::string filename)
 {
 	// open
 	in.open(filename.c_str());
@@ -91,7 +91,7 @@ File::Reader::open (String filename)
 }
 
 File::Reader::Token
-File::Reader::read_token (String& outstr)
+File::Reader::read_token (std::string& outstr)
 {
 	int test;
 
@@ -232,8 +232,8 @@ File::Reader::read_token (String& outstr)
 				} while (in);
 
 				// line end pattern?
-				String tstr = data.str();
-				if (strstr(tstr, "%end") && strip(tstr) == "%end") // see if the string exists, if so, see if that's all there is
+				std::string tstr = data.str();
+				if (strip(tstr) == "%end") // see if the string exists, if so, see if that's all there is
 					break;
 
 				// add data
@@ -282,7 +282,7 @@ bool
 File::Reader::get (Node& node)
 {
 	Token op;
-	String opstr;
+	std::string opstr;
 	std::vector<Value> list;
 
 	// clear node
@@ -335,7 +335,7 @@ File::Reader::get (Node& node)
 	// attribute?
 	else if (op == TOKEN_SET) {
 		// read
-		String data;
+		std::string data;
 		Token type = read_token(data);
 
 		// attribute-object
@@ -364,7 +364,7 @@ File::Reader::get (Node& node)
 }
 
 bool
-File::Reader::set_value (File::Reader::Token type, String data, File::Value& value)
+File::Reader::set_value (File::Reader::Token type, std::string data, File::Value& value)
 {
 	if (type == TOKEN_NUMBER) {
 		value = Value(Value::TYPE_INT, data);
@@ -424,7 +424,7 @@ File::Reader::consume ()
 }
 
 int
-File::Writer::open (String filename)
+File::Writer::open (std::string filename)
 {
 	// open and write to a temp file
 	path = filename;
@@ -457,7 +457,7 @@ File::Writer::do_indent ()
 }
 
 void
-File::Writer::attr (String ns, String name, String data)
+File::Writer::attr (std::string ns, std::string name, std::string data)
 {
 	if (!out)
 		return;
@@ -472,7 +472,7 @@ File::Writer::attr (String ns, String name, String data)
 }
 
 void
-File::Writer::attr (String ns, String name, long data)
+File::Writer::attr (std::string ns, std::string name, long data)
 {
 	if (!out)
 		return;
@@ -487,7 +487,7 @@ File::Writer::attr (String ns, String name, long data)
 }
 
 void
-File::Writer::attr (String ns, String name, bool data)
+File::Writer::attr (std::string ns, std::string name, bool data)
 {
 	if (!out)
 		return;
@@ -502,7 +502,7 @@ File::Writer::attr (String ns, String name, bool data)
 }
 
 void
-File::Writer::attr (String ns, String name, const UniqueID& data)
+File::Writer::attr (std::string ns, std::string name, const UniqueID& data)
 {
 	if (!out)
 		return;
@@ -518,7 +518,7 @@ File::Writer::attr (String ns, String name, const UniqueID& data)
 }
 
 void
-File::Writer::attr (String ns, String name, const std::vector<Value>& list)
+File::Writer::attr (std::string ns, std::string name, const std::vector<Value>& list)
 {
 	if (!out)
 		return;
@@ -554,7 +554,7 @@ File::Writer::attr (String ns, String name, const std::vector<Value>& list)
 }
 
 void
-File::Writer::block (String ns, String name, String data)
+File::Writer::block (std::string ns, std::string name, std::string data)
 {
 	if (!out)
 		return;
@@ -578,7 +578,7 @@ File::Writer::block (String ns, String name, String data)
 }
 
 void
-File::Writer::begin (String ns, String name)
+File::Writer::begin (std::string ns, std::string name)
 {
 	if (!out)
 		return;
@@ -594,7 +594,7 @@ File::Writer::begin (String ns, String name)
 }
 
 void
-File::Writer::begin_attr (String ns, String name, String type)
+File::Writer::begin_attr (std::string ns, std::string name, std::string type)
 {
 	if (!out)
 		return;
@@ -627,7 +627,7 @@ File::Writer::end ()
 }
 
 void
-File::Writer::comment (String text)
+File::Writer::comment (std::string text)
 {
 	if (!out)
 		return;
@@ -653,7 +653,7 @@ File::Writer::comment (String text)
 }
 
 bool
-File::valid_name (String name)
+File::valid_name (std::string name)
 {
 	// not empty
 	if (name.empty())
@@ -664,7 +664,7 @@ File::valid_name (String name)
 		return false;
 
 	// must be alpha, digit, _
-	for (String::const_iterator i = name.begin(); i != name.end(); ++i)
+	for (std::string::const_iterator i = name.begin(); i != name.end(); ++i)
 		if (!isalnum(*i) && *i != '_')
 			return false;
 
@@ -693,7 +693,7 @@ File::Node::get_bool () const
 	return value.get_value() == "true" || value.get_value() == "yes" || value.get_value() == "on";
 }
 
-String
+std::string
 File::Node::get_string () const
 {
 	if (value.get_type() != Value::TYPE_STRING) {
@@ -737,7 +737,7 @@ File::Node::get_list (size_t size) const
 	return value.get_list();
 }
 
-String
+std::string
 File::Node::get_string (size_t index) const
 {
 	if (value.get_type() != Value::TYPE_LIST) {

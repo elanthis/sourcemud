@@ -50,8 +50,8 @@ class Entity : public IMacroObject
 	Entity();
 
 	// factory handling
-	virtual String factory_type () const = 0;
-	static Entity* create (String type); // efactory.cc
+	virtual std::string factory_type () const = 0;
+	static Entity* create (std::string type); // efactory.cc
 
 	// get unique ID
 	inline const UniqueID& get_uid () const { return uid; }
@@ -60,7 +60,7 @@ class Entity : public IMacroObject
 	virtual EntityName get_name () const = 0;
 
 	// description
-	virtual String get_desc () const = 0;
+	virtual std::string get_desc () const = 0;
 
 	// events
 	inline const EventList& get_events () const { return events; }
@@ -84,26 +84,26 @@ class Entity : public IMacroObject
 
 	// output
 	virtual void display_desc (const class StreamControl& stream) const;
-	virtual String ncolor () const { return S(CNORMAL); }
+	virtual std::string ncolor () const { return S(CNORMAL); }
 
 	// save/load
-	static Entity* load (String factory, File::Reader& reader);
+	static Entity* load (std::string factory, File::Reader& reader);
 	int load (File::Reader& reader);
 	virtual int load_node (File::Reader& reader, File::Node& node);
 	virtual int load_finish () = 0;
-	void save (File::Writer& writer, String ns, String name);
+	void save (File::Writer& writer, std::string ns, std::string name);
 	virtual void save_data (File::Writer& writer);
 	virtual void save_hook (File::Writer& writer);
 
 	// check name
-	virtual bool name_match (String name) const;
+	virtual bool name_match (std::string name) const;
 
 	// event triggers
 	virtual void handle_event (const Event& event);
 	virtual void broadcast_event (const Event& event) = 0;
 
 	// for parsing, pull a property based on a char
-	virtual int macro_property (const class StreamControl& stream, String method, const MacroList& argv) const;
+	virtual int macro_property (const class StreamControl& stream, std::string method, const MacroList& argv) const;
 	virtual void macro_default (const class StreamControl& stream) const;
 
 	// heartbeat

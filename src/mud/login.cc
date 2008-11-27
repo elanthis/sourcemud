@@ -35,11 +35,11 @@ TelnetModeNewAccount::show_info (void)
 	*get_handler() << "Account Information\n";
 	*get_handler() << "-------------------\n";
 
-	if (id)
+	if (!id.empty())
 		*get_handler() << "Account name:   " CPLAYER << id << CNORMAL "\n";
-	if (name)
+	if (!name.empty())
 		*get_handler() << "Real name:      " << name << "\n";
-	if (email)
+	if (!email.empty())
 		*get_handler() << "E-mail address: " << email << "\n";
 
 	*get_handler() << "\n";
@@ -62,7 +62,7 @@ TelnetModeNewAccount::prompt (void)
 void
 TelnetModeNewAccount::process (char* data)
 {
-	String line(data);
+	std::string line(data);
 
 	switch (state) {
 		// select an ID
@@ -85,17 +85,17 @@ TelnetModeNewAccount::process (char* data)
 			break;
 		// enter real name
 		case STATE_NAME:
-			if (strlen(line))
+			if (!line.empty())
 				name = line;
 
-			if (name) {
+			if (!name.empty()) {
 				state = STATE_EMAIL;
 				show_info();
 			}
 			break;
 		// enter email address
 		case STATE_EMAIL:
-			if (strlen(line)) {
+			if (!line.empty()) {
 				if (str_is_email(line)) {
 					email = line;
 					get_handler()->toggle_echo(false);
@@ -105,7 +105,7 @@ TelnetModeNewAccount::process (char* data)
 				}
 			}
 
-			if (email) {
+			if (!email.empty()) {
 				state = STATE_PASS;
 				show_info();
 			}
@@ -113,7 +113,7 @@ TelnetModeNewAccount::process (char* data)
 		// enter passphrase
 		case STATE_PASS:
 			// legal?
-			if (!strlen(line) || !AccountManager.valid_passphrase(line)) {
+			if (line.empty() || !AccountManager.valid_passphrase(line)) {
 				*get_handler() << "\n" CADMIN "Passphrases must be at least " << ACCOUNT_PASS_MIN_LEN << " characters, and have both letters and numbers.  Passphrases may also contain symbols or punctuation characters." CNORMAL "\n";
 				break;
 			}
@@ -125,7 +125,7 @@ TelnetModeNewAccount::process (char* data)
 			break;
 		// double check passphrase
 		case STATE_CHECKPASS:
-			if (strcmp(passphrase, line)) {
+			if (passphrase != line) {
 				*get_handler() << "\n" CADMIN "Passwords do not match." CNORMAL "\n";
 				state = STATE_PASS;
 			} else {
@@ -137,7 +137,7 @@ TelnetModeNewAccount::process (char* data)
 		// approve it all
 		case STATE_APPROVE:
 			// done?
-			if (!strlen(line) || !strncasecmp (line, "yes", strlen (line))) {
+			if (line.empty() || str_is_true(line)) {
 				// double check account is unique
 				if (AccountManager.get(id)) {
 					*get_handler() << "\n" CADMIN "The account name '" << id << "' is already in use." CNORMAL "\n";
@@ -153,7 +153,7 @@ TelnetModeNewAccount::process (char* data)
 					get_handler()->set_mode(new TelnetModeMainMenu(get_handler(), account));
 					return;
 				}
-			} else if (!strncasecmp(line, "no", strlen(line))) {
+			} else if (str_is_false(line)) {
 				state = STATE_ID;
 				show_info();
 			}
@@ -179,7 +179,7 @@ TelnetModeLogin::prompt (void)
 void
 TelnetModeLogin::process (char* line)
 {
-	String data(line);
+	std::string data(line);
 
 	// NUL process command?
 	if (data.empty())
@@ -194,7 +194,7 @@ TelnetModeLogin::process (char* line)
 	// not at passphrase stage?
 	if (!pass) {
 		// no name?
-		if (!strlen(data)) {
+		if (!data.empty()) {
 			// enabled?
 			if (SettingsManager.get_account_creation()) {
 				*get_handler() << "\nYou must enter your account name to login or type " CBOLD "new" CNORMAL " to begin creating a new account.\n\n";

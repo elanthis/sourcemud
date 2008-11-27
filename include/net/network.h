@@ -45,12 +45,12 @@ enum PollHandlerFlags {
 
 class IPDenyList {
 	public:
-	int load(String file);
-	int save(String file);
+	int load(std::string file);
+	int save(std::string file);
 
 	// these return -1 on invalid input, 1 on exist errors, 0 on success
-	int add(String addr);
-	int remove(String addr);
+	int add(std::string addr);
+	int remove(std::string addr);
 
 	bool exists(SockStorage& addr);
 
@@ -91,7 +91,7 @@ class SNetworkManager : public IManager {
 
 	int poll(long timeout);
 
-	inline const String& get_host() const { return host; }
+	inline const std::string& get_host() const { return host; }
 
 	// track connections
 	IPConnList connections;
@@ -100,14 +100,14 @@ class SNetworkManager : public IManager {
 	IPDenyList denies;
 
 	private:
-	String host;
+	std::string host;
 
 	class PollData* p_data; // private implementation data
 };
 
 namespace Network {
 	// get the printable form of an IP address
-	String get_addr_name(const SockStorage& addr);
+	std::string get_addr_name(const SockStorage& addr);
 
 	// return 0 if the two addresses are the same
 	int addrcmp(const SockStorage& addr1, const SockStorage& addr2);
@@ -125,7 +125,7 @@ namespace Network {
 	int listen_tcp(int port, int family);
 
 	// listen on UNIX
-	int listen_unix(String path);
+	int listen_unix(std::string path);
 
 	// get socket from a tcp listener
 	int accept_tcp(int sock, SockStorage& addr);

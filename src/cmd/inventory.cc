@@ -24,7 +24,7 @@
  * format: get :0* from :2under :1*
  *
  * END COMMAND */
-void command_get (Creature* ch, String argv[]) {
+void command_get (Creature* ch, std::string argv[]) {
 	if (!argv[2].empty()) { // in, on, etc.
 		ObjectLocation type;
 		if (argv[1] == "on")
@@ -62,7 +62,7 @@ void command_get (Creature* ch, String argv[]) {
 	// get from the room
 	} else {
 		// coins?
-		if (argv[0].empty()) {
+		if (!argv[0].empty()) {
 			Room* room = ch->get_room();
 			if (room == NULL) {
 				*ch << "You are not in a room.\n";
@@ -122,10 +122,10 @@ void command_get (Creature* ch, String argv[]) {
  * format: drop :0*
  *
  * END COMMAND */
-void command_drop (Creature* ch, String argv[])
+void command_drop (Creature* ch, std::string argv[])
 {
 	// object?
-	if (argv[0]) {
+	if (argv[0].empty()) {
 		Object* obj = ch->cl_find_object (argv[0], GOC_HELD);
 		if (obj)
 			ch->do_drop (obj);
@@ -180,7 +180,7 @@ void command_drop (Creature* ch, String argv[])
  * format: put :0* :2under :1*
  *
  * END COMMAND */
-void command_put (Creature* ch, String argv[]) {
+void command_put (Creature* ch, std::string argv[]) {
 	Object* obj = ch->cl_find_object (argv[0], GOC_HELD);
 	if (!obj) 
 		return;
@@ -205,7 +205,7 @@ void command_put (Creature* ch, String argv[]) {
  * format: equip :0*
  *
  * END COMMAND */
-void command_wear (Creature* ch, String argv[])
+void command_wear (Creature* ch, std::string argv[])
 {
 	Object* obj = ch->cl_find_object (argv[0], GOC_HELD);
 	if (obj)
@@ -220,7 +220,7 @@ void command_wear (Creature* ch, String argv[])
  * format: remove :0*
  *
  * END COMMAND */
-void command_remove (Creature* ch, String argv[])
+void command_remove (Creature* ch, std::string argv[])
 {
 	Object* obj = ch->cl_find_object (argv[0], GOC_WORN);
 	if (obj)
@@ -232,7 +232,7 @@ void command_remove (Creature* ch, String argv[])
  * name: inventory
  *
  * END COMMAND */
-void command_inventory (Player* player, String[])
+void command_inventory (Player* player, std::string[])
 {
 	player->display_inventory ();
 }
@@ -244,7 +244,7 @@ void command_inventory (Player* player, String[])
  * format: swap
  *
  * END COMMAND */
-void command_swap(Creature* ch, String[])
+void command_swap(Creature* ch, std::string[])
 {
 	*ch << "You swap the contents of your hands.\n";
 	ch->swap_hands ();
@@ -258,7 +258,7 @@ void command_swap(Creature* ch, String[])
  * format: give :0% to? :1*
  *
  * END COMMAND */
-void command_give(Creature* ch, String argv[])
+void command_give(Creature* ch, std::string argv[])
 {
 	static const char* usage = "You must supply a positive number of coins to give.\n";
 

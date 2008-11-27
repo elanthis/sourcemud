@@ -51,7 +51,6 @@ HEADERS = \
 	include/mud/macro.h \
 	include/mud/message.h \
 	include/mud/name.h \
-	include/mud/network.h \
 	include/mud/npc.h \
 	include/mud/object.h \
 	include/mud/unique-object.h \
@@ -71,6 +70,7 @@ HEADERS = \
 	include/mud/weather.h \
 	include/mud/zone.h \
 	include/net/http.h \
+	include/net/network.h \
 	include/net/socket.h \
 	include/net/telnet.h \
 	include/net/zmp.h

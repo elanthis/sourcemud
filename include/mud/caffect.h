@@ -31,10 +31,10 @@ class CreatureAffectType
 	inline CreatureAffectType (void) : value(UNKNOWN) {}
 
 	inline bool valid (void) const { return value != UNKNOWN; }
-	inline String get_name(void) const { return names[value]; }
+	inline std::string get_name(void) const { return names[value]; }
 	inline type_t get_value (void) const { return value; }
 
-	static CreatureAffectType lookup (String name);
+	static CreatureAffectType lookup (std::string name);
 
 	inline bool operator == (const CreatureAffectType& dir) const { return dir.value == value; }
 	inline bool operator != (const CreatureAffectType& dir) const { return dir.value != value; }
@@ -42,7 +42,7 @@ class CreatureAffectType
 	private:
 	type_t value;
 
-	static String names[];
+	static std::string names[];
 };
 
 class ICreatureAffect
@@ -59,7 +59,7 @@ class ICreatureAffect
 class CreatureAffectGroup
 {
 	public:
-	CreatureAffectGroup (String s_title, CreatureAffectType s_type, uint s_duration);
+	CreatureAffectGroup (std::string s_title, CreatureAffectType s_type, uint s_duration);
 
 	int add_affect (ICreatureAffect* affect);
 
@@ -68,14 +68,14 @@ class CreatureAffectGroup
 
 	void update (Creature* character);
 
-	inline String get_title (void) const { return title; }
+	inline std::string get_title (void) const { return title; }
 	inline CreatureAffectType get_type (void) const { return type; }
 	inline uint get_time_left (void) const { return duration; }
 
 	private:
 	typedef std::vector<ICreatureAffect*> AffectList;
 
-	String title;
+	std::string title;
 	AffectList affects;
 	CreatureAffectType type;
 	uint duration;

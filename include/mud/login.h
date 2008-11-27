@@ -41,10 +41,10 @@ class TelnetModeNewAccount : public ITelnetMode
 	virtual void prompt ();
 
 	private:
-	String id;
-	String name;
-	String email;
-	String passphrase;
+	std::string id;
+	std::string name;
+	std::string email;
+	std::string passphrase;
 	int state;
 
 	void show_info ();
@@ -70,7 +70,7 @@ class TelnetModeMainMenu : public ITelnetMode
 	int state;
 
 	// temps
-	String tmp;
+	std::string tmp;
 
 	// menus
 	void show_banner ();

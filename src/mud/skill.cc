@@ -7,7 +7,7 @@
 
 #include "mud/skill.h"
 
-std::vector<String> SkillID::names;
+std::vector<std::string> SkillID::names;
 
 const SkillID SKILL_DODGE = SkillID::create(S("dodge"));
 const SkillID SKILL_PERCEPTION = SkillID::create(S("perception"));
@@ -35,7 +35,7 @@ uint8 SkillSet::setSkill(SkillID id, uint8 value)
 	return skills[id.getValue() - 1] = value;
 }
 
-SkillID SkillID::lookup(String name)
+SkillID SkillID::lookup(std::string name)
 {
 	for (size_t i = 1, e = names.size(); i < e; ++i)
 		if (names[i] == name)
@@ -43,7 +43,7 @@ SkillID SkillID::lookup(String name)
 	return SkillID();
 }
 
-SkillID SkillID::create(String name)
+SkillID SkillID::create(std::string name)
 {
 	SkillID id = lookup(name);
 	if (id)

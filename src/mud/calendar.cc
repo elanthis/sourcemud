@@ -13,7 +13,7 @@
 int
 GameCalendar::load (void)
 {
-	String path = SettingsManager.get_misc_path() + "/calendar";
+	std::string path = SettingsManager.get_misc_path() + "/calendar";
 
 	// open
 	File::TabReader reader;
@@ -28,12 +28,12 @@ GameCalendar::load (void)
 
 	// read each entry
 	for (size_t i = 0; i < reader.size(); ++i) {
-		String type = reader.get(i, 0);
+		std::string type = reader.get(i, 0);
 
 		// day time description
 		if (type == "daytime") {
-			String time = reader.get(i, 1);
-			String data = reader.get(i, 2);
+			std::string time = reader.get(i, 1);
+			std::string data = reader.get(i, 2);
 			if (data.empty()) {
 				Log::Error << "Macro error: " << path << ',' << reader.get_line(i) << ": Missing data for daytime entry";
 				return -1;
@@ -54,7 +54,7 @@ GameCalendar::load (void)
 
 		// weekday
 		} else if (type == "weekday") {
-			String name = reader.get(i, 1);
+			std::string name = reader.get(i, 1);
 			if (name.empty()) {
 				Log::Error << "Macro error: " << path << ',' << reader.get_line(i) << ": Missing name for weekday entry";
 				return -1;
@@ -64,7 +64,7 @@ GameCalendar::load (void)
 
 		// month
 		} else if (type == "month") {
-			String name = reader.get(i, 1);
+			std::string name = reader.get(i, 1);
 			ulong days = tolong(reader.get(i, 2));
 			ulong leap = tolong(reader.get(i, 3));
 
@@ -134,7 +134,7 @@ GameCalendar::days_in_month (const GameTime &gt) const
 		return months[gt.get_month() - 1].day_count;
 }
 
-String
+std::string
 GameCalendar::get_holiday (const GameTime &gt) const
 {
 	for (std::vector<GameCalendar::Holiday>::const_iterator i = holidays.begin(); i != holidays.end(); ++i) {
@@ -151,11 +151,11 @@ GameCalendar::get_holiday (const GameTime &gt) const
 		return i->name;
 	}
 
-	return String();
+	return std::string();
 }
 
 int
-GameCalendar::find_month (String name)
+GameCalendar::find_month (std::string name)
 {
 	uint ii = 0;
 	for (std::vector<GameCalendar::Month>::const_iterator i = months.begin(); i != months.end(); ++i, ++ii) {
@@ -166,7 +166,7 @@ GameCalendar::find_month (String name)
 }
 
 int
-GameCalendar::find_weekday (String name)
+GameCalendar::find_weekday (std::string name)
 {
 	uint ii = 0;
 	for (StringList::const_iterator i = weekdays.begin(); i != weekdays.end(); ++i, ++ii) {

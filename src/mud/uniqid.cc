@@ -24,7 +24,7 @@ SUniqueIDManager::initialize ()
 	next = 0;
 	limit = 0;
 
-	FILE* file = fopen(SettingsManager.get_misc_path() + "/uniqid", "r");
+	FILE* file = fopen((SettingsManager.get_misc_path() + "/uniqid").c_str(), "r");
 	if (file == NULL) {
 		Log::Error << "UniqueIDManager.initialize(): Failed to open uniqid: " << strerror(errno);
 		return -1;
@@ -43,7 +43,7 @@ SUniqueIDManager::initialize ()
 void
 SUniqueIDManager::shutdown ()
 {
-	FILE* file = fopen(SettingsManager.get_misc_path() + "/uniqid", "w");
+	FILE* file = fopen((SettingsManager.get_misc_path() + "/uniqid").c_str(), "w");
 	if (file == NULL) {
 		Log::Error << "UniqueIDManager.shutdown(): Failed to open uniqid: " << strerror(errno);
 		return;
@@ -61,7 +61,7 @@ SUniqueIDManager::reserve ()
 {
 	limit = next + LIMIT_AMOUNT;
 
-	FILE* file = fopen(SettingsManager.get_misc_path() + "/uniqid", "w");
+	FILE* file = fopen((SettingsManager.get_misc_path() + "/uniqid").c_str(), "w");
 	if (file == NULL) {
 		Log::Error << "UniqueIDManager.reserve(): Failed to open uniqid: " << strerror(errno);
 		return -1;
@@ -94,7 +94,7 @@ SUniqueIDManager::create ()
 	return id;
 }
 
-String
+std::string
 SUniqueIDManager::encode (UniqueID uid)
 {
 	StringBuffer buffer;
@@ -103,7 +103,7 @@ SUniqueIDManager::encode (UniqueID uid)
 }
 
 UniqueID
-SUniqueIDManager::decode (String string)
+SUniqueIDManager::decode (std::string string)
 {
 	UniqueID uid;
 	uid.id = strtol(string.c_str(), NULL, 10);

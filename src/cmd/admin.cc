@@ -23,7 +23,7 @@
  * access: ADMIN
  *
  * END COMMAND */
-void command_admin_grant (Player* admin, String argv[]) {
+void command_admin_grant (Player* admin, std::string argv[]) {
 	Account *account = AccountManager.get(argv[0]);
 	if (account == NULL) {
 		*admin << "Account '" << argv[0] << "' not found.\n";
@@ -51,7 +51,7 @@ void command_admin_grant (Player* admin, String argv[]) {
  * access: ADMIN
  *
  * END COMMAND */
-void command_admin_revoke (Player* admin, String argv[]) {
+void command_admin_revoke (Player* admin, std::string argv[]) {
 	Account *account = AccountManager.get(argv[0]);
 	if (account == NULL) {
 		*admin << "Account '" << argv[0] << "' does not exist.\n";
@@ -77,7 +77,7 @@ void command_admin_revoke (Player* admin, String argv[]) {
  * access: ADMIN
  *
  * END COMMAND */
-void command_admin_shutdown (Player* admin, String[]) {
+void command_admin_shutdown (Player* admin, std::string[]) {
 	*admin << CADMIN "Shutdown issued." CNORMAL "\n";
 	Log::Admin << "Shutdown issued by " << admin->get_account()->get_id();
 	ZoneManager.announce (S("Shutting down, NOW!"));
@@ -93,7 +93,7 @@ void command_admin_shutdown (Player* admin, String[]) {
  * access: ADMIN
  *
  * END COMMAND */
-void command_admin_blockip (Player* admin, String argv[]) {
+void command_admin_blockip (Player* admin, std::string argv[]) {
 	*admin << CADMIN "TEMPORARLY DISABLED" CNORMAL << "\n";
 	// FIXME: fix this
 	/*

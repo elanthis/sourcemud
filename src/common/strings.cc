@@ -12,13 +12,15 @@
 #include <ctype.h>
 #include <unistd.h>
 
+#include <cctype>
+#include <cstring>
 #include <algorithm>
+#include <vector>
+#include <sstream>
 
 #ifdef HAVE_REGEX
 #include <regex.h>
 #endif
-
-#include <vector>
 
 #include "common/types.h"
 #include "common/string.h"
@@ -32,53 +34,7 @@
 #define __va_copy(x, y) x = y
 #endif
 
-String::String (const char* src, size_t len)
-{
-	assert(src != NULL);
-	char* tmp = new char[len + 1];
-	strncpy(tmp, src, len);
-	tmp[len] = 0;
-	string = tmp;
-}
-
-String
-operator+ (String left, String right)
-{
-	char* ret = new char[left.size() + right.size() + 1];
-	strcpy(ret, left.c_str());
-	strcpy(ret + left.size(), right.c_str());
-	return TransferString(ret);
-}
-
-String
-operator+ (String left, const char* right)
-{
-	char* ret = new char[left.size() + strlen(right) + 1];
-	strcpy(ret, left.c_str());
-	strcpy(ret + left.size(), right);
-	return TransferString(ret);
-}
-
-String
-operator+ (const char* left, String right)
-{
-	char* ret = new char[strlen(left) + right.size() + 1];
-	strcpy(ret, left);
-	strcpy(ret + strlen(left), right.c_str());
-	return TransferString(ret);
-}
-
-void String::copy(CString src)
-{
-	assert(src != NULL);
-	if (string)
-		delete[] string;
-	string = new char[strlen(src) + 1];
-	strcpy((char*)string, src);
-}
-
-bool
-str_is_valid_id (String string)
+bool str_is_valid_id(const std::string& string)
 {
 	// can't be empty
 	if (string.empty())
@@ -97,8 +53,7 @@ str_is_valid_id (String string)
 	return true;
 }
 
-bool
-str_is_number (String string)
+bool str_is_number(const std::string& string)
 {
 	// no length?  bad
 	if (string.empty())
@@ -123,8 +78,7 @@ str_is_number (String string)
 	return true;
 }
 
-bool
-str_is_email (String string)
+bool str_is_email(const std::string& string)
 {
 #ifdef HAVE_REGEX
 	static RegEx regex ("^[a-z0-9._-]+@[a-z0-9_-]+(\\.[a-z0-9_-]+)+$", true);
@@ -166,8 +120,7 @@ str_is_email (String string)
 #endif // HAVE_REGEX
 }
 
-bool
-str_is_true (String string)
+bool str_is_true(const std::string& string)
 {
 	return (
 		str_eq(string, S("true")) ||
@@ -177,18 +130,28 @@ str_is_true (String string)
 	);
 }
 
-bool
-str_eq (String str_a, String str_b, size_t len)
+bool str_is_false(const std::string& string)
 {
-	// do comparison
-	if (len)
-		return !strncasecmp (str_a, str_b, len);
-	else
-		return !strcasecmp (str_a, str_b);
+	return (
+		str_eq(string, S("false")) ||
+		str_eq(string, S("no")) ||
+		str_eq(string, S("off")) ||
+		string == "0"
+	);
 }
 
 bool
-prefix_match (CString string, CString prefix)
+str_eq (std::string str_a, std::string str_b, size_t len)
+{
+	// do comparison
+	if (len)
+		return !strncasecmp(str_a.c_str(), str_b.c_str(), len);
+	else
+		return !strcasecmp(str_a.c_str(), str_b.c_str());
+}
+
+bool
+prefix_match (const char* string, const char* prefix)
 {
 	assert(string != NULL);
 	assert(prefix != NULL);
@@ -196,8 +159,7 @@ prefix_match (CString string, CString prefix)
 	return strncasecmp(string, prefix, strlen(prefix)) == 0;
 }
 
-bool
-phrase_match (CString match, CString test)
+bool phrase_match (const char* match, const char* test)
 {
 	assert(match != NULL);
 	assert(test != NULL);
@@ -277,7 +239,7 @@ phrase_match (CString match, CString test)
 	return matches == cchunk ? true : false;
 }
 
-String
+std::string
 get_num_suffix (unsigned int num) {
 	if (num == 11 || num == 12 || num == 13) { return S("th"); }
 	num %= 10;
@@ -285,7 +247,7 @@ get_num_suffix (unsigned int num) {
 }
 
 StringList&
-explode (StringList& list, String str, char ch)
+explode (StringList& list, std::string str, char ch)
 {
 	list.clear();
 
@@ -297,16 +259,16 @@ explode (StringList& list, String str, char ch)
 	const char* i;
 	l = str.c_str();
 	while ((i = strchr(l, ch)) != NULL) {
-		list.push_back(String(l, i - l));;
+		list.push_back(std::string(l, i - l));;
 		l = i + 1;
 	}
-	list.push_back(String(l));
+	list.push_back(std::string(l));
 
 	return list;
 }
 
-String&
-implode (String& string, const StringList& list, char ch)
+std::string&
+implode (std::string& string, const StringList& list, char ch)
 {
 	StringBuffer buffer;
 
@@ -320,8 +282,8 @@ implode (String& string, const StringList& list, char ch)
 	return string = buffer.str();
 }
 
-String&
-capwords (String& out, String string)
+std::string&
+capwords (std::string& out, std::string string)
 {
 	bool space = true;
 	char ch;
@@ -340,70 +302,63 @@ capwords (String& out, String string)
 	return out;
 }
 
-String
-tostr (long num)
+std::string tostr(long num)
 {
 	StringBuffer str;
 	str << num;
 	return str.str();
 }
 
-long
-tolong (String str)
+long tolong(const std::string& str)
 {
 	return strtol(str.c_str(), NULL, 10);
 }
 
-// ----- String class stuff -----
+// ----- std::string class stuff -----
 
-String
-strip (String string)
+std::string strip(const std::string& string)
 {
 	if (string.empty())
-		return String();
+		return std::string();
 
 	// strip back
 	const char* back = string.c_str() + string.size() - 1;
 	while (back >= string.c_str() && isspace(*back))
 		--back;
 	if (back < string.c_str())
-		return String();
+		return std::string();
 
 	// strip front
 	const char* front = string.c_str();
 	while (front < back && isspace(*front))
 		++front;
 	if (front == back)
-		return String();
+		return std::string();
 
 	// do substr
-	return String(front, back - front + 1);
+	return std::string(front, back - front + 1);
 }
 
-String
-strupper (String string)
+std::string strupper(const std::string& str)
 {
-	char* ret = new char[string.size() + 1];
-	for (size_t i = 0; i < string.size() + 1; ++i)
-		ret[i] = toupper(string[i]);
-	return TransferString(ret);
+	std::string rs = str;
+	std::transform(str.begin(), str.end(), rs.begin(), toupper);
+	return rs;
 }
 
-String
-strlower (String string)
+std::string strlower(const std::string& str)
 {
-	char* ret = new char[string.size() + 1];
-	for (size_t i = 0; i < string.size() + 1; ++i)
-		ret[i] = tolower(string[i]);
-	return TransferString(ret);
+	std::string rs = str;
+	std::transform(str.begin(), str.end(), rs.begin(), tolower);
+	return rs;
 }
 
 namespace {
 	struct Replace {
-		Replace (String s_from, String s_to) : from(s_from), to (s_to) {}
+		Replace (std::string s_from, std::string s_to) : from(s_from), to (s_to) {}
 
-		const String& from;
-		const String& to;
+		const std::string& from;
+		const std::string& to;
 
 		char operator ()(char c) {
 			char* r = strchr(from.c_str(), c);
@@ -414,8 +369,7 @@ namespace {
 	};
 }
 
-String
-trim (String source, String accept)
+std::string trim(const std::string& source, const std::string& accept)
 {
 	StringBuffer ret;
 
@@ -426,13 +380,13 @@ trim (String source, String accept)
 	return ret.str();
 }
 
-String
-str_tr (String source, String from, String to)
+std::string
+str_tr (std::string source, std::string from, std::string to)
 {
 	StringBuffer result;
 
 	for (const char* c = source.c_str(); *c != 0; ++c) {
-		const char* l = strchr(from, *c);
+		const char* l = std::strchr(from.c_str(), *c);
 		if (l != NULL)
 			result << to[l - from.c_str()];
 		else
@@ -442,19 +396,19 @@ str_tr (String source, String from, String to)
 	return result.str();
 }
 
-String
-make_path (CString path, CString file)
+std::string
+make_path (const char* path, const char* file)
 {
 	assert(path != NULL);
 	assert(file != NULL);
 
 	// if the file begins with a /, it's already a full path
 	if (file[0] == '/')
-		return String(file);
+		return std::string(file);
 
 	// if there is no path given, just return the file name
 	if (path[0] == 0)
-		return String(file);
+		return std::string(file);
 
 	StringBuffer res;
 	res << path;
@@ -468,8 +422,8 @@ make_path (CString path, CString file)
 	return res.str();
 }
 
-String
-base_name (CString path)
+std::string
+base_name (const char* path)
 {
 	assert(path != NULL);
 
@@ -484,13 +438,13 @@ base_name (CString path)
 	const char* ext = strrchr(start, '.');
 
 	if (ext == NULL)
-		return String(start);
+		return std::string(start);
 	else
-		return String(start, ext - start);
+		return std::string(start, ext - start);
 }
 
 bool
-has_suffix (CString base, CString suffix)
+has_suffix (const char* base, const char* suffix)
 {
 	assert(base != NULL);
 	assert(suffix != NULL);

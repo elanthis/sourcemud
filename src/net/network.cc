@@ -158,7 +158,7 @@ SNetworkManager::initialize ()
 
 	// set our hostname
 	host = SettingsManager.get_hostname();
-	if (!host) {
+	if (host.empty()) {
 		char host_buffer[256];
 		if (gethostname(host_buffer, sizeof(host_buffer))) {
 			Log::Error << "gethostname() failed: " << strerror(errno);
@@ -169,11 +169,11 @@ SNetworkManager::initialize ()
 			Log::Error << "gethostbyname() failed for " << host_buffer << ": " << strerror(errno);
 			return 1;
 		}
-		host = String(host_info->h_name);
+		host = std::string(host_info->h_name);
 	}
 
 	// load IP block list
-	if (SettingsManager.get_deny_file()) {
+	if (!SettingsManager.get_deny_file().empty()) {
 		Log::Info << "Reading denied host list";
 
 		if (denies.load(SettingsManager.get_deny_file()))
@@ -285,13 +285,13 @@ SNetworkManager::poll (long timeout)
  **************/
 
 int
-IPDenyList::load (String path)
+IPDenyList::load (std::string path)
 {
 	char line[512];
 	FILE* file;
 	uint lcnt;
 	
-	file = fopen(path, "r");
+	file = fopen(path.c_str(), "r");
 	if (file == NULL) {
 		Log::Error << "fopen() failed: " << path << ": " << strerror(errno);
 		return -1;
@@ -313,7 +313,7 @@ IPDenyList::load (String path)
 			continue;
 
 		// add and handle return codes
-		int err = add(String(line));
+		int err = add(std::string(line));
 		if (err == -1)
 			Log::Warning << "Invalid IP deny line at " << path << ":" << lcnt;
 	}
@@ -323,11 +323,11 @@ IPDenyList::load (String path)
 }
 
 int
-IPDenyList::save (String path)
+IPDenyList::save (std::string path)
 {
 	FILE* file;
 
-	file = fopen(path, "w");
+	file = fopen(path.c_str(), "w");
 	if (file == NULL) {
 		Log::Error << "fopen() failed: " << path << ": " << strerror(errno);
 		return -1;
@@ -342,12 +342,12 @@ IPDenyList::save (String path)
 }
 
 int
-IPDenyList::remove (String line)
+IPDenyList::remove (std::string line)
 {
 	SockStorage addr;
 	uint mask;
 
-	if (parse_addr(line, &addr, &mask))
+	if (parse_addr(line.c_str(), &addr, &mask))
 		return -1;
 
 	for (std::vector<IPDeny>::iterator i = denylist.begin(); i != denylist.end(); ++i)
@@ -360,12 +360,12 @@ IPDenyList::remove (String line)
 }
 
 int
-IPDenyList::add (String line)
+IPDenyList::add (std::string line)
 {
 	SockStorage addr;
 	uint mask;
 
-	if (parse_addr(line, &addr, &mask))
+	if (parse_addr(line.c_str(), &addr, &mask))
 		return -1;
 
 	for (uint i = 0; i < denylist.size(); ++i)
@@ -514,7 +514,7 @@ Network::addrcmp_mask (const SockStorage& in_addr1, const SockStorage& addr2, ui
 }
 
 // get name of socket
-String
+std::string
 Network::get_addr_name(const SockStorage& addr)
 {
 	char hostbuf[512];
@@ -534,7 +534,7 @@ Network::get_addr_name(const SockStorage& addr)
 
 	// no port?  just return the address
 	if (!strlen(servbuf))
-		return String(hostbuf);
+		return std::string(hostbuf);
 
 	// host have a : (*cough* IPv6 *cough*) ? format [addr]:port
 	if (strchr(hostbuf, ':'))
@@ -542,7 +542,7 @@ Network::get_addr_name(const SockStorage& addr)
 	else
 		snprintf(buffer, sizeof(buffer), "%s:%s", hostbuf, servbuf);
 
-	return String(buffer);
+	return std::string(buffer);
 }
 
 // get peer uid on AF_UNIX sockets
@@ -675,7 +675,7 @@ Network::is_addr_local (const SockStorage& addr)
 
 // listen/server connection
 int
-Network::listen_unix (String s_path)
+Network::listen_unix (std::string s_path)
 {
 	struct sockaddr_un address;
 	size_t sa_len = sizeof(address);
@@ -695,7 +695,7 @@ Network::listen_unix (String s_path)
 	}
 
 	// unlink previous socket
-	unlink(s_path);
+	unlink(s_path.c_str());
 
 	// setup and config
 	address.sun_family = AF_UNIX;
@@ -715,7 +715,7 @@ Network::listen_unix (String s_path)
 	// start listening
 	if (::listen (sock, 5)) {
 		Log::Error << "listen() failed: " << strerror(errno);
-		unlink(s_path);
+		unlink(s_path.c_str());
 		close(sock);
 		return -1;
 	}

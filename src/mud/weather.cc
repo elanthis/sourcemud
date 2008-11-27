@@ -119,7 +119,7 @@ WeatherRegion::save (File::Writer& writer) const
 int
 WeatherRegion::load ()
 {
-	String path = SettingsManager.get_world_path() + "/weather";
+	std::string path = SettingsManager.get_world_path() + "/weather";
 
 	// open
 	File::Reader reader;
@@ -136,7 +136,7 @@ WeatherRegion::load ()
 int
 WeatherRegion::save () const
 {
-	String path = SettingsManager.get_world_path() + "/weather";
+	std::string path = SettingsManager.get_world_path() + "/weather";
 
 	// open
 	File::Writer writer;
@@ -151,14 +151,14 @@ WeatherRegion::save () const
 }
 
 int
-WeatherRegion::get_state (String name) const {
+WeatherRegion::get_state (std::string name) const {
 	for (uint i = 0; i < states.size(); ++i)
 		if (states[i].id == name)
 			return i;
 	return -1;
 }
 
-String
+std::string
 WeatherRegion::get_current_desc () const {
 	uint i = get_random(states[state].descs.size());
 	return states[state].descs[i];

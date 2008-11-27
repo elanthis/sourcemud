@@ -87,14 +87,14 @@ namespace {
 
 	token_type get_token (const char** in, const char* end, StringBuffer& namebuf);
 	void skip (const char** in, const char* end);
-	String get_arg (MacroArgs& argv, uint index);
-	int invoke_method (const StreamControl& stream, MacroValue self, String method, MacroList& argv);
+	std::string get_arg (MacroArgs& argv, uint index);
+	int invoke_method (const StreamControl& stream, MacroValue self, std::string method, MacroList& argv);
 	int do_macro (const char** in, const char* end, MacroState& state, const StreamControl& stream, int depth, bool if_allowed);
-	int do_text(const StreamControl& stream, String in, MacroState& state, int depth);
+	int do_text(const StreamControl& stream, std::string in, MacroState& state, int depth);
 }
 
 namespace macro {
-	int exec_macro (const StreamControl& stream, String macro, MacroList& argv);
+	int exec_macro (const StreamControl& stream, std::string macro, MacroList& argv);
 }
 
 // function definitions
@@ -213,18 +213,18 @@ namespace {
 	}
 
 	// get an argument as a string
-	String get_arg (MacroList& argv, uint index)
+	std::string get_arg (MacroList& argv, uint index)
 	{
 		// bounds check
 		if (index >= argv.size())
-			return String();
+			return std::string();
 
 		// return string (empty if type is not a string)
 		return argv[index].get_string();
 	}
 
 	// invoke a method
-	int invoke_method (const StreamControl& stream, MacroValue self, String method, MacroList& argv)
+	int invoke_method (const StreamControl& stream, MacroValue self, std::string method, MacroList& argv)
 	{
 		// if it's an object, invoke Entity::macro_property();
 		if (self.is_object()) {
@@ -233,10 +233,10 @@ namespace {
 		
 		// it's a string, so process it ourself
 		if (self.is_string()) {
-			String string = self.get_string();
+			std::string string = self.get_string();
 
 			// LENGTH
-			if (!strcasecmp(method, "length")) {
+			if (str_eq(method, "length")) {
 				stream << string.size();
 				return 0;
 			}
@@ -252,7 +252,7 @@ namespace {
 		bool is_if = false;
 		bool is_bang = false;
 		MacroValue value;
-		String method;
+		std::string method;
 		StringBuffer buffer;
 		MacroList argv;
 
@@ -446,7 +446,7 @@ namespace {
 		// have a variable
 		if (!value.is_null()) {
 			// a method?
-			if (method) {
+			if (!method.empty()) {
 				if (invoke_method(buffer, value, method, argv)) {
 					stream << "{error: unknown method}";
 					return -1;
@@ -459,7 +459,7 @@ namespace {
 					value.get_object()->macro_default(buffer);
 			}
 		// just a function?
-		} else if (method) {
+		} else if (!method.empty()) {
 			if (macro::exec_macro(buffer, method, argv)) {
 				stream << "{error: macro failed}";
 				return -1;
@@ -499,7 +499,7 @@ namespace {
 
 	// macro text
 	int
-	do_text(const StreamControl& stream, String text, MacroState& state, int depth)
+	do_text(const StreamControl& stream, std::string text, MacroState& state, int depth)
 	{
 		// declarations
 		MacroIn in(text.c_str(), text.c_str() + text.size());
@@ -543,7 +543,7 @@ namespace {
 namespace macro {
 	// macro text
 	const StreamControl&
-	text(const StreamControl& stream, String in, const MacroArgs& argv)
+	text(const StreamControl& stream, std::string in, const MacroArgs& argv)
 	{
 		MacroState state(argv);
 
@@ -553,19 +553,19 @@ namespace macro {
 		return stream;
 	}
 
-	int exec_macro (const StreamControl& stream, String _cmd_name, MacroList& _cmd_argv)
+	int exec_macro (const StreamControl& stream, std::string _cmd_name, MacroList& _cmd_argv)
 	{
 		if (str_eq(_cmd_name, S("eq"))) {
 			if (_cmd_argv.size() != 2)
 				return -1;
-			String s1 = _cmd_argv[0].get_string();
-			String s2 = _cmd_argv[1].get_string();
+			std::string s1 = _cmd_argv[0].get_string();
+			std::string s2 = _cmd_argv[1].get_string();
 			stream << (str_eq(s1, s2) ? "yes" : "");
 		} else if (str_eq(_cmd_name, S("ne"))) {
 			if (_cmd_argv.size() != 2)
 				return -1;
-			String s1 = _cmd_argv[0].get_string();
-			String s2 = _cmd_argv[1].get_string();
+			std::string s1 = _cmd_argv[0].get_string();
+			std::string s2 = _cmd_argv[1].get_string();
 			stream << (str_eq(s1, s2) ? "" : "yes");
 		} else if (str_eq(_cmd_name, S("version"))) {
 			if (_cmd_argv.size() != 0)
@@ -590,7 +590,7 @@ namespace macro {
 		} else if (str_eq(_cmd_name, S("bold"))) {
 			if (_cmd_argv.size() != 1)
 				return -1;
-			String str = _cmd_argv[0].get_string();
+			std::string str = _cmd_argv[0].get_string();
 			stream << CBOLD << str << CNORMAL;
 		} else if (str_eq(_cmd_name, S("hostname"))) {
 			if (_cmd_argv.size() != 0)
@@ -636,7 +636,7 @@ namespace macro {
 		} else if (str_eq(_cmd_name, S("html"))) {
 			if (_cmd_argv.size() != 1)
 				return -1;
-			String str = _cmd_argv[0].get_string();
+			std::string str = _cmd_argv[0].get_string();
 			stream << StreamHTTPEscape(str); 
 		} else {
 			return -1;

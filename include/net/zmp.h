@@ -44,9 +44,9 @@
 #define TELOPT_ZMP 93
 
 /* define a command */
-typedef void(*ZMPFunction)(class TelnetHandler* telnet, size_t argc, String argv[]);
+typedef void(*ZMPFunction)(class TelnetHandler* telnet, size_t argc, std::string argv[]);
 struct ZMPCommand {
-	String name;	// name of command
+	std::string name;	// name of command
 	bool wild;	// is this a wildcard match?
 	ZMPFunction function;	// function to invoke
 };
@@ -55,10 +55,10 @@ struct ZMPCommand {
 class ZMPPack
 {
 	public:
-	ZMPPack (String command);
+	ZMPPack (std::string command);
 
 	// add an argument
-	ZMPPack& add (String arg);
+	ZMPPack& add (std::string arg);
 	ZMPPack& add (long);
 	ZMPPack& add (ulong);
 	inline ZMPPack& add (int i) { return add((long)i); }
@@ -88,13 +88,13 @@ class SZMPManager : public IManager
 	virtual void shutdown ();
 
 	// find a command
-	ZMPCommand* lookup (String name);
+	ZMPCommand* lookup (std::string name);
 
 	// add a new command
-	int add (String name, ZMPFunction func);
+	int add (std::string name, ZMPFunction func);
 
 	// see if a specific command/package is supported
-	bool match (String pattern);
+	bool match (std::string pattern);
 
 	private:
 	// the list of commands

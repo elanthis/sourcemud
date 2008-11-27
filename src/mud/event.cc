@@ -38,7 +38,7 @@ EventHandler::load (File::Reader& reader) {
 void
 EventHandler::save (File::Writer& writer) const {
 	writer.attr(S("event"), S("id"), event.get_name());
-	if (script)
+	if (!script.empty())
 		writer.block(S("event"), S("script"), script);
 }
 

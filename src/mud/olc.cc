@@ -62,7 +62,7 @@ enum OLCMode {
 namespace OLC {
 	// lookup entity
 	bool 
-	lookup_editable (Player* builder, String tname, String name, Entity*& entity)
+	lookup_editable (Player* builder, std::string tname, std::string name, Entity*& entity)
 	{
 		// init
 		entity = NULL;
@@ -83,7 +83,7 @@ namespace OLC {
 			type = tObject;
 
 		if (type != tRoom && type != tZone) {
-			if (!name)
+			if (name.empty())
 				return false;
 		}
 
@@ -190,7 +190,7 @@ namespace OLC {
 	}
 
 	void
-	do_olc (Player* user, OLCMode olc_mode, Entity* olc_entity, String olc_attr, String value)
+	do_olc (Player* user, OLCMode olc_mode, Entity* olc_entity, std::string olc_attr, std::string value)
 	{
 		bool olc_ok = false;
 

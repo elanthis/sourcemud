@@ -15,7 +15,7 @@
 
 // attack command
 void
-command_attack (Creature* attacker, String argv[])
+command_attack (Creature* attacker, std::string argv[])
 {
 	// check status
 	if (!attacker->check_alive() || !attacker->check_move() || !attacker->check_rt())

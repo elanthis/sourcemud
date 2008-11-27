@@ -34,21 +34,20 @@ namespace Log {
 	}
 
 	void
-	LogWrapper::stream_end (void)
+	LogWrapper::stream_end()
 	{
 		LogManager.print(klass, msg.str());
 		msg.reset();
 	}
 }
 
-int
-SLogManager::initialize (void)
+int SLogManager::initialize()
 {
 	path = SettingsManager.get_log_file();
 	file = NULL;
 
 	if (!path.empty()) {
-		if ((file = fopen(path, "a")) == NULL) {
+		if ((file = fopen(path.c_str(), "a")) == NULL) {
 			Log::Error << "Unable to open log file " << path << ": " << strerror(errno);
 			return 1;
 		}
@@ -62,15 +61,13 @@ SLogManager::initialize (void)
 	return 0;
 }
 
-void
-SLogManager::shutdown (void)
+void SLogManager::shutdown()
 {
 	if (file != NULL)
 		fclose(file);
 }
 
-void
-SLogManager::print (LogClass klass, String msg)
+void SLogManager::print (LogClass klass, const std::string& msg)
 {
 	char tbuf[41];
 	const char* prefix;
@@ -102,8 +99,7 @@ SLogManager::print (LogClass klass, String msg)
 	fprintf (out, "%s - %s%s\n", tbuf, prefix, msg.c_str());
 }
 
-void
-SLogManager::reset (void)
+void SLogManager::reset()
 {
 	if (file != NULL) {
 		fclose(file);

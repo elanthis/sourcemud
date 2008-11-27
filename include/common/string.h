@@ -17,161 +17,75 @@
 
 #define isvowel (ch) ((ch) == 'a' || (ch) == 'e' || (ch) == 'i' || (ch) == 'o' || (ch) == 'u' || (ch) == 'y')
 
-#define S(str) String(StaticString(str))
-
-typedef const char* CString;
-
-/* hold a static string */
-class StaticString {
-	public:
-	explicit StaticString (CString str) : string(str) {}
-
-	CString string;
-};
-
-/* transfer ownership to String */
-class TransferString {
-	public:
-	explicit TransferString (CString str) : string(str) {}
-
-	CString string;
-};
-
-/* hold a C++-style string in a less braind-dead way*/
-class String
-{
-	public:
-	String() : string(NULL) { copy(""); }
-	String(const String& str) : string(NULL) { copy(str.string); }
-	explicit String(CString str) : string(NULL) { copy(str); }
-	String(StaticString str) : string(NULL) { copy(str.string); }
-	String(TransferString str) : string(str.string) {}
-	String(CString str, size_t len);
-	~String() { delete[] string; }
-	
-	// copy operator
-	String& operator = (const String &str) { copy(str.string); return *this; }
-
-	// comparison operators
-	bool operator == (const String &str) const { return strcmp(string, str.string) == 0; }
-	bool operator != (const String &str) const { return strcmp(string, str.string) != 0; }
-	bool operator < (const String &str) const { return strcmp(string, str.string) < 0; }
-
-	// empty test
-	bool empty () const { return string[0] == 0; }
-	operator bool () const { return !empty(); }
-
-	// convert to c string
-	CString c_str () const { return string; }
-	operator CString () const { return c_str(); }
-
-	// size
-	size_t size () const { return strlen(string); }
-
-	// get a character
-	template <typename I> const char operator[] (I i) const { return string[i]; }
-	/*
-	const char operator[] (size_t index) const { return string[index]; }
-	const char operator[] (long index) const { return string[index]; }
-	const char operator[] (int index) const { return string[index]; }
-	*/
-
-	// iterators
-	typedef CString iterator;
-	typedef CString const_iterator;
-	iterator begin () const { return c_str(); }
-	iterator end () const { return c_str() + size(); }
-
-	// clear the string to zero
-	void clear () { copy(""); }
-
-	// get a substring
-	String substr (size_t begin, size_t end) const;
-
-	private:
-	CString string;
-
-	void copy(CString);
-};
-
-// concatenation
-String operator+ (String, String);
-String operator+ (String, CString);
-String operator+ (CString, String);
-
-// comparison with C strings
-inline bool operator== (String left, CString right) { return strcmp(left.c_str(), right) == 0; }
-inline bool operator== (CString left, String right) { return strcmp(left, right.c_str()) == 0; }
-inline bool operator!= (String left, CString right) { return strcmp(left.c_str(), right) != 0; }
-inline bool operator!= (CString left, String right) { return strcmp(left, right.c_str()) != 0; }
-inline bool operator< (String left, CString right) { return strcmp(left.c_str(), right) < 0; }
-inline bool operator< (CString left, String right) { return strcmp(left, right.c_str()) < 0; }
-
-// streams
-inline std::ostream& operator << (std::ostream& stream, String str) { return stream << str.c_str(); }
+#define S(str) std::string(str)
 
 // a list of strings
-typedef std::vector<String> StringList;
+typedef std::vector<std::string> StringList;
 
 // return suffix of number, like 1=>st, 2=>nd, etc.
-String get_num_suffix (uint);
+std::string get_num_suffix (uint);
 
 // conversion functions
-String tostr (long num);
-long tolong (String str);
-String strupper (String str);
-String strlower (String str);
-String strip (String str);
+std::string tostr(long num);
+long tolong(const std::string& str);
+std::string strupper(const std::string& str);
+std::string strlower(const std::string& str);
+std::string strip(const std::string& str);
 
 // format check functions
-bool str_is_number (String); // is a numeric value
-bool str_is_email (String); // checks for semi-valid name@host.domain
-bool str_is_true (String); // string is a "true" value
-bool str_is_valid_id (String); // is a valid id
+bool str_is_number(const std::string&); // is a numeric value
+bool str_is_email(const std::string&); // checks for semi-valid name@host.domain
+bool str_is_true(const std::string&); // string is a "true" value
+bool str_is_false(const std::string&); // string is a "false" value
+bool str_is_valid_id(const std::string&); // is a valid id
 	// valid id defined as regex: [A-Za-z][A-Za-z0-9_.-]*
 
 // various funcs
-bool str_eq (String, String, size_t len = 0); // are strings equal, ignoring case - true if equal, len is max length or 0 for full
+bool str_eq (std::string, std::string, size_t len = 0); // are strings equal, ignoring case - true if equal, len is max length or 0 for full
 
 // match words in a phrase
 // string to match is first, string being tested is second
 // i.e., phrase_match("bob", str) will return true if str is all of or
 // part of "bob"
-bool phrase_match (CString haystack, CString needle);
+bool phrase_match (const char* haystack, const char* needle);
+inline bool phrase_match (const std::string& haystack, const char* needle) { return phrase_match(haystack.c_str(), needle); }
+inline bool phrase_match (const std::string& haystack, const std::string& needle) { return phrase_match(haystack.c_str(), needle.c_str()); }
+inline bool phrase_match (const char* haystack, const std::string& needle) { return phrase_match(haystack, needle.c_str()); }
 // match a string prefix
 // tests if chunk is a prefix of full; that is, "ret" is a prefix of "return",
 // but "turn" is not.
-bool prefix_match (CString string, CString prefix);
+bool prefix_match (const char* string, const char* prefix);
+inline bool prefix_match (const char* string, const std::string& prefix) { return prefix_match(string, prefix.c_str()); }
 
 // determine a numeric value from input word, i.e. first=>1, second=>2, etc.
-uint str_value (String);
+uint str_value (std::string);
 
 // concatenate the path and filename together
 //  if the path already ends in a /, don't add one
 //  if the file begins with a /, ignore the path
-String make_path (CString path, CString file);
+std::string make_path (const char* path, const char* file);
 
 // find the base name of the path; i.e., strip all directories and final suffix
 // e.g.  /path/foo.html -> foo
-String base_name (CString path);
+std::string base_name (const char* path);
 
 // test if the suffix string is actually at the end of the base string
 // useful for testing for file extensions and the like
-bool has_suffix (CString base, CString suffix);
+bool has_suffix (const char* base, const char* suffix);
 
 // string list building/parsing
-StringList& explode(StringList& out, String string, char ch);
-String& implode(String& out, const StringList& list, char ch);
-String& capwords(String& out, String string);
+StringList& explode(StringList& out, std::string string, char ch);
+std::string& implode(std::string& out, const StringList& list, char ch);
+std::string& capwords(std::string& out, std::string string);
 // and 'easy' versions there-of
-inline StringList explode(String string, char ch) { StringList tmp; return explode(tmp, string, ch); }
-inline String implode(const StringList& list, char ch) { String tmp; return implode(tmp, list, ch); }
-inline String capwords(String string) { String tmp; return capwords(tmp, string); }
+inline StringList explode(std::string string, char ch) { StringList tmp; return explode(tmp, string, ch); }
+inline std::string implode(const StringList& list, char ch) { std::string tmp; return implode(tmp, list, ch); }
+inline std::string capwords(std::string string) { std::string tmp; return capwords(tmp, string); }
 
 // trim out unacceptable characters
-String trim (String source, String accept);
+std::string trim (std::string source, std::string accept);
 
 // replace characters in 'from' to corresponding characters in 'to'
-String str_tr (String source, String from, String to);
+std::string str_tr (std::string source, std::string from, std::string to);
 
 #endif

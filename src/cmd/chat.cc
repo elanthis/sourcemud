@@ -24,7 +24,7 @@
  * format: say :0*
  *
  * END COMMAND */
-void command_say(Creature* ch, String argv[])
+void command_say(Creature* ch, std::string argv[])
 {
 	ch->do_say (argv[0]);
 }
@@ -37,7 +37,7 @@ void command_say(Creature* ch, String argv[])
  * format: sing :0*
  *
  * END COMMAND */
-void command_sing(Creature* ch, String argv[])
+void command_sing(Creature* ch, std::string argv[])
 {
 	ch->do_sing(argv[0]);
 }
@@ -50,14 +50,14 @@ void command_sing(Creature* ch, String argv[])
  * format: reply :0*
  *
  * END COMMAND */
-void command_reply(Player* player, String argv[])
+void command_reply(Player* player, std::string argv[])
 {
 	player->do_reply(argv[0]);
 }
 
-void Player::do_reply(String what)
+void Player::do_reply(std::string what)
 {
-	if (!last_tell) {
+	if (last_tell.empty()) {
 		*this << "No one has sent you a tell yet.\n";
 		return;
 	}
@@ -80,7 +80,7 @@ void Player::do_reply(String what)
  * format: tell :0% :1*
  *
  * END COMMAND */
-void command_tell(Player* player, String argv[])
+void command_tell(Player* player, std::string argv[])
 {
 	Player* cn = PlayerManager.get(argv[0]);
 	if (cn) {
@@ -90,7 +90,7 @@ void command_tell(Player* player, String argv[])
 	}
 }
 
-void Player::do_tell(Player* who, String what)
+void Player::do_tell(Player* who, std::string what)
 {
 	*who << "[" << StreamName(this) << "]: " CTALK << what << CNORMAL "\n";
 	who->last_tell = get_id();

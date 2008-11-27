@@ -31,15 +31,15 @@
  *
  * END COMMAND */
 
-void command_look (Creature* ch, String argv[]) {
+void command_look (Creature* ch, std::string argv[]) {
 	// have we a target (argv[1])
-	if (!argv[1]) {
+	if (argv[1].empty()) {
 		ch->do_look ();
 		return;
 	}
 
 	// looking in/on/etc. container?
-	if (argv[0] && argv[0] != "at") {
+	if (!argv[0].empty() && argv[0] != "at") {
 		Object* obj = ch->cl_find_object (argv[1], GOC_ANY);
 		if (obj) {
 			if (argv[0] == "on")

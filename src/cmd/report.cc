@@ -25,11 +25,11 @@
  * format: report abuse :0* (60)
  *
  * END COMMAND */
-void command_report_abuse(Player* player, String argv[])
+void command_report_abuse(Player* player, std::string argv[])
 {
 #ifdef HAVE_SENDMAIL
 	// mail address
-	String rcpt = SettingsManager.get_abuse_email();
+	std::string rcpt = SettingsManager.get_abuse_email();
 	if (!rcpt) {
 		*player << CADMIN "Abuse reporting has been disabled." CNORMAL "\n";
 		return;
@@ -66,11 +66,11 @@ void command_report_abuse(Player* player, String argv[])
  * format: report bug :0* (60)
  *
  * END COMMAND */
-void command_report_bug(Player* player, String argv[])
+void command_report_bug(Player* player, std::string argv[])
 {
 #ifdef HAVE_SENDMAIL
 	// mail address
-	String rcpt = SettingsManager.get_bugs_email();
+	std::string rcpt = SettingsManager.get_bugs_email();
 	if (!rcpt) {
 		*player << CADMIN "Bug reporting has been disabled." CNORMAL "\n";
 		return;

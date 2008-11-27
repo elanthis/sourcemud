@@ -10,7 +10,7 @@
 #include "mud/name.h"
 #include "mud/entity.h"
 
-String EntityArticleClass::names[] = {
+std::string EntityArticleClass::names[] = {
 	S("normal"),
 	S("proper"),
 	S("unique"),
@@ -19,7 +19,7 @@ String EntityArticleClass::names[] = {
 };
 
 EntityArticleClass
-EntityArticleClass::lookup (String text)
+EntityArticleClass::lookup (std::string text)
 {
 	for (uint i = 0; i < COUNT; ++i)
 		if (str_eq(text, names[i]))
@@ -27,7 +27,7 @@ EntityArticleClass::lookup (String text)
 	return NORMAL;
 }
 
-String
+std::string
 EntityName::get_name () const
 {
 	switch (article.get_value()) {
@@ -53,7 +53,7 @@ EntityName::get_name () const
 }
 
 bool
-EntityName::set_name (String s_text)
+EntityName::set_name (std::string s_text)
 {
 	// empty text?  no article, no text
 	if (s_text.empty()) {
@@ -66,24 +66,24 @@ EntityName::set_name (String s_text)
 		text = s_text;
 		return true;
 	// start with the article 'the'?
-	} else if (!strncasecmp("the ", s_text, 4)) {
+	} else if (!strncasecmp("the ", s_text.c_str(), 4)) {
 		article = EntityArticleClass::UNIQUE;
-		text = String(s_text.c_str() + 4);
+		text = std::string(s_text.c_str() + 4);
 		return true;
 	// start with the article 'some'?
-	} else if (!strncasecmp("some ", s_text, 5)) {
+	} else if (!strncasecmp("some ", s_text.c_str(), 5)) {
 		article = EntityArticleClass::PLURAL;
-		text = String(s_text.c_str() + 5);
+		text = std::string(s_text.c_str() + 5);
 		return true;
 	// start with the article 'an'?
-	} else if (!strncasecmp("an ", s_text, 3)) {
+	} else if (!strncasecmp("an ", s_text.c_str(), 3)) {
 		article = EntityArticleClass::VOWEL;
-		text = String(s_text.c_str() + 3);
+		text = std::string(s_text.c_str() + 3);
 		return true;
 	// start with the article 'a'?
-	} else if (!strncasecmp("a ", s_text, 2)) {
+	} else if (!strncasecmp("a ", s_text.c_str(), 2)) {
 		article = EntityArticleClass::NORMAL;
-		text = String(s_text.c_str() + 2);
+		text = std::string(s_text.c_str() + 2);
 		return true;
 	// no known article or rule... time to guess
 	} else {
@@ -104,7 +104,7 @@ EntityName::set_name (String s_text)
 }
 
 bool
-EntityName::matches (String match) const
+EntityName::matches (std::string match) const
 {
 	return phrase_match(get_text(), match);
 }
@@ -112,7 +112,7 @@ EntityName::matches (String match) const
 const StreamControl&
 operator << (const StreamControl& stream, const StreamName& name)
 {
-	String text = name.ref.get_name().get_text();
+	std::string text = name.ref.get_name().get_text();
 	EntityArticleClass article = name.ref.get_name().get_article();
 
 	// PROPER NAMES (SPECIAL ARTICLES)
@@ -121,7 +121,7 @@ operator << (const StreamControl& stream, const StreamName& name)
 	if (article == EntityArticleClass::PROPER || name.article == NONE) {
 		// specialize output
 		stream << name.ref.ncolor();
-		if (name.capitalize && text) {
+		if (name.capitalize && !text.empty()) {
 			stream << (char)toupper(text[0]) << text.c_str() + 1;
 		} else {
 			stream << text;

@@ -17,14 +17,14 @@
 #include "mud/npc.h"
 
 void
-Creature::do_emote (String action)
+Creature::do_emote (std::string action)
 {
 	if (get_room())
 		*get_room() << "(S(" << StreamName(this, DEFINITE, true) << ") " << action << ")\n";
 }
 
 void
-Creature::do_say (String text)
+Creature::do_say (std::string text)
 {
 	// don't say nothing
 	if (text.empty())
@@ -65,7 +65,7 @@ Creature::do_say (String text)
 }
 
 void
-Creature::do_sing (String text)
+Creature::do_sing (std::string text)
 {
 	// split into lines
 	StringList lines;
@@ -171,7 +171,7 @@ Creature::do_look (Object *obj, ObjectLocation type)
 			*this << StreamName(*obj, DEFINITE, true) << " cannot be looked at that way.\n";
 	} else {
 		// generic - description and on or in contents
-		if (obj->get_desc())
+		if (!obj->get_desc().empty())
 			*this << StreamMacro(obj->get_desc(), S("self"), obj, S("actor"), this) << "  ";
 		// on contents?
 		if (obj->has_location(ObjectLocation::ON))
@@ -194,7 +194,7 @@ Creature::do_look (Portal *portal)
 		target_room = portal->get_relative_target(get_room());
 
 	// basic description
-	if (portal->get_desc() && strlen(portal->get_desc()))
+	if (!portal->get_desc().empty())
 		*this << StreamMacro(portal->get_desc(), S("portal"), portal, S("actor"), this) << "  ";
 	else if (target_room == NULL)
 		*this << "There is nothing remarkable about " << StreamName(*portal, DEFINITE) << ".  ";

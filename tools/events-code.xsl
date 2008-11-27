@@ -14,7 +14,7 @@
 #include "mud/object.h"
 #include "mud/zone.h"
 
-String EventID::names[] = {
+std::string EventID::names[] = {
   S("None"),
 ]]></xsl:text>
 <xsl:for-each select="event">
@@ -24,7 +24,7 @@ String EventID::names[] = {
 };
 
 EventID
-EventID::lookup (String name) {
+EventID::lookup (std::string name) {
   for (size_t i = 0; i < COUNT; ++i)
     if (name == names[i])
       return EventID(i);
@@ -60,7 +60,7 @@ namespace Events {
 ]]></xsl:text>
 
 <!-- Compiler -->
-<xsl:text>int SEventManager::compile (EventID id, String source, String filename, unsigned long fileline) {</xsl:text>
+<xsl:text>int SEventManager::compile (EventID id, std::string source, std::string filename, unsigned long fileline) {</xsl:text>
 <xsl:for-each select="event">
   <!--
   <xsl:text>if(id == EventID::</xsl:text>
@@ -87,7 +87,7 @@ namespace Events {
     <xsl:text>, </xsl:text>
     <xsl:choose>
       <xsl:when test="@type='String'">
-        <xsl:text>String </xsl:text>
+        <xsl:text>const std::string&amp; </xsl:text>
       </xsl:when>
       <xsl:when test="@type='Integer'">
         <xsl:text>long </xsl:text>

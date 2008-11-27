@@ -104,10 +104,10 @@ enum {
 };
 
 /* in connection.cc */
-extern String color_values[];
-extern String color_value_names[];
-extern String color_type_names[];
+extern std::string color_values[];
+extern std::string color_value_names[];
+extern std::string color_type_names[];
 extern const int color_type_defaults[];
-extern String color_type_rgb[];
+extern std::string color_type_rgb[];
 
 #endif

@@ -17,15 +17,15 @@ UniqueObject : public Object
 	public:
 	UniqueObject ();
 
-	virtual String factory_type () const { return S("uobject"); }
+	virtual std::string factory_type () const { return S("uobject"); }
 
 	// name info
-	bool set_name (String);
+	bool set_name (std::string);
 	virtual EntityName get_name () const { return name; }
 
 	// description
-	virtual String get_desc () const { return desc; }
-	void set_desc (String s_desc) { desc = s_desc; }
+	virtual std::string get_desc () const { return desc; }
+	void set_desc (std::string s_desc) { desc = s_desc; }
 
 	// save/load
 	virtual int load_node (File::Reader& reader, File::Node& node);
@@ -59,7 +59,7 @@ UniqueObject : public Object
 	// data
 	private:
 	EntityName name;
-	String desc;
+	std::string desc;
 	uint weight;
 	uint cost;
 	EquipSlot equip;

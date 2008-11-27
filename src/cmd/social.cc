@@ -24,7 +24,7 @@
  * format: emote :0*
  *
  * END COMMAND */
-void command_emote(Creature* ch, String argv[])
+void command_emote(Creature* ch, std::string argv[])
 {
 	ch->do_emote (argv[0]);
 }
@@ -39,11 +39,11 @@ void command_emote(Creature* ch, String argv[])
  * format: laugh :1evilly? at? :0*
  *
  * END COMMAND */
-void command_laugh(Creature* ch, String argv[])
+void command_laugh(Creature* ch, std::string argv[])
 {
 	// lookup target, if any
 	Creature* target = NULL;
-	if (argv[0])
+	if (!argv[0].empty())
 		if ((target = ch->cl_find_creature(argv[0])) == NULL)
 			return;
 

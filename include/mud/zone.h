@@ -50,15 +50,15 @@ class Zone
 	Zone ();
 
 	// zone ID
-	String get_id () const { return id; }
-	void set_id (String new_id) { id = new_id; }
+	std::string get_id () const { return id; }
+	void set_id (std::string new_id) { id = new_id; }
 
 	// name information
-	String get_name () const { return name; }
-	void set_name (String s_name) { name = s_name; }
+	std::string get_name () const { return name; }
+	void set_name (std::string s_name) { name = s_name; }
 
 	// find rooms
-	class Room* get_room (String name) const;
+	class Room* get_room (std::string name) const;
 	class Room* get_room_at (size_t index) const;
 	size_t get_room_count () const;
 
@@ -69,11 +69,11 @@ class Zone
 	void broadcast_event (const Event& event);
 
 	// load/save
-	int load (String path);
+	int load (std::string path);
 	void save ();
 
 	// announce to all rooms
-	void announce (String text, AnnounceFlags type = ANFL_NONE) const;
+	void announce (std::string text, AnnounceFlags type = ANFL_NONE) const;
 
 	// update zone
 	void heartbeat ();
@@ -86,8 +86,8 @@ class Zone
 	void destroy ();
 
 	protected:
-	String id;
-	String name;
+	std::string id;
+	std::string name;
 
 	typedef std::vector<class Room*> RoomList;
 	RoomList rooms;
@@ -109,12 +109,12 @@ class SZoneManager : public IManager
 	int load_world ();
 
 	// lookup entries
-	Zone* get_zone (String);
+	Zone* get_zone (std::string);
 	Zone* get_zone_at (size_t index);
-	class Room* get_room (String);
+	class Room* get_room (std::string);
 
 	// send an announcement to all the rooms in all the zones
-	void announce (String, AnnounceFlags = ANFL_NONE);
+	void announce (std::string, AnnounceFlags = ANFL_NONE);
 
 	// add a new zone
 	void add_zone (Zone*);

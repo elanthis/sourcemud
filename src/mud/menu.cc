@@ -117,7 +117,7 @@ TelnetModeMainMenu::show_create ()
 void
 TelnetModeMainMenu::process (char* line)
 {
-	String input(line);
+	std::string input(line);
 
 	switch (state) {
 		case STATE_MENU:
@@ -240,7 +240,7 @@ TelnetModeMainMenu::process (char* line)
 			state = STATE_ACCOUNT;
 
 			// not empty?  change
-			if (strlen(input)) {
+			if (!input.empty()) {
 				account->set_name(input);
 				show_account();
 				*get_handler() << "Your name has been changed.\n\n";
@@ -253,7 +253,7 @@ TelnetModeMainMenu::process (char* line)
 			state = STATE_ACCOUNT;
 
 			// not empty?  change
-			if (strlen(input)) {
+			if (!input.empty()) {
 				account->set_email(input);
 				show_account();
 				*get_handler() << "Your email address has been changed.\n\n";
@@ -299,7 +299,7 @@ TelnetModeMainMenu::process (char* line)
 			get_handler()->toggle_echo(true);
 
 			// confirm it
-			if (strcmp(input, tmp)) {
+			if (input != tmp) {
 				state = STATE_ACCOUNT;
 				show_account();
 				*get_handler() << "Passphrases do not match.\n\n";
@@ -360,7 +360,7 @@ TelnetModeMainMenu::process (char* line)
 			show_main();
 
 			// confirmed?  delete...
-			if (!strcmp(input, "I am sure!")) {
+			if (input == "I am sure!") {
 				// did delete work?
 				if (PlayerManager.destroy(tmp)) {
 					*get_handler() << "Internal error; could not delete character.\n\n";
@@ -416,7 +416,7 @@ TelnetModePlay::prompt ()
 void
 TelnetModePlay::process (char* line)
 {
-	player->process_command(String(line));
+	player->process_command(std::string(line));
 }
 
 void

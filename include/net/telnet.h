@@ -152,8 +152,8 @@ class TelnetHandler : public SocketConnection, public IStreamSink
 	// ZMP
 	inline bool has_zmp() const { return io_flags.zmp; }
 	inline bool has_zmp_color() const { return io_flags.zmp_color; } // supports the color.define command?
-	void send_zmp(size_t argc, const String argv[]);
-	void zmp_support(String pkg, bool value);
+	void send_zmp(size_t argc, const std::string argv[]);
+	void zmp_support(std::string pkg, bool value);
 
 	// mode
 	void set_mode(ITelnetMode* new_mode);
@@ -238,7 +238,7 @@ class TelnetHandler : public SocketConnection, public IStreamSink
 	void end_chunk();
 	void send_iac(uint, ...); // build iac
 	void send_data(uint, ...); // don't escape
-	void add_zmp(size_t argc, String argv[]);
+	void add_zmp(size_t argc, std::string argv[]);
 
 	// timeout handling
 	virtual void check_timeout(); // check to see if we should disconnect

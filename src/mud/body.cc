@@ -21,44 +21,44 @@
 #include "common/streams.h"
 #include "mud/settings.h"
 
-String GenderType::names[GenderType::COUNT] = {
+std::string GenderType::names[GenderType::COUNT] = {
 	S("none"),
 	S("female"),
 	S("male"),
 };
-String GenderType::hisher[GenderType::COUNT] = {
+std::string GenderType::hisher[GenderType::COUNT] = {
 	S("its"),
 	S("her"),
 	S("his"),
 };
-String GenderType::hishers[GenderType::COUNT] = {
+std::string GenderType::hishers[GenderType::COUNT] = {
 	S("its"),
 	S("hers"),
 	S("his"),
 };
-String GenderType::heshe[GenderType::COUNT] = {
+std::string GenderType::heshe[GenderType::COUNT] = {
 	S("it"),
 	S("she"),
 	S("he"),
 };
-String GenderType::himher[GenderType::COUNT] = {
+std::string GenderType::himher[GenderType::COUNT] = {
 	S("it"),
 	S("her"),
 	S("him"),
 };
-String GenderType::manwoman[GenderType::COUNT] = {
+std::string GenderType::manwoman[GenderType::COUNT] = {
 	S("thing"),
 	S("woman"),
 	S("man"),
 };
-String GenderType::malefemale[GenderType::COUNT] = {
+std::string GenderType::malefemale[GenderType::COUNT] = {
 	S("neuter"),
 	S("female"),
 	S("male"),
 };
 
 GenderType
-GenderType::lookup (String name)
+GenderType::lookup (std::string name)
 {
 	for (uint i = 0; i < COUNT; ++i)
 		if (str_eq(name, names[i]))
@@ -66,7 +66,7 @@ GenderType::lookup (String name)
 	return NONE;
 }
 
-String EquipSlot::names[] = {
+std::string EquipSlot::names[] = {
 	S("none"),
 	S("head"),
 	S("torso"),
@@ -81,7 +81,7 @@ String EquipSlot::names[] = {
 };
 
 EquipSlot
-EquipSlot::lookup (String name)
+EquipSlot::lookup (std::string name)
 {
 	for (uint i = 0; i < COUNT; ++i)
 		if (str_eq(name, names[i]))
@@ -257,7 +257,7 @@ Creature::get_equip_at (uint i) const
 }
 
 Object *
-Creature::find_worn (String name, uint count, uint *matches) const
+Creature::find_worn (std::string name, uint count, uint *matches) const
 {
 	assert (count != 0);
 
@@ -288,7 +288,7 @@ Creature::find_worn (String name, uint count, uint *matches) const
 }
 
 Object *
-Creature::find_held (String name, uint count, uint *matches) const
+Creature::find_held (std::string name, uint count, uint *matches) const
 {
 	assert (count != 0);
 
@@ -314,7 +314,7 @@ Creature::find_held (String name, uint count, uint *matches) const
 }
 
 Object *
-Creature::find_equip (String name, uint count, uint *matches) const
+Creature::find_equip (std::string name, uint count, uint *matches) const
 {
 	assert (count != 0);
 	uint held_matches;

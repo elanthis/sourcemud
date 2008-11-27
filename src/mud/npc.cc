@@ -38,7 +38,7 @@ void
 NpcBP::reset_desc()
 {
 	// clear
-	desc = String("npc");
+	desc = std::string("npc");
 	set_flags.desc = false;
 
 	// get parent value
@@ -305,7 +305,7 @@ Npc::get_name() const
 	return blueprint->get_name();
 }
 
-String
+std::string
 Npc::get_desc() const
 {
 	assert(blueprint != NULL);
@@ -392,7 +392,7 @@ Npc::set_blueprint(NpcBP* s_blueprint)
 
 // load npc from a blueprint
 Npc*
-Npc::load_blueprint(String name)
+Npc::load_blueprint(std::string name)
 {
 	// lookup the blueprint
 	NpcBP* blueprint = NpcBPManager.lookup(name);
@@ -426,7 +426,7 @@ Npc::load_blueprint(String name)
 void
 Npc::display_desc(const StreamControl& stream)
 {
-	if (get_desc())
+	if (!get_desc().empty())
 		stream << StreamMacro(get_desc(), S("npc"), this); // FIXME: re-enable 'actor'(looker)
 	else
 		stream << StreamName(this, DEFINITE, true) << " doesn't appear very interesting.";
@@ -476,7 +476,7 @@ Npc::can_use_portal(Portal* portal) const
 }
 
 bool
-Npc::is_blueprint(String name) const
+Npc::is_blueprint(std::string name) const
 {
 	NpcBP* blueprint = get_blueprint();
 
@@ -491,7 +491,7 @@ Npc::is_blueprint(String name) const
 }
 
 bool
-Npc::name_match(String match) const
+Npc::name_match(std::string match) const
 {
 	if (get_name().matches(match))
 		return true;
@@ -537,7 +537,7 @@ SNpcBPManager::initialize()
 					return -1;
 				}
 
-				if (!blueprint->get_id()) {
+				if (blueprint->get_id().empty()) {
 					Log::Warning << "Blueprint has no ID in " << reader.get_filename() << " at " << node.get_line();
 					return -1;
 				}
@@ -560,7 +560,7 @@ SNpcBPManager::shutdown()
 }
 
 NpcBP*
-SNpcBPManager::lookup(String id)
+SNpcBPManager::lookup(std::string id)
 {
 	BlueprintMap::iterator iter = blueprints.find(id);
 	if (iter == blueprints.end())

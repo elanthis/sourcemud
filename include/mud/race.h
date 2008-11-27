@@ -31,7 +31,7 @@ Race
 	public:
 	// this is an ugly hack, but it lets us construct the linked
 	// list as we need to do
-	Race (String s_name, Race* s_next);
+	Race (std::string s_name, Race* s_next);
 
 	int load (File::Reader&);
 
@@ -43,11 +43,11 @@ Race
 
 	int get_average_height (GenderType gender) const { return height[gender.get_value()]; }
 
-	String get_name() const { return name; }
-	String get_adj() const { return adj; }
-	String get_body() const { return body; }
-	String get_about() const { return about; }
-	String get_desc() const { return desc; }
+	std::string get_name() const { return name; }
+	std::string get_adj() const { return adj; }
+	std::string get_body() const { return body; }
+	std::string get_about() const { return about; }
+	std::string get_desc() const { return desc; }
 
 	const std::vector<FormColor>& get_eye_colors() const { return eye_colors; }
 	const std::vector<FormColor>& get_skin_colors() const { return skin_colors; }
@@ -57,11 +57,11 @@ Race
 
 	// ---- data ----
 	protected:
-	String name;
-	String adj;
-	String body;
-	String about;
-	String desc;
+	std::string name;
+	std::string adj;
+	std::string body;
+	std::string about;
+	std::string desc;
 
 	int age_min, age_max, life_span;
 
@@ -84,7 +84,7 @@ class SRaceManager : public IManager
 	int initialize();
 	void shutdown();
 
-	Race* get (String name);
+	Race* get (std::string name);
 	Race* first() { return head; }
 
 	private:

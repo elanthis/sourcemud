@@ -19,10 +19,10 @@ class SMessageManager : public IManager
 	virtual int initialize (void);
 	virtual void shutdown (void);
 
-	String get (String id);
+	std::string get (std::string id);
 
 	private:
-	typedef std::map<String, String> MessageMap;
+	typedef std::map<std::string, std::string> MessageMap;
 	MessageMap messages;
 };
 extern SMessageManager MessageManager;

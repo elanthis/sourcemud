@@ -10,7 +10,7 @@
 #include "common/file.h"
 #include "common/log.h"
 
-StringList file::getFileList(String path, String ext)
+StringList file::getFileList(std::string path, std::string ext)
 {
 	StringList list;
 
@@ -42,7 +42,7 @@ StringList file::getFileList(String path, String ext)
 			continue;
 
 		// add file to our result list!
-		list.push_back(path + S("/") + String(d->d_name));
+		list.push_back(path + S("/") + std::string(d->d_name));
 	}
 
 	closedir(dir);

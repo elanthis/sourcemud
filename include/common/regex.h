@@ -15,11 +15,11 @@
 
 class RegEx {
 	public:
-	RegEx (String pattern, bool nocase = false);
+	RegEx (std::string pattern, bool nocase = false);
 	~RegEx ();
 
-	bool grep (String string);
-	StringList match (String string);
+	bool grep (std::string string);
+	StringList match (std::string string);
 
 	private:
 	regex_t regex;

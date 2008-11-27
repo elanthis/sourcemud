@@ -297,8 +297,8 @@ SScriptBindings::shutdown()
       <xsl:when test="string(type)='Boolean'">
         long _arg_<xsl:value-of select="name"/> = 0;
       </xsl:when>
-      <xsl:when test="string(type)='String'">
-        String _arg_<xsl:value-of select="name"/>;
+      <xsl:when test="string(type)='std::string'">
+        std::string _arg_<xsl:value-of select="name"/>;
       </xsl:when>
       <xsl:when test="string(type)='Array'">
         Scriptix::Array* _arg_<xsl:value-of select="name"/>;
@@ -335,7 +335,7 @@ SScriptBindings::shutdown()
         <xsl:when test="string(type)='Boolean'">
           _arg_<xsl:value-of select="name"/> = Scriptix::Number::to_int(_argv[<xsl:value-of select="position()-1"/> + <xsl:value-of select="$arg-offset" />]);
         </xsl:when>
-        <xsl:when test="string(type)='String'">
+        <xsl:when test="string(type)='std::string'">
           if (!_argv[<xsl:value-of select="position()-1"/> + <xsl:value-of select="$arg-offset" />].is_string()) {
             Scriptix::ScriptManager.raise_error(Scriptix::SXE_BADTYPE, "Argument '<xsl:value-of select="name"/>' is not a string: %s", _argv[<xsl:value-of select="position()-1"/> + <xsl:value-of select="$arg-offset" />].get_type()->get_name().name().c_str());
             return Scriptix::Nil;
@@ -423,8 +423,8 @@ SScriptBindings::shutdown()
       <xsl:when test="string(return/type)='Boolean'">
         bool _return = false;
       </xsl:when>
-      <xsl:when test="string(return/type)='String'">
-        String _return;
+      <xsl:when test="string(return/type)='std::string'">
+        std::string _return;
       </xsl:when>
       <xsl:when test="string(return/type)='Array'">
         Scriptix::Array* _return = NULL;
@@ -471,7 +471,7 @@ SScriptBindings::shutdown()
         else
           return Scriptix::Nil;
       </xsl:when>
-      <xsl:when test="string(return/type)='String'">
+      <xsl:when test="string(return/type)='std::string'">
         return Scriptix::Value(_return);
       </xsl:when>
       <xsl:when test="string(return/type)='Mixed'">

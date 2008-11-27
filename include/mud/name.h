@@ -33,9 +33,9 @@ class EntityArticleClass {
 	inline EntityArticleClass () : value(NORMAL) {}
 	inline EntityArticleClass (const EntityArticleClass& s_value) : value(s_value.value) {}
 
-	inline String get_name() const { return names[value]; }
+	inline std::string get_name() const { return names[value]; }
 	inline type_t get_value () const { return value; }
-	static EntityArticleClass lookup (String name);
+	static EntityArticleClass lookup (std::string name);
 
 	inline bool operator == (const EntityArticleClass& dir) const { return dir.value == value; }
 	inline bool operator != (const EntityArticleClass& dir) const { return dir.value != value; }
@@ -43,7 +43,7 @@ class EntityArticleClass {
 	private:
 	type_t value;
 
-	static String names[];
+	static std::string names[];
 };
 
 enum EntityArticleUsage {
@@ -62,20 +62,20 @@ enum EntityArticleUsage {
 class EntityName {
 	public:
 	inline EntityName () : text(), article(EntityArticleClass::NORMAL) {}
-	inline EntityName (EntityArticleClass s_article, String s_text) :
+	inline EntityName (EntityArticleClass s_article, std::string s_text) :
 		text(s_text), article(s_article) {}
 
 	// these handle full names with articles
-	String get_name () const;
-	bool set_name (String s_name); // returns false if it had to guess at the article
+	std::string get_name () const;
+	bool set_name (std::string s_name); // returns false if it had to guess at the article
 
 	// compare name to string
-	bool matches (String match) const; // returns true on match; uses phrase_match
+	bool matches (std::string match) const; // returns true on match; uses phrase_match
 
 	// these handle name components
-	inline String get_text () const { return text; }
+	inline std::string get_text () const { return text; }
 	inline EntityArticleClass get_article () const { return article; }
-	inline void set_text (String s_text) { text = s_text; }
+	inline void set_text (std::string s_text) { text = s_text; }
 	inline void set_article (EntityArticleClass s_article) { article = s_article; }
 
 	inline bool empty () const { return text.empty(); }
@@ -83,7 +83,7 @@ class EntityName {
 	inline bool operator < (const EntityName& ref) { return strcasecmp(text.c_str(), ref.text.c_str()) < 0; }
 
 	private:
-	String text;
+	std::string text;
 	EntityArticleClass article;
 };
 

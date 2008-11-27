@@ -19,11 +19,11 @@
 SSettingsManager SettingsManager;
 
 #define SETTING_INT(name,short_opt,long_opt,file_opt,def) \
-	{ #name, short_opt, long_opt, file_opt, &SettingsManager.val_ ## name, NULL, NULL, def, String(), false },
+	{ #name, short_opt, long_opt, file_opt, &SettingsManager.val_ ## name, NULL, NULL, def, std::string(), false },
 #define SETTING_STRING(name,short_opt,long_opt,file_opt,def) \
 	{ #name, short_opt, long_opt, file_opt, NULL, &SettingsManager.val_ ## name, NULL, 0, S(def), false },
 #define SETTING_BOOL(name,short_opt,long_opt,file_opt,def) \
-	{ #name, short_opt, long_opt, file_opt, NULL, NULL, &SettingsManager.val_ ## name, 0, String(), def },
+	{ #name, short_opt, long_opt, file_opt, NULL, NULL, &SettingsManager.val_ ## name, 0, std::string(), def },
 
 namespace {
 	struct SettingInfo {
@@ -32,10 +32,10 @@ namespace {
 		const char* long_opt;
 		const char* file_opt;
 		int* val_int;
-		String* val_string;
+		std::string* val_string;
 		bool* val_bool;
 		int def_int;
-		String def_string;
+		std::string def_string;
 		bool def_bool;
 	};
 
@@ -145,7 +145,7 @@ SSettingsManager::parse_argv (int argc, char** argv)
 						Log::Error << "No argument given for option: " << argv[opt];
 						return -1;
 					}
-					*settings[i].val_string = String(argv[++opt]);
+					*settings[i].val_string = std::string(argv[++opt]);
 				} else if (settings[i].val_int != NULL) {
 					if (opt == argc - 1) {
 						Log::Error << "No argument given for option: " << argv[opt];
@@ -179,7 +179,7 @@ SSettingsManager::parse_argv (int argc, char** argv)
 }
 
 int
-SSettingsManager::load_file (String path)
+SSettingsManager::load_file (std::string path)
 {
 	FILE* file;
 	char buffer[1024];
@@ -191,7 +191,7 @@ SSettingsManager::load_file (String path)
 	Log::Info << "Reading settings from " << path;
 
 	// open
-	if ((file = fopen(path, "r")) == NULL) {
+	if ((file = fopen(path.c_str(), "r")) == NULL) {
 		Log::Error << "Failed to open " << path << ": " << strerror(errno);
 		return -1;
 	}
@@ -250,7 +250,7 @@ SSettingsManager::load_file (String path)
 			if (settings[i].file_opt != NULL && !strcmp(start, settings[i].file_opt)) {
 				// string?
 				if (settings[i].val_string != NULL) {
-					*settings[i].val_string = String(sep);
+					*settings[i].val_string = std::string(sep);
 				} else if (settings[i].val_int != NULL) {
 					*settings[i].val_int = strtol(sep, &end, 10);
 					if (*end != 0) {

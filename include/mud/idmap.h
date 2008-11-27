@@ -24,13 +24,13 @@
 class IDManager
 {
 	public:
-	typedef std::set<String> IDMap;
+	typedef std::set<std::string> IDMap;
 
 	IDManager ();
 	~IDManager ();
 	
-	const String* lookup (String name);
-	const String* create (String name);
+	const std::string* lookup (std::string name);
+	const std::string* create (std::string name);
 
 	const IDMap& get_all () const { return id_map; }
 
@@ -43,7 +43,7 @@ template <typename tag>
 class BaseID
 {
 	private:
-	explicit BaseID (const String* s_id) : id(s_id) {}
+	explicit BaseID (const std::string* s_id) : id(s_id) {}
 
 	public:
 	BaseID () : id(NULL) {}
@@ -51,10 +51,10 @@ class BaseID
 
 	bool valid () const { return id != 0; }
 
-	static BaseID<tag> lookup (String idname) { return BaseID<tag>(get_manager().lookup(idname)); }
-	static BaseID<tag> create (String idname) { return BaseID<tag>(get_manager().create(idname)); }
-	String name () const { return id != NULL ? *id : String(); }
-	static String nameof (BaseID<tag> id) { return id.name(); }
+	static BaseID<tag> lookup (std::string idname) { return BaseID<tag>(get_manager().lookup(idname)); }
+	static BaseID<tag> create (std::string idname) { return BaseID<tag>(get_manager().create(idname)); }
+	std::string name () const { return id != NULL ? *id : std::string(); }
+	static std::string nameof (BaseID<tag> id) { return id.name(); }
 
 	static const IDManager::IDMap& get_all () { return get_manager().get_all(); }
 
@@ -62,7 +62,7 @@ class BaseID
 	bool operator== (const BaseID<tag>& cmp) const { return id == cmp.id; }
 
 	protected:
-	const String* id;
+	const std::string* id;
 
 	static IDManager& get_manager ();
 };

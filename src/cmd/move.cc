@@ -17,7 +17,7 @@
  * format: n (10)
  *
  * END COMMAND */
-void command_north (Creature* ch, String argv[]) {
+void command_north (Creature* ch, std::string argv[]) {
 	// must be in a room
 	if (!ch->get_room()) {
 		*ch << "You are not in a room.\n";
@@ -43,7 +43,7 @@ void command_north (Creature* ch, String argv[]) {
  * format: ne (12)
  *
  * END COMMAND */
-void command_northeast (Creature* ch, String argv[]) {
+void command_northeast (Creature* ch, std::string argv[]) {
 	// must be in a room
 	if (!ch->get_room()) {
 		*ch << "You are not in a room.\n";
@@ -69,7 +69,7 @@ void command_northeast (Creature* ch, String argv[]) {
  * format: e (10)
  *
  * END COMMAND */
-void command_east (Creature* ch, String argv[]) {
+void command_east (Creature* ch, std::string argv[]) {
 	// must be in a room
 	if (!ch->get_room()) {
 		*ch << "You are not in a room.\n";
@@ -95,7 +95,7 @@ void command_east (Creature* ch, String argv[]) {
  * format: se (12)
  *
  * END COMMAND */
-void command_southeast (Creature* ch, String argv[]) {
+void command_southeast (Creature* ch, std::string argv[]) {
 	// must be in a room
 	if (!ch->get_room()) {
 		*ch << "You are not in a room.\n";
@@ -121,7 +121,7 @@ void command_southeast (Creature* ch, String argv[]) {
  * format: s (10)
  *
  * END COMMAND */
-void command_south (Creature* ch, String argv[]) {
+void command_south (Creature* ch, std::string argv[]) {
 	// must be in a room
 	if (!ch->get_room()) {
 		*ch << "You are not in a room.\n";
@@ -147,7 +147,7 @@ void command_south (Creature* ch, String argv[]) {
  * format: sw (12)
  *
  * END COMMAND */
-void command_southwest (Creature* ch, String argv[]) {
+void command_southwest (Creature* ch, std::string argv[]) {
 	// must be in a room
 	if (!ch->get_room()) {
 		*ch << "You are not in a room.\n";
@@ -173,7 +173,7 @@ void command_southwest (Creature* ch, String argv[]) {
  * format: w (10)
  *
  * END COMMAND */
-void command_west (Creature* ch, String argv[]) {
+void command_west (Creature* ch, std::string argv[]) {
 	// must be in a room
 	if (!ch->get_room()) {
 		*ch << "You are not in a room.\n";
@@ -199,7 +199,7 @@ void command_west (Creature* ch, String argv[]) {
  * format: nw (12)
  *
  * END COMMAND */
-void command_northwest (Creature* ch, String argv[]) {
+void command_northwest (Creature* ch, std::string argv[]) {
 	// must be in a room
 	if (!ch->get_room()) {
 		*ch << "You are not in a room.\n";
@@ -225,7 +225,7 @@ void command_northwest (Creature* ch, String argv[]) {
  * format: climb :0* (10)
  *
  * END COMMAND */
-void command_climb(Creature* ch, String argv[])
+void command_climb(Creature* ch, std::string argv[])
 {
 	if (ch->get_pos() != CreaturePosition::STAND) {
 		*ch << "You cannot climb while " << ch->get_pos().get_verbing() << ".\n";
@@ -250,7 +250,7 @@ void command_climb(Creature* ch, String argv[])
  * format: crawl :0* (10)
  *
  * END COMMAND */
-void command_crawl(Creature* ch, String argv[])
+void command_crawl(Creature* ch, std::string argv[])
 {
 	if (ch->get_pos() != CreaturePosition::KNEEL && ch->get_pos() != CreaturePosition::SIT) {
 		*ch << "You cannot crawl while " << ch->get_pos().get_verbing() << ".\n";
@@ -275,7 +275,7 @@ void command_crawl(Creature* ch, String argv[])
  * format: go :0*
  *
  * END COMMAND */
-void command_go(Creature* ch, String argv[])
+void command_go(Creature* ch, std::string argv[])
 {
 	if (ch->get_pos() != CreaturePosition::STAND) {
 		*ch << "You cannot climb while " << ch->get_pos().get_verbing() << ".\n";

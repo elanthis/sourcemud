@@ -13,7 +13,7 @@
 #include "common/imanager.h"
 
 #define SETTING_INT(name) int val_ ## name; inline int get_ ## name (void) const { return val_ ## name; }
-#define SETTING_STRING(name) String val_ ## name; inline const String& get_ ## name (void) const { return val_ ## name; }
+#define SETTING_STRING(name) std::string val_ ## name; inline const std::string& get_ ## name (void) const { return val_ ## name; }
 #define SETTING_BOOL(name) bool val_ ## name; inline bool get_ ## name (void) const { return val_ ## name; }
 
 class SSettingsManager : public IManager
@@ -24,7 +24,7 @@ class SSettingsManager : public IManager
 
 	void print_usage (void);
 	int parse_argv (int argc, char** argv);
-	int load_file (String path);
+	int load_file (std::string path);
 
 	SETTING_STRING(log_file)
 	SETTING_STRING(pid_file)

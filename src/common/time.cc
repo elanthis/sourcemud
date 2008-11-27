@@ -7,7 +7,7 @@
 
 #include "common/time.h"
 
-String
+std::string
 time_to_str (time_t time)
 {
 	struct tm tm;
@@ -15,11 +15,11 @@ time_to_str (time_t time)
 
 	localtime_r(&time, &tm);
 	strftime(buffer, sizeof(buffer), "%Y-%m-%d %H:%M:%S", &tm);
-	return String(buffer);
+	return std::string(buffer);
 }
 
 time_t
-str_to_time (String str)
+str_to_time (std::string str)
 {
 	struct tm tm;
 	memset(&tm, 0, sizeof(tm));

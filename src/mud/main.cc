@@ -63,7 +63,7 @@ namespace {
 	};
 
 	void cleanup();
-	int write_pid_file(String path);
+	int write_pid_file(std::string path);
 	double count_ticks(timeval& start, timeval& cur);
 }
 
@@ -107,11 +107,11 @@ namespace {
 
 	// write out our pid file
 	int
-	write_pid_file (String path)
+	write_pid_file (std::string path)
 	{
 		// open it up
 		int fd;
-		if ((fd = open(path, O_WRONLY|O_CREAT, 0640)) < 0) {
+		if ((fd = open(path.c_str(), O_WRONLY|O_CREAT, 0640)) < 0) {
 			// fatal error
 			Log::Error << "Failed to create or open PID file '" << path << "': " << strerror(errno);
 			return -1;
@@ -135,7 +135,7 @@ namespace {
 		// truncate file
 		if (ftruncate(fd, 0) < 0) {
 			Log::Error << "Failed to truncate PID file '" << path << "': " << strerror(errno);
-			unlink(path);
+			unlink(path.c_str());
 			close(fd);
 			return -1;
 		}
@@ -143,7 +143,7 @@ namespace {
 		// write PID
 		if (fdprintf(fd, "%d", getpid()) <= 0) {
 			Log::Error << "Failed to write to PID file '" << path << "': " << strerror(errno);
-			unlink(path);
+			unlink(path.c_str());
 			close(fd);
 			return -1;
 		}
@@ -156,11 +156,11 @@ namespace {
 	cleanup ()
 	{
 		// remember paths
-		String pid_path = SettingsManager.get_pid_file();
+		std::string pid_path = SettingsManager.get_pid_file();
 
 		// remove files
-		if (pid_path)
-			unlink (pid_path);
+		if (!pid_path.empty())
+			unlink(pid_path.c_str());
 	}
 
 	inline void
@@ -338,7 +338,7 @@ MUD::get_rounds ()
 	return TICKS_TO_ROUNDS(game_ticks);
 }
 
-String
+std::string
 MUD::get_uptime ()
 {
 	StringBuffer uptime;
@@ -389,12 +389,12 @@ main (int argc, char **argv)
 		return 1;
 	if (SettingsManager.parse_argv(argc, argv))
 		return 1;
-	if (SettingsManager.get_config_file() && SettingsManager.load_file(SettingsManager.get_config_file()))
+	if (!SettingsManager.get_config_file().empty() && SettingsManager.load_file(SettingsManager.get_config_file()))
 		return 1;
 
 	// change to chroot dir, but don't actually chroot yet
-	if (SettingsManager.get_chroot()) {
-		if (chdir(SettingsManager.get_chroot())) {
+	if (!SettingsManager.get_chroot().empty()) {
+		if (chdir(SettingsManager.get_chroot().c_str())) {
 			Log::Error << "chroot() failed: " << SettingsManager.get_chroot() << ": " << strerror(errno);
 			return 1;
 		}
@@ -436,31 +436,31 @@ main (int argc, char **argv)
 	::time (&start_time);
 
 	// write PID
-	String pid_path = SettingsManager.get_pid_file();
+	std::string pid_path = SettingsManager.get_pid_file();
 	if (write_pid_file(pid_path))
 		return 1;
 	Log::Info << "Wrote PID file '" << pid_path << "'";
 
 	// read group/user info
 	struct group *grp = NULL;
-	String group_name = SettingsManager.get_group();
-	if (group_name && !str_is_number (group_name)) {
+	std::string group_name = SettingsManager.get_group();
+	if (!group_name.empty() && !str_is_number (group_name)) {
 		if (str_is_number (group_name))
-			grp = getgrgid (tolong(group_name));
+			grp = getgrgid(tolong(group_name));
 		else
-			grp = getgrnam (group_name);
+			grp = getgrnam(group_name.c_str());
 		if (grp == NULL) {
 			Log::Error << "Couldn't find group '" << group_name << "': " << strerror(errno);
 			return 1;
 		}
 	}
 	struct passwd *usr = NULL;
-	String user_name = SettingsManager.get_user();
-	if (user_name) {
+	std::string user_name = SettingsManager.get_user();
+	if (!user_name.empty()) {
 		if (str_is_number (user_name))
-			usr = getpwuid (tolong(user_name));
+			usr = getpwuid(tolong(user_name));
 		else
-			usr = getpwnam (user_name);
+			usr = getpwnam(user_name.c_str());
 		if (usr == NULL) {
 			Log::Error << "Couldn't find user '" << user_name << "': " << strerror(errno);
 			return 1;
@@ -468,9 +468,9 @@ main (int argc, char **argv)
 	}
 
 	// do chroot jail
-	String chroot_dir = SettingsManager.get_chroot();
-	if (chroot_dir) {
-		if (chroot (chroot_dir)) {
+	std::string chroot_dir = SettingsManager.get_chroot();
+	if (!chroot_dir.empty()) {
+		if (chroot(chroot_dir.c_str())) {
 			Log::Error << "chroot() failed: " << strerror (errno);
 			return 1;
 		}

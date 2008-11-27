@@ -12,7 +12,7 @@
 
 #include "common/string.h"
 
-String time_to_str (time_t time);
-time_t str_to_time (String str);
+std::string time_to_str (time_t time);
+time_t str_to_time (std::string str);
 
 #endif

@@ -15,19 +15,19 @@
 
 // description of a change in the weather, such as 'the rain starts falling more heavily'
 struct WeatherChange {
-	String to;	// target state
-	String desc;	// message when changing to state
+	std::string to;	// target state
+	std::string desc;	// message when changing to state
 	uint chance;	// chance of occuring
 };
 
 // a weather state, such as 'raining heavily' or 'snowing lightly'
 struct WeatherState {
-	inline WeatherState (String s_id) : id(s_id), changes(), descs() {}
+	inline WeatherState (std::string s_id) : id(s_id), changes(), descs() {}
 		
 	int load (File::Reader& reader);
 	void save (File::Writer& writer) const;
 
-	String id;
+	std::string id;
 	std::vector<WeatherChange> changes;
 	StringList descs;
 };
@@ -43,7 +43,7 @@ class WeatherRegion {
 	int load ();
 	int save () const;
 
-	String get_current_desc () const;
+	std::string get_current_desc () const;
 
 	void update ();
 
@@ -52,7 +52,7 @@ class WeatherRegion {
 	uint state;
 	uint ticks;
 
-	int get_state (String name) const;
+	int get_state (std::string name) const;
 };
 
 // manage all regions
@@ -68,7 +68,7 @@ class SWeatherManager : public IManager
 	inline void update () { region.update(); }
 
 	// get current weather description
-	inline String get_current_desc () const { return region.get_current_desc(); }
+	inline std::string get_current_desc () const { return region.get_current_desc(); }
 
 	private:
 	WeatherRegion region;

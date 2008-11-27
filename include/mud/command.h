@@ -20,18 +20,18 @@
 class Creature;
 class Player;
 
-typedef void (*CreatureCommandFunc) (class Creature*, String argv[]); // can manipulate argv
-typedef void (*PlayerCommandFunc) (class Player*, String argv[]); // can manipulate argv
+typedef void (*CreatureCommandFunc) (class Creature*, std::string argv[]); // can manipulate argv
+typedef void (*PlayerCommandFunc) (class Player*, std::string argv[]); // can manipulate argv
 
 struct CommandFormatNode
 {
 	enum type_t { NONE, WORD, PHRASE, LITERAL } type; // type
 	int arg; // argument index
 	bool opt; // optional, can skip?
-	String literal; // text to match
+	std::string literal; // text to match
 
 	// new LITERAL node
-	CommandFormatNode(int s_arg, bool s_opt, String s_literal) :
+	CommandFormatNode(int s_arg, bool s_opt, std::string s_literal) :
 		type(LITERAL), arg(s_arg), opt(s_opt), literal(s_literal) {}
 	// new WORD or PHRASE node
 	CommandFormatNode(type_t s_type, int s_arg, bool s_opt) :
@@ -44,15 +44,15 @@ struct CommandFormatNode
 class CommandFormat
 {
 	public:
-	CommandFormat (class Command* s_command, String format, CreatureCommandFunc s_func, int s_priority = 100) : command(s_command), ch_func(s_func), ply_func(NULL), priority(s_priority) { build(format); }
-	CommandFormat (class Command* s_command, String format, PlayerCommandFunc s_func, int s_priority = 100) : command(s_command), ch_func(NULL), ply_func(s_func), priority(s_priority) { build(format); }
+	CommandFormat (class Command* s_command, std::string format, CreatureCommandFunc s_func, int s_priority = 100) : command(s_command), ch_func(s_func), ply_func(NULL), priority(s_priority) { build(format); }
+	CommandFormat (class Command* s_command, std::string format, PlayerCommandFunc s_func, int s_priority = 100) : command(s_command), ch_func(NULL), ply_func(s_func), priority(s_priority) { build(format); }
 
 	// get the basics
-	inline String get_format (void) const { return format; }
+	inline std::string get_format (void) const { return format; }
 	inline int get_priority (void) const { return priority; }
 
 	// construct format; return non-zero on failure
-	int build (String format);
+	int build (std::string format);
 
 	// get the command desc
 	inline Command* get_command (void) const { return command; }
@@ -65,18 +65,18 @@ class CommandFormat
 	// 0 on no match, and positive on partial match; closer the match,
 	// higher the positive return value.  The argv MUST be at least
 	// COMMAND_MAX_ARGS elements in size.
-	inline int match (char** words, String argv[]) const { return trymatch(0, words, argv); }
+	inline int match (char** words, std::string argv[]) const { return trymatch(0, words, argv); }
 
 	private:
 	class Command* command;
-	String format;
+	std::string format;
 	CreatureCommandFunc ch_func;
 	PlayerCommandFunc ply_func;
 	int priority;
 	std::vector<CommandFormatNode> nodes;
 
 	// do the matching
-	int trymatch (int node, char** words, String argv[]) const;
+	int trymatch (int node, char** words, std::string argv[]) const;
 
 	// let command manager see us
 	friend class SCommandManager;
@@ -86,17 +86,17 @@ class Command
 {
 	private:
 	// data
-	String name;
-	String usage;
+	std::string name;
+	std::string usage;
 	AccessID access; // required permission
 
 	public:
 	// constructor/destructor - virtual
-	inline Command (String s_name, String s_usage, AccessID s_access) : name(s_name), usage(s_usage), access (s_access)  {}
+	inline Command (std::string s_name, std::string s_usage, AccessID s_access) : name(s_name), usage(s_usage), access (s_access)  {}
 
 	// basics
-	const String& get_name (void) const { return name; }
-	const String& get_usage (void) const { return usage; }
+	const std::string& get_name (void) const { return name; }
+	const std::string& get_usage (void) const { return usage; }
 	AccessID get_access (void) const { return access; }
 
 	// display help
@@ -123,10 +123,10 @@ class SCommandManager : public IManager
 	void add(const CommandFormat& format) { formats.push_back(format); }
 
 	// invoke a command
-	int call (class Creature* character, String cmd_line);
+	int call (class Creature* character, std::string cmd_line);
 
 	// show a man page; return false if cmd_name is not found
-	bool show_man (class StreamControl& stream, String cmd_name, bool quiet = false);
+	bool show_man (class StreamControl& stream, std::string cmd_name, bool quiet = false);
 
 	// show a command list
 	void show_list (class Player* player);
@@ -147,8 +147,8 @@ namespace commands {
 
 #define COMMAND(name,usage,func,access,klass) \
 	{ \
-		extern void func (klass*, String[]); \
-		void (*fptr)(klass*, String[]) = func; \
+		extern void func (klass*, std::string[]); \
+		void (*fptr)(klass*, std::string[]) = func; \
 		Command* command = new Command(S(name),S(usage),access);
 #define FORMAT(priority, format) add(CommandFormat(command, S(format), (fptr), (priority)));
 #define END_COMM add(command); }

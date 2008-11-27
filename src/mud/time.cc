@@ -21,12 +21,12 @@ GameTime::time_str (char *buf, int len) const
 			(hour < 12) ? "am" : "pm");
 }
 
-String
+std::string
 GameTime::time_str () const
 {
 	char buffer[32];
 	time_str(buffer, sizeof(buffer));
-	return String(buffer);
+	return std::string(buffer);
 }
 
 void
@@ -40,18 +40,18 @@ GameTime::date_str (char *buf, int len) const
 			TimeManager.calendar.months[month - 1].name.c_str(),
 			year);
 	// append holiday if we have one
-	String holiday = TimeManager.calendar.get_holiday(*this);
+	std::string holiday = TimeManager.calendar.get_holiday(*this);
 	if (!holiday.empty()) {
 		snprintf (buf + add, len - add, " (%s)", holiday.c_str());
 	}
 }
 
-String
+std::string
 GameTime::date_str () const
 {
 	char buffer[256];
 	date_str(buffer, sizeof(buffer));
-	return String(buffer);
+	return std::string(buffer);
 }
 
 void
@@ -90,16 +90,16 @@ GameTime::clip_time ()
 		month = 1;
 }
 
-String
+std::string
 GameTime::encode () const
 {
 	char buffer[32];
 	snprintf(buffer, sizeof(buffer), "%04d/%02d/%02d %02d.%02d", year, month, day, hour, ticks_in_hour);
-	return String(buffer);
+	return std::string(buffer);
 }
 
 int
-GameTime::decode (String str)
+GameTime::decode (std::string str)
 {
 	uint s_year, s_month, s_day, s_hour, s_ticks;
 	if (sscanf(str.c_str(), "%u/%u/%u %u.%u", &s_year, &s_month, &s_day, &s_hour, &s_ticks) != 5)

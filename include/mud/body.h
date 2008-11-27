@@ -28,18 +28,18 @@ class GenderType
 	inline GenderType (int s_value) : value((type_t)s_value) {}
 	inline GenderType (void) : value(NONE) {}
 
-	inline const String& get_name(void) const { return names[value]; }
+	inline const std::string& get_name(void) const { return names[value]; }
 
-	inline const String& get_hisher (void) const { return hisher[value]; }
-	inline const String& get_hishers (void) const { return hishers[value]; }
-	inline const String& get_heshe (void) const { return heshe[value]; }
-	inline const String& get_himher (void) const { return himher[value]; }
-	inline const String& get_manwoman (void) const { return manwoman[value]; }
-	inline const String& get_malefemale (void) const { return malefemale[value]; }
+	inline const std::string& get_hisher (void) const { return hisher[value]; }
+	inline const std::string& get_hishers (void) const { return hishers[value]; }
+	inline const std::string& get_heshe (void) const { return heshe[value]; }
+	inline const std::string& get_himher (void) const { return himher[value]; }
+	inline const std::string& get_manwoman (void) const { return manwoman[value]; }
+	inline const std::string& get_malefemale (void) const { return malefemale[value]; }
 
 	inline type_t get_value (void) const { return value; }
 
-	static GenderType lookup (String name);
+	static GenderType lookup (std::string name);
 
 	inline bool operator == (const GenderType& gender) const { return gender.value == value; }
 	inline bool operator != (const GenderType& gender) const { return gender.value != value; }
@@ -47,13 +47,13 @@ class GenderType
 	private:
 	type_t value;
 
-	static String names[];
-	static String hisher[];
-	static String hishers[];
-	static String heshe[];
-	static String himher[];
-	static String manwoman[];
-	static String malefemale[];
+	static std::string names[];
+	static std::string hisher[];
+	static std::string hishers[];
+	static std::string heshe[];
+	static std::string himher[];
+	static std::string manwoman[];
+	static std::string malefemale[];
 };
 
 // Equip slot types
@@ -81,11 +81,11 @@ class EquipSlot
 
 	bool valid (void) const { return value != NONE; }
 
-	String get_name(void) const { return names[value]; }
+	std::string get_name(void) const { return names[value]; }
 
 	type_t get_value (void) const { return value; }
 
-	static EquipSlot lookup (String name);
+	static EquipSlot lookup (std::string name);
 
 	inline bool operator == (const EquipSlot& dir) const { return dir.value == value; }
 	inline bool operator != (const EquipSlot& dir) const { return dir.value != value; }
@@ -93,7 +93,7 @@ class EquipSlot
 	private:
 	type_t value;
 
-	static String names[];
+	static std::string names[];
 };
 
 #endif

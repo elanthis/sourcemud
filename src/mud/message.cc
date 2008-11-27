@@ -40,9 +40,9 @@ SMessageManager::shutdown (void)
 	messages.clear();
 }
 
-String
-SMessageManager::get (String id)
+std::string
+SMessageManager::get (std::string id)
 {
 	MessageMap::iterator i = messages.find(id);
-	return i != messages.end() ? i->second : String();
+	return i != messages.end() ? i->second : std::string();
 }

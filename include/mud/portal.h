@@ -33,22 +33,22 @@ class PortalDir {
 	private:
 	dir_t value;
 
-	static const String names[];
-	static const String abbreviations[];
+	static const std::string names[];
+	static const std::string abbreviations[];
 	static dir_t opposites[];
 	
 	public:
 	PortalDir (int s_value) : value((dir_t)s_value) {}
 	PortalDir () : value(NONE) {}
 
-	String get_name() const { return names[value]; }
-	String get_abbr() const { return abbreviations[value]; }
+	std::string get_name() const { return names[value]; }
+	std::string get_abbr() const { return abbreviations[value]; }
 	PortalDir get_opposite() const { return opposites[value]; }
 	bool valid () const { return value != NONE; }
 
 	dir_t get_value () const { return value; }
 
-	static PortalDir lookup (String name);
+	static PortalDir lookup (std::string name);
 
 	bool operator < (const PortalDir& dir) const { return value < dir.value; }
 	bool operator == (const PortalDir& dir) const { return dir.value == value; }
@@ -69,17 +69,17 @@ class PortalUsage {
 	private:
 	type_t value;
 
-	static const String names[];
+	static const std::string names[];
 	
 	public:
 	PortalUsage (int s_value) : value((type_t)s_value) {}
 	PortalUsage () : value(WALK) {}
 
-	String get_name() const { return names[value]; }
+	std::string get_name() const { return names[value]; }
 
 	type_t get_value () const { return value; }
 
-	static PortalUsage lookup (String name);
+	static PortalUsage lookup (std::string name);
 
 	bool operator == (const PortalUsage& dir) const { return dir.value == value; }
 	bool operator != (const PortalUsage& dir) const { return dir.value != value; }
@@ -105,17 +105,17 @@ class PortalDetail  {
 	private:
 	type_t value;
 
-	static const String names[];
+	static const std::string names[];
 	
 	public:
 	PortalDetail (int s_value) : value((type_t)s_value) {}
 	PortalDetail () : value(NONE) {}
 
-	String get_name() const { return names[value]; }
+	std::string get_name() const { return names[value]; }
 
 	type_t get_value () const { return value; }
 
-	static PortalDetail lookup (String name);
+	static PortalDetail lookup (std::string name);
 
 	bool operator == (const PortalDetail& dir) const { return dir.value == value; }
 	bool operator != (const PortalDetail& dir) const { return dir.value != value; }
@@ -128,28 +128,28 @@ class Portal : public Entity
 	public:
 	Portal ();
 
-	virtual String factory_type () const { return S("portal"); }
+	virtual std::string factory_type () const { return S("portal"); }
 
 	// name information
 	virtual EntityName get_name () const;
-	bool set_name (String s_name) { return name.set_name(s_name); }
-	void add_keyword (String keyword);
+	bool set_name (std::string s_name) { return name.set_name(s_name); }
+	void add_keyword (std::string keyword);
 
 	// description information
-	virtual String get_desc () const { return desc; }
-	virtual void set_desc (String s_desc) { desc = s_desc; }
+	virtual std::string get_desc () const { return desc; }
+	virtual void set_desc (std::string s_desc) { desc = s_desc; }
 
 	// 'standard' portals have no custom name
 	bool is_standard () const { return name.empty(); }
 
 	// the taget room and portal (target portal is the portal you come out of)
-	String get_target () const { return target; }
-	void set_target (String t) { target = t; }
+	std::string get_target () const { return target; }
+	void set_target (std::string t) { target = t; }
 
 	// movement messages based on usage/detail
-	String get_go () const;
-	String get_leaves () const;
-	String get_enters () const;
+	std::string get_go () const;
+	std::string get_leaves () const;
+	std::string get_enters () const;
 
 	// ownership - see entity.h
 	virtual void set_owner(Entity*);
@@ -194,7 +194,7 @@ class Portal : public Entity
 	bool is_disabled () const { return flags.disabled; }
 
 	// color of portal
-	virtual String ncolor () const { return S(CEXIT); }
+	virtual std::string ncolor () const { return S(CEXIT); }
 
 	// manage state
 	void lock (Room* base, class Creature* actor);
@@ -205,7 +205,7 @@ class Portal : public Entity
 	// heartbeat
 	void heartbeat ();
 
-	virtual bool name_match (String name) const;
+	virtual bool name_match (std::string name) const;
 
 	// set flags
 	void set_door (bool v) { flags.door = v; }
@@ -225,8 +225,8 @@ class Portal : public Entity
 	protected:
 	// data members
 	EntityName name;
-	String desc;
-	String target;
+	std::string desc;
+	std::string target;
 	PortalDir dir;
 	PortalUsage usage;
 	PortalDetail detail;

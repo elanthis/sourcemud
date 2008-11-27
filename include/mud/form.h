@@ -18,12 +18,12 @@ class FormColor {
 	FormColor () : value(0) {}
 	FormColor (const FormColor& c) : value(c.value) {}
 
-	String get_name () const;
+	std::string get_name () const;
 
 	uint8_t get_value () const { return value; }
 
-	static FormColor lookup (String);
-	static FormColor create (String);
+	static FormColor lookup (std::string);
+	static FormColor create (std::string);
 
 	bool valid () const { return value > 0 && value < names.size(); }
 
@@ -55,11 +55,11 @@ class FormBuild {
 	FormBuild (const FormBuild& form) : value(form.value) {}
 	FormBuild () : value(NONE) {}
 
-	String get_name () const { return valid()?names[value]:String(); }
+	std::string get_name () const { return valid()?names[value]:std::string(); }
 
 	type_t get_value () const { return value; }
 
-	static FormBuild lookup (String name);
+	static FormBuild lookup (std::string name);
 
 	bool valid () const { return value > 0 && value < COUNT; }
 
@@ -69,7 +69,7 @@ class FormBuild {
 	private:
 	type_t value;
 
-	static String names[];
+	static std::string names[];
 };
 
 class FormHeight {
@@ -88,11 +88,11 @@ class FormHeight {
 	FormHeight (const FormHeight& form) : value(form.value) {}
 	FormHeight () : value(NONE) {}
 
-	String get_name () const { return valid()?names[value]:String(); }
+	std::string get_name () const { return valid()?names[value]:std::string(); }
 
 	type_t get_value () const { return value; }
 
-	static FormHeight lookup (String name);
+	static FormHeight lookup (std::string name);
 
 	bool valid () const { return value > 0 && value < COUNT; }
 
@@ -102,7 +102,7 @@ class FormHeight {
 	private:
 	type_t value;
 
-	static String names[];
+	static std::string names[];
 };
 
 class FormHairStyle {
@@ -123,11 +123,11 @@ class FormHairStyle {
 	FormHairStyle (const FormHairStyle& form) : value(form.value) {}
 	FormHairStyle () : value(NONE) {}
 
-	String get_name () const { return valid()?names[value]:String(); }
+	std::string get_name () const { return valid()?names[value]:std::string(); }
 
 	type_t get_value () const { return value; }
 
-	static FormHairStyle lookup (String name);
+	static FormHairStyle lookup (std::string name);
 
 	bool valid () const { return value > 0 && value < COUNT; }
 
@@ -137,7 +137,7 @@ class FormHairStyle {
 	private:
 	type_t value;
 
-	static String names[];
+	static std::string names[];
 };
 
 #endif

@@ -58,7 +58,7 @@ Spawn::spawn (Zone* zone) const
 		return;
 
 	// select random room
-	String roomname = rooms[get_random(rooms.size())];
+	std::string roomname = rooms[get_random(rooms.size())];
 
 	// find room
 	Room* room = zone->get_room(roomname);
@@ -66,7 +66,7 @@ Spawn::spawn (Zone* zone) const
 		return;
 
 	// select random blueprint id
-	String tempname = blueprints[get_random(blueprints.size())];
+	std::string tempname = blueprints[get_random(blueprints.size())];
 
 	// try to spawn as NPC
 	Npc* npc = Npc::load_blueprint(tempname);
@@ -143,7 +143,7 @@ Zone::Zone()
 {}
 
 Room*
-Zone::get_room (String id) const
+Zone::get_room (std::string id) const
 {
 	for (RoomList::const_iterator i = rooms.begin(); i != rooms.end(); ++i)
 		if (str_eq ((*i)->get_id(), id))
@@ -169,7 +169,7 @@ Zone::get_room_count() const
 }
 
 int
-Zone::load (String path)
+Zone::load (std::string path)
 {
 	File::Reader reader;
 	if (reader.open(path))
@@ -199,7 +199,7 @@ Zone::load (String path)
 void
 Zone::save()
 {
-	String path = SettingsManager.get_zone_path() + "/" + get_id() + ".zone";
+	std::string path = SettingsManager.get_zone_path() + "/" + get_id() + ".zone";
 
 	/* backup zone file */
 	if (SettingsManager.get_backup_zones()) {
@@ -207,8 +207,8 @@ Zone::save()
 		time_t base_t;
 		time (&base_t);
 		strftime (time_buffer, sizeof (time_buffer), "%Y%m%d%H%M%S", localtime (&base_t));
-		String backup = path + S(".") + String(time_buffer) + S("~");
-		if (rename (path, backup)) /* move file */
+		std::string backup = path + S(".") + std::string(time_buffer) + S("~");
+		if (rename(path.c_str(), backup.c_str())) /* move file */
 			Log::Error << "Backup of zone '" << get_id() << "' to " << backup << " failed: " << strerror(errno);
 	}
 
@@ -367,9 +367,9 @@ SZoneManager::save()
 
 /* find a Zone */
 Zone*
-SZoneManager::get_zone (String id)
+SZoneManager::get_zone (std::string id)
 {
-	assert (id);
+	assert(!id.empty() && "id must not be empty");
 
 	for (ZoneList::iterator i = zones.begin(); i != zones.end(); ++i)
 		if (str_eq ((*i)->get_id(), id))
@@ -390,7 +390,7 @@ SZoneManager::get_zone_at (size_t index)
 
 /* find a Room */
 Room *
-SZoneManager::get_room (String id)
+SZoneManager::get_room (std::string id)
 {
 	if (id.empty())
 		return NULL;
@@ -406,7 +406,7 @@ SZoneManager::get_room (String id)
 }
 
 void
-Zone::announce (String str, AnnounceFlags flags) const
+Zone::announce (std::string str, AnnounceFlags flags) const
 {
 	for (RoomList::const_iterator i = rooms.begin(); i != rooms.end(); ++i) {
 		if (!flags ||
@@ -419,7 +419,7 @@ Zone::announce (String str, AnnounceFlags flags) const
 
 /* announce to all rooms in a Room */
 void
-SZoneManager::announce (String str, AnnounceFlags flags)
+SZoneManager::announce (std::string str, AnnounceFlags flags)
 {
 	for (ZoneList::iterator i = zones.begin(); i != zones.end(); ++i)
 		(*i)->announce (str, flags);

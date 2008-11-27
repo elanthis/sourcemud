@@ -7,7 +7,7 @@
 
 #include "mud/caffect.h"
 
-String CreatureAffectType::names[] = {
+std::string CreatureAffectType::names[] = {
 	S("unknown"),
 	S("toxin"),
 	S("disease"),
@@ -18,7 +18,7 @@ String CreatureAffectType::names[] = {
 };
 
 CreatureAffectType
-CreatureAffectType::lookup (String name)
+CreatureAffectType::lookup (std::string name)
 {
 	for (uint i = 0; i < COUNT; ++i)
 		if (str_eq(name, names[i]))
@@ -26,7 +26,7 @@ CreatureAffectType::lookup (String name)
 	return UNKNOWN;
 }
 
-CreatureAffectGroup::CreatureAffectGroup (String s_title, CreatureAffectType s_type, uint s_duration) : title(s_title), type(s_type), duration(s_duration)
+CreatureAffectGroup::CreatureAffectGroup (std::string s_title, CreatureAffectType s_type, uint s_duration) : title(s_title), type(s_type), duration(s_duration)
 {
 }
 

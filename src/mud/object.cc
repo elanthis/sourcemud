@@ -26,7 +26,7 @@
 #include "mud/unique-object.h"
 #include "mud/efactory.h"
 
-String ObjectLocation::names[] = {
+std::string ObjectLocation::names[] = {
 	S("none"),
 	S("in"),
 	S("on"),
@@ -42,7 +42,7 @@ ObjectBP::ObjectBP()
 }
 
 bool
-ObjectBP::set_name(String s_name)
+ObjectBP::set_name(std::string s_name)
 {
 	bool ret = name.set_name(s_name);
 	return ret;
@@ -84,7 +84,7 @@ ObjectBP::remove_tag(TagID tag)
 void
 ObjectBP::save(File::Writer& writer)
 {
-	if (id)
+	if (!id.empty())
 		writer.attr(S("blueprint"), S("id"), id);
 
 	writer.attr(S("blueprint"), S("name"), name.get_name());
@@ -488,7 +488,7 @@ Object::show_contents(Player *player, ObjectLocation container) const
 		*player << "nothing";
 
 	// finish up
-	String tname = S("somewhere on");
+	std::string tname = S("somewhere on");
 	if (container == ObjectLocation::ON)
 		tname = S("on");
 	else if (container == ObjectLocation::IN)
@@ -497,7 +497,7 @@ Object::show_contents(Player *player, ObjectLocation container) const
 }
 
 Object *
-Object::find_object(String name, uint index, ObjectLocation container, uint *matches) const
+Object::find_object(std::string name, uint index, ObjectLocation container, uint *matches) const
 {
 	assert (index != 0);
 
@@ -554,14 +554,14 @@ Object::get_holder() const
 }
 
 bool
-ShadowObject::set_name(String s_name)
+ShadowObject::set_name(std::string s_name)
 {
 	bool ret = name.set_name(s_name);
 	return ret;
 }
 
 bool
-UniqueObject::set_name(String s_name)
+UniqueObject::set_name(std::string s_name)
 {
 	bool ret = name.set_name(s_name);
 	return ret;
@@ -579,7 +579,7 @@ ShadowObject::get_name() const
 }
 
 // get object description
-String
+std::string
 ShadowObject::get_desc() const
 {
 	assert(blueprint != NULL);
@@ -646,15 +646,15 @@ ShadowObject::is_rotting() const
 
 // get parsable member values
 int
-Object::macro_property(const StreamControl& stream, String comm, const MacroList& argv) const
+Object::macro_property(const StreamControl& stream, std::string comm, const MacroList& argv) const
 {
 	// COST
-	if (!strcmp(comm, "cost")) {
+	if (str_eq(comm, "cost")) {
 		stream << get_cost();
 		return 0;
 	}
 	// WEIGHT
-	if (!strcmp(comm, "weight")) {
+	if (str_eq(comm, "weight")) {
 		stream << get_weight();
 		return 0;
 	}
@@ -684,7 +684,7 @@ ShadowObject::set_blueprint(ObjectBP* s_blueprint)
 
 // load object from a blueprint
 Object*
-ShadowObject::load_blueprint(String name)
+ShadowObject::load_blueprint(std::string name)
 {
 	ObjectBP* blueprint = ObjectBPManager.lookup(name);
 	if (!blueprint)
@@ -694,7 +694,7 @@ ShadowObject::load_blueprint(String name)
 }
 
 bool
-ShadowObject::is_blueprint(String name) const
+ShadowObject::is_blueprint(std::string name) const
 {
 	ObjectBP* blueprint = get_blueprint();
 
@@ -705,7 +705,7 @@ ShadowObject::is_blueprint(String name) const
 }
 
 bool
-ShadowObject::name_match(String match) const
+ShadowObject::name_match(std::string match) const
 {
 	if (get_name().matches(match))
 		return true;
@@ -736,29 +736,27 @@ SObjectBPManager::initialize()
 	StringList files = file::getFileList(SettingsManager.get_blueprint_path(),
 			S("objs"));
 	for (StringList::iterator i = files.begin(); i != files.end(); ++i) {
-		if (has_suffix(*i, S(".objs"))) {
-			// load from file
-			File::Reader reader;
-			if (reader.open(*i))
-				return -1;
-			FO_READ_BEGIN
-				FO_OBJECT("blueprint", "object")
-					ObjectBP* blueprint = new ObjectBP();
-					if (blueprint->load(reader)) {
-						Log::Warning << "Failed to load blueprint in " << reader.get_filename() << " at " << node.get_line();
-						return -1;
-					}
+		// load from file
+		File::Reader reader;
+		if (reader.open(*i))
+			return -1;
+		FO_READ_BEGIN
+			FO_OBJECT("blueprint", "object")
+				ObjectBP* blueprint = new ObjectBP();
+				if (blueprint->load(reader)) {
+					Log::Warning << "Failed to load blueprint in " << reader.get_filename() << " at " << node.get_line();
+					return -1;
+				}
 
-					if (!blueprint->get_id()) {
-						Log::Warning << "Blueprint has no ID in " << reader.get_filename() << " at " << node.get_line();
-						return -1;
-					}
+				if (blueprint->get_id().empty()) {
+					Log::Warning << "Blueprint has no ID in " << reader.get_filename() << " at " << node.get_line();
+					return -1;
+				}
 
-					blueprints[blueprint->get_id()] = blueprint;
-			FO_READ_ERROR
-				return -1;
-			FO_READ_END
-		}
+				blueprints[blueprint->get_id()] = blueprint;
+		FO_READ_ERROR
+			return -1;
+		FO_READ_END
 	}
 
 	return 0;
@@ -773,7 +771,7 @@ SObjectBPManager::shutdown()
 }
 
 ObjectBP*
-SObjectBPManager::lookup(String id)
+SObjectBPManager::lookup(std::string id)
 {
 	BlueprintMap::iterator iter = blueprints.find(id);
 	if (iter == blueprints.end())

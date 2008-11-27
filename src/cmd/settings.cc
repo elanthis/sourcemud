@@ -24,7 +24,7 @@
  *
  * END COMMAND */
 
-void command_set_color (Player* player, String argv[])
+void command_set_color (Player* player, std::string argv[])
 {
 	// must have a telnet connection
 	if (player->get_conn() == NULL) {

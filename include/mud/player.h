@@ -39,19 +39,19 @@ class Player : public Creature
 {
 	public:
 	// create and initialize
-	Player (class Account* s_account, String s_id);
+	Player (class Account* s_account, std::string s_id);
 
-	virtual String factory_type () const { return S("player"); }
+	virtual std::string factory_type () const { return S("player"); }
 
 	// player's unique ID (this is identical to their name)
-	inline String get_id () const { return name.get_text(); }
+	inline std::string get_id () const { return name.get_text(); }
 
 	// name information (special for players)
 	inline virtual EntityName get_name () const { return name; }
 
 	// description information
-	virtual inline String get_desc () const { return String(); }
-	virtual inline void set_desc (String s_desc) {}
+	virtual inline std::string get_desc () const { return std::string(); }
+	virtual inline void set_desc (std::string s_desc) {}
 
 	// gender
 	virtual inline GenderType get_gender () const { return form.gender; }
@@ -65,7 +65,7 @@ class Player : public Creature
 	int load_node (File::Reader& reader, File::Node& node);
 
 	// output color
-	inline String ncolor () const { return S(CPLAYER); }
+	inline std::string ncolor () const { return S(CPLAYER); }
 
 	// account
 	inline class Account* get_account () const { return account; }
@@ -140,7 +140,7 @@ class Player : public Creature
 	// I/O
 	virtual void stream_put (const char* data, size_t len = 0);
 	void show_prompt ();
-	void process_command (String cmd);
+	void process_command (std::string cmd);
 	void connect (IPlayerConnection* conn);
 	void disconnect ();
 	IPlayerConnection* get_conn() const { return conn; }
@@ -150,18 +150,18 @@ class Player : public Creature
 	void clear_scr ();
 
 	// parsing
-	virtual int macro_property (const class StreamControl& stream, String method, const MacroList& argv) const;
+	virtual int macro_property (const class StreamControl& stream, std::string method, const MacroList& argv) const;
 
 	// player-only actions
-	void do_tell (Player* who, String what);
-	void do_reply (String what);
+	void do_tell (Player* who, std::string what);
+	void do_reply (std::string what);
 
 	protected:
 	EntityName name;
 	IPlayerConnection* conn;
 	Account* account;
-	String last_command;
-	String last_tell;
+	std::string last_command;
+	std::string last_tell;
 	struct PDesc {
 		GenderType gender;
 		FormColor eye_color;
@@ -215,22 +215,22 @@ class SPlayerManager : public IManager
 	virtual void shutdown ();
 
 	// true if 'name' is a valid player name
-	bool valid_name (String name);
+	bool valid_name (std::string name);
 
 	// return the path a player's file is at
-	String path (String name);
+	std::string path (std::string name);
 
 	// return the logged-in player with the given name
-	Player* get (String name);
+	Player* get (std::string name);
 
 	// load a player - from disk
-	Player* load (class Account* account, String name);
+	Player* load (class Account* account, std::string name);
 
 	// DESTROY a player permanently (with backup)
-	int destroy (String name);
+	int destroy (std::string name);
 
 	// does a valid player of this name exist?
-	bool exists (String name);
+	bool exists (std::string name);
 
 	// count of connected players
 	size_t count ();
@@ -254,7 +254,7 @@ extern SPlayerManager PlayerManager;
 
 #define PLAYER(ent) E_CAST((ent),Player)
 
-extern String get_stat_level (uint value);
-extern String get_stat_color (uint value);
+extern std::string get_stat_level (uint value);
+extern std::string get_stat_color (uint value);
 
 #endif

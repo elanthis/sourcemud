@@ -22,7 +22,7 @@
 #include "mud/hooks.h"
 #include "mud/efactory.h"
 
-const String PortalDetail::names[] = {
+const std::string PortalDetail::names[] = {
 	S("none"),
 	S("in"),
 	S("on"),
@@ -35,13 +35,13 @@ const String PortalDetail::names[] = {
 	S("through"),
 };
 
-const String PortalUsage::names[] = {
+const std::string PortalUsage::names[] = {
 	S("walk"),
 	S("climb"),
 	S("crawl"),
 };
 
-const String PortalDir::names[] = {
+const std::string PortalDir::names[] = {
 	S("none"),
 	S("north"),
 	S("east"),
@@ -54,7 +54,7 @@ const String PortalDir::names[] = {
 	S("up"),
 	S("down"),
 };
-const String PortalDir::abbreviations[] = {
+const std::string PortalDir::abbreviations[] = {
 	S("x"),
 	S("n"),
 	S("e"),
@@ -84,7 +84,7 @@ PortalDir::dir_t PortalDir::opposites[] = {
 // local tables
 namespace {
 	// When You go {the-portal}
-	const String portal_go_table[PortalDetail::COUNT][PortalUsage::COUNT] = {
+	const std::string portal_go_table[PortalDetail::COUNT][PortalUsage::COUNT] = {
 		{
 			S("You head to {$portal.d}."),
 			S("You climb {$portal.d}."),
@@ -128,7 +128,7 @@ namespace {
 		},
 	};
 	// When {person} goes {the-portal}
-	const String portal_leaves_table[PortalDetail::COUNT][PortalUsage::COUNT] = {
+	const std::string portal_leaves_table[PortalDetail::COUNT][PortalUsage::COUNT] = {
 		{
 			S("{$actor.I} heads to {$portal.d}."),
 			S("{$actor.I} climbs {$portal.d}."),
@@ -172,7 +172,7 @@ namespace {
 		},
 	};
 	// When {person} enters from {the-portal}
-	const String portal_enters_table[PortalDetail::COUNT][PortalUsage::COUNT] = {
+	const std::string portal_enters_table[PortalDetail::COUNT][PortalUsage::COUNT] = {
 		{
 			S("{$actor.I} arrives from {$portal.d}."),
 			S("{$actor.I} climbs in from {$portal.d}."),
@@ -218,7 +218,7 @@ namespace {
 }
 
 PortalDir
-PortalDir::lookup (String name)
+PortalDir::lookup (std::string name)
 {
 	for (uint i = 0; i < COUNT; ++i)
 		if (names[i] == name)
@@ -227,7 +227,7 @@ PortalDir::lookup (String name)
 }
 
 PortalUsage
-PortalUsage::lookup (String name)
+PortalUsage::lookup (std::string name)
 {
 	for (uint i = 0; i < COUNT; ++i)
 		if (names[i] == name)
@@ -236,7 +236,7 @@ PortalUsage::lookup (String name)
 }
 
 PortalDetail
-PortalDetail::lookup (String name)
+PortalDetail::lookup (std::string name)
 {
 	for (uint i = 0; i < COUNT; ++i)
 		if (names[i] == name)
@@ -258,7 +258,7 @@ Portal::get_name () const
 }
 
 void
-Portal::add_keyword (String keyword)
+Portal::add_keyword (std::string keyword)
 {
 	keywords.push_back(keyword);
 }
@@ -327,7 +327,7 @@ Portal::has_room (Room* base) const
 bool
 Portal::is_valid () const
 {
-	return target && ZoneManager.get_room (target);
+	return !target.empty() && ZoneManager.get_room(target);
 }
 
 void
@@ -495,21 +495,21 @@ Portal::owner_release (Entity* child)
 	assert(false);
 }
 
-String
+std::string
 Portal::get_go () const
 {
 	// use table
 	return portal_go_table[detail.get_value()][usage.get_value()];
 }
 
-String
+std::string
 Portal::get_leaves () const
 {
 	// use table
 	return portal_leaves_table[detail.get_value()][usage.get_value()];
 }
 
-String
+std::string
 Portal::get_enters () const
 {
 	// use table
@@ -517,7 +517,7 @@ Portal::get_enters () const
 }
 
 bool
-Portal::name_match (String match) const
+Portal::name_match (std::string match) const
 {
 	if (name.matches(match))
 		return true;

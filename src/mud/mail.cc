@@ -19,13 +19,13 @@
 #include "config.h"
 
 void
-MailMessage::append (String data)
+MailMessage::append (std::string data)
 {
 	body << data;
 }
 
 void
-MailMessage::header (String name, String value)
+MailMessage::header (std::string name, std::string value)
 {
 	Header h;
 	h.name = name;
@@ -43,7 +43,7 @@ MailMessage::send (void) const
 	}
 
 	// configuration
-	String sendmail = SettingsManager.get_sendmail_bin();
+	std::string sendmail = SettingsManager.get_sendmail_bin();
 	if (!sendmail) {
 		Log::Error << "No sendmail binary configured";
 		return -1;

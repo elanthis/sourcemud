@@ -52,7 +52,7 @@
 // ---- BEGIN COLOURS ----
 
 // color names
-String color_value_names[] = {
+std::string color_value_names[] = {
 	S("normal"),
 	S("black"),
 	S("red"),
@@ -77,10 +77,10 @@ String color_value_names[] = {
 	S("darkmagenta"),
 	S("darkcyan"),
 	S("darkgrey"),
-	String()
+	std::string()
 };
 // colour ansi values
-String color_values[] = {
+std::string color_values[] = {
 	S(ANSI_NORMAL),
 	S(ANSI_BLACK),
 	S(ANSI_RED),
@@ -107,7 +107,7 @@ String color_values[] = {
 	S(ANSI_DARKGREY),
 };
 // colour type names
-String color_type_names[] = {
+std::string color_type_names[] = {
 	S("normal"),
 	S("title"),
 	S("desc"),
@@ -124,7 +124,7 @@ String color_type_names[] = {
 	S("statvgood"),
 	S("bold"),
 	S("talk"),
-	String()
+	std::string()
 };
 // default colour type mappings
 const int color_type_defaults[] = {
@@ -146,7 +146,7 @@ const int color_type_defaults[] = {
 	COLOR_CYAN
 };
 // colour type RGB values
-String color_type_rgb[] = {
+std::string color_type_rgb[] = {
 	S(""),
 	S("#0A0"),
 	S(""),
@@ -488,7 +488,7 @@ TelnetHandler::stream_put (const char *text, size_t len)
 					case 'C':
 						// zmp color?
 						if (io_flags.zmp_color) {
-							String argv[2] = {S("color.use"), S(&esc_buf[1])};
+							std::string argv[2] = {S("color.use"), S(&esc_buf[1])};
 							add_zmp(2, argv);
 						}
 						
@@ -507,14 +507,14 @@ TelnetHandler::stream_put (const char *text, size_t len)
 
 								// old color?
 								if (!colors.empty())
-									add_to_chunk (color_values[colors.back()], strlen (color_values[colors.back()]));
+									add_to_chunk(color_values[colors.back()].c_str(), color_values[colors.back()].size());
 
 							// other color
 							} else if (color > 0 && color < NUM_CTYPES) {
 								// put color
 								int cvalue = get_color (color);
 								colors.push_back(cvalue);
-								add_to_chunk (color_values[cvalue], strlen (color_values[cvalue]));
+								add_to_chunk(color_values[cvalue].c_str(), color_values[cvalue].size());
 							}
 						}
 
@@ -798,7 +798,7 @@ TelnetHandler::sock_input (char* buffer, size_t size)
 						// enable ZMP support
 						io_flags.zmp = true;
 						// send zmp.ident command
-						String argv[4] = {S("zmp.ident"), S("Source MUD"), S(PACKAGE_VERSION), S("Powerful C++ MUD server software") };
+						std::string argv[4] = {S("zmp.ident"), S("Source MUD"), S(PACKAGE_VERSION), S("Powerful C++ MUD server software") };
 						send_zmp(4, argv);
 						// check for net.sourcemud package
 						argv[0] = S("zmp.check");
@@ -902,7 +902,7 @@ TelnetHandler::set_mode (ITelnetMode* new_mode)
 void
 TelnetHandler::process_telnet_command(char* data)
 {
-	StringList args = explode(String(data), ' '); // FIXME: make more efficient
+	StringList args = explode(std::string(data), ' '); // FIXME: make more efficient
 	// enable/disable color
 	if (args.size() == 2 && args.front() == "color") {
 		if (args[1] == "on") {

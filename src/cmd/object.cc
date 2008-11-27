@@ -17,7 +17,7 @@
  * format: drink :0*
  *
  * END COMMAND */
-void command_drink (Creature* ch, String argv[])
+void command_drink (Creature* ch, std::string argv[])
 {
 	Object* obj = ch->cl_find_object (argv[0], GOC_ANY);
 	if (obj)
@@ -32,7 +32,7 @@ void command_drink (Creature* ch, String argv[])
  * format: eat :0*
  *
  * END COMMAND */
-void command_eat (Creature* ch, String argv[])
+void command_eat (Creature* ch, std::string argv[])
 {
 	Object* obj = ch->cl_find_object (argv[0], GOC_HELD);
 	if (obj)
@@ -47,7 +47,7 @@ void command_eat (Creature* ch, String argv[])
  * format: kick :0*
  *
  * END COMMAND */
-void command_kick (Creature* ch, String argv[])
+void command_kick (Creature* ch, std::string argv[])
 {
 	Object* obj = ch->cl_find_object (argv[0], GOC_ANY, true);
 	if (obj) {
@@ -69,7 +69,7 @@ void command_kick (Creature* ch, String argv[])
  * format: raise :0*
  *
  * END COMMAND */
-void command_raise (Creature* ch, String argv[])
+void command_raise (Creature* ch, std::string argv[])
 {
 	Object* obj = ch->cl_find_object (argv[0], GOC_HELD);
 	if (obj)
@@ -84,7 +84,7 @@ void command_raise (Creature* ch, String argv[])
  * format: read :0*
  *
  * END COMMAND */
-void command_read (Creature* ch, String argv[])
+void command_read (Creature* ch, std::string argv[])
 {
 	Object* obj = ch->cl_find_object (argv[0], GOC_ANY);
 	if (obj)
@@ -99,7 +99,7 @@ void command_read (Creature* ch, String argv[])
  * format: touch :0*
  *
  * END COMMAND */
-void command_touch (Creature* ch, String argv[])
+void command_touch (Creature* ch, std::string argv[])
 {
 	Object* obj = ch->cl_find_object (argv[0], GOC_ANY);
 	if (obj)

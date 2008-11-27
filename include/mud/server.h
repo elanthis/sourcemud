@@ -17,7 +17,7 @@ namespace MUD {
 	void shutdown ();
 
 	// get uptime
-	String get_uptime ();
+	std::string get_uptime ();
 }
 
 #endif

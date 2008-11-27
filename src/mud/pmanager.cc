@@ -12,18 +12,18 @@
 #include "mud/settings.h"
 
 // helper function to generate path names
-String
-SPlayerManager::path (String name)
+std::string
+SPlayerManager::path (std::string name)
 {
 	return SettingsManager.get_player_path() + "/" + strlower(name) + ".ply";
 }
 
 // check if a name is valid
 bool
-SPlayerManager::valid_name (String name)
+SPlayerManager::valid_name (std::string name)
 {
 	// empty?  just fail
-	if (!name)
+	if (name.empty())
 		return false;
 
 	// lower case
@@ -40,9 +40,9 @@ SPlayerManager::valid_name (String name)
 			return false;
 
 	// check 'badnames' file
-	String path = SettingsManager.get_player_path() + "/badnames";
+	std::string path = SettingsManager.get_player_path() + "/badnames";
 
-	std::ifstream badnames (path);
+	std::ifstream badnames(path.c_str());
 	if (!badnames) {
 		Log::Error << "Failed to open " << path;
 		return true;
@@ -60,9 +60,9 @@ SPlayerManager::valid_name (String name)
 
 // find a Player
 Player *
-SPlayerManager::get (String name)
+SPlayerManager::get (std::string name)
 {
-	assert (name);
+	assert(!name.empty() && "name must not be empty");
 
 	// try loading alive
 	for (PlayerList::iterator i = player_list.begin(); i != player_list.end(); ++i)
@@ -130,7 +130,7 @@ SPlayerManager::shutdown (void)
 }
 
 Player*
-SPlayerManager::load (Account* account, String name)
+SPlayerManager::load (Account* account, std::string name)
 {
 	// must be valid before attempting load
 	if (!valid_name(name))
@@ -162,7 +162,7 @@ SPlayerManager::load (Account* account, String name)
 }
 
 bool
-SPlayerManager::exists (String name)
+SPlayerManager::exists (std::string name)
 {
 	// must be a valid name
 	if (!valid_name(name))
@@ -178,7 +178,7 @@ SPlayerManager::exists (String name)
 	}
 
 	// check if player file exists
-	String path = PlayerManager.path(name);
+	std::string path = PlayerManager.path(name);
 	struct stat st;
 	int res = stat (path.c_str(), &st);
 	if (res == 0)
@@ -190,7 +190,7 @@ SPlayerManager::exists (String name)
 }
 
 int
-SPlayerManager::destroy (String name)
+SPlayerManager::destroy (std::string name)
 {
 	// must be a valid name
 	if (!valid_name(name))
@@ -206,11 +206,11 @@ SPlayerManager::destroy (String name)
 	}
 
 	// backup file
-	String path = PlayerManager.path(name);
+	std::string path = PlayerManager.path(name);
 	struct stat st;
-	if (!stat(path, &st)) {
-		String backup = path + ".del";
-		if (rename (path, backup)) { // move file
+	if (!stat(path.c_str(), &st)) {
+		std::string backup = path + ".del";
+		if (rename(path.c_str(), backup.c_str())) { // move file
 			Log::Error << "Backup of " << path << " to " << backup << " failed: " << strerror(errno);
 			return 2;
 		}

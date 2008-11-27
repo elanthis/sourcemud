@@ -168,7 +168,7 @@ HTTPHandler::process ()
 			url = parts[1];
 			const char* sep = strchr(url.c_str(), '?');
 			if (sep != NULL) {
-				path = String(url.c_str(), sep - url.c_str());
+				path = std::string(url.c_str(), sep - url.c_str());
 				parse_request_data(get, sep + 1);
 			} else {
 				path = url;
@@ -222,11 +222,11 @@ HTTPHandler::process ()
 				if ((sid_start = strstr(c + 2, "session=")) != NULL) {
 					sid_start = strchr(sid_start, '=') + 1;
 					const char* sid_end = strchr(sid_start, ';');
-					String sid;
+					std::string sid;
 					if (sid_end == NULL)
-						sid = String(sid_start);
+						sid = std::string(sid_start);
 					else
-						sid = String(sid_start, sid_end - sid_start);
+						sid = std::string(sid_start, sid_end - sid_start);
 
 					// get the session (may be NULL if expired/invalid)
 					session = HTTPManager.get_session(sid);
@@ -255,7 +255,7 @@ HTTPHandler::process ()
 }
 	
 void
-HTTPHandler::parse_request_data (std::map<String,String>& map, const char* line) const
+HTTPHandler::parse_request_data (std::map<std::string,std::string>& map, const char* line) const
 {
 	// parse the data
 	StringBuffer value;
@@ -291,7 +291,7 @@ HTTPHandler::parse_request_data (std::map<String,String>& map, const char* line)
 		}
 
 		// get reference to value
-		String& vref = map[value.str()];
+		std::string& vref = map[value.str()];
 
 		// decode the value, if we have one
 		if (sep != end) {
@@ -328,9 +328,9 @@ HTTPHandler::execute()
 
 	// DEBUG: Log request variables
 	/*
-	for (std::map<String,String>::iterator i = get.begin(); i != get.end(); ++i)
+	for (std::map<std::string,std::string>::iterator i = get.begin(); i != get.end(); ++i)
 		Log::Info << "GET: " << i->first << "=" << i->second;
-	for (std::map<String,String>::iterator i = post.begin(); i != post.end(); ++i)
+	for (std::map<std::string,std::string>::iterator i = post.begin(); i != post.end(); ++i)
 		Log::Info << "POST: " << i->first << "=" << i->second;
 	*/
 
@@ -367,7 +367,7 @@ HTTPHandler::page_index()
 void
 HTTPHandler::page_login()
 {
-	String msg;
+	std::string msg;
 
 	*this << "HTTP/1.0 200 OK\nContent-type: text/html\n";
 
@@ -410,15 +410,15 @@ HTTPHandler::page_account()
 		return;
 	}
 
-	String msg;
+	std::string msg;
 	if (get_post(S("action")) == "Save Changes") {
-		String name = strip(post[S("acct_name")]);
-		String email = strip(post[S("acct_email")]);
+		std::string name = strip(post[S("acct_name")]);
+		std::string email = strip(post[S("acct_email")]);
 		if (name.empty() || email.empty()) {
 			msg = S("You may not enter an empty name or email address.");
 		} else {
-			String pass1 = post[S("new_pass1")];
-			String pass2 = post[S("new_pass2")];
+			std::string pass1 = post[S("new_pass1")];
+			std::string pass2 = post[S("new_pass2")];
 
 			if (pass1 != pass2) {
 				msg = S("Passphrases do not match.");
@@ -443,10 +443,10 @@ HTTPHandler::page_account()
 }
 
 void
-HTTPHandler::http_error (int error, String msg)
+HTTPHandler::http_error (int error, std::string msg)
 {
 	// lookup HTTP error msg code
-	String http_msg;
+	std::string http_msg;
 	switch (error) {
 		case 200: http_msg=S("OK"); break;
 		case 400: http_msg=S("Bad Request"); break;
@@ -466,32 +466,32 @@ HTTPHandler::http_error (int error, String msg)
 		<< StreamMacro(HTTPManager.get_template(S("footer")));
 
 	// log error
-	Log::Network << (reqtype == GET ? "GET" : reqtype == POST ? "POST" : "-") << " " << (url ? url : S("-")) << " " << error << " " << (get_account() ? get_account()->get_id() : S("-")) << " " << Network::get_addr_name(addr) << " <" << msg << ">";
+	Log::Network << (reqtype == GET ? "GET" : reqtype == POST ? "POST" : "-") << " " << (url.empty() ? "-" : url) << " " << error << " " << (get_account() ? get_account()->get_id() : S("-")) << " " << Network::get_addr_name(addr) << " <" << msg << ">";
 
 	// set error state
 	state = ERROR;
 }
 
-String
-HTTPHandler::get_request (String id) const
+std::string
+HTTPHandler::get_request (std::string id) const
 {
-	std::map<String,String>::const_iterator i = get.find(id);
+	std::map<std::string,std::string>::const_iterator i = get.find(id);
 	if (i == get.end())
-		return String();
+		return std::string();
 	return i->second;
 }
 
-String
-HTTPHandler::get_post (String id) const
+std::string
+HTTPHandler::get_post (std::string id) const
 {
-	std::map<String,String>::const_iterator i = post.find(id);
+	std::map<std::string,std::string>::const_iterator i = post.find(id);
 	if (i == post.end())
-		return String();
+		return std::string();
 	return i->second;
 }
 
 int
-HTTPHandler::macro_property (const StreamControl& stream, String method, const MacroList& argv) const
+HTTPHandler::macro_property (const StreamControl& stream, std::string method, const MacroList& argv) const
 {
 	if (method == "post" && argv.size() == 1) {
 		stream.stream_put(get_post(argv[0].get_string()));
@@ -525,7 +525,7 @@ HTTPSession::HTTPSession (Account* account)
 	buf << timestamp;
 	char md5buf[MD5_BUFFER_SIZE];
 	MD5::hash(buf.c_str(), md5buf);
-	id = String(md5buf);
+	id = std::string(md5buf);
 }
 
 void
@@ -540,17 +540,17 @@ HTTPSession::check_timestamp ()
 	return (time(NULL) - timestamp) < SettingsManager.get_http_timeout() * 60;
 }
 
-String
-HTTPSession::get_var (String id) const
+std::string
+HTTPSession::get_var (std::string id) const
 {
-	std::map<String,String>::const_iterator i = vars.find(id);
+	std::map<std::string,std::string>::const_iterator i = vars.find(id);
 	if (i == vars.end())
-		return String();
+		return std::string();
 	return i->second;
 }
 
 void
-HTTPSession::set_var (String id, String val)
+HTTPSession::set_var (std::string id, std::string val)
 {
 	vars[id] = val;
 }
@@ -572,7 +572,7 @@ SHTTPManager::initialize (void)
 	StringList files = file::getFileList(SettingsManager.get_html_path(),
 			S("tpl"));
 	for (StringList::iterator i = files.begin(); i != files.end(); ++i) {
-		FILE* in = fopen(*i, "rt");
+		FILE* in = fopen(i->c_str(), "rt");
 		if (in == NULL) {
 			Log::Error << "Failed to load HTML template " << *i << ": " << strerror(errno);
 			return -1;
@@ -586,7 +586,7 @@ SHTTPManager::initialize (void)
 
 		// clean up
 		fclose(in);
-		templates[base_name(*i)] = buf.str();
+		templates[base_name(i->c_str())] = buf.str();
 	}
 
 	// all good
@@ -599,11 +599,11 @@ SHTTPManager::shutdown (void)
 	templates.clear();
 }
 
-String
-SHTTPManager::get_template (String id)
+std::string
+SHTTPManager::get_template (std::string id)
 {
 	TemplateMap::iterator i = templates.find(id);
-	return i != templates.end() ? i->second : String();
+	return i != templates.end() ? i->second : std::string();
 }
 
 HTTPSession*
@@ -630,7 +630,7 @@ SHTTPManager::destroy_session (HTTPSession* session)
 }
 
 HTTPSession*
-SHTTPManager::get_session (String id)
+SHTTPManager::get_session (std::string id)
 {
 	SessionMap::iterator i = sessions.find(id);
 	if (i == sessions.end())
@@ -657,7 +657,7 @@ SHTTPManager::check_timeouts ()
 const StreamControl&
 operator << (const StreamControl& stream, const StreamHTTPEscape& esc)
 {
-	for (String::const_iterator i = esc.text.begin(); i != esc.text.end(); ++i) {
+	for (std::string::const_iterator i = esc.text.begin(); i != esc.text.end(); ++i) {
 		if (*i == '<')
 			stream.stream_put("&lt;");
 		else if (*i == '>')

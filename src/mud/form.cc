@@ -11,7 +11,7 @@
 
 StringList FormColor::names;
 
-String FormBuild::names[] = {
+std::string FormBuild::names[] = {
 	S("none"),
 	S("hunched"),
 	S("gaunt"),
@@ -23,7 +23,7 @@ String FormBuild::names[] = {
 	S("athletic"),
 };
 
-String FormHeight::names[] = {
+std::string FormHeight::names[] = {
 	S("none"),
 	S("tiny"),
 	S("short"),
@@ -31,7 +31,7 @@ String FormHeight::names[] = {
 	S("tall"),
 };
 
-String FormHairStyle::names [] = {
+std::string FormHairStyle::names [] = {
 	S("none"),
 	S("long, straight"),
 	S("long, wavy"),
@@ -41,17 +41,17 @@ String FormHairStyle::names [] = {
 	S("short, curly"),
 };
 
-String
+std::string
 FormColor::get_name () const
 {
 	if (!valid())
-		return String();
+		return std::string();
 	else
 		return names[value-1];
 }
 
 FormColor
-FormColor::lookup (String name)
+FormColor::lookup (std::string name)
 {
 	for (size_t i = 0; i < names.size(); ++i) {
 		if (names[i] == name)
@@ -61,7 +61,7 @@ FormColor::lookup (String name)
 }
 
 FormColor
-FormColor::create (String name)
+FormColor::create (std::string name)
 {
 	for (size_t i = 0; i < names.size(); ++i) {
 		if (names[i] == name)
@@ -72,7 +72,7 @@ FormColor::create (String name)
 }
 
 FormBuild
-FormBuild::lookup (String name)
+FormBuild::lookup (std::string name)
 {
 	for (size_t i = 0; i < COUNT; ++i) {
 		if (names[i] == name)
@@ -82,7 +82,7 @@ FormBuild::lookup (String name)
 }
 
 FormHeight
-FormHeight::lookup (String name)
+FormHeight::lookup (std::string name)
 {
 	for (size_t i = 0; i < COUNT; ++i) {
 		if (names[i] == name)
@@ -92,7 +92,7 @@ FormHeight::lookup (String name)
 }
 
 FormHairStyle
-FormHairStyle::lookup (String name)
+FormHairStyle::lookup (std::string name)
 {
 	for (size_t i = 0; i < COUNT; ++i) {
 		if (names[i] == name)

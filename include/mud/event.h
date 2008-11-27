@@ -21,7 +21,7 @@ class Room;
 class EventHandler {
 	protected:
 	EventID event;
-	String script;
+	std::string script;
 
 	public:
 	EventHandler ();
@@ -83,7 +83,7 @@ class SEventManager : public IManager
 	bool events_pending () { return !events.empty(); }
 
 	// compile an event handler script
-	int compile (EventID id, String source, String filename, unsigned long fileline);
+	int compile (EventID id, std::string source, std::string filename, unsigned long fileline);
 
 	// process events
 	void process ();

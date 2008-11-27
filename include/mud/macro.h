@@ -14,7 +14,7 @@
 
 class MacroValue;
 
-typedef std::map<String, MacroValue> MacroArgs;
+typedef std::map<std::string, MacroValue> MacroArgs;
 typedef std::vector<MacroValue> MacroList;
 
 class IMacroObject
@@ -23,7 +23,7 @@ class IMacroObject
 	virtual ~IMacroObject () {}
 
 	// return non-zero if the requested method/property does not exist
-	virtual int macro_property (const class StreamControl& stream, String method, const MacroList& argv) const = 0;
+	virtual int macro_property (const class StreamControl& stream, std::string method, const MacroList& argv) const = 0;
 
 	// stream a default desc/name/whatever
 	virtual void macro_default (const class StreamControl& stream) const = 0;
@@ -37,7 +37,7 @@ class MacroValue
 	// constructors
 	MacroValue () : type(T_NULL), object(NULL), string() {}
 	MacroValue (const IMacroObject* s_object) : type(s_object == NULL ? T_NULL : T_OBJECT), object(s_object), string() {}
-	MacroValue (String s_string) : type(T_STRING), object(NULL), string(s_string) {}
+	MacroValue (std::string s_string) : type(T_STRING), object(NULL), string(s_string) {}
 
 	// fetch the type of the mixed value
 	Type get_type () const { return type; }
@@ -47,31 +47,31 @@ class MacroValue
 
 	// specific getters
 	const IMacroObject* get_object () const { return this->object; }
-	const String& get_string () const { return this->string; }
+	const std::string& get_string () const { return this->string; }
 
 	// assign
 	const IMacroObject* operator= (const IMacroObject* object) { type = (object == NULL ? T_NULL : T_OBJECT); return this->object = object; }
-	const String& operator= (String string) { type = T_STRING; return this->string = string; }
+	const std::string& operator= (std::string string) { type = T_STRING; return this->string = string; }
 	MacroValue& operator= (const MacroValue& base) { type = base.type; object = base.object; string = base.string; return *this; }
 
 	private:
 	Type type;
 	const IMacroObject* object;
-	String string;
+	std::string string;
 };
 
 namespace macro {
-	const StreamControl& text (const StreamControl& stream, String format, const MacroArgs& argv);
+	const StreamControl& text (const StreamControl& stream, std::string format, const MacroArgs& argv);
 }
 
 // macro info
 struct StreamMacro {
-	StreamMacro(String s_text);
-	StreamMacro(String s_text, String s_name, MacroValue s_value);
-	StreamMacro(String s_text, String s_name1, MacroValue s_value1, String s_name2, MacroValue s_value2);
-	StreamMacro(String s_text, String s_name1, MacroValue s_value1, String s_name2, MacroValue s_value2, String s_name3, MacroValue s_value3);
+	StreamMacro(std::string s_text);
+	StreamMacro(std::string s_text, std::string s_name, MacroValue s_value);
+	StreamMacro(std::string s_text, std::string s_name1, MacroValue s_value1, std::string s_name2, MacroValue s_value2);
+	StreamMacro(std::string s_text, std::string s_name1, MacroValue s_value1, std::string s_name2, MacroValue s_value2, std::string s_name3, MacroValue s_value3);
 
-	StreamMacro& add (String s_name, MacroValue s_value);
+	StreamMacro& add (std::string s_name, MacroValue s_value);
 
 	friend inline
 	const StreamControl&
@@ -81,7 +81,7 @@ struct StreamMacro {
 	}
 
 	private:
-	String text;
+	std::string text;
 	MacroArgs argv;
 };
 

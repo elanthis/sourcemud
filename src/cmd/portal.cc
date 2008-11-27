@@ -17,7 +17,7 @@
  * format: open :0*
  *
  * END COMMAND */
-void command_open(Creature* ch, String argv[]) {
+void command_open(Creature* ch, std::string argv[]) {
 	Portal* portal;
 	if ((portal = ch->cl_find_portal (argv[0])) != NULL) {
 		if (portal->is_door ())
@@ -35,7 +35,7 @@ void command_open(Creature* ch, String argv[]) {
  * format: close :0*
  *
  * END COMMAND */
-void command_close(Creature* ch, String argv[]) {
+void command_close(Creature* ch, std::string argv[]) {
 	Portal* portal;
 	if ((portal = ch->cl_find_portal (argv[0])) != NULL) {
 		if (portal->is_door ())
@@ -53,7 +53,7 @@ void command_close(Creature* ch, String argv[]) {
  * format: lock :0*
  *
  * END COMMAND */
-void command_lock(Creature* ch, String argv[]) {
+void command_lock(Creature* ch, std::string argv[]) {
 	Portal* portal;
 	if ((portal = ch->cl_find_portal (argv[0])) != NULL) {
 		if (portal->is_door ())
@@ -71,7 +71,7 @@ void command_lock(Creature* ch, String argv[]) {
  * format: unlock :0*
  *
  * END COMMAND */
-void command_unlock(Creature* ch, String argv[]) {
+void command_unlock(Creature* ch, std::string argv[]) {
 	Portal* portal;
 	if ((portal = ch->cl_find_portal (argv[0])) != NULL) {
 		if (portal->is_door ())

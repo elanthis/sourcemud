@@ -19,7 +19,7 @@ NpcBP
 	NpcBP ();
 
 	// blueprint id
-	inline String get_id () const { return id; }
+	inline std::string get_id () const { return id; }
 
 	// npc
 	inline const StringList& get_equip_list () const { return equip_list; }
@@ -33,14 +33,14 @@ NpcBP
 
 	// name
 	inline const EntityName& get_name () const { return name; }
-	inline bool set_name (String s_name) { bool ret = name.set_name(s_name); set_flags.name = true; return ret; }
+	inline bool set_name (std::string s_name) { bool ret = name.set_name(s_name); set_flags.name = true; return ret; }
 	void reset_name ();
 
 	inline const StringList& get_keywords () const { return keywords; }
 
 	// description
-	inline const String& get_desc () const { return desc; }
-	inline void set_desc (String s_desc) { desc = s_desc; set_flags.desc = true; }
+	inline const std::string& get_desc () const { return desc; }
+	inline void set_desc (std::string s_desc) { desc = s_desc; set_flags.desc = true; }
 	void reset_desc ();
 
 	// stats
@@ -68,9 +68,9 @@ NpcBP
 	void refresh ();
 
 	private:
-	String id;
+	std::string id;
 	EntityName name;
-	String desc;
+	std::string desc;
 	StringList keywords;
 	GenderType gender;
 	CreatureStatArray base_stats;
@@ -105,20 +105,20 @@ class Npc : public Creature
 	Npc ();
 	Npc (NpcBP* s_blueprint);
 
-	virtual String factory_type () const { return S("npc"); }
+	virtual std::string factory_type () const { return S("npc"); }
 
 	// blueprints
 	virtual NpcBP* get_blueprint () const { return blueprint; }
 	void set_blueprint (NpcBP* s_blueprint);
-	static Npc* load_blueprint (String name);
+	static Npc* load_blueprint (std::string name);
 
 	// name info
 	virtual EntityName get_name () const;
 
-	virtual bool name_match (String name) const;
+	virtual bool name_match (std::string name) const;
 
 	// description
-	virtual String get_desc () const;
+	virtual std::string get_desc () const;
 
 	// gender
 	virtual GenderType get_gender () const;
@@ -133,10 +133,10 @@ class Npc : public Creature
 	virtual void save_hook (File::Writer& writer);
 
 	// display
-	virtual String ncolor () const { return S(CNPC); }
+	virtual std::string ncolor () const { return S(CNPC); }
 
 	// return ture if we derive from the named blueprint
-	bool is_blueprint (String blueprint) const;
+	bool is_blueprint (std::string blueprint) const;
 
 	// combat
 	virtual uint get_combat_dodge () const;
@@ -185,13 +185,13 @@ class Npc : public Creature
 
 class SNpcBPManager : public IManager
 {
-	typedef std::map<String,NpcBP*> BlueprintMap;
+	typedef std::map<std::string,NpcBP*> BlueprintMap;
 
 	public:
 	int initialize();
 	void shutdown();
 
-	NpcBP* lookup (String id);
+	NpcBP* lookup (std::string id);
 
 	private:
 	BlueprintMap blueprints;

@@ -150,7 +150,7 @@ void SCommandManager::add(Command *command)
 }
 
 int
-SCommandManager::call (Creature *ch, String comm) {
+SCommandManager::call (Creature *ch, std::string comm) {
 	Player *ply = PLAYER(ch);
 
 	// break up words
@@ -174,7 +174,7 @@ SCommandManager::call (Creature *ch, String comm) {
 		return 1;
 
 	// find the command if we can, using the phrase command list
-	String argv[MAX_COMMAND_ARGS];
+	std::string argv[MAX_COMMAND_ARGS];
 	int best_score = -1, result = 0;
 	CommandList best_cmds;
 	for (std::vector<CommandFormat>::const_iterator f = formats.begin(), e = formats.end(); f != e; ++f) {
@@ -305,7 +305,7 @@ Command::show_man (StreamControl& stream)
 
 // build command
 int
-CommandFormat::build (String s_format)
+CommandFormat::build (std::string s_format)
 {
 	int arg;
 	bool opt;
@@ -392,7 +392,7 @@ CommandFormat::build (String s_format)
 }
 
 // match command nodes
-int CommandFormat::trymatch(int node, char** words, String argv[]) const
+int CommandFormat::trymatch(int node, char** words, std::string argv[]) const
 {
 	int result;
 	int cnt;
@@ -420,7 +420,7 @@ int CommandFormat::trymatch(int node, char** words, String argv[]) const
 		case CommandFormatNode::WORD:
 			// store the word
 			if (nodes[node].arg >= 0)
-				argv[nodes[node].arg] = String(words[0]);
+				argv[nodes[node].arg] = std::string(words[0]);
 
 			// try the next node, return on success
 			result = trymatch(node + 1, &words[1], argv);
@@ -455,7 +455,7 @@ int CommandFormat::trymatch(int node, char** words, String argv[]) const
 
 			// store phrase
 			if (nodes[node].arg >= 0)
-				argv[nodes[node].arg] = String(repair(words[0], cnt));
+				argv[nodes[node].arg] = std::string(repair(words[0], cnt));
 
 			// we have successfully matched all following nodes already,
 			// so we can just return the success code
@@ -557,7 +557,7 @@ Command::operator< (const Command& command) const
 
 // show a man page; return false if cmd_name is not found
 bool
-SCommandManager::show_man (StreamControl& stream, String name, bool quiet)
+SCommandManager::show_man (StreamControl& stream, std::string name, bool quiet)
 {
 	// find exact match?
 	for (CommandList::iterator i = commands.begin(); i != commands.end(); ++i) {
@@ -601,7 +601,7 @@ SCommandManager::show_man (StreamControl& stream, String name, bool quiet)
 }
 
 void
-Creature::process_command (String line)
+Creature::process_command (std::string line)
 {
 	CommandManager.call (this, line);
 }
@@ -609,7 +609,7 @@ Creature::process_command (String line)
 // Helper functions for the Creature::cl_find_* functions
 namespace {
 	// skip a word and following white space
-	void skip_word (CString& ptr)
+	void skip_word (const char*& ptr)
 	{
 		// skip the word
 		while (*ptr != 0 && !isspace(*ptr))
@@ -621,7 +621,7 @@ namespace {
 	}
 
 	// return true if the string matches 'test' followed by a space or NUL
-	bool word_match (CString string, CString test)
+	bool word_match (const char* string, const char* test)
 	{
 		// if there's no match, it's false
 		if (strncasecmp(string, test, strlen(test)))
@@ -632,13 +632,13 @@ namespace {
 	}
 
 	// return true if a string has no more creatures
-	inline bool str_empty (CString string)
+	inline bool str_empty (const char* string)
 	{
 		return string[0] == 0;
 	}
 
 	// return a numeric value of the next word in the input
-	uint str_value (CString string)
+	uint str_value (const char* string)
 	{
 		// first, check for simple number
 		char* end;
@@ -680,7 +680,7 @@ namespace {
 
 // parse a command line to get an object
 Object* 
-Creature::cl_find_object (String line, int type, bool silent)
+Creature::cl_find_object (std::string line, int type, bool silent)
 {
 	uint matches;
 	Object* object;
@@ -716,7 +716,7 @@ Creature::cl_find_object (String line, int type, bool silent)
 	}
 
 	// store name
-	String name (text);
+	std::string name (text);
 
 	// search room
 	if (type & GOC_FLOOR && get_room() != NULL) {
@@ -775,7 +775,7 @@ Creature::cl_find_object (String line, int type, bool silent)
 
 // find an object inside a particular container
 Object*
-Creature::cl_find_object (String line, Object* container, ObjectLocation type, bool silent)
+Creature::cl_find_object (std::string line, Object* container, ObjectLocation type, bool silent)
 {
 	const char* text = line.c_str();
 
@@ -805,7 +805,7 @@ Creature::cl_find_object (String line, Object* container, ObjectLocation type, b
 	}
 
 	// store name
-	String name (text);
+	std::string name (text);
 
 	// search room
 	Object* object = container->find_object (name, index, type);
@@ -820,7 +820,7 @@ Creature::cl_find_object (String line, Object* container, ObjectLocation type, b
 
 // parse a command line to get a creature
 Creature* 
-Creature::cl_find_creature (String line, bool silent)
+Creature::cl_find_creature (std::string line, bool silent)
 {
 	const char* text = line.c_str();
 
@@ -852,7 +852,7 @@ Creature::cl_find_creature (String line, bool silent)
 		return NULL;
 	}
 
-	Creature* ch = get_room()->find_creature (String(text), index);
+	Creature* ch = get_room()->find_creature (std::string(text), index);
 	if (ch == NULL && !silent)
 		*this << "You do not see '" << text << "'.\n";
 
@@ -861,7 +861,7 @@ Creature::cl_find_creature (String line, bool silent)
 
 /* parse a command line to get an portal*/
 Portal* 
-Creature::cl_find_portal (String line, bool silent)
+Creature::cl_find_portal (std::string line, bool silent)
 {
 	const char* text = line.c_str();
 
@@ -892,7 +892,7 @@ Creature::cl_find_portal (String line, bool silent)
 		return NULL;
 	}
 
-	String name(text);
+	std::string name(text);
 	Portal* portal;
 	do {
 		portal = get_room()->find_portal (name, index++);
@@ -907,7 +907,7 @@ Creature::cl_find_portal (String line, bool silent)
 
 // parse a command line to get a creature, object, or portal
 Entity* 
-Creature::cl_find_any (String line, bool silent)
+Creature::cl_find_any (std::string line, bool silent)
 {
 	uint matches;
 
@@ -924,7 +924,7 @@ Creature::cl_find_any (String line, bool silent)
 	if (word_match(text, "my")) {
 		// do 'my' object search
 		skip_word(text);
-		return cl_find_object(String(text), GOC_EQUIP, silent);
+		return cl_find_object(std::string(text), GOC_EQUIP, silent);
 	} else if (word_match(text, "the")) {
 		skip_word(text);
 	}
@@ -943,7 +943,7 @@ Creature::cl_find_any (String line, bool silent)
 		return NULL;
 	}
 
-	String name(text);
+	std::string name(text);
 
 	// look for a creature
 	if (get_room()) {
@@ -1032,7 +1032,7 @@ Creature::cl_find_any (String line, bool silent)
 }
 
 void
-Player::process_command (String line)
+Player::process_command (std::string line)
 {
 	if (str_eq(line, S("quit"))) {
 		end_session();
@@ -1053,7 +1053,7 @@ Player::process_command (String line)
 		if (line[1] == '\0')
 			*this << "Say what?\n";
 		else
-			do_say (String(line.c_str() + 1)); // FIXME: make this more efficient
+			do_say (std::string(line.c_str() + 1)); // FIXME: make this more efficient
 		return;
 	}
 
@@ -1063,7 +1063,7 @@ Player::process_command (String line)
 		if (line[1] == '\0')
 			*this << "Do what?\n";
 		else
-			do_emote(String(line.c_str() + 1)); // FIXME: make this more efficient
+			do_emote(std::string(line.c_str() + 1)); // FIXME: make this more efficient
 		return;
 	}
 

@@ -21,8 +21,8 @@ class StringBuffer : public IStreamSink
 	~StringBuffer();
 
 	bool empty () const { return buffer[0] == 0; }
-	String str () const { return String(buffer); }
-	CString c_str () const { return buffer; }
+	std::string str () const { return std::string(buffer); }
+	const char* c_str () const { return buffer; }
 
 	size_t size () const { return strlen(buffer); }
 
@@ -42,7 +42,7 @@ class StringBuffer : public IStreamSink
 inline
 const StreamControl& operator << (const StreamControl& stream, StringBuffer& buffer)
 {
-	return stream.stream_put(buffer.str());
+	return stream.stream_put(buffer.str().c_str());
 }
 
 #endif

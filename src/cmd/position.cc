@@ -15,7 +15,7 @@
  * format: kneel
  *
  * END COMMAND */
-void command_kneel(Creature* ch, String[]) {
+void command_kneel(Creature* ch, std::string[]) {
 	ch->do_position (CreaturePosition::KNEEL);
 }
 
@@ -26,7 +26,7 @@ void command_kneel(Creature* ch, String[]) {
  * format: lay
  *
  * END COMMAND */
-void command_lay(Creature* ch, String[]) {
+void command_lay(Creature* ch, std::string[]) {
 	ch->do_position (CreaturePosition::LAY);
 }
 
@@ -37,7 +37,7 @@ void command_lay(Creature* ch, String[]) {
  * format: sit
  *
  * END COMMAND */
-void command_sit(Creature* ch, String[]) {
+void command_sit(Creature* ch, std::string[]) {
 	ch->do_position (CreaturePosition::SIT);
 }
 
@@ -48,6 +48,6 @@ void command_sit(Creature* ch, String[]) {
  * format: stand
  *
  * END COMMAND */
-void command_stand(Creature* ch, String[]) {
+void command_stand(Creature* ch, std::string[]) {
 	ch->do_position (CreaturePosition::STAND);
 }

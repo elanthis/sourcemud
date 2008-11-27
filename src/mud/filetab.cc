@@ -17,7 +17,7 @@
 #include "common/log.h"
 
 int
-File::TabReader::open (String filename)
+File::TabReader::open (std::string filename)
 {
 	// open
 	in.open(filename.c_str());
@@ -125,10 +125,10 @@ File::TabReader::load ()
 	return 0;
 }
 
-String
+std::string
 File::TabReader::get (size_t line, size_t col) const
 {
 	if (entries[line].second.size() <= col)
-		return String();
+		return std::string();
 	return entries[line].second[col];
 }

@@ -56,13 +56,13 @@ class TelnetModeRealNewCharacter : public TelnetModeNewCharacter
 	private:
 	void display ();
 	void create ();
-	void show_error (String msg);
+	void show_error (std::string msg);
 	void enter_state (state_t state);
 
-	static bool is_match (String test, String operand);
+	static bool is_match (std::string test, std::string operand);
 
 	Account* account;
-	String name;
+	std::string name;
 	state_t state;
 	int tokens;
 	int stats[CreatureStatID::COUNT];
@@ -82,7 +82,7 @@ TelnetModeNewCharacter::create (TelnetHandler* handler, Account* account)
 	return new TelnetModeRealNewCharacter (handler, account);
 }
 
-bool TelnetModeRealNewCharacter::is_match (String test, String operand)
+bool TelnetModeRealNewCharacter::is_match (std::string test, std::string operand)
 {
 	return !operand.empty() && !strncasecmp(test.c_str(), operand.c_str(), operand.size());
 }
@@ -153,7 +153,7 @@ void TelnetModeRealNewCharacter::prompt ()
 // PROCESS INPUT FOR CURRENT STATE
 void TelnetModeRealNewCharacter::process (char* line)
 {
-	String input = strlower(S(line));
+	std::string input = strlower(S(line));
 	int numeric = tolong(input);
 
 	if (input == S("quit")) {
@@ -181,7 +181,7 @@ void TelnetModeRealNewCharacter::process (char* line)
 			enter_state(state == STATE_NAME ? STATE_NAME_CONFIRM : STATE_RENAME_CONFIRM);
 			break;
 		case STATE_NAME_CONFIRM:
-			if (!input || is_match(S("yes"), input))
+			if (input.empty() || is_match(S("yes"), input))
 				enter_state(state == STATE_NAME_CONFIRM ? STATE_RACE : STATE_FINAL_CONFIRM);
 			else if (is_match(S("no"), input))
 				enter_state(STATE_NAME);
@@ -211,7 +211,7 @@ void TelnetModeRealNewCharacter::process (char* line)
 			break;
 		}
 		case STATE_RACE_CONFIRM:
-			if (!input || is_match(S("yes"), input))
+			if (input.empty() || is_match(S("yes"), input))
 				enter_state(STATE_GENDER);
 			else if (is_match(S("no"), input))
 				enter_state(STATE_RACE);
@@ -290,7 +290,7 @@ void TelnetModeRealNewCharacter::process (char* line)
 			show_error(S("I do not understand thy response."));
 	  		break;
 		case STATE_FORM_CONFIRM:
-			if (!input || is_match(S("yes"), input))
+			if (input.empty() || is_match(S("yes"), input))
 				enter_state(STATE_STATS);
 			else if (is_match(S("no"), input))
 				enter_state(STATE_GENDER); // redo gender and height, too
@@ -338,7 +338,7 @@ void TelnetModeRealNewCharacter::process (char* line)
 			break;
 		}
 		case STATE_STATS_CONFIRM:
-			if (!input || is_match(S("yes"), input))
+			if (input.empty() || is_match(S("yes"), input))
 				enter_state(STATE_FINAL_CONFIRM);
 			else if (is_match(S("no"), input))
 				enter_state(STATE_STATS);
@@ -346,7 +346,7 @@ void TelnetModeRealNewCharacter::process (char* line)
 				show_error(S("I do not understand thy response."));
 			break;
 		case STATE_FINAL_CONFIRM:
-			if (!input || is_match(S("yes"), input)) {
+			if (input.empty() || is_match(S("yes"), input)) {
 				if (PlayerManager.exists(name))
 					enter_state(STATE_RENAME);
 				else
@@ -367,7 +367,7 @@ void TelnetModeRealNewCharacter::display ()
 {
 	get_handler()->clear_scr();
 	*get_handler() << "Character Creation\n------------------\n";
-	if (name) {
+	if (!name.empty()) {
 		if (race)
 			*get_handler() << name << " (" << capwords(race->get_name()) << ")\n";
 		else
@@ -542,7 +542,7 @@ void TelnetModeRealNewCharacter::display ()
 	}
 }
 
-void TelnetModeRealNewCharacter::show_error (String msg)
+void TelnetModeRealNewCharacter::show_error (std::string msg)
 {
 	display();
 	*get_handler() << CWARNING << msg << CNORMAL << "\n\n";

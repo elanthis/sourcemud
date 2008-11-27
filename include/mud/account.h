@@ -31,23 +31,23 @@ class Account : public IMacroObject
 {
 	public:
 	// the ID
-	String get_id () const { return id; }
+	std::string get_id () const { return id; }
 
 	// account info
-	String get_name () const { return name; }
-	void set_name (String s_name) { name = s_name; }
+	std::string get_name () const { return name; }
+	void set_name (std::string s_name) { name = s_name; }
 
-	String get_email () const { return email; }
-	void set_email (String s_email) { email = s_email; }
+	std::string get_email () const { return email; }
+	void set_email (std::string s_email) { email = s_email; }
 
 	// pass phrases
-	bool check_passphrase (String check) const;
-	void set_passphrase (String s_pass);
+	bool check_passphrase (std::string check) const;
+	void set_passphrase (std::string s_pass);
 
 	// character list
 	const StringList& get_char_list () const { return characters; }
-	void add_character (String name);
-	void del_character (String name);
+	void add_character (std::string name);
+	void del_character (std::string name);
 
 	// times
 	time_t get_time_created () const { return time_created; }
@@ -86,14 +86,14 @@ class Account : public IMacroObject
 	void grant_builder () { grant_access(AccessID::lookup(S("builder"))); }
 
 	// parsing
-	virtual int macro_property (const class StreamControl& stream, String method, const MacroList& argv) const;
+	virtual int macro_property (const class StreamControl& stream, std::string method, const MacroList& argv) const;
 	virtual void macro_default (const class StreamControl& stream) const;
 
 	private:
-	String id;
-	String name;
-	String email;
-	String pass;
+	std::string id;
+	std::string name;
+	std::string email;
+	std::string pass;
 	uint active;
 	uint maxcharacters; // 0 means default
 	uint maxactive; // 0 means default
@@ -107,7 +107,7 @@ class Account : public IMacroObject
 		int disabled:1; // no login allowed
 	} flags;
 
-	Account (String s_id);
+	Account (std::string s_id);
 	~Account ();
 
 	friend class SAccountManager;
@@ -119,14 +119,14 @@ class SAccountManager : public IManager
 	virtual int initialize ();
 	virtual void shutdown ();
 
-	Account* get (String name); // need a copy for get
+	Account* get (std::string name); // need a copy for get
 
-	Account* create (String id); // create a new account
+	Account* create (std::string id); // create a new account
 
-	bool valid_name (String name); // is a name a valid account name?
-	bool valid_passphrase (String check); // a valid passphrase?
+	bool valid_name (std::string name); // is a name a valid account name?
+	bool valid_passphrase (std::string check); // a valid passphrase?
 
-	bool exists (String name); // account already exists
+	bool exists (std::string name); // account already exists
 
 	private:
 	typedef std::vector<Account*> AccountList;

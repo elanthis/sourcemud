@@ -17,7 +17,7 @@ namespace file {
 // have the requested extension.  does not search sub-
 // directories, and never returns a file that starts with
 // a .
-StringList getFileList(String path, String ext);
+StringList getFileList(std::string path, std::string ext);
 
 } // namespace file
 

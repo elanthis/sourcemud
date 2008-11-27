@@ -112,7 +112,7 @@ namespace {
 	}
 }
 
-Player::Player (class Account* s_account, String s_id)
+Player::Player (class Account* s_account, std::string s_id)
 {
 	// initialize
 	account = s_account;
@@ -195,19 +195,19 @@ Player::save_data (File::Writer& writer)
 void
 Player::save ()
 {
-	String path = PlayerManager.path(get_id());
+	std::string path = PlayerManager.path(get_id());
 
 	// backup player file
 	if (SettingsManager.get_backup_players()) {
 		// only if it exists
 		struct stat st;
-		if (!stat(path, &st)) {
+		if (!stat(path.c_str(), &st)) {
 			time_t base_t;
 			time (&base_t);
 			char time_buffer[15];
 			strftime (time_buffer, sizeof (time_buffer), "%Y%m%d%H%M%S", localtime (&base_t));
-			String backup = path + S(".") + String(time_buffer) + S("~");
-			if (rename (path, backup)) // move file
+			std::string backup = path + S(".") + std::string(time_buffer) + S("~");
+			if (rename(path.c_str(), backup.c_str())) // move file
 				Log::Error << "Backup of " << path << " to " << backup << " failed: " << strerror(errno);
 		}
 	}
@@ -215,10 +215,10 @@ Player::save ()
 	// do save
 	mode_t omask = umask(0066);
 	File::Writer writer(path);
-	writer.comment(String("Player file: ") + get_id());
+	writer.comment(std::string("Player file: ") + get_id());
 	time_t t;
 	time(&t);
-	writer.comment(String("Timestamp: ") + String(ctime(&t)));
+	writer.comment(std::string("Timestamp: ") + std::string(ctime(&t)));
 	writer.bl();
 	save_data(writer);
 	writer.close();
@@ -575,7 +575,7 @@ Player::show_prompt ()
 }
 
 int
-Player::macro_property (const StreamControl& stream, String comm, const MacroList& argv) const
+Player::macro_property (const StreamControl& stream, std::string comm, const MacroList& argv) const
 {
 	// RACE
 	if (str_eq(comm, S("race"))) {

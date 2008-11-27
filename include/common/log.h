@@ -27,17 +27,17 @@ enum LogClass {
 class SLogManager : public IManager
 {
 	public:
-	int initialize (void);
-	void shutdown (void);
+	int initialize();
+	void shutdown();
 
-	void print (LogClass klass, String msg);
+	void print(LogClass klass, const std::string& msg);
 
-	void reset (void);
+	void reset();
 
-	String get_path (void) const { return path; }
+	std::string get_path() const { return path; }
 
 	protected:
-	String path;
+	std::string path;
 	FILE *file;
 };
 
@@ -51,8 +51,8 @@ namespace Log
 		public:
 		LogWrapper (LogClass s_klass) : klass(s_klass) {}
 
-		virtual void stream_put (const char* str, size_t len);
-		virtual void stream_end (void);
+		virtual void stream_put(const char* str, size_t len);
+		virtual void stream_end();
 
 		private:
 		LogClass klass;

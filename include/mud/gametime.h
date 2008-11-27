@@ -28,7 +28,7 @@ GameCalendar
 	public:
 	struct Month
 	{
-		String name;
+		std::string name;
 		uint16 day_count;
 		uint8 leap_years;	// each leap_years year, month has extra day
 
@@ -36,7 +36,7 @@ GameCalendar
 	};
 	struct Holiday
 	{
-		String name;
+		std::string name;
 		int year; // year count it occurs (every year, every three years, etc.)
 		int day; // day of months it occurs
 		int weekday; // weekday it occurs
@@ -60,10 +60,10 @@ GameCalendar
 
 	uint8 get_weekday (const class GameTime &) const;
 	uint16 days_in_month (const class GameTime &) const;
-	String get_holiday (const class GameTime &) const;
+	std::string get_holiday (const class GameTime &) const;
 
-	int find_month (String name);
-	int find_weekday (String name);
+	int find_month (std::string name);
+	int find_weekday (std::string name);
 
 	int load ();
 };
@@ -95,11 +95,11 @@ GameTime
 
 	void time_str (char *buf, int len) const;
 	void date_str (char *buf, int len) const;
-	String time_str () const;
-	String date_str () const;
+	std::string time_str () const;
+	std::string date_str () const;
 
-	String encode () const;
-	int decode (String time);
+	std::string encode () const;
+	int decode (std::string time);
 
 	bool is_day () const { return hour >= SUN_UP_HOUR && hour < SUN_DOWN_HOUR; }
 	bool is_night () const { return !is_day (); }
