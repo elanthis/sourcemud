@@ -8,6 +8,8 @@
  * Each section of code carries its own copyright and licensing headers.
  */
 
+#include <string>
+
 #include <sys/types.h>
 #include <stdio.h>
 #include <string.h>
@@ -479,9 +481,7 @@ MD5Crypt(const char *pw, const char *salt)
  */
 
 namespace MD5 {
-
-	void
-	encrypt (const char *key, char *buffer)
+	void encrypt(const char *key, char *buffer)
 	{
 		char salt[14];
 
@@ -508,8 +508,7 @@ namespace MD5 {
 		snprintf (buffer, MD5_BUFFER_SIZE, "%s", MD5Crypt (key, salt));
 	}
 
-	void
-	hash (const char* source, char* out)
+	void hash(const char* source, char* out)
 	{
 		MD5_CTX ctx;
 		union {
@@ -524,8 +523,14 @@ namespace MD5 {
 		snprintf(out, MD5_BUFFER_SIZE, "%X%X%X%X", result.ints[0], result.ints[1], result.ints[2], result.ints[3]);
 	}
 
-	int
-	compare (const char *base, const char *pass)
+	std::string hash(const std::string& str)
+	{
+		char buf[MD5_BUFFER_SIZE];
+		hash(str.c_str(), buf);
+		return buf;
+	}
+
+	int compare(const char *base, const char *pass)
 	{
 		return !strcmp (base, MD5Crypt (pass, base));
 	}
