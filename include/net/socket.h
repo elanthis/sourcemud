@@ -5,25 +5,29 @@
  * http://www.sourcemud.org
  */
 
-#ifndef MUD_COMMON_SOCKET_H 
-#define MUD_COMMON_SOCKET_H
-
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
+#ifndef SOURCEMUD_NET_SOCKET_H 
+#define SOURCEMUD_NET_SOCKET_H
 
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/time.h>
 #include <netinet/in.h>
 #include <sys/socket.h>
+#include <vector>
 
 #include "common/types.h"
 #include "common/string.h"
-#include "mud/server.h"
 #include "common/strbuf.h"
+#include "mud/server.h"
+#include "config.h"
 
-#include <vector>
+// sockaddr_storage workarounds
+#ifdef HAVE_SOCKADDR_STORAGE
+typedef struct sockaddr_storage SockStorage;
+#else // HAVE_SOCKADDR_STORAGE
+typedef struct sockaddr_in SockStorage;
+#define ss_family sin_family
+#endif // HAVE_SOCKADDR_STORAGE
 
 // sockaddr_storage workarounds
 #ifdef HAVE_SOCKADDR_STORAGE

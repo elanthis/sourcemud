@@ -1,3 +1,14 @@
+Version 0.27
+============
+
+  * AweMUD is now Source MUD
+  * Removed Scriptix
+  * Removed use of Boehm GC
+  * Reduced use of XML code generation
+  * Removed custon String class
+  * General code reduction
+  * Bug fixes and cleanups
+
 Version 0.26
 ============
 

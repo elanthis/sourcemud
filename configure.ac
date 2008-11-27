@@ -1,9 +1,9 @@
 # Source MUD
 # Configuration script
-BASE_VERSION=0.01
-VERSION=0.01.20081030
+BASE_VERSION=0.26
+VERSION=0.26.20081030
 
-AC_INIT([Source MUD], 0.01.20081030, [http://sourcemud.org/bugs])
+AC_INIT([Source MUD], 0.26.20081030, [http://sourcemud.org/bugs])
 AC_CONFIG_SRCDIR(src/mud/main.cc)
 AC_CONFIG_HEADERS(include/config.h)
 

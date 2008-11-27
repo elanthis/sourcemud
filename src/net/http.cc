@@ -25,7 +25,8 @@
 #include "mud/macro.h"
 #include "mud/settings.h"
 #include "net/http.h"
-#include "net/network.h"
+#include "net/manager.h"
+#include "net/util.h"
 
 #include "config.h"
 

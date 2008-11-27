@@ -15,7 +15,7 @@
 #include "mud/gametime.h"
 #include "mud/player.h"
 #include "net/http.h"
-#include "net/network.h"
+#include "net/manager.h"
 #include "config.h"
 
 #define MACRO_OUT_SIZE 2048

@@ -38,9 +38,10 @@
 #include "mud/server.h"
 #include "mud/settings.h"
 #include "mud/login.h"
-#include "net/network.h"
+#include "net/manager.h"
 #include "net/telnet.h"
 #include "net/http.h"
+#include "net/util.h"
 
 #include "config.h"
 

@@ -70,9 +70,11 @@ HEADERS = \
 	include/mud/weather.h \
 	include/mud/zone.h \
 	include/net/http.h \
-	include/net/network.h \
+	include/net/iplist.h \
+	include/net/manager.h \
 	include/net/socket.h \
 	include/net/telnet.h \
+	include/net/util.h \
 	include/net/zmp.h
 
 SOURCES = \
@@ -131,9 +133,11 @@ SOURCES = \
 	src/mud/weather.cc \
 	src/mud/zone.cc \
 	src/net/http.cc \
-	src/net/network.cc \
+	src/net/iplist.cc \
+	src/net/manager.cc \
 	src/net/socket.cc \
 	src/net/telnet.cc \
+	src/net/util.cc \
 	src/net/zmp.cc \
 	$(wildcard src/cmd/*.cc)
 

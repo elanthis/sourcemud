@@ -29,9 +29,10 @@
 #include "mud/color.h"
 #include "mud/message.h"
 #include "mud/settings.h"
-#include "net/network.h"
+#include "net/manager.h"
 #include "net/telnet.h"
 #include "net/zmp.h"
+#include "net/util.h"
 
 #include "config.h"
 
