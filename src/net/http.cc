@@ -129,7 +129,7 @@ HTTPHandler::sock_flush ()
 
 	// disconnect if we are all done
 	if (state == DONE || state == ERROR)
-		sock_disconnect();
+		disconnect();
 }
 
 void
