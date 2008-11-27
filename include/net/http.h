@@ -42,7 +42,7 @@ class HTTPHandler : public SocketConnection, public IStreamSink, public IMacroOb
 	void page_account();
 
 	// error
-	void http_error (int error, std::string msg);
+	void http_error(int error);
 
 	// get post data
 	std::string get_post (std::string name) const;
@@ -72,10 +72,10 @@ class HTTPHandler : public SocketConnection, public IStreamSink, public IMacroOb
 
 	// HTTP parsing
 	StringBuffer line;
+	std::string method;
 	std::string url;
 	std::string path;
 	enum { NONE, URLENCODED } posttype;
-	enum { GET, POST } reqtype;
 	enum { REQ, HEADER, BODY, DONE, ERROR } state;
 	size_t content_length;
 	time_t timeout;

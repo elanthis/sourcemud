@@ -103,7 +103,7 @@ HTTPHandler::sock_input (char* buffer, size_t size)
 			} else {
 				// if we still don't have a line but we're over the max, fail
 				if (line.size() + size >= HTTP_HEADER_LINE_MAX) {
-					http_error(413, S("Header too large."));
+					http_error(413);
 					return;
 				}
 
@@ -123,7 +123,7 @@ HTTPHandler::sock_flush ()
 {
 	// handle timeout
 	if (timeout != 0 && (time(NULL) - timeout) >= HTTP_REQUEST_TIMEOUT) {
-		http_error(408, S("Request timed out."));
+		http_error(408);
 		timeout = 0;
 	}
 
@@ -153,17 +153,14 @@ HTTPHandler::process ()
 
 			// check size
 			if (parts.size() != 3) {
-				http_error(400, S("Invalid request."));
+				http_error(400);
 				return;
 			}
 
-			// request type
-			if (parts[0] == "GET")
-				reqtype = GET;
-			else if (parts[0] == "POST")
-				reqtype = POST;
-			else {
-				http_error(405, S("Illegal request type."));
+			// http method
+			method = parts[0];
+			if (method != "GET" && method != "POST") {
+				http_error(405);
 				return;
 			}
 
@@ -185,7 +182,7 @@ HTTPHandler::process ()
 			// no more headers
 			if (line.empty()) {
 				// a GET request is now processed immediately
-				if (reqtype == GET) {
+				if (method == "GET") {
 					execute();
 				// a POST request requires us to parse the body first
 				} else {
@@ -198,7 +195,7 @@ HTTPHandler::process ()
 			const char* c = strchr(line.c_str(), ':');
 			// require ': ' after header name
 			if (c == NULL || *(c + 1) != ' ') {
-				http_error(400, S("Malformed header."));
+				http_error(400);
 				return;
 			}
 
@@ -208,7 +205,7 @@ HTTPHandler::process ()
 				if (!strcmp("application/x-www-form-urlencoded", c + 2))
 					posttype = URLENCODED;
 				else {
-					http_error(406, S("Content-type for POST must be application/x-www-form-urlencoded."));
+					http_error(406);
 					return;
 				}
 			} else if (!strncasecmp("Content-length", line.c_str(), c - line.c_str())) {
@@ -217,7 +214,7 @@ HTTPHandler::process ()
 
 				// check max content length
 				if (content_length > HTTP_POST_BODY_MAX) {
-					http_error(413, S("Form data length overflow."));
+					http_error(413);
 				}
 			} else if (!strncasecmp("Cookie", line.c_str(), c - line.c_str())) {
 				// Cookie; look for session
@@ -358,12 +355,12 @@ HTTPHandler::execute()
 	else if (path == "/account")
 		page_account();
 	else {
-		http_error(404, S("Page does not exist."));
+		http_error(404);
 		return;
 	}
 
 	// log access
-	Log::Network << (reqtype == GET ? "GET" : "POST") << " " << url << " 200 " << (get_account() ? get_account()->get_id() : S("-")) << " " << Network::get_addr_name(addr);
+	Log::Network << method << ' ' << url << " 200 " << (get_account() ? get_account()->get_id() : S("-")) << ' ' << Network::get_addr_name(addr);
 
 	// done
 	state = DONE;
@@ -428,7 +425,7 @@ HTTPHandler::page_account()
 {
 	// must have an account for this to work
 	if (get_account() == NULL) {
-		http_error(403, S("You must login to access this page."));
+		http_error(403);
 		return;
 	}
 
@@ -465,7 +462,7 @@ HTTPHandler::page_account()
 }
 
 void
-HTTPHandler::http_error (int error, std::string msg)
+HTTPHandler::http_error(int error)
 {
 	// lookup HTTP error msg code
 	std::string http_msg;
@@ -482,13 +479,13 @@ HTTPHandler::http_error (int error, std::string msg)
 	}
 
 	// display error page
-	*this << "HTTP/1.0 " << error << " " << http_msg << "\nContent-type: text/html\n\n"
+	*this << "HTTP/1.0 " << error << ' ' << http_msg << "\nContent-type: text/html\n\n"
 		<< StreamMacro(HTTPManager.get_template(S("header")), S("account"), get_account())
-		<< StreamMacro(HTTPManager.get_template(S("error")), S("error"), tostr(error), S("http_msg"), http_msg, S("msg"), msg)
+		<< StreamMacro(HTTPManager.get_template(S("error")), S("error"), tostr(error), S("http_msg"), http_msg, S("msg"), http_msg)
 		<< StreamMacro(HTTPManager.get_template(S("footer")));
 
 	// log error
-	Log::Network << (reqtype == GET ? "GET" : reqtype == POST ? "POST" : "-") << " " << (url.empty() ? "-" : url) << " " << error << " " << (get_account() ? get_account()->get_id() : S("-")) << " " << Network::get_addr_name(addr) << " <" << msg << ">";
+	Log::Network << method << ' ' << (url.empty() ? "-" : url) << ' ' << error << ' ' << (get_account() ? get_account()->get_id() : S("-")) << ' ' << Network::get_addr_name(addr);
 
 	// set error state
 	state = ERROR;
