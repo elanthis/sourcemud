@@ -23,6 +23,7 @@ SEntityFactoryManager::initialize ()
 void
 SEntityFactoryManager::shutdown ()
 {
+	delete factories;
 }
 
 void
