@@ -9,6 +9,8 @@
 #define HTTP_HEADER_LINE_MAX 2048 // arbitrary max line length
 #define HTTP_POST_BODY_MAX (16*1024) // 16K
 
+#include <fstream>
+
 #include <stdio.h>
 #include <unistd.h>
 #include <ctype.h>
@@ -21,13 +23,13 @@
 #include "common/log.h"
 #include "common/md5.h"
 #include "common/file.h"
+#include "common/rand.h"
 #include "mud/server.h"
 #include "mud/macro.h"
 #include "mud/settings.h"
 #include "net/http.h"
 #include "net/manager.h"
 #include "net/util.h"
-
 #include "config.h"
 
 SHTTPManager HTTPManager;
@@ -36,8 +38,8 @@ HTTPHandler::HTTPHandler (int s_sock, const SockStorage& s_netaddr) :  SocketCon
 {
 	addr = s_netaddr;
 	state = REQ;
-	session = NULL;
 	timeout = time(NULL);
+	account = NULL;
 }
 
 // disconnect
@@ -229,10 +231,21 @@ HTTPHandler::process ()
 					else
 						sid = std::string(sid_start, sid_end - sid_start);
 
-					// get the session (may be NULL if expired/invalid)
-					session = HTTPManager.get_session(sid);
-					if (session != NULL)
-						session->update_timestamp();
+					// split session into hash, salt, and account ID
+					StringList parts = explode(sid, ':');
+					if (parts.size() == 3) {
+						std::string hash = parts[0];
+						std::string salt = parts[1];
+						std::string id = parts[2];
+
+						// re-hash and compare
+						std::ostringstream buf;
+						buf << HTTPManager.get_session_key() << ':' << salt << ':' << id;
+						if (hash == MD5::hash(buf.str())) {
+							// lookup the account, we're successful
+							account = AccountManager.get(id);
+						}
+					}
 				}
 			} else {
 				// ignore it
@@ -374,13 +387,24 @@ HTTPHandler::page_login()
 
 	// attempt login?
 	if (get_post(S("action")) == "Login") {
-		Account* account = AccountManager.get(get_post(S("username")));
+		account = AccountManager.get(get_post(S("username")));
 		if (account != NULL && account->check_passphrase(get_post(S("password")))) {
-			session = HTTPManager.create_session(account);
+			// generate a session salt, then a session hash
+			// FIXME: make this not suck
+			std::string salt = tostr(10000 + get_random(9999));
+			std::ostringstream buf;
+			buf << HTTPManager.get_session_key() << ':' << salt << ':' << account->get_id();
+			std::string hash = MD5::hash(buf.str());
+
+			// create session id
+			buf.str("");
+			buf << hash << ':' << salt << ':' << account->get_id();
+
 			msg = S("Login successful!");
-			*this << "Set-cookie: session=" << session->get_id() << "\n";
+			*this << "Set-cookie: session=" << buf.str() << "\n";
 		} else {
 			msg = S("Incorrect username or passphrase.");
+			account = NULL;
 		}
 	}
 
@@ -393,9 +417,6 @@ HTTPHandler::page_login()
 void
 HTTPHandler::page_logout()
 {
-	if (session != NULL)
-		HTTPManager.destroy_session(session);
-
 	*this << "HTTP/1.0 200 OK\nContent-type: text/html\nSet-cookie: session=\n\n"
 		<< StreamMacro(HTTPManager.get_template(S("header")))
 		<< StreamMacro(HTTPManager.get_template(S("logout")))
@@ -508,66 +529,18 @@ HTTPHandler::macro_default (const StreamControl& stream) const
 	stream << "<HTTP>";
 }
 
-HTTPSession::HTTPSession (Account* account)
-{
-	assert(account != NULL);
-
-	// initial setup
-	this->account = account;
-	timestamp = time(NULL);
-
-	// generate session ID
-	StringBuffer buf;
-	buf << "Source MUD";
-	buf << account->get_id();
-	buf << account->get_name();
-	buf << rand();
-	buf << account->get_email();
-	buf << timestamp;
-	char md5buf[MD5_BUFFER_SIZE];
-	MD5::hash(buf.c_str(), md5buf);
-	id = std::string(md5buf);
-}
-
-void
-HTTPSession::update_timestamp ()
-{
-	timestamp = time(NULL);
-}
-
-bool
-HTTPSession::check_timestamp ()
-{
-	return (time(NULL) - timestamp) < SettingsManager.get_http_timeout() * 60;
-}
-
-std::string
-HTTPSession::get_var (std::string id) const
-{
-	std::map<std::string,std::string>::const_iterator i = vars.find(id);
-	if (i == vars.end())
-		return std::string();
-	return i->second;
-}
-
-void
-HTTPSession::set_var (std::string id, std::string val)
-{
-	vars[id] = val;
-}
-
-void
-HTTPSession::clear ()
-{
-	vars.clear();
-	id.clear();
-	account = NULL;
-}
-
 int
 SHTTPManager::initialize (void)
 {
 	StringBuffer buf;
+
+	std::ifstream ifs(SettingsManager.get_skey_path().c_str());
+	if (!ifs) {
+		Log::Error << "Failed to open session key file " << SettingsManager.get_skey_path();
+		return -1;
+	}
+	ifs >> session_key;
+	ifs.close();
 
 	// read templates
 	StringList files = File::dirlist(SettingsManager.get_html_path());
@@ -607,52 +580,9 @@ SHTTPManager::get_template (std::string id)
 	return i != templates.end() ? i->second : std::string();
 }
 
-HTTPSession*
-SHTTPManager::create_session (Account* account)
-{
-	assert(account != NULL);
-
-	HTTPSession* session = new HTTPSession(account);
-	sessions[session->get_id()] = session;
-
-	return session;
-}
-
-void
-SHTTPManager::destroy_session (HTTPSession* session)
-{
-	assert(session != NULL);
-
-	SessionMap::iterator i = sessions.find(session->get_id());
-	if (i != sessions.end())
-		sessions.erase(i);
-	session->clear();
-	session = NULL;
-}
-
-HTTPSession*
-SHTTPManager::get_session (std::string id)
-{
-	SessionMap::iterator i = sessions.find(id);
-	if (i == sessions.end())
-		return NULL;
-	return i->second;
-}
-
 void
 SHTTPManager::check_timeouts ()
 {
-	SessionMap::iterator i, n;
-	i = sessions.begin();
-	while (i != sessions.end()) {
-		n = i;
-		++n;
-		if (!i->second->check_timestamp()) {
-			i->second->clear();
-			sessions.erase(i);
-		}
-		i = n;
-	}
 }
 
 const StreamControl&

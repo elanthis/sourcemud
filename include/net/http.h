@@ -22,29 +22,6 @@
 #include "mud/macro.h"
 #include "net/socket.h"
 
-class HTTPSession
-{
-	public:
-	HTTPSession(Account* s_account);
-
-	std::string get_id() const { return id; }
-	Account* get_account() const { return account; }
-
-	std::string get_var(std::string id) const;
-	void set_var(std::string id, std::string value);
-
-	void update_timestamp();
-	bool check_timestamp();
-
-	void clear();
-
-	private:
-	std::string id;
-	time_t timestamp;
-	Account* account;
-	std::map<std::string,std::string> vars;
-};
-
 class HTTPHandler : public SocketConnection, public IStreamSink, public IMacroObject
 {
 	public:
@@ -72,8 +49,7 @@ class HTTPHandler : public SocketConnection, public IStreamSink, public IMacroOb
 	std::string get_request (std::string name) const;
 
 	// get user account
-	HTTPSession* get_session() const { return session; }
-	Account* get_account() const { return session ? session->get_account() : NULL; }
+	Account* get_account() const { return account; }
 
 	// low-level IO
 	void disconnect();
@@ -91,7 +67,6 @@ class HTTPHandler : public SocketConnection, public IStreamSink, public IMacroOb
 	protected:
 	// parse urlencoded data (GET/POST)
 	void parse_request_data (std::map<std::string,std::string>& map, const char* input) const;
-
 
 	SockStorage addr;
 
@@ -111,7 +86,8 @@ class HTTPHandler : public SocketConnection, public IStreamSink, public IMacroOb
 	std::map<std::string, std::string> post;
 
 	// the session
-	HTTPSession* session;
+	std::string session;
+	Account* account;
 };
 
 class SHTTPManager : public IManager
@@ -120,20 +96,16 @@ class SHTTPManager : public IManager
 	virtual int initialize();
 	virtual void shutdown();
 
-	std::string get_template (std::string id);
+	std::string get_template(std::string id);
 
-	HTTPSession* create_session (Account* account);
-	void destroy_session (HTTPSession* session);
-	HTTPSession* get_session (std::string id);
+	std::string get_session_key() { return session_key; }
 
 	void check_timeouts();
 
 	private:
 	typedef std::map<std::string, std::string> TemplateMap;
 	TemplateMap templates;
-
-	typedef std::map<std::string, HTTPSession*> SessionMap;
-	SessionMap sessions;
+	std::string session_key;
 };
 extern SHTTPManager HTTPManager;
 
