@@ -158,11 +158,13 @@ TOOLS = \
 BINARIES = sourcemud-bin
 BUILD = Makefile configure
 DIST = configure configure.ac Makefile.in sourcemud.in include/config.h.in
+HTTPKEY = data/session.key
 
 OBJECTS = $(SOURCES:%.cc=$(BUILDDIR)/%.o)
 
 # CORE BUILD
-all: $(BUILD) $(TOOLS) $(XML) $(HEADERS) $(SOURCES) $(OBJECTS) $(BINARIES)
+all: $(BUILD) $(TOOLS) $(XML) $(HEADERS) $(SOURCES) $(OBJECTS) $(BINARIES) \
+	$(HTTPKEY)
 
 clean:
 	@echo Cleaning
@@ -189,6 +191,11 @@ $(BUILDDIR)/%.o: %.cc
 sourcemud-bin: $(OBJECTS)
 	@echo Linking $@
 	@$(CXX) -o $@ $^ $(LFLAGS)
+
+# DATE FILES
+data/session.key:
+	@echo Generating HTTP session key
+	@head -c 512 /dev/urandom | base64 -w0 > $@
 
 # GENERATED SOURCE
 src/generated/commands.cc: tools/parse-commands.pl $(wildcard src/cmd/*.cc)
