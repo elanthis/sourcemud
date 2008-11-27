@@ -8,35 +8,38 @@ log_file = @DATADIR@/log/sourcemud.log
 ## PID file
 pid_file = @DATADIR@/run/sourcemud.pid
 
+## HTTP session key file.
+skey_path = @DATADIR@/lib/sourcemud/session.key
+
 ## Directory holding player files.
-player_dir = @DATADIR@/lib/sourcemud/players/
+player_path = @DATADIR@/lib/sourcemud/players/
 
 ## Directory holding account files.
-account_dir = @DATADIR@/lib/sourcemud/accounts/
+account_path = @DATADIR@/lib/sourcemud/accounts/
 
 ## Directory holding zones.
-zone_dir = @DATADIR@/lib/sourcemud/world/
+zone_path = @DATADIR@/lib/sourcemud/world/
 
 ## Directory holding world state.
-world_dir = @DATADIR@/lib/sourcemud/world/
+world_path = @DATADIR@/lib/sourcemud/world/
 
 ## Directory holding scripts.
-script_dir = @DATADIR@/lib/sourcemud/scripts/
+script_path = @DATADIR@/lib/sourcemud/scripts/
 
 ## Directory holding AI definitions.
-ai_dir = @DATADIR@/lib/sourcemud/scripts/
+ai_path = @DATADIR@/lib/sourcemud/scripts/
 
 ## Directory holding blueprints.
-blueprint_dir = @DATADIR@/lib/sourcemud/blueprints/
+blueprint_path = @DATADIR@/lib/sourcemud/blueprints/
 
 ## Directory holding help files.
-help_dir = @DATADIR@/lib/sourcemud/help/
+help_path = @DATADIR@/lib/sourcemud/help/
 
 ## Directory holding misc. data.
-misc_dir = @DATADIR@/lib/sourcemud/data/
+misc_path = @DATADIR@/lib/sourcemud/data/
 
 ## Directory holding HTML .tpl files.
-html_dir = @DATADIR@/lib/sourcemud/data/html/
+html_path = @DATADIR@/lib/sourcemud/data/html/
 
 ## Port to listen on for both IPv4 and IPv6 clients.
 #port = 4545
