@@ -7,19 +7,19 @@
 
 #include <time.h>
 
+#include "common/rand.h"
+#include "common/streams.h"
+#include "common/file.h"
 #include "mud/room.h"
 #include "mud/zone.h"
 #include "mud/settings.h"
-#include "common/rand.h"
 #include "mud/npc.h"
-#include "common/streams.h"
 #include "mud/clock.h"
 #include "mud/gametime.h"
 #include "mud/weather.h"
 #include "mud/object.h"
 #include "mud/hooks.h"
 #include "mud/shadow-object.h"
-#include "common/file.h"
 
 SZoneManager ZoneManager;
 
@@ -208,7 +208,7 @@ Zone::save()
 		time (&base_t);
 		strftime (time_buffer, sizeof (time_buffer), "%Y%m%d%H%M%S", localtime (&base_t));
 		std::string backup = path + S(".") + std::string(time_buffer) + S("~");
-		if (rename(path.c_str(), backup.c_str())) /* move file */
+		if (File::rename(path, backup.c_str())) /* move file */
 			Log::Error << "Backup of zone '" << get_id() << "' to " << backup << " failed: " << strerror(errno);
 	}
 
@@ -280,13 +280,17 @@ Zone::deactivate()
 void
 Zone::destroy()
 {
+	// save and backup
+	save();
+	std::string path = SettingsManager.get_zone_path() + "/" + get_id() + ".zone";
+	File::rename(path, path + "~");
+
+	// remove from zone list
 	SZoneManager::ZoneList::iterator i = find(ZoneManager.zones.begin(), ZoneManager.zones.end(), this);
 	if (i != ZoneManager.zones.end())
 		ZoneManager.zones.erase(i);
 
-	rooms.clear();
-	spawns.clear();
-
+	// shut down zone
 	deactivate();
 }
 
@@ -321,8 +325,8 @@ int
 SZoneManager::load_world()
 {
 	// read zones dir
-	StringList files = file::getFileList(SettingsManager.get_zone_path(),
-			S("zone"));
+	StringList files = File::dirlist(SettingsManager.get_zone_path());
+	File::filter(files, "*.zone");
 	for (StringList::iterator i = files.begin(); i != files.end(); ++i) {
 		Zone* zone = new Zone();
 		if (zone->load (*i))

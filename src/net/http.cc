@@ -570,8 +570,8 @@ SHTTPManager::initialize (void)
 	StringBuffer buf;
 
 	// read templates
-	StringList files = file::getFileList(SettingsManager.get_html_path(),
-			S("tpl"));
+	StringList files = File::dirlist(SettingsManager.get_html_path());
+	File::filter(files, "*.tpl");
 	for (StringList::iterator i = files.begin(); i != files.end(); ++i) {
 		FILE* in = fopen(i->c_str(), "rt");
 		if (in == NULL) {

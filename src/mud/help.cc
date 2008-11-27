@@ -58,8 +58,8 @@ SHelpManager::print (StreamControl& stream, std::string name)
 int
 SHelpManager::initialize ()
 {
-	StringList files = file::getFileList(SettingsManager.get_help_path(),
-			S("help"));
+	StringList files = File::dirlist(SettingsManager.get_help_path());
+	File::filter(files, "*.help");
 	for (StringList::iterator i = files.begin(); i != files.end(); ++i) {
 		File::Reader reader;
 

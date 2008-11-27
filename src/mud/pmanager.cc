@@ -7,6 +7,7 @@
 
 #include <fnmatch.h>
 
+#include "common/file.h"
 #include "mud/player.h"
 #include "mud/account.h"
 #include "mud/settings.h"
@@ -209,9 +210,8 @@ SPlayerManager::destroy (std::string name)
 	std::string path = PlayerManager.path(name);
 	struct stat st;
 	if (!stat(path.c_str(), &st)) {
-		std::string backup = path + ".del";
-		if (rename(path.c_str(), backup.c_str())) { // move file
-			Log::Error << "Backup of " << path << " to " << backup << " failed: " << strerror(errno);
+		if (File::rename(path, path + "~")) { // move file
+			Log::Error << "Backup of " << path << " failed: " << strerror(errno);
 			return 2;
 		}
 	}

@@ -26,6 +26,7 @@
 #include "common/streams.h"
 #include "common/log.h"
 #include "common/fdprintf.h"
+#include "common/file.h"
 #include "mud/player.h"
 #include "mud/settings.h"
 #include "mud/weather.h"
@@ -136,7 +137,7 @@ namespace {
 		// truncate file
 		if (ftruncate(fd, 0) < 0) {
 			Log::Error << "Failed to truncate PID file '" << path << "': " << strerror(errno);
-			unlink(path.c_str());
+			File::remove(path);
 			close(fd);
 			return -1;
 		}
@@ -144,7 +145,7 @@ namespace {
 		// write PID
 		if (fdprintf(fd, "%d", getpid()) <= 0) {
 			Log::Error << "Failed to write to PID file '" << path << "': " << strerror(errno);
-			unlink(path.c_str());
+			File::remove(path);
 			close(fd);
 			return -1;
 		}
@@ -161,7 +162,7 @@ namespace {
 
 		// remove files
 		if (!pid_path.empty())
-			unlink(pid_path.c_str());
+			File::remove(pid_path);
 	}
 
 	inline void

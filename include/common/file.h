@@ -11,13 +11,27 @@
 #include <vector>
 #include "common/string.h"
 
-namespace file {
+namespace File {
 
-// gets a list of all files in the requested path that
-// have the requested extension.  does not search sub-
-// directories, and never returns a file that starts with
-// a .
-StringList getFileList(std::string path, std::string ext);
+// gets a list of files in a particular directory.  does
+// not return files that start with a . or end with a ~.
+// if subdir is true, sub-directories will also be returned,
+// otherwise only regular files are returned.
+StringList dirlist(const std::string& path, bool subdir = false);
+
+// filters the file list to only include files that match
+// the given filter.  the filter is a UNIX-style shell glob,
+// using fnmatch().
+StringList& filter(StringList& files, const std::string& filter);
+
+// returns true if the given path is a regular file
+bool isfile(const std::string& path);
+
+// deletes a file or an empty directory
+void remove(const std::string& path);
+
+// rename a file or directory, replacing target file
+bool rename(const std::string& src, const std::string& dst);
 
 } // namespace file
 

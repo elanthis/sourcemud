@@ -12,8 +12,9 @@
 #include <stdlib.h>
 
 #include "common/string.h"
-#include "mud/fileobj.h"
 #include "common/log.h"
+#include "common/file.h"
+#include "mud/fileobj.h"
 #include "mud/uniqid.h"
 
 using namespace std;
@@ -445,7 +446,7 @@ File::Writer::close ()
 		out.close();
 
 		// move temp file to real file
-		rename((path + "~").c_str(), path.c_str());
+		File::rename(path + "~", path);
 	}
 }
 

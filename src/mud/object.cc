@@ -733,8 +733,8 @@ SObjectBPManager::initialize()
 	if (require(EventManager) != 0)
 		return 1;
 
-	StringList files = file::getFileList(SettingsManager.get_blueprint_path(),
-			S("objs"));
+	StringList files = File::dirlist(SettingsManager.get_blueprint_path());
+	File::filter(files, "*.objs");
 	for (StringList::iterator i = files.begin(); i != files.end(); ++i) {
 		// load from file
 		File::Reader reader;

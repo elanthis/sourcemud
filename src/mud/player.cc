@@ -17,6 +17,7 @@
 #include "common/string.h"
 #include "common/streams.h"
 #include "common/log.h"
+#include "common/file.h"
 #include "mud/creature.h"
 #include "mud/player.h"
 #include "mud/body.h"
@@ -207,7 +208,7 @@ Player::save ()
 			char time_buffer[15];
 			strftime (time_buffer, sizeof (time_buffer), "%Y%m%d%H%M%S", localtime (&base_t));
 			std::string backup = path + S(".") + std::string(time_buffer) + S("~");
-			if (rename(path.c_str(), backup.c_str())) // move file
+			if (File::rename(path, backup)) // move file
 				Log::Error << "Backup of " << path << " to " << backup << " failed: " << strerror(errno);
 		}
 	}
