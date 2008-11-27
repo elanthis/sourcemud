@@ -22,17 +22,6 @@ AC_HEADER_STDC
 AC_HEADER_TIME
 AC_FUNC_VPRINTF
 
-# Docbook tools
-AC_ARG_ENABLE(docs,[  --disable-docs          Disable building of documentation],BUILD_DOCS="$enableval",BUILD_DOCS=yes)
-AC_ARG_ENABLE(docs,[  --enable-pdf            Enable building of PDF documentation],BUILD_PDFDOCS="$enableval",BUILD_PDFDOCS=no)
-if test "x$BUILD_DOCS" = "xyes" ; then
-	AC_PATH_PROG(PATH_XMLTO,xmlto)
-	if test "x$PATH_XMLTO" = "x" ; then
-		BUILD_DOCS="no"
-	fi
-	AC_SUBST(PATH_XMLTO)
-fi
-
 # Look for sendmail
 AC_ARG_WITH(sendmail,[  --with-sendmail=<path>  Path of your sendmail bianry],[PATH_SENDMAIL="$withval"],[AC_PATH_PROG(PATH_SENDMAIL, sendmail, none, [$PATH:/usr/sbin:/sbin])])
 if test "x$PATH_SENDMAIL" != "xnone" ; then
@@ -125,6 +114,17 @@ AC_CHECK_TYPE(struct sockaddr_storage,
 		#include <netinet/in.h>
 	])
 
+# Math library
+AC_CHECK_LIB(m,cos,,)
+
+# Lua support
+AC_CHECK_LIB(lua,lua_newstate,,
+	# Debian/Ubuntu don't use the standard library name
+	AC_CHECK_LIB(lua-5.1,lua_newstate,,
+		AC_MSG_ERROR([can't find Lua])
+	)
+)
+
 # zlib support
 AC_CHECK_LIB(z,deflate,ZLIB=yes,ZLIB=no)
 if test "x$ZLIB" = "xyes" ; then
@@ -173,7 +173,6 @@ echo "See COPYING for license details."
 echo
 echo "  Version    ... $PACKAGE_VERSION"
 echo "  Install    ... ${prefix}"
-echo "  Documents  ... ${BUILD_DOCS}"
 if test "x$IPV6" = "xyes" ; then
 	echo "  IPv6       ... enabled"
 else

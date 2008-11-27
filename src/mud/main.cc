@@ -43,6 +43,7 @@
 #include "net/telnet.h"
 #include "net/http.h"
 #include "net/util.h"
+#include "lua/core.h"
 
 #include "config.h"
 
@@ -516,6 +517,10 @@ main (int argc, char **argv)
 	if (IManager::initialize_all())
 		return 1;
 
+	// initialie Lua
+	if (!lua::initialize())
+		return 1;
+
 	// load the world
 	if (ZoneManager.load_world())
 		return 1;
@@ -579,6 +584,9 @@ main (int argc, char **argv)
 		}
 		Log::Info << "Set user to " << usr->pw_name << " (" << usr->pw_uid << ")";
 	}
+
+	// Load the init script for Lua
+	lua::runfile(SettingsManager.get_scripts_path() + "/init.lua");
 
 	// run init hook
 	Hooks::ready();
@@ -711,6 +719,9 @@ main (int argc, char **argv)
 
 	// clean up all entities
 	EntityManager.collect();
+
+	// shutdown Lua
+	lua::shutdown();
 
 	return 0;
 }

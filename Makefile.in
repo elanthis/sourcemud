@@ -1,5 +1,6 @@
 # CONFIG
 CXXFLAGS = -I. -Iinclude @CXXFLAGS@
+LIBS = @LIBS@
 
 VERSION = @PACKAGE_VERSION@
 PACKAGE = @PACKAGE_TARNAME@-$(VERSION)
@@ -27,6 +28,7 @@ HEADERS = \
 	include/common/time.h \
 	include/common/types.h \
 	include/generated/events.h \
+	include/lua/core.h \
 	include/mud/account.h \
 	include/mud/action.h \
 	include/mud/body.h \
@@ -92,6 +94,7 @@ SOURCES = \
 	src/common/time.cc \
 	src/generated/commands.cc \
 	src/generated/events.cc \
+	src/lua/core.cc \
 	src/mud/account.cc \
 	src/mud/action.cc \
 	src/mud/body.cc \
@@ -155,6 +158,46 @@ TOOLS = \
 	tools/script-doc.xsl \
 	tools/script-header.xsl
 
+LUA = \
+	scripts/init.lua
+
+DATA = \
+	data/admin.acct \
+	data/admin.ply \
+	data/zones/saladhin.zone \
+	data/zones/.zone \
+	data/zones/underworld.zone \
+	data/zones/catacombs.zone \
+	data/zones/darkwood.zone \
+	data/zones/example.zone.old \
+	data/time \
+	data/badnames \
+	data/calendar \
+	data/messages \
+	data/races \
+	data/blueprints/armor.objs \
+	data/blueprints/gems.objs \
+	data/blueprints/misc.objs \
+	data/blueprints/weapons.objs \
+	data/blueprints/animals.npcs \
+	data/blueprints/undead.npcs \
+	data/skills \
+	data/traits \
+	data/uniqid \
+	data/weather \
+	data/html/header.tpl \
+	data/html/footer.tpl \
+	data/html/index.tpl \
+	data/html/error.tpl \
+	data/html/account.tpl \
+	data/html/login.tpl \
+	data/html/stats.tpl \
+	data/html/logout.tpl \
+	data/html/stats.html \
+	data/help/commands.help \
+	data/help/olc.help \
+	data/help/sourcemud.help
+
 BINARIES = sourcemud-bin
 BUILD = Makefile configure
 DIST = configure configure.ac Makefile.in sourcemud.in include/config.h.in
@@ -164,7 +207,7 @@ OBJECTS = $(SOURCES:%.cc=$(BUILDDIR)/%.o)
 
 # CORE BUILD
 all: $(BUILD) $(TOOLS) $(XML) $(HEADERS) $(SOURCES) $(OBJECTS) $(BINARIES) \
-	$(HTTPKEY)
+	$(HTTPKEY) $(SCRIPTS) $(DATA)
 
 clean:
 	@echo Cleaning
@@ -190,7 +233,7 @@ $(BUILDDIR)/%.o: %.cc
 # BINARIES
 sourcemud-bin: $(OBJECTS)
 	@echo Linking $@
-	@$(CXX) -o $@ $^ $(LFLAGS)
+	@$(CXX) -o $@ $^ $(LFLAGS) $(LIBS)
 
 # DATE FILES
 data/session.key:
@@ -232,10 +275,11 @@ configure: configure.ac
 	@autoconf && ./config.status --recheck
 
 # DISTRIBUTION
-dist: all
+dist: all make-dist
+make-dist: configure $(DIST) $(TOOLS) $(XML) $(HEADERS) $(SOURCES) $(LUA) $(DATA)
 	@echo Building distribution tarball $(PACKAGE).tar.gz
 	@[ ! -d $(PACKAGE) ] || rm -fr $(PACKAGE)
 	@mkdir $(PACKAGE)
-	@for file in configure $(DIST) $(TOOLS) $(XML) $(HEADERS) $(SOURCES); do install -D $$file $(PACKAGE)/$$file; done
+	@for file in $^ ; do install -D $$file $(PACKAGE)/$$file; done
 	@tar -zcf $(PACKAGE).tar.gz $(PACKAGE)
 	@rm -fr $(PACKAGE)
