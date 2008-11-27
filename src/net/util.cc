@@ -213,9 +213,9 @@ Network::listen_tcp (int port, int family)
 	if (family == AF_INET6) {
 		// IPv6
 		ss_len = sizeof(sockaddr_in6);
+		memset(&ss, 0, sizeof(ss));
 		ss.ss_family = AF_INET6;
 		((sockaddr_in6*)&ss)->sin6_port = htons (port);
-		memset (&((sockaddr_in6*)&ss)->sin6_addr, 0, sizeof (((sockaddr_in6*)&ss)->sin6_addr));
 
 #ifdef IPV6_V6ONLY
 		// set IPV6-only
@@ -227,9 +227,9 @@ Network::listen_tcp (int port, int family)
 	if (family == AF_INET) {
 		// IPv4
 		ss_len = sizeof(sockaddr_in);
+		memset(&ss, 0, sizeof(ss));
 		ss.ss_family = AF_INET;
 		((sockaddr_in*)&ss)->sin_port = htons (port);
-		memset (&((sockaddr_in*)&ss)->sin_addr, 0, sizeof (((sockaddr_in*)&ss)->sin_addr));
 	}
 
 	// bind socket
