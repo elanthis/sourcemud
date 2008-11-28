@@ -45,8 +45,8 @@ class HTTPHandler : public SocketConnection, public IStreamSink, public IMacroOb
 	void http_error(int error);
 
 	// get post data
-	std::string get_post (std::string name) const;
-	std::string get_request (std::string name) const;
+	std::string get_post(std::string name) const;
+	std::string get_request(std::string name) const;
 
 	// get user account
 	Account* get_account() const { return account; }
@@ -58,23 +58,29 @@ class HTTPHandler : public SocketConnection, public IStreamSink, public IMacroOb
 	virtual void sock_flush();
 
 	// macro values
-	int macro_property (const StreamControl& stream, std::string method, const MacroList& argv) const;
-	void macro_default (const StreamControl& stream) const;
+	int macro_property(const StreamControl& stream, std::string method, const MacroList& argv) const;
+	void macro_default(const StreamControl& stream) const;
+
+	// log a request
+	void log(int status);
 
 	protected:
 	~HTTPHandler() {}
 
 	protected:
 	// parse urlencoded data (GET/POST)
-	void parse_request_data (std::map<std::string,std::string>& map, const char* input) const;
+	void parse_request_data(std::map<std::string,std::string>& map, const char* input) const;
 
 	SockStorage addr;
 
 	// HTTP parsing
 	StringBuffer line;
+	std::string request;
 	std::string method;
 	std::string url;
 	std::string path;
+	std::string referer;
+	std::string user_agent;
 	enum { NONE, URLENCODED } posttype;
 	enum { REQ, HEADER, BODY, DONE, ERROR } state;
 	size_t content_length;

@@ -24,6 +24,7 @@
 #include "common/md5.h"
 #include "common/file.h"
 #include "common/rand.h"
+#include "common/streamtime.h"
 #include "mud/server.h"
 #include "mud/macro.h"
 #include "mud/settings.h"
@@ -144,12 +145,14 @@ HTTPHandler::process ()
 	switch (state) {
 		case REQ:
 		{
-			// empty line?  ignore
-			if (line.empty())
+			request = line.str();
+
+			// empty request?  ignore
+			if (request.empty())
 				return;
 
 			// parse
-			StringList parts = explode(line.str(), ' ');
+			StringList parts = explode(request, ' ');
 
 			// check size
 			if (parts.size() != 3) {
@@ -208,7 +211,11 @@ HTTPHandler::process ()
 					http_error(406);
 					return;
 				}
-			} else if (!strncasecmp("Content-length", line.c_str(), c - line.c_str())) {
+			} else if (!strncasecmp("User-Agent", line.c_str(), c - line.c_str())) {
+				user_agent = c + 2;
+			} else if (!strncasecmp("Referer", line.c_str(), c - line.c_str())) {
+				referer = c + 2;
+			} else if (!strncasecmp("Content-Length", line.c_str(), c - line.c_str())) {
 				// POST: content-length
 				content_length = strtoul(c + 2, NULL, 10);
 
@@ -360,7 +367,7 @@ HTTPHandler::execute()
 	}
 
 	// log access
-	Log::Network << method << ' ' << url << " 200 " << (get_account() ? get_account()->get_id() : S("-")) << ' ' << Network::get_addr_name(addr);
+	log(200);
 
 	// done
 	state = DONE;
@@ -461,6 +468,20 @@ HTTPHandler::page_account()
 		<< StreamMacro(HTTPManager.get_template(S("footer")));
 }
 
+void HTTPHandler::log(int error)
+{
+	Log::Network
+		<< Network::get_addr_name(addr) << ' '
+		<< "- " // RFC 1413 identify -- apache log compatibility place-holder
+	 	<< (get_account() ? get_account()->get_id().c_str() : "-") << ' '
+		<< '[' << StreamTime("%d/%b/%Y:%H:%M:%S %z") << "] "
+		<< '"' << request << "\" " 
+		<< error << ' '
+		<< get_out_bytes() << ' '
+		<< '"' << (referer.empty() ? "-" : referer.c_str()) << "\" "
+		<< '"' << (user_agent.empty() ? "-" : user_agent.c_str()) << '"';
+}
+
 void
 HTTPHandler::http_error(int error)
 {
@@ -485,7 +506,7 @@ HTTPHandler::http_error(int error)
 		<< StreamMacro(HTTPManager.get_template(S("footer")));
 
 	// log error
-	Log::Network << method << ' ' << (url.empty() ? "-" : url) << ' ' << error << ' ' << (get_account() ? get_account()->get_id() : S("-")) << ' ' << Network::get_addr_name(addr);
+	log(error);
 
 	// set error state
 	state = ERROR;
