@@ -21,12 +21,15 @@ enum LogClass {
 	LOG_WARNING,
 	LOG_ERROR,
 	LOG_NETWORK,
+	LOG_HTTP,
 	LOG_ADMIN
 };
 
 class SLogManager : public IManager
 {
 	public:
+	SLogManager() : log(NULL), http_log(NULL) {}
+
 	int initialize();
 	void shutdown();
 
@@ -35,10 +38,13 @@ class SLogManager : public IManager
 	void reset();
 
 	std::string get_path() const { return path; }
+	std::string get_http_path() const { return http_path; }
 
 	protected:
 	std::string path;
-	FILE *file;
+	std::string http_path;
+	FILE* log;
+	FILE* http_log;
 };
 
 extern SLogManager LogManager;

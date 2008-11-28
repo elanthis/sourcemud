@@ -44,37 +44,54 @@ namespace Log {
 int SLogManager::initialize()
 {
 	path = SettingsManager.get_log_file();
-	file = NULL;
+	http_path = SettingsManager.get_http_log_file();
 
 	if (!path.empty()) {
-		if ((file = fopen(path.c_str(), "a")) == NULL) {
+		if ((log = fopen(path.c_str(), "a")) == NULL) {
 			Log::Error << "Unable to open log file " << path << ": " << strerror(errno);
+			return 1;
+		}
+	}
+
+	if (!http_path.empty()) {
+		if ((http_log = fopen(http_path.c_str(), "a")) == NULL) {
+			Log::Error << "Unable to open HTTP log file " << http_path << ": " << strerror(errno);
 			return 1;
 		}
 	}
 
 	Log::Info << "<--- Source MUD V" PACKAGE_VERSION " --->";
 
-	if (!path.empty())
-		Log::Info << "Logging to " << path;
-
 	return 0;
 }
 
 void SLogManager::shutdown()
 {
-	if (file != NULL)
-		fclose(file);
+	if (log != NULL)
+		fclose(log);
+	if (http_log != NULL)
+		fclose(http_log);
 }
 
 void SLogManager::print (LogClass klass, const std::string& msg)
 {
+	// HTTP logs go to the HTTP log file, with no extra info
+	if (klass == LOG_HTTP) {
+		if (http_log)
+			fprintf(http_log, "%s\n", msg.c_str());
+		else if (log)
+			fprintf(log, "%s\n", msg.c_str());
+		else
+			fprintf(stderr, "%s\n", msg.c_str());
+		return;
+	}
+
 	char tbuf[41];
 	const char* prefix;
 	time_t t;
 	struct tm local;
 	time (&t);
-	FILE* out = file ? file : stderr;
+	FILE* out = log ? log : stderr;
 
 	switch (klass) {
 		case LOG_ERROR:
@@ -101,10 +118,23 @@ void SLogManager::print (LogClass klass, const std::string& msg)
 
 void SLogManager::reset()
 {
-	if (file != NULL) {
-		fclose(file);
-		file = fopen(path.c_str(), "a+");
-		if (file == NULL)
-			Log::Warning << "Failed to re-load SLogManager " << path << ": " << strerror(errno);
+	if (log != NULL) {
+		FILE* nlog = fopen(path.c_str(), "a");
+		if (nlog == NULL) {
+			Log::Warning << "Failed to re-load log file " << path << ": " << strerror(errno);
+		} else {
+			fclose(log);
+			log = nlog;
+		}
+	}
+
+	if (http_log != NULL) {
+		FILE* nlog = fopen(http_path.c_str(), "a");
+		if (nlog == NULL) {
+			Log::Warning << "Failed to re-load HTTP log file " << http_path << ": " << strerror(errno);
+		} else {
+			fclose(http_log);
+			http_log = nlog;
+		}
 	}
 }

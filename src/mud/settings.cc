@@ -41,6 +41,7 @@ namespace {
 
 	SettingInfo settings[] = {
 		SETTING_STRING(log_file, 'l', "log", "log_file", "")
+		SETTING_STRING(http_log_file, 0, "http_log", "http_log_file", "")
 		SETTING_STRING(pid_file, 'p', "pid", "pid_file", "sourcemud.pid")
 		SETTING_STRING(deny_file, 0, "deny", "denied_hosts_file", "")
 		SETTING_STRING(account_path, 0, NULL, "account_dir", "data")

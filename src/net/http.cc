@@ -35,6 +35,10 @@
 
 SHTTPManager HTTPManager;
 
+namespace Log {
+	LogWrapper HTTP(LOG_HTTP);
+}
+
 HTTPHandler::HTTPHandler (int s_sock, const SockStorage& s_netaddr) :  SocketConnection(s_sock)
 {
 	addr = s_netaddr;
@@ -470,7 +474,7 @@ HTTPHandler::page_account()
 
 void HTTPHandler::log(int error)
 {
-	Log::Network
+	Log::HTTP
 		<< Network::get_addr_name(addr) << ' '
 		<< "- " // RFC 1413 identify -- apache log compatibility place-holder
 	 	<< (get_account() ? get_account()->get_id().c_str() : "-") << ' '

@@ -27,6 +27,7 @@ class SSettingsManager : public IManager
 	int load_file (std::string path);
 
 	SETTING_STRING(log_file)
+	SETTING_STRING(http_log_file)
 	SETTING_STRING(pid_file)
 	SETTING_STRING(deny_file)
 	SETTING_STRING(state_file)

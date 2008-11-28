@@ -5,6 +5,9 @@
 ## Log file.
 log_file = @DATADIR@/log/sourcemud.log
 
+## HTTP Log file.
+http_log_file = @DATADIR@/log/sm_access.log
+
 ## PID file
 pid_file = @DATADIR@/run/sourcemud.pid
 
