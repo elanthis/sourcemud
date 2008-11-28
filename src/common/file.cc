@@ -81,3 +81,61 @@ bool File::rename(const std::string& src, const std::string& dst)
 {
 	return ::rename(src.c_str(), dst.c_str()) == 0;
 }
+
+File::pathinfo_t& File::pathinfo(const std::string& path, pathinfo_t& info)
+{
+	// search for the final directory separator, if any, and
+	// split the file and directory bits
+	size_t dsep = path.rfind('/');
+	if (dsep != std::string::npos) {
+		info.dir = path.substr(0, dsep);
+		info.file = path.substr(dsep + 1);
+	} else {
+		info.dir = ".";
+		info.file = path;
+	}
+
+	// look for the extension, if any
+	size_t esep = info.file.rfind('.');
+	if (esep != std::string::npos)
+		info.ext = info.file.substr(esep + 1);
+	else
+		info.ext.clear();
+
+	return info;
+}
+
+std::string& File::normalize(std::string& path)
+{
+	// FIXME: this is not exactly a speedy way of doing this.  but it
+	// does work quite well.  a more efficient implementation is definitely
+	// possible without _too_ much extra effort
+	
+	// break the path into components
+	StringList parts;
+	explode(parts, path, '/');
+
+	// look at each component, remove/keep as appropriate
+	StringList::iterator i = parts.begin();
+	while (i != parts.end()) {
+		// remove . components
+		if (*i == ".") {
+			i = parts.erase(i);
+		// ignore empty components
+		} else if (i->empty()) {
+			i = parts.erase(i);
+		// for .. component, remove both it and the previous component
+		} else if (*i == "..") {
+			i = parts.erase(i);
+			if (i != parts.begin())
+				i = parts.erase(--i);
+		// keep everything else
+		} else {
+			++i;
+		}
+	}
+
+	// now we rejoin all components, and we also add in a leading /
+	path = "/" + implode(parts, '/');
+	return path;
+}

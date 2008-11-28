@@ -33,6 +33,18 @@ void remove(const std::string& path);
 // rename a file or directory, replacing target file
 bool rename(const std::string& src, const std::string& dst);
 
+// parse a path string into its components
+struct pathinfo_t {
+	std::string dir;
+	std::string file;
+	std::string ext;
+};
+pathinfo_t& pathinfo(const std::string& path, pathinfo_t& out);
+
+// normalize a path (remove . and .. components, and add a leading /)
+// this assumes that the path is meant to be absolute
+std::string& normalize(std::string& path);
+
 } // namespace file
 
 #endif
