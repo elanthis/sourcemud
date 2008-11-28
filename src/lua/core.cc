@@ -14,8 +14,10 @@ extern "C" {
 #include "common/log.h"
 #include "lua/core.h"
 
-namespace {
+namespace lua {
 	lua_State* lua_state = NULL;
+
+	extern bool initializePrint();
 }
 
 bool lua::initialize()
@@ -34,6 +36,10 @@ bool lua::initialize()
 
 	// load Lua libs
 	luaL_openlibs(lua_state);
+
+	// initialize our custom libraries
+	if (!initializePrint())
+		return false;
 
 	return true;
 }

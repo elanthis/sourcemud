@@ -30,6 +30,7 @@ HEADERS = \
 	include/common/types.h \
 	include/generated/events.h \
 	include/lua/core.h \
+	include/lua/print.h \
 	include/mud/account.h \
 	include/mud/action.h \
 	include/mud/body.h \
@@ -96,6 +97,7 @@ SOURCES = \
 	src/generated/commands.cc \
 	src/generated/events.cc \
 	src/lua/core.cc \
+	src/lua/print.cc \
 	src/mud/account.cc \
 	src/mud/action.cc \
 	src/mud/body.cc \
