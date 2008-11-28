@@ -23,6 +23,7 @@ HEADERS = \
 	include/common/rand.h \
 	include/common/regex.h \
 	include/common/streams.h \
+	include/common/streamtime.h \
 	include/common/strbuf.h \
 	include/common/string.h \
 	include/common/time.h \
