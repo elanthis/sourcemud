@@ -274,9 +274,9 @@ implode (std::string& string, const StringList& list, char ch)
 
 	// keep adding to string
 	for (StringList::const_iterator i = list.begin(); i != list.end(); ++i) {
-		if (!string.empty())
+		if (!buffer.empty())
 			buffer << ch;
-		buffer << (*i).c_str();
+		buffer << *i;
 	}
 
 	return string = buffer.str();
