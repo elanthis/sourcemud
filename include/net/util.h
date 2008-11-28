@@ -12,7 +12,7 @@
 
 namespace Network {
 	// get the printable form of an IP address
-	std::string get_addr_name(const SockStorage& addr);
+	std::string get_addr_name(const SockStorage& addr, bool show_port = true);
 
 	// return 0 if the two addresses are the same
 	int addrcmp(const SockStorage& addr1, const SockStorage& addr2);

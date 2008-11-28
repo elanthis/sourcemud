@@ -124,8 +124,7 @@ Network::addrcmp_mask (const SockStorage& in_addr1, const SockStorage& addr2, ui
 }
 
 // get name of socket
-std::string
-Network::get_addr_name(const SockStorage& addr)
+std::string Network::get_addr_name(const SockStorage& addr, bool show_port)
 {
 	char hostbuf[512];
 	char servbuf[512];
@@ -146,11 +145,15 @@ Network::get_addr_name(const SockStorage& addr)
 	if (!strlen(servbuf))
 		return std::string(hostbuf);
 
-	// host have a : (*cough* IPv6 *cough*) ? format [addr]:port
-	if (strchr(hostbuf, ':'))
-		snprintf(buffer, sizeof(buffer), "[%s]:%s", hostbuf, servbuf);
-	else
-		snprintf(buffer, sizeof(buffer), "%s:%s", hostbuf, servbuf);
+	// display the port, and optionally port
+	if (show_port) {
+		if (strchr(hostbuf, ':'))
+			snprintf(buffer, sizeof(buffer), "%s.%s", hostbuf, servbuf);
+		else
+			snprintf(buffer, sizeof(buffer), "%s:%s", hostbuf, servbuf);
+	} else {
+		snprintf(buffer, sizeof(buffer), "%s", hostbuf);
+	}
 
 	return std::string(buffer);
 }

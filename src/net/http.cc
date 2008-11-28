@@ -475,7 +475,7 @@ HTTPHandler::page_account()
 void HTTPHandler::log(int error)
 {
 	Log::HTTP
-		<< Network::get_addr_name(addr) << ' '
+		<< Network::get_addr_name(addr, false) << ' '
 		<< "- " // RFC 1413 identify -- apache log compatibility place-holder
 	 	<< (get_account() ? get_account()->get_id().c_str() : "-") << ' '
 		<< '[' << StreamTime("%d/%b/%Y:%H:%M:%S %z") << "] "
