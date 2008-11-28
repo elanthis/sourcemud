@@ -96,10 +96,16 @@ class SocketConnection : public ISocketHandler {
 	virtual bool sock_is_disconnect_waiting() { return disconnect; }
 	virtual void sock_complete_disconnect();
 
+	// stats
+	size_t get_in_bytes() const { return in_bytes; }
+	size_t get_out_bytes() const { return out_bytes; }
+
 	private:
 	std::vector<char> output;
 	int sock;
 	bool disconnect;
+	size_t in_bytes;
+	size_t out_bytes;
 };
 
 #endif

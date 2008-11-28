@@ -17,7 +17,8 @@
 
 #include "config.h"
 
-SocketConnection::SocketConnection (int s_sock) : output(), sock(s_sock), disconnect(false)
+SocketConnection::SocketConnection (int s_sock) : output(), sock(s_sock),
+	disconnect(false), in_bytes(0), out_bytes(0)
 {}
 
 void
@@ -34,20 +35,20 @@ SocketConnection::sock_in_ready ()
 
 		sock_hangup();
 		return;
-	}
 
 	// eof
-	else if (err == 0) {
+	} else if (err == 0) {
 		close(sock);
 		sock = -1;
 
 		sock_hangup();
 		return;
-	}
 
 	// real data
-	else if (err > 0 && !disconnect)
+	} else if (err > 0 && !disconnect) {
+		in_bytes += err;
 		sock_input(buffer, err);
+	}
 }
 
 
@@ -69,6 +70,7 @@ SocketConnection::sock_out_ready ()
 void
 SocketConnection::sock_buffer (const char* bytes, size_t len)
 {
+	out_bytes += len;
 	if (output.size() + len > output.capacity()) {
 		// size is + 1024 bytes
 		size_t newsize = ((output.size() + len) / 1024 + 1 * 1024);
