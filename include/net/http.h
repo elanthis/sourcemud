@@ -64,6 +64,12 @@ class HTTPHandler : public SocketConnection, public IStreamSink, public IMacroOb
 	// log a request
 	void log(int status);
 
+	// serve a file
+	void serve_file(const std::string& full_path);
+
+	// serve a script
+	void serve_script(const std::string& full_path);
+
 	protected:
 	~HTTPHandler() {}
 

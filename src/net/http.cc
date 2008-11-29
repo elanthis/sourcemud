@@ -17,6 +17,7 @@
 #include <errno.h>
 #include <string.h>
 #include <stdarg.h>
+#include <sys/stat.h>
 
 #include "common/error.h"
 #include "common/streams.h"
@@ -31,6 +32,8 @@
 #include "net/http.h"
 #include "net/manager.h"
 #include "net/util.h"
+#include "lua/core.h"
+#include "lua/print.h"
 #include "config.h"
 
 SHTTPManager HTTPManager;
@@ -180,6 +183,7 @@ HTTPHandler::process ()
 			} else {
 				path = url;
 			}
+			File::normalize(path);
 
 			state = HEADER;
 			break;
@@ -207,7 +211,7 @@ HTTPHandler::process ()
 			}
 
 			// determine which header we're dealing with
-			if (!strncasecmp("Content-type", line.c_str(), c - line.c_str())) {
+			if (!strncasecmp("Content-Type", line.c_str(), c - line.c_str())) {
 				// POST: content-type (must be application/x-www-form-urlencoded
 				if (!strcmp("application/x-www-form-urlencoded", c + 2))
 					posttype = URLENCODED;
@@ -347,15 +351,28 @@ HTTPHandler::parse_request_data (std::map<std::string,std::string>& map, const c
 void
 HTTPHandler::execute()
 {
+	// turn our request path info a full file path
+	std::string file = SettingsManager.get_html_path() + path;
 
-	// DEBUG: Log request variables
-	/*
-	for (std::map<std::string,std::string>::iterator i = get.begin(); i != get.end(); ++i)
-		Log::Info << "GET: " << i->first << "=" << i->second;
-	for (std::map<std::string,std::string>::iterator i = post.begin(); i != post.end(); ++i)
-		Log::Info << "POST: " << i->first << "=" << i->second;
-	*/
+	// check to see if our file exists, and serve it if it does
+	if (File::isfile(file)) {
+		serve_file(file);
+	// check for that file with a .lua extension
+	} else if (File::isfile(file + ".lua")) {
+		serve_script(file + ".lua");
+	// look for our file with /index.lua or /index.html appended
+	} else if (File::isfile(file + "/index.lua")) {
+		serve_script(file + "/index.lua");
+	} else if (File::isfile(file + "/index.html")) {
+		serve_file(file + "/index.html");
+	// not found
+	} else {
+		http_error(404);
+	}
 
+	state = DONE;
+
+/*
 	// handle built-in pages
 	if (path == "/")
 		page_index();
@@ -369,18 +386,82 @@ HTTPHandler::execute()
 		http_error(404);
 		return;
 	}
+*/
+}
 
-	// log access
+void HTTPHandler::serve_file(const std::string& full_path)
+{
+	// get mime type
+	const std::string& mime = File::getMimeType(full_path);
+
+	// serve sripts specially
+	if (mime == "application/x-lua") {
+		serve_script(full_path);
+		return;
+	}
+
+	// stat the file
+	struct stat st;
+	if (stat(full_path.c_str(), &st) != 0) {
+		http_error(404);
+		return;
+	}
+
+	// calculate mtime, size, and etag
+	std::string mtime = Time::format(Time::RFC_822_FORMAT, st.st_mtime);
+	std::string etag = '"' + MD5::hash(full_path + mtime) + '"';
+	size_t size = st.st_size;
+
+	// simple headers
+	*this <<
+		"HTTP/1.0 200 OK\r\n"
+		"Content-Type: " << mime << "\r\n"
+		"Content-Length: " << size << "\r\n"
+		"Last-Modified: " << mtime << "\r\n"
+		"ETag: " << etag << "\r\n\r\n";
+
+	// file content
+	std::ifstream ifs;
+	ifs.open(full_path.c_str(), std::ios::binary);
+	char buf[1024];
+	size_t rs = 0;
+	while (ifs) {
+		rs = ifs.readsome(buf, sizeof(buf));
+		if (rs == 0)
+			break;
+		this->stream_put(buf, rs);
+	}
+	ifs.close();
+
+	// successful
 	log(200);
+}
 
-	// done
-	state = DONE;
+void HTTPHandler::serve_script(const std::string& full_path)
+{
+	// simplistic header
+	*this <<
+		"HTTP/1.0 200 OK\r\n"
+		"Content-Type: text/html\r\n"
+		"Cache-Control: no-cache\r\n"
+		"Pragma: no-cache\r\n\r\n";
+
+	// setup print handler
+	Lua::setPrint(this);
+
+	// run the script
+	Lua::runfile(full_path);
+
+	// remove print handler
+	Lua::setPrint(NULL);
+
+	log(200);
 }
 
 void
 HTTPHandler::page_index()
 {
-	*this << "HTTP/1.0 200 OK\nContent-type: text/html\n\n"
+	*this << "HTTP/1.0 200 OK\nContent-Type: text/html\n\n"
 		<< StreamMacro(HTTPManager.get_template(S("header")), S("account"), get_account())
 		<< StreamMacro(HTTPManager.get_template(S("index")), S("account"), get_account())
 		<< StreamMacro(HTTPManager.get_template(S("footer")));
@@ -391,7 +472,7 @@ HTTPHandler::page_login()
 {
 	std::string msg;
 
-	*this << "HTTP/1.0 200 OK\nContent-type: text/html\n";
+	*this << "HTTP/1.0 200 OK\nContent-Type: text/html\n";
 
 	// attempt login?
 	if (get_post(S("action")) == "Login") {
@@ -425,7 +506,7 @@ HTTPHandler::page_login()
 void
 HTTPHandler::page_logout()
 {
-	*this << "HTTP/1.0 200 OK\nContent-type: text/html\nSet-cookie: session=\n\n"
+	*this << "HTTP/1.0 200 OK\nContent-Type: text/html\nSet-cookie: session=\n\n"
 		<< StreamMacro(HTTPManager.get_template(S("header")))
 		<< StreamMacro(HTTPManager.get_template(S("logout")))
 		<< StreamMacro(HTTPManager.get_template(S("footer")));
@@ -466,7 +547,7 @@ HTTPHandler::page_account()
 	}
 
 	// did they try to save changes?
-	*this << "HTTP/1.0 200 OK\nContent-type: text/html\n\n"
+	*this << "HTTP/1.0 200 OK\nContent-Type: text/html\n\n"
 		<< StreamMacro(HTTPManager.get_template(S("header")), S("account"), get_account(), S("msg"), msg)
 		<< StreamMacro(HTTPManager.get_template(S("account")), S("account"), get_account())
 		<< StreamMacro(HTTPManager.get_template(S("footer")));
@@ -504,7 +585,7 @@ HTTPHandler::http_error(int error)
 	}
 
 	// display error page
-	*this << "HTTP/1.0 " << error << ' ' << http_msg << "\nContent-type: text/html\n\n"
+	*this << "HTTP/1.0 " << error << ' ' << http_msg << "\nContent-Type: text/html\n\n"
 		<< StreamMacro(HTTPManager.get_template(S("header")), S("account"), get_account())
 		<< StreamMacro(HTTPManager.get_template(S("error")), S("error"), tostr(error), S("http_msg"), http_msg, S("msg"), http_msg)
 		<< StreamMacro(HTTPManager.get_template(S("footer")));
