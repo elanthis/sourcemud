@@ -24,19 +24,11 @@
 #ifndef SOURCEMUD_LUA_PRINT_H
 #define SOURCEMUD_LUA_PRINT_H
 
+#include "common/streams.h"
+
 namespace Lua {
-	// A print handling callback
-	class IPrint {
-		public:
-		virtual ~IPrint() {}
-		virtual void print(const char* bytes, size_t len) = 0;
-	};
-
 	// Set the current print handler
-	void setPrint(IPrint*);
-
-	// Clear the print handler
-	inline void clearPrint() { setPrint(NULL); }
+	void setPrint(IStreamSink* sink);
 }
 
 #endif
