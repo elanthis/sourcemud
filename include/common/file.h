@@ -45,6 +45,9 @@ pathinfo_t& pathinfo(const std::string& path, pathinfo_t& out);
 // this assumes that the path is meant to be absolute
 std::string& normalize(std::string& path);
 
+// get mime type (for now, just uses the extension)
+const std::string& getMimeType(const std::string& path); 
+
 } // namespace file
 
 #endif

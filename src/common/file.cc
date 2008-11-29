@@ -10,6 +10,8 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
+#include <map>
+
 #include "common/file.h"
 #include "common/log.h"
 
@@ -138,4 +140,36 @@ std::string& File::normalize(std::string& path)
 	// now we rejoin all components, and we also add in a leading /
 	path = "/" + implode(parts, '/');
 	return path;
+}
+
+const std::string& File::getMimeType(const std::string& path)
+{
+	// mime types mapping
+	static std::map<std::string, std::string> mime_map;
+	static std::string mime_unknown = "unknown";
+	if (mime_map.empty()) {
+		mime_map["txt"] = "text/plain";
+		mime_map["html"] = "text/html";
+		mime_map["css"] = "text/css";
+		mime_map["js"] = "text/js";
+		mime_map["lua"] = "application/x-lua";
+		mime_map["png"] = "image/png";
+		mime_map["jpg"] = "image/jpg";
+		mime_map["gif"] = "image/gif";
+	}
+
+	// get the file's extension
+	size_t esep = path.find_last_of("/.");
+	if (esep == std::string::npos)
+		return mime_unknown;
+
+	// copy and lower-case the string
+	std::string ext = strlower(path.substr(esep + 1));
+
+	// find the extension in the map, or return unknown if not found
+	std::map<std::string, std::string>::iterator i = mime_map.find(ext);
+	if (i != mime_map.end())
+		return i->second;
+	else
+		return mime_unknown;
 }
