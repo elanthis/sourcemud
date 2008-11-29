@@ -14,7 +14,6 @@
 #include "mud/macro.h"
 #include "mud/gametime.h"
 #include "mud/player.h"
-#include "net/http.h"
 #include "net/manager.h"
 #include "config.h"
 
@@ -633,11 +632,6 @@ namespace macro {
 			if (_cmd_argv.size() != 0)
 				return -1;
 			stream << (TimeManager.time.get_minutes());
-		} else if (str_eq(_cmd_name, S("html"))) {
-			if (_cmd_argv.size() != 1)
-				return -1;
-			std::string str = _cmd_argv[0].get_string();
-			stream << StreamHTTPEscape(str); 
 		} else {
 			return -1;
 		}
