@@ -11,15 +11,14 @@
 #include <time.h>
 
 #include "common/streams.h"
-
-#define STREAMTIME_RFC822 "%a, %d %b %Y %H:%M:%S %z"
+#include "common/time.h"
 
 class StreamTime
 {
 	public:
 	explicit StreamTime(const char* s_format, time_t s_time) : format(s_format), time(s_time) {}
 	explicit StreamTime(const char* s_format) : format(s_format) { ::time(&time); }
-	StreamTime() : format(STREAMTIME_RFC822) { ::time(&time); }
+	StreamTime() : format(Time::RFC_822_FORMAT.c_str()) { ::time(&time); }
 
 	const char* get_format() const { return format; }
 	const time_t& get_time() const { return time; }
