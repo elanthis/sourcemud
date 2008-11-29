@@ -24,7 +24,7 @@
 #ifndef SOURCEMUD_LUA_PRINT_H
 #define SOURCEMUD_LUA_PRINT_H
 
-namespace lua {
+namespace Lua {
 	// A print handling callback
 	class IPrint {
 		public:
@@ -36,7 +36,7 @@ namespace lua {
 	void setPrint(IPrint*);
 
 	// Clear the print handler
-	void clearPrint() { setPrint(NULL); }
+	inline void clearPrint() { setPrint(NULL); }
 }
 
 #endif

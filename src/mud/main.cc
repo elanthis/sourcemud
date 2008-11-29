@@ -518,7 +518,7 @@ main (int argc, char **argv)
 		return 1;
 
 	// initialie Lua
-	if (!lua::initialize())
+	if (!Lua::initialize())
 		return 1;
 
 	// load the world
@@ -586,7 +586,7 @@ main (int argc, char **argv)
 	}
 
 	// Load the init script for Lua
-	lua::runfile(SettingsManager.get_scripts_path() + "/init.lua");
+	Lua::runfile(SettingsManager.get_scripts_path() + "/init.lua");
 
 	// run init hook
 	Hooks::ready();
@@ -721,7 +721,7 @@ main (int argc, char **argv)
 	EntityManager.collect();
 
 	// shutdown Lua
-	lua::shutdown();
+	Lua::shutdown();
 
 	return 0;
 }

@@ -12,7 +12,7 @@
 
 #include "common/imanager.h"
 
-namespace lua {
+namespace Lua {
 	// Initialize the Lua subsystem
 	bool initialize();
 

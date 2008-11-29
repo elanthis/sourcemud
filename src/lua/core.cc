@@ -14,28 +14,28 @@ extern "C" {
 #include "common/log.h"
 #include "lua/core.h"
 
-namespace lua {
-	lua_State* lua_state = NULL;
+namespace Lua {
+	lua_State* state = NULL;
 
 	extern bool initializePrint();
 }
 
-bool lua::initialize()
+bool Lua::initialize()
 {
 	// initialize only once
-	if (lua_state != NULL)
+	if (state != NULL)
 		return true;
 
 	Log::Info << "Initializing Lua...";
 
 	// initialize the Lua state object
-	if ((lua_state = luaL_newstate()) == NULL) {
+	if ((state = luaL_newstate()) == NULL) {
 		Log::Error << "luaL_newstate() failed";
 		return false;
 	}
 
 	// load Lua libs
-	luaL_openlibs(lua_state);
+	luaL_openlibs(state);
 
 	// initialize our custom libraries
 	if (!initializePrint())
@@ -44,34 +44,34 @@ bool lua::initialize()
 	return true;
 }
 
-void lua::shutdown()
+void Lua::shutdown()
 {
-	if (lua_state != NULL) {
-		lua_close(lua_state);
-		lua_state = NULL;
+	if (state != NULL) {
+		lua_close(state);
+		state = NULL;
 	}
 }
 
-bool lua::runfile(const std::string& path)
+bool Lua::runfile(const std::string& path)
 {
-	if (!lua_state) {
-		Log::Error << "lua::runfile(): Lua not initialized";
+	if (!state) {
+		Log::Error << "Lua::runfile(): Lua not initialized";
 		return false;
 	}
 
 	// load the script
-	int rs = luaL_loadfile(lua_state, path.c_str());
+	int rs = luaL_loadfile(state, path.c_str());
 	if (rs != 0) {
-		Log::Error << "Couldn't load script: " << lua_tostring(lua_state, -1);
-		lua_pop(lua_state, 1);
+		Log::Error << "Couldn't load script: " << lua_tostring(state, -1);
+		lua_pop(state, 1);
 		return false;
 	}
 	
 	// execute the script
-	rs = lua_pcall(lua_state, 0, 0, 0);
+	rs = lua_pcall(state, 0, 0, 0);
 	if (rs != 0) {
-		Log::Error << "Couldn't execute script: " << lua_tostring(lua_state, -1);
-		lua_pop(lua_state, 1);
+		Log::Error << "Couldn't execute script: " << lua_tostring(state, -1);
+		lua_pop(state, 1);
 		return false;
 	}
 

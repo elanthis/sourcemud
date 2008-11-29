@@ -15,23 +15,23 @@ extern "C" {
 #include "lua/print.h"
 
 // globals
-namespace lua {
-	extern lua_State* lua_state;
-	IPrint* lua_print = NULL;
+namespace Lua {
+	extern lua_State* state;
+	IPrint* print = NULL;
 }
 
 // the public interface
-void lua::setPrint(IPrint* print)
+void Lua::setPrint(IPrint* print)
 {
-	lua_print = print;
+	Lua::print = print;
 }
 
 // this is our actual print function
 namespace {
-	int print(lua_State* s)
+	int do_print(lua_State* s)
 	{
 		// check that we have a print object
-		if (!lua::lua_print) {
+		if (!Lua::print) {
 			lua_pushstring(s, "print() is not allowed in this context");
 			lua_error(s);
 		}
@@ -40,7 +40,7 @@ namespace {
 		for (int i = 1, e = lua_gettop(s); i != e; ++i) {
 			size_t len;
 			const char* str = lua_tolstring(s, i, &len);
-			lua::lua_print->print(str, len);
+			Lua::print->print(str, len);
 		}
 
 		// done; no return values
@@ -49,11 +49,11 @@ namespace {
 }
 
 // our initialization routine
-namespace lua {
+namespace Lua {
 	bool initializePrint()
 	{
 		// register our print function as 'print'
-		lua_register(lua_state, "print", print);
+		lua_register(Lua::state, "print", do_print);
 		return true;
 	}
 }
