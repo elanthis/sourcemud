@@ -13,7 +13,6 @@ extern "C" {
 
 #include "lua/core.h"
 #include "lua/print.h"
-#include "common/log.h"
 
 // globals
 namespace Lua {
@@ -31,7 +30,6 @@ void Lua::setPrint(IStreamSink* sink)
 namespace {
 	int do_print(lua_State* s)
 	{
-		Log::Info << "print: " << lua_gettop(s);
 		// check that we have a stream sink
 		if (!Lua::sink) {
 			lua_pushstring(s, "print() is not allowed in this context");
