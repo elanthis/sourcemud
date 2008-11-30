@@ -25,20 +25,20 @@ SSettingsManager SettingsManager;
 #define SETTING_BOOL(name,short_opt,long_opt,file_opt,def) \
 	{ #name, short_opt, long_opt, file_opt, NULL, NULL, &SettingsManager.val_ ## name, 0, std::string(), def },
 
-namespace {
-	struct SettingInfo {
-		const char* name;
-		char short_opt;
-		const char* long_opt;
-		const char* file_opt;
-		int* val_int;
-		std::string* val_string;
-		bool* val_bool;
-		int def_int;
-		std::string def_string;
-		bool def_bool;
-	};
+struct SettingInfo {
+	const char* name;
+	char short_opt;
+	const char* long_opt;
+	const char* file_opt;
+	int* val_int;
+	std::string* val_string;
+	bool* val_bool;
+	int def_int;
+	std::string def_string;
+	bool def_bool;
+};
 
+namespace {
 	SettingInfo settings[] = {
 		SETTING_STRING(log_file, 'l', "log", "log_file", "")
 		SETTING_STRING(http_log_file, 0, "http_log", "http_log_file", "")
@@ -86,9 +86,11 @@ namespace {
 }
 
 int
-SSettingsManager::initialize (void)
+SSettingsManager::initialize()
 {
 	for (int i = 0; settings[i].name != NULL; ++i) {
+		by_name[settings[i].name] = &settings[i];
+
 		if (settings[i].val_int)
 			*settings[i].val_int = settings[i].def_int;
 		else if (settings[i].val_string)
@@ -100,8 +102,7 @@ SSettingsManager::initialize (void)
 	return 0;
 }
 
-void
-SSettingsManager::print_usage (void)
+void SSettingsManager::printUsage()
 {
 	// FIXME - don't use fprintf
 	fprintf(stderr, "./sourcemud");
@@ -129,8 +130,7 @@ SSettingsManager::print_usage (void)
 	fprintf(stderr, "\n");
 }
 
-int
-SSettingsManager::parse_argv (int argc, char** argv)
+int SSettingsManager::parseArgv(int argc, char** argv)
 {
 	int err = 0;
 	for (int opt = 1; opt < argc; ++opt) {
@@ -180,8 +180,7 @@ SSettingsManager::parse_argv (int argc, char** argv)
 	return err;
 }
 
-int
-SSettingsManager::load_file (std::string path)
+int SSettingsManager::loadFile(const std::string& path)
 {
 	FILE* file;
 	char buffer[1024];
@@ -281,4 +280,29 @@ SSettingsManager::load_file (std::string path)
 	fclose(file);
 
 	return 0;
+}
+
+const std::string& SSettingsManager::getString(const std::string& name)
+{
+	std::map<std::string, SettingInfo*>::const_iterator i = by_name.find(name);
+	if (i != by_name.end() && i->second->val_string)
+		return *i->second->val_string;
+	static const std::string empty;
+	return empty;
+}
+
+int SSettingsManager::getInt(const std::string& name)
+{
+	std::map<std::string, SettingInfo*>::const_iterator i = by_name.find(name);
+	if (i != by_name.end() && i->second->val_int)
+		return *i->second->val_int;
+	return 0;
+}
+
+bool SSettingsManager::getBool(const std::string& name)
+{
+	std::map<std::string, SettingInfo*>::const_iterator i = by_name.find(name);
+	if (i != by_name.end() && i->second->val_bool)
+		return *i->second->val_bool;
+	return false;
 }

@@ -8,23 +8,31 @@
 #ifndef SETTINGS_H
 #define SETTINGS_H
 
-#include "common/string.h"
-#include "mud/server.h"
-#include "common/imanager.h"
+#include <map>
 
-#define SETTING_INT(name) int val_ ## name; inline int get_ ## name (void) const { return val_ ## name; }
-#define SETTING_STRING(name) std::string val_ ## name; inline const std::string& get_ ## name (void) const { return val_ ## name; }
-#define SETTING_BOOL(name) bool val_ ## name; inline bool get_ ## name (void) const { return val_ ## name; }
+#include "common/string.h"
+#include "common/imanager.h"
+#include "mud/server.h"
+
+#define SETTING_INT(name) int val_ ## name; inline int get_ ## name () const { return val_ ## name; }
+#define SETTING_STRING(name) std::string val_ ## name; inline const std::string& get_ ## name () const { return val_ ## name; }
+#define SETTING_BOOL(name) bool val_ ## name; inline bool get_ ## name () const { return val_ ## name; }
+
+struct SettingInfo;
 
 class SSettingsManager : public IManager
 {
 	public:
-	int initialize (void);
-	void shutdown (void) {}
+	int initialize();
+	void shutdown() {}
 
-	void print_usage (void);
-	int parse_argv (int argc, char** argv);
-	int load_file (std::string path);
+	void printUsage();
+	int parseArgv(int argc, char** argv);
+	int loadFile(const std::string& path);
+
+	int getInt(const std::string&);
+	const std::string& getString(const std::string&);
+	bool getBool(const std::string&);
 
 	SETTING_STRING(log_file)
 	SETTING_STRING(http_log_file)
@@ -67,6 +75,9 @@ class SSettingsManager : public IManager
 	SETTING_BOOL(backup_players)
 	SETTING_BOOL(backup_accounts)
 	SETTING_BOOL(backup_zones)
+
+	private:
+	std::map<std::string, SettingInfo*> by_name;
 };
 
 extern SSettingsManager SettingsManager;
