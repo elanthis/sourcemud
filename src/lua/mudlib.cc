@@ -10,6 +10,7 @@ extern "C" {
 #include <lauxlib.h>
 }
 
+#include "common/log.h"
 #include "lua/core.h"
 
 // -------------------
@@ -76,7 +77,6 @@ extern lua_State* state;
 bool initializeMudlib()
 {
 	luaL_register(Lua::state, "mud", bindings::mud::registry);
-
 	return true;
 }
 
