@@ -12,11 +12,13 @@
  * and tidy.
  *
  * To add arguments, use the param() methods.  To execute a function, use
- * one of the run*() methods.  The run*() methods will return true if the
+ * one of the run*() methods.  The run() method will return true if the
  * function ran and false is the function could not be executed or if an
- * error occured during execution.  If an error occured, then isError()
- * will return true.  If the function could not be found, then isError()
- * will return false.
+ * error occured during execution.
+ *
+ * isValid() returns true if the function was successfully found.  It
+ * MUST be called before setting any parameters, or else it will always
+ * return true.
  *
  * The return value can be retrieved using the get*() functions, and
  * checked using the is*() functions.
@@ -33,6 +35,9 @@
  * A single Exec object may be used for multiple function calls.  However,
  * the arguments are not kept between calls.  The cleanup() MUST be called
  * before reusing an Exec object.
+ *
+ * ExecHook is a sub-class that looks up a hook function set with the
+ * mud.setHook function in Lua.
  */
 
 #ifndef SOURCEMUD_LUA_EXEC_H
@@ -47,8 +52,13 @@ namespace Lua {
 // Execution manager
 class Exec {
 	public:
-	Exec() : error(false), stack(0) {}
+	// pass in the name of the function to be called
+	Exec(const std::string& funcname);
 	~Exec() { cleanup(); }
+
+	// returns true if a function was successfully set.
+	// MUST be called before setting parameters, or it will lie.
+	bool isValid() { return stack; }
 
 	// boolean parameter
 	void param(bool);
@@ -91,11 +101,8 @@ class Exec {
 	int getInteger() { return getNumber(); }
 	std::string getString();
 
-	// execute a global function by name
-	bool run(const std::string&);
-
-	// execute a hook by name
-	bool runHook(const std::string&);
+	// executes the function
+	bool run();
 
 	// set our print handler
 	void setPrint(IStreamSink* stream) { print = stream; }
@@ -105,17 +112,23 @@ class Exec {
 	// but the Exec object isn't going out of scope.
 	void cleanup();
 
-	// return true if exec*() was called, the function was found,
-	// but an error occured during execution of the function.
-	// returns false if exec*() was called by the funcion was not found.
-	bool isError() { return error; }
-
-	private:
+	protected:
 	// tracks how many items are on the stack that we need to pop
 	// we destructed.
-	bool error;
 	size_t stack;
+	// passed to Lua::setPrint() when run() is called.
 	IStreamSink* print;
+
+	// just for ExecHook
+	protected:
+	Exec() : stack(0), print(NULL) {}
+
+};
+
+class ExecHook : public Exec
+{
+	public:
+	ExecHook(const std::string& hookname);
 };
 
 }

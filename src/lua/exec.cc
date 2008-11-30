@@ -18,6 +18,16 @@ namespace Lua {
 	extern lua_State* state;
 }
 
+Lua::Exec::Exec(const std::string& funcname) : stack(0), print(NULL)
+{
+	// look up the function
+	lua_getglobal(Lua::state, funcname.c_str());
+	if (!lua_isfunction(Lua::state, -1))
+		lua_pop(Lua::state, 1);
+	else
+		stack = 1;
+}
+
 void Lua::Exec::param(bool v)
 {
 	lua_pushboolean(Lua::state, v);
@@ -82,74 +92,49 @@ std::string Lua::Exec::getString()
 	return lua_tostring(Lua::state, -1);
 }
 
-bool Lua::Exec::run(const std::string& name)
+bool Lua::Exec::run()
 {
-	// look up the function
-	lua_getglobal(Lua::state, name.c_str());
-	if (lua_isnil(Lua::state, -1)) {
-		lua_pop(Lua::state, 1);
-		return false;
-	}
-
-	// execute the function
-	if (lua_pcall(Lua::state, stack, 1, 0) != 0) {
-		// just the error is left
-		stack = 1;
-		// log error
-		Log::Error << "Error executing `" << name << "': "
-			<< lua_tostring(Lua::state, -1);
-		return false;
-	} else {
-		// one and only one return value
-		stack = 1;
-		return true;
-	}
-}
-
-bool Lua::Exec::runHook(const std::string& name)
-{
-	// look up hook table
-	lua_getfield(Lua::state, LUA_REGISTRYINDEX, "_hooks");
-	if (lua_isnil(Lua::state, -1)) {
-		lua_pop(Lua::state, 1);
-		return false;
-	}
-
-	// get the hook from the table
-	lua_getfield(Lua::state, -1, name.c_str());
-	if (lua_isnil(Lua::state, -1)) {
-		lua_pop(Lua::state, 2);
-		return false;
-	}
-	lua_replace(Lua::state, -2);
-
 	// set the print handler
 	Lua::setPrint(print);
 
 	// execute the function
 	if (lua_pcall(Lua::state, stack, 1, 0) != 0) {
-		// just the error is left
-		stack = 1;
-		// note that we received an error
-		error = true;
-		// clear print handler
-		Lua::setPrint(print);
-		// log error
-		Log::Error << "Error executing `" << name << "': "
-			<< lua_tostring(Lua::state, -1);
+		// remove the error
+		lua_pop(Lua::state, 1);
+		// we have nothing left on the stack
+		stack = 0;
+		// clear the print handler
+		Lua::setPrint(NULL);
 		return false;
 	} else {
 		// one and only one return value
 		stack = 1;
-		// clear print handler
-		Lua::setPrint(print);
+		// clear the print handler
+		Lua::setPrint(NULL);
 		return true;
 	}
+}
+
+Lua::ExecHook::ExecHook(const std::string& hookname) : Lua::Exec()
+{
+	// look up hook table
+	lua_getfield(Lua::state, LUA_REGISTRYINDEX, "_hooks");
+	if (lua_isnil(Lua::state, -1)) {
+		lua_pop(Lua::state, 1);
+		return;
+	}
+
+	// get the hook from the table
+	lua_getfield(Lua::state, -1, hookname.c_str());
+	if (lua_isnil(Lua::state, -1)) {
+		lua_pop(Lua::state, 2);
+		return;
+	}
+	lua_replace(Lua::state, -2);
 }
 
 void Lua::Exec::cleanup()
 {
 	lua_pop(Lua::state, stack);
 	stack = 0;
-	error = false;
 }
