@@ -31,10 +31,9 @@ const luaL_Reg registry[] = {
 };
 
 /**
- * name: setHook
+ * name: mud.setHook
  * param: string name
  * param: function callback
- * return: boid
  */
 int setHook(lua_State* s)
 {
@@ -45,7 +44,7 @@ int setHook(lua_State* s)
 	lua_getfield(s, LUA_REGISTRYINDEX, "_hooks");
 	if (lua_isnil(s, -1)) {
 		lua_newtable(s);
-		lua_pushvalue(s, 1);
+		lua_pushvalue(s, -1);
 		lua_setfield(s, LUA_REGISTRYINDEX, "_hooks");
 	}
 
@@ -64,6 +63,60 @@ int setHook(lua_State* s)
 } // namespace bindings::mud
 
 // -------------------
+//   LOG.*
+// -------------------
+namespace log {
+
+int info(lua_State*);
+int error(lua_State*);
+int warning(lua_State*);
+const luaL_Reg registry[] = {
+	{ "info", info},
+	{ NULL, NULL }
+};
+
+/**
+ * name: log.info
+ * param: string ...
+ */
+int info(lua_State* s)
+{
+	const StreamControl& st(Log::Info);
+	st << "LUA: ";
+	for (int i = 1, e = lua_gettop(s); i <= e; ++i)
+		st << lua_tostring(s, i);
+	return 0;
+}
+
+/**
+ * name: log.error
+ * param: string ...
+ */
+int error(lua_State* s)
+{
+	const StreamControl& st(Log::Error);
+	st << "LUA: ";
+	for (int i = 1, e = lua_gettop(s); i <= e; ++i)
+		st << lua_tostring(s, i);
+	return 0;
+}
+
+/**
+ * name: log.warning
+ * param: string ...
+ */
+int warning(lua_State* s)
+{
+	const StreamControl& st(Log::Warning);
+	st << "LUA: ";
+	for (int i = 1, e = lua_gettop(s); i <= e; ++i)
+		st << lua_tostring(s, i);
+	return 0;
+}
+
+} // namespace bindings::log
+
+// -------------------
 //   END BINDINGS
 // -------------------
 
@@ -77,6 +130,7 @@ extern lua_State* state;
 bool initializeMudlib()
 {
 	luaL_register(Lua::state, "mud", bindings::mud::registry);
+	luaL_register(Lua::state, "log", bindings::log::registry);
 	return true;
 }
 
