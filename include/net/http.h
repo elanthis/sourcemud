@@ -19,10 +19,9 @@
 #include "common/streams.h"
 #include "common/imanager.h"
 #include "mud/account.h"
-#include "mud/macro.h"
 #include "net/socket.h"
 
-class HTTPHandler : public SocketConnection, public IStreamSink, public IMacroObject
+class HTTPHandler : public SocketConnection, public IStreamSink
 {
 	public:
 	HTTPHandler(int s_sock, const SockStorage& s_netaddr);
@@ -44,10 +43,6 @@ class HTTPHandler : public SocketConnection, public IStreamSink, public IMacroOb
 	// error
 	void http_error(int error);
 
-	// get post data
-	std::string get_post(std::string name) const;
-	std::string get_request(std::string name) const;
-
 	// get user account
 	Account* get_account() const { return account; }
 
@@ -57,18 +52,18 @@ class HTTPHandler : public SocketConnection, public IStreamSink, public IMacroOb
 	virtual void sock_hangup();
 	virtual void sock_flush();
 
-	// macro values
-	int macro_property(const StreamControl& stream, std::string method, const MacroList& argv) const;
-	void macro_default(const StreamControl& stream) const;
-
 	// log a request
 	void log(int status);
 
 	// serve a file
-	void serve_file(const std::string& full_path);
+	void serve(const std::string& full_path);
 
-	// serve a script
-	void serve_script(const std::string& full_path);
+	// get various values
+	const std::string& getHeader(const std::string& name) const;
+	const std::string& getCookie(const std::string& name) const;
+	const std::string& getGET(const std::string& name) const;
+	const std::string& getPOST(const std::string& name) const;
+	const std::string& getRequest(const std::string& name) const;
 
 	protected:
 	~HTTPHandler() {}
@@ -85,17 +80,15 @@ class HTTPHandler : public SocketConnection, public IStreamSink, public IMacroOb
 	std::string method;
 	std::string url;
 	std::string path;
-	std::string referer;
-	std::string user_agent;
-	enum { NONE, URLENCODED } posttype;
 	enum { REQ, HEADER, BODY, DONE, ERROR } state;
 	size_t content_length;
 	time_t timeout;
-	std::map<std::string, std::string> headers;
 
 	// request data
+	std::map<std::string, std::string> header;
 	std::map<std::string, std::string> get;
 	std::map<std::string, std::string> post;
+	std::map<std::string, std::string> cookie;
 
 	// the session
 	std::string session;
@@ -108,27 +101,11 @@ class SHTTPManager : public IManager
 	virtual int initialize();
 	virtual void shutdown();
 
-	std::string get_template(std::string id);
-
 	std::string get_session_key() { return session_key; }
 
-	void check_timeouts();
-
 	private:
-	typedef std::map<std::string, std::string> TemplateMap;
-	TemplateMap templates;
 	std::string session_key;
 };
 extern SHTTPManager HTTPManager;
-
-struct StreamHTTPEscape {
-	inline
-	explicit StreamHTTPEscape(std::string s_text) : text(s_text) {}
-
-	friend const class StreamControl& operator << (const class StreamControl& stream, const StreamHTTPEscape& esc);
-
-	std::string text;
-};
-typedef StreamHTTPEscape StreamXMLEscape;
 
 #endif

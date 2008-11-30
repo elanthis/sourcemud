@@ -27,13 +27,13 @@
 #include "common/rand.h"
 #include "common/streamtime.h"
 #include "mud/server.h"
-#include "mud/macro.h"
 #include "mud/settings.h"
 #include "net/http.h"
 #include "net/manager.h"
 #include "net/util.h"
 #include "lua/core.h"
 #include "lua/print.h"
+#include "lua/exec.h"
 #include "config.h"
 
 SHTTPManager HTTPManager;
@@ -146,8 +146,7 @@ HTTPHandler::sock_hangup ()
 	disconnect();
 }
 
-void
-HTTPHandler::process ()
+void HTTPHandler::process()
 {
 	switch (state) {
 		case REQ:
@@ -192,10 +191,15 @@ HTTPHandler::process ()
 		{
 			// no more headers
 			if (line.empty()) {
-				// a GET request is now processed immediately
-				if (method == "GET") {
+				// determine content length of body, if any
+				content_length = tolong(getHeader("content-length"));
+				if (content_length > HTTP_POST_BODY_MAX) {
+					http_error(413);
+				// if we have no content length, go straight to processing
+				} else if (content_length == 0) {
 					execute();
-				// a POST request requires us to parse the body first
+					state = DONE;
+				// we must continue on with processing body
 				} else {
 					state = BODY;
 				}
@@ -210,27 +214,11 @@ HTTPHandler::process ()
 				return;
 			}
 
-			// determine which header we're dealing with
-			if (!strncasecmp("Content-Type", line.c_str(), c - line.c_str())) {
-				// POST: content-type (must be application/x-www-form-urlencoded
-				if (!strcmp("application/x-www-form-urlencoded", c + 2))
-					posttype = URLENCODED;
-				else {
-					http_error(406);
-					return;
-				}
-			} else if (!strncasecmp("User-Agent", line.c_str(), c - line.c_str())) {
-				user_agent = c + 2;
-			} else if (!strncasecmp("Referer", line.c_str(), c - line.c_str())) {
-				referer = c + 2;
-			} else if (!strncasecmp("Content-Length", line.c_str(), c - line.c_str())) {
-				// POST: content-length
-				content_length = strtoul(c + 2, NULL, 10);
+			// store it away, lower-case the name
+			header[strlower(std::string(line.c_str(), c - line.c_str()))] = c + 2;
 
-				// check max content length
-				if (content_length > HTTP_POST_BODY_MAX) {
-					http_error(413);
-				}
+/*
+			// determine which header we're dealing with
 			} else if (!strncasecmp("Cookie", line.c_str(), c - line.c_str())) {
 				// Cookie; look for session
 				const char* sid_start;
@@ -259,16 +247,15 @@ HTTPHandler::process ()
 						}
 					}
 				}
-			} else {
-				// ignore it
-			}
+*/
 
 			break;
 		}
 		case BODY:
 		{
-			// parse the post data
-			parse_request_data(post, line.c_str());
+			// parse the post data, we we can
+			if (getHeader("content-type") == "application/x-www-form-urlencoded")
+				parse_request_data(post, line.c_str());
 
 			// execute
 			execute();
@@ -280,8 +267,7 @@ HTTPHandler::process ()
 	}
 }
 	
-void
-HTTPHandler::parse_request_data (std::map<std::string,std::string>& map, const char* line) const
+void HTTPHandler::parse_request_data(std::map<std::string,std::string>& map, const char* line) const
 {
 	// parse the data
 	StringBuffer value;
@@ -348,57 +334,61 @@ HTTPHandler::parse_request_data (std::map<std::string,std::string>& map, const c
 	} while (*begin != 0);
 }
 
-void
-HTTPHandler::execute()
+void HTTPHandler::execute()
 {
-	// turn our request path info a full file path
+	// set up to run the Lua http_request hook handler
+	Lua::ExecHook exec("http_request");
+
+	// build the 'req' table parameter
+	exec.table();
+	exec.setTable("url", url);
+	exec.setTable("path", path);
+	exec.setTable("method", method);
+
+	// set ourself as the print handler
+	exec.setPrint(this);
+
+	// run; fail with HTTP 500 on error
+	if (!exec.run()) {
+		http_error(500);
+		return;
+	}
+
+	// if the return value is non-0, log the response code
+	int code = exec.getInteger();
+	if (code != 0) {
+		log(code);
+		return;
+	}
+
+	// the response code was zero -- try to serve a file the
+	// old-fashioned way.  cleanup Lua first, then turn the
+	// url request into a full path
+	exec.cleanup();
+
 	std::string file = SettingsManager.get_html_path() + path;
 
 	// check to see if our file exists, and serve it if it does
 	if (File::isfile(file)) {
-		serve_file(file);
-	// check for that file with a .lua extension
-	} else if (File::isfile(file + ".lua")) {
-		serve_script(file + ".lua");
-	// look for our file with /index.lua or /index.html appended
-	} else if (File::isfile(file + "/index.lua")) {
-		serve_script(file + "/index.lua");
-	} else if (File::isfile(file + "/index.html")) {
-		serve_file(file + "/index.html");
-	// not found
-	} else {
-		http_error(404);
-	}
-
-	state = DONE;
-
-/*
-	// handle built-in pages
-	if (path == "/")
-		page_index();
-	else if (path == "/login")
-		page_login();
-	else if (path == "/logout")
-		page_logout();
-	else if (path == "/account")
-		page_account();
-	else {
-		http_error(404);
+		serve(file);
 		return;
 	}
-*/
+
+	// try it with a directory index applied (FIXME: kinda hacky)
+	file += "/index.html";
+	if (File::isfile(file)) {
+		serve(file);
+		return;
+	}
+
+	// not found
+	http_error(404);
 }
 
-void HTTPHandler::serve_file(const std::string& full_path)
+void HTTPHandler::serve(const std::string& full_path)
 {
 	// get mime type
 	const std::string& mime = File::getMimeType(full_path);
-
-	// serve sripts specially
-	if (mime == "application/x-lua") {
-		serve_script(full_path);
-		return;
-	}
 
 	// stat the file
 	struct stat st;
@@ -412,6 +402,16 @@ void HTTPHandler::serve_file(const std::string& full_path)
 	std::string etag = '"' + MD5::hash(full_path + mtime) + '"';
 	size_t size = st.st_size;
 
+	// see if the item should be cached
+	if (getHeader("if-modified-since") == mtime
+			&& getHeader("if-none-match") == etag) {
+		*this <<
+			"HTTP/1.1 304 Not Modified\r\n"
+			"ETag: " << etag << "\r\n\r\n";
+		log(304);
+		return;
+	}
+
 	// simple headers
 	*this <<
 		"HTTP/1.0 200 OK\r\n"
@@ -419,7 +419,7 @@ void HTTPHandler::serve_file(const std::string& full_path)
 		"Content-Length: " << size << "\r\n"
 		"Last-Modified: " << mtime << "\r\n"
 		"ETag: " << etag << "\r\n\r\n";
-
+	
 	// file content
 	std::ifstream ifs;
 	ifs.open(full_path.c_str(), std::ios::binary);
@@ -437,124 +437,11 @@ void HTTPHandler::serve_file(const std::string& full_path)
 	log(200);
 }
 
-void HTTPHandler::serve_script(const std::string& full_path)
-{
-	// simplistic header
-	*this <<
-		"HTTP/1.0 200 OK\r\n"
-		"Content-Type: text/html\r\n"
-		"Cache-Control: no-cache\r\n"
-		"Pragma: no-cache\r\n\r\n";
-
-	// setup print handler
-	Lua::setPrint(this);
-
-	// run the script
-	Lua::runfile(full_path);
-
-	// remove print handler
-	Lua::setPrint(NULL);
-
-	log(200);
-}
-
-void
-HTTPHandler::page_index()
-{
-	*this << "HTTP/1.0 200 OK\nContent-Type: text/html\n\n"
-		<< StreamMacro(HTTPManager.get_template(S("header")), S("account"), get_account())
-		<< StreamMacro(HTTPManager.get_template(S("index")), S("account"), get_account())
-		<< StreamMacro(HTTPManager.get_template(S("footer")));
-}
-
-void
-HTTPHandler::page_login()
-{
-	std::string msg;
-
-	*this << "HTTP/1.0 200 OK\nContent-Type: text/html\n";
-
-	// attempt login?
-	if (get_post(S("action")) == "Login") {
-		account = AccountManager.get(get_post(S("username")));
-		if (account != NULL && account->check_passphrase(get_post(S("password")))) {
-			// generate a session salt, then a session hash
-			// FIXME: make this not suck
-			std::string salt = tostr(10000 + get_random(9999));
-			std::ostringstream buf;
-			buf << HTTPManager.get_session_key() << ':' << salt << ':' << account->get_id();
-			std::string hash = MD5::hash(buf.str());
-
-			// create session id
-			buf.str("");
-			buf << hash << ':' << salt << ':' << account->get_id();
-
-			msg = S("Login successful!");
-			*this << "Set-cookie: session=" << buf.str() << "\n";
-		} else {
-			msg = S("Incorrect username or passphrase.");
-			account = NULL;
-		}
-	}
-
-	*this << "\n"
-		<< StreamMacro(HTTPManager.get_template(S("header")), S("msg"), msg, S("account"), get_account())
-		<< StreamMacro(HTTPManager.get_template(S("login")), S("account"), get_account())
-		<< StreamMacro(HTTPManager.get_template(S("footer")));
-}
-
-void
-HTTPHandler::page_logout()
-{
-	*this << "HTTP/1.0 200 OK\nContent-Type: text/html\nSet-cookie: session=\n\n"
-		<< StreamMacro(HTTPManager.get_template(S("header")))
-		<< StreamMacro(HTTPManager.get_template(S("logout")))
-		<< StreamMacro(HTTPManager.get_template(S("footer")));
-}
-
-void
-HTTPHandler::page_account()
-{
-	// must have an account for this to work
-	if (get_account() == NULL) {
-		http_error(403);
-		return;
-	}
-
-	std::string msg;
-	if (get_post(S("action")) == "Save Changes") {
-		std::string name = strip(post[S("acct_name")]);
-		std::string email = strip(post[S("acct_email")]);
-		if (name.empty() || email.empty()) {
-			msg = S("You may not enter an empty name or email address.");
-		} else {
-			std::string pass1 = post[S("new_pass1")];
-			std::string pass2 = post[S("new_pass2")];
-
-			if (pass1 != pass2) {
-				msg = S("Passphrases do not match.");
-			} else {
-				if (!pass1.empty())
-					get_account()->set_passphrase(pass1);
-
-				get_account()->set_name(name);
-				get_account()->set_email(email);
-				get_account()->save();
-
-				msg = S("Changes saved successfully!");
-			}
-		}
-	}
-
-	// did they try to save changes?
-	*this << "HTTP/1.0 200 OK\nContent-Type: text/html\n\n"
-		<< StreamMacro(HTTPManager.get_template(S("header")), S("account"), get_account(), S("msg"), msg)
-		<< StreamMacro(HTTPManager.get_template(S("account")), S("account"), get_account())
-		<< StreamMacro(HTTPManager.get_template(S("footer")));
-}
-
 void HTTPHandler::log(int error)
 {
+	// get headers we log
+	const std::string& user_agent = getHeader("user-agent");
+	const std::string& referer = getHeader("referer");
 	Log::HTTP
 		<< Network::get_addr_name(addr, false) << ' '
 		<< "- " // RFC 1413 identify -- apache log compatibility place-holder
@@ -585,10 +472,12 @@ HTTPHandler::http_error(int error)
 	}
 
 	// display error page
-	*this << "HTTP/1.0 " << error << ' ' << http_msg << "\nContent-Type: text/html\n\n"
-		<< StreamMacro(HTTPManager.get_template(S("header")), S("account"), get_account())
-		<< StreamMacro(HTTPManager.get_template(S("error")), S("error"), tostr(error), S("http_msg"), http_msg, S("msg"), http_msg)
-		<< StreamMacro(HTTPManager.get_template(S("footer")));
+	*this <<
+		"HTTP/1.1 " << error << ' ' << http_msg << "\r\n"
+		"Content-Type: text/html\r\n\r\n"
+		"<html><head><title>Error</title></head>"
+		"<body><h1>" << error << " Error</h1>"
+		"<p>" << http_msg << "</p></body></html>";
 
 	// log error
 	log(error);
@@ -597,43 +486,60 @@ HTTPHandler::http_error(int error)
 	state = ERROR;
 }
 
-std::string
-HTTPHandler::get_request (std::string id) const
+const std::string& HTTPHandler::getHeader(const std::string& name) const
 {
-	std::map<std::string,std::string>::const_iterator i = get.find(id);
-	if (i == get.end())
-		return std::string();
-	return i->second;
+	std::map<std::string,std::string>::const_iterator i = header.find(name);
+	if (i != header.end())
+		return i->second;
+	static const std::string empty;
+	return empty;
 }
 
-std::string
-HTTPHandler::get_post (std::string id) const
+const std::string& HTTPHandler::getCookie(const std::string& name) const
 {
-	std::map<std::string,std::string>::const_iterator i = post.find(id);
-	if (i == post.end())
-		return std::string();
-	return i->second;
+	std::map<std::string,std::string>::const_iterator i = cookie.find(name);
+	if (i != cookie.end())
+		return i->second;
+	static const std::string empty;
+	return empty;
+}
+
+const std::string& HTTPHandler::getGET(const std::string& name) const
+{
+	std::map<std::string,std::string>::const_iterator i = get.find(name);
+	if (i != get.end())
+		return i->second;
+	static const std::string empty;
+	return empty;
+}
+
+const std::string& HTTPHandler::getPOST(const std::string& name) const
+{
+	std::map<std::string,std::string>::const_iterator i = post.find(name);
+	if (i != post.end())
+		return i->second;
+	static const std::string empty;
+	return empty;
+}
+
+const std::string& HTTPHandler::getRequest(const std::string& name) const
+{
+	// searches POST. GET. then cookie
+	std::map<std::string,std::string>::const_iterator i = post.find(name);
+	if (i != post.end())
+		return i->second;
+	i = get.find(name);
+	if (i != get.end())
+		return i->second;
+	i = cookie.find(name);
+	if (i != cookie.end())
+		return i->second;
+	static const std::string empty;
+	return empty;
 }
 
 int
-HTTPHandler::macro_property (const StreamControl& stream, std::string method, const MacroList& argv) const
-{
-	if (method == "post" && argv.size() == 1) {
-		stream.stream_put(get_post(argv[0].get_string()));
-		return 0;
-	} else {
-		return -1;
-	}
-}
-
-void
-HTTPHandler::macro_default (const StreamControl& stream) const
-{
-	stream << "<HTTP>";
-}
-
-int
-SHTTPManager::initialize (void)
+SHTTPManager::initialize()
 {
 	StringBuffer buf;
 
@@ -645,63 +551,11 @@ SHTTPManager::initialize (void)
 	ifs >> session_key;
 	ifs.close();
 
-	// read templates
-	StringList files = File::dirlist(SettingsManager.get_html_path());
-	File::filter(files, "*.tpl");
-	for (StringList::iterator i = files.begin(); i != files.end(); ++i) {
-		FILE* in = fopen(i->c_str(), "rt");
-		if (in == NULL) {
-			Log::Error << "Failed to load HTML template " << *i << ": " << strerror(errno);
-			return -1;
-		}
-
-		// read in buffer
-		buf.clear();
-		char line[512];
-		while (fgets(line, sizeof(line), in) != NULL)
-			buf << line;
-
-		// clean up
-		fclose(in);
-		templates[base_name(i->c_str())] = buf.str();
-	}
-
 	// all good
 	return 0;
 }
 
 void
-SHTTPManager::shutdown (void)
+SHTTPManager::shutdown()
 {
-	templates.clear();
-}
-
-std::string
-SHTTPManager::get_template (std::string id)
-{
-	TemplateMap::iterator i = templates.find(id);
-	return i != templates.end() ? i->second : std::string();
-}
-
-void
-SHTTPManager::check_timeouts ()
-{
-}
-
-const StreamControl&
-operator << (const StreamControl& stream, const StreamHTTPEscape& esc)
-{
-	for (std::string::const_iterator i = esc.text.begin(); i != esc.text.end(); ++i) {
-		if (*i == '<')
-			stream.stream_put("&lt;");
-		else if (*i == '>')
-			stream.stream_put("&gt;");
-		else if (*i == '&')
-			stream.stream_put("&amp;");
-		else if (*i == '"')
-			stream.stream_put("&quot;");
-		else
-			stream.stream_put(&*i, 1);
-	}
-	return stream;
 }
