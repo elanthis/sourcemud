@@ -117,14 +117,6 @@ AC_CHECK_TYPE(struct sockaddr_storage,
 # Math library
 AC_CHECK_LIB(m,cos,,)
 
-# Lua support
-AC_CHECK_LIB(lua,lua_newstate,,
-	# Debian/Ubuntu don't use the standard library name
-	AC_CHECK_LIB(lua-5.1,lua_newstate,,
-		AC_MSG_ERROR([can't find Lua])
-	)
-)
-
 # zlib support
 AC_CHECK_LIB(z,deflate,ZLIB=yes,ZLIB=no)
 if test "x$ZLIB" = "xyes" ; then

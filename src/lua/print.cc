@@ -5,14 +5,11 @@
  * http://www.sourcemud.org
  */
 
-extern "C" {
-#include <lua.h>
-#include <lauxlib.h>
-#include <lualib.h>
-}
-
 #include "lua/core.h"
 #include "lua/print.h"
+#include "lib/lua51/lua.h"
+#include "lib/lua51/lauxlib.h"
+#include "lib/lua51/lualib.h"
 
 // globals
 namespace Lua {

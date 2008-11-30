@@ -1,0 +1,57 @@
+===========================
+Source MUD Lua Distribution
+===========================
+
+This is a trimmed down copy of the Lua 5.1.4 release.  Source MUD includes
+its own copy of Lua to ensure that it is compiled with full C++ support.
+
+Files from the official Lua distribution which are not required by
+Source MUD are not included in this distribution.  If you require the full
+Lua distribution, it can be found at http://lua.org.
+
+The COPYRIGHT file in this directory (./lib/lua51) contains the copyright
+notice for the official Lua source files.  It does not apply to any files
+outside of this directory.
+
+The remainder of this file is the README from the official distribution.
+
+===========================
+
+
+README for Lua 5.1
+
+See INSTALL for installation instructions.
+See HISTORY for a summary of changes since the last released version.
+
+* What is Lua?
+  ------------
+  Lua is a powerful, light-weight programming language designed for extending
+  applications. Lua is also frequently used as a general-purpose, stand-alone
+  language. Lua is free software.
+
+  For complete information, visit Lua's web site at http://www.lua.org/ .
+  For an executive summary, see http://www.lua.org/about.html .
+
+  Lua has been used in many different projects around the world.
+  For a short list, see http://www.lua.org/uses.html .
+
+* Availability
+  ------------
+  Lua is freely available for both academic and commercial purposes.
+  See COPYRIGHT and http://www.lua.org/license.html for details.
+  Lua can be downloaded at http://www.lua.org/download.html .
+
+* Installation
+  ------------
+  Lua is implemented in pure ANSI C, and compiles unmodified in all known
+  platforms that have an ANSI C compiler. In most Unix-like platforms, simply
+  do "make" with a suitable target. See INSTALL for detailed instructions.
+
+* Origin
+  ------
+  Lua is developed at Lua.org, a laboratory of the Department of Computer
+  Science of PUC-Rio (the Pontifical Catholic University of Rio de Janeiro
+  in Brazil).
+  For more information about the authors, see http://www.lua.org/authors.html .
+
+(end of README)
