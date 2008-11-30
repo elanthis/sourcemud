@@ -54,7 +54,7 @@ int setHook(lua_State* s)
 	lua_pushvalue(s, 2);
 
 	// set the hook
-	lua_settable(s, 3);
+	lua_settable(s, -3);
 
 	// return true value
 	lua_pushboolean(s, true);
