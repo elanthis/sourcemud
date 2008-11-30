@@ -1,6 +1,6 @@
 /*
  * Source MUD
- * Copyright (C) 2000-2005  Sean Middleditch
+ * Copyright (C) 2008  Sean Middleditch
  * See the file COPYING for license details
  * http://www.sourcemud.org
  */
