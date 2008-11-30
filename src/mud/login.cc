@@ -68,13 +68,13 @@ TelnetModeNewAccount::process (char* data)
 		// select an ID
 		case STATE_ID:
 			// valid name?
-			if (!AccountManager.valid_name(line)) {
+			if (!MAccount.valid_name(line)) {
 				*get_handler() << "\n" CADMIN "Account names must be between " << ACCOUNT_NAME_MIN_LEN << " and " << ACCOUNT_NAME_MAX_LEN << " characters, and consist of only letters and numbers." CNORMAL "\n";
 				break;
 			}
 
 			// already exists?
-			if (AccountManager.exists(line)) {
+			if (MAccount.exists(line)) {
 				*get_handler() << "\n" CADMIN "The account name '" << line << "' is already in use." CNORMAL "\n";
 			}
 
@@ -113,7 +113,7 @@ TelnetModeNewAccount::process (char* data)
 		// enter passphrase
 		case STATE_PASS:
 			// legal?
-			if (line.empty() || !AccountManager.valid_passphrase(line)) {
+			if (line.empty() || !MAccount.valid_passphrase(line)) {
 				*get_handler() << "\n" CADMIN "Passphrases must be at least " << ACCOUNT_PASS_MIN_LEN << " characters, and have both letters and numbers.  Passphrases may also contain symbols or punctuation characters." CNORMAL "\n";
 				break;
 			}
@@ -139,12 +139,12 @@ TelnetModeNewAccount::process (char* data)
 			// done?
 			if (line.empty() || str_is_true(line)) {
 				// double check account is unique
-				if (AccountManager.get(id)) {
+				if (MAccount.get(id)) {
 					*get_handler() << "\n" CADMIN "The account name '" << id << "' is already in use." CNORMAL "\n";
 					state = STATE_ID;
 				} else {
 					// create the account!
-					Account* account = AccountManager.create(id);
+					Account* account = MAccount.create(id);
 					account->set_name(name);
 					account->set_email(email);
 					account->set_passphrase(passphrase);
@@ -196,7 +196,7 @@ TelnetModeLogin::process (char* line)
 		// no name?
 		if (!data.empty()) {
 			// enabled?
-			if (SettingsManager.get_account_creation()) {
+			if (MSettings.get_account_creation()) {
 				*get_handler() << "\nYou must enter your account name to login or type " CBOLD "new" CNORMAL " to begin creating a new account.\n\n";
 			} else {
 				*get_handler() << "\nYou must enter your account name to login.\n\n";
@@ -207,7 +207,7 @@ TelnetModeLogin::process (char* line)
 		// create account?
 		if (str_eq(data, S("new")) || str_eq(data, S("create"))) {
 			// enabled?
-			if (SettingsManager.get_account_creation()) {
+			if (MSettings.get_account_creation()) {
 				get_handler()->set_mode(new TelnetModeNewAccount(get_handler()));
 			} else {
 				*get_handler() << "\nNew account creation is disabled.\n\n";
@@ -216,14 +216,14 @@ TelnetModeLogin::process (char* line)
 		}
 
 		// invalid name?
-		if (!AccountManager.valid_name (data)) {
+		if (!MAccount.valid_name (data)) {
 			*get_handler() << "\nAccount names must be between " << ACCOUNT_NAME_MIN_LEN << " and " << ACCOUNT_NAME_MAX_LEN << " characters, and consist of only letters and numbers.\n\n";
 			return;
 		}
 
 		// get account
-		if (AccountManager.exists(data))
-			account = AccountManager.get(data);
+		if (MAccount.exists(data))
+			account = MAccount.get(data);
 
 		// do passphrase stage
 		pass = true;

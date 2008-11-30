@@ -62,7 +62,7 @@ void Player::do_reply(std::string what)
 		return;
 	}
 
-	Player* who = PlayerManager.get(last_tell);
+	Player* who = MPlayer.get(last_tell);
 	if (who) {
 		*who << "[" << StreamName(this) << "]: " CTALK << what << CNORMAL "\n";
 		who->last_tell = get_id();
@@ -82,7 +82,7 @@ void Player::do_reply(std::string what)
  * END COMMAND */
 void command_tell(Player* player, std::string argv[])
 {
-	Player* cn = PlayerManager.get(argv[0]);
+	Player* cn = MPlayer.get(argv[0]);
 	if (cn) {
 		player->do_tell(cn, argv[1]);
 	} else {

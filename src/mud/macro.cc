@@ -581,11 +581,11 @@ namespace macro {
 		} else if (str_eq(_cmd_name, S("player-count"))) {
 			if (_cmd_argv.size() != 0)
 				return -1;
-			stream << PlayerManager.count();
+			stream << MPlayer.count();
 		} else if (str_eq(_cmd_name, S("day-or-night"))) {
 			if (_cmd_argv.size() != 0)
 				return -1;
-			stream << (TimeManager.time.is_night() ? "night" : "day");
+			stream << (MTime.time.is_night() ? "night" : "day");
 		} else if (str_eq(_cmd_name, S("bold"))) {
 			if (_cmd_argv.size() != 1)
 				return -1;
@@ -594,44 +594,44 @@ namespace macro {
 		} else if (str_eq(_cmd_name, S("hostname"))) {
 			if (_cmd_argv.size() != 0)
 				return -1;
-			stream << NetworkManager.get_host();
+			stream << MNetwork.get_host();
 		} else if (str_eq(_cmd_name, S("date"))) {
 			if (_cmd_argv.size() != 0)
 				return -1;
-			stream << TimeManager.time.date_str();
+			stream << MTime.time.date_str();
 		} else if (str_eq(_cmd_name, S("time"))) {
 			if (_cmd_argv.size() != 0)
 				return -1;
-			stream << TimeManager.time.time_str();
+			stream << MTime.time.time_str();
 		} else if (str_eq(_cmd_name, S("date-year"))) {
 			if (_cmd_argv.size() != 0)
 				return -1;
-			stream << TimeManager.time.get_year();
+			stream << MTime.time.get_year();
 		} else if (str_eq(_cmd_name, S("date-month"))) {
 			if (_cmd_argv.size() != 0)
 				return -1;
-			stream << TimeManager.time.get_month();
+			stream << MTime.time.get_month();
 		} else if (str_eq(_cmd_name, S("date-day"))) {
 			if (_cmd_argv.size() != 0)
 				return -1;
-			stream << TimeManager.time.get_day();
+			stream << MTime.time.get_day();
 		} else if (str_eq(_cmd_name, S("time-hours24"))) {
 			if (_cmd_argv.size() != 0)
 				return -1;
-			stream << TimeManager.time.get_hour();
+			stream << MTime.time.get_hour();
 		} else if (str_eq(_cmd_name, S("time-hours12"))) {
 			if (_cmd_argv.size() != 0)
 				return -1;
-			uint hours = TimeManager.time.get_hour();
+			uint hours = MTime.time.get_hour();
 			stream << (hours == 0 ? 12 : (hours <= 12 ? hours : hours - 12));
 		} else if (str_eq(_cmd_name, S("time-ampm"))) {
 			if (_cmd_argv.size() != 0)
 				return -1;
-			stream << (TimeManager.time.get_hour() < 12 ? "am" : "pm");
+			stream << (MTime.time.get_hour() < 12 ? "am" : "pm");
 		} else if (str_eq(_cmd_name, S("time-minutes"))) {
 			if (_cmd_argv.size() != 0)
 				return -1;
-			stream << (TimeManager.time.get_minutes());
+			stream << (MTime.time.get_minutes());
 		} else {
 			return -1;
 		}

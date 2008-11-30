@@ -20,7 +20,7 @@ enum AnnounceFlags {
 	ANFL_INDOORS = (1 << 1),
 };
 
-class SZoneManager;
+class _MZone;
 class Zone;
 
 class Spawn 
@@ -95,10 +95,10 @@ class Zone
 	typedef std::vector<Spawn> SpawnList;
 	SpawnList spawns;
 
-	friend class SZoneManager;
+	friend class _MZone;
 };
 
-class SZoneManager : public IManager
+class _MZone : public IManager
 {
 	public:
 	virtual int initialize ();
@@ -128,7 +128,7 @@ class SZoneManager : public IManager
 
 	friend void Zone::destroy ();
 };
-extern SZoneManager ZoneManager;
+extern _MZone MZone;
 
 #define ZONE(ent) E_CAST(ent,Zone)
 

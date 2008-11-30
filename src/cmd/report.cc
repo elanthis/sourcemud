@@ -29,7 +29,7 @@ void command_report_abuse(Player* player, std::string argv[])
 {
 #ifdef HAVE_SENDMAIL
 	// mail address
-	std::string rcpt = SettingsManager.get_abuse_email();
+	std::string rcpt = MSettings.get_abuse_email();
 	if (!rcpt) {
 		*player << CADMIN "Abuse reporting has been disabled." CNORMAL "\n";
 		return;
@@ -39,7 +39,7 @@ void command_report_abuse(Player* player, std::string argv[])
 	StringBuffer body;
 	body << "# -- HEADER --\n";
 	body << "Issue: ABUSE\n";
-	body << "Host: " << NetworkManager.get_host() << "\n";
+	body << "Host: " << MNetwork.get_host() << "\n";
 	body << "From: " << player->get_account()->get_id() << "\n";
 	body << "About: " << argv[0] << "\n";
 	body << "# -- END --\n";
@@ -70,7 +70,7 @@ void command_report_bug(Player* player, std::string argv[])
 {
 #ifdef HAVE_SENDMAIL
 	// mail address
-	std::string rcpt = SettingsManager.get_bugs_email();
+	std::string rcpt = MSettings.get_bugs_email();
 	if (!rcpt) {
 		*player << CADMIN "Bug reporting has been disabled." CNORMAL "\n";
 		return;
@@ -80,7 +80,7 @@ void command_report_bug(Player* player, std::string argv[])
 	StringBuffer body;
 	body << "# -- HEADER --\n";
 	body << "Issue: BUG\n";
-	body << "Host: " << NetworkManager.get_host() << "\n";
+	body << "Host: " << MNetwork.get_host() << "\n";
 	body << "From: " << player->get_account()->get_id() << "\n";
 	body << "# -- END --\n";
 	body << "# -- BODY --\n";

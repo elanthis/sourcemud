@@ -21,13 +21,13 @@
 // up" or optimize the code by removing them, because it'll just
 // cause some weird breakages.
 
-class IDManager
+class MID
 {
 	public:
 	typedef std::set<std::string> IDMap;
 
-	IDManager ();
-	~IDManager ();
+	MID ();
+	~MID ();
 	
 	const std::string* lookup (std::string name);
 	const std::string* create (std::string name);
@@ -56,7 +56,7 @@ class BaseID
 	std::string name () const { return id != NULL ? *id : std::string(); }
 	static std::string nameof (BaseID<tag> id) { return id.name(); }
 
-	static const IDManager::IDMap& get_all () { return get_manager().get_all(); }
+	static const MID::IDMap& get_all () { return get_manager().get_all(); }
 
 	bool operator< (const BaseID<tag>& cmp) const { return id < cmp.id; }
 	bool operator== (const BaseID<tag>& cmp) const { return id == cmp.id; }
@@ -64,14 +64,14 @@ class BaseID
 	protected:
 	const std::string* id;
 
-	static IDManager& get_manager ();
+	static MID& get_manager ();
 };
 
 template <typename tag>
-IDManager&
+MID&
 BaseID<tag>::get_manager ()
 {
-	static IDManager manager;
+	static MID manager;
 	return manager;
 }
 

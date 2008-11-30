@@ -157,15 +157,15 @@ class Entity : public IMacroObject
 	protected:
 	// protected destructor
 	virtual ~Entity () {}
-	friend class SEntityManager;
+	friend class _MEntity;
 };
 
 // manage all entities
-class SEntityManager : public IManager
+class _MEntity : public IManager
 {
 	public:
-	SEntityManager ();
-	~SEntityManager ();
+	_MEntity ();
+	~_MEntity ();
 
 	// initialize the system
 	virtual int initialize ();
@@ -208,7 +208,7 @@ class SEntityManager : public IManager
 	// also need to manage tag_map - double ick
 	friend class Entity;
 };
-extern SEntityManager EntityManager;
+extern _MEntity MEntity;
 
 // --- CASTING/TYPE-CHECKING ---
 

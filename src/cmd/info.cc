@@ -36,7 +36,7 @@ void command_affects (Creature* ch, std::string argv[])
  * END COMMAND */
 void command_commands (Player *ply, std::string[])
 {
-	CommandManager.show_list (ply);
+	MCommand.show_list (ply);
 }
 
 /* BEGIN COMMAND
@@ -50,7 +50,7 @@ void command_commands (Player *ply, std::string[])
 void command_man (Player* player, std::string argv[])
 {
 	StreamControl stream(player);
-	CommandManager.show_man(stream, argv[0]);
+	MCommand.show_man(stream, argv[0]);
 }
 
 /* BEGIN COMMAND
@@ -82,13 +82,13 @@ void command_time (Player *player, std::string[])
 {
 	char time_str[40];
 	char date_str[120];
-	TimeManager.time.time_str (time_str, sizeof (time_str));
-	TimeManager.time.date_str (date_str, sizeof (date_str));
+	MTime.time.time_str (time_str, sizeof (time_str));
+	MTime.time.date_str (date_str, sizeof (date_str));
 	*player << "It is currently " << time_str << " on " << date_str << ".  ";
-	if (TimeManager.time.is_day ())
-		*player << "It is daytime.  The Sun will set in " << (SUN_DOWN_HOUR - TimeManager.time.get_hour()) << " hours.\n";
+	if (MTime.time.is_day ())
+		*player << "It is daytime.  The Sun will set in " << (SUN_DOWN_HOUR - MTime.time.get_hour()) << " hours.\n";
 	else
-		*player << "It is nighttime.  The Sun will rise in " << ((TimeManager.time.get_hour() < SUN_UP_HOUR) ? SUN_UP_HOUR - TimeManager.time.get_hour() : SUN_UP_HOUR + 24 - TimeManager.time.get_hour()) << " hours.\n";
+		*player << "It is nighttime.  The Sun will rise in " << ((MTime.time.get_hour() < SUN_UP_HOUR) ? SUN_UP_HOUR - MTime.time.get_hour() : SUN_UP_HOUR + 24 - MTime.time.get_hour()) << " hours.\n";
 }
 
 /* BEGIN COMMAND
@@ -98,5 +98,5 @@ void command_time (Player *player, std::string[])
  * END COMMAND */
 void command_who (Player *player, std::string[])
 {
-	PlayerManager.list (*player);
+	MPlayer.list (*player);
 }

@@ -24,7 +24,7 @@
  *
  * END COMMAND */
 void command_admin_grant (Player* admin, std::string argv[]) {
-	Account *account = AccountManager.get(argv[0]);
+	Account *account = MAccount.get(argv[0]);
 	if (account == NULL) {
 		*admin << "Account '" << argv[0] << "' not found.\n";
 		return;
@@ -52,7 +52,7 @@ void command_admin_grant (Player* admin, std::string argv[]) {
  *
  * END COMMAND */
 void command_admin_revoke (Player* admin, std::string argv[]) {
-	Account *account = AccountManager.get(argv[0]);
+	Account *account = MAccount.get(argv[0]);
 	if (account == NULL) {
 		*admin << "Account '" << argv[0] << "' does not exist.\n";
 		return;
@@ -80,7 +80,7 @@ void command_admin_revoke (Player* admin, std::string argv[]) {
 void command_admin_shutdown (Player* admin, std::string[]) {
 	*admin << CADMIN "Shutdown issued." CNORMAL "\n";
 	Log::Admin << "Shutdown issued by " << admin->get_account()->get_id();
-	ZoneManager.announce (S("Shutting down, NOW!"));
+	MZone.announce (S("Shutting down, NOW!"));
 	MUD::shutdown();
 }
 

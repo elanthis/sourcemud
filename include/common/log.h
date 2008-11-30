@@ -25,10 +25,10 @@ enum LogClass {
 	LOG_ADMIN
 };
 
-class SLogManager : public IManager
+class _MLog : public IManager
 {
 	public:
-	SLogManager() : log(NULL), http_log(NULL) {}
+	_MLog() : log(NULL), http_log(NULL) {}
 
 	int initialize();
 	void shutdown();
@@ -47,7 +47,7 @@ class SLogManager : public IManager
 	FILE* http_log;
 };
 
-extern SLogManager LogManager;
+extern _MLog MLog;
 
 // C++ logging
 namespace Log

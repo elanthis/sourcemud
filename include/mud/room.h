@@ -133,7 +133,7 @@ class Room : public Entity
 
 	E_TYPE(Room)
 	
-	friend class SZoneManager;
+	friend class _MZone;
 };
 
 #define ROOM(ent) E_CAST(ent,Room)

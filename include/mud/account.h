@@ -110,10 +110,10 @@ class Account : public IMacroObject
 	Account (std::string s_id);
 	~Account ();
 
-	friend class SAccountManager;
+	friend class _MAccount;
 };
 
-class SAccountManager : public IManager
+class _MAccount : public IManager
 {
 	public:
 	virtual int initialize ();
@@ -134,6 +134,6 @@ class SAccountManager : public IManager
 
 	friend class Account;
 };
-extern SAccountManager AccountManager;
+extern _MAccount MAccount;
 
 #endif

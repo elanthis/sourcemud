@@ -15,7 +15,7 @@
 
 #include "config.h"
 
-SRaceManager RaceManager;
+_MRace MRace;
 
 Race::Race (std::string s_name, Race *s_next) :
 	name(s_name.c_str()),
@@ -90,7 +90,7 @@ Race::load(File::Reader& reader)
 }
 
 Race *
-SRaceManager::get(std::string name)
+_MRace::get(std::string name)
 {
 	Race *race = head;
 	while (race != NULL) {
@@ -102,10 +102,10 @@ SRaceManager::get(std::string name)
 }
 
 int
-SRaceManager::initialize()
+_MRace::initialize()
 {
 	File::Reader reader;
-	std::string path = SettingsManager.get_misc_path() + "/races";
+	std::string path = MSettings.get_misc_path() + "/races";
 
 	if (reader.open(path)) {
 		Log::Error << "Failed to open " << path;
@@ -128,7 +128,7 @@ SRaceManager::initialize()
 }
 
 void
-SRaceManager::shutdown()
+_MRace::shutdown()
 {
 	while (head != NULL) {
 		Race* r = head->get_next();

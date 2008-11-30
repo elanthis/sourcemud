@@ -16,7 +16,7 @@ struct HelpTopic {
 	std::string about;
 };
 
-class SHelpManager : public IManager
+class _MHelp : public IManager
 {
 	public:
 	// startup the manager
@@ -36,6 +36,6 @@ class SHelpManager : public IManager
 	typedef std::vector<HelpTopic*> TopicList;
 	TopicList topics;
 };
-extern SHelpManager HelpManager;
+extern _MHelp MHelp;
 
 #endif

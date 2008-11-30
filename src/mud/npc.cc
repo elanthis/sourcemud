@@ -151,7 +151,7 @@ NpcBP::load(File::Reader& reader)
 		FO_ATTR("blueprint", "id")
 			id = node.get_string();
 		FO_ATTR("blueprint", "parent")
-			NpcBP* blueprint = NpcBPManager.lookup(node.get_string());
+			NpcBP* blueprint = MNpcBP.lookup(node.get_string());
 			if (blueprint)
 				set_parent(blueprint);
 			else
@@ -261,7 +261,7 @@ Npc::load_node(File::Reader& reader, File::Node& node)
 	FO_NODE_BEGIN
 		FO_ATTR("npc", "blueprint")
 			NpcBP* blueprint;
-			if ((blueprint = NpcBPManager.lookup(node.get_string())) == NULL)
+			if ((blueprint = MNpcBP.lookup(node.get_string())) == NULL)
 				Log::Error << "Could not find npc blueprint '" << node.get_string() << "'";
 			else
 				set_blueprint(blueprint);
@@ -395,7 +395,7 @@ Npc*
 Npc::load_blueprint(std::string name)
 {
 	// lookup the blueprint
-	NpcBP* blueprint = NpcBPManager.lookup(name);
+	NpcBP* blueprint = MNpcBP.lookup(name);
 	if (!blueprint)
 		return NULL;
 	
@@ -512,18 +512,18 @@ Npc::name_match(std::string match) const
 
 // Npc Blueprint Manager
 
-SNpcBPManager NpcBPManager;
+_MNpcBP MNpcBP;
 
 int
-SNpcBPManager::initialize()
+_MNpcBP::initialize()
 {
 	// requirements
-	if (require(ObjectBPManager) != 0)
+	if (require(MObjectBP) != 0)
 		return 1;
-	if (require(EventManager) != 0)
+	if (require(MEvent) != 0)
 		return 1;
 
-	StringList files = File::dirlist(SettingsManager.get_blueprint_path());
+	StringList files = File::dirlist(MSettings.get_blueprint_path());
 	File::filter(files, "*.npcs");
 	for (StringList::iterator i = files.begin(); i != files.end(); ++i) {
 		File::Reader reader;
@@ -552,7 +552,7 @@ SNpcBPManager::initialize()
 }
 
 void
-SNpcBPManager::shutdown()
+_MNpcBP::shutdown()
 {
 	for (BlueprintMap::iterator i = blueprints.begin(), e = blueprints.end();
 			i != e; ++i)
@@ -560,7 +560,7 @@ SNpcBPManager::shutdown()
 }
 
 NpcBP*
-SNpcBPManager::lookup(std::string id)
+_MNpcBP::lookup(std::string id)
 {
 	BlueprintMap::iterator iter = blueprints.find(id);
 	if (iter == blueprints.end())

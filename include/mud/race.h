@@ -76,10 +76,10 @@ Race
 	Race* next;
 };
 
-class SRaceManager : public IManager
+class _MRace : public IManager
 {
 	public:
-	SRaceManager() : head(NULL) {}
+	_MRace() : head(NULL) {}
 
 	int initialize();
 	void shutdown();
@@ -90,6 +90,6 @@ class SRaceManager : public IManager
 	private:
 	Race* head;
 };
-extern SRaceManager RaceManager;
+extern _MRace MRace;
 
 #endif

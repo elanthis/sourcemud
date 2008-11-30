@@ -34,7 +34,7 @@ enum PollHandlerFlags {
 	POLLSYS_WRITE = 2
 };
 
-class SNetworkManager : public IManager {
+class _MNetwork : public IManager {
 	public:
 	virtual int initialize();
 	virtual void shutdown();
@@ -57,6 +57,6 @@ class SNetworkManager : public IManager {
 	class PollData* p_data; // private implementation data
 };
 
-extern SNetworkManager NetworkManager;
+extern _MNetwork MNetwork;
 
 #endif

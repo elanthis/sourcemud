@@ -135,7 +135,7 @@ ShadowObject : public Object
 	virtual ~ShadowObject ();
 };
 
-class SObjectBPManager : public IManager
+class _MObjectBP : public IManager
 {
 	typedef std::map<std::string,ObjectBP*> BlueprintMap;
 
@@ -150,7 +150,7 @@ class SObjectBPManager : public IManager
 	BlueprintMap blueprints;
 };
 
-extern SObjectBPManager ObjectBPManager;
+extern _MObjectBP MObjectBP;
 
 #define OBJECT(ent) E_CAST(ent,Object)
 

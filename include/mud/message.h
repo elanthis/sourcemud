@@ -13,7 +13,7 @@
 #include "common/imanager.h"
 #include <map>
 
-class SMessageManager : public IManager
+class _MMessage : public IManager
 {
 	public:
 	virtual int initialize (void);
@@ -25,6 +25,6 @@ class SMessageManager : public IManager
 	typedef std::map<std::string, std::string> MessageMap;
 	MessageMap messages;
 };
-extern SMessageManager MessageManager;
+extern _MMessage MMessage;
 
 #endif

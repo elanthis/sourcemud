@@ -36,7 +36,7 @@
 #include "net/telnet.h"
 
 // manager of players
-SPlayerManager PlayerManager;
+_MPlayer MPlayer;
 
 namespace {
 	// make a roman-numeral - FIXME: put somewhere better, make more correct
@@ -138,15 +138,15 @@ Player::Player (class Account* s_account, std::string s_id)
 	name.set_article(EntityArticleClass::PROPER);
 
 	// register
-	PlayerManager.player_list.push_back(this);
+	MPlayer.player_list.push_back(this);
 }
 
 Player::~Player ()
 {
 	// remove
-	SPlayerManager::PlayerList::iterator i = std::find(PlayerManager.player_list.begin(), PlayerManager.player_list.end(), this);
-	if (i != PlayerManager.player_list.end())
-		PlayerManager.player_list.erase(i);
+	_MPlayer::PlayerList::iterator i = std::find(MPlayer.player_list.begin(), MPlayer.player_list.end(), this);
+	if (i != MPlayer.player_list.end())
+		MPlayer.player_list.erase(i);
 }
 	
 void
@@ -196,10 +196,10 @@ Player::save_data (File::Writer& writer)
 void
 Player::save ()
 {
-	std::string path = PlayerManager.path(get_id());
+	std::string path = MPlayer.path(get_id());
 
 	// backup player file
-	if (SettingsManager.get_backup_players()) {
+	if (MSettings.get_backup_players()) {
 		// only if it exists
 		struct stat st;
 		if (!stat(path.c_str(), &st)) {
@@ -262,7 +262,7 @@ Player::load_node (File::Reader& reader, File::Node& node)
 		FO_ATTR("player", "hair_style")
 			form.hair_style = FormHairStyle::lookup(node.get_string());
 		FO_ATTR("player", "race")
-			race = RaceManager.get (node.get_string());
+			race = MRace.get (node.get_string());
 			if (race == NULL) {
 				Log::Error << node << ": Player has invalid race";
 				throw File::Error();
@@ -271,7 +271,7 @@ Player::load_node (File::Reader& reader, File::Node& node)
 			if (birthday.decode(node.get_string()))
 				throw File::Error (S("Invalid birthday"));
 		FO_ATTR("player", "location")
-			location = ZoneManager.get_room(node.get_string());
+			location = MZone.get_room(node.get_string());
 			if (location == NULL) {
 				Log::Error << node << ": Unknown room";
 				throw File::Error();
@@ -309,13 +309,13 @@ Player::start_session ()
 {
 	// login message
 	clear_scr();
-	*this << "\n" << StreamMacro (MessageManager.get(S("login")), S("player"), this) << "\n";
+	*this << "\n" << StreamMacro (MMessage.get(S("login")), S("player"), this) << "\n";
 
 	// not already active?  add to room...
 	if (!is_active()) {
 		if (location) {
 			// announce arrival
-			ZoneManager.announce (CADMIN "**" CNORMAL " " CPLAYER + get_id() + CNORMAL " has entered this world, leaving behind " + get_gender().get_hisher() + " mundane life. " CADMIN "**" CNORMAL);
+			MZone.announce (CADMIN "**" CNORMAL " " CPLAYER + get_id() + CNORMAL " has entered this world, leaving behind " + get_gender().get_hisher() + " mundane life. " CADMIN "**" CNORMAL);
 
 			// try to enter room
 			if (!enter(location, NULL)) {
@@ -339,7 +339,7 @@ Player::start_session ()
 			}
 
 			// announce login
-			ZoneManager.announce (CADMIN "**" CNORMAL " " CPLAYER + get_id() + CNORMAL " has entered this world, leaving behind " + get_gender().get_hisher() + " mundane life. " CADMIN "**" CNORMAL);
+			MZone.announce (CADMIN "**" CNORMAL " " CPLAYER + get_id() + CNORMAL " has entered this world, leaving behind " + get_gender().get_hisher() + " mundane life. " CADMIN "**" CNORMAL);
 		}
 
 		// Example affect - make strong
@@ -370,7 +370,7 @@ Player::end_session ()
 	save();
 
 	// quit message
-	ZoneManager.announce (CADMIN "**" CNORMAL " " CPLAYER + get_id() + CNORMAL " has left this world, returning to " + get_gender().get_hisher() + " mundane life. " CADMIN "**" CNORMAL);
+	MZone.announce (CADMIN "**" CNORMAL " " CPLAYER + get_id() + CNORMAL " has left this world, returning to " + get_gender().get_hisher() + " mundane life. " CADMIN "**" CNORMAL);
 
 	// disengage from game world
 	destroy();
@@ -383,11 +383,11 @@ uint
 Player::get_age () const
 {
 	// calculate the age in years, based on birthdate and current time
-	uint years = TimeManager.time.get_year() - birthday.get_year();
-	if (TimeManager.time.get_month() < birthday.get_month())
+	uint years = MTime.time.get_year() - birthday.get_year();
+	if (MTime.time.get_month() < birthday.get_month())
 		years --;
-	else if (TimeManager.time.get_month() == birthday.get_month())
-		if (TimeManager.time.get_day() < birthday.get_day())
+	else if (MTime.time.get_month() == birthday.get_month())
+		if (MTime.time.get_day() < birthday.get_day())
 			years --;
 	return years;
 }

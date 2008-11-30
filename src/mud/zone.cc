@@ -21,14 +21,14 @@
 #include "mud/hooks.h"
 #include "mud/shadow-object.h"
 
-SZoneManager ZoneManager;
+_MZone MZone;
 
 bool
 Spawn::check (const Zone* zone) const
 {
 	if (!tag.valid())
 		return false;
-	size_t count = EntityManager.tag_count(tag);
+	size_t count = MEntity.tag_count(tag);
 	return count < min;
 }
 
@@ -199,10 +199,10 @@ Zone::load (std::string path)
 void
 Zone::save()
 {
-	std::string path = SettingsManager.get_zone_path() + "/" + get_id() + ".zone";
+	std::string path = MSettings.get_zone_path() + "/" + get_id() + ".zone";
 
 	/* backup zone file */
-	if (SettingsManager.get_backup_zones()) {
+	if (MSettings.get_backup_zones()) {
 		char time_buffer[15];
 		time_t base_t;
 		time (&base_t);
@@ -282,13 +282,13 @@ Zone::destroy()
 {
 	// save and backup
 	save();
-	std::string path = SettingsManager.get_zone_path() + "/" + get_id() + ".zone";
+	std::string path = MSettings.get_zone_path() + "/" + get_id() + ".zone";
 	File::rename(path, path + "~");
 
 	// remove from zone list
-	SZoneManager::ZoneList::iterator i = find(ZoneManager.zones.begin(), ZoneManager.zones.end(), this);
-	if (i != ZoneManager.zones.end())
-		ZoneManager.zones.erase(i);
+	_MZone::ZoneList::iterator i = find(MZone.zones.begin(), MZone.zones.end(), this);
+	if (i != MZone.zones.end())
+		MZone.zones.erase(i);
 
 	// shut down zone
 	deactivate();
@@ -298,34 +298,34 @@ void
 Zone::broadcast_event (const Event& event)
 {
 	for (RoomList::iterator i = rooms.begin(); i != rooms.end(); ++i)
-		EventManager.resend(event, *i);
+		MEvent.resend(event, *i);
 }
 
 int
-SZoneManager::initialize()
+_MZone::initialize()
 {
 	// modules we need
-	if (require(UniqueIDManager) != 0)
+	if (require(MUniqueID) != 0)
 		return 1;
-	if (require(EntityManager) != 0)
+	if (require(MEntity) != 0)
 		return 1;
-	if (require(NpcBPManager) != 0)
+	if (require(MNpcBP) != 0)
 		return 1;
-	if (require(ObjectBPManager) != 0)
+	if (require(MObjectBP) != 0)
 		return 1;
-	if (require(TimeManager) != 0)
+	if (require(MTime) != 0)
 		return 1;
-	if (require(WeatherManager) != 0)
+	if (require(MWeather) != 0)
 		return 1;
 	return 0;
 }
 
 // load the world
 int
-SZoneManager::load_world()
+_MZone::load_world()
 {
 	// read zones dir
-	StringList files = File::dirlist(SettingsManager.get_zone_path());
+	StringList files = File::dirlist(MSettings.get_zone_path());
 	File::filter(files, "*.zone");
 	for (StringList::iterator i = files.begin(); i != files.end(); ++i) {
 		Zone* zone = new Zone();
@@ -343,7 +343,7 @@ SZoneManager::load_world()
 
 // close down zone manager
 void
-SZoneManager::shutdown()
+_MZone::shutdown()
 {
 	// deactive all zones, which deactives all entities.
 	// we don't delete them until a collection is run, in order to
@@ -353,7 +353,7 @@ SZoneManager::shutdown()
 		(*i)->deactivate();
 
 	// collect entities
-	EntityManager.collect();
+	MEntity.collect();
 
 	// delete zones
 	for (ZoneList::iterator i = zones.begin(), e = zones.end(); i != e; ++i)
@@ -363,7 +363,7 @@ SZoneManager::shutdown()
 
 // save zones
 void
-SZoneManager::save()
+_MZone::save()
 {
 	for (ZoneList::iterator i = zones.begin(); i != zones.end(); ++i)
 		(*i)->save();
@@ -371,7 +371,7 @@ SZoneManager::save()
 
 /* find a Zone */
 Zone*
-SZoneManager::get_zone (std::string id)
+_MZone::get_zone (std::string id)
 {
 	assert(!id.empty() && "id must not be empty");
 
@@ -384,7 +384,7 @@ SZoneManager::get_zone (std::string id)
 
 /* get a Zone  by index */
 Zone*
-SZoneManager::get_zone_at (size_t index)
+_MZone::get_zone_at (size_t index)
 {
 	if (index >= zones.size())
 		return NULL;
@@ -394,7 +394,7 @@ SZoneManager::get_zone_at (size_t index)
 
 /* find a Room */
 Room *
-SZoneManager::get_room (std::string id)
+_MZone::get_room (std::string id)
 {
 	if (id.empty())
 		return NULL;
@@ -423,14 +423,14 @@ Zone::announce (std::string str, AnnounceFlags flags) const
 
 /* announce to all rooms in a Room */
 void
-SZoneManager::announce (std::string str, AnnounceFlags flags)
+_MZone::announce (std::string str, AnnounceFlags flags)
 {
 	for (ZoneList::iterator i = zones.begin(); i != zones.end(); ++i)
 		(*i)->announce (str, flags);
 }
 
 void
-SZoneManager::add_zone (Zone *zone)
+_MZone::add_zone (Zone *zone)
 {
 	assert (zone != NULL);
 
@@ -446,7 +446,7 @@ SZoneManager::add_zone (Zone *zone)
 }
 
 void
-SZoneManager::list_rooms (const StreamControl& stream)
+_MZone::list_rooms (const StreamControl& stream)
 {
 	for (ZoneList::iterator i = zones.begin(); i != zones.end(); ++i) {
 		stream << " " << (*i)->get_name() << " <" << (*i)->get_id() << ">\n";

@@ -55,7 +55,7 @@ void
 HTTPHandler::disconnect ()
 {
 	// reduce count
-	NetworkManager.connections.remove(addr);
+	MNetwork.connections.remove(addr);
 
 	// close socket
 	sock_disconnect();
@@ -366,7 +366,7 @@ void HTTPHandler::execute()
 	// url request into a full path
 	exec.cleanup();
 
-	std::string file = SettingsManager.get_html_path() + path;
+	std::string file = MSettings.get_html_path() + path;
 
 	// check to see if our file exists, and serve it if it does
 	if (File::isfile(file)) {
@@ -543,9 +543,9 @@ SHTTPManager::initialize()
 {
 	StringBuffer buf;
 
-	std::ifstream ifs(SettingsManager.get_skey_path().c_str());
+	std::ifstream ifs(MSettings.get_skey_path().c_str());
 	if (!ifs) {
-		Log::Error << "Failed to open session key file " << SettingsManager.get_skey_path();
+		Log::Error << "Failed to open session key file " << MSettings.get_skey_path();
 		return -1;
 	}
 	ifs >> session_key;

@@ -14,21 +14,21 @@
 #include "mud/gametime.h"
 #include "mud/clock.h"
 
-SWeatherManager WeatherManager;
+_MWeather MWeather;
 
 int
-SWeatherManager::initialize ()
+_MWeather::initialize ()
 {
 	return region.load();
 }
 
 void
-SWeatherManager::shutdown ()
+_MWeather::shutdown ()
 {
 }
 
 void
-SWeatherManager::save ()
+_MWeather::save ()
 {
 }
 
@@ -119,7 +119,7 @@ WeatherRegion::save (File::Writer& writer) const
 int
 WeatherRegion::load ()
 {
-	std::string path = SettingsManager.get_world_path() + "/weather";
+	std::string path = MSettings.get_world_path() + "/weather";
 
 	// open
 	File::Reader reader;
@@ -136,7 +136,7 @@ WeatherRegion::load ()
 int
 WeatherRegion::save () const
 {
-	std::string path = SettingsManager.get_world_path() + "/weather";
+	std::string path = MSettings.get_world_path() + "/weather";
 
 	// open
 	File::Writer writer;
@@ -188,7 +188,7 @@ WeatherRegion::update () {
 					state = nstate;
 
 					// announce
-					ZoneManager.announce(i->desc, ANFL_OUTDOORS);
+					MZone.announce(i->desc, ANFL_OUTDOORS);
 				}
 				break;
 			}

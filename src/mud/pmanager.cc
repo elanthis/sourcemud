@@ -14,14 +14,14 @@
 
 // helper function to generate path names
 std::string
-SPlayerManager::path (std::string name)
+_MPlayer::path (std::string name)
 {
-	return SettingsManager.get_player_path() + "/" + strlower(name) + ".ply";
+	return MSettings.get_player_path() + "/" + strlower(name) + ".ply";
 }
 
 // check if a name is valid
 bool
-SPlayerManager::valid_name (std::string name)
+_MPlayer::valid_name (std::string name)
 {
 	// empty?  just fail
 	if (name.empty())
@@ -41,7 +41,7 @@ SPlayerManager::valid_name (std::string name)
 			return false;
 
 	// check 'badnames' file
-	std::string path = SettingsManager.get_player_path() + "/badnames";
+	std::string path = MSettings.get_player_path() + "/badnames";
 
 	std::ifstream badnames(path.c_str());
 	if (!badnames) {
@@ -61,7 +61,7 @@ SPlayerManager::valid_name (std::string name)
 
 // find a Player
 Player *
-SPlayerManager::get (std::string name)
+_MPlayer::get (std::string name)
 {
 	assert(!name.empty() && "name must not be empty");
 
@@ -75,7 +75,7 @@ SPlayerManager::get (std::string name)
 }
 
 void
-SPlayerManager::list (const StreamControl& stream)
+_MPlayer::list (const StreamControl& stream)
 {
 	stream << "Currently logged in players:\n";
 	size_t count = 0;
@@ -99,7 +99,7 @@ SPlayerManager::list (const StreamControl& stream)
 }
 
 size_t
-SPlayerManager::count (void)
+_MPlayer::count (void)
 {
 	size_t count = 0;
 	for (PlayerList::iterator i = player_list.begin(); i != player_list.end(); ++i)
@@ -109,19 +109,19 @@ SPlayerManager::count (void)
 }
 
 int
-SPlayerManager::initialize (void)
+_MPlayer::initialize (void)
 {
 	// modules we need to operate
-	if (require(AccountManager) != 0)
+	if (require(MAccount) != 0)
 		return 1;
-	if (require(EntityManager) != 0)
+	if (require(MEntity) != 0)
 		return 1;
 
 	return 0;
 }
 
 void
-SPlayerManager::shutdown (void)
+_MPlayer::shutdown (void)
 {
 	// quit all players
 	while (!player_list.empty()) {
@@ -131,7 +131,7 @@ SPlayerManager::shutdown (void)
 }
 
 Player*
-SPlayerManager::load (Account* account, std::string name)
+_MPlayer::load (Account* account, std::string name)
 {
 	// must be valid before attempting load
 	if (!valid_name(name))
@@ -144,7 +144,7 @@ SPlayerManager::load (Account* account, std::string name)
 
 	// open reader
 	File::Reader reader;
-	if (reader.open(PlayerManager.path(name)))
+	if (reader.open(MPlayer.path(name)))
 		return NULL;
 	
 	// create player
@@ -163,7 +163,7 @@ SPlayerManager::load (Account* account, std::string name)
 }
 
 bool
-SPlayerManager::exists (std::string name)
+_MPlayer::exists (std::string name)
 {
 	// must be a valid name
 	if (!valid_name(name))
@@ -179,7 +179,7 @@ SPlayerManager::exists (std::string name)
 	}
 
 	// check if player file exists
-	std::string path = PlayerManager.path(name);
+	std::string path = MPlayer.path(name);
 	struct stat st;
 	int res = stat (path.c_str(), &st);
 	if (res == 0)
@@ -191,7 +191,7 @@ SPlayerManager::exists (std::string name)
 }
 
 int
-SPlayerManager::destroy (std::string name)
+_MPlayer::destroy (std::string name)
 {
 	// must be a valid name
 	if (!valid_name(name))
@@ -207,7 +207,7 @@ SPlayerManager::destroy (std::string name)
 	}
 
 	// backup file
-	std::string path = PlayerManager.path(name);
+	std::string path = MPlayer.path(name);
 	struct stat st;
 	if (!stat(path.c_str(), &st)) {
 		if (File::rename(path, path + "~")) { // move file
@@ -223,7 +223,7 @@ SPlayerManager::destroy (std::string name)
 }
 
 void
-SPlayerManager::save (void)
+_MPlayer::save (void)
 {
 	for (PlayerList::iterator i = player_list.begin(); i != player_list.end(); ++i)
 		if ((*i)->is_active())

@@ -302,7 +302,7 @@ ShadowObject::load_node(File::Reader& reader, File::Node& node)
 		FO_ATTR("object", "blueprint")
 			// sets a real blueprint
 			ObjectBP* blueprint = NULL;
-			if ((blueprint = ObjectBPManager.lookup(node.get_string())) == NULL)
+			if ((blueprint = MObjectBP.lookup(node.get_string())) == NULL)
 				Log::Error << "Could not find object blueprint '" << node.get_string() << "'";
 			else
 				set_blueprint(blueprint);
@@ -673,7 +673,7 @@ void
 Object::broadcast_event(const Event& event)
 {
 	for (EList<Object>::const_iterator i = children.begin(); i != children.end(); ++i)
-		EventManager.resend(event, *i);
+		MEvent.resend(event, *i);
 }
 
 void
@@ -686,7 +686,7 @@ ShadowObject::set_blueprint(ObjectBP* s_blueprint)
 Object*
 ShadowObject::load_blueprint(std::string name)
 {
-	ObjectBP* blueprint = ObjectBPManager.lookup(name);
+	ObjectBP* blueprint = MObjectBP.lookup(name);
 	if (!blueprint)
 		return NULL;
 	
@@ -724,16 +724,16 @@ ShadowObject::name_match(std::string match) const
 
 // Object Blueprint Manager
 
-SObjectBPManager ObjectBPManager;
+_MObjectBP MObjectBP;
 
 int
-SObjectBPManager::initialize()
+_MObjectBP::initialize()
 {
 	// requirements
-	if (require(EventManager) != 0)
+	if (require(MEvent) != 0)
 		return 1;
 
-	StringList files = File::dirlist(SettingsManager.get_blueprint_path());
+	StringList files = File::dirlist(MSettings.get_blueprint_path());
 	File::filter(files, "*.objs");
 	for (StringList::iterator i = files.begin(); i != files.end(); ++i) {
 		// load from file
@@ -763,7 +763,7 @@ SObjectBPManager::initialize()
 }
 
 void
-SObjectBPManager::shutdown()
+_MObjectBP::shutdown()
 {
 	for (BlueprintMap::iterator i = blueprints.begin(), e = blueprints.end();
 			i != e; ++i)
@@ -771,7 +771,7 @@ SObjectBPManager::shutdown()
 }
 
 ObjectBP*
-SObjectBPManager::lookup(std::string id)
+_MObjectBP::lookup(std::string id)
 {
 	BlueprintMap::iterator iter = blueprints.find(id);
 	if (iter == blueprints.end())

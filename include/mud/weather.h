@@ -57,7 +57,7 @@ class WeatherRegion {
 
 // manage all regions
 // FIXME: we should actually *have* multiple regions... ^^;
-class SWeatherManager : public IManager
+class _MWeather : public IManager
 {
 	public:
 	virtual int initialize ();
@@ -73,6 +73,6 @@ class SWeatherManager : public IManager
 	private:
 	WeatherRegion region;
 };
-extern SWeatherManager WeatherManager;
+extern _MWeather MWeather;
 
 #endif

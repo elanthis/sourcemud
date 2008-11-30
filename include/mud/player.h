@@ -195,14 +195,14 @@ class Player : public Creature
 
 	E_SUBTYPE(Player,Creature);
 
-	friend class SPlayerManager; // obvious
+	friend class _MPlayer; // obvious
 
 	protected:
 	~Player ();
 };
 
 // manage all players
-class SPlayerManager : public IManager
+class _MPlayer : public IManager
 {
 	public:
 	// list of *connected* players - do *not* use GC
@@ -250,7 +250,7 @@ class SPlayerManager : public IManager
 	// yuck - let Player class manage their own membership
 	friend class Player;
 };
-extern SPlayerManager PlayerManager;
+extern _MPlayer MPlayer;
 
 #define PLAYER(ent) E_CAST((ent),Player)
 

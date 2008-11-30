@@ -89,7 +89,7 @@ void command_olc_create (Player* builder, std::string argv[])
 			return;
 		}
 
-		Room* target = ZoneManager.get_room(argv[2]);
+		Room* target = MZone.get_room(argv[2]);
 		if (target == NULL) {
 			*builder << "Target room '" << argv[2] << "' not found.\n";
 			return;
@@ -102,7 +102,7 @@ void command_olc_create (Player* builder, std::string argv[])
 	} else if (str_eq(argv[0], S("room"))) {
 		Zone *zone = NULL;
 		if (!argv[2].empty()) {
-			zone = ZoneManager.get_zone(argv[2]);
+			zone = MZone.get_zone(argv[2]);
 			if (zone == NULL) {
 				*builder << "Zone '" << argv[2] << "' does not exist.\n";
 				return;
@@ -117,7 +117,7 @@ void command_olc_create (Player* builder, std::string argv[])
 			}
 		}
 
-		if (ZoneManager.get_room (argv[1])) {
+		if (MZone.get_room (argv[1])) {
 			*builder << "Room '" << argv[1] << "' already exists.\n";
 			return;
 		}
@@ -130,7 +130,7 @@ void command_olc_create (Player* builder, std::string argv[])
 		zone->add_room (room);
 	// create zone
 	} else if (str_eq(argv[0], S("zone"))) {
-		if (ZoneManager.get_zone (argv[1])) {
+		if (MZone.get_zone (argv[1])) {
 			*builder << "Zone '" << argv[1] << "' already exists.\n";
 			return;
 		}
@@ -139,7 +139,7 @@ void command_olc_create (Player* builder, std::string argv[])
 		zone->set_id (argv[1]);
 		zone->set_name (argv[1]);
 
-		ZoneManager.add_zone (zone);
+		MZone.add_zone (zone);
 		*builder << "Zone '" << zone->get_id () << "' added.\n";
 	}
 }
@@ -242,7 +242,7 @@ void command_olc_portals (Player *builder, std::string argv[])
 			return;
 		}
 	} else {
-		room = ZoneManager.get_room(argv[0]);
+		room = MZone.get_room(argv[0]);
 		if (room == NULL) {
 			*builder << "Could not find room '" << argv[0] << "'.\n";
 			return;

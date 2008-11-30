@@ -18,7 +18,7 @@
 #include "mud/settings.h"
 #include "config.h"
 
-SLogManager LogManager;
+_MLog MLog;
 
 namespace Log {
 	LogWrapper Error(LOG_ERROR);
@@ -36,15 +36,15 @@ namespace Log {
 	void
 	LogWrapper::stream_end()
 	{
-		LogManager.print(klass, msg.str());
+		MLog.print(klass, msg.str());
 		msg.reset();
 	}
 }
 
-int SLogManager::initialize()
+int _MLog::initialize()
 {
-	path = SettingsManager.get_log_file();
-	http_path = SettingsManager.get_http_log_file();
+	path = MSettings.get_log_file();
+	http_path = MSettings.get_http_log_file();
 
 	if (!path.empty()) {
 		if ((log = fopen(path.c_str(), "a")) == NULL) {
@@ -65,7 +65,7 @@ int SLogManager::initialize()
 	return 0;
 }
 
-void SLogManager::shutdown()
+void _MLog::shutdown()
 {
 	if (log != NULL)
 		fclose(log);
@@ -73,7 +73,7 @@ void SLogManager::shutdown()
 		fclose(http_log);
 }
 
-void SLogManager::print (LogClass klass, const std::string& msg)
+void _MLog::print (LogClass klass, const std::string& msg)
 {
 	// HTTP logs go to the HTTP log file, with no extra info
 	if (klass == LOG_HTTP) {
@@ -116,7 +116,7 @@ void SLogManager::print (LogClass klass, const std::string& msg)
 	fprintf (out, "%s - %s%s\n", tbuf, prefix, msg.c_str());
 }
 
-void SLogManager::reset()
+void _MLog::reset()
 {
 	if (log != NULL) {
 		FILE* nlog = fopen(path.c_str(), "a");

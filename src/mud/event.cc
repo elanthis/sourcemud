@@ -15,7 +15,7 @@
 #include "mud/room.h"
 #include "generated/events.h"
 
-SEventManager EventManager;
+_MEvent MEvent;
 
 EventHandler::EventHandler () : event(), script() {}
 
@@ -53,19 +53,19 @@ Entity::handle_event (const Event& event)
 }
 
 int
-SEventManager::initialize ()
+_MEvent::initialize ()
 {
 	return 0;
 }
 
 void
-SEventManager::shutdown ()
+_MEvent::shutdown ()
 {
 	events.clear();
 }
 
 void
-SEventManager::send (EventID id, Entity* recipient, Entity* aux1, Entity* aux2, Entity* aux3)
+_MEvent::send (EventID id, Entity* recipient, Entity* aux1, Entity* aux2, Entity* aux3)
 {
 	assert (id.valid());
 	assert (recipient != NULL);
@@ -83,7 +83,7 @@ SEventManager::send (EventID id, Entity* recipient, Entity* aux1, Entity* aux2, 
 }
 
 void
-SEventManager::broadcast (EventID id, Entity* recipient, Entity* aux1, Entity* aux2, Entity* aux3)
+_MEvent::broadcast (EventID id, Entity* recipient, Entity* aux1, Entity* aux2, Entity* aux3)
 {
 	assert (id.valid());
 	assert (recipient != NULL);
@@ -101,7 +101,7 @@ SEventManager::broadcast (EventID id, Entity* recipient, Entity* aux1, Entity* a
 }
 
 void
-SEventManager::resend (const Event& event, Entity* recipient)
+_MEvent::resend (const Event& event, Entity* recipient)
 {
 	Event new_event = event;
 	new_event.recipient = recipient;
@@ -109,7 +109,7 @@ SEventManager::resend (const Event& event, Entity* recipient)
 }
 
 void
-SEventManager::process ()
+_MEvent::process ()
 {
 	// remember how many events we started with
 	// this way, events which trigger more events

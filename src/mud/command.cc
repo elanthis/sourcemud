@@ -23,7 +23,7 @@
 #include "mud/creature.h"
 #include "net/telnet.h"
 
-SCommandManager CommandManager;
+_MCommand MCommand;
 
 // helper functions
 namespace {
@@ -140,7 +140,7 @@ namespace {
 }
 
 // add a command to the list
-void SCommandManager::add(Command *command)
+void _MCommand::add(Command *command)
 {
 	assert (command != NULL);
 
@@ -150,7 +150,7 @@ void SCommandManager::add(Command *command)
 }
 
 int
-SCommandManager::call (Creature *ch, std::string comm) {
+_MCommand::call (Creature *ch, std::string comm) {
 	Player *ply = PLAYER(ch);
 
 	// break up words
@@ -232,7 +232,7 @@ SCommandManager::call (Creature *ch, std::string comm) {
 }
 
 void
-SCommandManager::show_list (Player *player)
+_MCommand::show_list (Player *player)
 {
 	int col, max_col;
 	size_t colwidth;
@@ -286,7 +286,7 @@ SCommandManager::show_list (Player *player)
 void	
 Command::show_man (StreamControl& stream)
 {
-	HelpTopic* topic = HelpManager.get_topic(name);
+	HelpTopic* topic = MHelp.get_topic(name);
 
 	stream << CSPECIAL "Help: " CNORMAL << name << "\n\n";
 
@@ -557,7 +557,7 @@ Command::operator< (const Command& command) const
 
 // show a man page; return false if cmd_name is not found
 bool
-SCommandManager::show_man (StreamControl& stream, std::string name, bool quiet)
+_MCommand::show_man (StreamControl& stream, std::string name, bool quiet)
 {
 	// find exact match?
 	for (CommandList::iterator i = commands.begin(); i != commands.end(); ++i) {
@@ -603,7 +603,7 @@ SCommandManager::show_man (StreamControl& stream, std::string name, bool quiet)
 void
 Creature::process_command (std::string line)
 {
-	CommandManager.call (this, line);
+	MCommand.call (this, line);
 }
 
 // Helper functions for the Creature::cl_find_* functions
@@ -1067,10 +1067,10 @@ Player::process_command (std::string line)
 		return;
 	}
 
-	CommandManager.call(this, line);
+	MCommand.call(this, line);
 }
 
-void SCommandManager::shutdown()
+void _MCommand::shutdown()
 {
 	for (std::vector<Command*>::iterator i = commands.begin(),
 			e = commands.end(); i != e; ++i)

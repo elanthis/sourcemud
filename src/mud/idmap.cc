@@ -7,16 +7,16 @@
 
 #include "mud/idmap.h"
 
-IDManager::IDManager ()
+MID::MID ()
 {
 }
 
-IDManager::~IDManager ()
+MID::~MID ()
 {
 }
 
 const std::string*
-IDManager::lookup (std::string idname)
+MID::lookup (std::string idname)
 {
 	IDMap::iterator i = id_map.find(idname);
 	if (i != id_map.end())
@@ -25,7 +25,7 @@ IDManager::lookup (std::string idname)
 }
 
 const std::string*
-IDManager::create (std::string idname)
+MID::create (std::string idname)
 {
 	if (idname.empty())
 		return NULL;

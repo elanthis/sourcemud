@@ -11,23 +11,23 @@
 #include "common/log.h"
 #include "mud/entity.h"
 
-SEntityFactoryManager EntityFactoryManager;
-SEntityFactoryManager::FactoryList* SEntityFactoryManager::factories = 0;
+_MEntityFactory MEntityFactory;
+_MEntityFactory::FactoryList* _MEntityFactory::factories = 0;
 
 int
-SEntityFactoryManager::initialize ()
+_MEntityFactory::initialize ()
 {
 	return 0;
 }
 
 void
-SEntityFactoryManager::shutdown ()
+_MEntityFactory::shutdown ()
 {
 	delete factories;
 }
 
 void
-SEntityFactoryManager::register_factory (const IEntityFactory* factory)
+_MEntityFactory::register_factory (const IEntityFactory* factory)
 {
 	assert(factory != NULL);
 
@@ -38,7 +38,7 @@ SEntityFactoryManager::register_factory (const IEntityFactory* factory)
 }
 
 Entity*
-SEntityFactoryManager::create (std::string name) const
+_MEntityFactory::create (std::string name) const
 {
 	assert(factories != NULL);
 
@@ -56,5 +56,5 @@ SEntityFactoryManager::create (std::string name) const
 Entity*
 Entity::create (std::string name)
 {
-	return EntityFactoryManager.create(name);
+	return MEntityFactory.create(name);
 }

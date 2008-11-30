@@ -16,14 +16,14 @@
 #include "mud/fileobj.h"
 #include "common/log.h"
 
-SSettingsManager SettingsManager;
+_MSettings MSettings;
 
 #define SETTING_INT(name,short_opt,long_opt,file_opt,def) \
-	{ #name, short_opt, long_opt, file_opt, &SettingsManager.val_ ## name, NULL, NULL, def, std::string(), false },
+	{ #name, short_opt, long_opt, file_opt, &MSettings.val_ ## name, NULL, NULL, def, std::string(), false },
 #define SETTING_STRING(name,short_opt,long_opt,file_opt,def) \
-	{ #name, short_opt, long_opt, file_opt, NULL, &SettingsManager.val_ ## name, NULL, 0, S(def), false },
+	{ #name, short_opt, long_opt, file_opt, NULL, &MSettings.val_ ## name, NULL, 0, S(def), false },
 #define SETTING_BOOL(name,short_opt,long_opt,file_opt,def) \
-	{ #name, short_opt, long_opt, file_opt, NULL, NULL, &SettingsManager.val_ ## name, 0, std::string(), def },
+	{ #name, short_opt, long_opt, file_opt, NULL, NULL, &MSettings.val_ ## name, 0, std::string(), def },
 
 struct SettingInfo {
 	const char* name;
@@ -86,7 +86,7 @@ namespace {
 }
 
 int
-SSettingsManager::initialize()
+_MSettings::initialize()
 {
 	for (int i = 0; settings[i].name != NULL; ++i) {
 		by_name[settings[i].name] = &settings[i];
@@ -102,7 +102,7 @@ SSettingsManager::initialize()
 	return 0;
 }
 
-void SSettingsManager::printUsage()
+void _MSettings::printUsage()
 {
 	// FIXME - don't use fprintf
 	fprintf(stderr, "./sourcemud");
@@ -130,7 +130,7 @@ void SSettingsManager::printUsage()
 	fprintf(stderr, "\n");
 }
 
-int SSettingsManager::parseArgv(int argc, char** argv)
+int _MSettings::parseArgv(int argc, char** argv)
 {
 	int err = 0;
 	for (int opt = 1; opt < argc; ++opt) {
@@ -180,7 +180,7 @@ int SSettingsManager::parseArgv(int argc, char** argv)
 	return err;
 }
 
-int SSettingsManager::loadFile(const std::string& path)
+int _MSettings::loadFile(const std::string& path)
 {
 	FILE* file;
 	char buffer[1024];
@@ -282,7 +282,7 @@ int SSettingsManager::loadFile(const std::string& path)
 	return 0;
 }
 
-const std::string& SSettingsManager::getString(const std::string& name)
+const std::string& _MSettings::getString(const std::string& name)
 {
 	std::map<std::string, SettingInfo*>::const_iterator i = by_name.find(name);
 	if (i != by_name.end() && i->second->val_string)
@@ -291,7 +291,7 @@ const std::string& SSettingsManager::getString(const std::string& name)
 	return empty;
 }
 
-int SSettingsManager::getInt(const std::string& name)
+int _MSettings::getInt(const std::string& name)
 {
 	std::map<std::string, SettingInfo*>::const_iterator i = by_name.find(name);
 	if (i != by_name.end() && i->second->val_int)
@@ -299,7 +299,7 @@ int SSettingsManager::getInt(const std::string& name)
 	return 0;
 }
 
-bool SSettingsManager::getBool(const std::string& name)
+bool _MSettings::getBool(const std::string& name)
 {
 	std::map<std::string, SettingInfo*>::const_iterator i = by_name.find(name);
 	if (i != by_name.end() && i->second->val_bool)

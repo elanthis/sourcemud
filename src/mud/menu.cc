@@ -37,7 +37,7 @@ void
 TelnetModeMainMenu::show_banner ()
 {
 	get_handler()->clear_scr();
-	*get_handler() << StreamMacro(MessageManager.get(S("menu_banner"))) << S("\n");
+	*get_handler() << StreamMacro(MMessage.get(S("menu_banner"))) << S("\n");
 	*get_handler() << "Greetings, " CPLAYER << account->get_name() << CNORMAL "!\n\n";
 }
 
@@ -150,7 +150,7 @@ TelnetModeMainMenu::process (char* line)
 				show_characters();
 			// portal?
 			} else if (input == "5" || prefix_match("portal", input)) {
-				*get_handler() << StreamMacro(MessageManager.get(S("quit")));
+				*get_handler() << StreamMacro(MMessage.get(S("quit")));
 				get_handler()->disconnect();
 			// eh?
 			} else {
@@ -184,7 +184,7 @@ TelnetModeMainMenu::process (char* line)
 			}
 
 			// get player
-			Player* player = PlayerManager.load(account, account->get_char_list()[choice]);
+			Player* player = MPlayer.load(account, account->get_char_list()[choice]);
 			if (player == NULL) {
 				show_characters();
 				*get_handler() << CADMIN "Error: Character cannot be found." CNORMAL "\n\n";
@@ -278,7 +278,7 @@ TelnetModeMainMenu::process (char* line)
 			break;
 		case STATE_CHPASS_SELECT:
 			// must be valid
-			if (input.empty() || !AccountManager.valid_passphrase(input)) {
+			if (input.empty() || !MAccount.valid_passphrase(input)) {
 				state = STATE_ACCOUNT;
 				show_account();
 				*get_handler() << "Passphrases must be at least " << ACCOUNT_PASS_MIN_LEN << " characters, and have both letters and numbers.  Passphrases may also contain symbols or punctuation characters.\n\n";
@@ -362,7 +362,7 @@ TelnetModeMainMenu::process (char* line)
 			// confirmed?  delete...
 			if (input == "I am sure!") {
 				// did delete work?
-				if (PlayerManager.destroy(tmp)) {
+				if (MPlayer.destroy(tmp)) {
 					*get_handler() << "Internal error; could not delete character.\n\n";
 					tmp.clear();
 					break;

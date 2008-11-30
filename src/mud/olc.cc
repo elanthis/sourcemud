@@ -108,7 +108,7 @@ namespace OLC {
 		}
 		// limit to Players?
 		if (type == tPlayer) {
-			Player* player = PlayerManager.get(name);
+			Player* player = MPlayer.get(name);
 			if (player != NULL) {
 				entity = player;
 				return true;
@@ -154,7 +154,7 @@ namespace OLC {
 		if (type == tRoom) {
 			Room* room = NULL;
 			if (!name.empty()) 
-				room = ZoneManager.get_room(name);
+				room = MZone.get_room(name);
 			else
 				room = builder->get_room();
 			if (room != NULL) {
@@ -171,7 +171,7 @@ namespace OLC {
 		if (type == tZone) {
 			Zone* zone = NULL;
 			if (!name.empty())
-				zone = ZoneManager.get_zone(name);
+				zone = MZone.get_zone(name);
 			else
 				zone = builder->get_room() ? builder->get_room()->get_zone() : NULL;
 			if (zone != NULL) {
@@ -199,7 +199,7 @@ namespace OLC {
 OLC_BEGIN_TYPE(Entity)
 	OLC_BEGIN_ATTR(uniqid)
 		OLC_GET
-			OLC_DISPLAY(UniqueIDManager.encode(edit->get_uid()))
+			OLC_DISPLAY(MUniqueID.encode(edit->get_uid()))
 	OLC_END_ATTR
 	OLC_BEGIN_ATTR(name)
 		OLC_GET
@@ -225,7 +225,7 @@ OLC_BEGIN_TYPE(ShadowObject)
 		OLC_GET
 			OLC_DISPLAY(edit->get_blueprint()->get_id())
 		OLC_SET
-			ObjectBP* blueprint = ObjectBPManager.lookup(value);
+			ObjectBP* blueprint = MObjectBP.lookup(value);
 			if (blueprint != NULL)
 				edit->set_blueprint(blueprint);
 			else
@@ -238,7 +238,7 @@ OLC_BEGIN_TYPE(Npc)
 		OLC_GET
 			OLC_DISPLAY(edit->get_blueprint()->get_id())
 		OLC_SET
-			NpcBP* blueprint = NpcBPManager.lookup(value);
+			NpcBP* blueprint = MNpcBP.lookup(value);
 			if (blueprint != NULL)
 				edit->set_blueprint(blueprint);
 			else

@@ -165,13 +165,13 @@ void TelnetModeRealNewCharacter::process (char* line)
 		case STATE_NAME:
 		case STATE_RENAME:
 			// must be a valid name
-			if (!PlayerManager.valid_name(input)) {
+			if (!MPlayer.valid_name(input)) {
 				show_error(S("Thy chosen name is not acceptable."));
 				break;
 			}
 
 			// not already in use
-			if (PlayerManager.exists(input)) {
+			if (MPlayer.exists(input)) {
 				show_error(S("Thy chosen name is already in use."));
 				break;
 			}
@@ -191,7 +191,7 @@ void TelnetModeRealNewCharacter::process (char* line)
 		case STATE_RACE:
 		{
 			// find the selected race
-			Race* rptr = RaceManager.first();
+			Race* rptr = MRace.first();
 			int index = 1;
 			int selected = numeric;
 			while (rptr != NULL) {
@@ -347,7 +347,7 @@ void TelnetModeRealNewCharacter::process (char* line)
 			break;
 		case STATE_FINAL_CONFIRM:
 			if (input.empty() || is_match(S("yes"), input)) {
-				if (PlayerManager.exists(name))
+				if (MPlayer.exists(name))
 					enter_state(STATE_RENAME);
 				else
 					create();
@@ -412,7 +412,7 @@ void TelnetModeRealNewCharacter::display ()
 			break;
 		case STATE_RACE:
 		{
-			Race* rptr = RaceManager.first();
+			Race* rptr = MRace.first();
 			int index = 1;
 			while (rptr != NULL) {
 				*get_handler() << index << ") " << capwords(rptr->get_name()) << "\n";
@@ -591,7 +591,7 @@ void TelnetModeRealNewCharacter::create ()
 
 	// set birthday
 	int age = race->get_age_min() + get_random(race->get_age_max() - race->get_age_min());
-	GameTime birthday = TimeManager.time;
+	GameTime birthday = MTime.time;
 	birthday.set_year(birthday.get_year() - age);
 	player->set_birthday(birthday);
 

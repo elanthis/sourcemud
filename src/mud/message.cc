@@ -10,15 +10,15 @@
 #include "mud/settings.h"
 #include "common/log.h"
 
-SMessageManager MessageManager;
+_MMessage MMessage;
 
 int
-SMessageManager::initialize (void)
+_MMessage::initialize (void)
 {
 	File::Reader reader;
 
 	// open messages file
-	if (reader.open(SettingsManager.get_misc_path() + "/messages"))
+	if (reader.open(MSettings.get_misc_path() + "/messages"))
 		return -1;
 
 	// read said file
@@ -35,13 +35,13 @@ SMessageManager::initialize (void)
 }
 
 void
-SMessageManager::shutdown (void)
+_MMessage::shutdown (void)
 {
 	messages.clear();
 }
 
 std::string
-SMessageManager::get (std::string id)
+_MMessage::get (std::string id)
 {
 	MessageMap::iterator i = messages.find(id);
 	return i != messages.end() ? i->second : std::string();

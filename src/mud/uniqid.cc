@@ -14,19 +14,19 @@
 #include "mud/uniqid.h"
 #include "common/log.h"
 
-SUniqueIDManager UniqueIDManager;
+_MUniqueID MUniqueID;
 
 const size_t LIMIT_AMOUNT = 1024;
 
 int
-SUniqueIDManager::initialize ()
+_MUniqueID::initialize ()
 {
 	next = 0;
 	limit = 0;
 
-	FILE* file = fopen((SettingsManager.get_misc_path() + "/uniqid").c_str(), "r");
+	FILE* file = fopen((MSettings.get_misc_path() + "/uniqid").c_str(), "r");
 	if (file == NULL) {
-		Log::Error << "UniqueIDManager.initialize(): Failed to open uniqid: " << strerror(errno);
+		Log::Error << "MUniqueID.initialize(): Failed to open uniqid: " << strerror(errno);
 		return -1;
 	}
 
@@ -41,11 +41,11 @@ SUniqueIDManager::initialize ()
 }
 
 void
-SUniqueIDManager::shutdown ()
+_MUniqueID::shutdown ()
 {
-	FILE* file = fopen((SettingsManager.get_misc_path() + "/uniqid").c_str(), "w");
+	FILE* file = fopen((MSettings.get_misc_path() + "/uniqid").c_str(), "w");
 	if (file == NULL) {
-		Log::Error << "UniqueIDManager.shutdown(): Failed to open uniqid: " << strerror(errno);
+		Log::Error << "MUniqueID.shutdown(): Failed to open uniqid: " << strerror(errno);
 		return;
 	}
 
@@ -57,13 +57,13 @@ SUniqueIDManager::shutdown ()
 }
 
 int
-SUniqueIDManager::reserve ()
+_MUniqueID::reserve ()
 {
 	limit = next + LIMIT_AMOUNT;
 
-	FILE* file = fopen((SettingsManager.get_misc_path() + "/uniqid").c_str(), "w");
+	FILE* file = fopen((MSettings.get_misc_path() + "/uniqid").c_str(), "w");
 	if (file == NULL) {
-		Log::Error << "UniqueIDManager.reserve(): Failed to open uniqid: " << strerror(errno);
+		Log::Error << "MUniqueID.reserve(): Failed to open uniqid: " << strerror(errno);
 		return -1;
 	}
 
@@ -77,12 +77,12 @@ SUniqueIDManager::reserve ()
 }
 
 void
-SUniqueIDManager::save ()
+_MUniqueID::save ()
 {
 }
 
 UniqueID
-SUniqueIDManager::create ()
+_MUniqueID::create ()
 {
 	UniqueID id;
 
@@ -95,7 +95,7 @@ SUniqueIDManager::create ()
 }
 
 std::string
-SUniqueIDManager::encode (UniqueID uid)
+_MUniqueID::encode (UniqueID uid)
 {
 	StringBuffer buffer;
 	buffer << uid.id;
@@ -103,7 +103,7 @@ SUniqueIDManager::encode (UniqueID uid)
 }
 
 UniqueID
-SUniqueIDManager::decode (std::string string)
+_MUniqueID::decode (std::string string)
 {
 	UniqueID uid;
 	uid.id = strtol(string.c_str(), NULL, 10);

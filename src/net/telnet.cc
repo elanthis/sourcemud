@@ -253,7 +253,7 @@ TelnetHandler::TelnetHandler (int s_sock, const SockStorage& s_netaddr) : Socket
 	cur_col = 0;
 	mode = NULL;
 	memset(&io_flags, 0, sizeof(IOFlags));
-	timeout = SettingsManager.get_telnet_timeout();
+	timeout = MSettings.get_telnet_timeout();
 
 	// initial telnet options
 	io_flags.want_echo = true;
@@ -338,7 +338,7 @@ TelnetHandler::disconnect ()
 	Log::Network << "Telnet client disconnected: " << Network::get_addr_name(addr);
 
 	// reduce count
-	NetworkManager.connections.remove(addr);
+	MNetwork.connections.remove(addr);
 
 #ifdef HAVE_LIBZ
 	end_mccp();

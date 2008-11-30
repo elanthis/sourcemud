@@ -31,7 +31,7 @@
 
 #include "config.h"
 
-SNetworkManager NetworkManager;
+_MNetwork MNetwork;
 
 struct PollData {
 	std::vector<ISocketHandler*> sockets;
@@ -39,12 +39,12 @@ struct PollData {
 };
 
 int
-SNetworkManager::initialize ()
+_MNetwork::initialize ()
 {
 	p_data = new PollData();
 
 	// set our hostname
-	host = SettingsManager.get_hostname();
+	host = MSettings.get_hostname();
 	if (host.empty()) {
 		char host_buffer[256];
 		if (gethostname(host_buffer, sizeof(host_buffer))) {
@@ -60,10 +60,10 @@ SNetworkManager::initialize ()
 	}
 
 	// load IP block list
-	if (!SettingsManager.get_deny_file().empty()) {
+	if (!MSettings.get_deny_file().empty()) {
 		Log::Info << "Reading denied host list";
 
-		if (denies.load(SettingsManager.get_deny_file()))
+		if (denies.load(MSettings.get_deny_file()))
 			return 1;
 	}
 
@@ -71,7 +71,7 @@ SNetworkManager::initialize ()
 }
 
 void
-SNetworkManager::shutdown ()
+_MNetwork::shutdown ()
 {
 	for (std::vector<ISocketHandler*>::iterator i = p_data->sockets.begin(),
 			e = p_data->sockets.end(); i != e; ++i)
@@ -87,14 +87,14 @@ SNetworkManager::shutdown ()
 }
 
 int
-SNetworkManager::add_socket (ISocketHandler* socket)
+_MNetwork::add_socket (ISocketHandler* socket)
 {
 	p_data->add.push_back(socket);
 	return 0;
 }
 
 int
-SNetworkManager::poll (long timeout)
+_MNetwork::poll (long timeout)
 {
 	fd_set cread;
 	fd_set cwrite;

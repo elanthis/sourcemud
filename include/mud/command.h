@@ -79,7 +79,7 @@ class CommandFormat
 	int trymatch (int node, char** words, std::string argv[]) const;
 
 	// let command manager see us
-	friend class SCommandManager;
+	friend class _MCommand;
 };
 
 class Command
@@ -106,10 +106,10 @@ class Command
 	bool operator< (const Command& command) const;
 
 	// let command manager see us
-	friend class SCommandManager;
+	friend class _MCommand;
 };
 
-class SCommandManager : public IManager
+class _MCommand : public IManager
 {
 	public:
 	// initialize
@@ -136,7 +136,7 @@ class SCommandManager : public IManager
 	CommandList commands;
 	std::vector<CommandFormat> formats;
 };
-extern SCommandManager CommandManager;
+extern _MCommand MCommand;
 
 namespace commands {
 	char *get_arg (char **); /* updates pointer, returns arg */

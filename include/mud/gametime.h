@@ -114,7 +114,7 @@ GameTime
 	bool operator != (const GameTime&) const;
 };
 
-class STimeManager : public IManager
+class _MTime : public IManager
 {
 	public:
 	virtual int initialize ();
@@ -124,6 +124,6 @@ class STimeManager : public IManager
 	GameCalendar calendar;
 	GameTime time;
 };
-extern STimeManager TimeManager;
+extern _MTime MTime;
 
 #endif

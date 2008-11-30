@@ -5,7 +5,7 @@ print OUT "// AUTOMATICALLY GENERATED - DO NOT EDIT\n";
 print OUT "// Generated on $(date)\n";
 		
 print OUT "#include \"mud/command.h\"\n";
-print OUT "int SCommandManager::initialize () {\n";
+print OUT "int _MCommand::initialize () {\n";
 print OUT "AccessID ACCESS_ALL;\n";
 print OUT "AccessID ACCESS_GM = AccessID::create(S(\"gm\"));\n";
 print OUT "AccessID ACCESS_BUILDER = AccessID::create(S(\"builder\"));\n";

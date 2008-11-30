@@ -159,7 +159,7 @@ namespace {
 	cleanup ()
 	{
 		// remember paths
-		std::string pid_path = SettingsManager.get_pid_file();
+		std::string pid_path = MSettings.get_pid_file();
 
 		// remove files
 		if (!pid_path.empty())
@@ -209,7 +209,7 @@ namespace {
 		}
 
 		// deny blocked hosts
-		if (NetworkManager.denies.exists(addr)) {
+		if (MNetwork.denies.exists(addr)) {
 			fdprintf(client, "Your host or network has been banned from this server.\r\n");
 			Log::Network << "Telnet client rejected: " << Network::get_addr_name(addr) << ": host or network banned";
 			close(client);
@@ -217,7 +217,7 @@ namespace {
 		}
 
 		// manage connection count
-		int err = NetworkManager.connections.add(addr);
+		int err = MNetwork.connections.add(addr);
 		if (err == -1) {
 			fdprintf(client, "Too many users connected.\r\n");
 			Log::Network << "Telnet client rejected: " << Network::get_addr_name(addr) << ": too many users";
@@ -240,16 +240,16 @@ namespace {
 			fdprintf(client, "Internal server error.\r\n");
 			Log::Error << "TelnetHandler() failed, closing connection.";
 			close(client);
-			NetworkManager.connections.remove(addr);
+			MNetwork.connections.remove(addr);
 			return;
 		}
 
 		// add to poll manager
-		if (NetworkManager.add_socket(telnet)) {
+		if (MNetwork.add_socket(telnet)) {
 			fdprintf(client, "Internal server error.\r\n");
 			Log::Error << "PollSystem::add_socket() failed, closing connection.";
 			close(client);
-			NetworkManager.connections.remove(addr);
+			MNetwork.connections.remove(addr);
 			return;
 		}
 
@@ -261,7 +261,7 @@ namespace {
 			"Visit http://www.sourcemud.org for more details.\n";
 
 		// connect message
-		*telnet << StreamMacro(MessageManager.get(S("connect")));
+		*telnet << StreamMacro(MMessage.get(S("connect")));
 
 		// init login
 		telnet->set_mode(new TelnetModeLogin(telnet));
@@ -279,7 +279,7 @@ namespace {
 		}
 
 		// deny blocked hosts
-		if (NetworkManager.denies.exists(addr)) {
+		if (MNetwork.denies.exists(addr)) {
 			fdprintf(client, "HTTP/1.0 403 Forbidden\n\nYour host or network has been banned from this server.\n");
 			Log::Network << "HTTP client rejected: " << Network::get_addr_name(addr) << ": host or network banned";
 			close(client);
@@ -287,7 +287,7 @@ namespace {
 		}
 
 		// manage connection count
-		int err = NetworkManager.connections.add(addr);
+		int err = MNetwork.connections.add(addr);
 		if (err == -1) {
 			fdprintf(client, "HTTP/1.0 503 Service Unavailable\n\nToo many users connected.\n");
 			Log::Network << "HTTP client rejected: " << Network::get_addr_name(addr) << ": too many users";
@@ -307,16 +307,16 @@ namespace {
 			fdprintf(client, "HTTP/1.0 500 Internal Server Error\n\nServer failure.\n");
 			Log::Error << "HTTPHandler() failed, closing connection.";
 			close(client);
-			NetworkManager.connections.remove(addr);
+			MNetwork.connections.remove(addr);
 			return;
 		}
 
 		// add to poll manager
-		if (NetworkManager.add_socket(http)) {
+		if (MNetwork.add_socket(http)) {
 			fdprintf(client, "HTTP/1.0 500 Internal Server Error\n\nServer failure.\n");
 			Log::Error << "PollSystem::add_socket() failed, closing connection.";
 			close(client);
-			NetworkManager.connections.remove(addr);
+			MNetwork.connections.remove(addr);
 			return;
 		}
 	}
@@ -388,27 +388,27 @@ main (int argc, char **argv)
 		"under certain conditions; for details, see the file COPYING.\n");
 
 	// load settings
-	if (IManager::require(SettingsManager))
+	if (IManager::require(MSettings))
 		return 1;
-	if (SettingsManager.parseArgv(argc, argv))
+	if (MSettings.parseArgv(argc, argv))
 		return 1;
-	if (!SettingsManager.get_config_file().empty() && SettingsManager.loadFile(SettingsManager.get_config_file()))
+	if (!MSettings.get_config_file().empty() && MSettings.loadFile(MSettings.get_config_file()))
 		return 1;
 
 	// change to chroot dir, but don't actually chroot yet
-	if (!SettingsManager.get_chroot().empty()) {
-		if (chdir(SettingsManager.get_chroot().c_str())) {
-			Log::Error << "chroot() failed: " << SettingsManager.get_chroot() << ": " << strerror(errno);
+	if (!MSettings.get_chroot().empty()) {
+		if (chdir(MSettings.get_chroot().c_str())) {
+			Log::Error << "chroot() failed: " << MSettings.get_chroot() << ": " << strerror(errno);
 			return 1;
 		}
 	}
 
 	// logging
-	if (IManager::require(LogManager))
+	if (IManager::require(MLog))
 		return 1;
 
 	// fork daemon
-	if (SettingsManager.get_daemon()) {
+	if (MSettings.get_daemon()) {
 		if (fork ())
 			_exit(0);
 
@@ -439,14 +439,14 @@ main (int argc, char **argv)
 	::time (&start_time);
 
 	// write PID
-	std::string pid_path = SettingsManager.get_pid_file();
+	std::string pid_path = MSettings.get_pid_file();
 	if (write_pid_file(pid_path))
 		return 1;
 	Log::Info << "Wrote PID file '" << pid_path << "'";
 
 	// read group/user info
 	struct group *grp = NULL;
-	std::string group_name = SettingsManager.get_group();
+	std::string group_name = MSettings.get_group();
 	if (!group_name.empty() && !str_is_number (group_name)) {
 		if (str_is_number (group_name))
 			grp = getgrgid(tolong(group_name));
@@ -458,7 +458,7 @@ main (int argc, char **argv)
 		}
 	}
 	struct passwd *usr = NULL;
-	std::string user_name = SettingsManager.get_user();
+	std::string user_name = MSettings.get_user();
 	if (!user_name.empty()) {
 		if (str_is_number (user_name))
 			usr = getpwuid(tolong(user_name));
@@ -471,7 +471,7 @@ main (int argc, char **argv)
 	}
 
 	// do chroot jail
-	std::string chroot_dir = SettingsManager.get_chroot();
+	std::string chroot_dir = MSettings.get_chroot();
 	if (!chroot_dir.empty()) {
 		if (chroot(chroot_dir.c_str())) {
 			Log::Error << "chroot() failed: " << strerror (errno);
@@ -522,7 +522,7 @@ main (int argc, char **argv)
 		return 1;
 
 	// load the world
-	if (ZoneManager.load_world())
+	if (MZone.load_world())
 		return 1;
 
 	// listen sockets
@@ -532,11 +532,11 @@ main (int argc, char **argv)
 	int http_ipv4 = -1;
 
 	// get port
-	int accept_port = SettingsManager.get_port();
+	int accept_port = MSettings.get_port();
 
 	// IPv6 message
 #ifdef HAVE_IPV6
-	if (SettingsManager.get_ipv6()) {
+	if (MSettings.get_ipv6()) {
 		player_ipv6 = Network::listen_tcp(accept_port, AF_INET6);
 		if (player_ipv6 == -1)
 			return 1;
@@ -548,23 +548,23 @@ main (int argc, char **argv)
 	if (player_ipv4 == -1)
 		return 1;
 
-	Log::Info << "Listening for players on " << NetworkManager.get_host() << "." << accept_port;
+	Log::Info << "Listening for players on " << MNetwork.get_host() << "." << accept_port;
 
 	// HTTP server
-	if (SettingsManager.get_http() != 0) {
+	if (MSettings.get_http() != 0) {
 #ifdef HAVE_IPV6
-		if (SettingsManager.get_ipv6()) {
-			http_ipv6 = Network::listen_tcp(SettingsManager.get_http(), AF_INET6);
+		if (MSettings.get_ipv6()) {
+			http_ipv6 = Network::listen_tcp(MSettings.get_http(), AF_INET6);
 			if (http_ipv6 == -1)
 				return 1;
 		}
 #endif // HAVE_IPV6
 
-		http_ipv4 = Network::listen_tcp(SettingsManager.get_http(), AF_INET);
+		http_ipv4 = Network::listen_tcp(MSettings.get_http(), AF_INET);
 		if (http_ipv4 == -1)
 			return 1;
 
-		Log::Info << "Listening for web clients on " << NetworkManager.get_host() << "." << SettingsManager.get_http();
+		Log::Info << "Listening for web clients on " << MNetwork.get_host() << "." << MSettings.get_http();
 	}
 
 	// change user/group
@@ -586,7 +586,7 @@ main (int argc, char **argv)
 	}
 
 	// Load the init script for Lua
-	Lua::runfile(SettingsManager.get_scripts_path() + "/init.lua");
+	Lua::runfile(MSettings.get_scripts_path() + "/init.lua");
 
 	// run init hook
 	Hooks::ready();
@@ -600,25 +600,25 @@ main (int argc, char **argv)
 	game_ticks = 0;
 
 	// initialize listen sockets
-	if (NetworkManager.add_socket(new TelnetListener(player_ipv4))) {
-		Log::Error << "NetworkManager.add_socket() failed";
+	if (MNetwork.add_socket(new TelnetListener(player_ipv4))) {
+		Log::Error << "MNetwork.add_socket() failed";
 		return 1;
 	}
 	if (player_ipv6 != -1) {
-		if (NetworkManager.add_socket(new TelnetListener(player_ipv6))) {
-			Log::Error << "NetworkManager.add_socket() failed";
+		if (MNetwork.add_socket(new TelnetListener(player_ipv6))) {
+			Log::Error << "MNetwork.add_socket() failed";
 			return 1;
 		}
 	}
 	if (http_ipv4 != -1) {
-		if (NetworkManager.add_socket(new HTTPListener(http_ipv4))) {
-			Log::Error << "NetworkManager.add_socket() failed";
+		if (MNetwork.add_socket(new HTTPListener(http_ipv4))) {
+			Log::Error << "MNetwork.add_socket() failed";
 			return 1;
 		}
 	}
 	if (http_ipv6 != -1) {
-		if (NetworkManager.add_socket(new HTTPListener(http_ipv6))) {
-			Log::Error << "NetworkManager.add_socket() failed";
+		if (MNetwork.add_socket(new HTTPListener(http_ipv6))) {
+			Log::Error << "MNetwork.add_socket() failed";
 			return 1;
 		}
 	}
@@ -630,17 +630,17 @@ main (int argc, char **argv)
 		long timeout = 15000; // 15 seconds
 
 		// need to run now to process data?
-		if (EventManager.events_pending())
+		if (MEvent.events_pending())
 			timeout = 0;
 		// behind on ticks?
 		else if (cur_ticks > game_ticks)
 			timeout = 0;
 		// have players?  need a timeout for game updates
-		else if (PlayerManager.count())
+		else if (MPlayer.count())
 			timeout = ms_until_timeval(nexttick);
 
 		// do select - no player, don't timeout
-		NetworkManager.poll(timeout);
+		MNetwork.poll(timeout);
 
 		// update by one tick per loop at most...
 		// update timer
@@ -655,38 +655,38 @@ main (int argc, char **argv)
 				nexttick = current;
 
 			// update entities
-			EntityManager.heartbeat();
+			MEntity.heartbeat();
 
 			// update weather
-			WeatherManager.update();
+			MWeather.update();
 
 			// update time
-			bool is_day = TimeManager.time.is_day();
-			uint hour = TimeManager.time.get_hour();
-			TimeManager.time.update(1);
+			bool is_day = MTime.time.is_day();
+			uint hour = MTime.time.get_hour();
+			MTime.time.update(1);
 
 			// change from day/night
-			if (is_day && !TimeManager.time.is_day()) {
-				if (!TimeManager.calendar.sunset_text.empty())
-					ZoneManager.announce(TimeManager.calendar.sunset_text[get_random(TimeManager.calendar.sunset_text.size())], ANFL_OUTDOORS);
-			} else if (!is_day && TimeManager.time.is_day()) {
-				if (!TimeManager.calendar.sunrise_text.empty())
-					ZoneManager.announce(TimeManager.calendar.sunrise_text[get_random(TimeManager.calendar.sunrise_text.size())], ANFL_OUTDOORS);
+			if (is_day && !MTime.time.is_day()) {
+				if (!MTime.calendar.sunset_text.empty())
+					MZone.announce(MTime.calendar.sunset_text[get_random(MTime.calendar.sunset_text.size())], ANFL_OUTDOORS);
+			} else if (!is_day && MTime.time.is_day()) {
+				if (!MTime.calendar.sunrise_text.empty())
+					MZone.announce(MTime.calendar.sunrise_text[get_random(MTime.calendar.sunrise_text.size())], ANFL_OUTDOORS);
 			}
 
 			// new hour
-			if (TimeManager.time.get_hour() != hour)
+			if (MTime.time.get_hour() != hour)
 				Hooks::change_hour();
 		}
 
 		// handle events
-		EventManager.process();
+		MEvent.process();
 
 		// free memory for dead entities
-		EntityManager.collect();
+		MEntity.collect();
 
 		// do auto-save
-		if ((cur_ticks - last_autosave) >= (uint)SettingsManager.get_auto_save() * TICKS_PER_ROUND * 60) {
+		if ((cur_ticks - last_autosave) >= (uint)MSettings.get_auto_save() * TICKS_PER_ROUND * 60) {
 			last_autosave = cur_ticks;
 			Log::Info << "Auto-saving...";
 			IManager::save_all();
@@ -697,7 +697,7 @@ main (int argc, char **argv)
 			signaled_reload = false;
 			Log::Info << "Server received a SIGHUP";
 			IManager::save_all();
-			LogManager.reset();
+			MLog.reset();
 		}
 
 		// check for signaled_shutdown
@@ -715,7 +715,7 @@ main (int argc, char **argv)
 	IManager::shutdown_all();
 
 	// clean up all entities
-	EntityManager.collect();
+	MEntity.collect();
 
 	// shutdown Lua
 	Lua::shutdown();

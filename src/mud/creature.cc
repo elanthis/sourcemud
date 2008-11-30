@@ -783,13 +783,13 @@ void
 Creature::broadcast_event (const Event& event)
 {
 	if (equipment.right_held)
-		EventManager.resend(event, equipment.right_held);
+		MEvent.resend(event, equipment.right_held);
 	if (equipment.left_held)
-		EventManager.resend(event, equipment.left_held);
+		MEvent.resend(event, equipment.left_held);
 	if (equipment.body_worn)
-		EventManager.resend(event, equipment.body_worn);
+		MEvent.resend(event, equipment.body_worn);
 	if (equipment.back_worn)
-		EventManager.resend(event, equipment.back_worn);
+		MEvent.resend(event, equipment.back_worn);
 	if (equipment.waist_worn)
-		EventManager.resend(event, equipment.waist_worn);
+		MEvent.resend(event, equipment.waist_worn);
 }

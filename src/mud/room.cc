@@ -322,14 +322,14 @@ Room::show (const StreamControl& stream, Creature* viewer)
 	if (is_outdoors ()) {
 		// show weather
 		if (!flags.noweather)
-			stream << "  " << WeatherManager.get_current_desc();
+			stream << "  " << MWeather.get_current_desc();
 		// show time
-		if (TimeManager.time.is_day ()) {
-			if (!TimeManager.calendar.day_text.empty())
-				stream << "  " << TimeManager.calendar.day_text[get_random(TimeManager.calendar.day_text.size())];
+		if (MTime.time.is_day ()) {
+			if (!MTime.calendar.day_text.empty())
+				stream << "  " << MTime.calendar.day_text[get_random(MTime.calendar.day_text.size())];
 		} else {
-			if (!TimeManager.calendar.night_text.empty())
-				stream << "  " << TimeManager.calendar.night_text[get_random(TimeManager.calendar.night_text.size())];
+			if (!MTime.calendar.night_text.empty())
+				stream << "  " << MTime.calendar.night_text[get_random(MTime.calendar.night_text.size())];
 		}
 	}
 	stream << "\n";
@@ -542,15 +542,15 @@ Room::broadcast_event (const Event& event)
 {
 	// propogate to objects
 	for (EList<Object>::const_iterator i = objects.begin(); i != objects.end(); ++i)
-		EventManager.resend(event, *i);
+		MEvent.resend(event, *i);
 
 	// propogate to creatures
 	for (EList<Creature>::const_iterator i = creatures.begin(); i != creatures.end(); ++i)
-		EventManager.resend(event, *i);
+		MEvent.resend(event, *i);
 
 	// propogate to portals
 	for (std::map<PortalDir,Portal*>::const_iterator i = portals.begin(); i != portals.end(); ++i)
-		EventManager.resend(event, i->second);
+		MEvent.resend(event, i->second);
 }
 
 // StreamSink for room buffering

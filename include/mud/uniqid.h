@@ -29,10 +29,10 @@ class UniqueID
 	private:
 	UniqueIDBase id;
 
-	friend class SUniqueIDManager;
+	friend class _MUniqueID;
 };
 
-class SUniqueIDManager : public IManager
+class _MUniqueID : public IManager
 {
 	public:
 	virtual int initialize ();
@@ -49,6 +49,6 @@ class SUniqueIDManager : public IManager
 	UniqueIDBase limit;
 };
 
-extern SUniqueIDManager UniqueIDManager;
+extern _MUniqueID MUniqueID;
 
 #endif

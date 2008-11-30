@@ -183,7 +183,7 @@ class Npc : public Creature
 	E_SUBTYPE(Npc, Creature);
 };
 
-class SNpcBPManager : public IManager
+class _MNpcBP : public IManager
 {
 	typedef std::map<std::string,NpcBP*> BlueprintMap;
 
@@ -197,7 +197,7 @@ class SNpcBPManager : public IManager
 	BlueprintMap blueprints;
 };
 
-extern SNpcBPManager NpcBPManager;
+extern _MNpcBP MNpcBP;
 
 #define NPC(ent) E_CAST((ent),Npc)
 

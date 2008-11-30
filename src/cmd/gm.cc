@@ -28,7 +28,7 @@
  * END COMMAND */
 void command_gm_announce (Player* gm, std::string argv[])
 {
-	ZoneManager.announce (std::string(CADMIN "Announcement: " CNORMAL) + std::string(argv[0]));
+	MZone.announce (std::string(CADMIN "Announcement: " CNORMAL) + std::string(argv[0]));
 }
 
 /* BEGIN COMMAND
@@ -43,7 +43,7 @@ void command_gm_announce (Player* gm, std::string argv[])
  * END COMMAND */
 void command_gm_boot (Player* gm, std::string argv[])
 {
-	Player *cn = PlayerManager.get(argv[0]);
+	Player *cn = MPlayer.get(argv[0]);
 	if (cn == gm) {
 		*gm << "You cannot boot yourself.\n";
 	} else if (cn == NULL) {

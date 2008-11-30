@@ -13,7 +13,7 @@
 int
 GameCalendar::load (void)
 {
-	std::string path = SettingsManager.get_misc_path() + "/calendar";
+	std::string path = MSettings.get_misc_path() + "/calendar";
 
 	// open
 	File::TabReader reader;

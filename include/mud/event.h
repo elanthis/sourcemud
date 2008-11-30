@@ -49,10 +49,10 @@ class Event
 	Entity* aux2;
 	Entity* aux3;
 
-	friend class SEventManager;
+	friend class _MEvent;
 };
 
-class SEventManager : public IManager
+class _MEvent : public IManager
 {
 	public:
 	// initialize manager
@@ -92,6 +92,6 @@ class SEventManager : public IManager
 	typedef std::deque<Event> EQueue;
 	EQueue events;
 };
-extern SEventManager EventManager;
+extern _MEvent MEvent;
 
 #endif

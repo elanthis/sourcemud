@@ -29,10 +29,10 @@ Entity::Entity() : state(FLOAT)
 	// add to the dead list; we move to the live list
 	// only if we get activated
 	link_prev = NULL;
-	link_next = EntityManager.dead;
+	link_next = MEntity.dead;
 	if (link_next)
 		link_next->link_prev = this;
-	EntityManager.dead = this;
+	MEntity.dead = this;
 }
 
 EventHandler*
@@ -56,29 +56,29 @@ Entity::activate (void)
 
 	// assign unique ID if it has none
 	if (!uid)
-		uid = UniqueIDManager.create();
+		uid = MUniqueID.create();
 
 	// insert into unique ID table
-	EntityManager.id_map.insert(std::pair<UniqueID, Entity*>(uid, this));
+	MEntity.id_map.insert(std::pair<UniqueID, Entity*>(uid, this));
 
 	// remove from dead list
 	if (link_next)
 		link_next->link_prev = link_prev;
 	if (link_prev)
 		link_prev->link_next = link_next;
-	if (this == EntityManager.dead)
-		EntityManager.dead = link_next;
+	if (this == MEntity.dead)
+		MEntity.dead = link_next;
 
 	// add to active list
 	link_prev = NULL;
-	link_next = EntityManager.all;
+	link_next = MEntity.all;
 	if (link_next)
 		link_next->link_prev = this;
-	EntityManager.all = this;
+	MEntity.all = this;
 
 	// register tags
 	for (TagList::iterator i = tags.begin(); i != tags.end(); ++i) 
-		EntityManager.tag_map.insert(std::pair<TagID, Entity*> (*i, this));
+		MEntity.tag_map.insert(std::pair<TagID, Entity*> (*i, this));
 }
 
 void
@@ -91,35 +91,35 @@ Entity::deactivate (void)
 	state = DEAD;
 
 	// ID MAP
-	UniqueIDMap::iterator i = EntityManager.id_map.find(uid);
-	if (i != EntityManager.id_map.end())
-		EntityManager.id_map.erase(i);
+	UniqueIDMap::iterator i = MEntity.id_map.find(uid);
+	if (i != MEntity.id_map.end())
+		MEntity.id_map.erase(i);
 
 	// if we're the next heartbeat target, update the heartbeat pointer
-	if (this == EntityManager.next)
-		EntityManager.next = link_next;
+	if (this == MEntity.next)
+		MEntity.next = link_next;
 
 	// remove from active list
 	if (link_next)
 		link_next->link_prev = link_prev;
 	if (link_prev)
 		link_prev->link_next = link_next;
-	if (this == EntityManager.all)
-		EntityManager.all = link_next;
+	if (this == MEntity.all)
+		MEntity.all = link_next;
 
 	// add to dead list
 	link_prev = NULL;
-	link_next = EntityManager.dead;
+	link_next = MEntity.dead;
 	if (link_next)
 		link_next->link_prev = this;
-	EntityManager.dead = this;
+	MEntity.dead = this;
 
 	// TAG MAP
 	for (TagList::iterator i = tags.begin(); i != tags.end(); ++i) {
-		std::pair<TagTable::iterator, TagTable::iterator> mi = EntityManager.tag_map.equal_range(*i);
+		std::pair<TagTable::iterator, TagTable::iterator> mi = MEntity.tag_map.equal_range(*i);
 		while (mi.first != mi.second) {
 			if (mi.first->second == this)
-				EntityManager.tag_map.erase(mi.first++);
+				MEntity.tag_map.erase(mi.first++);
 			else
 				++mi.first;
 		}
@@ -307,7 +307,7 @@ Entity::add_tag (TagID tag)
 	// register with entity manager
 	// FIXME: check for error, maybe?
 	if (is_active())
-		EntityManager.tag_map.insert(std::pair<TagID, Entity*> (tag, this));
+		MEntity.tag_map.insert(std::pair<TagID, Entity*> (tag, this));
 
 	return 0;
 }
@@ -325,10 +325,10 @@ Entity::remove_tag (TagID tag)
 
 	// unregister with entity manager
 	if (is_active()) {
-		std::pair<TagTable::iterator, TagTable::iterator> mi = EntityManager.tag_map.equal_range(tag);
+		std::pair<TagTable::iterator, TagTable::iterator> mi = MEntity.tag_map.equal_range(tag);
 		while (mi.first != mi.second) {
 			if (mi.first->second == this) {
-				EntityManager.tag_map.erase(mi.first);
+				MEntity.tag_map.erase(mi.first);
 				return 0;
 			}
 			++mi.first;
@@ -361,33 +361,33 @@ Entity::operator< (const Entity& ent) const
 	return get_name() < ent.get_name();
 }
 
-// ----- SEntityManager -----
+// ----- _MEntity -----
 
-SEntityManager EntityManager;
+_MEntity MEntity;
 
-SEntityManager::SEntityManager()
+_MEntity::_MEntity()
 {
 }
 
-SEntityManager::~SEntityManager()
+_MEntity::~_MEntity()
 {
 }
 
 int
-SEntityManager::initialize()
+_MEntity::initialize()
 {
 	return 0; // no error
 }
 
 void
-SEntityManager::shutdown (void)
+_MEntity::shutdown (void)
 {
 	tag_map.clear();
 	collect();
 }
 
 void
-SEntityManager::heartbeat (void)
+_MEntity::heartbeat (void)
 {
 	// loop over all entities, running the heartbeat method.
 	// keep track of the next entity to be run, so that
@@ -404,19 +404,19 @@ SEntityManager::heartbeat (void)
 }
 
 size_t
-SEntityManager::tag_count (TagID tag) const
+_MEntity::tag_count (TagID tag) const
 {
 	return tag_map.count(tag);
 }
 
 std::pair<TagTable::const_iterator, TagTable::const_iterator>
-SEntityManager::tag_list (TagID tag) const
+_MEntity::tag_list (TagID tag) const
 {
 	return tag_map.equal_range(tag);
 }
 
 Entity*
-SEntityManager::get (const UniqueID& uid) const
+_MEntity::get (const UniqueID& uid) const
 {
 	UniqueIDMap::const_iterator i = id_map.find(uid);
 	if (i != id_map.end())
@@ -424,7 +424,7 @@ SEntityManager::get (const UniqueID& uid) const
 	return NULL;
 }
 
-void SEntityManager::collect()
+void _MEntity::collect()
 {
 	// delete all dead entities
 	// we remove the entity from the list first, then we

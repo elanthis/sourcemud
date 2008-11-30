@@ -125,14 +125,14 @@ IPConnList::add (SockStorage& addr)
 	// NOTE: we never limit connections from localhost
 
 	// too many total connections?
-	if (!Network::is_addr_local(addr) && total_conns >= SettingsManager.get_max_clients())
+	if (!Network::is_addr_local(addr) && total_conns >= MSettings.get_max_clients())
 		return -1;
 
 	// find existing connection from host
 	for (std::vector<IPTrack>::iterator i = connections.begin(); i != connections.end(); ++i) {
 		if (!Network::addrcmp(addr, i->addr)) {
 			// too many from this host?
-			if (!Network::is_addr_local(addr) && i->conns >= SettingsManager.get_max_per_host())
+			if (!Network::is_addr_local(addr) && i->conns >= MSettings.get_max_per_host())
 				return -2;
 
 			// inc, and return OK

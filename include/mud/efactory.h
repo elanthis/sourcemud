@@ -23,7 +23,7 @@ class IEntityFactory
 	virtual Entity* create() const = 0;
 };
 
-class SEntityFactoryManager : public IManager
+class _MEntityFactory : public IManager
 {
 	public:
 	int initialize ();
@@ -38,7 +38,7 @@ class SEntityFactoryManager : public IManager
 	static FactoryList* factories;
 };
 
-extern SEntityFactoryManager EntityFactoryManager;
+extern _MEntityFactory MEntityFactory;
 
 #define BEGIN_EFACTORY(name) \
 	namespace { \
@@ -47,7 +47,7 @@ extern SEntityFactoryManager EntityFactoryManager;
 				public: \
 				virtual const char* get_name() const { return #name; } \
 				_Factory##name () { \
-					SEntityFactoryManager::register_factory(this); \
+					_MEntityFactory::register_factory(this); \
 				} \
 				virtual Entity* create() const {
 #define END_EFACTORY \

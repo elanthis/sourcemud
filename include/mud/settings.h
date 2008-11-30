@@ -20,7 +20,7 @@
 
 struct SettingInfo;
 
-class SSettingsManager : public IManager
+class _MSettings : public IManager
 {
 	public:
 	int initialize();
@@ -80,7 +80,7 @@ class SSettingsManager : public IManager
 	std::map<std::string, SettingInfo*> by_name;
 };
 
-extern SSettingsManager SettingsManager;
+extern _MSettings MSettings;
 
 #undef SETTING_INT
 #undef SETTING_STRING

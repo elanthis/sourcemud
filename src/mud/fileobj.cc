@@ -515,7 +515,7 @@ File::Writer::attr (std::string ns, std::string name, const UniqueID& data)
 
 	do_indent();
 
-	out << ns << "." << name << " = <" << UniqueIDManager.encode(data) << ">\n";
+	out << ns << "." << name << " = <" << MUniqueID.encode(data) << ">\n";
 }
 
 void
@@ -711,7 +711,7 @@ File::Node::get_id () const
 		Log::Error << "Incorrect data type for '" << get_ns() << '.' << get_name() << "' at :" << get_line();
 		throw(File::Error(S("data type mismatch")));
 	}
-	return UniqueIDManager.decode(value.get_value());
+	return MUniqueID.decode(value.get_value());
 }
 
 const std::vector<File::Value>&

@@ -270,7 +270,7 @@ Portal::get_relative_target (Room* base) const
 
 	// if we're asking about the owner, return the 'target' room
 	if (base == parent_room)
-		return ZoneManager.get_room (target);
+		return MZone.get_room (target);
 	// if we're the target room, return the owner
 	else if (base->get_id() == target)
 		return parent_room;
@@ -290,7 +290,7 @@ Portal::get_relative_portal (Room* base) const
 
 	// if we're the portal's owner, get the target's opposite portal
 	if (base == parent_room) {
-		Room* room = ZoneManager.get_room(target);
+		Room* room = MZone.get_room(target);
 		if (room == NULL)
 			return NULL;
 		return room->get_portal_by_dir(dir.get_opposite());
@@ -327,7 +327,7 @@ Portal::has_room (Room* base) const
 bool
 Portal::is_valid () const
 {
-	return !target.empty() && ZoneManager.get_room(target);
+	return !target.empty() && MZone.get_room(target);
 }
 
 void
@@ -537,7 +537,7 @@ Portal::activate ()
 	Entity::activate();
 
 	if (!is_oneway()) {
-		Room* room = ZoneManager.get_room(target);
+		Room* room = MZone.get_room(target);
 		if (room != NULL) {
 			if (!room->register_portal(this)) {
 				Log::Warning << "Room '" << room->get_id() << "' already has portal for direction " << get_dir().get_opposite().get_name() << ", converting " << get_dir().get_name() << " portal of room '" << parent_room->get_id() << "' to one-way";
@@ -551,7 +551,7 @@ void
 Portal::deactivate ()
 {
 	if (!is_oneway()) {
-		Room* room = ZoneManager.get_room(target);
+		Room* room = MZone.get_room(target);
 		if (room != NULL)
 			room->unregister_portal(this);
 	}

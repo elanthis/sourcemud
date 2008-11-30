@@ -60,7 +60,7 @@ namespace Events {
 ]]></xsl:text>
 
 <!-- Compiler -->
-<xsl:text>int SEventManager::compile (EventID id, std::string source, std::string filename, unsigned long fileline) {</xsl:text>
+<xsl:text>int _MEvent::compile (EventID id, std::string source, std::string filename, unsigned long fileline) {</xsl:text>
 <xsl:for-each select="event">
   <!--
   <xsl:text>if(id == EventID::</xsl:text>

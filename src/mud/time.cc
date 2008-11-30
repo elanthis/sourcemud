@@ -10,7 +10,7 @@
 #include "mud/server.h"
 #include "mud/clock.h"
 
-STimeManager TimeManager;
+_MTime MTime;
 
 void
 GameTime::time_str (char *buf, int len) const
@@ -34,13 +34,13 @@ GameTime::date_str (char *buf, int len) const
 {
 	// base date string
 	size_t add = snprintf (buf, len, "%s, %d%s of %s, %d",
-			TimeManager.calendar.weekdays[TimeManager.calendar.get_weekday (*this)].c_str(),
+			MTime.calendar.weekdays[MTime.calendar.get_weekday (*this)].c_str(),
 			day,
 			get_num_suffix (day).c_str(),
-			TimeManager.calendar.months[month - 1].name.c_str(),
+			MTime.calendar.months[month - 1].name.c_str(),
 			year);
 	// append holiday if we have one
-	std::string holiday = TimeManager.calendar.get_holiday(*this);
+	std::string holiday = MTime.calendar.get_holiday(*this);
 	if (!holiday.empty()) {
 		snprintf (buf + add, len - add, " (%s)", holiday.c_str());
 	}
@@ -74,16 +74,16 @@ GameTime::clip_time ()
 		hour -= 24;
 		day ++;
 	}
-	while (day > TimeManager.calendar.days_in_month (*this))
+	while (day > MTime.calendar.days_in_month (*this))
 	{
-		day -= TimeManager.calendar.days_in_month (*this);
+		day -= MTime.calendar.days_in_month (*this);
 		month ++;
 	}
 	if (day < 1)
 		day = 1;
-	while (month > TimeManager.calendar.months.size ())
+	while (month > MTime.calendar.months.size ())
 	{
-		month -= TimeManager.calendar.months.size ();
+		month -= MTime.calendar.months.size ();
 		year ++;
 	}
 	if (month < 1)
@@ -132,7 +132,7 @@ GameTime:: operator != (const GameTime& other) const
 }
 
 int
-STimeManager::initialize ()
+_MTime::initialize ()
 {
 	// initialize calendar
 	if (calendar.load())
@@ -140,7 +140,7 @@ STimeManager::initialize ()
 
 	File::Reader reader;
 
-	if (reader.open(SettingsManager.get_world_path() + "/" + "time"))
+	if (reader.open(MSettings.get_world_path() + "/" + "time"))
 		return 1;
 
 	FO_READ_BEGIN
@@ -154,12 +154,12 @@ STimeManager::initialize ()
 }
 
 void
-STimeManager::save ()
+_MTime::save ()
 {
 	// open
 	File::Writer writer;
 	
-	if (writer.open(SettingsManager.get_world_path() + "/" + "time"))
+	if (writer.open(MSettings.get_world_path() + "/" + "time"))
 		return;
 
 	// save
@@ -169,6 +169,6 @@ STimeManager::save ()
 }
 
 void
-STimeManager::shutdown ()
+_MTime::shutdown ()
 {
 }

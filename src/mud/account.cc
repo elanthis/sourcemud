@@ -13,7 +13,7 @@
 #include "common/md5.h"
 #include "common/time.h"
 
-SAccountManager AccountManager;
+_MAccount MAccount;
 
 Account::Account (std::string s_id) : id(s_id), active(0), maxcharacters(0), maxactive(0), timeout(0)
 {
@@ -25,15 +25,15 @@ Account::Account (std::string s_id) : id(s_id), active(0), maxcharacters(0), max
 Account::~Account ()
 {
 	// remove from account list
-	SAccountManager::AccountList::iterator i = find(AccountManager.accounts.begin(), AccountManager.accounts.end(), this);
-	if (i != AccountManager.accounts.end())
-		AccountManager.accounts.erase(i);
+	_MAccount::AccountList::iterator i = find(MAccount.accounts.begin(), MAccount.accounts.end(), this);
+	if (i != MAccount.accounts.end())
+		MAccount.accounts.erase(i);
 }
 
 int
 Account::save () const
 {
-	std::string path = SettingsManager.get_account_path() + "/" + strlower(id) + ".acct";
+	std::string path = MSettings.get_account_path() + "/" + strlower(id) + ".acct";
 
 	// open
 	File::Writer writer;
@@ -125,7 +125,7 @@ Account::get_max_characters () const
 		return maxcharacters;
 
 	// default
-	return SettingsManager.get_characters_per_account();
+	return MSettings.get_characters_per_account();
 }
 
 // get max active characters allowed
@@ -137,7 +137,7 @@ Account::get_max_active () const
 		return maxactive;
 
 	// default
-	return SettingsManager.get_active_per_account();
+	return MSettings.get_active_per_account();
 }
 
 // update login time
@@ -196,14 +196,14 @@ Account::macro_default (const StreamControl& stream) const
 }
 
 int
-SAccountManager::initialize ()
+_MAccount::initialize ()
 {
 
 	return 0;
 }
 
 void
-SAccountManager::shutdown ()
+_MAccount::shutdown ()
 {
 	// save all accounts
 	for (AccountList::iterator i = accounts.begin(); i != accounts.end(); ++i)
@@ -211,7 +211,7 @@ SAccountManager::shutdown ()
 }
 
 bool
-SAccountManager::valid_name (std::string name)
+_MAccount::valid_name (std::string name)
 {
 	// length
 	if (name.size() < ACCOUNT_NAME_MIN_LEN || name.size() > ACCOUNT_NAME_MAX_LEN)
@@ -227,7 +227,7 @@ SAccountManager::valid_name (std::string name)
 }
 
 bool
-SAccountManager::valid_passphrase (std::string pass)
+_MAccount::valid_passphrase (std::string pass)
 {
 	// length
 	if (pass.size() < ACCOUNT_PASS_MIN_LEN)
@@ -247,7 +247,7 @@ SAccountManager::valid_passphrase (std::string pass)
 }
 
 Account*
-SAccountManager::get (std::string in_name)
+_MAccount::get (std::string in_name)
 {
 	// force lower-case
 	std::string name = strlower(in_name);
@@ -265,7 +265,7 @@ SAccountManager::get (std::string in_name)
 	File::Reader reader;
 
 	// open
-	if (reader.open(SettingsManager.get_account_path() + "/" + name + ".acct"))
+	if (reader.open(MSettings.get_account_path() + "/" + name + ".acct"))
 		return NULL;
 
 	// create
@@ -309,7 +309,7 @@ SAccountManager::get (std::string in_name)
 }
 
 Account*
-SAccountManager::create (std::string name)
+_MAccount::create (std::string name)
 {
 	// check validity
 	if (!valid_name(name))
@@ -334,7 +334,7 @@ SAccountManager::create (std::string name)
 }
 
 bool
-SAccountManager::exists (std::string name)
+_MAccount::exists (std::string name)
 {
 	// must be lower-case
 	strlower(name);
@@ -350,7 +350,7 @@ SAccountManager::exists (std::string name)
 	}
 
 	// check if player file exists
-	std::string path = SettingsManager.get_account_path() + "/" + name + ".acct";
+	std::string path = MSettings.get_account_path() + "/" + name + ".acct";
 	struct stat st;
 	int res = stat (path.c_str(), &st);
 	if (res == 0)

@@ -19,16 +19,16 @@
 
 #include <iostream>
 
-SHelpManager HelpManager;
+_MHelp MHelp;
 
 void command_help (Player* player, std::string argv[])
 {
 	StreamControl stream(player);
-	HelpManager.print (stream, argv[0]);
+	MHelp.print (stream, argv[0]);
 }
 
 HelpTopic*
-SHelpManager::get_topic (std::string name)
+_MHelp::get_topic (std::string name)
 {
 	for (TopicList::iterator i = topics.begin(); i != topics.end(); ++i)
 		if (phrase_match((*i)->name, name))
@@ -37,10 +37,10 @@ SHelpManager::get_topic (std::string name)
 }
 
 void
-SHelpManager::print (StreamControl& stream, std::string name)
+_MHelp::print (StreamControl& stream, std::string name)
 {
 	// try a man page
-	if (!name.empty() && CommandManager.show_man(stream, name, true))
+	if (!name.empty() && MCommand.show_man(stream, name, true))
 		return;
 
 	// try a help topic
@@ -56,9 +56,9 @@ SHelpManager::print (StreamControl& stream, std::string name)
 }
 
 int
-SHelpManager::initialize ()
+_MHelp::initialize ()
 {
-	StringList files = File::dirlist(SettingsManager.get_help_path());
+	StringList files = File::dirlist(MSettings.get_help_path());
 	File::filter(files, "*.help");
 	for (StringList::iterator i = files.begin(); i != files.end(); ++i) {
 		File::Reader reader;
@@ -241,7 +241,7 @@ SHelpManager::initialize ()
 }
 
 void
-SHelpManager::shutdown ()
+_MHelp::shutdown ()
 {
 	// delete all topics
 	for (TopicList::iterator i = topics.begin(); i != topics.end(); ++i)
