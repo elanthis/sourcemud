@@ -390,9 +390,9 @@ main (int argc, char **argv)
 	// load settings
 	if (IManager::require(SettingsManager))
 		return 1;
-	if (SettingsManager.parse_argv(argc, argv))
+	if (SettingsManager.parseArgv(argc, argv))
 		return 1;
-	if (!SettingsManager.get_config_file().empty() && SettingsManager.load_file(SettingsManager.get_config_file()))
+	if (!SettingsManager.get_config_file().empty() && SettingsManager.loadFile(SettingsManager.get_config_file()))
 		return 1;
 
 	// change to chroot dir, but don't actually chroot yet
@@ -659,9 +659,6 @@ main (int argc, char **argv)
 
 			// update weather
 			WeatherManager.update();
-
-			// HTTP timeouts 
-			HTTPManager.check_timeouts();
 
 			// update time
 			bool is_day = TimeManager.time.is_day();
