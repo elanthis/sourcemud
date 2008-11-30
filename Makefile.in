@@ -166,8 +166,10 @@ TOOLS = \
 	tools/script-doc.xsl \
 	tools/script-header.xsl
 
-LUA = \
-	scripts/init.lua
+SCRIPTS = \
+	scripts/init.lua \
+	scripts/http.lua \
+	scripts/httplib.lua
 
 DATA = \
 	data/admin.acct \
@@ -281,7 +283,8 @@ configure: configure.ac
 
 # DISTRIBUTION
 dist: all make-dist
-make-dist: configure $(DIST) $(TOOLS) $(XML) $(HEADERS) $(SOURCES) $(LUA) $(DATA)
+make-dist: configure $(DIST) $(TOOLS) $(XML) $(HEADERS) $(SOURCES) \
+		$(SCRIPTS) $(DATA)
 	@echo Building distribution tarball $(PACKAGE).tar.gz
 	@[ ! -d $(PACKAGE) ] || rm -fr $(PACKAGE)
 	@mkdir $(PACKAGE)
