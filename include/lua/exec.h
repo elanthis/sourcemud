@@ -14,7 +14,9 @@
  * To add arguments, use the param() methods.  To execute a function, use
  * one of the run*() methods.  The run*() methods will return true if the
  * function ran and false is the function could not be executed or if an
- * error occured during execution.
+ * error occured during execution.  If an error occured, then isError()
+ * will return true.  If the function could not be found, then isError()
+ * will return false.
  *
  * The return value can be retrieved using the get*() functions, and
  * checked using the is*() functions.
@@ -27,6 +29,10 @@
  * global print function in Lua.  This guarantees that it is unset after
  * the function is complete.  When complete, the print handler is cleared;
  * it is NOT restored to the previous value, if any.
+ *
+ * A single Exec object may be used for multiple function calls.  However,
+ * the arguments are not kept between calls.  The cleanup() MUST be called
+ * before reusing an Exec object.
  */
 
 #ifndef SOURCEMUD_LUA_EXEC_H
@@ -41,7 +47,7 @@ namespace Lua {
 // Execution manager
 class Exec {
 	public:
-	Exec() : stack(0) {}
+	Exec() : error(false), stack(0) {}
 	~Exec() { cleanup(); }
 
 	// boolean parameter
@@ -99,9 +105,15 @@ class Exec {
 	// but the Exec object isn't going out of scope.
 	void cleanup();
 
+	// return true if exec*() was called, the function was found,
+	// but an error occured during execution of the function.
+	// returns false if exec*() was called by the funcion was not found.
+	bool isError() { return error; }
+
 	private:
 	// tracks how many items are on the stack that we need to pop
 	// we destructed.
+	bool error;
 	size_t stack;
 	IStreamSink* print;
 };

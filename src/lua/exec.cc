@@ -130,6 +130,8 @@ bool Lua::Exec::runHook(const std::string& name)
 	if (lua_pcall(Lua::state, stack, 1, 0) != 0) {
 		// just the error is left
 		stack = 1;
+		// note that we received an error
+		error = true;
 		// clear print handler
 		Lua::setPrint(print);
 		// log error
@@ -147,8 +149,7 @@ bool Lua::Exec::runHook(const std::string& name)
 
 void Lua::Exec::cleanup()
 {
-	if (stack) {
-		lua_pop(Lua::state, stack);
-		stack = 0;
-	}
+	lua_pop(Lua::state, stack);
+	stack = 0;
+	error = false;
 }
