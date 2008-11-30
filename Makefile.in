@@ -12,6 +12,7 @@ DEPDIR = .deps
 
 # FILES
 HEADERS = \
+	include/common/base64.h \
 	include/common/bitset.h \
 	include/common/error.h \
 	include/common/fdprintf.h \
@@ -30,6 +31,7 @@ HEADERS = \
 	include/common/types.h \
 	include/generated/events.h \
 	include/lua/core.h \
+	include/lua/exec.h \
 	include/lua/print.h \
 	include/mud/account.h \
 	include/mud/action.h \
@@ -82,6 +84,7 @@ HEADERS = \
 	include/net/zmp.h
 
 SOURCES = \
+	src/common/base64.cc \
 	src/common/error.cc \
 	src/common/fdprintf.cc \
 	src/common/file.cc \
@@ -97,6 +100,8 @@ SOURCES = \
 	src/generated/commands.cc \
 	src/generated/events.cc \
 	src/lua/core.cc \
+	src/lua/exec.cc \
+	src/lua/mudlib.cc \
 	src/lua/print.cc \
 	src/mud/account.cc \
 	src/mud/action.cc \
@@ -188,14 +193,11 @@ DATA = \
 	data/traits \
 	data/uniqid \
 	data/weather \
-	data/html/header.tpl \
-	data/html/footer.tpl \
-	data/html/index.tpl \
-	data/html/error.tpl \
+	data/html/tpl/header.tpl \
+	data/html/tpl/footer.tpl \
+	data/html/tpl/index.tpl \
 	data/html/account.tpl \
-	data/html/login.tpl \
 	data/html/stats.tpl \
-	data/html/logout.tpl \
 	data/html/stats.html \
 	data/help/commands.help \
 	data/help/olc.help \
