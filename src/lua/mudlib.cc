@@ -6,6 +6,7 @@
  */
 
 #include "common/log.h"
+#include "mud/settings.h"
 #include "lua/core.h"
 #include "lib/lua51/lua.h"
 #include "lib/lua51/lauxlib.h"
@@ -23,8 +24,14 @@ namespace bindings {
 namespace mud {
 
 int setHook(lua_State*);
+int getConfigInt(lua_State*);
+int getConfigBool(lua_State*);
+int getConfigString(lua_State*);
 const luaL_Reg registry[] = {
 	{ "setHook", setHook },
+	{ "getConfigInt", getConfigInt },
+	{ "getConfigBool", getConfigBool },
+	{ "getConfigString", getConfigString },
 	{ NULL, NULL }
 };
 
@@ -55,6 +62,42 @@ int setHook(lua_State* s)
 
 	// return true value
 	lua_pushboolean(s, true);
+	return 1;
+}
+
+/**
+ * name: mud.getConfigInt
+ * param: string name
+ * return: number
+ */
+int getConfigInt(lua_State* s)
+{
+	luaL_checkstring(s, 1);
+	lua_pushnumber(s, MSettings.getInt(lua_tostring(s, 1)));
+	return 1;
+}
+
+/**
+ * name: mud.getConfigBool
+ * param: string name
+ * return: boolean
+ */
+int getConfigBool(lua_State* s)
+{
+	luaL_checkstring(s, 1);
+	lua_pushboolean(s, MSettings.getBool(lua_tostring(s, 1)));
+	return 1;
+}
+
+/**
+ * name: mud.getConfigString
+ * param: string name
+ * return: string
+ */
+int getConfigString(lua_State* s)
+{
+	luaL_checkstring(s, 1);
+	lua_pushstring(s, MSettings.getString(lua_tostring(s, 1)).c_str());
 	return 1;
 }
 
