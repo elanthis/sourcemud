@@ -5,7 +5,6 @@ LIBS = @LIBS@
 VERSION = @PACKAGE_VERSION@
 PACKAGE = @PACKAGE_TARNAME@-$(VERSION)
 PERL = @PATH_PERL@
-XSLTPROC = @PATH_XSLTPROC@
 
 BUILDDIR = .build
 DEPDIR = .deps
@@ -150,15 +149,9 @@ SOURCES = \
 	src/net/zmp.cc \
 	$(wildcard src/cmd/*.cc)
 
-XML = \
-	src/xml/bindings.xml
-
 TOOLS = \
 	tools/parse-commands.pl \
-	tools/replace.sh.in \
-	tools/script-code.xsl \
-	tools/script-doc.xsl \
-	tools/script-header.xsl
+	tools/replace.sh.in
 
 LUA_HEADERS = \
 	lib/lua51/lapi.h \
@@ -303,16 +296,6 @@ data/session.key:
 src/generated/commands.cc: tools/parse-commands.pl $(wildcard src/cmd/*.cc)
 	@echo Generating $@
 	@$(PERL) tools/parse-commands.pl
-
-include/generated/bindings.h: tools/script-header.xsl src/xml/bindings.xml
-	@echo Generating $@
-	@-mkdir -p include/generated
-	@$(XSLTPROC) tools/script-header.xsl src/xml/bindings.xml > $@ 
-
-src/generated/bindings.cc: tools/script-code.xsl src/xml/bindings.xml
-	@echo Generating $@
-	@-mkdir -p include/generated
-	@$(XSLTPROC) tools/script-code.xsl src/xml/bindings.xml > $@ 
 
 # BUILD FILES
 Makefile: Makefile.in configure

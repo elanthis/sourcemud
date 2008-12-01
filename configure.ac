@@ -46,23 +46,6 @@ if test "x$PATH_PERL" = "xnone"; then
 fi
 AC_SUBST(PATH_PERL)
 
-# Look for xsltproc
-AC_ARG_WITH(
-	xsltproc,
-	[  --with-xsltproc=<path>      Path of your xsltproc bianry],
-	[PATH_XSLTPROC="$withval"],
-	[AC_PATH_PROG(
-		PATH_XSLTPROC,
-		xsltproc,
-		none,
-		[$PATH:/bin:/usr/bin]
-	)]
-)
-if test "x$PATH_XSLTPROC" = "xnone"; then
-	AC_MSG_ERROR([Can't find xsltproc])
-fi
-AC_SUBST(PATH_XSLTPROC)
-
 # Backtrace generation
 AC_CHECK_HEADER(execinfo.h,[
 	AC_DEFINE(HAVE_EXECINFO, 1, [The execinfo.h header is present])
@@ -181,7 +164,6 @@ else
 	echo "  Sendmail   ... not found"
 fi
 echo "  Perl       ... $PATH_PERL"
-echo "  XSLT       ... $PATH_XSLTPROC"
 
 echo
 echo "Now type \"make\" to build Source MUD"
