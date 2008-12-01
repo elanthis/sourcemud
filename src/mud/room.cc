@@ -147,7 +147,7 @@ Room::save_hook (File::Writer& writer)
 }
 
 Portal *
-Room::find_portal (std::string e_name, uint c, uint *matches)
+Room::find_portal (const std::string& e_name, uint c, uint *matches)
 {
 	assert (c != 0);
 
@@ -471,7 +471,7 @@ Room::show_portals (const StreamControl& stream)
 
 /* broadcast a message to the Room */
 void
-Room::put (std::string msg, size_t len, std::vector<Creature*>* ignore_list)
+Room::put (const std::string& msg, size_t len, std::vector<Creature*>* ignore_list)
 {
 	// iterator
 	for (EList<Creature>::iterator i = creatures.begin(); i != creatures.end(); ++i) {
@@ -487,7 +487,7 @@ Room::put (std::string msg, size_t len, std::vector<Creature*>* ignore_list)
 
 /* find a Creature by name */
 Creature *
-Room::find_creature (std::string cname, uint c, uint *matches)
+Room::find_creature (const std::string& cname, uint c, uint *matches)
 {
 	assert (c != 0);
 	
@@ -496,7 +496,7 @@ Room::find_creature (std::string cname, uint c, uint *matches)
 
 /* find an object by name */
 Object *
-Room::find_object (std::string oname, uint c, uint *matches)
+Room::find_object (const std::string& oname, uint c, uint *matches)
 {
 	assert (c != 0);
 

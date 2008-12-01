@@ -39,7 +39,7 @@ class GenderType
 
 	inline type_t get_value (void) const { return value; }
 
-	static GenderType lookup (std::string name);
+	static GenderType lookup (const std::string& name);
 
 	inline bool operator == (const GenderType& gender) const { return gender.value == value; }
 	inline bool operator != (const GenderType& gender) const { return gender.value != value; }
@@ -85,7 +85,7 @@ class EquipSlot
 
 	type_t get_value (void) const { return value; }
 
-	static EquipSlot lookup (std::string name);
+	static EquipSlot lookup (const std::string& name);
 
 	inline bool operator == (const EquipSlot& dir) const { return dir.value == value; }
 	inline bool operator != (const EquipSlot& dir) const { return dir.value != value; }

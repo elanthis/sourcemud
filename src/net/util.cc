@@ -287,8 +287,7 @@ Network::is_addr_local (const SockStorage& addr)
 }
 
 // listen/server connection
-int
-Network::listen_unix (std::string s_path)
+int Network::listen_unix(const std::string& s_path)
 {
 	struct sockaddr_un address;
 	size_t sa_len = sizeof(address);

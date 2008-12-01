@@ -16,10 +16,10 @@
 class _MMessage : public IManager
 {
 	public:
-	virtual int initialize (void);
-	virtual void shutdown (void);
+	virtual int initialize();
+	virtual void shutdown();
 
-	std::string get (std::string id);
+	std::string get (const std::string& id);
 
 	private:
 	typedef std::map<std::string, std::string> MessageMap;

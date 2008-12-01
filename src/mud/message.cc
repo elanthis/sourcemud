@@ -12,8 +12,7 @@
 
 _MMessage MMessage;
 
-int
-_MMessage::initialize (void)
+int _MMessage::initialize()
 {
 	File::Reader reader;
 
@@ -41,7 +40,7 @@ _MMessage::shutdown (void)
 }
 
 std::string
-_MMessage::get (std::string id)
+_MMessage::get (const std::string& id)
 {
 	MessageMap::iterator i = messages.find(id);
 	return i != messages.end() ? i->second : std::string();

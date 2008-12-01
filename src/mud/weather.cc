@@ -151,7 +151,7 @@ WeatherRegion::save () const
 }
 
 int
-WeatherRegion::get_state (std::string name) const {
+WeatherRegion::get_state (const std::string& name) const {
 	for (uint i = 0; i < states.size(); ++i)
 		if (states[i].id == name)
 			return i;

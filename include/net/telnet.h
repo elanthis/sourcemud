@@ -152,8 +152,8 @@ class TelnetHandler : public SocketConnection, public IStreamSink
 	// ZMP
 	inline bool has_zmp() const { return io_flags.zmp; }
 	inline bool has_zmp_color() const { return io_flags.zmp_color; } // supports the color.define command?
-	void send_zmp(size_t argc, const std::string argv[]);
-	void zmp_support(std::string pkg, bool value);
+	void send_zmp(size_t argc, std::string argv[]);
+	void zmp_support(const std::string& pkg, bool value);
 
 	// mode
 	void set_mode(ITelnetMode* new_mode);

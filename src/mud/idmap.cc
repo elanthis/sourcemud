@@ -16,7 +16,7 @@ MID::~MID ()
 }
 
 const std::string*
-MID::lookup (std::string idname)
+MID::lookup (const std::string& idname)
 {
 	IDMap::iterator i = id_map.find(idname);
 	if (i != id_map.end())
@@ -25,7 +25,7 @@ MID::lookup (std::string idname)
 }
 
 const std::string*
-MID::create (std::string idname)
+MID::create (const std::string& idname)
 {
 	if (idname.empty())
 		return NULL;

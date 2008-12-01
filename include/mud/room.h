@@ -31,11 +31,11 @@ class Room : public Entity
 
 	// name information
 	inline virtual EntityName get_name () const { return name; }
-	inline void set_name (std::string s_name) { name.set_name(s_name); }
+	inline void set_name (const std::string& s_name) { name.set_name(s_name); }
 
 	// description information
 	inline virtual std::string get_desc () const { return desc; }
-	inline virtual void set_desc (std::string s_desc) { desc = s_desc; }
+	inline virtual void set_desc (const std::string& s_desc) { desc = s_desc; }
 
 	// outdoors
 	inline bool is_outdoors () const { return flags.outdoors; }
@@ -52,7 +52,7 @@ class Room : public Entity
 	// portals
 	class Portal* get_portal_at (uint);
 	class Portal* get_portal_by_dir (PortalDir);
-	class Portal* find_portal (std::string, uint c = 1, uint *matches = NULL);
+	class Portal* find_portal (const std::string&, uint c = 1, uint *matches = NULL);
 	class Portal* new_portal (PortalDir dir);
 
 	// this is called when a portal needs to attach itself to the room
@@ -62,7 +62,7 @@ class Room : public Entity
 
 	// identifier
 	inline std::string get_id () const { return id; }
-	inline void set_id (std::string new_id) { id = new_id; }
+	inline void set_id (const std::string& new_id) { id = new_id; }
 
 	// colour type
 	inline virtual std::string ncolor () const { return S(CTITLE); }
@@ -88,11 +88,11 @@ class Room : public Entity
 	void show_portals (const class StreamControl& stream);
 
 	// output
-	void put (std::string text, size_t len, std::vector<class Creature*>* ignore = NULL);
+	void put (const std::string& text, size_t len, std::vector<class Creature*>* ignore = NULL);
 
 	// get entities
-	class Creature* find_creature (std::string name, uint c = 1, uint *matches = NULL);
-	class Object* find_object (std::string name, uint c = 1, uint *matches = NULL);
+	class Creature* find_creature (const std::string& name, uint c = 1, uint *matches = NULL);
+	class Object* find_object (const std::string& name, uint c = 1, uint *matches = NULL);
 
 	// count players in room
 	unsigned long count_players () const;

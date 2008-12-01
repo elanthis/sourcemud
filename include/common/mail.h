@@ -30,14 +30,14 @@ class MailMessage {
 	std::vector<Header> headers;
 
 	public:
-	MailMessage (std::string s_to, std::string s_subj, std::string s_body) :
+	MailMessage (const std::string& s_to, const std::string& s_subj, const std::string& s_body) :
 		to(s_to), subject(s_subj), body(), headers() { body << s_body; }
-	MailMessage (std::string s_to, std::string s_subj) :
+	MailMessage (const std::string& s_to, const std::string& s_subj) :
 		to(s_to), subject(s_subj), body(), headers() {}
 
-	void append (std::string data);
+	void append (const std::string& data);
 
-	void header (std::string name, std::string value);
+	void header (const std::string& name, const std::string& value);
 
 	int send (void) const;
 };

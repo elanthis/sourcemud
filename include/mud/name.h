@@ -35,7 +35,7 @@ class EntityArticleClass {
 
 	inline std::string get_name() const { return names[value]; }
 	inline type_t get_value () const { return value; }
-	static EntityArticleClass lookup (std::string name);
+	static EntityArticleClass lookup (const std::string& name);
 
 	inline bool operator == (const EntityArticleClass& dir) const { return dir.value == value; }
 	inline bool operator != (const EntityArticleClass& dir) const { return dir.value != value; }
@@ -62,20 +62,20 @@ enum EntityArticleUsage {
 class EntityName {
 	public:
 	inline EntityName () : text(), article(EntityArticleClass::NORMAL) {}
-	inline EntityName (EntityArticleClass s_article, std::string s_text) :
+	inline EntityName (EntityArticleClass s_article, const std::string& s_text) :
 		text(s_text), article(s_article) {}
 
 	// these handle full names with articles
 	std::string get_name () const;
-	bool set_name (std::string s_name); // returns false if it had to guess at the article
+	bool set_name (const std::string& s_name); // returns false if it had to guess at the article
 
 	// compare name to string
-	bool matches (std::string match) const; // returns true on match; uses phrase_match
+	bool matches (const std::string& match) const; // returns true on match; uses phrase_match
 
 	// these handle name components
 	inline std::string get_text () const { return text; }
 	inline EntityArticleClass get_article () const { return article; }
-	inline void set_text (std::string s_text) { text = s_text; }
+	inline void set_text (const std::string& s_text) { text = s_text; }
 	inline void set_article (EntityArticleClass s_article) { article = s_article; }
 
 	inline bool empty () const { return text.empty(); }

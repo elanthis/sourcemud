@@ -19,13 +19,13 @@
 #include "config.h"
 
 void
-MailMessage::append (std::string data)
+MailMessage::append (const std::string& data)
 {
 	body << data;
 }
 
 void
-MailMessage::header (std::string name, std::string value)
+MailMessage::header (const std::string& name, const std::string& value)
 {
 	Header h;
 	h.name = name;

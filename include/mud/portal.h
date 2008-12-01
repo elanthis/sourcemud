@@ -48,7 +48,7 @@ class PortalDir {
 
 	dir_t get_value () const { return value; }
 
-	static PortalDir lookup (std::string name);
+	static PortalDir lookup (const std::string& name);
 
 	bool operator < (const PortalDir& dir) const { return value < dir.value; }
 	bool operator == (const PortalDir& dir) const { return dir.value == value; }
@@ -79,7 +79,7 @@ class PortalUsage {
 
 	type_t get_value () const { return value; }
 
-	static PortalUsage lookup (std::string name);
+	static PortalUsage lookup (const std::string& name);
 
 	bool operator == (const PortalUsage& dir) const { return dir.value == value; }
 	bool operator != (const PortalUsage& dir) const { return dir.value != value; }
@@ -115,7 +115,7 @@ class PortalDetail  {
 
 	type_t get_value () const { return value; }
 
-	static PortalDetail lookup (std::string name);
+	static PortalDetail lookup (const std::string& name);
 
 	bool operator == (const PortalDetail& dir) const { return dir.value == value; }
 	bool operator != (const PortalDetail& dir) const { return dir.value != value; }
@@ -132,19 +132,19 @@ class Portal : public Entity
 
 	// name information
 	virtual EntityName get_name () const;
-	bool set_name (std::string s_name) { return name.set_name(s_name); }
-	void add_keyword (std::string keyword);
+	bool set_name (const std::string& s_name) { return name.set_name(s_name); }
+	void add_keyword (const std::string& keyword);
 
 	// description information
 	virtual std::string get_desc () const { return desc; }
-	virtual void set_desc (std::string s_desc) { desc = s_desc; }
+	virtual void set_desc (const std::string& s_desc) { desc = s_desc; }
 
 	// 'standard' portals have no custom name
 	bool is_standard () const { return name.empty(); }
 
 	// the taget room and portal (target portal is the portal you come out of)
 	std::string get_target () const { return target; }
-	void set_target (std::string t) { target = t; }
+	void set_target (const std::string& t) { target = t; }
 
 	// movement messages based on usage/detail
 	std::string get_go () const;
@@ -205,7 +205,7 @@ class Portal : public Entity
 	// heartbeat
 	void heartbeat ();
 
-	virtual bool name_match (std::string name) const;
+	virtual bool name_match (const std::string& name) const;
 
 	// set flags
 	void set_door (bool v) { flags.door = v; }

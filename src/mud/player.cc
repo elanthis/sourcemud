@@ -113,7 +113,7 @@ namespace {
 	}
 }
 
-Player::Player (class Account* s_account, std::string s_id)
+Player::Player (class Account* s_account, const std::string& s_id)
 {
 	// initialize
 	account = s_account;
@@ -216,10 +216,10 @@ Player::save ()
 	// do save
 	mode_t omask = umask(0066);
 	File::Writer writer(path);
-	writer.comment(std::string("Player file: ") + get_id());
+	writer.comment("Player file: " + get_id());
 	time_t t;
 	time(&t);
-	writer.comment(std::string("Timestamp: ") + std::string(ctime(&t)));
+	writer.comment("Timestamp: " + std::string(ctime(&t)));
 	writer.bl();
 	save_data(writer);
 	writer.close();
@@ -576,7 +576,7 @@ Player::show_prompt ()
 }
 
 int
-Player::macro_property (const StreamControl& stream, std::string comm, const MacroList& argv) const
+Player::macro_property (const StreamControl& stream, const std::string& comm, const MacroList& argv) const
 {
 	// RACE
 	if (str_eq(comm, S("race"))) {

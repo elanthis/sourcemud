@@ -54,8 +54,7 @@ namespace {
 
 // return 0 if not valid, or non-0 if valid
 namespace {
-	bool
-	check_zmp_chunk(size_t size, const char* data)
+	bool check_zmp_chunk(size_t size, const char* data)
 	{
 		// size must be at least two bytes
 		if (size < 2)
@@ -75,14 +74,13 @@ namespace {
 }
 
 // new zmp packed command
-ZMPPack::ZMPPack (std::string command)
+ZMPPack::ZMPPack(const std::string& command)
 {
 	add(command);
 }
 
 // add a string
-ZMPPack&
-ZMPPack::add (std::string command)
+ZMPPack& ZMPPack::add(const std::string& command)
 {
 	args.push_back(command);
 
@@ -129,15 +127,13 @@ SZMPManager::initialize (void)
 }
 
 // shutdown
-void
-SZMPManager::shutdown (void)
+void SZMPManager::shutdown()
 {
 	commands.resize(0);
 }
 
 // register a new command
-int
-SZMPManager::add (std::string name, ZMPFunction func)
+int SZMPManager::add(const std::string& name, ZMPFunction func)
 {
 	// must have a name
 	if (name.empty())
@@ -158,8 +154,7 @@ SZMPManager::add (std::string name, ZMPFunction func)
 }
 
 // find the request function; return NULL if not found
-ZMPCommand*
-SZMPManager::lookup(std::string name)
+ZMPCommand* SZMPManager::lookup(const std::string& name)
 {
 	// search list - easy enough
 	for (ZMPCommandList::iterator i = commands.begin(); i != commands.end(); ++i) {
@@ -173,8 +168,7 @@ SZMPManager::lookup(std::string name)
 }
 
 // match a package pattern; non-zero on match
-bool
-SZMPManager::match(std::string pattern)
+bool SZMPManager::match(const std::string& pattern)
 {
 	int package = 0; // are we looking for a package?
 
@@ -248,8 +242,7 @@ TelnetHandler::process_zmp(size_t size, char* data)
 }
 
 // send an zmp command
-void
-TelnetHandler::send_zmp(size_t argc, const std::string argv[])
+void TelnetHandler::send_zmp(size_t argc, std::string argv[])
 {
 	// check for ZMP support
 	if (!has_zmp())
@@ -348,8 +341,7 @@ TelnetHandler::add_zmp(size_t argc, std::string argv[])
 }
 
 // deal with ZMP support/no-support
-void
-TelnetHandler::zmp_support (std::string pkg, bool value)
+void TelnetHandler::zmp_support(const std::string& pkg, bool value)
 {
 	// color.define?
 	if (str_eq(pkg, S("color.define"))) {

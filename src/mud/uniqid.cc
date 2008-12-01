@@ -103,7 +103,7 @@ _MUniqueID::encode (UniqueID uid)
 }
 
 UniqueID
-_MUniqueID::decode (std::string string)
+_MUniqueID::decode (const std::string& string)
 {
 	UniqueID uid;
 	uid.id = strtol(string.c_str(), NULL, 10);

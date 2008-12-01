@@ -48,7 +48,7 @@ class CreatureStatID {
 
 	type_t get_value () const { return value; }
 
-	static CreatureStatID lookup (std::string name);
+	static CreatureStatID lookup (const std::string& name);
 
 	bool operator == (CreatureStatID dir) const { return dir.value == value; }
 	bool operator != (CreatureStatID dir) const { return dir.value != value; }
@@ -92,7 +92,7 @@ class CreaturePosition {
 
 	inline type_t get_value () const { return value; }
 
-	static CreaturePosition lookup (std::string name);
+	static CreaturePosition lookup (const std::string& name);
 
 	inline bool operator == (CreaturePosition dir) const { return dir.value == value; }
 	inline bool operator != (CreaturePosition dir) const { return dir.value != value; }
@@ -173,9 +173,9 @@ Creature : public Entity, public IStreamSink
 	class Object* get_worn_by_loc (uint loc) const;
 	class Object* get_equip_by_loc (uint loc) const;
 
-	class Object* find_held (std::string name, uint count = 1, uint* matches = NULL) const;
-	class Object* find_worn (std::string name, uint count = 1, uint* matches = NULL) const;
-	class Object* find_equip (std::string name, uint count = 1, uint* matches = NULL) const;
+	class Object* find_held (const std::string& name, uint count = 1, uint* matches = NULL) const;
+	class Object* find_worn (const std::string& name, uint count = 1, uint* matches = NULL) const;
+	class Object* find_equip (const std::string& name, uint count = 1, uint* matches = NULL) const;
 
 	void release_object (class Object*); // *ONLY* for use by Object::release() !!!!
 
@@ -219,17 +219,17 @@ Creature : public Entity, public IStreamSink
 
 	// input/output
 	virtual void stream_put (const char*, size_t len) {};
-	virtual void process_command (std::string);
+	virtual void process_command (const std::string&);
 
 	// command processing utility funcs
-	class Object* cl_find_object (std::string name, int type, bool silent = false);
-	class Object* cl_find_object (std::string name, class Object* container, class ObjectLocation loc, bool silent = false);
+	class Object* cl_find_object (const std::string& name, int type, bool silent = false);
+	class Object* cl_find_object (const std::string& name, class Object* container, class ObjectLocation loc, bool silent = false);
 
-	class Creature* cl_find_creature (std::string name, bool silent = false);
-	class Portal* cl_find_portal (std::string name, bool silent = false);
+	class Creature* cl_find_creature (const std::string& name, bool silent = false);
+	class Portal* cl_find_portal (const std::string& name, bool silent = false);
 	/* cl_find_any looks for a creature, then an object, then an portal.
 	 * Object searching is the same as using cl_find_object w/ GOC_ANY. */
-	class Entity* cl_find_any (std::string name, bool silent = false);
+	class Entity* cl_find_any (const std::string& name, bool silent = false);
 
 	// heartbeat
 	virtual void heartbeat ();
@@ -253,7 +253,7 @@ Creature : public Entity, public IStreamSink
 	virtual void recalc ();
 
 	// parsing
-	virtual int macro_property (const class StreamControl& stream, std::string method, const MacroList& argv) const;
+	virtual int macro_property (const class StreamControl& stream, const std::string& method, const MacroList& argv) const;
 
 	// output description of character or equipment lsit
 	void display_equip (const class StreamControl& stream) const;
@@ -262,9 +262,9 @@ Creature : public Entity, public IStreamSink
 	void display_affects (const class StreamControl& stream) const;
 
 	// == ACTIONS ==
-	void do_emote (std::string text);
-	void do_say (std::string text);
-	void do_sing (std::string text);
+	void do_emote (const std::string& text);
+	void do_say (const std::string& text);
+	void do_sing (const std::string& text);
 
 	void do_look ();
 	void do_look (Creature *who);

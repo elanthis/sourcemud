@@ -87,13 +87,13 @@ namespace {
 	token_type get_token (const char** in, const char* end, StringBuffer& namebuf);
 	void skip (const char** in, const char* end);
 	std::string get_arg (MacroArgs& argv, uint index);
-	int invoke_method (const StreamControl& stream, MacroValue self, std::string method, MacroList& argv);
+	int invoke_method (const StreamControl& stream, MacroValue self, const std::string& method, MacroList& argv);
 	int do_macro (const char** in, const char* end, MacroState& state, const StreamControl& stream, int depth, bool if_allowed);
-	int do_text(const StreamControl& stream, std::string in, MacroState& state, int depth);
+	int do_text(const StreamControl& stream, const std::string& in, MacroState& state, int depth);
 }
 
 namespace macro {
-	int exec_macro (const StreamControl& stream, std::string macro, MacroList& argv);
+	int exec_macro (const StreamControl& stream, const std::string& macro, MacroList& argv);
 }
 
 // function definitions
@@ -223,7 +223,7 @@ namespace {
 	}
 
 	// invoke a method
-	int invoke_method (const StreamControl& stream, MacroValue self, std::string method, MacroList& argv)
+	int invoke_method (const StreamControl& stream, MacroValue self, const std::string& method, MacroList& argv)
 	{
 		// if it's an object, invoke Entity::macro_property();
 		if (self.is_object()) {
@@ -498,7 +498,7 @@ namespace {
 
 	// macro text
 	int
-	do_text(const StreamControl& stream, std::string text, MacroState& state, int depth)
+	do_text(const StreamControl& stream, const std::string& text, MacroState& state, int depth)
 	{
 		// declarations
 		MacroIn in(text.c_str(), text.c_str() + text.size());
@@ -542,7 +542,7 @@ namespace {
 namespace macro {
 	// macro text
 	const StreamControl&
-	text(const StreamControl& stream, std::string in, const MacroArgs& argv)
+	text(const StreamControl& stream, const std::string& in, const MacroArgs& argv)
 	{
 		MacroState state(argv);
 
@@ -552,7 +552,7 @@ namespace macro {
 		return stream;
 	}
 
-	int exec_macro (const StreamControl& stream, std::string _cmd_name, MacroList& _cmd_argv)
+	int exec_macro (const StreamControl& stream, const std::string& _cmd_name, MacroList& _cmd_argv)
 	{
 		if (str_eq(_cmd_name, S("eq"))) {
 			if (_cmd_argv.size() != 2)

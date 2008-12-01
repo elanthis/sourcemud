@@ -20,12 +20,12 @@ UniqueObject : public Object
 	virtual std::string factory_type () const { return S("uobject"); }
 
 	// name info
-	bool set_name (std::string);
+	bool set_name (const std::string&);
 	virtual EntityName get_name () const { return name; }
 
 	// description
 	virtual std::string get_desc () const { return desc; }
-	void set_desc (std::string s_desc) { desc = s_desc; }
+	void set_desc (const std::string& s_desc) { desc = s_desc; }
 
 	// save/load
 	virtual int load_node (File::Reader& reader, File::Node& node);

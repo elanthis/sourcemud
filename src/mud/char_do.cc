@@ -17,14 +17,14 @@
 #include "mud/npc.h"
 
 void
-Creature::do_emote (std::string action)
+Creature::do_emote (const std::string& action)
 {
 	if (get_room())
 		*get_room() << "(S(" << StreamName(this, DEFINITE, true) << ") " << action << ")\n";
 }
 
 void
-Creature::do_say (std::string text)
+Creature::do_say (const std::string& text)
 {
 	// don't say nothing
 	if (text.empty())
@@ -65,7 +65,7 @@ Creature::do_say (std::string text)
 }
 
 void
-Creature::do_sing (std::string text)
+Creature::do_sing (const std::string& text)
 {
 	// split into lines
 	StringList lines;

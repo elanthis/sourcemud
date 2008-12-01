@@ -42,7 +42,7 @@ ObjectBP::ObjectBP()
 }
 
 bool
-ObjectBP::set_name(std::string s_name)
+ObjectBP::set_name(const std::string& s_name)
 {
 	bool ret = name.set_name(s_name);
 	return ret;
@@ -497,7 +497,7 @@ Object::show_contents(Player *player, ObjectLocation container) const
 }
 
 Object *
-Object::find_object(std::string name, uint index, ObjectLocation container, uint *matches) const
+Object::find_object(const std::string& name, uint index, ObjectLocation container, uint *matches) const
 {
 	assert (index != 0);
 
@@ -554,14 +554,14 @@ Object::get_holder() const
 }
 
 bool
-ShadowObject::set_name(std::string s_name)
+ShadowObject::set_name(const std::string& s_name)
 {
 	bool ret = name.set_name(s_name);
 	return ret;
 }
 
 bool
-UniqueObject::set_name(std::string s_name)
+UniqueObject::set_name(const std::string& s_name)
 {
 	bool ret = name.set_name(s_name);
 	return ret;
@@ -646,7 +646,7 @@ ShadowObject::is_rotting() const
 
 // get parsable member values
 int
-Object::macro_property(const StreamControl& stream, std::string comm, const MacroList& argv) const
+Object::macro_property(const StreamControl& stream, const std::string& comm, const MacroList& argv) const
 {
 	// COST
 	if (str_eq(comm, "cost")) {
@@ -684,7 +684,7 @@ ShadowObject::set_blueprint(ObjectBP* s_blueprint)
 
 // load object from a blueprint
 Object*
-ShadowObject::load_blueprint(std::string name)
+ShadowObject::load_blueprint(const std::string& name)
 {
 	ObjectBP* blueprint = MObjectBP.lookup(name);
 	if (!blueprint)
@@ -694,7 +694,7 @@ ShadowObject::load_blueprint(std::string name)
 }
 
 bool
-ShadowObject::is_blueprint(std::string name) const
+ShadowObject::is_blueprint(const std::string& name) const
 {
 	ObjectBP* blueprint = get_blueprint();
 
@@ -705,7 +705,7 @@ ShadowObject::is_blueprint(std::string name) const
 }
 
 bool
-ShadowObject::name_match(std::string match) const
+ShadowObject::name_match(const std::string& match) const
 {
 	if (get_name().matches(match))
 		return true;
@@ -771,7 +771,7 @@ _MObjectBP::shutdown()
 }
 
 ObjectBP*
-_MObjectBP::lookup(std::string id)
+_MObjectBP::lookup(const std::string& id)
 {
 	BlueprintMap::iterator iter = blueprints.find(id);
 	if (iter == blueprints.end())

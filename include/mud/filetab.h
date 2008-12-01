@@ -24,7 +24,7 @@ namespace File
 		~TabReader () { close(); }
 
 		const std::string get_filename () const { return filename; }
-		int open (std::string file);
+		int open (const std::string& file);
 		bool is_open () const { return in; }
 		void close () { if (in) in.close(); }
 

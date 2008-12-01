@@ -41,7 +41,7 @@ bool str_is_valid_id(const std::string&); // is a valid id
 	// valid id defined as regex: [A-Za-z][A-Za-z0-9_.-]*
 
 // various funcs
-bool str_eq (std::string, std::string, size_t len = 0); // are strings equal, ignoring case - true if equal, len is max length or 0 for full
+bool str_eq(const std::string&, const std::string&, size_t len = 0); // are strings equal, ignoring case - true if equal, len is max length or 0 for full
 
 // match words in a phrase
 // string to match is first, string being tested is second
@@ -58,7 +58,7 @@ bool prefix_match (const char* string, const char* prefix);
 inline bool prefix_match (const char* string, const std::string& prefix) { return prefix_match(string, prefix.c_str()); }
 
 // determine a numeric value from input word, i.e. first=>1, second=>2, etc.
-uint str_value (std::string);
+uint str_value (const std::string&);
 
 // concatenate the path and filename together
 //  if the path already ends in a /, don't add one
@@ -74,18 +74,18 @@ std::string base_name (const char* path);
 bool has_suffix (const char* base, const char* suffix);
 
 // string list building/parsing
-StringList& explode(StringList& out, std::string string, char ch);
+StringList& explode(StringList& out, const std::string& string, char ch);
 std::string& implode(std::string& out, const StringList& list, char ch);
-std::string& capwords(std::string& out, std::string string);
+std::string& capwords(std::string& out, const std::string& string);
 // and 'easy' versions there-of
-inline StringList explode(std::string string, char ch) { StringList tmp; return explode(tmp, string, ch); }
+inline StringList explode(const std::string& string, char ch) { StringList tmp; return explode(tmp, string, ch); }
 inline std::string implode(const StringList& list, char ch) { std::string tmp; return implode(tmp, list, ch); }
-inline std::string capwords(std::string string) { std::string tmp; return capwords(tmp, string); }
+inline std::string capwords(const std::string& string) { std::string tmp; return capwords(tmp, string); }
 
 // trim out unacceptable characters
-std::string trim (std::string source, std::string accept);
+std::string trim (const std::string& source, const std::string& accept);
 
 // replace characters in 'from' to corresponding characters in 'to'
-std::string str_tr (std::string source, std::string from, std::string to);
+std::string str_tr (const std::string& source, const std::string& from, const std::string& to);
 
 #endif

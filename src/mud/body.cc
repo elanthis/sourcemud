@@ -58,7 +58,7 @@ std::string GenderType::malefemale[GenderType::COUNT] = {
 };
 
 GenderType
-GenderType::lookup (std::string name)
+GenderType::lookup (const std::string& name)
 {
 	for (uint i = 0; i < COUNT; ++i)
 		if (str_eq(name, names[i]))
@@ -81,7 +81,7 @@ std::string EquipSlot::names[] = {
 };
 
 EquipSlot
-EquipSlot::lookup (std::string name)
+EquipSlot::lookup (const std::string& name)
 {
 	for (uint i = 0; i < COUNT; ++i)
 		if (str_eq(name, names[i]))
@@ -257,7 +257,7 @@ Creature::get_equip_at (uint i) const
 }
 
 Object *
-Creature::find_worn (std::string name, uint count, uint *matches) const
+Creature::find_worn (const std::string& name, uint count, uint *matches) const
 {
 	assert (count != 0);
 
@@ -288,7 +288,7 @@ Creature::find_worn (std::string name, uint count, uint *matches) const
 }
 
 Object *
-Creature::find_held (std::string name, uint count, uint *matches) const
+Creature::find_held (const std::string& name, uint count, uint *matches) const
 {
 	assert (count != 0);
 
@@ -314,7 +314,7 @@ Creature::find_held (std::string name, uint count, uint *matches) const
 }
 
 Object *
-Creature::find_equip (std::string name, uint count, uint *matches) const
+Creature::find_equip (const std::string& name, uint count, uint *matches) const
 {
 	assert (count != 0);
 	uint held_matches;

@@ -19,7 +19,7 @@ std::string EntityArticleClass::names[] = {
 };
 
 EntityArticleClass
-EntityArticleClass::lookup (std::string text)
+EntityArticleClass::lookup (const std::string& text)
 {
 	for (uint i = 0; i < COUNT; ++i)
 		if (str_eq(text, names[i]))
@@ -53,7 +53,7 @@ EntityName::get_name () const
 }
 
 bool
-EntityName::set_name (std::string s_text)
+EntityName::set_name (const std::string& s_text)
 {
 	// empty text?  no article, no text
 	if (s_text.empty()) {
@@ -104,7 +104,7 @@ EntityName::set_name (std::string s_text)
 }
 
 bool
-EntityName::matches (std::string match) const
+EntityName::matches (const std::string& match) const
 {
 	return phrase_match(get_text(), match);
 }

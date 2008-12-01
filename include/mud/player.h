@@ -39,7 +39,7 @@ class Player : public Creature
 {
 	public:
 	// create and initialize
-	Player (class Account* s_account, std::string s_id);
+	Player (class Account* s_account, const std::string& s_id);
 
 	virtual std::string factory_type () const { return S("player"); }
 
@@ -51,7 +51,7 @@ class Player : public Creature
 
 	// description information
 	virtual inline std::string get_desc () const { return std::string(); }
-	virtual inline void set_desc (std::string s_desc) {}
+	virtual inline void set_desc (const std::string& s_desc) {}
 
 	// gender
 	virtual inline GenderType get_gender () const { return form.gender; }
@@ -140,7 +140,7 @@ class Player : public Creature
 	// I/O
 	virtual void stream_put (const char* data, size_t len = 0);
 	void show_prompt ();
-	void process_command (std::string cmd);
+	void process_command (const std::string& cmd);
 	void connect (IPlayerConnection* conn);
 	void disconnect ();
 	IPlayerConnection* get_conn() const { return conn; }
@@ -150,11 +150,11 @@ class Player : public Creature
 	void clear_scr ();
 
 	// parsing
-	virtual int macro_property (const class StreamControl& stream, std::string method, const MacroList& argv) const;
+	virtual int macro_property (const class StreamControl& stream, const std::string& method, const MacroList& argv) const;
 
 	// player-only actions
-	void do_tell (Player* who, std::string what);
-	void do_reply (std::string what);
+	void do_tell (Player* who, const std::string& what);
+	void do_reply (const std::string& what);
 
 	protected:
 	EntityName name;
@@ -215,22 +215,22 @@ class _MPlayer : public IManager
 	virtual void shutdown ();
 
 	// true if 'name' is a valid player name
-	bool valid_name (std::string name);
+	bool valid_name (const std::string& name);
 
 	// return the path a player's file is at
-	std::string path (std::string name);
+	std::string path (const std::string& name);
 
 	// return the logged-in player with the given name
-	Player* get (std::string name);
+	Player* get (const std::string& name);
 
 	// load a player - from disk
-	Player* load (class Account* account, std::string name);
+	Player* load (class Account* account, const std::string& name);
 
 	// DESTROY a player permanently (with backup)
-	int destroy (std::string name);
+	int destroy (const std::string& name);
 
 	// does a valid player of this name exist?
-	bool exists (std::string name);
+	bool exists (const std::string& name);
 
 	// count of connected players
 	size_t count ();

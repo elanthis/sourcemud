@@ -55,7 +55,7 @@ void command_reply(Player* player, std::string argv[])
 	player->do_reply(argv[0]);
 }
 
-void Player::do_reply(std::string what)
+void Player::do_reply(const std::string& what)
 {
 	if (last_tell.empty()) {
 		*this << "No one has sent you a tell yet.\n";
@@ -90,7 +90,7 @@ void command_tell(Player* player, std::string argv[])
 	}
 }
 
-void Player::do_tell(Player* who, std::string what)
+void Player::do_tell(Player* who, const std::string& what)
 {
 	*who << "[" << StreamName(this) << "]: " CTALK << what << CNORMAL "\n";
 	who->last_tell = get_id();

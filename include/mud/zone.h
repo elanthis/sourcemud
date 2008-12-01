@@ -51,14 +51,14 @@ class Zone
 
 	// zone ID
 	std::string get_id () const { return id; }
-	void set_id (std::string new_id) { id = new_id; }
+	void set_id (const std::string& new_id) { id = new_id; }
 
 	// name information
 	std::string get_name () const { return name; }
-	void set_name (std::string s_name) { name = s_name; }
+	void set_name (const std::string& s_name) { name = s_name; }
 
 	// find rooms
-	class Room* get_room (std::string name) const;
+	class Room* get_room (const std::string& name) const;
 	class Room* get_room_at (size_t index) const;
 	size_t get_room_count () const;
 
@@ -69,11 +69,11 @@ class Zone
 	void broadcast_event (const Event& event);
 
 	// load/save
-	int load (std::string path);
+	int load (const std::string& path);
 	void save ();
 
 	// announce to all rooms
-	void announce (std::string text, AnnounceFlags type = ANFL_NONE) const;
+	void announce (const std::string& text, AnnounceFlags type = ANFL_NONE) const;
 
 	// update zone
 	void heartbeat ();
@@ -109,12 +109,12 @@ class _MZone : public IManager
 	int load_world ();
 
 	// lookup entries
-	Zone* get_zone (std::string);
+	Zone* get_zone (const std::string&);
 	Zone* get_zone_at (size_t index);
-	class Room* get_room (std::string);
+	class Room* get_room (const std::string&);
 
 	// send an announcement to all the rooms in all the zones
-	void announce (std::string, AnnounceFlags = ANFL_NONE);
+	void announce (const std::string&, AnnounceFlags = ANFL_NONE);
 
 	// add a new zone
 	void add_zone (Zone*);

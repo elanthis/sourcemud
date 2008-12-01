@@ -392,7 +392,7 @@ Npc::set_blueprint(NpcBP* s_blueprint)
 
 // load npc from a blueprint
 Npc*
-Npc::load_blueprint(std::string name)
+Npc::load_blueprint(const std::string& name)
 {
 	// lookup the blueprint
 	NpcBP* blueprint = MNpcBP.lookup(name);
@@ -476,7 +476,7 @@ Npc::can_use_portal(Portal* portal) const
 }
 
 bool
-Npc::is_blueprint(std::string name) const
+Npc::is_blueprint(const std::string& name) const
 {
 	NpcBP* blueprint = get_blueprint();
 
@@ -491,7 +491,7 @@ Npc::is_blueprint(std::string name) const
 }
 
 bool
-Npc::name_match(std::string match) const
+Npc::name_match(const std::string& match) const
 {
 	if (get_name().matches(match))
 		return true;
@@ -560,7 +560,7 @@ _MNpcBP::shutdown()
 }
 
 NpcBP*
-_MNpcBP::lookup(std::string id)
+_MNpcBP::lookup(const std::string& id)
 {
 	BlueprintMap::iterator iter = blueprints.find(id);
 	if (iter == blueprints.end())

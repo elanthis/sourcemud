@@ -11,8 +11,7 @@
 #include "net/iplist.h"
 #include "net/util.h"
 
-int
-IPDenyList::load (std::string path)
+int IPDenyList::load(const std::string& path)
 {
 	char line[512];
 	FILE* file;
@@ -49,8 +48,7 @@ IPDenyList::load (std::string path)
 	return 0;
 }
 
-int
-IPDenyList::save (std::string path)
+int IPDenyList::save(const std::string& path)
 {
 	FILE* file;
 
@@ -68,8 +66,7 @@ IPDenyList::save (std::string path)
 	return 0;
 }
 
-int
-IPDenyList::remove (std::string line)
+int IPDenyList::remove(const std::string& line)
 {
 	SockStorage addr;
 	uint mask;
@@ -86,8 +83,7 @@ IPDenyList::remove (std::string line)
 	return 1;
 }
 
-int
-IPDenyList::add (std::string line)
+int IPDenyList::add(const std::string& line)
 {
 	SockStorage addr;
 	uint mask;

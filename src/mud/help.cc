@@ -28,7 +28,7 @@ void command_help (Player* player, std::string argv[])
 }
 
 HelpTopic*
-_MHelp::get_topic (std::string name)
+_MHelp::get_topic (const std::string& name)
 {
 	for (TopicList::iterator i = topics.begin(); i != topics.end(); ++i)
 		if (phrase_match((*i)->name, name))
@@ -37,7 +37,7 @@ _MHelp::get_topic (std::string name)
 }
 
 void
-_MHelp::print (StreamControl& stream, std::string name)
+_MHelp::print (StreamControl& stream, const std::string& name)
 {
 	// try a man page
 	if (!name.empty() && MCommand.show_man(stream, name, true))

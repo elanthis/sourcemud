@@ -19,7 +19,7 @@ std::string time_to_str(time_t time)
 	return std::string(buffer);
 }
 
-time_t str_to_time(std::string str)
+time_t str_to_time(const std::string& str)
 {
 	struct tm tm;
 	memset(&tm, 0, sizeof(tm));

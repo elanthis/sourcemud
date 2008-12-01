@@ -31,7 +31,7 @@ Race
 	public:
 	// this is an ugly hack, but it lets us construct the linked
 	// list as we need to do
-	Race (std::string s_name, Race* s_next);
+	Race (const std::string& s_name, Race* s_next);
 
 	int load (File::Reader&);
 
@@ -84,7 +84,7 @@ class _MRace : public IManager
 	int initialize();
 	void shutdown();
 
-	Race* get (std::string name);
+	Race* get (const std::string& name);
 	Race* first() { return head; }
 
 	private:

@@ -218,7 +218,7 @@ namespace {
 }
 
 PortalDir
-PortalDir::lookup (std::string name)
+PortalDir::lookup (const std::string& name)
 {
 	for (uint i = 0; i < COUNT; ++i)
 		if (names[i] == name)
@@ -227,7 +227,7 @@ PortalDir::lookup (std::string name)
 }
 
 PortalUsage
-PortalUsage::lookup (std::string name)
+PortalUsage::lookup (const std::string& name)
 {
 	for (uint i = 0; i < COUNT; ++i)
 		if (names[i] == name)
@@ -236,7 +236,7 @@ PortalUsage::lookup (std::string name)
 }
 
 PortalDetail
-PortalDetail::lookup (std::string name)
+PortalDetail::lookup (const std::string& name)
 {
 	for (uint i = 0; i < COUNT; ++i)
 		if (names[i] == name)
@@ -258,7 +258,7 @@ Portal::get_name () const
 }
 
 void
-Portal::add_keyword (std::string keyword)
+Portal::add_keyword (const std::string& keyword)
 {
 	keywords.push_back(keyword);
 }
@@ -517,7 +517,7 @@ Portal::get_enters () const
 }
 
 bool
-Portal::name_match (std::string match) const
+Portal::name_match (const std::string& match) const
 {
 	if (name.matches(match))
 		return true;

@@ -17,7 +17,7 @@
 
 _MRace MRace;
 
-Race::Race (std::string s_name, Race *s_next) :
+Race::Race (const std::string& s_name, Race *s_next) :
 	name(s_name.c_str()),
 	next(s_next) {}
 
@@ -90,7 +90,7 @@ Race::load(File::Reader& reader)
 }
 
 Race *
-_MRace::get(std::string name)
+_MRace::get(const std::string& name)
 {
 	Race *race = head;
 	while (race != NULL) {

@@ -14,7 +14,7 @@
 
 // legacy cruft
 std::string time_to_str (time_t time);
-time_t str_to_time (std::string str);
+time_t str_to_time (const std::string& str);
 
 namespace Time {
 

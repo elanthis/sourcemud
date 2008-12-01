@@ -7,25 +7,23 @@
 
 #include "common/regex.h"
 
-RegEx::RegEx (std::string pattern, bool nocase)
+RegEx::RegEx(const std::string& pattern, bool nocase)
 {
 	memset(&regex, 0, sizeof(regex));
 	regcomp(&regex, pattern.c_str(), REG_EXTENDED | (nocase ? REG_ICASE : 0));
 }
 
-RegEx::~RegEx ()
+RegEx::~RegEx()
 {
 	regfree(&regex);
 }
 
-bool
-RegEx::grep (std::string string)
+bool RegEx::grep(const std::string& string)
 {
 	return !regexec(&regex, string.c_str(), 0, NULL, 0);
 }
 
-StringList
-RegEx::match (std::string string)
+StringList RegEx::match(const std::string& string)
 {
 	regmatch_t results[5];
 	const int size = sizeof(results)/sizeof(results[0]);

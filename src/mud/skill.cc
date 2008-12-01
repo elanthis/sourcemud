@@ -35,7 +35,7 @@ uint8 SkillSet::setSkill(SkillID id, uint8 value)
 	return skills[id.getValue() - 1] = value;
 }
 
-SkillID SkillID::lookup(std::string name)
+SkillID SkillID::lookup(const std::string& name)
 {
 	for (size_t i = 1, e = names.size(); i < e; ++i)
 		if (names[i] == name)
@@ -43,7 +43,7 @@ SkillID SkillID::lookup(std::string name)
 	return SkillID();
 }
 
-SkillID SkillID::create(std::string name)
+SkillID SkillID::create(const std::string& name)
 {
 	SkillID id = lookup(name);
 	if (id)

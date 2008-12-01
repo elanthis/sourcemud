@@ -416,7 +416,7 @@ TelnetModePlay::prompt ()
 void
 TelnetModePlay::process (char* line)
 {
-	player->process_command(std::string(line));
+	player->process_command(line);
 }
 
 void

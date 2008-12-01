@@ -22,8 +22,8 @@ class SkillID {
 	int getValue() const { return value; }
 	static size_t size() { return names.size(); }
 
-	static SkillID lookup(std::string name);
-	static SkillID create(std::string name);
+	static SkillID lookup(const std::string& name);
+	static SkillID create(const std::string& name);
 
 	operator bool() const { return value; }
 	bool operator ==(SkillID dir) const { return dir.value == value; }

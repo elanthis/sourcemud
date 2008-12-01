@@ -14,21 +14,18 @@
 
 // helper function to generate path names
 std::string
-_MPlayer::path (std::string name)
+_MPlayer::path (const std::string& name)
 {
 	return MSettings.get_player_path() + "/" + strlower(name) + ".ply";
 }
 
 // check if a name is valid
 bool
-_MPlayer::valid_name (std::string name)
+_MPlayer::valid_name (const std::string& name)
 {
 	// empty?  just fail
 	if (name.empty())
 		return false;
-
-	// lower case
-	name = strlower(name);
 
 	// check size
 	int len = name.size();
@@ -37,7 +34,7 @@ _MPlayer::valid_name (std::string name)
 
 	// alpha only
 	for (int i = 0; i < len; i ++)
-		if (!isalpha (name[i]))
+		if (!isalpha(name[i]))
 			return false;
 
 	// check 'badnames' file
@@ -50,18 +47,16 @@ _MPlayer::valid_name (std::string name)
 	}
 
 	char t_name[512];
-	while ((badnames.getline (t_name, sizeof (t_name)))) {
-		if (!fnmatch (t_name, name.c_str(), 0)) {
+	while ((badnames.getline(t_name, sizeof (t_name))))
+		if (!fnmatch(t_name, name.c_str(), FNM_CASEFOLD))
 			return false;
-		}
-	}
 
 	return true;
 }
 
 // find a Player
 Player *
-_MPlayer::get (std::string name)
+_MPlayer::get (const std::string& name)
 {
 	assert(!name.empty() && "name must not be empty");
 
@@ -131,7 +126,7 @@ _MPlayer::shutdown (void)
 }
 
 Player*
-_MPlayer::load (Account* account, std::string name)
+_MPlayer::load (Account* account, const std::string& name)
 {
 	// must be valid before attempting load
 	if (!valid_name(name))
@@ -163,7 +158,7 @@ _MPlayer::load (Account* account, std::string name)
 }
 
 bool
-_MPlayer::exists (std::string name)
+_MPlayer::exists (const std::string& name)
 {
 	// must be a valid name
 	if (!valid_name(name))
@@ -191,7 +186,7 @@ _MPlayer::exists (std::string name)
 }
 
 int
-_MPlayer::destroy (std::string name)
+_MPlayer::destroy (const std::string& name)
 {
 	// must be a valid name
 	if (!valid_name(name))

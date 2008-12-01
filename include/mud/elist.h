@@ -27,7 +27,7 @@ class EList : public std::vector<EntType*>
 	void add (EntType* ent);
 	void remove (EntType* ent);
 	bool has (EntType* ent);
-	EntType* match (std::string str, uint index = 1, uint *matches = NULL);
+	EntType* match (const std::string& str, uint index = 1, uint *matches = NULL);
 };
 
 // --- EList Implementation ---
@@ -75,7 +75,7 @@ EList<EntType>::has(EntType* ent)
 
 template<class EntType>
 EntType*
-EList<EntType>::match (std::string str, uint index, uint *matches)
+EList<EntType>::match (const std::string& str, uint index, uint *matches)
 {
 	assert (!str.empty());
 	assert (index != 0);

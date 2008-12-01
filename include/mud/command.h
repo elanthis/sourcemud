@@ -31,7 +31,7 @@ struct CommandFormatNode
 	std::string literal; // text to match
 
 	// new LITERAL node
-	CommandFormatNode(int s_arg, bool s_opt, std::string s_literal) :
+	CommandFormatNode(int s_arg, bool s_opt, const std::string& s_literal) :
 		type(LITERAL), arg(s_arg), opt(s_opt), literal(s_literal) {}
 	// new WORD or PHRASE node
 	CommandFormatNode(type_t s_type, int s_arg, bool s_opt) :
@@ -44,15 +44,15 @@ struct CommandFormatNode
 class CommandFormat
 {
 	public:
-	CommandFormat (class Command* s_command, std::string format, CreatureCommandFunc s_func, int s_priority = 100) : command(s_command), ch_func(s_func), ply_func(NULL), priority(s_priority) { build(format); }
-	CommandFormat (class Command* s_command, std::string format, PlayerCommandFunc s_func, int s_priority = 100) : command(s_command), ch_func(NULL), ply_func(s_func), priority(s_priority) { build(format); }
+	CommandFormat (class Command* s_command, const std::string& format, CreatureCommandFunc s_func, int s_priority = 100) : command(s_command), ch_func(s_func), ply_func(NULL), priority(s_priority) { build(format); }
+	CommandFormat (class Command* s_command, const std::string& format, PlayerCommandFunc s_func, int s_priority = 100) : command(s_command), ch_func(NULL), ply_func(s_func), priority(s_priority) { build(format); }
 
 	// get the basics
 	inline std::string get_format (void) const { return format; }
 	inline int get_priority (void) const { return priority; }
 
 	// construct format; return non-zero on failure
-	int build (std::string format);
+	int build (const std::string& format);
 
 	// get the command desc
 	inline Command* get_command (void) const { return command; }
@@ -92,7 +92,7 @@ class Command
 
 	public:
 	// constructor/destructor - virtual
-	inline Command (std::string s_name, std::string s_usage, AccessID s_access) : name(s_name), usage(s_usage), access (s_access)  {}
+	inline Command (const std::string& s_name, const std::string& s_usage, AccessID s_access) : name(s_name), usage(s_usage), access (s_access)  {}
 
 	// basics
 	const std::string& get_name (void) const { return name; }
@@ -123,10 +123,10 @@ class _MCommand : public IManager
 	void add(const CommandFormat& format) { formats.push_back(format); }
 
 	// invoke a command
-	int call (class Creature* character, std::string cmd_line);
+	int call (class Creature* character, const std::string& cmd_line);
 
 	// show a man page; return false if cmd_name is not found
-	bool show_man (class StreamControl& stream, std::string cmd_name, bool quiet = false);
+	bool show_man (class StreamControl& stream, const std::string& cmd_name, bool quiet = false);
 
 	// show a command list
 	void show_list (class Player* player);

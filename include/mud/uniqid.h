@@ -41,7 +41,7 @@ class _MUniqueID : public IManager
 
 	UniqueID create ();
 	std::string encode (UniqueID uid);
-	UniqueID decode (std::string string);
+	UniqueID decode (const std::string& string);
 	int reserve ();
 
 	private:

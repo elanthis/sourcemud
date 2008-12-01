@@ -29,8 +29,8 @@ class MID
 	MID ();
 	~MID ();
 	
-	const std::string* lookup (std::string name);
-	const std::string* create (std::string name);
+	const std::string* lookup (const std::string& name);
+	const std::string* create (const std::string& name);
 
 	const IDMap& get_all () const { return id_map; }
 
@@ -51,8 +51,8 @@ class BaseID
 
 	bool valid () const { return id != 0; }
 
-	static BaseID<tag> lookup (std::string idname) { return BaseID<tag>(get_manager().lookup(idname)); }
-	static BaseID<tag> create (std::string idname) { return BaseID<tag>(get_manager().create(idname)); }
+	static BaseID<tag> lookup (const std::string& idname) { return BaseID<tag>(get_manager().lookup(idname)); }
+	static BaseID<tag> create (const std::string& idname) { return BaseID<tag>(get_manager().create(idname)); }
 	std::string name () const { return id != NULL ? *id : std::string(); }
 	static std::string nameof (BaseID<tag> id) { return id.name(); }
 

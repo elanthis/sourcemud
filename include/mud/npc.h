@@ -33,14 +33,14 @@ NpcBP
 
 	// name
 	inline const EntityName& get_name () const { return name; }
-	inline bool set_name (std::string s_name) { bool ret = name.set_name(s_name); set_flags.name = true; return ret; }
+	inline bool set_name (const std::string& s_name) { bool ret = name.set_name(s_name); set_flags.name = true; return ret; }
 	void reset_name ();
 
 	inline const StringList& get_keywords () const { return keywords; }
 
 	// description
 	inline const std::string& get_desc () const { return desc; }
-	inline void set_desc (std::string s_desc) { desc = s_desc; set_flags.desc = true; }
+	inline void set_desc (const std::string& s_desc) { desc = s_desc; set_flags.desc = true; }
 	void reset_desc ();
 
 	// stats
@@ -110,12 +110,12 @@ class Npc : public Creature
 	// blueprints
 	virtual NpcBP* get_blueprint () const { return blueprint; }
 	void set_blueprint (NpcBP* s_blueprint);
-	static Npc* load_blueprint (std::string name);
+	static Npc* load_blueprint (const std::string& name);
 
 	// name info
 	virtual EntityName get_name () const;
 
-	virtual bool name_match (std::string name) const;
+	virtual bool name_match (const std::string& name) const;
 
 	// description
 	virtual std::string get_desc () const;
@@ -136,7 +136,7 @@ class Npc : public Creature
 	virtual std::string ncolor () const { return S(CNPC); }
 
 	// return ture if we derive from the named blueprint
-	bool is_blueprint (std::string blueprint) const;
+	bool is_blueprint (const std::string& blueprint) const;
 
 	// combat
 	virtual uint get_combat_dodge () const;
@@ -191,7 +191,7 @@ class _MNpcBP : public IManager
 	int initialize();
 	void shutdown();
 
-	NpcBP* lookup (std::string id);
+	NpcBP* lookup (const std::string& id);
 
 	private:
 	BlueprintMap blueprints;

@@ -34,7 +34,7 @@ class CreatureAffectType
 	inline std::string get_name(void) const { return names[value]; }
 	inline type_t get_value (void) const { return value; }
 
-	static CreatureAffectType lookup (std::string name);
+	static CreatureAffectType lookup (const std::string& name);
 
 	inline bool operator == (const CreatureAffectType& dir) const { return dir.value == value; }
 	inline bool operator != (const CreatureAffectType& dir) const { return dir.value != value; }
@@ -59,7 +59,7 @@ class ICreatureAffect
 class CreatureAffectGroup
 {
 	public:
-	CreatureAffectGroup (std::string s_title, CreatureAffectType s_type, uint s_duration);
+	CreatureAffectGroup (const std::string& s_title, CreatureAffectType s_type, uint s_duration);
 
 	int add_affect (ICreatureAffect* affect);
 

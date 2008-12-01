@@ -29,7 +29,7 @@ class _MEntityFactory : public IManager
 	int initialize ();
 	void shutdown ();
 
-	Entity* create (std::string name) const;
+	Entity* create (const std::string& name) const;
 
 	static void register_factory (const IEntityFactory*);
 

@@ -10,12 +10,12 @@
 
 class IPDenyList {
 	public:
-	int load(std::string file);
-	int save(std::string file);
+	int load(const std::string& file);
+	int save(const std::string& file);
 
 	// these return -1 on invalid input, 1 on exist errors, 0 on success
-	int add(std::string addr);
-	int remove(std::string addr);
+	int add(const std::string& addr);
+	int remove(const std::string& addr);
 
 	bool exists(SockStorage& addr);
 

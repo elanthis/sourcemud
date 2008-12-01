@@ -13,7 +13,7 @@ namespace OLC {
 	// name will be modified
 	// result stored in entity
 	// returns false on error or not found
-	bool lookup_editable (Player* builder, std::string type, std::string name, Entity*& entity);
+	bool lookup_editable (Player* builder, const std::string& type, const std::string& name, Entity*& entity);
 
 	// -- ENTITY --
 	bool modify_entity (Player* builder, Entity* entity, const char* attr, char* value);

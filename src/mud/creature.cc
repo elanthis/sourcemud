@@ -50,7 +50,7 @@ std::string CreatureStatID::short_names[CreatureStatID::COUNT] = {
 };
 
 CreatureStatID
-CreatureStatID::lookup (std::string name)
+CreatureStatID::lookup (const std::string& name)
 {
 	for (uint i = 0; i < COUNT; ++i)
 		if (str_eq(name, names[i]))
@@ -134,7 +134,7 @@ std::string CreaturePosition::verbings[CreaturePosition::COUNT] = {
 };
 
 CreaturePosition
-CreaturePosition::lookup (std::string name)
+CreaturePosition::lookup (const std::string& name)
 {
 	for (uint i = 0; i < COUNT; ++i)
 		if (str_eq(name, names[i]))
@@ -568,7 +568,7 @@ Creature::deactivate (void)
 }
 
 int
-Creature::macro_property (const StreamControl& stream, std::string comm, const MacroList& argv) const
+Creature::macro_property (const StreamControl& stream, const std::string& comm, const MacroList& argv) const
 {
 	// HE / SHE
 	if (str_eq(comm, S("he"))) {

@@ -99,7 +99,7 @@ GameTime::encode () const
 }
 
 int
-GameTime::decode (std::string str)
+GameTime::decode (const std::string& str)
 {
 	uint s_year, s_month, s_day, s_hour, s_ticks;
 	if (sscanf(str.c_str(), "%u/%u/%u %u.%u", &s_year, &s_month, &s_day, &s_hour, &s_ticks) != 5)

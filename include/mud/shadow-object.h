@@ -22,13 +22,13 @@ ObjectBP
 
 	// name
 	virtual EntityName get_name () const;
-	bool set_name (std::string s_name);
+	bool set_name (const std::string& s_name);
 
 	const StringList& get_keywords () const { return keywords; }
 
 	// description
 	const std::string& get_desc () const { return desc; }
-	void set_desc (std::string s_desc) { desc = s_desc; }
+	void set_desc (const std::string& s_desc) { desc = s_desc; }
 
 	// weight
 	uint get_weight () const { return weight; }
@@ -87,9 +87,9 @@ ShadowObject : public Object
 	virtual std::string factory_type () const { return S("sobject"); }
 
 	// name info
-	bool set_name (std::string);
+	bool set_name (const std::string&);
 	virtual EntityName get_name () const;
-	virtual bool name_match (std::string name) const;
+	virtual bool name_match (const std::string& name) const;
 
 	// description
 	virtual std::string get_desc () const;
@@ -116,12 +116,12 @@ ShadowObject : public Object
 	bool is_rotting () const;
 
 	// return ture if we derive from the named blueprint
-	bool is_blueprint (std::string blueprint) const;
+	bool is_blueprint (const std::string& blueprint) const;
 
 	// blueprint information
 	virtual ObjectBP* get_blueprint () const { return blueprint; }
 	void set_blueprint (ObjectBP* blueprint);
-	static Object* load_blueprint (std::string name);
+	static Object* load_blueprint (const std::string& name);
 
 	// containers
 	bool has_location (ObjectLocation type) const { return blueprint->has_location(type); }
@@ -144,7 +144,7 @@ class _MObjectBP : public IManager
 
 	void shutdown ();
 
-	ObjectBP* lookup (std::string id);
+	ObjectBP* lookup (const std::string& id);
 
 	private:
 	BlueprintMap blueprints;

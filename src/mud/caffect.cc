@@ -18,7 +18,7 @@ std::string CreatureAffectType::names[] = {
 };
 
 CreatureAffectType
-CreatureAffectType::lookup (std::string name)
+CreatureAffectType::lookup (const std::string& name)
 {
 	for (uint i = 0; i < COUNT; ++i)
 		if (str_eq(name, names[i]))
@@ -26,7 +26,7 @@ CreatureAffectType::lookup (std::string name)
 	return UNKNOWN;
 }
 
-CreatureAffectGroup::CreatureAffectGroup (std::string s_title, CreatureAffectType s_type, uint s_duration) : title(s_title), type(s_type), duration(s_duration)
+CreatureAffectGroup::CreatureAffectGroup (const std::string& s_title, CreatureAffectType s_type, uint s_duration) : title(s_title), type(s_type), duration(s_duration)
 {
 }
 

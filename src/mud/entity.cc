@@ -137,7 +137,7 @@ Entity::destroy (void)
 }
 
 bool
-Entity::name_match (std::string match) const
+Entity::name_match (const std::string& match) const
 {
 	return get_name().matches(match);
 
@@ -152,7 +152,7 @@ Entity::display_desc (const StreamControl& stream) const
 }
 
 void
-Entity::save (File::Writer& writer, std::string ns, std::string name)
+Entity::save (File::Writer& writer, const std::string& ns, const std::string& name)
 {
 	writer.begin_attr(ns, name, factory_type());
 	save_data(writer);
@@ -187,7 +187,7 @@ Entity::save_hook (File::Writer& writer)
 
 // load
 Entity*
-Entity::load (std::string factory, File::Reader& reader)
+Entity::load (const std::string& factory, File::Reader& reader)
 {
 	Entity* entity;
 
@@ -239,7 +239,7 @@ Entity::load_node (File::Reader& reader, File::Node& node)
 }
 
 int
-Entity::macro_property (const StreamControl& stream, std::string comm, const MacroList& argv) const
+Entity::macro_property (const StreamControl& stream, const std::string& comm, const MacroList& argv) const
 {
 	// SPECIAL: one-letter name commands
 	if (comm.size() == 1) {

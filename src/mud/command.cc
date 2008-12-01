@@ -150,7 +150,7 @@ void _MCommand::add(Command *command)
 }
 
 int
-_MCommand::call (Creature *ch, std::string comm) {
+_MCommand::call (Creature *ch, const std::string& comm) {
 	Player *ply = PLAYER(ch);
 
 	// break up words
@@ -305,7 +305,7 @@ Command::show_man (StreamControl& stream)
 
 // build command
 int
-CommandFormat::build (std::string s_format)
+CommandFormat::build (const std::string& s_format)
 {
 	int arg;
 	bool opt;
@@ -557,7 +557,7 @@ Command::operator< (const Command& command) const
 
 // show a man page; return false if cmd_name is not found
 bool
-_MCommand::show_man (StreamControl& stream, std::string name, bool quiet)
+_MCommand::show_man (StreamControl& stream, const std::string& name, bool quiet)
 {
 	// find exact match?
 	for (CommandList::iterator i = commands.begin(); i != commands.end(); ++i) {
@@ -601,7 +601,7 @@ _MCommand::show_man (StreamControl& stream, std::string name, bool quiet)
 }
 
 void
-Creature::process_command (std::string line)
+Creature::process_command (const std::string& line)
 {
 	MCommand.call (this, line);
 }
@@ -680,7 +680,7 @@ namespace {
 
 // parse a command line to get an object
 Object* 
-Creature::cl_find_object (std::string line, int type, bool silent)
+Creature::cl_find_object (const std::string& line, int type, bool silent)
 {
 	uint matches;
 	Object* object;
@@ -775,7 +775,7 @@ Creature::cl_find_object (std::string line, int type, bool silent)
 
 // find an object inside a particular container
 Object*
-Creature::cl_find_object (std::string line, Object* container, ObjectLocation type, bool silent)
+Creature::cl_find_object (const std::string& line, Object* container, ObjectLocation type, bool silent)
 {
 	const char* text = line.c_str();
 
@@ -820,7 +820,7 @@ Creature::cl_find_object (std::string line, Object* container, ObjectLocation ty
 
 // parse a command line to get a creature
 Creature* 
-Creature::cl_find_creature (std::string line, bool silent)
+Creature::cl_find_creature (const std::string& line, bool silent)
 {
 	const char* text = line.c_str();
 
@@ -852,7 +852,7 @@ Creature::cl_find_creature (std::string line, bool silent)
 		return NULL;
 	}
 
-	Creature* ch = get_room()->find_creature (std::string(text), index);
+	Creature* ch = get_room()->find_creature(text, index);
 	if (ch == NULL && !silent)
 		*this << "You do not see '" << text << "'.\n";
 
@@ -861,7 +861,7 @@ Creature::cl_find_creature (std::string line, bool silent)
 
 /* parse a command line to get an portal*/
 Portal* 
-Creature::cl_find_portal (std::string line, bool silent)
+Creature::cl_find_portal (const std::string& line, bool silent)
 {
 	const char* text = line.c_str();
 
@@ -907,7 +907,7 @@ Creature::cl_find_portal (std::string line, bool silent)
 
 // parse a command line to get a creature, object, or portal
 Entity* 
-Creature::cl_find_any (std::string line, bool silent)
+Creature::cl_find_any (const std::string& line, bool silent)
 {
 	uint matches;
 
@@ -924,7 +924,7 @@ Creature::cl_find_any (std::string line, bool silent)
 	if (word_match(text, "my")) {
 		// do 'my' object search
 		skip_word(text);
-		return cl_find_object(std::string(text), GOC_EQUIP, silent);
+		return cl_find_object(text, GOC_EQUIP, silent);
 	} else if (word_match(text, "the")) {
 		skip_word(text);
 	}
@@ -1031,21 +1031,21 @@ Creature::cl_find_any (std::string line, bool silent)
 	return NULL;
 }
 
-void
-Player::process_command (std::string line)
+void Player::process_command (const std::string& in_line)
 {
-	if (str_eq(line, S("quit"))) {
+	if (str_eq(in_line, S("quit"))) {
 		end_session();
 		return;
 	}
 
-	if (line.empty())
+	if (in_line.empty())
 		return;
 
-	if (line[0] == '#')
+	std::string line;
+	if (in_line == "#")
 		line = last_command;
 	else
-		last_command = line;
+		line = last_command = in_line;
 
 	/* check for talking with \", a special case */
 	if (line[0] == '\"' || line[0] == '\'')
@@ -1053,7 +1053,7 @@ Player::process_command (std::string line)
 		if (line[1] == '\0')
 			*this << "Say what?\n";
 		else
-			do_say (std::string(line.c_str() + 1)); // FIXME: make this more efficient
+			do_say(std::string(line.c_str() + 1)); // FIXME: make this more efficient
 		return;
 	}
 

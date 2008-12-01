@@ -55,10 +55,10 @@ struct ZMPCommand {
 class ZMPPack
 {
 	public:
-	ZMPPack (std::string command);
+	ZMPPack (const std::string& command);
 
 	// add an argument
-	ZMPPack& add (std::string arg);
+	ZMPPack& add (const std::string& arg);
 	ZMPPack& add (long);
 	ZMPPack& add (ulong);
 	inline ZMPPack& add (int i) { return add((long)i); }
@@ -88,13 +88,13 @@ class SZMPManager : public IManager
 	virtual void shutdown ();
 
 	// find a command
-	ZMPCommand* lookup (std::string name);
+	ZMPCommand* lookup (const std::string& name);
 
 	// add a new command
-	int add (std::string name, ZMPFunction func);
+	int add (const std::string& name, ZMPFunction func);
 
 	// see if a specific command/package is supported
-	bool match (std::string pattern);
+	bool match (const std::string& pattern);
 
 	private:
 	// the list of commands

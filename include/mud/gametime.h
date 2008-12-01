@@ -62,8 +62,8 @@ GameCalendar
 	uint16 days_in_month (const class GameTime &) const;
 	std::string get_holiday (const class GameTime &) const;
 
-	int find_month (std::string name);
-	int find_weekday (std::string name);
+	int find_month (const std::string& name);
+	int find_weekday (const std::string& name);
 
 	int load ();
 };
@@ -99,7 +99,7 @@ GameTime
 	std::string date_str () const;
 
 	std::string encode () const;
-	int decode (std::string time);
+	int decode (const std::string& time);
 
 	bool is_day () const { return hour >= SUN_UP_HOUR && hour < SUN_DOWN_HOUR; }
 	bool is_night () const { return !is_day (); }

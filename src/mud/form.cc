@@ -51,7 +51,7 @@ FormColor::get_name () const
 }
 
 FormColor
-FormColor::lookup (std::string name)
+FormColor::lookup (const std::string& name)
 {
 	for (size_t i = 0; i < names.size(); ++i) {
 		if (names[i] == name)
@@ -61,7 +61,7 @@ FormColor::lookup (std::string name)
 }
 
 FormColor
-FormColor::create (std::string name)
+FormColor::create (const std::string& name)
 {
 	for (size_t i = 0; i < names.size(); ++i) {
 		if (names[i] == name)
@@ -72,7 +72,7 @@ FormColor::create (std::string name)
 }
 
 FormBuild
-FormBuild::lookup (std::string name)
+FormBuild::lookup (const std::string& name)
 {
 	for (size_t i = 0; i < COUNT; ++i) {
 		if (names[i] == name)
@@ -82,7 +82,7 @@ FormBuild::lookup (std::string name)
 }
 
 FormHeight
-FormHeight::lookup (std::string name)
+FormHeight::lookup (const std::string& name)
 {
 	for (size_t i = 0; i < COUNT; ++i) {
 		if (names[i] == name)
@@ -92,7 +92,7 @@ FormHeight::lookup (std::string name)
 }
 
 FormHairStyle
-FormHairStyle::lookup (std::string name)
+FormHairStyle::lookup (const std::string& name)
 {
 	for (size_t i = 0; i < COUNT; ++i) {
 		if (names[i] == name)

@@ -66,7 +66,7 @@ namespace {
 	};
 
 	void cleanup();
-	int write_pid_file(std::string path);
+	int write_pid_file(const std::string& path);
 	double count_ticks(timeval& start, timeval& cur);
 }
 
@@ -110,7 +110,7 @@ namespace {
 
 	// write out our pid file
 	int
-	write_pid_file (std::string path)
+	write_pid_file (const std::string& path)
 	{
 		// open it up
 		int fd;

@@ -38,7 +38,7 @@ _MEntityFactory::register_factory (const IEntityFactory* factory)
 }
 
 Entity*
-_MEntityFactory::create (std::string name) const
+_MEntityFactory::create (const std::string& name) const
 {
 	assert(factories != NULL);
 
@@ -54,7 +54,7 @@ _MEntityFactory::create (std::string name) const
 }
 
 Entity*
-Entity::create (std::string name)
+Entity::create (const std::string& name)
 {
 	return MEntityFactory.create(name);
 }

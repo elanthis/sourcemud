@@ -15,7 +15,7 @@
 
 _MAccount MAccount;
 
-Account::Account (std::string s_id) : id(s_id), active(0), maxcharacters(0), maxactive(0), timeout(0)
+Account::Account(const std::string& s_id) : id(s_id), active(0), maxcharacters(0), maxactive(0), timeout(0)
 {
 	flags.disabled = false;
 	time_created = time(NULL);
@@ -66,7 +66,7 @@ Account::save () const
 
 // password management
 void
-Account::set_passphrase (std::string s_pass)
+Account::set_passphrase (const std::string& s_pass)
 {
 	// encrypt
 	char enc_pass[MD5_BUFFER_SIZE];
@@ -81,7 +81,7 @@ Account::set_passphrase (std::string s_pass)
 
 // check password
 bool
-Account::check_passphrase (std::string s_pass) const
+Account::check_passphrase (const std::string& s_pass) const
 {
 	// empty?  auto-fail
 	if (s_pass.empty())
@@ -93,7 +93,7 @@ Account::check_passphrase (std::string s_pass) const
 
 // add a new character
 void
-Account::add_character (std::string name)
+Account::add_character (const std::string& name)
 {
 	// not already in list?
 	if (find(characters.begin(), characters.end(), name) != characters.end())
@@ -105,7 +105,7 @@ Account::add_character (std::string name)
 
 // remove a character
 void
-Account::del_character (std::string name)
+Account::del_character (const std::string& name)
 {
 	// find in list
 	StringList::iterator i;
@@ -173,7 +173,7 @@ Account::revoke_access(AccessID id)
 }
 
 int
-Account::macro_property (const StreamControl& stream, std::string method, const MacroList& argv) const
+Account::macro_property (const StreamControl& stream, const std::string& method, const MacroList& argv) const
 {
 	if (method == "id") {
 		stream << id;
@@ -211,7 +211,7 @@ _MAccount::shutdown ()
 }
 
 bool
-_MAccount::valid_name (std::string name)
+_MAccount::valid_name (const std::string& name)
 {
 	// length
 	if (name.size() < ACCOUNT_NAME_MIN_LEN || name.size() > ACCOUNT_NAME_MAX_LEN)
@@ -227,7 +227,7 @@ _MAccount::valid_name (std::string name)
 }
 
 bool
-_MAccount::valid_passphrase (std::string pass)
+_MAccount::valid_passphrase (const std::string& pass)
 {
 	// length
 	if (pass.size() < ACCOUNT_PASS_MIN_LEN)
@@ -247,7 +247,7 @@ _MAccount::valid_passphrase (std::string pass)
 }
 
 Account*
-_MAccount::get (std::string in_name)
+_MAccount::get (const std::string& in_name)
 {
 	// force lower-case
 	std::string name = strlower(in_name);
@@ -309,7 +309,7 @@ _MAccount::get (std::string in_name)
 }
 
 Account*
-_MAccount::create (std::string name)
+_MAccount::create (const std::string& name)
 {
 	// check validity
 	if (!valid_name(name))
@@ -334,7 +334,7 @@ _MAccount::create (std::string name)
 }
 
 bool
-_MAccount::exists (std::string name)
+_MAccount::exists (const std::string& name)
 {
 	// must be lower-case
 	strlower(name);

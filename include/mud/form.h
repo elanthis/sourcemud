@@ -22,8 +22,8 @@ class FormColor {
 
 	uint8_t get_value () const { return value; }
 
-	static FormColor lookup (std::string);
-	static FormColor create (std::string);
+	static FormColor lookup (const std::string&);
+	static FormColor create (const std::string&);
 
 	bool valid () const { return value > 0 && value < names.size(); }
 
@@ -59,7 +59,7 @@ class FormBuild {
 
 	type_t get_value () const { return value; }
 
-	static FormBuild lookup (std::string name);
+	static FormBuild lookup (const std::string& name);
 
 	bool valid () const { return value > 0 && value < COUNT; }
 
@@ -92,7 +92,7 @@ class FormHeight {
 
 	type_t get_value () const { return value; }
 
-	static FormHeight lookup (std::string name);
+	static FormHeight lookup (const std::string& name);
 
 	bool valid () const { return value > 0 && value < COUNT; }
 
@@ -127,7 +127,7 @@ class FormHairStyle {
 
 	type_t get_value () const { return value; }
 
-	static FormHairStyle lookup (std::string name);
+	static FormHairStyle lookup (const std::string& name);
 
 	bool valid () const { return value > 0 && value < COUNT; }
 

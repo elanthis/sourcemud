@@ -35,19 +35,19 @@ class Account : public IMacroObject
 
 	// account info
 	std::string get_name () const { return name; }
-	void set_name (std::string s_name) { name = s_name; }
+	void set_name (const std::string& s_name) { name = s_name; }
 
 	std::string get_email () const { return email; }
-	void set_email (std::string s_email) { email = s_email; }
+	void set_email (const std::string& s_email) { email = s_email; }
 
 	// pass phrases
-	bool check_passphrase (std::string check) const;
-	void set_passphrase (std::string s_pass);
+	bool check_passphrase (const std::string& check) const;
+	void set_passphrase (const std::string& s_pass);
 
 	// character list
 	const StringList& get_char_list () const { return characters; }
-	void add_character (std::string name);
-	void del_character (std::string name);
+	void add_character (const std::string& name);
+	void del_character (const std::string& name);
 
 	// times
 	time_t get_time_created () const { return time_created; }
@@ -86,7 +86,7 @@ class Account : public IMacroObject
 	void grant_builder () { grant_access(AccessID::lookup(S("builder"))); }
 
 	// parsing
-	virtual int macro_property (const class StreamControl& stream, std::string method, const MacroList& argv) const;
+	virtual int macro_property (const class StreamControl& stream, const std::string& method, const MacroList& argv) const;
 	virtual void macro_default (const class StreamControl& stream) const;
 
 	private:
@@ -107,7 +107,7 @@ class Account : public IMacroObject
 		int disabled:1; // no login allowed
 	} flags;
 
-	Account (std::string s_id);
+	Account (const std::string& s_id);
 	~Account ();
 
 	friend class _MAccount;
@@ -119,14 +119,14 @@ class _MAccount : public IManager
 	virtual int initialize ();
 	virtual void shutdown ();
 
-	Account* get (std::string name); // need a copy for get
+	Account* get (const std::string& name); // need a copy for get
 
-	Account* create (std::string id); // create a new account
+	Account* create (const std::string& id); // create a new account
 
-	bool valid_name (std::string name); // is a name a valid account name?
-	bool valid_passphrase (std::string check); // a valid passphrase?
+	bool valid_name (const std::string& name); // is a name a valid account name?
+	bool valid_passphrase (const std::string& check); // a valid passphrase?
 
-	bool exists (std::string name); // account already exists
+	bool exists (const std::string& name); // account already exists
 
 	private:
 	typedef std::vector<Account*> AccountList;

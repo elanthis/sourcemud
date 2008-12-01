@@ -30,7 +30,7 @@ namespace Network {
 	int listen_tcp(int port, int family);
 
 	// listen on UNIX
-	int listen_unix(std::string path);
+	int listen_unix(const std::string& path);
 
 	// get socket from a tcp listener
 	int accept_tcp(int sock, SockStorage& addr);

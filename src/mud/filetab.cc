@@ -17,7 +17,7 @@
 #include "common/log.h"
 
 int
-File::TabReader::open (std::string filename)
+File::TabReader::open (const std::string& filename)
 {
 	// open
 	in.open(filename.c_str());

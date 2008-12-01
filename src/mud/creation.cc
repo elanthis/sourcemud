@@ -56,10 +56,10 @@ class TelnetModeRealNewCharacter : public TelnetModeNewCharacter
 	private:
 	void display ();
 	void create ();
-	void show_error (std::string msg);
+	void show_error (const std::string& msg);
 	void enter_state (state_t state);
 
-	static bool is_match (std::string test, std::string operand);
+	static bool is_match (const std::string& test, const std::string& operand);
 
 	Account* account;
 	std::string name;
@@ -82,7 +82,7 @@ TelnetModeNewCharacter::create (TelnetHandler* handler, Account* account)
 	return new TelnetModeRealNewCharacter (handler, account);
 }
 
-bool TelnetModeRealNewCharacter::is_match (std::string test, std::string operand)
+bool TelnetModeRealNewCharacter::is_match (const std::string& test, const std::string& operand)
 {
 	return !operand.empty() && !strncasecmp(test.c_str(), operand.c_str(), operand.size());
 }
@@ -542,7 +542,7 @@ void TelnetModeRealNewCharacter::display ()
 	}
 }
 
-void TelnetModeRealNewCharacter::show_error (std::string msg)
+void TelnetModeRealNewCharacter::show_error (const std::string& msg)
 {
 	display();
 	*get_handler() << CWARNING << msg << CNORMAL << "\n\n";

@@ -140,8 +140,7 @@ bool str_is_false(const std::string& string)
 	);
 }
 
-bool
-str_eq (std::string str_a, std::string str_b, size_t len)
+bool str_eq(const std::string& str_a, const std::string& str_b, size_t len)
 {
 	// do comparison
 	if (len)
@@ -247,7 +246,7 @@ get_num_suffix (unsigned int num) {
 }
 
 StringList&
-explode (StringList& list, std::string str, char ch)
+explode (StringList& list, const std::string& str, char ch)
 {
 	list.clear();
 
@@ -267,8 +266,7 @@ explode (StringList& list, std::string str, char ch)
 	return list;
 }
 
-std::string&
-implode (std::string& string, const StringList& list, char ch)
+std::string& implode(std::string& string, const StringList& list, char ch)
 {
 	StringBuffer buffer;
 
@@ -282,8 +280,7 @@ implode (std::string& string, const StringList& list, char ch)
 	return string = buffer.str();
 }
 
-std::string&
-capwords (std::string& out, std::string string)
+std::string& capwords(std::string& out, const std::string& string)
 {
 	bool space = true;
 	char ch;
@@ -355,7 +352,7 @@ std::string strlower(const std::string& str)
 
 namespace {
 	struct Replace {
-		Replace (std::string s_from, std::string s_to) : from(s_from), to (s_to) {}
+		Replace (std::string s_from, const std::string& s_to) : from(s_from), to (s_to) {}
 
 		const std::string& from;
 		const std::string& to;
@@ -381,7 +378,7 @@ std::string trim(const std::string& source, const std::string& accept)
 }
 
 std::string
-str_tr (std::string source, std::string from, std::string to)
+str_tr (std::string source, const std::string& from, const std::string& to)
 {
 	StringBuffer result;
 

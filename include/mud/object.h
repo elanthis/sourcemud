@@ -90,7 +90,7 @@ Object : public Entity
 	Object ();
 
 	// name info
-	virtual bool set_name (std::string) = 0;
+	virtual bool set_name (const std::string&) = 0;
 	virtual EntityName get_name () const = 0;
 
 	// description
@@ -124,7 +124,7 @@ Object : public Entity
 	virtual std::string ncolor () const { return S(CITEM); }
 
 	// for parsing, pull a property based on a char*
-	virtual int macro_property (const class StreamControl& stream, std::string method, const MacroList& argv) const;
+	virtual int macro_property (const class StreamControl& stream, const std::string& method, const MacroList& argv) const;
 
 	// object properties
 	virtual uint get_cost () const = 0;
@@ -150,7 +150,7 @@ Object : public Entity
 	virtual bool has_location (ObjectLocation type) const = 0;
 	bool add_object (Object *sub, ObjectLocation type);
 	void remove_object (Object *sub, ObjectLocation type);
-	Object *find_object (std::string name, uint index, ObjectLocation type, uint *matches = NULL) const;
+	Object *find_object (const std::string& name, uint index, ObjectLocation type, uint *matches = NULL) const;
 	void show_contents (class Player *player, ObjectLocation type) const;
 
 	// data

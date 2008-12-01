@@ -45,7 +45,7 @@ namespace File
 		};
 
 		Value () : type(TYPE_NONE), value(), list() {}
-		Value (Type s_type, std::string s_value) : type(s_type), value(s_value), list() {}
+		Value (Type s_type, const std::string& s_value) : type(s_type), value(s_value), list() {}
 		Value (const std::vector<Value>& s_list) : type(TYPE_LIST), value(), list(s_list) {}
 
 		Type get_type () const { return type; }
@@ -117,7 +117,7 @@ namespace File
 		~Reader () { close(); }
 
 		const std::string get_filename () const { return filename; }
-		int open (std::string file);
+		int open (const std::string& file);
 		bool is_open () const { return in; }
 		void close () { if (in) in.close(); }
 
@@ -140,47 +140,47 @@ namespace File
 		enum Token { TOKEN_ERROR, TOKEN_EOF, TOKEN_STRING, TOKEN_NUMBER, TOKEN_TRUE, TOKEN_FALSE, TOKEN_BEGIN, TOKEN_END, TOKEN_SET, TOKEN_ID, TOKEN_KEY, TOKEN_START_LIST, TOKEN_END_LIST, TOKEN_COMMA, TOKEN_NAME };
 
 		Token read_token(std::string& data);
-		bool set_value (Token type, std::string data, Value& value);
+		bool set_value (Token type, std::string& data, Value& value);
 	};
 
 	class Writer
 	{
 		public:
 		Writer () : out(), indent(0) {}
-		Writer (std::string file) : out(), indent(0) { open(file); }
+		Writer (const std::string& file) : out(), indent(0) { open(file); }
 		~Writer () { close(); }
 
-		int open (std::string file);
+		int open (const std::string& file);
 		bool is_open () const { return out; }
 		void close ();
 
 		// attributes
-		void attr (std::string ns, std::string name, std::string data);
-		void attr (std::string ns, std::string name, long data);
-		void attr (std::string ns, std::string name, bool data);
-		void attr (std::string ns, std::string name, const UniqueID& data);
-		void attr (std::string ns, std::string name, const std::vector<Value>& list);
+		void attr (const std::string& ns, const std::string& name, const std::string& data);
+		void attr (const std::string& ns, const std::string& name, long data);
+		void attr (const std::string& ns, const std::string& name, bool data);
+		void attr (const std::string& ns, const std::string& name, const UniqueID& data);
+		void attr (const std::string& ns, const std::string& name, const std::vector<Value>& list);
 
-		inline void attr (std::string ns, std::string name, unsigned long data) { attr(ns, name, (long)data); }
-		inline void attr (std::string ns, std::string name, int data) { attr(ns, name, (long)data); }
-		inline void attr (std::string ns, std::string name, unsigned int data) { attr(ns, name, (long)data); }
-		inline void attr (std::string ns, std::string name, short data) { attr(ns, name, (long)data); }
-		inline void attr (std::string ns, std::string name, unsigned short data) { attr(ns, name, (long)data); }
+		inline void attr (const std::string& ns, const std::string& name, unsigned long data) { attr(ns, name, (long)data); }
+		inline void attr (const std::string& ns, const std::string& name, int data) { attr(ns, name, (long)data); }
+		inline void attr (const std::string& ns, const std::string& name, unsigned int data) { attr(ns, name, (long)data); }
+		inline void attr (const std::string& ns, const std::string& name, short data) { attr(ns, name, (long)data); }
+		inline void attr (const std::string& ns, const std::string& name, unsigned short data) { attr(ns, name, (long)data); }
 
 		// output a data block
-		void block (std::string ns, std::string name, std::string data);
+		void block (const std::string& ns, const std::string& name, const std::string& data);
 
 		// begin a new section
-		void begin (std::string ns, std::string name);
+		void begin (const std::string& ns, const std::string& name);
 
 		// open begin... MUST be followed by a regular begin
-		void begin_attr (std::string ns, std::string name, std::string type);
+		void begin_attr (const std::string& ns, const std::string& name, const std::string& type);
 
 		// end a section
 		void end ();
 
 		// output a comment
-		void comment (std::string text);
+		void comment (const std::string& text);
 
 		// add a blank line to output
 		inline void bl () { if(out) out << "\n"; }
@@ -194,7 +194,7 @@ namespace File
 	};
 
 	// return true if a valid attribute/object name
-	bool valid_name (std::string name);
+	bool valid_name (const std::string& name);
 }
 
 // stream a node

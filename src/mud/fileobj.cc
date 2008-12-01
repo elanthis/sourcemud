@@ -77,7 +77,7 @@ namespace {
 }
 
 int
-File::Reader::open (std::string filename)
+File::Reader::open (const std::string& filename)
 {
 	// open
 	in.open(filename.c_str());
@@ -91,8 +91,7 @@ File::Reader::open (std::string filename)
 	return 0;
 }
 
-File::Reader::Token
-File::Reader::read_token (std::string& outstr)
+File::Reader::Token File::Reader::read_token(std::string& outstr)
 {
 	int test;
 
@@ -364,8 +363,7 @@ File::Reader::get (Node& node)
 	}
 }
 
-bool
-File::Reader::set_value (File::Reader::Token type, std::string data, File::Value& value)
+bool File::Reader::set_value(File::Reader::Token type, std::string& data, File::Value& value)
 {
 	if (type == TOKEN_NUMBER) {
 		value = Value(Value::TYPE_INT, data);
@@ -425,7 +423,7 @@ File::Reader::consume ()
 }
 
 int
-File::Writer::open (std::string filename)
+File::Writer::open (const std::string& filename)
 {
 	// open and write to a temp file
 	path = filename;
@@ -458,7 +456,7 @@ File::Writer::do_indent ()
 }
 
 void
-File::Writer::attr (std::string ns, std::string name, std::string data)
+File::Writer::attr (const std::string& ns, const std::string& name, const std::string& data)
 {
 	if (!out)
 		return;
@@ -473,7 +471,7 @@ File::Writer::attr (std::string ns, std::string name, std::string data)
 }
 
 void
-File::Writer::attr (std::string ns, std::string name, long data)
+File::Writer::attr (const std::string& ns, const std::string& name, long data)
 {
 	if (!out)
 		return;
@@ -488,7 +486,7 @@ File::Writer::attr (std::string ns, std::string name, long data)
 }
 
 void
-File::Writer::attr (std::string ns, std::string name, bool data)
+File::Writer::attr (const std::string& ns, const std::string& name, bool data)
 {
 	if (!out)
 		return;
@@ -503,7 +501,7 @@ File::Writer::attr (std::string ns, std::string name, bool data)
 }
 
 void
-File::Writer::attr (std::string ns, std::string name, const UniqueID& data)
+File::Writer::attr (const std::string& ns, const std::string& name, const UniqueID& data)
 {
 	if (!out)
 		return;
@@ -519,7 +517,7 @@ File::Writer::attr (std::string ns, std::string name, const UniqueID& data)
 }
 
 void
-File::Writer::attr (std::string ns, std::string name, const std::vector<Value>& list)
+File::Writer::attr (const std::string& ns, const std::string& name, const std::vector<Value>& list)
 {
 	if (!out)
 		return;
@@ -555,7 +553,7 @@ File::Writer::attr (std::string ns, std::string name, const std::vector<Value>& 
 }
 
 void
-File::Writer::block (std::string ns, std::string name, std::string data)
+File::Writer::block (const std::string& ns, const std::string& name, const std::string& data)
 {
 	if (!out)
 		return;
@@ -579,7 +577,7 @@ File::Writer::block (std::string ns, std::string name, std::string data)
 }
 
 void
-File::Writer::begin (std::string ns, std::string name)
+File::Writer::begin (const std::string& ns, const std::string& name)
 {
 	if (!out)
 		return;
@@ -595,7 +593,7 @@ File::Writer::begin (std::string ns, std::string name)
 }
 
 void
-File::Writer::begin_attr (std::string ns, std::string name, std::string type)
+File::Writer::begin_attr (const std::string& ns, const std::string& name, const std::string& type)
 {
 	if (!out)
 		return;
@@ -628,7 +626,7 @@ File::Writer::end ()
 }
 
 void
-File::Writer::comment (std::string text)
+File::Writer::comment (const std::string& text)
 {
 	if (!out)
 		return;
@@ -654,7 +652,7 @@ File::Writer::comment (std::string text)
 }
 
 bool
-File::valid_name (std::string name)
+File::valid_name (const std::string& name)
 {
 	// not empty
 	if (name.empty())

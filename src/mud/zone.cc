@@ -143,7 +143,7 @@ Zone::Zone()
 {}
 
 Room*
-Zone::get_room (std::string id) const
+Zone::get_room (const std::string& id) const
 {
 	for (RoomList::const_iterator i = rooms.begin(); i != rooms.end(); ++i)
 		if (str_eq ((*i)->get_id(), id))
@@ -169,7 +169,7 @@ Zone::get_room_count() const
 }
 
 int
-Zone::load (std::string path)
+Zone::load (const std::string& path)
 {
 	File::Reader reader;
 	if (reader.open(path))
@@ -371,7 +371,7 @@ _MZone::save()
 
 /* find a Zone */
 Zone*
-_MZone::get_zone (std::string id)
+_MZone::get_zone (const std::string& id)
 {
 	assert(!id.empty() && "id must not be empty");
 
@@ -394,7 +394,7 @@ _MZone::get_zone_at (size_t index)
 
 /* find a Room */
 Room *
-_MZone::get_room (std::string id)
+_MZone::get_room (const std::string& id)
 {
 	if (id.empty())
 		return NULL;
@@ -410,7 +410,7 @@ _MZone::get_room (std::string id)
 }
 
 void
-Zone::announce (std::string str, AnnounceFlags flags) const
+Zone::announce (const std::string& str, AnnounceFlags flags) const
 {
 	for (RoomList::const_iterator i = rooms.begin(); i != rooms.end(); ++i) {
 		if (!flags ||
@@ -423,7 +423,7 @@ Zone::announce (std::string str, AnnounceFlags flags) const
 
 /* announce to all rooms in a Room */
 void
-_MZone::announce (std::string str, AnnounceFlags flags)
+_MZone::announce (const std::string& str, AnnounceFlags flags)
 {
 	for (ZoneList::iterator i = zones.begin(); i != zones.end(); ++i)
 		(*i)->announce (str, flags);
