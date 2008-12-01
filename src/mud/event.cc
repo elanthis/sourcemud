@@ -13,9 +13,31 @@
 #include "common/string.h"
 #include "mud/server.h"
 #include "mud/room.h"
-#include "generated/events.h"
 
 _MEvent MEvent;
+
+std::string EventID::names[] = {
+	S("None"),
+	S("Look"),
+	S("LeaveRoom"),
+	S("EnterRoom"),
+	S("LeaveZone"),
+	S("EnterZone"),
+	S("TouchItem"),
+	S("GraspItem"),
+	S("ReleaseItem"),
+	S("GetItem"),
+	S("PutItem"),
+	S("DropItem"),
+	S("PickupItem"),
+};
+
+EventID EventID::lookup(const std::string& name) {
+  for (size_t i = 0; i < COUNT; ++i)
+    if (name == names[i])
+      return EventID(i);
+  return EventID();
+}
 
 EventHandler::EventHandler () : event(), script() {}
 
@@ -141,3 +163,71 @@ _MEvent::process ()
 		event.get_recipient()->handle_event(event);
 	}
 }
+
+int _MEvent::compile(EventID id, const std::string& source, const std::string& filename, unsigned long fileline)
+{
+	return 0;
+}
+
+namespace Events {
+	void sendLook(Room* room, Creature* actor, Entity* target)
+	{
+		/*EventManager.send(EventID::Look,room,actor,target,aux);*/
+	}
+
+	void sendLeaveRoom(Room* room, Creature* actor, Portal* aux, Room* arg_dest)
+	{
+		/*EventManager.send(EventID::LeaveRoom,room,actor,target,aux,arg_dest);*/
+	}
+
+	void sendEnterRoom(Room* room, Creature* actor, Portal* aux, Room* arg_from)
+	{
+		/*EventManager.send(EventID::EnterRoom,room,actor,target,aux,arg_from);*/
+	}
+
+	void sendLeaveZone(Room* room, Creature* actor, Zone* arg_dest)
+	{
+		/*EventManager.send(EventID::LeaveZone,room,actor,target,aux,arg_dest);*/
+	}
+
+	void sendEnterZone(Room* room, Creature* actor, Zone* arg_from)
+	{
+		/*EventManager.send(EventID::EnterZone,room,actor,target,aux,arg_from);*/
+	}
+
+	void sendTouchItem(Room* room, Creature* actor, Object* target)
+	{
+		/*EventManager.send(EventID::TouchItem,room,actor,target,aux);*/
+	}
+
+	void sendGraspItem(Room* room, Creature* actor, Object* target)
+	{
+		/*EventManager.send(EventID::GraspItem,room,actor,target,aux);*/
+	}
+
+	void sendReleaseItem(Room* room, Creature* actor, Object* target)
+	{
+		/*EventManager.send(EventID::ReleaseItem,room,actor,target,aux);*/
+	}
+
+	void sendGetItem(Room* room, Creature* actor, Object* target, Object* aux, const std::string& arg_)
+	{
+		/*EventManager.send(EventID::GetItem,room,actor,target,aux,arg_);*/
+	}
+
+	void sendPutItem(Room* room, Creature* actor, Object* target, Object* aux, const std::string& arg_)
+	{
+		/*EventManager.send(EventID::PutItem,room,actor,target,aux,arg_);*/
+	}
+
+	void sendDropItem(Room* room, Creature* actor, Object* target)
+	{
+		/*EventManager.send(EventID::DropItem,room,actor,target,aux);*/
+	}
+
+	void sendPickupItem(Room* room, Creature* actor, Object* target)
+	{
+		/*EventManager.send(EventID::PickupItem,room,actor,target,aux);*/
+	}
+
+} // namespace Events
