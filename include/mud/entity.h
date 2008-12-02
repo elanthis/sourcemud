@@ -26,12 +26,13 @@
 #include "mud/clock.h"
 #include "mud/macro.h"
 #include "mud/name.h"
+#include "lua/object.h"
 
 #define E_SUBTYPE(name,par) \
 	public: \
 	typedef par _parent_type; \
-	inline static const void *get_setype () { return (const void *)name::get_setype; } \
-	virtual bool check_etype (const void *type) const { return (type == name::get_setype ()) || par::check_etype(type); }
+	inline static const void *get_setype() { return (const void *)name::get_setype; } \
+	virtual bool check_etype (const void *type) const { return (type == name::get_setype()) || par::check_etype(type); }
 #define E_TYPE(name) E_SUBTYPE(name,Entity)
 
 // for the global entity list
@@ -50,47 +51,51 @@ class Entity : public IMacroObject
 	Entity();
 
 	// factory handling
-	virtual std::string factory_type () const = 0;
+	virtual std::string factory_type() const = 0;
 	static Entity* create (const std::string& type); // efactory.cc
 
 	// get unique ID
-	inline const UniqueID& get_uid () const { return uid; }
+	inline const UniqueID& get_uid() const { return uid; }
+
+	// Lua scripting support -- returns a userdata representing the
+	// Entity in question.
+	void pushLuaTable() const { return Lua::getObject((void*)this); }
 
 	// name stuff
-	virtual EntityName get_name () const = 0;
+	virtual EntityName get_name() const = 0;
 
 	// description
-	virtual std::string get_desc () const = 0;
+	virtual std::string get_desc() const = 0;
 
 	// events
-	inline const EventList& get_events () const { return events; }
+	inline const EventList& get_events() const { return events; }
 	EventHandler* get_event (EventID event);
 
 	// active
-	inline bool is_active () const { return state == ACTIVE; }
-	virtual void activate (); // subclasses should call Entity::activate() first, then do custom code
-	virtual void deactivate (); // subclasses do custom code, then call Entity::deactivate last
+	inline bool is_active() const { return state == ACTIVE; }
+	virtual void activate(); // subclasses should call Entity::activate() first, then do custom code
+	virtual void deactivate(); // subclasses do custom code, then call Entity::deactivate last
 
 	// destroy() will remove the entity from its parent using
 	// get_owner()->owner_release(this).  over-ridable for any necessary
 	// custom destroy behaviour; *must* call Entity::destroy()
-	virtual void destroy ();
+	virtual void destroy();
 
 	// tags
 	bool has_tag (TagID tag) const;
 	int add_tag (TagID tag);
 	int remove_tag (TagID tag);
-	inline const TagList& get_tags () const { return tags; }
+	inline const TagList& get_tags() const { return tags; }
 
 	// output
 	virtual void display_desc (const class StreamControl& stream) const;
-	virtual std::string ncolor () const { return S(CNORMAL); }
+	virtual std::string ncolor() const { return S(CNORMAL); }
 
 	// save/load
 	static Entity* load (const std::string& factory, File::Reader& reader);
 	int load (File::Reader& reader);
 	virtual int load_node (File::Reader& reader, File::Node& node);
-	virtual int load_finish () = 0;
+	virtual int load_finish() = 0;
 	void save (File::Writer& writer, const std::string& ns, const std::string& name);
 	virtual void save_data (File::Writer& writer);
 	virtual void save_hook (File::Writer& writer);
@@ -107,16 +112,16 @@ class Entity : public IMacroObject
 	virtual void macro_default (const class StreamControl& stream) const;
 
 	// heartbeat
-	virtual void heartbeat () = 0;
+	virtual void heartbeat() = 0;
 
 	// sorting
 	bool operator< (const Entity& ent) const;
 
 	// our custom type checking system
-	inline static const void *get_setype ()
+	inline static const void *get_setype()
 		{ return (const void *)Entity::get_setype; }
 	inline virtual bool check_etype (const void *type) const
-		{ return (type == Entity::get_setype ()); }
+		{ return (type == Entity::get_setype()); }
 
 	// owner management
 	// set_owner() should *only* be called from an owning object's add*()
@@ -156,7 +161,7 @@ class Entity : public IMacroObject
 
 	protected:
 	// protected destructor
-	virtual ~Entity () {}
+	virtual ~Entity();
 	friend class _MEntity;
 };
 
@@ -164,17 +169,17 @@ class Entity : public IMacroObject
 class _MEntity : public IManager
 {
 	public:
-	_MEntity ();
-	~_MEntity ();
+	_MEntity();
+	~_MEntity();
 
 	// initialize the system
-	virtual int initialize ();
+	virtual int initialize();
 
 	// shutdown system
-	virtual void shutdown ();
+	virtual void shutdown();
 
 	// run a single heartbeat loop
-	virtual void heartbeat ();
+	virtual void heartbeat();
 
 	// fetch by tag
 	std::pair<TagTable::const_iterator, TagTable::const_iterator> tag_list (TagID tag) const;

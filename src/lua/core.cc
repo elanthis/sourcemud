@@ -16,6 +16,7 @@ namespace Lua {
 
 	extern bool initializePrint();
 	extern bool initializeMudlib();
+	extern bool initializeEntlib();
 }
 
 bool Lua::initialize()
@@ -39,6 +40,8 @@ bool Lua::initialize()
 	if (!initializePrint())
 		return false;
 	if (!initializeMudlib())
+		return false;
+	if (!initializeEntlib())
 		return false;
 
 	return true;

@@ -30,6 +30,7 @@ HEADERS = \
 	include/common/types.h \
 	include/lua/core.h \
 	include/lua/exec.h \
+	include/lua/object.h \
 	include/lua/print.h \
 	include/mud/account.h \
 	include/mud/action.h \
@@ -97,8 +98,10 @@ SOURCES = \
 	src/common/time.cc \
 	src/generated/commands.cc \
 	src/lua/core.cc \
+	src/lua/entlib.cc \
 	src/lua/exec.cc \
 	src/lua/mudlib.cc \
+	src/lua/object.cc \
 	src/lua/print.cc \
 	src/mud/account.cc \
 	src/mud/action.cc \
@@ -219,7 +222,6 @@ DATA = \
 	data/admin.acct \
 	data/admin.ply \
 	data/zones/saladhin.zone \
-	data/zones/.zone \
 	data/zones/underworld.zone \
 	data/zones/catacombs.zone \
 	data/zones/darkwood.zone \
@@ -289,7 +291,7 @@ sourcemud-bin: $(OBJECTS)
 
 # DATE FILES
 data/session.key:
-	@echo Generating HTTP session key
+	@echo "Generating HTTP session key (this may take a few moments)"
 	@head -c 512 /dev/urandom | base64 -w0 > $@
 
 # GENERATED SOURCE
