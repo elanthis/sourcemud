@@ -132,7 +132,9 @@ SOURCES = \
 	src/mud/message.cc \
 	src/mud/name.cc \
 	src/mud/npc.cc \
+	src/mud/npcbp.cc \
 	src/mud/object.cc \
+	src/mud/objectbp.cc \
 	src/mud/olc.cc \
 	src/mud/player.cc \
 	src/mud/pmanager.cc \

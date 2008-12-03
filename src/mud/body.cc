@@ -17,39 +17,39 @@
 #include "mud/settings.h"
 
 std::string GenderType::names[GenderType::COUNT] = {
-	S("none"),
-	S("female"),
-	S("male"),
+	"none",
+	"female",
+	"male",
 };
 std::string GenderType::hisher[GenderType::COUNT] = {
-	S("its"),
-	S("her"),
-	S("his"),
+	"its",
+	"her",
+	"his",
 };
 std::string GenderType::hishers[GenderType::COUNT] = {
-	S("its"),
-	S("hers"),
-	S("his"),
+	"its",
+	"hers",
+	"his",
 };
 std::string GenderType::heshe[GenderType::COUNT] = {
-	S("it"),
-	S("she"),
-	S("he"),
+	"it",
+	"she",
+	"he",
 };
 std::string GenderType::himher[GenderType::COUNT] = {
-	S("it"),
-	S("her"),
-	S("him"),
+	"it",
+	"her",
+	"him",
 };
 std::string GenderType::manwoman[GenderType::COUNT] = {
-	S("thing"),
-	S("woman"),
-	S("man"),
+	"thing",
+	"woman",
+	"man",
 };
 std::string GenderType::malefemale[GenderType::COUNT] = {
-	S("neuter"),
-	S("female"),
-	S("male"),
+	"neuter",
+	"female",
+	"male",
 };
 
 GenderType
@@ -62,17 +62,17 @@ GenderType::lookup (const std::string& name)
 }
 
 std::string EquipSlot::names[] = {
-	S("none"),
-	S("head"),
-	S("torso"),
-	S("arm"),
-	S("leg"),
-	S("hand"),
-	S("foot"),
-	S("neck"),
-	S("body"),
-	S("back"),
-	S("waist")
+	"none",
+	"head",
+	"torso",
+	"arm",
+	"leg",
+	"hand",
+	"foot",
+	"neck",
+	"body",
+	"back",
+	"waist"
 };
 
 EquipSlot

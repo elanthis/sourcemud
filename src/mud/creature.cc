@@ -28,21 +28,21 @@
 // ----- CreatureStatID -----
 
 std::string CreatureStatID::names[CreatureStatID::COUNT] = {
-	S("Strength"),
-	S("Agility"),
-	S("Fortitude"),
-	S("Intellect"),
-	S("Spirit"),
-	S("Willpower"),
+	"Strength",
+	"Agility",
+	"Fortitude",
+	"Intellect",
+	"Spirit",
+	"Willpower",
 };
 
 std::string CreatureStatID::short_names[CreatureStatID::COUNT] = {
-	S("ST"),
-	S("AG"),
-	S("FO"),
-	S("IN"),
-	S("SP"),
-	S("WI"),
+	"ST",
+	"AG",
+	"FO",
+	"IN",
+	"SP",
+	"WI",
 };
 
 CreatureStatID
@@ -55,15 +55,15 @@ CreatureStatID::lookup (const std::string& name)
 }
 
 std::string stat_levels[] = {
-	S("Wretched"),
-	S("Horrible"),
-	S("Bad"),
-	S("Poor"),
-	S("Average"),
-	S("Fair"),
-	S("Good"),
-	S("Excellent"),
-	S("Awesome"),
+	"Wretched",
+	"Horrible",
+	"Bad",
+	"Poor",
+	"Average",
+	"Fair",
+	"Good",
+	"Excellent",
+	"Awesome",
 };
 
 std::string
@@ -91,42 +91,42 @@ get_stat_level (uint stat) {
 std::string
 get_stat_color (uint stat) {
 	if (stat <= 35)
-		return S(CSTAT_BAD2);
+		return CSTAT_BAD2;
 	else if (stat <= 45)
-		return S(CSTAT_BAD1);
+		return CSTAT_BAD1;
 	else if (stat <= 55)
-		return S(CSTAT);
+		return CSTAT;
 	else if (stat <= 65)
-		return S(CSTAT_GOOD1);
+		return CSTAT_GOOD1;
 	else
-		return S(CSTAT_GOOD2);
+		return CSTAT_GOOD2;
 }
 
 // ----- CreaturePosition -----
 
 std::string CreaturePosition::names[CreaturePosition::COUNT] = {
-	S("stand"),
-	S("sit"),
-	S("lay"),
-	S("kneel"),
+	"stand",
+	"sit",
+	"lay",
+	"kneel",
 };
 std::string CreaturePosition::verbs[CreaturePosition::COUNT] = {
-	S("stand up"),
-	S("sit down"),
-	S("lay down"),
-	S("kneel"),
+	"stand up",
+	"sit down",
+	"lay down",
+	"kneel",
 };
 std::string CreaturePosition::sverbs[CreaturePosition::COUNT] = {
-	S("stands up"),
-	S("sits down"),
-	S("lays down"),
-	S("kneels"),
+	"stands up",
+	"sits down",
+	"lays down",
+	"kneels",
 };
 std::string CreaturePosition::verbings[CreaturePosition::COUNT] = {
-	S("standing"),
-	S("sitting"),
-	S("laying down"),
-	S("kneeling"),
+	"standing",
+	"sitting",
+	"laying down",
+	"kneeling",
 };
 
 CreaturePosition
@@ -146,25 +146,25 @@ Creature::save_data (File::Writer& writer)
 	Entity::save_data(writer);
 
 	if (dead)
-		writer.attr(S("creature"), S("dead"), S("yes"));
+		writer.attr("creature", "dead", "yes");
 
-	writer.attr(S("creature"), S("position"), position.get_name());
+	writer.attr("creature", "position", position.get_name());
 
 	if (coins)
-		writer.attr(S("creature"), S("coins"), coins);
+		writer.attr("creature", "coins", coins);
 
-	writer.attr(S("creature"), S("hp"), health.cur);
+	writer.attr("creature", "hp", health.cur);
 
 	if (equipment.right_held)
-		equipment.right_held->save(writer, S("creature"), S("equip_rhand"));
+		equipment.right_held->save(writer, "creature", "equip_rhand");
 	if (equipment.left_held)
-		equipment.left_held->save(writer, S("creature"), S("equip_lhand"));
+		equipment.left_held->save(writer, "creature", "equip_lhand");
 	if (equipment.body_worn)
-		equipment.body_worn->save(writer, S("creature"), S("equip_body"));
+		equipment.body_worn->save(writer, "creature", "equip_body");
 	if (equipment.back_worn)
-		equipment.back_worn->save(writer, S("creature"), S("equip_back"));
+		equipment.back_worn->save(writer, "creature", "equip_back");
 	if (equipment.waist_worn)
-		equipment.waist_worn->save(writer, S("creature"), S("equip_waist"));
+		equipment.waist_worn->save(writer, "creature", "equip_waist");
 }
 
 void
@@ -189,23 +189,23 @@ Creature::load_node (File::Reader& reader, File::Node& node)
 			health.cur = node.get_int();
 
 		FO_ENTITY("creature", "equip_rhand")
-			if (OBJECT(entity) == NULL) throw File::Error(S("Equipment is not an Object"));
+			if (OBJECT(entity) == NULL) throw File::Error("Equipment is not an Object");
 			equipment.right_held = OBJECT(entity);
 			equipment.right_held->set_owner(this);
 		FO_ENTITY("creature", "equip_lhand")
-			if (OBJECT(entity) == NULL) throw File::Error(S("Equipment is not an Object"));
+			if (OBJECT(entity) == NULL) throw File::Error("Equipment is not an Object");
 			equipment.left_held = OBJECT(entity);
 			equipment.left_held->set_owner(this);
 		FO_ENTITY("creature", "equip_body")
-			if (OBJECT(entity) == NULL) throw File::Error(S("Equipment is not an Object"));
+			if (OBJECT(entity) == NULL) throw File::Error("Equipment is not an Object");
 			equipment.body_worn = OBJECT(entity);
 			equipment.body_worn->set_owner(this);
 		FO_ENTITY("creature", "equip_back")
-			if (OBJECT(entity) == NULL) throw File::Error(S("Equipment is not an Object"));
+			if (OBJECT(entity) == NULL) throw File::Error("Equipment is not an Object");
 			equipment.back_worn = OBJECT(entity);
 			equipment.back_worn->set_owner(this);
 		FO_ENTITY("creature", "equip_waist")
-			if (OBJECT(entity) == NULL) throw File::Error(S("Equipment is not an Object"));
+			if (OBJECT(entity) == NULL) throw File::Error("Equipment is not an Object");
 			equipment.waist_worn = OBJECT(entity);
 			equipment.waist_worn->set_owner(this);
 	FO_NODE_END
@@ -407,16 +407,16 @@ Creature::enter (Room *new_room, Portal *old_portal)
 	// did we go thru an portal?
 	if (old_portal) {
 		// "You go..." message
-		*this << StreamMacro(old_portal->get_go()).add(S("actor"), this).add(S("portal"), old_portal) << "\n";
+		*this << StreamMacro(old_portal->get_go()).add("actor", this).add("portal", old_portal) << "\n";
 
 		// "So-and-so leaves thru..." message
 		if (old_room)
-			*old_room << StreamIgnore(this) << StreamMacro(old_portal->get_leaves()).add(S("actor"), this).add( S("portal"), old_portal) << "\n";
+			*old_room << StreamIgnore(this) << StreamMacro(old_portal->get_leaves()).add("actor", this).add( "portal", old_portal) << "\n";
 	}
 
 	// valid portal?
 	if (enter_portal)
-		*new_room << StreamMacro(enter_portal->get_enters()).add(S("actor"), this).add(S("portal"), enter_portal) << "\n";
+		*new_room << StreamMacro(enter_portal->get_enters()).add("actor", this).add("portal", enter_portal) << "\n";
 	else
 		*new_room << StreamName(this, INDEFINITE, true) << " arrives.\n";
 
@@ -567,38 +567,38 @@ int
 Creature::macro_property (const StreamControl& stream, const std::string& comm, const MacroList& argv) const
 {
 	// HE / SHE
-	if (str_eq(comm, S("he"))) {
+	if (str_eq(comm, "he")) {
 		stream << get_gender().get_heshe();
 	}
 	// HIM / HER
-	else if (str_eq(comm, S("him"))) {
+	else if (str_eq(comm, "him")) {
 		stream << get_gender().get_himher();
 	}
 	// HIS / HER
-	else if (str_eq(comm, S("his"))) {
+	else if (str_eq(comm, "his")) {
 		stream << get_gender().get_hisher();
 	}
 	// HIS / HERS
-	else if (str_eq(comm, S("hers"))) {
+	else if (str_eq(comm, "hers")) {
 		stream << get_gender().get_hishers();
 	}
 	// MAN / WOMAN
-	else if (str_eq(comm, S("man"))) {
+	else if (str_eq(comm, "man")) {
 		stream << get_gender().get_manwoman();
 	}
 	// MALE / FEMALE
-	else if (str_eq(comm, S("male"))) {
+	else if (str_eq(comm, "male")) {
 		stream << get_gender().get_malefemale();
 	}
 	// ALIVE / DEAD
-	else if (str_eq(comm, S("alive"))) {
+	else if (str_eq(comm, "alive")) {
 		if (is_dead())
 			stream << "dead";
 		else
 			stream << "alive";
 	}
 	// POSITION
-	else if (str_eq(comm, S("position"))) {
+	else if (str_eq(comm, "position")) {
 		stream << get_pos().get_verbing();
 	}
 	// default...
@@ -656,7 +656,7 @@ Creature::display_equip (const StreamControl& stream) const
 			if (didshow) {
 				stream << ", ";
 			} else {
-				stream << StreamMacro(S("  {$self.He} is wearing "), S("self"), this);
+				stream << StreamMacro("  {$self.He} is wearing ", "self", this);
 				didshow = true;
 			}
 			// do show
@@ -671,7 +671,7 @@ Creature::display_equip (const StreamControl& stream) const
 		if (didshow) {
 			stream << " and ";
 		} else {
-			stream << StreamMacro(S("  {$self.He} is wearing "), S("self"), this);
+			stream << StreamMacro("  {$self.He} is wearing ", "self", this);
 			didshow = true;
 		}
 		// show it
@@ -692,7 +692,7 @@ Creature::display_equip (const StreamControl& stream) const
 			if (didshow) {
 				stream << ", ";
 			} else {
-				stream << StreamMacro(S("  {$self.He} is holding "), S("self"), this);
+				stream << StreamMacro("  {$self.He} is holding ", "self", this);
 				didshow = true;
 			}
 			// show
@@ -706,7 +706,7 @@ Creature::display_equip (const StreamControl& stream) const
 		if (didshow) {
 			stream << " and ";
 		} else {
-			stream << StreamMacro(S("  {$self.He} is holding "), S("self"), this);
+			stream << StreamMacro("  {$self.He} is holding ", "self", this);
 			didshow = true;
 		}
 		// show it
@@ -715,18 +715,18 @@ Creature::display_equip (const StreamControl& stream) const
 
 	// dead or position
 	if (is_dead())
-		stream << StreamMacro(S("  {$self.He} is laying on the ground, dead."), S("self"), this);
+		stream << StreamMacro("  {$self.He} is laying on the ground, dead.", "self", this);
 	else if (get_pos() != CreaturePosition::STAND)
-		stream << StreamMacro(S("  {$self.He} is {$self.position}."), S("self"), this);
+		stream << StreamMacro("  {$self.He} is {$self.position}.", "self", this);
 
 	// health
 	if (!is_dead() && get_max_hp() > 0) {
 		if (get_hp() * 100 / get_max_hp() <= 25)
-			stream << StreamMacro(S("  {$self.He} appears severely wounded."), S("self"), this);
+			stream << StreamMacro("  {$self.He} appears severely wounded.", "self", this);
 		else if (get_hp() * 100 / get_max_hp() <= 75)
-			stream << StreamMacro(S("  {$self.He} appears wounded."), S("self"), this);
+			stream << StreamMacro("  {$self.He} appears wounded.", "self", this);
 		else
-			stream << StreamMacro(S("  {$self.He} appears to be in good health."), S("self"), this);
+			stream << StreamMacro("  {$self.He} appears to be in good health.", "self", this);
 	}
 }
 

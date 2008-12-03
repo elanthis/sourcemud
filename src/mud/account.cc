@@ -8,6 +8,7 @@
 #include "common.h"
 #include "common/md5.h"
 #include "common/time.h"
+#include "common/string.h"
 #include "mud/account.h"
 #include "mud/fileobj.h"
 #include "mud/settings.h"
@@ -40,23 +41,23 @@ Account::save () const
 		return -1;
 
 	// save it out
-	writer.attr(S("account"), S("name"), name);
-	writer.attr(S("account"), S("email"), email);
-	writer.attr(S("account"), S("passphrase"), pass);
-	for (StringList::const_iterator i = characters.begin(); i != characters.end(); ++i)
-		writer.attr(S("account"), S("character"), *i);
+	writer.attr("account", "name", name);
+	writer.attr("account", "email", email);
+	writer.attr("account", "passphrase", pass);
+	for (std::vector<std::string>::const_iterator i = characters.begin(); i != characters.end(); ++i)
+		writer.attr("account", "character", *i);
 	if (flags.disabled)
-		writer.attr(S("account"), S("disabled"), "yes");
+		writer.attr("account", "disabled", "yes");
 	if (maxcharacters > 0)
-		writer.attr(S("account"), S("maxcharacters"), maxcharacters);
+		writer.attr("account", "maxcharacters", maxcharacters);
 	if (maxactive > 0)
-		writer.attr(S("account"), S("maxactive"), maxactive);
+		writer.attr("account", "maxactive", maxactive);
 	if (timeout > 0)
-		writer.attr(S("account"), S("maxactive"), timeout);
-	writer.attr(S("account"), S("created"), time_to_str(time_created));
-	writer.attr(S("account"), S("lastlogin"), time_to_str(time_lastlogin));
+		writer.attr("account", "maxactive", timeout);
+	writer.attr("account", "created", time_to_str(time_created));
+	writer.attr("account", "lastlogin", time_to_str(time_lastlogin));
 	for (AccessList::const_iterator i = access.begin(); i != access.end(); ++i)
-		writer.attr(S("account"), S("access"), AccessID::nameof(*i));
+		writer.attr("account", "access", AccessID::nameof(*i));
 
 	// done
 	writer.close();
@@ -107,7 +108,7 @@ void
 Account::del_character (const std::string& name)
 {
 	// find in list
-	StringList::iterator i;
+	std::vector<std::string>::iterator i;
 	if ((i = find(characters.begin(), characters.end(), name)) == characters.end())
 		return;
 
@@ -274,23 +275,23 @@ _MAccount::get (const std::string& in_name)
 
 	// read it in
 	FO_READ_BEGIN
-		FO_ATTR("account", S("name"))
+		FO_ATTR("account", "name")
 			account->name = node.get_string();
-		FO_ATTR("account", S("email"))
+		FO_ATTR("account", "email")
 			account->email = node.get_string();
-		FO_ATTR("account", S("passphrase"))
+		FO_ATTR("account", "passphrase")
 			account->pass = node.get_string();
-		FO_ATTR("account", S("character"))
+		FO_ATTR("account", "character")
 			account->characters.push_back(node.get_string());
-		FO_ATTR("account", S("maxcharacters"))
+		FO_ATTR("account", "maxcharacters")
 			account->maxcharacters = node.get_int();
-		FO_ATTR("account", S("maxactive"))
+		FO_ATTR("account", "maxactive")
 			account->maxactive = node.get_int();
-		FO_ATTR("account", S("timeout"))
+		FO_ATTR("account", "timeout")
 			account->timeout = node.get_int();
-		FO_ATTR("account", S("disabled"))
+		FO_ATTR("account", "disabled")
 			account->flags.disabled = node.get_bool();
-		FO_ATTR("account", S("access"))
+		FO_ATTR("account", "access")
 			account->access.insert(AccessID::create(node.get_string()));
 		FO_ATTR("account", "created")
 			account->time_created = str_to_time(node.get_string());

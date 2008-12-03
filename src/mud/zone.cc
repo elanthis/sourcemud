@@ -9,6 +9,7 @@
 #include "common/rand.h"
 #include "common/streams.h"
 #include "common/file.h"
+#include "common/string.h"
 #include "mud/room.h"
 #include "mud/zone.h"
 #include "mud/settings.h"
@@ -123,16 +124,16 @@ Spawn::load (File::Reader& reader)
 void
 Spawn::save (File::Writer& writer) const
 {
-	writer.begin(S("zone"), S("spawn"));
+	writer.begin("zone", "spawn");
 
-	writer.attr(S("spawn"), S("tag"), TagID::nameof(tag));
-	writer.attr(S("spawn"), S("count"), min);
-	writer.attr(S("spawn"), S("delay"), delay);
-	for (StringList::const_iterator i = blueprints.begin(); i != blueprints.end(); ++i) {
-		writer.attr(S("spawn"), S("blueprint"), *i);
+	writer.attr("spawn", "tag", TagID::nameof(tag));
+	writer.attr("spawn", "count", min);
+	writer.attr("spawn", "delay", delay);
+	for (std::vector<std::string>::const_iterator i = blueprints.begin(); i != blueprints.end(); ++i) {
+		writer.attr("spawn", "blueprint", *i);
 	}
-	for (StringList::const_iterator i = rooms.begin(); i != rooms.end(); ++i) {
-		writer.attr(S("spawn"), S("room"), *i);
+	for (std::vector<std::string>::const_iterator i = rooms.begin(); i != rooms.end(); ++i) {
+		writer.attr("spawn", "room", *i);
 	}
 
 	writer.end();
@@ -180,14 +181,14 @@ Zone::load (const std::string& path)
 		FO_ATTR("zone", "id")
 			id = node.get_string();
 		FO_ENTITY("zone", "child")
-			if (ROOM(entity) == NULL) throw File::Error(S("Zone child is not a Room"));
+			if (ROOM(entity) == NULL) throw File::Error("Zone child is not a Room");
 			add_room(ROOM(entity));
 		FO_OBJECT("zone", "spawn")
 			Spawn spawn;
 			if (!spawn.load (reader))
 				spawns.push_back(spawn);
 			else
-				throw File::Error(S("Failed to load room"));
+				throw File::Error("Failed to load room");
 	FO_READ_ERROR
 		return -1;
 	FO_READ_END
@@ -206,7 +207,7 @@ Zone::save()
 		time_t base_t;
 		time (&base_t);
 		strftime (time_buffer, sizeof (time_buffer), "%Y%m%d%H%M%S", localtime (&base_t));
-		std::string backup = path + S(".") + std::string(time_buffer) + S("~");
+		std::string backup = path + "." + std::string(time_buffer) + "~";
 		if (File::rename(path, backup.c_str())) /* move file */
 			Log::Error << "Backup of zone '" << get_id() << "' to " << backup << " failed: " << strerror(errno);
 	}
@@ -218,28 +219,28 @@ Zone::save()
 	}
 
 	// header
-	writer.comment(S("Zone: ") + get_id());
+	writer.comment("Zone: " + get_id());
 
 	// basics
 	writer.bl();
-	writer.comment (S("--- BASICS ---"));
-	writer.attr(S("zone"), S("id"), id);
-	writer.attr(S("zone"), S("name"), name);
+	writer.comment ("--- BASICS ---");
+	writer.attr("zone", "id", id);
+	writer.attr("zone", "name", name);
 
 	// spawns
 	writer.bl();
-	writer.comment (S("--- SPAWNS ---"));
+	writer.comment ("--- SPAWNS ---");
 	for (SpawnList::const_iterator i = spawns.begin(); i != spawns.end(); ++i)
 		i->save(writer);
 
 	// rooms
 	writer.bl();
-	writer.comment(S("--- ROOMS ---"));
+	writer.comment("--- ROOMS ---");
 	for (RoomList::iterator i = rooms.begin(); i != rooms.end(); ++i)
-		(*i)->save(writer, S("zone"), S("child"));
+		(*i)->save(writer, "zone", "child");
 
 	writer.bl();
-	writer.comment (S(" --- EOF ---"));
+	writer.comment (" --- EOF ---");
 }
 
 void
@@ -324,9 +325,9 @@ int
 _MZone::load_world()
 {
 	// read zones dir
-	StringList files = File::dirlist(MSettings.get_zone_path());
+	std::vector<std::string> files = File::dirlist(MSettings.get_zone_path());
 	File::filter(files, "*.zone");
-	for (StringList::iterator i = files.begin(); i != files.end(); ++i) {
+	for (std::vector<std::string>::iterator i = files.begin(); i != files.end(); ++i) {
 		Zone* zone = new Zone();
 		if (zone->load (*i))
 			return -1;

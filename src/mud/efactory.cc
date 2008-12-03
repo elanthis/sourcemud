@@ -7,6 +7,7 @@
 
 #include "common.h"
 #include "common/log.h"
+#include "common/string.h"
 #include "mud/efactory.h"
 #include "mud/entity.h"
 

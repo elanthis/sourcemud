@@ -13,11 +13,6 @@
 
 #define isvowel (ch) ((ch) == 'a' || (ch) == 'e' || (ch) == 'i' || (ch) == 'o' || (ch) == 'u' || (ch) == 'y')
 
-#define S(str) std::string(str)
-
-// a list of strings
-typedef std::vector<std::string> StringList;
-
 // return suffix of number, like 1=>st, 2=>nd, etc.
 std::string get_num_suffix (uint);
 
@@ -70,12 +65,12 @@ std::string base_name (const char* path);
 bool has_suffix (const char* base, const char* suffix);
 
 // string list building/parsing
-StringList& explode(StringList& out, const std::string& string, char ch);
-std::string& implode(std::string& out, const StringList& list, char ch);
+std::vector<std::string>& explode(std::vector<std::string>& out, const std::string& string, char ch);
+std::string& implode(std::string& out, const std::vector<std::string>& list, char ch);
 std::string& capwords(std::string& out, const std::string& string);
 // and 'easy' versions there-of
-inline StringList explode(const std::string& string, char ch) { StringList tmp; return explode(tmp, string, ch); }
-inline std::string implode(const StringList& list, char ch) { std::string tmp; return implode(tmp, list, ch); }
+inline std::vector<std::string> explode(const std::string& string, char ch) { std::vector<std::string> tmp; return explode(tmp, string, ch); }
+inline std::string implode(const std::vector<std::string>& list, char ch) { std::string tmp; return implode(tmp, list, ch); }
 inline std::string capwords(const std::string& string) { std::string tmp; return capwords(tmp, string); }
 
 // trim out unacceptable characters

@@ -4,12 +4,13 @@ open(OUT, ">src/generated/commands.cc");
 print OUT "// AUTOMATICALLY GENERATED - DO NOT EDIT\n";
 print OUT "// Generated on $(date)\n";
 		
+print OUT "#include \"common.h\"\n";
 print OUT "#include \"mud/command.h\"\n";
 print OUT "int _MCommand::initialize () {\n";
 print OUT "AccessID ACCESS_ALL;\n";
-print OUT "AccessID ACCESS_GM = AccessID::create(S(\"gm\"));\n";
-print OUT "AccessID ACCESS_BUILDER = AccessID::create(S(\"builder\"));\n";
-print OUT "AccessID ACCESS_ADMIN = AccessID::create(S(\"admin\"));\n";
+print OUT "AccessID ACCESS_GM = AccessID::create(\"gm\");\n";
+print OUT "AccessID ACCESS_BUILDER = AccessID::create(\"builder\");\n";
+print OUT "AccessID ACCESS_ADMIN = AccessID::create(\"admin\");\n";
 
 for my $file (glob "src/cmd/*.cc") {
 	open(IN, "<$file");

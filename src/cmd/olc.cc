@@ -5,8 +5,11 @@
  * http://www.sourcemud.org
  */
 
-#include "mud/creature.h"
+#include "common.h"
 #include "common/error.h"
+#include "common/streams.h"
+#include "common/string.h"
+#include "mud/creature.h"
 #include "mud/server.h"
 #include "mud/room.h"
 #include "mud/zone.h"
@@ -14,7 +17,6 @@
 #include "mud/player.h"
 #include "mud/npc.h"
 #include "mud/object.h"
-#include "common/streams.h"
 #include "mud/olc.h"
 #include "mud/shadow-object.h"
 #include "mud/unique-object.h"
@@ -41,7 +43,7 @@ using namespace OLC;
 void command_olc_create (Player* builder, std::string argv[])
 {
 	// create npc from blueprint
-	if (str_eq (argv[0], S("npc"))) {
+	if (str_eq (argv[0], "npc")) {
 		Npc *new_npc = NULL;
 		if (!argv[1].empty()) {
 			new_npc = Npc::load_blueprint(argv[1]);
@@ -56,7 +58,7 @@ void command_olc_create (Player* builder, std::string argv[])
 		new_npc->enter (builder->get_room(), NULL);
 		*builder << "New NPC " << StreamName(*new_npc, NONE) << " created.\n";
 	// creat object from blueprint
-	} else if (str_eq (argv[0], S("object"))) {
+	} else if (str_eq (argv[0], "object")) {
 		Object* new_object = NULL;
 		if (!argv[1].empty()) {
 			new_object = ShadowObject::load_blueprint(argv[1]);
@@ -71,7 +73,7 @@ void command_olc_create (Player* builder, std::string argv[])
 		builder->get_room()->add_object (new_object);
 		*builder << "New object " << StreamName(*new_object, NONE) << " created.\n";
 	// create portal in room
-	} else if (str_eq(argv[0], S("portal"))) {
+	} else if (str_eq(argv[0], "portal")) {
 		Room* room = builder->get_room();
 		if (room == NULL) {
 			*builder << "You are not in a room.\n";
@@ -99,7 +101,7 @@ void command_olc_create (Player* builder, std::string argv[])
 		portal->set_target(target->get_id());
 		*builder << "Portal created.\n";
 	// create room in zone
-	} else if (str_eq(argv[0], S("room"))) {
+	} else if (str_eq(argv[0], "room")) {
 		Zone *zone = NULL;
 		if (!argv[2].empty()) {
 			zone = MZone.get_zone(argv[2]);
@@ -129,7 +131,7 @@ void command_olc_create (Player* builder, std::string argv[])
 		*builder << "Room '" << room->get_id () << "' added.\n";
 		zone->add_room (room);
 	// create zone
-	} else if (str_eq(argv[0], S("zone"))) {
+	} else if (str_eq(argv[0], "zone")) {
 		if (MZone.get_zone (argv[1])) {
 			*builder << "Zone '" << argv[1] << "' already exists.\n";
 			return;

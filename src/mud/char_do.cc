@@ -5,12 +5,14 @@
  * http://www.sourcemud.org
  */
 
+#include "common.h"
+#include "common/streams.h"
+#include "common/string.h"
 #include "mud/creature.h"
 #include "mud/server.h"
 #include "mud/room.h"
 #include "mud/body.h"
 #include "mud/player.h"
-#include "common/streams.h"
 #include "mud/macro.h"
 #include "mud/action.h"
 #include "mud/object.h"
@@ -20,7 +22,7 @@ void
 Creature::do_emote (const std::string& action)
 {
 	if (get_room())
-		*get_room() << "(S(" << StreamName(this, DEFINITE, true) << ") " << action << ")\n";
+		*get_room() << "(" << StreamName(this, DEFINITE, true) << ") " << action << "\n";
 }
 
 void
@@ -68,7 +70,7 @@ void
 Creature::do_sing (const std::string& text)
 {
 	// split into lines
-	StringList lines;
+	std::vector<std::string> lines;
 	explode(lines, text, ';');
 	if (lines.size() > 4) {
 		*this << "You may only sing up to four lines at a time.\n";
@@ -76,7 +78,7 @@ Creature::do_sing (const std::string& text)
 	}
 
 	// trim lines
-	StringList::iterator li = lines.begin();
+	std::vector<std::string>::iterator li = lines.begin();
 	while (li != lines.end()) {
 		*li = strip(*li);
 		if (li->empty())
@@ -172,7 +174,7 @@ Creature::do_look (Object *obj, ObjectLocation type)
 	} else {
 		// generic - description and on or in contents
 		if (!obj->get_desc().empty())
-			*this << StreamMacro(obj->get_desc(), S("self"), obj, S("actor"), this) << "  ";
+			*this << StreamMacro(obj->get_desc(), "self", obj, "actor", this) << "  ";
 		// on contents?
 		if (obj->has_location(ObjectLocation::ON))
 			obj->show_contents(PLAYER(this), ObjectLocation::ON);
@@ -195,7 +197,7 @@ Creature::do_look (Portal *portal)
 
 	// basic description
 	if (!portal->get_desc().empty())
-		*this << StreamMacro(portal->get_desc(), S("portal"), portal, S("actor"), this) << "  ";
+		*this << StreamMacro(portal->get_desc(), "portal", portal, "actor", this) << "  ";
 	else if (target_room == NULL)
 		*this << "There is nothing remarkable about " << StreamName(*portal, DEFINITE) << ".  ";
 

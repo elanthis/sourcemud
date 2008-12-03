@@ -123,9 +123,9 @@ bool str_is_email(const std::string& string)
 bool str_is_true(const std::string& string)
 {
 	return (
-		str_eq(string, S("true")) ||
-		str_eq(string, S("yes")) ||
-		str_eq(string, S("on")) ||
+		str_eq(string, "true") ||
+		str_eq(string, "yes") ||
+		str_eq(string, "on") ||
 		(str_is_number(string) && tolong(string) != 0)
 	);
 }
@@ -133,9 +133,9 @@ bool str_is_true(const std::string& string)
 bool str_is_false(const std::string& string)
 {
 	return (
-		str_eq(string, S("false")) ||
-		str_eq(string, S("no")) ||
-		str_eq(string, S("off")) ||
+		str_eq(string, "false") ||
+		str_eq(string, "no") ||
+		str_eq(string, "off") ||
 		string == "0"
 	);
 }
@@ -240,13 +240,13 @@ bool phrase_match (const char* match, const char* test)
 
 std::string
 get_num_suffix (unsigned int num) {
-	if (num == 11 || num == 12 || num == 13) { return S("th"); }
+	if (num == 11 || num == 12 || num == 13) { return "th"; }
 	num %= 10;
-	return num == 1 ? S("st") : num == 2 ? S("nd") : num == 3 ? S("rd") : S("th");
+	return num == 1 ? "st" : num == 2 ? "nd" : num == 3 ? "rd" : "th";
 }
 
-StringList&
-explode (StringList& list, const std::string& str, char ch)
+std::vector<std::string>&
+explode (std::vector<std::string>& list, const std::string& str, char ch)
 {
 	list.clear();
 
@@ -266,12 +266,12 @@ explode (StringList& list, const std::string& str, char ch)
 	return list;
 }
 
-std::string& implode(std::string& string, const StringList& list, char ch)
+std::string& implode(std::string& string, const std::vector<std::string>& list, char ch)
 {
 	StringBuffer buffer;
 
 	// keep adding to string
-	for (StringList::const_iterator i = list.begin(); i != list.end(); ++i) {
+	for (std::vector<std::string>::const_iterator i = list.begin(); i != list.end(); ++i) {
 		if (!buffer.empty())
 			buffer << ch;
 		buffer << *i;

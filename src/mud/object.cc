@@ -10,12 +10,10 @@
 #include "common/error.h"
 #include "common/file.h"
 #include "common/streams.h"
-#include "mud/entity.h"
 #include "mud/object.h"
 #include "mud/creature.h"
 #include "mud/room.h"
 #include "mud/server.h"
-#include "mud/body.h"
 #include "mud/player.h"
 #include "mud/settings.h"
 #include "mud/hooks.h"
@@ -24,143 +22,11 @@
 #include "mud/efactory.h"
 
 std::string ObjectLocation::names[] = {
-	S("none"),
-	S("in"),
-	S("on"),
-	S("MAX")
+	"none",
+	"in",
+	"on",
+	"MAX"
 };
-
-// ----- ObjectBP -----
-
-ObjectBP::ObjectBP()
-{
-	weight = 0;
-	cost = 0;
-}
-
-bool
-ObjectBP::set_name(const std::string& s_name)
-{
-	bool ret = name.set_name(s_name);
-	return ret;
-}
-
-EntityName
-ObjectBP::get_name() const
-{
-	return name;
-}
-
-bool
-ObjectBP::has_tag(TagID tag) const
-{
-	return tags.find(tag) != tags.end();
-}
-
-int
-ObjectBP::add_tag(TagID tag)
-{
-	tags.insert(tag);
-	return 0;
-}
-
-int
-ObjectBP::remove_tag(TagID tag)
-{
-	// find
-	TagList::iterator ti = std::find(tags.begin(), tags.end(), tag);
-	if (ti == tags.end())
-		return 1;
-
-	// remove
-	tags.erase(ti);
-
-	return 0;
-}
-
-void
-ObjectBP::save(File::Writer& writer)
-{
-	if (!id.empty())
-		writer.attr(S("blueprint"), S("id"), id);
-
-	writer.attr(S("blueprint"), S("name"), name.get_name());
-	writer.attr(S("blueprint"), S("desc"), desc);
-
-	for (StringList::const_iterator i = keywords.begin(); i != keywords.end(); ++i)
-		writer.attr(S("blueprint"), S("keyword"), *i);
-
-	writer.attr(S("blueprint"), S("equip"), equip.get_name());
-
-	writer.attr(S("blueprint"), S("cost"), cost);
-	writer.attr(S("blueprint"), S("weight"), weight);
-
-	writer.attr(S("blueprint"), S("hidden"), flags.check(ObjectFlag::HIDDEN));
-	writer.attr(S("blueprint"), S("gettable"), flags.check(ObjectFlag::GET));
-	writer.attr(S("blueprint"), S("touchable"), flags.check(ObjectFlag::TOUCH));
-	writer.attr(S("blueprint"), S("dropable"), flags.check(ObjectFlag::DROP));
-	writer.attr(S("blueprint"), S("trashable"), flags.check(ObjectFlag::TRASH));
-	writer.attr(S("blueprint"), S("rotting"), flags.check(ObjectFlag::ROT));
-
-	if (locations.check(ObjectLocation::IN))
-		writer.attr(S("blueprint"), S("container"), S("in"));
-	if (locations.check(ObjectLocation::ON))
-		writer.attr(S("blueprint"), S("container"), S("on"));
-
-	for (TagList::iterator i = tags.begin(); i != tags.end(); ++i)
-		writer.attr(S("blueprint"), S("tag"), i->name());
-
-	// script hook
-	Hooks::save_object_blueprint(this, writer);
-}
-
-int
-ObjectBP::load(File::Reader& reader)
-{
-	FO_READ_BEGIN
-		FO_ATTR("blueprint", "id")
-			id = node.get_string();
-		FO_ATTR("blueprint", "name")
-			set_name(node.get_string());
-		FO_ATTR("blueprint", "keyword")
-			keywords.push_back(node.get_string());
-		FO_ATTR("blueprint", "desc")
-			set_desc(node.get_string());
-		FO_ATTR("blueprint", "weight")
-			set_weight(node.get_int());
-		FO_ATTR("blueprint", "cost")
-			set_cost(node.get_int());
-		FO_ATTR("blueprint", "equip")
-			set_equip(EquipSlot::lookup(node.get_string()));
-		FO_ATTR("blueprint", "gettable")
-			set_flag(ObjectFlag::GET, node.get_bool());
-		FO_ATTR("blueprint", "touchable")
-			set_flag(ObjectFlag::TOUCH, node.get_bool());
-		FO_ATTR("blueprint", "hidden")
-			set_flag(ObjectFlag::HIDDEN, node.get_bool());
-		FO_ATTR("blueprint", "dropable")
-			set_flag(ObjectFlag::DROP, node.get_bool());
-		FO_ATTR("blueprint", "trashable")
-			set_flag(ObjectFlag::TRASH, node.get_bool());
-		FO_ATTR("blueprint", "rotting")
-			set_flag(ObjectFlag::ROT, node.get_bool());
-		FO_ATTR("blueprint", "container")
-			if (node.get_string() == S("on")) {
-				locations.set_on(ObjectLocation::ON);
-			} else if (node.get_string() == S("in")) {
-				locations.set_on(ObjectLocation::IN);
-			} else
-				Log::Warning << "Unknown container type '" << node.get_string() << "' at " << reader.get_filename() << ':' << node.get_line();
-		FO_ATTR("blueprint", "tag")
-			tags.insert(TagID::create(node.get_string()));
-	FO_READ_ERROR
-		return -1;
-	FO_READ_END
-
-	return 0;
-}
-
-// ----- Object -----
 
 Object::Object()
 {
@@ -187,13 +53,13 @@ Object::save_data(File::Writer& writer)
 {
 	// parent location
 	if (container == ObjectLocation::IN)
-		writer.attr(S("object"), S("location"), S("in"));
+		writer.attr("object", "location", "in");
 	if (container == ObjectLocation::ON)
-		writer.attr(S("object"), S("location"), S("on"));
+		writer.attr("object", "location", "on");
 
 	// save children objects
 	for (EList<Object>::const_iterator e = children.begin(); e != children.end(); ++e) {
-		(*e)->save(writer, S("object"), S("child"));
+		(*e)->save(writer, "object", "child");
 	}
 
 	// parent data
@@ -203,31 +69,31 @@ Object::save_data(File::Writer& writer)
 void
 UniqueObject::save_data(File::Writer& writer)
 {
-	writer.attr(S("object"), S("name"), name.get_name());
-	writer.attr(S("object"), S("desc"), desc);
+	writer.attr("object", "name", name.get_name());
+	writer.attr("object", "desc", desc);
 
-	for (StringList::const_iterator i = keywords.begin(); i != keywords.end(); ++i)
-		writer.attr(S("object"), S("keyword"), *i);
+	for (std::vector<std::string>::const_iterator i = keywords.begin(); i != keywords.end(); ++i)
+		writer.attr("object", "keyword", *i);
 
-	writer.attr(S("object"), S("equip"), equip.get_name());
+	writer.attr("object", "equip", equip.get_name());
 
-	writer.attr(S("object"), S("cost"), cost);
-	writer.attr(S("object"), S("weight"), weight);
+	writer.attr("object", "cost", cost);
+	writer.attr("object", "weight", weight);
 
-	writer.attr(S("object"), S("hidden"), flags.check(ObjectFlag::HIDDEN));
-	writer.attr(S("object"), S("gettable"), flags.check(ObjectFlag::GET));
-	writer.attr(S("object"), S("touchable"), flags.check(ObjectFlag::TOUCH));
-	writer.attr(S("object"), S("dropable"), flags.check(ObjectFlag::DROP));
-	writer.attr(S("object"), S("trashable"), flags.check(ObjectFlag::TRASH));
-	writer.attr(S("object"), S("rotting"), flags.check(ObjectFlag::ROT));
+	writer.attr("object", "hidden", flags.check(ObjectFlag::HIDDEN));
+	writer.attr("object", "gettable", flags.check(ObjectFlag::GET));
+	writer.attr("object", "touchable", flags.check(ObjectFlag::TOUCH));
+	writer.attr("object", "dropable", flags.check(ObjectFlag::DROP));
+	writer.attr("object", "trashable", flags.check(ObjectFlag::TRASH));
+	writer.attr("object", "rotting", flags.check(ObjectFlag::ROT));
 
 	if (locations.check(ObjectLocation::IN))
-		writer.attr(S("object"), S("container"), S("in"));
+		writer.attr("object", "container", "in");
 	if (locations.check(ObjectLocation::ON))
-		writer.attr(S("object"), S("container"), S("on"));
+		writer.attr("object", "container", "on");
 
 	for (TagList::iterator i = tags.begin(); i != tags.end(); ++i)
-		writer.attr(S("object"), S("tag"), i->name());
+		writer.attr("object", "tag", i->name());
 
 	// parent data
 	Object::save_data(writer);
@@ -238,11 +104,11 @@ ShadowObject::save_data(File::Writer& writer)
 {
 	// save blueprint
 	if (get_blueprint())
-		writer.attr(S("object"), S("blueprint"), get_blueprint()->get_id());
+		writer.attr("object", "blueprint", get_blueprint()->get_id());
 
 	// save name, if set
 	if (!name.empty())
-		writer.attr(S("object"), S("name"), name.get_name());
+		writer.attr("object", "name", name.get_name());
 
 	// parent data
 	Object::save_data(writer);
@@ -278,14 +144,14 @@ Object::load_node(File::Reader& reader, File::Node& node)
 {
 	FO_NODE_BEGIN
 		FO_ATTR("object", "location")
-			if (node.get_string() == S("in"))
+			if (node.get_string() == "in")
 				container = ObjectLocation::IN;
-			else if (node.get_string() == S("on"))
+			else if (node.get_string() == "on")
 				container = ObjectLocation::ON;
 			else
-				throw File::Error(S("Object has invalid container attribute"));
+				throw File::Error("Object has invalid container attribute");
 		FO_ENTITY("object", "child")
-			if (OBJECT(entity) == NULL) throw File::Error(S("Object child is not an Object"));
+			if (OBJECT(entity) == NULL) throw File::Error("Object child is not an Object");
 			OBJECT(entity)->set_owner (this);
 			children.add (OBJECT(entity));
 		FO_PARENT(Entity)
@@ -338,9 +204,9 @@ UniqueObject::load_node(File::Reader& reader, File::Node& node)
 		FO_ATTR("object", "rotting")
 			set_flag(ObjectFlag::ROT, node.get_bool());
 		FO_ATTR("object", "container")
-			if (node.get_string() == S("on")) {
+			if (node.get_string() == "on") {
 				locations.set_on(ObjectLocation::ON);
-			} else if (node.get_string() == S("in")) {
+			} else if (node.get_string() == "in") {
 				locations.set_on(ObjectLocation::IN);
 			} else
 				Log::Warning << "Unknown container type '" << node.get_string() << "' at " << reader.get_filename() << ':' << node.get_line();
@@ -485,11 +351,11 @@ Object::show_contents(Player *player, ObjectLocation container) const
 		*player << "nothing";
 
 	// finish up
-	std::string tname = S("somewhere on");
+	std::string tname = "somewhere on";
 	if (container == ObjectLocation::ON)
-		tname = S("on");
+		tname = "on";
 	else if (container == ObjectLocation::IN)
-		tname = S("in");
+		tname = "in";
 	*player << " " << tname << " " << StreamName(*this, DEFINITE, false) << ".\n";
 }
 
@@ -710,71 +576,13 @@ ShadowObject::name_match(const std::string& match) const
 	// blueprint keywords
 	ObjectBP* blueprint = get_blueprint();
 	if (blueprint != NULL) {
-		for (StringList::const_iterator i = blueprint->get_keywords().begin(); i != blueprint->get_keywords().end(); ++i)
+		for (std::vector<std::string>::const_iterator i = blueprint->get_keywords().begin(); i != blueprint->get_keywords().end(); ++i)
 			if (phrase_match (*i, match))
 				return true;
 	}
 
 	// no match
 	return false;
-}
-
-// Object Blueprint Manager
-
-_MObjectBP MObjectBP;
-
-int
-_MObjectBP::initialize()
-{
-	// requirements
-	if (require(MEvent) != 0)
-		return 1;
-
-	StringList files = File::dirlist(MSettings.get_blueprint_path());
-	File::filter(files, "*.objs");
-	for (StringList::iterator i = files.begin(); i != files.end(); ++i) {
-		// load from file
-		File::Reader reader;
-		if (reader.open(*i))
-			return -1;
-		FO_READ_BEGIN
-			FO_OBJECT("blueprint", "object")
-				ObjectBP* blueprint = new ObjectBP();
-				if (blueprint->load(reader)) {
-					Log::Warning << "Failed to load blueprint in " << reader.get_filename() << " at " << node.get_line();
-					return -1;
-				}
-
-				if (blueprint->get_id().empty()) {
-					Log::Warning << "Blueprint has no ID in " << reader.get_filename() << " at " << node.get_line();
-					return -1;
-				}
-
-				blueprints[blueprint->get_id()] = blueprint;
-		FO_READ_ERROR
-			return -1;
-		FO_READ_END
-	}
-
-	return 0;
-}
-
-void
-_MObjectBP::shutdown()
-{
-	for (BlueprintMap::iterator i = blueprints.begin(), e = blueprints.end();
-			i != e; ++i)
-		delete i->second;
-}
-
-ObjectBP*
-_MObjectBP::lookup(const std::string& id)
-{
-	BlueprintMap::iterator iter = blueprints.find(id);
-	if (iter == blueprints.end())
-		return NULL;
-	else
-		return iter->second;
 }
 
 BEGIN_EFACTORY(SObject)

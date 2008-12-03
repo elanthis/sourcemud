@@ -10,7 +10,6 @@
 
 #include "common.h"
 #include "common/types.h"
-#include "common/string.h"
 #include "common/imanager.h"
 #include "common/strbuf.h"
 #include "mud/server.h"

@@ -9,7 +9,6 @@
 #define __ACCOUNT_H__
 
 #include "common.h"
-#include "common/string.h"
 #include "common/imanager.h"
 #include "mud/server.h"
 #include "mud/idmap.h"
@@ -29,13 +28,13 @@ class Account : public IMacroObject
 {
 	public:
 	// the ID
-	std::string get_id () const { return id; }
+	std::string get_id() const { return id; }
 
 	// account info
-	std::string get_name () const { return name; }
+	std::string get_name() const { return name; }
 	void set_name (const std::string& s_name) { name = s_name; }
 
-	std::string get_email () const { return email; }
+	std::string get_email() const { return email; }
 	void set_email (const std::string& s_email) { email = s_email; }
 
 	// pass phrases
@@ -43,45 +42,45 @@ class Account : public IMacroObject
 	void set_passphrase (const std::string& s_pass);
 
 	// character list
-	const StringList& get_char_list () const { return characters; }
+	const std::vector<std::string>& get_char_list() const { return characters; }
 	void add_character (const std::string& name);
 	void del_character (const std::string& name);
 
 	// times
-	time_t get_time_created () const { return time_created; }
-	time_t get_time_lastlogin () const { return time_lastlogin; }
-	void update_time_lastlogin ();
+	time_t get_time_created() const { return time_created; }
+	time_t get_time_lastlogin() const { return time_lastlogin; }
+	void update_time_lastlogin();
 
 	// save out
-	int save () const;
+	int save() const;
 
 	// active counts
-	uint get_active () { return active; }
+	uint get_active() { return active; }
 	// manage active connections FIXME should only be available to Player...
-	void inc_active () { ++active; }
-	void dec_active () { --active; }
+	void inc_active() { ++active; }
+	void dec_active() { --active; }
 
 	// limits
-	uint get_max_characters () const;
-	uint get_max_active () const;
-	uint get_timeout () const { return timeout; }
+	uint get_max_characters() const;
+	uint get_max_active() const;
+	uint get_timeout() const { return timeout; }
 	void set_max_characters (uint value) { maxcharacters = value; }
 	void set_max_active (uint value) { maxactive = value; }
 	void set_timeout (uint value) { timeout = value; }
-	bool is_disabled () const { return flags.disabled; }
+	bool is_disabled() const { return flags.disabled; }
 	void set_disabled (bool value) { flags.disabled = value; }
 
 	// access privileges
 	bool has_access (AccessID) const; // true if we do, false if we don't
 	bool grant_access (AccessID); // returns true if added, false is we already have
 	bool revoke_access (AccessID); // returns true if removed, flase if we didn't have it
-	const AccessList& get_access () const { return access; }
-	bool is_gm () const { return has_access(AccessID::lookup(S("gm"))); }
-	bool is_admin () const { return has_access(AccessID::lookup(S("admin"))); }
-	bool is_builder () const { return has_access(AccessID::lookup(S("builder"))); }
-	void grant_admin () { grant_access(AccessID::lookup(S("admin"))); }
-	void grant_gm () { grant_access(AccessID::lookup(S("gm"))); }
-	void grant_builder () { grant_access(AccessID::lookup(S("builder"))); }
+	const AccessList& get_access() const { return access; }
+	bool is_gm() const { return has_access(AccessID::lookup("gm")); }
+	bool is_admin() const { return has_access(AccessID::lookup("admin")); }
+	bool is_builder() const { return has_access(AccessID::lookup("builder")); }
+	void grant_admin() { grant_access(AccessID::lookup("admin")); }
+	void grant_gm() { grant_access(AccessID::lookup("gm")); }
+	void grant_builder() { grant_access(AccessID::lookup("builder")); }
 
 	// parsing
 	virtual int macro_property (const class StreamControl& stream, const std::string& method, const MacroList& argv) const;
@@ -98,7 +97,7 @@ class Account : public IMacroObject
 	uint timeout; // 0 means default
 	time_t time_created;
 	time_t time_lastlogin;
-	StringList characters;
+	std::vector<std::string> characters;
 	AccessList access;
 
 	struct AccountFlags {
@@ -106,7 +105,7 @@ class Account : public IMacroObject
 	} flags;
 
 	Account (const std::string& s_id);
-	~Account ();
+	~Account();
 
 	friend class _MAccount;
 };
@@ -114,8 +113,8 @@ class Account : public IMacroObject
 class _MAccount : public IManager
 {
 	public:
-	virtual int initialize ();
-	virtual void shutdown ();
+	virtual int initialize();
+	virtual void shutdown();
 
 	Account* get (const std::string& name); // need a copy for get
 

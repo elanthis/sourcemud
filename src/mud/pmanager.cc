@@ -7,6 +7,7 @@
 
 #include "common.h"
 #include "common/file.h"
+#include "common/string.h"
 #include "mud/player.h"
 #include "mud/account.h"
 #include "mud/settings.h"

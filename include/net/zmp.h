@@ -33,7 +33,6 @@
 #define ZMP_H 1
 
 #include "common.h"
-#include "common/string.h"
 #include "common/types.h"
 #include "common/imanager.h"
 #include "net/telnet.h"
@@ -69,7 +68,7 @@ class ZMPPack
 	{ telnet->send_zmp(args.size(), &args[0]); }
 
 	private:
-	StringList args;
+	std::vector<std::string> args;
 };
 
 /* ---- ZMP INVOCATIONS ---- */

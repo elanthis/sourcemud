@@ -9,7 +9,6 @@
 #define SOURCEMUD_MUD_CAFFECT_H
 
 #include "common.h"
-#include "common/string.h"
 #include "mud/creature.h"
 
 class CreatureAffectType
@@ -53,7 +52,7 @@ class ICreatureAffect
 
 	virtual void update (Creature* character) const = 0;
 
-	virtual ~ICreatureAffect () {}
+	virtual ~ICreatureAffect() {}
 };
 
 class CreatureAffectGroup

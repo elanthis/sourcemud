@@ -16,7 +16,7 @@ _MSettings MSettings;
 #define SETTING_INT(name,short_opt,long_opt,file_opt,def) \
 	{ #name, short_opt, long_opt, file_opt, &MSettings.val_ ## name, NULL, NULL, def, std::string(), false },
 #define SETTING_STRING(name,short_opt,long_opt,file_opt,def) \
-	{ #name, short_opt, long_opt, file_opt, NULL, &MSettings.val_ ## name, NULL, 0, S(def), false },
+	{ #name, short_opt, long_opt, file_opt, NULL, &MSettings.val_ ## name, NULL, 0, def, false },
 #define SETTING_BOOL(name,short_opt,long_opt,file_opt,def) \
 	{ #name, short_opt, long_opt, file_opt, NULL, NULL, &MSettings.val_ ## name, 0, std::string(), def },
 
@@ -76,7 +76,7 @@ namespace {
 		SETTING_INT(auto_save, 0, NULL, "auto_save", 15)
 		SETTING_INT(telnet_timeout, 0, NULL, "telnet_timeout", 30)
 		SETTING_INT(http_timeout, 0, NULL, "http_timeout", 30)
-		{ NULL, 0, NULL, NULL, NULL, NULL, NULL, 0, S(""), false }
+		{ NULL, 0, NULL, NULL, NULL, NULL, NULL, 0, "", false }
 	};
 }
 

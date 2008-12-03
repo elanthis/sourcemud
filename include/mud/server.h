@@ -8,7 +8,6 @@
 #ifndef SERVER_H
 #define SERVER_H
 
-#include "common/string.h"
 
 #define SERVER_MAX_CLIENTS 10000
 

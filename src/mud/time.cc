@@ -5,6 +5,8 @@
  * http://www.sourcemud.org
  */
 
+#include "common.h"
+#include "common/string.h"
 #include "mud/gametime.h"
 #include "mud/settings.h"
 #include "mud/server.h"
@@ -163,7 +165,7 @@ _MTime::save ()
 		return;
 
 	// save
-	writer.attr(S("time"), S("current"), time.encode());
+	writer.attr("time", "current", time.encode());
 
 	writer.close();
 }

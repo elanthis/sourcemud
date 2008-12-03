@@ -24,7 +24,7 @@ ObjectBP
 	virtual EntityName get_name () const;
 	bool set_name (const std::string& s_name);
 
-	const StringList& get_keywords () const { return keywords; }
+	const std::vector<std::string>& get_keywords () const { return keywords; }
 
 	// description
 	const std::string& get_desc () const { return desc; }
@@ -66,7 +66,7 @@ ObjectBP
 	uint weight;
 	uint cost;
 	EquipSlot equip;
-	StringList keywords;
+	std::vector<std::string> keywords;
 	TagList tags;
 
 	// flags
@@ -84,7 +84,7 @@ ShadowObject : public Object
 	ShadowObject ();
 	ShadowObject (ObjectBP* s_blueprint);
 
-	virtual std::string factory_type () const { return S("sobject"); }
+	virtual const char* factory_type () const { return "sobject"; }
 
 	// name info
 	bool set_name (const std::string&);

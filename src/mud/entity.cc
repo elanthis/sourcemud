@@ -152,7 +152,7 @@ Entity::name_match(const std::string& match) const
 void
 Entity::display_desc(const StreamControl& stream) const
 {
-	stream << StreamMacro(get_desc(), S("self"), this);
+	stream << StreamMacro(get_desc(), "self", this);
 }
 
 void
@@ -166,18 +166,18 @@ Entity::save(File::Writer& writer, const std::string& ns, const std::string& nam
 void
 Entity::save_data(File::Writer& writer)
 {
-	writer.attr(S("entity"), S("uid"), uid);
+	writer.attr("entity", "uid", uid);
 
 	// event handler list
 	for (EventList::const_iterator i = events.begin (); i != events.end (); i ++) {
-		writer.begin(S("entity"), S("event"));
+		writer.begin("entity", "event");
 		(*i)->save(writer);
 		writer.end();
 	}
 
 	// save tags
 	for (TagList::const_iterator i = tags.begin(); i != tags.end(); ++i)
-		writer.attr(S("entity"), S("tag"), TagID::nameof(*i));
+		writer.attr("entity", "tag", TagID::nameof(*i));
 
 	// call save hook
 	save_hook(writer);
@@ -274,11 +274,11 @@ Entity::macro_property(const StreamControl& stream, const std::string& comm, con
 	}
 
 	// ENTITY's NAME
-	if (str_eq(comm, S("name"))) {
+	if (str_eq(comm, "name")) {
 		stream << StreamName(this);
 		return 0;
 	// ENTITY'S DESC
-	} else if (str_eq(comm, S("desc"))) {
+	} else if (str_eq(comm, "desc")) {
 		display_desc(stream);
 		return 0;
 	}

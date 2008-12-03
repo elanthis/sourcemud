@@ -5,16 +5,18 @@
  * http://www.sourcemud.org
  */
 
+#include "common.h"
+#include "common/string.h"
 #include "mud/caffect.h"
 
 std::string CreatureAffectType::names[] = {
-	S("unknown"),
-	S("toxin"),
-	S("disease"),
-	S("innate"),
-	S("magic"),
-	S("psionic"),
-	S("tech"),
+	"unknown",
+	"toxin",
+	"disease",
+	"innate",
+	"magic",
+	"psionic",
+	"tech",
 };
 
 CreatureAffectType

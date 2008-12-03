@@ -9,7 +9,6 @@
 #define SOURCEMUD_MUD_BODY_H
 
 #include "common.h"
-#include "common/string.h"
 #include "mud/fileobj.h"
 #include "mud/server.h"
 

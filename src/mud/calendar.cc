@@ -5,9 +5,11 @@
  * http://www.sourcemud.org
  */
 
+#include "common.h"
+#include "common/log.h"
+#include "common/string.h"
 #include "mud/gametime.h"
 #include "mud/settings.h"
-#include "common/log.h"
 #include "mud/filetab.h"
 
 int
@@ -169,7 +171,7 @@ int
 GameCalendar::find_weekday (const std::string& name)
 {
 	uint ii = 0;
-	for (StringList::const_iterator i = weekdays.begin(); i != weekdays.end(); ++i, ++ii) {
+	for (std::vector<std::string>::const_iterator i = weekdays.begin(); i != weekdays.end(); ++i, ++ii) {
 		if (name == *i)
 			return ii;
 	}

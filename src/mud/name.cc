@@ -5,17 +5,18 @@
  * http://www.sourcemud.org
  */
 
+#include "common.h"
 #include "common/string.h"
 #include "common/streams.h"
 #include "mud/name.h"
 #include "mud/entity.h"
 
 std::string EntityArticleClass::names[] = {
-	S("normal"),
-	S("proper"),
-	S("unique"),
-	S("plural"),
-	S("vowel")
+	"normal",
+	"proper",
+	"unique",
+	"plural",
+	"vowel"
 };
 
 EntityArticleClass

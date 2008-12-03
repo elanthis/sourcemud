@@ -11,7 +11,6 @@
 #include "mud/server.h"
 #include "common/imanager.h"
 #include "common/types.h"
-#include "common/string.h"
 
 typedef uint32 UniqueIDBase; // FIXME: should probably default to uin64
 

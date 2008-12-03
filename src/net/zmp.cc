@@ -31,6 +31,7 @@
 
 #include "common.h"
 #include "common/log.h"
+#include "common/string.h"
 #include "net/telnet.h"
 #include "net/zmp.h"
 
@@ -110,13 +111,13 @@ SZMPManager::~SZMPManager (void)
 int
 SZMPManager::initialize (void)
 {
-	if (add(S("zmp.ping"), handle_zmp_ping))
+	if (add("zmp.ping", handle_zmp_ping))
 		return -1;
-	if (add(S("zmp.check"), handle_zmp_check))
+	if (add("zmp.check", handle_zmp_check))
 		return -1;
-	if (add(S("zmp.support"), handle_zmp_support))
+	if (add("zmp.support", handle_zmp_support))
 		return -1;
-	if (add(S("zmp.input"), handle_zmp_input))
+	if (add("zmp.input", handle_zmp_input))
 		return -1;
 	return 0;
 }
@@ -339,12 +340,12 @@ TelnetHandler::add_zmp(size_t argc, std::string argv[])
 void TelnetHandler::zmp_support(const std::string& pkg, bool value)
 {
 	// color.define?
-	if (str_eq(pkg, S("color.define"))) {
+	if (str_eq(pkg, "color.define")) {
 		io_flags.zmp_color = value;
 
 		// init if true
 		if (value) {
-			std::string argv[4] = {S("color.define"), std::string(), std::string(), std::string()};
+			std::string argv[4] = {"color.define", std::string(), std::string(), std::string()};
 			for (int i = 1; i < NUM_CTYPES; ++i) {
 				argv[1] = tostr(i);
 				argv[2] = color_type_names[i];
@@ -367,7 +368,7 @@ namespace {
 		time(&t);
 		strftime(buffer, sizeof(buffer), "%Y-%m-%d %H:%M:%S", gmtime(&t));
 		buffer[sizeof(buffer) - 1] = 0;
-		std::string response[2] = { S("zmp.time"), std::string(buffer) };
+		std::string response[2] = { "zmp.time", std::string(buffer) };
 		telnet->send_zmp(2, response);
 	}
 
@@ -381,11 +382,11 @@ namespace {
 
 		// have we the argument?
 		if (ZMPManager.match(argv[1])) {
-			argv[0] = S("zmp.support");
+			argv[0] = "zmp.support";
 			telnet->send_zmp(2, argv);
 		// nope
 		} else {
-			argv[0] = S("zmp.no-support");
+			argv[0] = "zmp.no-support";
 			telnet->send_zmp(2, argv);
 		}
 	}

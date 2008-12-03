@@ -9,7 +9,6 @@
 #define OBJECT_H
 
 #include "common.h"
-#include "common/string.h"
 #include "common/error.h"
 #include "common/imanager.h"
 #include "common/bitset.h"
@@ -33,7 +32,7 @@ struct ObjectFlag {
 
 	ObjectFlag (bits b) : v(b) {}
 	explicit ObjectFlag (int i) : v((bits)(i>=1&&i<MAX?i:1)) {}
-	operator bits () const { return v; }
+	operator bits() const { return v; }
 
 	bits v;
 };
@@ -50,8 +49,8 @@ struct ObjectLocation {
 
 	ObjectLocation (bits b) : v(b) {}
 	explicit ObjectLocation (int i) : v((bits)(i>=1&&i<MAX?i:1)) {}
-	ObjectLocation () : v(NONE) {}
-	operator bits () const { return v; }
+	ObjectLocation() : v(NONE) {}
+	operator bits() const { return v; }
 
 	std::string name() const { return names[v-1]; }
 	static std::string names[MAX];
@@ -87,27 +86,27 @@ class
 Object : public Entity
 {
 	public:
-	Object ();
+	Object();
 
 	// name info
 	virtual bool set_name (const std::string&) = 0;
-	virtual EntityName get_name () const = 0;
+	virtual EntityName get_name() const = 0;
 
 	// description
-	virtual std::string get_desc () const = 0;
+	virtual std::string get_desc() const = 0;
 
 	// save/load
 	virtual int load_node (File::Reader& reader, File::Node& node);
-	virtual int load_finish ();
+	virtual int load_finish();
 	virtual void save_data (File::Writer& writer);
 	virtual void save_hook (File::Writer& writer);
 
 	// weight
-	inline uint get_weight () const { return calc_weight + get_real_weight(); }
-	virtual uint get_real_weight () const = 0;
+	inline uint get_weight() const { return calc_weight + get_real_weight(); }
+	virtual uint get_real_weight() const = 0;
 
 	// owner tracking - see entity.h
-	virtual inline Entity* get_owner () const { return owner; }
+	virtual inline Entity* get_owner() const { return owner; }
 	virtual void set_owner (Entity* s_owner);
 	virtual void owner_release (Entity* child);
 
@@ -117,34 +116,34 @@ Object : public Entity
 
 	// returns the room the object is in (tracing through parents) or the
 	// character holding the object (again, tracing through parenst)
-	class Creature* get_holder () const;
-	class Room* get_room () const;
+	class Creature* get_holder() const;
+	class Room* get_room() const;
 
 	// name color
-	virtual std::string ncolor () const { return S(CITEM); }
+	virtual const char* ncolor() const { return CITEM; }
 
 	// for parsing, pull a property based on a char*
 	virtual int macro_property (const class StreamControl& stream, const std::string& method, const MacroList& argv) const;
 
 	// object properties
-	virtual uint get_cost () const = 0;
-	virtual EquipSlot get_equip () const = 0;
+	virtual uint get_cost() const = 0;
+	virtual EquipSlot get_equip() const = 0;
 
 	// check flags
 	virtual bool get_flag (ObjectFlag flag) const = 0;
-	bool is_hidden () const { return get_flag(ObjectFlag::HIDDEN); }
-	bool is_touchable () const { return get_flag(ObjectFlag::TOUCH); }
-	bool is_gettable () const { return get_flag(ObjectFlag::GET); }
-	bool is_dropable () const { return get_flag(ObjectFlag::DROP); }
-	bool is_trashable () const { return get_flag(ObjectFlag::TRASH); }
-	bool is_rotting () const { return get_flag(ObjectFlag::ROT); }
+	bool is_hidden() const { return get_flag(ObjectFlag::HIDDEN); }
+	bool is_touchable() const { return get_flag(ObjectFlag::TOUCH); }
+	bool is_gettable() const { return get_flag(ObjectFlag::GET); }
+	bool is_dropable() const { return get_flag(ObjectFlag::DROP); }
+	bool is_trashable() const { return get_flag(ObjectFlag::TRASH); }
+	bool is_rotting() const { return get_flag(ObjectFlag::ROT); }
 
 	// (de)activate children
-	virtual void activate ();
-	virtual void deactivate ();
+	virtual void activate();
+	virtual void deactivate();
 
 	// heartbeat
-	void heartbeat ();
+	void heartbeat();
 
 	// containers
 	virtual bool has_location (ObjectLocation type) const = 0;
@@ -163,10 +162,10 @@ Object : public Entity
 	EList<Object> children; // child objects
 
 	// weight tracking
-	void recalc_weight ();
+	void recalc_weight();
 
 	protected:
-	virtual ~Object ();
+	virtual ~Object();
 
 	E_TYPE(Object)
 };

@@ -13,6 +13,7 @@
 #include "common/file.h"
 #include "common/rand.h"
 #include "common/streamtime.h"
+#include "common/string.h"
 #include "mud/server.h"
 #include "mud/settings.h"
 #include "net/http.h"
@@ -149,7 +150,7 @@ void HTTPHandler::process()
 				return;
 
 			// parse
-			StringList parts = explode(request, ' ');
+			std::vector<std::string> parts = explode(request, ' ');
 
 			// check size
 			if (parts.size() != 3) {
@@ -223,7 +224,7 @@ void HTTPHandler::process()
 						sid = std::string(sid_start, sid_end - sid_start);
 
 					// split session into hash, salt, and account ID
-					StringList parts = explode(sid, ':');
+					std::vector<std::string> parts = explode(sid, ':');
 					if (parts.size() == 3) {
 						std::string hash = parts[0];
 						std::string salt = parts[1];
@@ -451,15 +452,15 @@ HTTPHandler::http_error(int error)
 	// lookup HTTP error msg code
 	std::string http_msg;
 	switch (error) {
-		case 200: http_msg=S("OK"); break;
-		case 400: http_msg=S("Bad Request"); break;
-		case 403: http_msg=S("Access Denied"); break;
-		case 404: http_msg=S("Not Found"); break;
-		case 405: http_msg=S("Method Not Allowed"); break;
-		case 406: http_msg=S("Not Acceptable"); break;
-		case 408: http_msg=S("Request Timeout"); break;
-		case 413: http_msg=S("Request Entity Too Large"); break;
-		default: http_msg = S("Unknown"); break;
+		case 200: http_msg="OK"; break;
+		case 400: http_msg="Bad Request"; break;
+		case 403: http_msg="Access Denied"; break;
+		case 404: http_msg="Not Found"; break;
+		case 405: http_msg="Method Not Allowed"; break;
+		case 406: http_msg="Not Acceptable"; break;
+		case 408: http_msg="Request Timeout"; break;
+		case 413: http_msg="Request Entity Too Large"; break;
+		default: http_msg = "Unknown"; break;
 	}
 
 	// display error page

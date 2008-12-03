@@ -10,7 +10,6 @@
 
 #include "common.h"
 #include "common/types.h"
-#include "common/string.h"
 #include "common/imanager.h"
 #include "mud/fileobj.h"
 #include "mud/server.h"
@@ -50,11 +49,11 @@ GameCalendar
 	
 	MonthList months;
 	HolidayList holidays;
-	StringList weekdays;
-	StringList day_text;
-	StringList night_text;
-	StringList sunrise_text;
-	StringList sunset_text;
+	std::vector<std::string> weekdays;
+	std::vector<std::string> day_text;
+	std::vector<std::string> night_text;
+	std::vector<std::string> sunrise_text;
+	std::vector<std::string> sunset_text;
 
 	GameCalendar () : months(), holidays(), weekdays(), day_text(), night_text(), sunrise_text(), sunset_text() {}
 

@@ -9,7 +9,6 @@
 #define SOURCEMUD_MUD_PORTAL_H
 
 #include "mud/entity.h"
-#include "common/string.h"
 
 // Direction object
 class PortalDir {
@@ -39,21 +38,21 @@ class PortalDir {
 	
 	public:
 	PortalDir (int s_value) : value((dir_t)s_value) {}
-	PortalDir () : value(NONE) {}
+	PortalDir() : value(NONE) {}
 
 	std::string get_name() const { return names[value]; }
 	std::string get_abbr() const { return abbreviations[value]; }
 	PortalDir get_opposite() const { return opposites[value]; }
-	bool valid () const { return value != NONE; }
+	bool valid() const { return value != NONE; }
 
-	dir_t get_value () const { return value; }
+	dir_t get_value() const { return value; }
 
 	static PortalDir lookup (const std::string& name);
 
 	bool operator < (const PortalDir& dir) const { return value < dir.value; }
 	bool operator == (const PortalDir& dir) const { return dir.value == value; }
 	bool operator != (const PortalDir& dir) const { return dir.value != value; }
-	operator bool () const { return valid(); }
+	operator bool() const { return valid(); }
 };
 
 // Portal usage object
@@ -73,11 +72,11 @@ class PortalUsage {
 	
 	public:
 	PortalUsage (int s_value) : value((type_t)s_value) {}
-	PortalUsage () : value(WALK) {}
+	PortalUsage() : value(WALK) {}
 
 	std::string get_name() const { return names[value]; }
 
-	type_t get_value () const { return value; }
+	type_t get_value() const { return value; }
 
 	static PortalUsage lookup (const std::string& name);
 
@@ -109,11 +108,11 @@ class PortalDetail  {
 	
 	public:
 	PortalDetail (int s_value) : value((type_t)s_value) {}
-	PortalDetail () : value(NONE) {}
+	PortalDetail() : value(NONE) {}
 
 	std::string get_name() const { return names[value]; }
 
-	type_t get_value () const { return value; }
+	type_t get_value() const { return value; }
 
 	static PortalDetail lookup (const std::string& name);
 
@@ -126,30 +125,30 @@ class PortalDetail  {
 class Portal : public Entity
 {
 	public:
-	Portal ();
+	Portal();
 
-	virtual std::string factory_type () const { return S("portal"); }
+	virtual const char* factory_type() const { return "portal"; }
 
 	// name information
-	virtual EntityName get_name () const;
+	virtual EntityName get_name() const;
 	bool set_name (const std::string& s_name) { return name.set_name(s_name); }
 	void add_keyword (const std::string& keyword);
 
 	// description information
-	virtual std::string get_desc () const { return desc; }
+	virtual std::string get_desc() const { return desc; }
 	virtual void set_desc (const std::string& s_desc) { desc = s_desc; }
 
 	// 'standard' portals have no custom name
-	bool is_standard () const { return name.empty(); }
+	bool is_standard() const { return name.empty(); }
 
 	// the taget room and portal (target portal is the portal you come out of)
-	std::string get_target () const { return target; }
+	std::string get_target() const { return target; }
 	void set_target (const std::string& t) { target = t; }
 
 	// movement messages based on usage/detail
-	std::string get_go () const;
-	std::string get_leaves () const;
-	std::string get_enters () const;
+	std::string get_go() const;
+	std::string get_leaves() const;
+	std::string get_enters() const;
 
 	// ownership - see entity.h
 	virtual void set_owner(Entity*);
@@ -162,19 +161,19 @@ class Portal : public Entity
 	virtual void broadcast_event (const Event& event);
 
 	// activate/deactivtee
-	virtual void activate ();
-	virtual void deactivate ();
+	virtual void activate();
+	virtual void deactivate();
 
 	// portal usage (climb, etc.)
-	PortalUsage get_usage () const { return usage; }
+	PortalUsage get_usage() const { return usage; }
 	void set_usage (PortalUsage t) { usage = t; }
 
 	// portal detail (on, over, etc.)
-	PortalDetail get_detail () const { return detail; }
+	PortalDetail get_detail() const { return detail; }
 	void set_detail (PortalDetail t) { detail = t; }
 
 	// direction (east, west, etc.)
-	PortalDir get_dir () const { return dir; }
+	PortalDir get_dir() const { return dir; }
 	void set_dir (PortalDir d) { dir = d; }
 
 	// get relative dir and target
@@ -184,17 +183,17 @@ class Portal : public Entity
 	bool has_room (Room* base) const;
 
 	// flags
-	bool is_valid () const;
-	bool is_hidden () const { return flags.hidden; }
-	bool is_closed () const { return flags.closed; }
-	bool is_oneway () const { return flags.oneway; }
-	bool is_locked () const { return flags.locked; }
-	bool is_door () const { return flags.door; }
-	bool is_nolook () const { return flags.nolook; }
-	bool is_disabled () const { return flags.disabled; }
+	bool is_valid() const;
+	bool is_hidden() const { return flags.hidden; }
+	bool is_closed() const { return flags.closed; }
+	bool is_oneway() const { return flags.oneway; }
+	bool is_locked() const { return flags.locked; }
+	bool is_door() const { return flags.door; }
+	bool is_nolook() const { return flags.nolook; }
+	bool is_disabled() const { return flags.disabled; }
 
 	// color of portal
-	virtual std::string ncolor () const { return S(CEXIT); }
+	virtual const char* ncolor() const { return CEXIT; }
 
 	// manage state
 	void lock (Room* base, class Creature* actor);
@@ -203,7 +202,7 @@ class Portal : public Entity
 	void open (Room* base, class Creature* actor);
 
 	// heartbeat
-	void heartbeat ();
+	void heartbeat();
 
 	virtual bool name_match (const std::string& name) const;
 
@@ -220,7 +219,7 @@ class Portal : public Entity
 	virtual void save_data (File::Writer& writer);
 	virtual void save_hook (File::Writer& writer);
 	virtual int load_node(File::Reader& reader, File::Node& node);
-	virtual int load_finish ();
+	virtual int load_finish();
 
 	protected:
 	// data members
@@ -231,7 +230,7 @@ class Portal : public Entity
 	PortalUsage usage;
 	PortalDetail detail;
 	class Room* parent_room;
-	StringList keywords;
+	std::vector<std::string> keywords;
 
 	// flags
 	struct Flags {
@@ -243,7 +242,7 @@ class Portal : public Entity
 	} flags;
 
 	protected:
-	~Portal () {}
+	~Portal() {}
 
 	// extra
 	friend class Room;

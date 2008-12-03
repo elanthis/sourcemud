@@ -9,7 +9,6 @@
 #define SOURCEMUD_COMMON_AWEREGEX_H 1
 
 #include "common.h"
-#include "common/string.h"
 
 class RegEx {
 	public:
@@ -17,7 +16,7 @@ class RegEx {
 	~RegEx ();
 
 	bool grep (const std::string& string);
-	StringList match (const std::string& string);
+	std::vector<std::string> match (const std::string& string);
 
 	private:
 	regex_t regex;

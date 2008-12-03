@@ -8,6 +8,7 @@
 #include "common.h"
 #include "common/rand.h"
 #include "common/log.h"
+#include "common/string.h"
 #include "mud/race.h"
 #include "mud/settings.h"
 #include "mud/fileobj.h"
@@ -26,12 +27,12 @@ Race::load(File::Reader& reader)
 {
 	// clear and/or defaults
 	adj.clear();
-	about = S("Source MUD player race.");
+	about = "Source MUD player race.";
 	desc.clear();
 	age_min = 0;
 	age_max = 0;
 	life_span = 0;
-	body = S("human");
+	body = "human";
 	height[GenderType::NONE] = 72;
 	height[GenderType::FEMALE] = 65;
 	height[GenderType::MALE] = 68;

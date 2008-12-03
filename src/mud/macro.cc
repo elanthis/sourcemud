@@ -8,6 +8,7 @@
 #include "common.h"
 #include "common/streams.h"
 #include "common/strbuf.h"
+#include "common/string.h"
 #include "mud/macro.h"
 #include "mud/gametime.h"
 #include "mud/player.h"
@@ -551,81 +552,81 @@ namespace macro {
 
 	int exec_macro (const StreamControl& stream, const std::string& _cmd_name, MacroList& _cmd_argv)
 	{
-		if (str_eq(_cmd_name, S("eq"))) {
+		if (str_eq(_cmd_name, "eq")) {
 			if (_cmd_argv.size() != 2)
 				return -1;
 			std::string s1 = _cmd_argv[0].get_string();
 			std::string s2 = _cmd_argv[1].get_string();
 			stream << (str_eq(s1, s2) ? "yes" : "");
-		} else if (str_eq(_cmd_name, S("ne"))) {
+		} else if (str_eq(_cmd_name, "ne")) {
 			if (_cmd_argv.size() != 2)
 				return -1;
 			std::string s1 = _cmd_argv[0].get_string();
 			std::string s2 = _cmd_argv[1].get_string();
 			stream << (str_eq(s1, s2) ? "" : "yes");
-		} else if (str_eq(_cmd_name, S("version"))) {
+		} else if (str_eq(_cmd_name, "version")) {
 			if (_cmd_argv.size() != 0)
 				return -1;
 			stream << PACKAGE_VERSION;
-		} else if (str_eq(_cmd_name, S("build"))) {
+		} else if (str_eq(_cmd_name, "build")) {
 			if (_cmd_argv.size() != 0)
 				return -1;
 			stream << __DATE__ " " __TIME__;
-		} else if (str_eq(_cmd_name, S("uptime"))) {
+		} else if (str_eq(_cmd_name, "uptime")) {
 			if (_cmd_argv.size() != 0)
 				return -1;
 			stream << MUD::get_uptime();
-		} else if (str_eq(_cmd_name, S("player-count"))) {
+		} else if (str_eq(_cmd_name, "player-count")) {
 			if (_cmd_argv.size() != 0)
 				return -1;
 			stream << MPlayer.count();
-		} else if (str_eq(_cmd_name, S("day-or-night"))) {
+		} else if (str_eq(_cmd_name, "day-or-night")) {
 			if (_cmd_argv.size() != 0)
 				return -1;
 			stream << (MTime.time.is_night() ? "night" : "day");
-		} else if (str_eq(_cmd_name, S("bold"))) {
+		} else if (str_eq(_cmd_name, "bold")) {
 			if (_cmd_argv.size() != 1)
 				return -1;
 			std::string str = _cmd_argv[0].get_string();
 			stream << CBOLD << str << CNORMAL;
-		} else if (str_eq(_cmd_name, S("hostname"))) {
+		} else if (str_eq(_cmd_name, "hostname")) {
 			if (_cmd_argv.size() != 0)
 				return -1;
 			stream << MNetwork.get_host();
-		} else if (str_eq(_cmd_name, S("date"))) {
+		} else if (str_eq(_cmd_name, "date")) {
 			if (_cmd_argv.size() != 0)
 				return -1;
 			stream << MTime.time.date_str();
-		} else if (str_eq(_cmd_name, S("time"))) {
+		} else if (str_eq(_cmd_name, "time")) {
 			if (_cmd_argv.size() != 0)
 				return -1;
 			stream << MTime.time.time_str();
-		} else if (str_eq(_cmd_name, S("date-year"))) {
+		} else if (str_eq(_cmd_name, "date-year")) {
 			if (_cmd_argv.size() != 0)
 				return -1;
 			stream << MTime.time.get_year();
-		} else if (str_eq(_cmd_name, S("date-month"))) {
+		} else if (str_eq(_cmd_name, "date-month")) {
 			if (_cmd_argv.size() != 0)
 				return -1;
 			stream << MTime.time.get_month();
-		} else if (str_eq(_cmd_name, S("date-day"))) {
+		} else if (str_eq(_cmd_name, "date-day")) {
 			if (_cmd_argv.size() != 0)
 				return -1;
 			stream << MTime.time.get_day();
-		} else if (str_eq(_cmd_name, S("time-hours24"))) {
+		} else if (str_eq(_cmd_name, "time-hours24")) {
 			if (_cmd_argv.size() != 0)
 				return -1;
 			stream << MTime.time.get_hour();
-		} else if (str_eq(_cmd_name, S("time-hours12"))) {
+		} else if (str_eq(_cmd_name, "time-hours12")) {
 			if (_cmd_argv.size() != 0)
 				return -1;
 			uint hours = MTime.time.get_hour();
 			stream << (hours == 0 ? 12 : (hours <= 12 ? hours : hours - 12));
-		} else if (str_eq(_cmd_name, S("time-ampm"))) {
+		} else if (str_eq(_cmd_name, "time-ampm")) {
 			if (_cmd_argv.size() != 0)
 				return -1;
 			stream << (MTime.time.get_hour() < 12 ? "am" : "pm");
-		} else if (str_eq(_cmd_name, S("time-minutes"))) {
+		} else if (str_eq(_cmd_name, "time-minutes")) {
 			if (_cmd_argv.size() != 0)
 				return -1;
 			stream << (MTime.time.get_minutes());

@@ -5,12 +5,13 @@
  * http://www.sourcemud.org
  */
 
+#include "common.h"
 #include "mud/skill.h"
 
 std::vector<std::string> SkillID::names;
 
-const SkillID SKILL_DODGE = SkillID::create(S("dodge"));
-const SkillID SKILL_PERCEPTION = SkillID::create(S("perception"));
+const SkillID SKILL_DODGE = SkillID::create("dodge");
+const SkillID SKILL_PERCEPTION = SkillID::create("perception");
 
 SkillSet::SkillSet()
 {

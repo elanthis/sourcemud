@@ -68,7 +68,7 @@ WeatherRegion::load (File::Reader& reader)
 		FO_ATTR("weather", "current")
 			state = get_state(node.get_string());
 			if (state < 0)
-				throw File::Error(S("Current state out of range"));
+				throw File::Error("Current state out of range");
 		FO_ATTR("weather", "ticks")
 			ticks = node.get_int();
 			if (ticks > 500) // ludicrous
@@ -99,22 +99,22 @@ void
 WeatherRegion::save (File::Writer& writer) const
 {
 	for (std::vector<WeatherState>::const_iterator si = states.begin(); si != states.end(); ++si) {
-		writer.begin(S("weather"), S("state"));
-		writer.attr(S("state"), S("id"), si->id);
-		for (StringList::const_iterator di = si->descs.begin(); di != si->descs.end(); ++di)
-			writer.attr(S("state"), S("desc"), *di);
+		writer.begin("weather", "state");
+		writer.attr("state", "id", si->id);
+		for (std::vector<std::string>::const_iterator di = si->descs.begin(); di != si->descs.end(); ++di)
+			writer.attr("state", "desc", *di);
 		for (std::vector<WeatherChange>::const_iterator ci = si->changes.begin(); ci != si->changes.end(); ++ci) {
-			writer.begin(S("state"), S("change"));
-			writer.attr(S("change"), S("target"), ci->to);
-			writer.attr(S("change"), S("chance"), ci->chance);
-			writer.attr(S("change"), S("text"), ci->desc);
+			writer.begin("state", "change");
+			writer.attr("change", "target", ci->to);
+			writer.attr("change", "chance", ci->chance);
+			writer.attr("change", "text", ci->desc);
 			writer.end();
 		}
 		writer.end();
 	}
 
-	writer.attr(S("weather"), S("current"), states[state].id);
-	writer.attr(S("weather"), S("ticks"), ticks);
+	writer.attr("weather", "current", states[state].id);
+	writer.attr("weather", "ticks", ticks);
 }
 
 int

@@ -43,7 +43,7 @@ _MHelp::print (StreamControl& stream, const std::string& name)
 		return;
 
 	// try a help topic
-	HelpTopic* topic = name.empty() ? get_topic(S("general")) : get_topic(name);
+	HelpTopic* topic = name.empty() ? get_topic("general") : get_topic(name);
 	if (topic) {
 		stream << CSPECIAL "Help: " CNORMAL << topic->name << "\n\n";
 		stream << StreamIndent(2) << StreamMacro(topic->about) << StreamIndent(0) << "\n";
@@ -57,9 +57,9 @@ _MHelp::print (StreamControl& stream, const std::string& name)
 int
 _MHelp::initialize ()
 {
-	StringList files = File::dirlist(MSettings.get_help_path());
+	std::vector<std::string> files = File::dirlist(MSettings.get_help_path());
 	File::filter(files, "*.help");
-	for (StringList::iterator i = files.begin(); i != files.end(); ++i) {
+	for (std::vector<std::string>::iterator i = files.begin(); i != files.end(); ++i) {
 		File::Reader reader;
 
 		// open file
@@ -115,7 +115,7 @@ _MHelp::initialize ()
 				}
 
 				// command must be 'begin'
-				if (S("begin") != buf.c_str()) {
+				if ("begin" != buf.str()) {
 					Log::Error << *i << ',' << line << ": Unrecognized command '" << buf.c_str() << "'";
 					return -1;
 				}

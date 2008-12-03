@@ -5,19 +5,14 @@
  * http://www.sourcemud.org
  */
 
-#include <dirent.h>
-#include <fnmatch.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-
-#include <map>
-
+#include "common.h"
 #include "common/file.h"
 #include "common/log.h"
+#include "common/string.h"
 
-StringList File::dirlist(const std::string& path, bool subdir)
+std::vector<std::string> File::dirlist(const std::string& path, bool subdir)
 {
-	StringList list;
+	std::vector<std::string> list;
 
 	// open our directory
 	DIR* dir = opendir(path.c_str());
@@ -38,7 +33,7 @@ StringList File::dirlist(const std::string& path, bool subdir)
 			continue;
 
 		// store the file
-		list.push_back(path + S("/") + std::string(d->d_name));
+		list.push_back(path + "/" + std::string(d->d_name));
 
 		// if subdir is off and we're not referencing a fail, skip it
 		if (!subdir && !File::isfile(list.back())) {
@@ -51,9 +46,9 @@ StringList File::dirlist(const std::string& path, bool subdir)
 	return list;
 }
 
-StringList& File::filter(StringList& files, const std::string& filter)
+std::vector<std::string>& File::filter(std::vector<std::string>& files, const std::string& filter)
 {
-	StringList::iterator i = files.begin();
+	std::vector<std::string>::iterator i = files.begin();
 	while (i != files.end()) {
 		if (fnmatch(filter.c_str(), i->c_str(), 0) == 0)
 			++i;
@@ -114,11 +109,11 @@ std::string& File::normalize(std::string& path)
 	// possible without _too_ much extra effort
 	
 	// break the path into components
-	StringList parts;
+	std::vector<std::string> parts;
 	explode(parts, path, '/');
 
 	// look at each component, remove/keep as appropriate
-	StringList::iterator i = parts.begin();
+	std::vector<std::string>::iterator i = parts.begin();
 	while (i != parts.end()) {
 		// remove . components
 		if (*i == ".") {

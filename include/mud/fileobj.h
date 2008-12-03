@@ -9,7 +9,6 @@
 #define __FILEAPI_H__
 
 #include "common.h"
-#include "common/string.h"
 #include "common/log.h"
 #include "mud/uniqid.h"
 

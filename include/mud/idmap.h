@@ -9,7 +9,6 @@
 #define IDMAP_H
 
 #include "common.h"
-#include "common/string.h"
 
 // NOTE:
 // The funky static methods to retrieve the name list and intptr_t map

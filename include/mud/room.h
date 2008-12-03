@@ -9,7 +9,6 @@
 #define SOURCEMUD_MUD_ROOM_H
 
 #include "mud/elist.h"
-#include "common/string.h"
 #include "mud/portal.h"
 
 class Object;
@@ -25,28 +24,28 @@ class Room : public Entity
 	EList<Creature> creatures;
 	std::map<PortalDir, Portal*> portals;
 
-	Room ();
+	Room();
 
-	virtual std::string factory_type () const { return S("room"); }
+	virtual const char* factory_type() const { return "room"; }
 
 	// name information
-	inline virtual EntityName get_name () const { return name; }
+	inline virtual EntityName get_name() const { return name; }
 	inline void set_name (const std::string& s_name) { name.set_name(s_name); }
 
 	// description information
-	inline virtual std::string get_desc () const { return desc; }
+	inline virtual std::string get_desc() const { return desc; }
 	inline virtual void set_desc (const std::string& s_desc) { desc = s_desc; }
 
 	// outdoors
-	inline bool is_outdoors () const { return flags.outdoors; }
+	inline bool is_outdoors() const { return flags.outdoors; }
 	inline void set_outdoors (bool v) { flags.outdoors = v; }
 
 	// safe (no combat/attacks)
-	inline bool is_safe () const { return flags.safe; }
+	inline bool is_safe() const { return flags.safe; }
 	inline void set_safe (bool v) { flags.safe = v; }
 
 	// no weather notices in room descriptions (but does get global weather changes)
-	inline bool is_noweather () const { return flags.noweather; }
+	inline bool is_noweather() const { return flags.noweather; }
 	inline void set_noweather (bool v) { flags.noweather = v; }
 
 	// portals
@@ -61,27 +60,27 @@ class Room : public Entity
 	void unregister_portal (Portal* portal);
 
 	// identifier
-	inline std::string get_id () const { return id; }
+	inline std::string get_id() const { return id; }
 	inline void set_id (const std::string& new_id) { id = new_id; }
 
 	// colour type
-	inline virtual std::string ncolor () const { return S(CTITLE); }
+	virtual const char* ncolor() const { return CTITLE; }
 
 	// io
 	virtual void save_data (File::Writer& writer);
 	virtual void save_hook (File::Writer& writer);
 	virtual int load_node(File::Reader& reader, File::Node& node);
-	virtual int load_finish ();
+	virtual int load_finish();
 
 	// streaming
-	IStreamSink* get_stream ();
+	IStreamSink* get_stream();
 
 	// heartbeat
-	void heartbeat ();
+	void heartbeat();
 
 	// (de)activate children
-	virtual void activate ();
-	virtual void deactivate ();
+	virtual void activate();
+	virtual void deactivate();
 
 	// display
 	void show (const class StreamControl& stream, class Creature* viewer);
@@ -95,14 +94,14 @@ class Room : public Entity
 	class Object* find_object (const std::string& name, uint c = 1, uint *matches = NULL);
 
 	// count players in room
-	unsigned long count_players () const;
+	unsigned long count_players() const;
 
 	// add entities
 	void add_object (class Object* object);
 	void add_creature (class Creature* creature);
 
 	// coins on the floor
-	inline uint get_coins () const { return coins; }
+	inline uint get_coins() const { return coins; }
 	uint take_coins (uint amount);
 	uint give_coins (uint amount);
 
@@ -113,10 +112,10 @@ class Room : public Entity
 	// owner management - see entity.h
 	virtual void set_owner (Entity* owner);
 	virtual void owner_release (Entity* child);
-	virtual class Entity* get_owner () const;
+	virtual class Entity* get_owner() const;
 
 	void set_zone (Zone* s_zone) { zone = s_zone; }
-	inline class Zone* get_zone () const { return zone; }
+	inline class Zone* get_zone() const { return zone; }
 
 	protected:
 	std::string id;
@@ -129,7 +128,7 @@ class Room : public Entity
 	} flags;
 
 	protected:
-	~Room ();
+	~Room();
 
 	E_TYPE(Room)
 	

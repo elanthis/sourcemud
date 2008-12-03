@@ -9,7 +9,6 @@
 #define __LOG_H__
 
 #include "common.h"
-#include "common/string.h"
 #include "common/error.h"
 #include "common/streams.h"
 #include "common/imanager.h"

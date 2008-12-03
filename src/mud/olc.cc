@@ -7,6 +7,7 @@
 
 #include "common.h"
 #include "common/streams.h"
+#include "common/string.h"
 #include "mud/creature.h"
 #include "mud/server.h"
 #include "mud/room.h"
@@ -70,17 +71,17 @@ namespace OLC {
 		enum { tNone, tPlayer, tCreature, tNPC, tObject, tRoom, tPortal, tZone } type = tNone;
 
 		// is name comprised of 'room' or 'zone' or whatever?
-		if (str_eq(tname, S("room")))
+		if (str_eq(tname, "room"))
 			type = tRoom;
-		else if (str_eq(tname, S("zone")))
+		else if (str_eq(tname, "zone"))
 			type = tZone;
-		else if (str_eq(tname, S("player")))
+		else if (str_eq(tname, "player"))
 			type = tPlayer;
-		else if (str_eq(tname, S("npc")))
+		else if (str_eq(tname, "npc"))
 			type = tNPC;
-		else if (str_eq(tname, S("portal")))
+		else if (str_eq(tname, "portal"))
 			type = tPortal;
-		else if (str_eq(tname, S("object")))
+		else if (str_eq(tname, "object"))
 			type = tObject;
 
 		if (type != tRoom && type != tZone) {

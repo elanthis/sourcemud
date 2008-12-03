@@ -9,7 +9,6 @@
 #define SOURCEMUD_MUD_FILETAB_H
 
 #include "common.h"
-#include "common/string.h"
 
 namespace File
 {
@@ -41,7 +40,7 @@ namespace File
 		std::string filename;
 		size_t line;
 
-		typedef std::pair<size_t, StringList> Entry;
+		typedef std::pair<size_t, std::vector<std::string> > Entry;
 		typedef std::vector<Entry> Entries;
 
 		Entries entries;

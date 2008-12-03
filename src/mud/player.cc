@@ -146,41 +146,41 @@ Player::save_data (File::Writer& writer)
 {
 	Creature::save_data(writer);
 
-	writer.attr(S("player"), S("created"), time_to_str(time_created));
-	writer.attr(S("player"), S("lastlogin"), time_to_str(time_lastlogin));
-	writer.attr(S("player"), S("playtime"), total_playtime);
+	writer.attr("player", "created", time_to_str(time_created));
+	writer.attr("player", "lastlogin", time_to_str(time_lastlogin));
+	writer.attr("player", "playtime", total_playtime);
 
 	if (race != NULL)
-		writer.attr(S("player"), S("race"), race->get_name());
+		writer.attr("player", "race", race->get_name());
 
-	writer.attr(S("player"), S("birthday"), birthday.encode());
+	writer.attr("player", "birthday", birthday.encode());
 
 	for (int i = 0; i < CreatureStatID::COUNT; ++i) {
 		std::vector<File::Value> list;
 		list.push_back(File::Value(File::Value::TYPE_STRING, CreatureStatID(i).get_name())); 
 		list.push_back(File::Value(File::Value::TYPE_INT, tostr(base_stats[i])));
-		writer.attr(S("player"), S("stat"), list);
+		writer.attr("player", "stat", list);
 	}
 
-	writer.attr(S("player"), S("gender"), form.gender.get_name());
-	writer.attr(S("player"), S("build"), form.build.get_name());
-	writer.attr(S("player"), S("height"), form.height.get_name());
-	writer.attr(S("player"), S("skin_color"), form.skin_color.get_name());
-	writer.attr(S("player"), S("eye_color"), form.eye_color.get_name());
-	writer.attr(S("player"), S("hair_color"), form.hair_color.get_name());
-	writer.attr(S("player"), S("hair_style"), form.hair_style.get_name());
+	writer.attr("player", "gender", form.gender.get_name());
+	writer.attr("player", "build", form.build.get_name());
+	writer.attr("player", "height", form.height.get_name());
+	writer.attr("player", "skin_color", form.skin_color.get_name());
+	writer.attr("player", "eye_color", form.eye_color.get_name());
+	writer.attr("player", "hair_color", form.hair_color.get_name());
+	writer.attr("player", "hair_style", form.hair_style.get_name());
 
 	if (get_room()) 
-		writer.attr(S("player"), S("location"), get_room()->get_id());
+		writer.attr("player", "location", get_room()->get_id());
 
-	writer.attr(S("player"), S("experience"), experience);
+	writer.attr("player", "experience", experience);
 
 	for (size_t i = 1; i < SkillID::size(); ++i) {
 		if (skills.hasSkill(SkillID(i))) {
 			std::vector<File::Value> list;
 			list.push_back(File::Value(File::Value::TYPE_STRING, SkillID(i).getName())); 
 			list.push_back(File::Value(File::Value::TYPE_INT, tostr(skills.getSkill(SkillID(i)))));
-			writer.attr(S("player"), S("skill"), list);
+			writer.attr("player", "skill", list);
 		}
 	}
 }
@@ -199,7 +199,7 @@ Player::save ()
 			time (&base_t);
 			char time_buffer[15];
 			strftime (time_buffer, sizeof (time_buffer), "%Y%m%d%H%M%S", localtime (&base_t));
-			std::string backup = path + S(".") + std::string(time_buffer) + S("~");
+			std::string backup = path + "." + std::string(time_buffer) + "~";
 			if (File::rename(path, backup)) // move file
 				Log::Error << "Backup of " << path << " to " << backup << " failed: " << strerror(errno);
 		}
@@ -261,7 +261,7 @@ Player::load_node (File::Reader& reader, File::Node& node)
 			}
 		FO_ATTR("player", "birthday")
 			if (birthday.decode(node.get_string()))
-				throw File::Error (S("Invalid birthday"));
+				throw File::Error ("Invalid birthday");
 		FO_ATTR("player", "location")
 			location = MZone.get_room(node.get_string());
 			if (location == NULL) {
@@ -301,7 +301,7 @@ Player::start_session ()
 {
 	// login message
 	clear_scr();
-	*this << "\n" << StreamMacro (MMessage.get(S("login")), S("player"), this) << "\n";
+	*this << "\n" << StreamMacro (MMessage.get("login"), "player", this) << "\n";
 
 	// not already active?  add to room...
 	if (!is_active()) {
@@ -335,7 +335,7 @@ Player::start_session ()
 		}
 
 		// Example affect - make strong
-		CreatureAffectGroup* strong = new CreatureAffectGroup(S("Strength"), CreatureAffectType::INNATE, 60 * 30);
+		CreatureAffectGroup* strong = new CreatureAffectGroup("Strength", CreatureAffectType::INNATE, 60 * 30);
 		strong->add_affect(new CreatureAffectStat(CreatureStatID::STRENGTH, 10));
 		add_affect(strong);
 
@@ -571,25 +571,25 @@ int
 Player::macro_property (const StreamControl& stream, const std::string& comm, const MacroList& argv) const
 {
 	// RACE
-	if (str_eq(comm, S("race"))) {
+	if (str_eq(comm, "race")) {
 		if (get_race())
 			stream << get_race()->get_name();
 	// RACE ADJECTIVE
-	} else if (str_eq(comm, S("race-adj"))) {
+	} else if (str_eq(comm, "race-adj")) {
 		if (get_race())
 			stream << get_race()->get_adj();
 	// PHYSICAL FORM
-	} else if (str_eq(comm, S("build"))) {
+	} else if (str_eq(comm, "build")) {
 		stream << form.build.get_name();
-	} else if (str_eq(comm, S("skin_color"))) {
+	} else if (str_eq(comm, "skin_color")) {
 		stream << form.skin_color.get_name();
-	} else if (str_eq(comm, S("eye_color"))) {
+	} else if (str_eq(comm, "eye_color")) {
 		stream << form.eye_color.get_name();
-	} else if (str_eq(comm, S("hair_color"))) {
+	} else if (str_eq(comm, "hair_color")) {
 		stream << form.hair_color.get_name();
-	} else if (str_eq(comm, S("hair_style"))) {
+	} else if (str_eq(comm, "hair_style")) {
 		stream << form.hair_style.get_name();
-	} else if (str_eq(comm, S("height"))) {
+	} else if (str_eq(comm, "height")) {
 		stream << form.height.get_name();
 	// default...
 	} else {
@@ -685,5 +685,5 @@ Player::clear_scr ()
 void
 Player::display_desc (const StreamControl& stream) const
 {
-	stream << StreamMacro(get_race()->get_desc(), S("self"), this);
+	stream << StreamMacro(get_race()->get_desc(), "self", this);
 }

@@ -9,7 +9,6 @@
 #define RACE_H
 
 #include "common.h"
-#include "common/string.h"
 #include "mud/fileobj.h"
 #include "mud/creature.h"
 #include "mud/form.h"

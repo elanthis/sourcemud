@@ -18,49 +18,49 @@
 #include "mud/efactory.h"
 
 const std::string PortalDetail::names[] = {
-	S("none"),
-	S("in"),
-	S("on"),
-	S("over"),
-	S("under"),
-	S("across"),
-	S("out"),
-	S("up"),
-	S("down"),
-	S("through"),
+	"none",
+	"in",
+	"on",
+	"over",
+	"under",
+	"across",
+	"out",
+	"up",
+	"down",
+	"through",
 };
 
 const std::string PortalUsage::names[] = {
-	S("walk"),
-	S("climb"),
-	S("crawl"),
+	"walk",
+	"climb",
+	"crawl",
 };
 
 const std::string PortalDir::names[] = {
-	S("none"),
-	S("north"),
-	S("east"),
-	S("south"),
-	S("west"),
-	S("northwest"),
-	S("northeast"),
-	S("southeast"),
-	S("southwest"),
-	S("up"),
-	S("down"),
+	"none",
+	"north",
+	"east",
+	"south",
+	"west",
+	"northwest",
+	"northeast",
+	"southeast",
+	"southwest",
+	"up",
+	"down",
 };
 const std::string PortalDir::abbreviations[] = {
-	S("x"),
-	S("n"),
-	S("e"),
-	S("s"),
-	S("w"),
-	S("nw"),
-	S("ne"),
-	S("se"),
-	S("sw"),
-	S("u"),
-	S("d"),
+	"x",
+	"n",
+	"e",
+	"s",
+	"w",
+	"nw",
+	"ne",
+	"se",
+	"sw",
+	"u",
+	"d",
 };
 PortalDir::dir_t PortalDir::opposites[] = {
 	PortalDir::NONE,
@@ -81,133 +81,133 @@ namespace {
 	// When You go {the-portal}
 	const std::string portal_go_table[PortalDetail::COUNT][PortalUsage::COUNT] = {
 		{
-			S("You head to {$portal.d}."),
-			S("You climb {$portal.d}."),
-			S("You crawl to {$portal.d}.")
+			"You head to {$portal.d}.",
+			"You climb {$portal.d}.",
+			"You crawl to {$portal.d}."
 		}, {
-			S("You go in {$portal.d}."),
-			S("You climb in {$portal.d}."),
-			S("You crawl in {$portal.d}.")
+			"You go in {$portal.d}.",
+			"You climb in {$portal.d}.",
+			"You crawl in {$portal.d}."
 		}, {
-			S("You get on {$portal.d}."),
-			S("You climb on {$portal.d}."),
-			S("You crawl on {$portal.d}.")
+			"You get on {$portal.d}.",
+			"You climb on {$portal.d}.",
+			"You crawl on {$portal.d}."
 		}, {
-			S("You head over {$portal.d}."),
-			S("You climb over {$portal.d}."),
-			S("You crawl over {$portal.d}.")
+			"You head over {$portal.d}.",
+			"You climb over {$portal.d}.",
+			"You crawl over {$portal.d}."
 		}, {
-			S("You go under {$portal.d}."),
-			S("You climb beneath {$portal.d}."),
-			S("You crawl under {$portal.d}.")
+			"You go under {$portal.d}.",
+			"You climb beneath {$portal.d}.",
+			"You crawl under {$portal.d}."
 		}, {
-			S("You head across {$portal.d}."),
-			S("You climb across {$portal.d}."),
-			S("You crawl across {$portal.d}.")
+			"You head across {$portal.d}.",
+			"You climb across {$portal.d}.",
+			"You crawl across {$portal.d}."
 		}, {
-			S("You go out {$portal.d}."),
-			S("You climb out {$portal.d}."),
-			S("You crawl out {$portal.d}.")
+			"You go out {$portal.d}.",
+			"You climb out {$portal.d}.",
+			"You crawl out {$portal.d}."
 		}, {
-			S("You go up {$portal.d}."),
-			S("You climb up {$portal.d}."),
-			S("You crawl up {$portal.d}.")
+			"You go up {$portal.d}.",
+			"You climb up {$portal.d}.",
+			"You crawl up {$portal.d}."
 		}, {
-			S("You go down {$portal.d}."),
-			S("You climb down {$portal.d}."),
-			S("You crawl down {$portal.d}.")
+			"You go down {$portal.d}.",
+			"You climb down {$portal.d}.",
+			"You crawl down {$portal.d}."
 		}, {
-			S("You head through {$portal.d}."),
-			S("You climb through {$portal.d}."),
-			S("You crawl through {$portal.d}.")
+			"You head through {$portal.d}.",
+			"You climb through {$portal.d}.",
+			"You crawl through {$portal.d}."
 		},
 	};
 	// When {person} goes {the-portal}
 	const std::string portal_leaves_table[PortalDetail::COUNT][PortalUsage::COUNT] = {
 		{
-			S("{$actor.I} heads to {$portal.d}."),
-			S("{$actor.I} climbs {$portal.d}."),
-			S("{$actor.I} crawls to {$portal.d}.")
+			"{$actor.I} heads to {$portal.d}.",
+			"{$actor.I} climbs {$portal.d}.",
+			"{$actor.I} crawls to {$portal.d}."
 		}, {
-			S("{$actor.I} goes in {$portal.d}."),
-			S("{$actor.I} climbs in {$portal.d}."),
-			S("{$actor.I} crawls in {$portal.d}.")
+			"{$actor.I} goes in {$portal.d}.",
+			"{$actor.I} climbs in {$portal.d}.",
+			"{$actor.I} crawls in {$portal.d}."
 		}, {
-			S("{$actor.I} gets on {$portal.d}."),
-			S("{$actor.I} climbs on {$portal.d}."),
-			S("{$actor.I} crawls on {$portal.d}.")
+			"{$actor.I} gets on {$portal.d}.",
+			"{$actor.I} climbs on {$portal.d}.",
+			"{$actor.I} crawls on {$portal.d}."
 		}, {
-			S("{$actor.I} heads over {$portal.d}."),
-			S("{$actor.I} climbs over {$portal.d}."),
-			S("{$actor.I} crawls over {$portal.d}.")
+			"{$actor.I} heads over {$portal.d}.",
+			"{$actor.I} climbs over {$portal.d}.",
+			"{$actor.I} crawls over {$portal.d}."
 		}, {
-			S("{$actor.I} goes under {$portal.d}."),
-			S("{$actor.I} climbs beneath {$portal.d}."),
-			S("{$actor.I} crawls under {$portal.d}.")
+			"{$actor.I} goes under {$portal.d}.",
+			"{$actor.I} climbs beneath {$portal.d}.",
+			"{$actor.I} crawls under {$portal.d}."
 		}, {
-			S("{$actor.I} heads across {$portal.d}."),
-			S("{$actor.I} climbs across {$portal.d}."),
-			S("{$actor.I} crawls across {$portal.d}.")
+			"{$actor.I} heads across {$portal.d}.",
+			"{$actor.I} climbs across {$portal.d}.",
+			"{$actor.I} crawls across {$portal.d}."
 		}, {
-			S("{$actor.I} goes out {$portal.d}."),
-			S("{$actor.I} climbs out {$portal.d}."),
-			S("{$actor.I} crawls out {$portal.d}.")
+			"{$actor.I} goes out {$portal.d}.",
+			"{$actor.I} climbs out {$portal.d}.",
+			"{$actor.I} crawls out {$portal.d}."
 		}, {
-			S("{$actor.I} goes up {$portal.d}."),
-			S("{$actor.I} climbs up {$portal.d}."),
-			S("{$actor.I} crawls up {$portal.d}.")
+			"{$actor.I} goes up {$portal.d}.",
+			"{$actor.I} climbs up {$portal.d}.",
+			"{$actor.I} crawls up {$portal.d}."
 		}, {
-			S("{$actor.I} goes down {$portal.d}."),
-			S("{$actor.I} climbs down {$portal.d}."),
-			S("{$actor.I} crawls down {$portal.d}.")
+			"{$actor.I} goes down {$portal.d}.",
+			"{$actor.I} climbs down {$portal.d}.",
+			"{$actor.I} crawls down {$portal.d}."
 		}, {
-			S("{$actor.I} heads through {$portal.d}."),
-			S("{$actor.I} climbs through {$portal.d}."),
-			S("{$actor.I} crawls through {$portal.d}.")
+			"{$actor.I} heads through {$portal.d}.",
+			"{$actor.I} climbs through {$portal.d}.",
+			"{$actor.I} crawls through {$portal.d}."
 		},
 	};
 	// When {person} enters from {the-portal}
 	const std::string portal_enters_table[PortalDetail::COUNT][PortalUsage::COUNT] = {
 		{
-			S("{$actor.I} arrives from {$portal.d}."),
-			S("{$actor.I} climbs in from {$portal.d}."),
-			S("{$actor.I} crawls in from {$portal.d}.")
+			"{$actor.I} arrives from {$portal.d}.",
+			"{$actor.I} climbs in from {$portal.d}.",
+			"{$actor.I} crawls in from {$portal.d}."
 		}, {
-			S("{$actor.I} comes out from {$portal.d}."),
-			S("{$actor.I} climbs out from {$portal.d}."),
-			S("{$actor.I} crawls out from {$portal.d}.")
+			"{$actor.I} comes out from {$portal.d}.",
+			"{$actor.I} climbs out from {$portal.d}.",
+			"{$actor.I} crawls out from {$portal.d}."
 		}, {
-			S("{$actor.I} gets off {$portal.d}."),
-			S("{$actor.I} climbs off {$portal.d}."),
-			S("{$actor.I} crawls off {$portal.d}.")
+			"{$actor.I} gets off {$portal.d}.",
+			"{$actor.I} climbs off {$portal.d}.",
+			"{$actor.I} crawls off {$portal.d}."
 		}, {
-			S("{$actor.I} arrives from over {$portal.d}."),
-			S("{$actor.I} climbs over from {$portal.d}."),
-			S("{$actor.I} crawls over from {$portal.d}.")
+			"{$actor.I} arrives from over {$portal.d}.",
+			"{$actor.I} climbs over from {$portal.d}.",
+			"{$actor.I} crawls over from {$portal.d}."
 		}, {
-			S("{$actor.I} comes from under {$portal.d}."),
-			S("{$actor.I} climbs from beneath {$portal.d}."),
-			S("{$actor.I} crawls from under {$portal.d}.")
+			"{$actor.I} comes from under {$portal.d}.",
+			"{$actor.I} climbs from beneath {$portal.d}.",
+			"{$actor.I} crawls from under {$portal.d}."
 		}, {
-			S("{$actor.I} arrives from across {$portal.d}."),
-			S("{$actor.I} climbs from across {$portal.d}."),
-			S("{$actor.I} crawls from across {$portal.d}.")
+			"{$actor.I} arrives from across {$portal.d}.",
+			"{$actor.I} climbs from across {$portal.d}.",
+			"{$actor.I} crawls from across {$portal.d}."
 		}, {
-			S("{$actor.I} comes in from {$portal.d}."),
-			S("{$actor.I} climbs in from {$portal.d}."),
-			S("{$actor.I} crawls in from {$portal.d}.")
+			"{$actor.I} comes in from {$portal.d}.",
+			"{$actor.I} climbs in from {$portal.d}.",
+			"{$actor.I} crawls in from {$portal.d}."
 		}, {
-			S("{$actor.I} comes down from {$portal.d}."),
-			S("{$actor.I} climbs down {$portal.d}."),
-			S("{$actor.I} crawls down {$portal.d}.")
+			"{$actor.I} comes down from {$portal.d}.",
+			"{$actor.I} climbs down {$portal.d}.",
+			"{$actor.I} crawls down {$portal.d}."
 		}, {
-			S("{$actor.I} comes up {$portal.d}."),
-			S("{$actor.I} climbs up {$portal.d}."),
-			S("{$actor.I} crawls up {$portal.d}.")
+			"{$actor.I} comes up {$portal.d}.",
+			"{$actor.I} climbs up {$portal.d}.",
+			"{$actor.I} crawls up {$portal.d}."
 		}, {
-			S("{$actor.I} comes through {$portal.d}."),
-			S("{$actor.I} climbs through from {$portal.d}."),
-			S("{$actor.I} crawls from through {$portal.d}.")
+			"{$actor.I} comes through {$portal.d}.",
+			"{$actor.I} climbs through from {$portal.d}.",
+			"{$actor.I} crawls from through {$portal.d}."
 		},
 	};
 }
@@ -329,40 +329,40 @@ void
 Portal::save_data (File::Writer& writer)
 {
 	if (!name.empty())
-		writer.attr(S("portal"), S("name"), name.get_name());
+		writer.attr("portal", "name", name.get_name());
 
 	if (!desc.empty())
-		writer.attr(S("portal"), S("desc"), desc);
+		writer.attr("portal", "desc", desc);
 	
 	Entity::save_data (writer);
 
-	for (StringList::const_iterator i = keywords.begin(); i != keywords.end(); ++i)
-		writer.attr(S("portal"), S("keyword"), *i);
+	for (std::vector<std::string>::const_iterator i = keywords.begin(); i != keywords.end(); ++i)
+		writer.attr("portal", "keyword", *i);
 
 	if (dir.valid())
-		writer.attr(S("portal"), S("dir"), dir.get_name());
+		writer.attr("portal", "dir", dir.get_name());
 	if (usage != PortalUsage::WALK)
-		writer.attr(S("portal"), S("usage"), usage.get_name());
+		writer.attr("portal", "usage", usage.get_name());
 	if (detail != PortalDetail::NONE)
-		writer.attr(S("portal"), S("detail"), detail.get_name());
+		writer.attr("portal", "detail", detail.get_name());
 	if (is_hidden())
-		writer.attr(S("portal"), S("hidden"), true);
+		writer.attr("portal", "hidden", true);
 	if (is_door()) {
-		writer.attr(S("portal"), S("door"), true);
+		writer.attr("portal", "door", true);
 		if (is_closed())
-			writer.attr(S("portal"), S("closed"), true);
+			writer.attr("portal", "closed", true);
 		if (is_locked())
-			writer.attr(S("portal"), S("locked"), true);
+			writer.attr("portal", "locked", true);
 	}
 	if (is_nolook())
-		writer.attr(S("portal"), S("nolook"), true);
+		writer.attr("portal", "nolook", true);
 	if (is_disabled())
-		writer.attr(S("portal"), S("disabled"), true);
+		writer.attr("portal", "disabled", true);
 	if (is_oneway())
-		writer.attr(S("portal"), S("oneway"), true);
+		writer.attr("portal", "oneway", true);
 
 	if (!target.empty())
-		writer.attr(S("portal"), S("target"), target);
+		writer.attr("portal", "target", target);
 }
 
 void
@@ -518,7 +518,7 @@ Portal::name_match (const std::string& match) const
 		return true;
 
 	// try keywords
-	for (StringList::const_iterator i = keywords.begin(); i != keywords.end(); i ++)
+	for (std::vector<std::string>::const_iterator i = keywords.begin(); i != keywords.end(); i ++)
 		if (phrase_match (*i, match))
 			return true;
 

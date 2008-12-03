@@ -9,7 +9,6 @@
 #define COMMAND_LINE_H
 
 #include "common.h"
-#include "common/string.h"
 #include "common/imanager.h"
 #include "mud/account.h"
 #include "mud/server.h"
@@ -149,8 +148,8 @@ namespace commands {
 	{ \
 		extern void func (klass*, std::string[]); \
 		void (*fptr)(klass*, std::string[]) = func; \
-		Command* command = new Command(S(name),S(usage),access);
-#define FORMAT(priority, format) add(CommandFormat(command, S(format), (fptr), (priority)));
+		Command* command = new Command(name,usage,access);
+#define FORMAT(priority, format) add(CommandFormat(command, format, (fptr), (priority)));
 #define END_COMM add(command); }
 
 #endif

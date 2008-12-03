@@ -11,6 +11,7 @@
 #include "common.h"
 #include "common/types.h"
 #include "common/streams.h"
+#include "common/string.h"
 #include "mud/color.h"
 #include "net/socket.h"
 #include "config.h"

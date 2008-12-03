@@ -8,7 +8,6 @@
 #ifndef SOURCEMUD_COMMON_STRBUF_H
 #define SOURCEMUD_COMMON_STRBUF_H
 
-#include "common/string.h"
 #include "common/streams.h"
 
 const int STRING_BUFFER_STATIC_SIZE = 256;

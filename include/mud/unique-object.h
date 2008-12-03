@@ -17,7 +17,7 @@ UniqueObject : public Object
 	public:
 	UniqueObject ();
 
-	virtual std::string factory_type () const { return S("uobject"); }
+	virtual const char* factory_type () const { return "uobject"; }
 
 	// name info
 	bool set_name (const std::string&);
@@ -63,7 +63,7 @@ UniqueObject : public Object
 	uint weight;
 	uint cost;
 	EquipSlot equip;
-	StringList keywords;
+	std::vector<std::string> keywords;
 	TagList tags;
 
 	// flags

@@ -7,6 +7,7 @@
 
 #include "common.h"
 #include "common/streams.h"
+#include "common/string.h"
 #include "mud/creature.h"
 #include "mud/server.h"
 #include "mud/player.h"
@@ -185,7 +186,7 @@ TelnetModeLogin::process (char* line)
 		return;
 
 	// quit?
-	if (str_eq(data, S("quit"))) {
+	if (str_eq(data, "quit")) {
 		get_handler()->disconnect();
 		return;
 	}
@@ -204,7 +205,7 @@ TelnetModeLogin::process (char* line)
 		}
 
 		// create account?
-		if (str_eq(data, S("new")) || str_eq(data, S("create"))) {
+		if (str_eq(data, "new") || str_eq(data, "create")) {
 			// enabled?
 			if (MSettings.get_account_creation()) {
 				get_handler()->set_mode(new TelnetModeNewAccount(get_handler()));

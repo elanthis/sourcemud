@@ -9,7 +9,6 @@
 #define SOURCEMUD_STREAMS_H
 
 #include "common.h"
-#include "common/string.h"
 
 // pre-defines
 class Creature;

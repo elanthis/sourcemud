@@ -9,7 +9,6 @@
 #define SOURCEMUD_MUD_WEATHER_H
 
 #include "common.h"
-#include "common/string.h"
 #include "common/imanager.h"
 #include "mud/fileobj.h"
 
@@ -29,7 +28,7 @@ struct WeatherState {
 
 	std::string id;
 	std::vector<WeatherChange> changes;
-	StringList descs;
+	std::vector<std::string> descs;
 };
 
 // a single region of the world and its weather patterns

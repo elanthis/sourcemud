@@ -9,36 +9,36 @@
 #include "common/string.h"
 #include "mud/form.h"
 
-StringList FormColor::names;
+std::vector<std::string> FormColor::names;
 
 std::string FormBuild::names[] = {
-	S("none"),
-	S("hunched"),
-	S("gaunt"),
-	S("lean"),
-	S("average"),
-	S("husky"),
-	S("stocky"),
-	S("powerful"),
-	S("athletic"),
+	"none",
+	"hunched",
+	"gaunt",
+	"lean",
+	"average",
+	"husky",
+	"stocky",
+	"powerful",
+	"athletic",
 };
 
 std::string FormHeight::names[] = {
-	S("none"),
-	S("tiny"),
-	S("short"),
-	S("typical"),
-	S("tall"),
+	"none",
+	"tiny",
+	"short",
+	"typical",
+	"tall",
 };
 
 std::string FormHairStyle::names [] = {
-	S("none"),
-	S("long, straight"),
-	S("long, wavy"),
-	S("long, curly"),
-	S("short, straight"),
-	S("short, wavy"),
-	S("short, curly"),
+	"none",
+	"long, straight",
+	"long, wavy",
+	"long, curly",
+	"short, straight",
+	"short, wavy",
+	"short, curly",
 };
 
 std::string

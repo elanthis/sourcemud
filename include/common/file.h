@@ -9,7 +9,6 @@
 #define SOURCEMUD_COMMON_FILE_H
 
 #include "common.h"
-#include "common/string.h"
 
 namespace File {
 
@@ -17,12 +16,12 @@ namespace File {
 // not return files that start with a . or end with a ~.
 // if subdir is true, sub-directories will also be returned,
 // otherwise only regular files are returned.
-StringList dirlist(const std::string& path, bool subdir = false);
+std::vector<std::string> dirlist(const std::string& path, bool subdir = false);
 
 // filters the file list to only include files that match
 // the given filter.  the filter is a UNIX-style shell glob,
 // using fnmatch().
-StringList& filter(StringList& files, const std::string& filter);
+std::vector<std::string>& filter(std::vector<std::string>& files, const std::string& filter);
 
 // returns true if the given path is a regular file
 bool isfile(const std::string& path);

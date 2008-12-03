@@ -5,11 +5,12 @@
  * http://www.sourcemud.org
  */
 
+#include "common.h"
 #include "common/string.h"
+#include "common/streams.h"
 #include "mud/server.h"
 #include "mud/command.h"
 #include "mud/player.h"
-#include "common/streams.h"
 #include "mud/zone.h"
 #include "mud/account.h"
 
@@ -80,7 +81,7 @@ void command_admin_revoke (Player* admin, std::string argv[]) {
 void command_admin_shutdown (Player* admin, std::string[]) {
 	*admin << CADMIN "Shutdown issued." CNORMAL "\n";
 	Log::Admin << "Shutdown issued by " << admin->get_account()->get_id();
-	MZone.announce (S("Shutting down, NOW!"));
+	MZone.announce ("Shutting down, NOW!");
 	MUD::shutdown();
 }
 

@@ -9,7 +9,6 @@
 #define SOURCEMUD_MUD_ELIST_H
 
 #include "common.h"
-#include "common/string.h"
 #include "common/error.h"
 
 // --- EList Definition ---

@@ -23,14 +23,14 @@ bool RegEx::grep(const std::string& string)
 	return !regexec(&regex, string.c_str(), 0, NULL, 0);
 }
 
-StringList RegEx::match(const std::string& string)
+std::vector<std::string> RegEx::match(const std::string& string)
 {
 	regmatch_t results[5];
 	const int size = sizeof(results)/sizeof(results[0]);
 	if(regexec(&regex, string.c_str(), size, results, 0))
-		return StringList();
+		return std::vector<std::string>();
 
-	StringList ret(size);
+	std::vector<std::string> ret(size);
 	for (int i = 0; i < size; ++i) {
 		if (results[i].rm_so != -1)
 			ret.push_back(std::string(string.c_str() + results[i].rm_so, results[i].rm_eo - results[i].rm_so));

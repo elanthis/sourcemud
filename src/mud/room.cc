@@ -69,9 +69,9 @@ Room::load_node (File::Reader& reader, File::Node& node)
 
 				// direction checking
 				if (!portal->get_dir().valid())
-					throw File::Error(S("Portal has no dir"));
+					throw File::Error("Portal has no dir");
 				if (get_portal_by_dir(portal->get_dir()) != NULL)
-					throw File::Error(S("Duplicate portal direction"));
+					throw File::Error("Duplicate portal direction");
 
 				// add
 				portal->parent_room = this;
@@ -81,7 +81,7 @@ Room::load_node (File::Reader& reader, File::Node& node)
 				if (is_active())
 					portal->activate();
 			} else {
-				throw File::Error(S("Room child is not an Npc, Object, or Portal"));
+				throw File::Error("Room child is not an Npc, Object, or Portal");
 			}
 		FO_PARENT(Entity)
 	FO_NODE_END
@@ -97,37 +97,37 @@ Room::load_finish ()
 void
 Room::save_data (File::Writer& writer)
 {
-	writer.attr(S("room"), S("id"), id);
+	writer.attr("room", "id", id);
 
 	if (!name.empty())
-		writer.attr(S("room"), S("name"), name.get_name());
+		writer.attr("room", "name", name.get_name());
 
 	if (!desc.empty())
-		writer.attr(S("room"), S("desc"), desc);
+		writer.attr("room", "desc", desc);
 	
 	Entity::save_data(writer);
 
 	if (flags.outdoors)
-		writer.attr(S("room"), S("outdoors"), true);
+		writer.attr("room", "outdoors", true);
 	if (flags.safe)
-		writer.attr(S("room"), S("safe"), true);
+		writer.attr("room", "safe", true);
 	if (flags.noweather)
-		writer.attr(S("room"), S("noweather"), true);
+		writer.attr("room", "noweather", true);
 
 	if (coins)
-		writer.attr(S("room"), S("coins"), coins);
+		writer.attr("room", "coins", coins);
 
 	for (std::map<PortalDir,Portal*>::const_iterator i = portals.begin(); i != portals.end(); ++i) {
 		if (i->second->get_owner() == this)
-			i->second->save(writer, S("room"), S("child"));
+			i->second->save(writer, "room", "child");
 	}
 
 	for (EList<Object>::const_iterator i = objects.begin(); i != objects.end(); ++i)
-		(*i)->save(writer, S("room"), S("child"));
+		(*i)->save(writer, "room", "child");
 
 	for (EList<Creature>::const_iterator i = creatures.begin(); i != creatures.end(); ++i) {
 		if (NPC(*i))
-			(*i)->save(writer, S("room"), S("child"));
+			(*i)->save(writer, "room", "child");
 	}
 }
 
@@ -308,7 +308,7 @@ Room::show (const StreamControl& stream, Creature* viewer)
 
 	// basic info
 	stream << "[ " << StreamName(*this, NONE, true) << " ]\n";
-	stream << CDESC "  " << StreamMacro(get_desc(), S("room"), this, S("actor"), viewer) << CNORMAL;
+	stream << CDESC "  " << StreamMacro(get_desc(), "room", this, "actor", viewer) << CNORMAL;
 
 	// we're outdoors - do that stuff
 	if (is_outdoors ()) {

@@ -8,6 +8,7 @@
 #include "common.h"
 #include "common/error.h"
 #include "common/streams.h"
+#include "common/string.h"
 #include "mud/command.h"
 #include "mud/creature.h"
 #include "mud/player.h"
@@ -291,7 +292,7 @@ Command::show_man (StreamControl& stream)
 		stream << StreamIndent(2);
 		stream << CSPECIAL "About:" CNORMAL "\n";
 		stream << StreamIndent(4);
-		stream << StreamMacro(topic->about) << S("\n");
+		stream << StreamMacro(topic->about) << "\n";
 	}
 	stream << StreamIndent(2);
 	stream << CSPECIAL "Usage:" CNORMAL "\n";
@@ -307,7 +308,7 @@ CommandFormat::build (const std::string& s_format)
 	int arg;
 	bool opt;
 	CommandFormatNode::type_t type;
-	StringList words;
+	std::vector<std::string> words;
 
 	// set our format
 	format = s_format;
@@ -1030,7 +1031,7 @@ Creature::cl_find_any (const std::string& line, bool silent)
 
 void Player::process_command (const std::string& in_line)
 {
-	if (str_eq(in_line, S("quit"))) {
+	if (str_eq(in_line, "quit")) {
 		end_session();
 		return;
 	}

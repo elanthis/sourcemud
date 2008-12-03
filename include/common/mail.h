@@ -11,7 +11,6 @@
 #ifdef HAVE_SENDMAIL
 
 #include "common.h"
-#include "common/string.h"
 #include "common/strbuf.h"
 #include "config.h"
 

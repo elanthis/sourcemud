@@ -7,6 +7,7 @@
 
 #include "common.h"
 #include "common/streams.h"
+#include "common/string.h"
 #include "mud/creature.h"
 #include "mud/server.h"
 #include "mud/player.h"
@@ -36,7 +37,7 @@ void
 TelnetModeMainMenu::show_banner ()
 {
 	get_handler()->clear_scr();
-	*get_handler() << StreamMacro(MMessage.get(S("menu_banner"))) << S("\n");
+	*get_handler() << StreamMacro(MMessage.get("menu_banner")) << "\n";
 	*get_handler() << "Greetings, " CPLAYER << account->get_name() << CNORMAL "!\n\n";
 }
 
@@ -149,7 +150,7 @@ TelnetModeMainMenu::process (char* line)
 				show_characters();
 			// portal?
 			} else if (input == "5" || prefix_match("portal", input)) {
-				*get_handler() << StreamMacro(MMessage.get(S("quit")));
+				*get_handler() << StreamMacro(MMessage.get("quit"));
 				get_handler()->disconnect();
 			// eh?
 			} else {

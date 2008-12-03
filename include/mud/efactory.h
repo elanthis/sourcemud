@@ -9,7 +9,6 @@
 #define SOURCEMUD_MUD_EFACTORY_H
 
 #include "common.h"
-#include "common/string.h"
 #include "common/imanager.h"
 
 class Entity;

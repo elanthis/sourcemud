@@ -246,7 +246,7 @@ namespace {
 			"Visit http://www.sourcemud.org for more details.\n";
 
 		// connect message
-		*telnet << StreamMacro(MMessage.get(S("connect")));
+		*telnet << StreamMacro(MMessage.get("connect"));
 
 		// init login
 		telnet->set_mode(new TelnetModeLogin(telnet));

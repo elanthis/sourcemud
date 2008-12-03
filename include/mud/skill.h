@@ -10,7 +10,6 @@
 
 #include "common.h"
 #include "common/types.h"
-#include "common/string.h"
 
 class SkillID {
 	public:

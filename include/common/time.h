@@ -9,7 +9,6 @@
 #define SOURCEMUD_COMMON_TIME_H
 
 #include "common.h"
-#include "common/string.h"
 
 // legacy cruft
 std::string time_to_str (time_t time);

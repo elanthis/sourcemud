@@ -135,7 +135,7 @@ File::Reader::Token File::Reader::read_token(std::string& outstr)
 		while (in && (test = in.peek()) != '"') {
 			// line breaks not allowed
 			if (test == '\n') {
-				throw File::Error(S("Line break in string"));
+				throw File::Error("Line break in string");
 
 			// escape?
 			} else if (test == '\\') {
@@ -150,7 +150,7 @@ File::Reader::Token File::Reader::read_token(std::string& outstr)
 				else if (test == '"')
 					data << '"';
 				else
-					throw File::Error(S("Unknown escape code"));
+					throw File::Error("Unknown escape code");
 
 				// consume the op
 				in.get();
@@ -184,7 +184,7 @@ File::Reader::Token File::Reader::read_token(std::string& outstr)
 		while (in && isdigit(in.peek()))
 			data << (char)in.get();
 		if (in.get() != '>')
-			throw File::Error(S("Invalid ID format"));
+			throw File::Error("Invalid ID format");
 
 		outstr = data.str();
 
@@ -208,7 +208,7 @@ File::Reader::Token File::Reader::read_token(std::string& outstr)
 			// must have whitespace to end of line
 			while (in && in.peek() != '\n')
 				if (!isspace(in.get()))
-					throw File::Error(S("Syntax error: garbage after <<["));
+					throw File::Error("Syntax error: garbage after <<[");
 			in.get();
 			++line;
 
@@ -237,7 +237,7 @@ File::Reader::Token File::Reader::read_token(std::string& outstr)
 
 			return TOKEN_STRING;
 		} else {
-			throw File::Error(S("Syntax error: unknown symbol: ") + outstr);
+			throw File::Error("Syntax error: unknown symbol: " + outstr);
 		}
 
 	// name
@@ -270,7 +270,7 @@ File::Reader::Token File::Reader::read_token(std::string& outstr)
 	while (in && !isspace(in.peek()))
 		data << (char)in.get();
 
-	throw File::Error(S("Syntax error: unknown symbol: ") + data.str());
+	throw File::Error("Syntax error: unknown symbol: " + data.str());
 }
 
 bool
@@ -305,18 +305,18 @@ File::Reader::get (Node& node)
 
 	// expect a name
 	if (op != TOKEN_NAME)
-		throw File::Error(S("Macro error: name expected"));
+		throw File::Error("Macro error: name expected");
 	node.ns = opstr;
 
 	// expect name separator
 	op = read_token(opstr);
 	if (op != TOKEN_KEY)
-		throw File::Error(S("Macro error: expected ."));
+		throw File::Error("Macro error: expected .");
 
 	// read name
 	op = read_token(opstr);
 	if (op != TOKEN_NAME && op != TOKEN_STRING)
-		throw File::Error(S("Macro error: name expected after ."));
+		throw File::Error("Macro error: name expected after .");
 	node.name = opstr;
 
 	// object?
@@ -338,7 +338,7 @@ File::Reader::get (Node& node)
 			node.value = Value(Value::TYPE_STRING, data);
 			type = read_token(data);
 			if (type != TOKEN_BEGIN)
-				throw File::Error(S("Macro error: { expected after name"));
+				throw File::Error("Macro error: { expected after name");
 			node.type = Node::BEGIN_TYPED;
 			return true;
 	
@@ -350,11 +350,11 @@ File::Reader::get (Node& node)
 		// no value
 		} else {
 			// unknown type
-			throw File::Error(S("Macro error: value expected after ="));
+			throw File::Error("Macro error: value expected after =");
 		}
 
 	} else {
-		throw File::Error(S("Macro error: expected { or = after name"));
+		throw File::Error("Macro error: expected { or = after name");
 	}
 }
 
@@ -363,9 +363,9 @@ bool File::Reader::set_value(File::Reader::Token type, std::string& data, File::
 	if (type == TOKEN_NUMBER) {
 		value = Value(Value::TYPE_INT, data);
 	} else if (type == TOKEN_TRUE) {
-		value = Value(Value::TYPE_BOOL, S("true"));
+		value = Value(Value::TYPE_BOOL, "true");
 	} else if (type == TOKEN_FALSE) {
-		value = Value(Value::TYPE_BOOL, S("false"));
+		value = Value(Value::TYPE_BOOL, "false");
 	} else if (type == TOKEN_STRING) {
 		value = Value(Value::TYPE_STRING, data);
 	} else if (type == TOKEN_ID) {
@@ -671,7 +671,7 @@ File::Node::get_int () const
 {
 	if (value.get_type() != Value::TYPE_INT) {
 		Log::Error << "Incorrect data type for '" << get_ns() << '.' << get_name() << "' at :" << get_line();
-		throw(File::Error(S("data type mismatch")));
+		throw(File::Error("data type mismatch"));
 	}
 
 	return tolong(value.get_value());
@@ -682,7 +682,7 @@ File::Node::get_bool () const
 {
 	if (value.get_type() != Value::TYPE_BOOL) {
 		Log::Error << "Incorrect data type for '" << get_ns() << '.' << get_name() << "' at :" << get_line();
-		throw(File::Error(S("data type mismatch")));
+		throw(File::Error("data type mismatch"));
 	}
 	return value.get_value() == "true" || value.get_value() == "yes" || value.get_value() == "on";
 }
@@ -692,7 +692,7 @@ File::Node::get_string () const
 {
 	if (value.get_type() != Value::TYPE_STRING) {
 		Log::Error << "Incorrect data type for '" << get_ns () << '.' << get_name() << "' at :" << get_line();
-		throw(File::Error(S("data type mismatch")));
+		throw(File::Error("data type mismatch"));
 	}
 	return value.get_value();
 }
@@ -702,7 +702,7 @@ File::Node::get_id () const
 {
 	if (value.get_type() != Value::TYPE_ID) {
 		Log::Error << "Incorrect data type for '" << get_ns() << '.' << get_name() << "' at :" << get_line();
-		throw(File::Error(S("data type mismatch")));
+		throw(File::Error("data type mismatch"));
 	}
 	return MUniqueID.decode(value.get_value());
 }
@@ -712,7 +712,7 @@ File::Node::get_list () const
 {
 	if (value.get_type() != Value::TYPE_LIST) {
 		Log::Error << "Incorrect data type for '" << get_ns() << '.' << get_name() << "' at :" << get_line();
-		throw(File::Error(S("data type mismatch")));
+		throw(File::Error("data type mismatch"));
 	}
 	return value.get_list();
 }
@@ -722,11 +722,11 @@ File::Node::get_list (size_t size) const
 {
 	if (value.get_type() != Value::TYPE_LIST) {
 		Log::Error << "Incorrect data type for '" << get_ns() << '.' << get_name() << "' at :" << get_line();
-		throw(File::Error(S("data type mismatch")));
+		throw(File::Error("data type mismatch"));
 	}
 	if (value.get_list().size() != size) {
 		Log::Error << "Incorrect number of elements in list for '" << get_ns() << '.' << get_name() << "' at :" << get_line();
-		throw(File::Error(S("list size mismatch")));
+		throw(File::Error("list size mismatch"));
 	}
 	return value.get_list();
 }
@@ -736,15 +736,15 @@ File::Node::get_string (size_t index) const
 {
 	if (value.get_type() != Value::TYPE_LIST) {
 		Log::Error << "Incorrect data type for '" << get_ns () << '.' << get_name() << "' at :" << get_line();
-		throw(File::Error(S("data type mismatch")));
+		throw(File::Error("data type mismatch"));
 	}
 	if (value.get_list().size() <= index) {
 		Log::Error << "Incorrect number of elements in list for '" << get_ns() << '.' << get_name() << "' at :" << get_line();
-		throw(File::Error(S("list size mismatch")));
+		throw(File::Error("list size mismatch"));
 	}
 	if (value.get_list()[index].get_type() != Value::TYPE_STRING) {
 		Log::Error << "Incorrect data type for element " << (index + 1) << " of '" << get_ns () << '.' << get_name() << "' at :" << get_line();
-		throw(File::Error(S("data type mismatch")));
+		throw(File::Error("data type mismatch"));
 	}
 	return value.get_list()[index].get_value();
 }
@@ -754,15 +754,15 @@ File::Node::get_int (size_t index) const
 {
 	if (value.get_type() != Value::TYPE_LIST) {
 		Log::Error << "Incorrect data type for '" << get_ns () << '.' << get_name() << "' at :" << get_line();
-		throw(File::Error(S("data type mismatch")));
+		throw(File::Error("data type mismatch"));
 	}
 	if (value.get_list().size() <= index) {
 		Log::Error << "Incorrect number of elements in list for '" << get_ns() << '.' << get_name() << "' at :" << get_line();
-		throw(File::Error(S("list size mismatch")));
+		throw(File::Error("list size mismatch"));
 	}
 	if (value.get_list()[index].get_type() != Value::TYPE_INT) {
 		Log::Error << "Incorrect data type for element " << (index + 1) << " of '" << get_ns () << '.' << get_name() << "' at :" << get_line();
-		throw(File::Error(S("data type mismatch")));
+		throw(File::Error("data type mismatch"));
 	}
 	return tolong(value.get_list()[index].get_value());
 }

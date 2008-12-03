@@ -9,7 +9,6 @@
 #define PLAYER_H
 
 #include "common.h"
-#include "common/string.h"
 #include "common/imanager.h"
 #include "common/time.h"
 #include "mud/creature.h"
@@ -30,72 +29,72 @@ class Player : public Creature
 	// create and initialize
 	Player (class Account* s_account, const std::string& s_id);
 
-	virtual std::string factory_type () const { return S("player"); }
+	virtual const char* factory_type() const { return "player"; }
 
 	// player's unique ID (this is identical to their name)
-	inline std::string get_id () const { return name.get_text(); }
+	inline std::string get_id() const { return name.get_text(); }
 
 	// name information (special for players)
-	inline virtual EntityName get_name () const { return name; }
+	inline virtual EntityName get_name() const { return name; }
 
 	// description information
-	virtual inline std::string get_desc () const { return std::string(); }
+	virtual inline std::string get_desc() const { return std::string(); }
 	virtual inline void set_desc (const std::string& s_desc) {}
 
 	// gender
-	virtual inline GenderType get_gender () const { return form.gender; }
+	virtual inline GenderType get_gender() const { return form.gender; }
 	inline void set_gender (GenderType s_gender) { form.gender = s_gender; }
 
 	// save and load
 	virtual void save_data (File::Writer& writer);
 	virtual void save_hook (File::Writer& writer);
-	void save ();
+	void save();
 
 	int load_node (File::Reader& reader, File::Node& node);
 
 	// output color
-	inline std::string ncolor () const { return S(CPLAYER); }
+	inline const char* ncolor() const { return CPLAYER; }
 
 	// account
-	inline class Account* get_account () const { return account; }
+	inline class Account* get_account() const { return account; }
 
 	// connected?
 	//   currently in use by someone
-	inline bool is_connected () const { return conn != NULL; }
+	inline bool is_connected() const { return conn != NULL; }
 
 	// time
-	time_t get_time_created () const { return time_created; }
-	time_t get_time_lastlogin () const { return time_lastlogin; }
-	uint32 get_total_playtime () const { return total_playtime; }
+	time_t get_time_created() const { return time_created; }
+	time_t get_time_lastlogin() const { return time_lastlogin; }
+	uint32 get_total_playtime() const { return total_playtime; }
 
 	// session management
-	int start_session ();
-	void end_session ();
+	int start_session();
+	void end_session();
 
 	// birthday/age
-	uint get_age () const;
-	inline GameTime get_birthday () const { return birthday; }
+	uint get_age() const;
+	inline GameTime get_birthday() const { return birthday; }
 	inline void set_birthday (const GameTime& gt) { birthday = gt; }
 
 	// misc
 	void kill (Creature* killer);
-	void heartbeat ();
+	void heartbeat();
 
 	// manage account active counts
-	virtual void activate ();
-	virtual void deactivate ();
+	virtual void activate();
+	virtual void deactivate();
 
 	// race
-	inline class Race* get_race () const { return race; }
+	inline class Race* get_race() const { return race; }
 	inline class Race* set_race (class Race* race_in) { return race = race_in; }
 
 	// character traits
-	FormColor get_eye_color () const { return form.eye_color; }
-	FormColor get_hair_color () const { return form.hair_color; }
-	FormColor get_skin_color () const { return form.skin_color; }
-	FormHairStyle get_hair_style () const { return form.hair_style; }
-	FormBuild get_build () const { return form.build; }
-	FormHeight get_height () const { return form.height; }
+	FormColor get_eye_color() const { return form.eye_color; }
+	FormColor get_hair_color() const { return form.hair_color; }
+	FormColor get_skin_color() const { return form.skin_color; }
+	FormHairStyle get_hair_style() const { return form.hair_style; }
+	FormBuild get_build() const { return form.build; }
+	FormHeight get_height() const { return form.height; }
 
 	void set_eye_color (FormColor value) { form.eye_color = value; }
 	void set_hair_color (FormColor value) { form.hair_color = value; }
@@ -105,12 +104,12 @@ class Player : public Creature
 	void set_height (FormHeight value) { form.height = value; }
 
 	// combat
-	virtual uint get_combat_dodge () const;
-	virtual uint get_combat_attack () const;
-	virtual uint get_combat_damage () const;
+	virtual uint get_combat_dodge() const;
+	virtual uint get_combat_attack() const;
+	virtual uint get_combat_damage() const;
 
 	// class/exp
-	inline uint get_exp () const { return experience; }
+	inline uint get_exp() const { return experience; }
 	void grant_exp (uint amount);
 
 	// stats
@@ -118,25 +117,25 @@ class Player : public Creature
 	inline void set_base_stat (CreatureStatID stat, int value) { base_stats[stat.get_value()] = value; }
 
 	// recalcuate everything
-	virtual void recalc_stats ();
-	virtual void recalc ();
+	virtual void recalc_stats();
+	virtual void recalc();
 
 	// display info
-	void display_inventory ();
+	void display_inventory();
 	virtual void display_desc (const class StreamControl& stream) const;
-	void display_skills ();
+	void display_skills();
 
 	// I/O
 	virtual void stream_put (const char* data, size_t len = 0);
-	void show_prompt ();
+	void show_prompt();
 	void process_command (const std::string& cmd);
 	void connect (IPlayerConnection* conn);
-	void disconnect ();
+	void disconnect();
 	IPlayerConnection* get_conn() const { return conn; }
 	void toggle_echo (bool value);
 	void set_indent (uint level);
-	uint get_width ();
-	void clear_scr ();
+	uint get_width();
+	void clear_scr();
 
 	// parsing
 	virtual int macro_property (const class StreamControl& stream, const std::string& method, const MacroList& argv) const;
@@ -178,8 +177,8 @@ class Player : public Creature
 
 #ifdef HAVE_LIBZ
 	// compression
-	bool begin_mccp ();
-	void end_mccp ();
+	bool begin_mccp();
+	void end_mccp();
 #endif // HAVE_LIBZ
 
 	E_SUBTYPE(Player,Creature);
@@ -187,7 +186,7 @@ class Player : public Creature
 	friend class _MPlayer; // obvious
 
 	protected:
-	~Player ();
+	~Player();
 };
 
 // manage all players
@@ -198,10 +197,10 @@ class _MPlayer : public IManager
 	typedef std::list<Player*> PlayerList;
 
 	// initialize the player manager
-	virtual int initialize ();
+	virtual int initialize();
 
 	// shutdown the player manager
-	virtual void shutdown ();
+	virtual void shutdown();
 
 	// true if 'name' is a valid player name
 	bool valid_name (const std::string& name);
@@ -222,16 +221,16 @@ class _MPlayer : public IManager
 	bool exists (const std::string& name);
 
 	// count of connected players
-	size_t count ();
+	size_t count();
 
 	// list all connected players
 	void list (const StreamControl& stream);
 
 	// save all players
-	void save ();
+	void save();
 
 	// EEEEW - return list of all players - yuck
-	inline const PlayerList& get_player_list () { return player_list; }
+	inline const PlayerList& get_player_list() { return player_list; }
 
 	private:
 	PlayerList player_list;

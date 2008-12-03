@@ -9,7 +9,6 @@
 #define SOURCEMUD_MUD_MESSAGE_H
 
 #include "common.h"
-#include "common/string.h"
 #include "common/imanager.h"
 #include "mud/server.h"
 

@@ -27,8 +27,8 @@ class Spawn
 {
 	protected:
 	TagID tag;
-	StringList blueprints;
-	StringList rooms;
+	std::vector<std::string> blueprints;
+	std::vector<std::string> rooms;
 	uint min;
 	uint delay;
 	uint dcount;

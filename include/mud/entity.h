@@ -11,7 +11,6 @@
 #include "common.h"
 #include "common/types.h"
 #include "common/error.h"
-#include "common/string.h"
 #include "common/imanager.h"
 #include "mud/uniqid.h"
 #include "mud/event.h"
@@ -46,7 +45,7 @@ class Entity : public IMacroObject
 	Entity();
 
 	// factory handling
-	virtual std::string factory_type() const = 0;
+	virtual const char* factory_type() const = 0;
 	static Entity* create (const std::string& type); // efactory.cc
 
 	// get unique ID
@@ -84,7 +83,7 @@ class Entity : public IMacroObject
 
 	// output
 	virtual void display_desc (const class StreamControl& stream) const;
-	virtual std::string ncolor() const { return S(CNORMAL); }
+	virtual const char* ncolor() const { return CNORMAL; }
 
 	// save/load
 	static Entity* load (const std::string& factory, File::Reader& reader);

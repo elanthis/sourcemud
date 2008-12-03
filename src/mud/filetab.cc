@@ -29,7 +29,7 @@ File::TabReader::open (const std::string& filename)
 int
 File::TabReader::load ()
 {
-	StringList cent;
+	std::vector<std::string> cent;
 	StringBuffer cword;
 	enum {
 		WS,

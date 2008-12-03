@@ -8,6 +8,7 @@
 #include "common.h"
 #include "common/error.h"
 #include "common/streams.h"
+#include "common/string.h"
 #include "mud/server.h"
 #include "mud/macro.h"
 #include "mud/command.h"
@@ -45,77 +46,77 @@
 
 // color names
 std::string color_value_names[] = {
-	S("normal"),
-	S("black"),
-	S("red"),
-	S("green"),
-	S("brown"),
-	S("blue"),
-	S("magenta"),
-	S("cyan"),
-	S("grey"),
-	S("lightblack"),
-	S("lightred"),
-	S("lightgreen"),
-	S("yellow"),
-	S("lightblue"),
-	S("lightmagenta"),
-	S("lightcyan"),
-	S("white"),
-	S("darkred"),
-	S("darkgreen"),
-	S("darkyellow"),
-	S("darkblue"),
-	S("darkmagenta"),
-	S("darkcyan"),
-	S("darkgrey"),
+	"normal",
+	"black",
+	"red",
+	"green",
+	"brown",
+	"blue",
+	"magenta",
+	"cyan",
+	"grey",
+	"lightblack",
+	"lightred",
+	"lightgreen",
+	"yellow",
+	"lightblue",
+	"lightmagenta",
+	"lightcyan",
+	"white",
+	"darkred",
+	"darkgreen",
+	"darkyellow",
+	"darkblue",
+	"darkmagenta",
+	"darkcyan",
+	"darkgrey",
 	std::string()
 };
 // colour ansi values
 std::string color_values[] = {
-	S(ANSI_NORMAL),
-	S(ANSI_BLACK),
-	S(ANSI_RED),
-	S(ANSI_GREEN),
-	S(ANSI_BROWN),
-	S(ANSI_BLUE),
-	S(ANSI_MAGENTA),
-	S(ANSI_CYAN),
-	S(ANSI_GREY),
-	S(ANSI_LIGHTBLACK),
-	S(ANSI_LIGHTRED),
-	S(ANSI_LIGHTGREEN),
-	S(ANSI_YELLOW),
-	S(ANSI_LIGHTBLUE),
-	S(ANSI_LIGHTMAGENTA),
-	S(ANSI_LIGHTCYAN),
-	S(ANSI_WHITE),
-	S(ANSI_DARKRED),
-	S(ANSI_DARKGREEN),
-	S(ANSI_DARKYELLOW),
-	S(ANSI_DARKBLUE),
-	S(ANSI_DARKMAGENTA),
-	S(ANSI_DARKCYAN),
-	S(ANSI_DARKGREY),
+	ANSI_NORMAL,
+	ANSI_BLACK,
+	ANSI_RED,
+	ANSI_GREEN,
+	ANSI_BROWN,
+	ANSI_BLUE,
+	ANSI_MAGENTA,
+	ANSI_CYAN,
+	ANSI_GREY,
+	ANSI_LIGHTBLACK,
+	ANSI_LIGHTRED,
+	ANSI_LIGHTGREEN,
+	ANSI_YELLOW,
+	ANSI_LIGHTBLUE,
+	ANSI_LIGHTMAGENTA,
+	ANSI_LIGHTCYAN,
+	ANSI_WHITE,
+	ANSI_DARKRED,
+	ANSI_DARKGREEN,
+	ANSI_DARKYELLOW,
+	ANSI_DARKBLUE,
+	ANSI_DARKMAGENTA,
+	ANSI_DARKCYAN,
+	ANSI_DARKGREY,
 };
 // colour type names
 std::string color_type_names[] = {
-	S("normal"),
-	S("title"),
-	S("desc"),
-	S("player"),
-	S("npc"),
-	S("item"),
-	S("special"),
-	S("admin"),
-	S("portal"),
-	S("stat"),
-	S("statvbad"),
-	S("statbad"),
-	S("statgood"),
-	S("statvgood"),
-	S("bold"),
-	S("talk"),
+	"normal",
+	"title",
+	"desc",
+	"player",
+	"npc",
+	"item",
+	"special",
+	"admin",
+	"portal",
+	"stat",
+	"statvbad",
+	"statbad",
+	"statgood",
+	"statvgood",
+	"bold",
+	"talk",
 	std::string()
 };
 // default colour type mappings
@@ -139,22 +140,22 @@ const int color_type_defaults[] = {
 };
 // colour type RGB values
 std::string color_type_rgb[] = {
-	S(""),
-	S("#0A0"),
-	S(""),
-	S("#A05"),
-	S("#A50"),
-	S("#0A0"),
-	S("#A50"),
-	S("#500"),
-	S("#0AF"),
-	S(""),
-	S("#A00"),
-	S("#AA5"),
-	S("#5AF"),
-	S("#5FA"),
-	S("#A50"),
-	S("#05A"),
+	"",
+	"#0A0",
+	"",
+	"#A05",
+	"#A50",
+	"#0A0",
+	"#A50",
+	"#500",
+	"#0AF",
+	"",
+	"#A00",
+	"#AA5",
+	"#5AF",
+	"#5FA",
+	"#A50",
+	"#05A",
 };
 
 // ---- END COLOURS ----
@@ -480,7 +481,7 @@ TelnetHandler::stream_put (const char *text, size_t len)
 					case 'C':
 						// zmp color?
 						if (io_flags.zmp_color) {
-							std::string argv[2] = {S("color.use"), S(&esc_buf[1])};
+							std::string argv[2] = {"color.use", &esc_buf[1]};
 							add_zmp(2, argv);
 						}
 						
@@ -790,15 +791,15 @@ TelnetHandler::sock_input (char* buffer, size_t size)
 						// enable ZMP support
 						io_flags.zmp = true;
 						// send zmp.ident command
-						std::string argv[4] = {S("zmp.ident"), S("Source MUD"), S(PACKAGE_VERSION), S("Powerful C++ MUD server software") };
+						std::string argv[4] = {"zmp.ident", "Source MUD", PACKAGE_VERSION, "Powerful C++ MUD server software" };
 						send_zmp(4, argv);
 						// check for net.sourcemud package
-						argv[0] = S("zmp.check");
-						argv[1] = S("net.sourcemud.");
+						argv[0] = "zmp.check";
+						argv[1] = "net.sourcemud.";
 						send_zmp(2, argv);
 						// check for color.define command
-						argv[0] = S("zmp.check");
-						argv[1] = S("color.define");
+						argv[0] = "zmp.check";
+						argv[1] = "color.define";
 						send_zmp(2, argv);
 						break;
 					}
@@ -894,7 +895,7 @@ TelnetHandler::set_mode (ITelnetMode* new_mode)
 void
 TelnetHandler::process_telnet_command(char* data)
 {
-	StringList args = explode(std::string(data), ' '); // FIXME: make more efficient
+	std::vector<std::string> args = explode(std::string(data), ' '); // FIXME: make more efficient
 	// enable/disable color
 	if (args.size() == 2 && args.front() == "color") {
 		if (args[1] == "on") {

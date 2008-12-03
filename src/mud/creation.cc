@@ -5,7 +5,9 @@
  * http://www.sourcemud.org
  */
 
+#include "common.h"
 #include "common/rand.h"
+#include "common/string.h"
 #include "mud/player.h"
 #include "mud/login.h"
 #include "mud/creation.h"
@@ -153,10 +155,10 @@ void TelnetModeRealNewCharacter::prompt ()
 // PROCESS INPUT FOR CURRENT STATE
 void TelnetModeRealNewCharacter::process (char* line)
 {
-	std::string input = strlower(S(line));
+	std::string input = strlower(line);
 	int numeric = tolong(input);
 
-	if (input == S("quit")) {
+	if (input == "quit") {
 		finish();
 		return;
 	}
@@ -166,13 +168,13 @@ void TelnetModeRealNewCharacter::process (char* line)
 		case STATE_RENAME:
 			// must be a valid name
 			if (!MPlayer.valid_name(input)) {
-				show_error(S("Thy chosen name is not acceptable."));
+				show_error("Thy chosen name is not acceptable.");
 				break;
 			}
 
 			// not already in use
 			if (MPlayer.exists(input)) {
-				show_error(S("Thy chosen name is already in use."));
+				show_error("Thy chosen name is already in use.");
 				break;
 			}
 
@@ -181,12 +183,12 @@ void TelnetModeRealNewCharacter::process (char* line)
 			enter_state(state == STATE_NAME ? STATE_NAME_CONFIRM : STATE_RENAME_CONFIRM);
 			break;
 		case STATE_NAME_CONFIRM:
-			if (input.empty() || is_match(S("yes"), input))
+			if (input.empty() || is_match("yes", input))
 				enter_state(state == STATE_NAME_CONFIRM ? STATE_RACE : STATE_FINAL_CONFIRM);
-			else if (is_match(S("no"), input))
+			else if (is_match("no", input))
 				enter_state(STATE_NAME);
 			else
-				show_error(S("I do not understand thy response."));
+				show_error("I do not understand thy response.");
 			break;
 		case STATE_RACE:
 		{
@@ -201,7 +203,7 @@ void TelnetModeRealNewCharacter::process (char* line)
 				++ index;
 			}
 			if (rptr == NULL) {
-				show_error(S("I do not understand thy response."));
+				show_error("I do not understand thy response.");
 				break;
 			}
 
@@ -211,22 +213,22 @@ void TelnetModeRealNewCharacter::process (char* line)
 			break;
 		}
 		case STATE_RACE_CONFIRM:
-			if (input.empty() || is_match(S("yes"), input))
+			if (input.empty() || is_match("yes", input))
 				enter_state(STATE_GENDER);
-			else if (is_match(S("no"), input))
+			else if (is_match("no", input))
 				enter_state(STATE_RACE);
 			else
-				show_error(S("I do not understand thy response."));
+				show_error("I do not understand thy response.");
 			break;
 		case STATE_GENDER:
-			if (numeric == 1 || is_match(S("female"), input)) {
+			if (numeric == 1 || is_match("female", input)) {
 				gender = GenderType::FEMALE;
 				enter_state(STATE_HEIGHT);
-			} else if (numeric == 2 || is_match(S("male"), input)) {
+			} else if (numeric == 2 || is_match("male", input)) {
 				gender = GenderType::MALE;
 				enter_state(STATE_HEIGHT);
 			} else {
-				show_error(S("I do not understand thy response."));
+				show_error("I do not understand thy response.");
 			}
 			break;
 		case STATE_HEIGHT:
@@ -237,7 +239,7 @@ void TelnetModeRealNewCharacter::process (char* line)
 					return;
 				}
 			}
-			show_error(S("I do not understand thy response."));
+			show_error("I do not understand thy response.");
 			break;
 		case STATE_BUILD:
 			for (int i = 1; i < FormBuild::COUNT; ++i) {
@@ -247,7 +249,7 @@ void TelnetModeRealNewCharacter::process (char* line)
 					return;
 				}
 			}
-			show_error(S("I do not understand thy response."));
+			show_error("I do not understand thy response.");
 			break;
 		case STATE_SKINCOLOR:
 			for (std::vector<FormColor>::const_iterator i = race->get_skin_colors().begin(); i != race->get_skin_colors().end(); ++i) {
@@ -257,7 +259,7 @@ void TelnetModeRealNewCharacter::process (char* line)
 					return;
 				}
 			}
-			show_error(S("I do not understand thy response."));
+			show_error("I do not understand thy response.");
 			break;
 		case STATE_EYECOLOR:
 			for (std::vector<FormColor>::const_iterator i = race->get_eye_colors().begin(); i != race->get_eye_colors().end(); ++i) {
@@ -267,7 +269,7 @@ void TelnetModeRealNewCharacter::process (char* line)
 					return;
 				}
 			}
-			show_error(S("I do not understand thy response."));
+			show_error("I do not understand thy response.");
 			break;
 		case STATE_HAIRCOLOR:
 			for (std::vector<FormColor>::const_iterator i = race->get_hair_colors().begin(); i != race->get_hair_colors().end(); ++i) {
@@ -277,7 +279,7 @@ void TelnetModeRealNewCharacter::process (char* line)
 					return;
 				}
 			}
-			show_error(S("I do not understand thy response."));
+			show_error("I do not understand thy response.");
 			break;
 		case STATE_HAIRSTYLE:
 			for (int i = 1; i < FormHairStyle::COUNT; ++i) {
@@ -287,20 +289,20 @@ void TelnetModeRealNewCharacter::process (char* line)
 					return;
 				}
 			}
-			show_error(S("I do not understand thy response."));
+			show_error("I do not understand thy response.");
 	  		break;
 		case STATE_FORM_CONFIRM:
-			if (input.empty() || is_match(S("yes"), input))
+			if (input.empty() || is_match("yes", input))
 				enter_state(STATE_STATS);
-			else if (is_match(S("no"), input))
+			else if (is_match("no", input))
 				enter_state(STATE_GENDER); // redo gender and height, too
 			else
-				show_error(S("I do not understand thy response."));
+				show_error("I do not understand thy response.");
 			break;
 		case STATE_STATS:
 		{
 			// reroll?
-			if (input == S("reroll") || input == S("reset")) {
+			if (input == "reroll" || input == "reset") {
 				enter_state(STATE_STATS);
 				break;
 			}
@@ -315,14 +317,14 @@ void TelnetModeRealNewCharacter::process (char* line)
 						break;
 				}
 				if (stat == CreatureStatID::COUNT) {
-					show_error(S("I do not understand thy response."));
+					show_error("I do not understand thy response.");
 					break;
 				}
 			}
 
 			// make sure stat is under limit
 			if (stats[stat] >= STAT_MAX) {
-				show_error(S("Ye may not increase that attribute any further."));
+				show_error("Ye may not increase that attribute any further.");
 				break;
 			}
 
@@ -338,23 +340,23 @@ void TelnetModeRealNewCharacter::process (char* line)
 			break;
 		}
 		case STATE_STATS_CONFIRM:
-			if (input.empty() || is_match(S("yes"), input))
+			if (input.empty() || is_match("yes", input))
 				enter_state(STATE_FINAL_CONFIRM);
-			else if (is_match(S("no"), input))
+			else if (is_match("no", input))
 				enter_state(STATE_STATS);
 			else
-				show_error(S("I do not understand thy response."));
+				show_error("I do not understand thy response.");
 			break;
 		case STATE_FINAL_CONFIRM:
-			if (input.empty() || is_match(S("yes"), input)) {
+			if (input.empty() || is_match("yes", input)) {
 				if (MPlayer.exists(name))
 					enter_state(STATE_RENAME);
 				else
 					create();
-			} else if (is_match(S("no"), input)) {
+			} else if (is_match("no", input)) {
 				enter_state(STATE_BEGIN);
 			} else {
-				show_error(S("I do not understand thy response."));
+				show_error("I do not understand thy response.");
 			}
 			break;
 		default:

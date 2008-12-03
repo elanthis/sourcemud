@@ -13,19 +13,19 @@
 _MEvent MEvent;
 
 std::string EventID::names[] = {
-	S("None"),
-	S("Look"),
-	S("LeaveRoom"),
-	S("EnterRoom"),
-	S("LeaveZone"),
-	S("EnterZone"),
-	S("TouchItem"),
-	S("GraspItem"),
-	S("ReleaseItem"),
-	S("GetItem"),
-	S("PutItem"),
-	S("DropItem"),
-	S("PickupItem"),
+	"None",
+	"Look",
+	"LeaveRoom",
+	"EnterRoom",
+	"LeaveZone",
+	"EnterZone",
+	"TouchItem",
+	"GraspItem",
+	"ReleaseItem",
+	"GetItem",
+	"PutItem",
+	"DropItem",
+	"PickupItem",
 };
 
 EventID EventID::lookup(const std::string& name) {
@@ -55,9 +55,9 @@ EventHandler::load (File::Reader& reader) {
 
 void
 EventHandler::save (File::Writer& writer) const {
-	writer.attr(S("event"), S("id"), event.get_name());
+	writer.attr("event", "id", event.get_name());
 	if (!script.empty())
-		writer.block(S("event"), S("script"), script);
+		writer.block("event", "script", script);
 }
 
 void

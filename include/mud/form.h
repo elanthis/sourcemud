@@ -9,7 +9,6 @@
 #define SOURCEMUD_MUD_FORM_H
 
 #include "common.h"
-#include "common/string.h"
 #include "common/types.h"
 
 class FormColor {
@@ -31,7 +30,7 @@ class FormColor {
 	bool operator < (const FormColor& c) const { return value < c.value; }
 
 	private:
-	static StringList names;
+	static std::vector<std::string> names;
 	uint8_t value;
 };
 

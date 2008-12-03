@@ -16,13 +16,13 @@ class
 NpcBP
 {
 	public:
-	NpcBP ();
+	NpcBP();
 
 	// blueprint id
-	inline std::string get_id () const { return id; }
+	inline std::string get_id() const { return id; }
 
 	// npc
-	inline const StringList& get_equip_list () const { return equip_list; }
+	inline const std::vector<std::string>& get_equip_list() const { return equip_list; }
 
 	// load
 	int load (File::Reader& reader);
@@ -32,50 +32,50 @@ NpcBP
 	virtual NpcBP* get_parent() const { return parent; }
 
 	// name
-	inline const EntityName& get_name () const { return name; }
+	inline const EntityName& get_name() const { return name; }
 	inline bool set_name (const std::string& s_name) { bool ret = name.set_name(s_name); set_flags.name = true; return ret; }
-	void reset_name ();
+	void reset_name();
 
-	inline const StringList& get_keywords () const { return keywords; }
+	inline const std::vector<std::string>& get_keywords() const { return keywords; }
 
 	// description
-	inline const std::string& get_desc () const { return desc; }
+	inline const std::string& get_desc() const { return desc; }
 	inline void set_desc (const std::string& s_desc) { desc = s_desc; set_flags.desc = true; }
-	void reset_desc ();
+	void reset_desc();
 
 	// stats
 	inline int get_stat (CreatureStatID stat) const { return base_stats[stat]; }
 	inline void set_stat (CreatureStatID stat, int value) { base_stats[stat] = value; }
-	void reset_stats ();
+	void reset_stats();
 
 	// gender
-	inline GenderType get_gender () const { return gender; }
+	inline GenderType get_gender() const { return gender; }
 	inline void set_gender (GenderType s_gender) { gender = s_gender; set_flags.gender = true; }
-	void reset_gender ();
+	void reset_gender();
 
 	// combat
-	inline uint get_combat_dodge () const { return combat.dodge; }
-	inline uint get_combat_attack () const { return combat.attack; }
-	inline uint get_combat_damage () const { return combat.damage; }
+	inline uint get_combat_dodge() const { return combat.dodge; }
+	inline uint get_combat_attack() const { return combat.attack; }
+	inline uint get_combat_damage() const { return combat.damage; }
 	inline void set_combat_dodge (uint value) { combat.dodge = value; set_flags.dodge = true; }
 	inline void set_combat_attack (uint value) { combat.attack = value; set_flags.attack = true; }
 	inline void set_combat_damage (uint value) { combat.damage = value; set_flags.damage = true; }
-	void reset_combat_dodge ();
-	void reset_combat_attack ();
-	void reset_combat_damage ();
+	void reset_combat_dodge();
+	void reset_combat_attack();
+	void reset_combat_damage();
 
 	// refresh all data
-	void refresh ();
+	void refresh();
 
 	private:
 	std::string id;
 	EntityName name;
 	std::string desc;
-	StringList keywords;
+	std::vector<std::string> keywords;
 	GenderType gender;
 	CreatureStatArray base_stats;
 	NpcBP* parent;
-	StringList equip_list;
+	std::vector<std::string> equip_list;
 
 	struct CombatData {
 		uint dodge;
@@ -91,7 +91,7 @@ NpcBP
 			attack:1,
 			damage:1,
 			stats:1;
-		inline SetFlags () : name(false), desc(false),
+		inline SetFlags() : name(false), desc(false),
 			gender(false), dodge(false), attack(false),
 			damage(false), stats(false) {}
 	} set_flags;
@@ -102,53 +102,53 @@ NpcBP
 class Npc : public Creature
 {
 	public:
-	Npc ();
+	Npc();
 	Npc (NpcBP* s_blueprint);
 
-	virtual std::string factory_type () const { return S("npc"); }
+	virtual const char* factory_type() const { return "npc"; }
 
 	// blueprints
-	virtual NpcBP* get_blueprint () const { return blueprint; }
+	virtual NpcBP* get_blueprint() const { return blueprint; }
 	void set_blueprint (NpcBP* s_blueprint);
 	static Npc* load_blueprint (const std::string& name);
 
 	// name info
-	virtual EntityName get_name () const;
+	virtual EntityName get_name() const;
 
 	virtual bool name_match (const std::string& name) const;
 
 	// description
-	virtual std::string get_desc () const;
+	virtual std::string get_desc() const;
 
 	// gender
-	virtual GenderType get_gender () const;
+	virtual GenderType get_gender() const;
 
 	// stats
 	virtual int get_base_stat (CreatureStatID stat) const;
 
 	// save and load
 	virtual int load_node (File::Reader& reader, File::Node& node);
-	virtual int load_finish ();
+	virtual int load_finish();
 	virtual void save_data (File::Writer& writer);
 	virtual void save_hook (File::Writer& writer);
 
 	// display
-	virtual std::string ncolor () const { return S(CNPC); }
+	virtual const char* ncolor() const { return CNPC; }
 
 	// return ture if we derive from the named blueprint
 	bool is_blueprint (const std::string& blueprint) const;
 
 	// combat
-	virtual uint get_combat_dodge () const;
-	virtual uint get_combat_attack () const;
-	virtual uint get_combat_damage () const;
+	virtual uint get_combat_dodge() const;
+	virtual uint get_combat_attack() const;
+	virtual uint get_combat_damage() const;
 
 	// movement information
-	inline bool is_zone_locked () const { return flags.zonelock; }
+	inline bool is_zone_locked() const { return flags.zonelock; }
 	inline void set_zone_locked (bool value) { flags.zonelock = value; }
-	inline bool is_room_tag_reversed () const { return flags.revroomtag; }
+	inline bool is_room_tag_reversed() const { return flags.revroomtag; }
 	inline void set_room_tag_reversed (bool value) { flags.revroomtag = value; }
-	inline TagID get_room_tag () const { return room_tag; }
+	inline TagID get_room_tag() const { return room_tag; }
 	inline void set_room_tag (TagID s_room_tag) { room_tag = s_room_tag; }
 	bool can_use_portal (class Portal* portal) const;
 
@@ -156,7 +156,7 @@ class Npc : public Creature
 	void kill (Creature* killer);
 
 	// heartbeat
-	void heartbeat ();
+	void heartbeat();
 
 	// handle events
 	virtual void handle_event (const Event& event);
@@ -165,9 +165,9 @@ class Npc : public Creature
 	virtual void display_desc (const class StreamControl& stream);
 
 	protected:
-	~Npc ();
+	~Npc();
 
-	void initialize ();
+	void initialize();
 
 	// data
 	private:

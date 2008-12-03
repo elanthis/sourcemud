@@ -5,6 +5,8 @@
  * http://www.sourcemud.org
  */
 
+#include "common.h"
+#include "common/string.h"
 #include "mud/creature.h"
 #include "mud/room.h"
 #include "mud/command.h"
