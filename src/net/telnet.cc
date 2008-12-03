@@ -5,21 +5,7 @@
  * http://www.sourcemud.org
  */
 
-#define TELCMDS
-#define TELOPTS
-#define SLC_NAMES
-
-#include <stdio.h>
-#include <unistd.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <arpa/telnet.h>
-#include <sys/socket.h>
-#include <sys/types.h>
-#include <ctype.h>
-#include <stdarg.h>
-
+#include "common.h"
 #include "common/error.h"
 #include "common/streams.h"
 #include "mud/server.h"
@@ -33,8 +19,13 @@
 #include "net/telnet.h"
 #include "net/zmp.h"
 #include "net/util.h"
-
 #include "config.h"
+
+// include telnet, along with optional globals
+#define TELCMDS 1
+#define TELOPTS 1
+#define SLC_NAMES 1
+#include <arpa/telnet.h>
 
 #define TELOPT_MCCP2 86
 

@@ -8,13 +8,13 @@
 #ifndef SOURCEMUD_MUD_TIME_H
 #define SOURCEMUD_MUD_TIME_H
 
+#include "common.h"
 #include "common/types.h"
 #include "common/string.h"
+#include "common/imanager.h"
 #include "mud/fileobj.h"
 #include "mud/server.h"
-#include "common/imanager.h"
 #include "mud/clock.h"
-#include <vector>
 
 #define TICKS_PER_HOUR ROUNDS_TO_TICKS((60 * 60) / GAME_TIME_SCALE)
 

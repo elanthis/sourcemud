@@ -5,21 +5,7 @@
  * http://www.sourcemud.org
  */
 
-#include <stdlib.h>
-#include <signal.h>
-#include <errno.h>
-#include <stdio.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <sys/time.h>
-#include <sys/ioctl.h>
-#include <termios.h>
-#include <pwd.h>
-#include <grp.h>
-#include <netdb.h>
-
-#include <fstream>
-
+#include "common.h"
 #include "common/error.h"
 #include "common/string.h"
 #include "common/rand.h"
@@ -44,7 +30,6 @@
 #include "net/http.h"
 #include "net/util.h"
 #include "lua/core.h"
-
 #include "config.h"
 
 // DECLARATIONS

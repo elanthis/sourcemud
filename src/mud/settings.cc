@@ -5,16 +5,11 @@
  * http://www.sourcemud.org
  */
 
-#include <stdio.h>
-#include <ctype.h>
-#include <errno.h>
-#include <string.h>
-#include <stdlib.h>
-
+#include "common.h"
 #include "common/string.h"
+#include "common/log.h"
 #include "mud/settings.h"
 #include "mud/fileobj.h"
-#include "common/log.h"
 
 _MSettings MSettings;
 

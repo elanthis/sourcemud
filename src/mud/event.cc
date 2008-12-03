@@ -5,12 +5,8 @@
  * http://www.sourcemud.org
  */
 
-
-#include <stdlib.h>
-#include <stdio.h>
-
+#include "common.h"
 #include "mud/entity.h"
-#include "common/string.h"
 #include "mud/server.h"
 #include "mud/room.h"
 

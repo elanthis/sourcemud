@@ -8,8 +8,6 @@
 #ifndef UNIQID_H
 #define UNIQID_H
 
-#include <sys/time.h>
-
 #include "mud/server.h"
 #include "common/imanager.h"
 #include "common/types.h"

@@ -29,18 +29,13 @@
  * DAMAGE.
  */
 
-#include <vector>
-
-#include <stdlib.h>
-#include <arpa/telnet.h>
-#include <string.h>
-#include <errno.h>
-#include <ctype.h>
-#include <stdio.h>
-
+#include "common.h"
 #include "common/log.h"
 #include "net/telnet.h"
 #include "net/zmp.h"
+
+// include telnet
+#include <arpa/telnet.h>
 
 SZMPManager ZMPManager;
 

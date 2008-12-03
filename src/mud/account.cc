@@ -5,13 +5,12 @@
  * http://www.sourcemud.org
  */
 
-#include <ctype.h>
-
+#include "common.h"
+#include "common/md5.h"
+#include "common/time.h"
 #include "mud/account.h"
 #include "mud/fileobj.h"
 #include "mud/settings.h"
-#include "common/md5.h"
-#include "common/time.h"
 
 _MAccount MAccount;
 

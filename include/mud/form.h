@@ -8,9 +8,9 @@
 #ifndef SOURCEMUD_MUD_FORM_H
 #define SOURCEMUD_MUD_FORM_H
 
+#include "common.h"
 #include "common/string.h"
 #include "common/types.h"
-#include <vector>
 
 class FormColor {
 	public:

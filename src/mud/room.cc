@@ -6,26 +6,12 @@
  */
 
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <ctype.h>
-#include <climits>
-
-#include <algorithm>
-
-#include "mud/room.h"
+#include "common.h"
 #include "common/string.h"
 #include "common/error.h"
-#include "mud/color.h"
-#include "mud/server.h"
-#include "mud/player.h"
-#include "mud/npc.h"
-#include "mud/weather.h"
 #include "common/streams.h"
-#include "mud/macro.h"
 #include "common/rand.h"
+#include "mud/macro.h"
 #include "mud/zone.h"
 #include "mud/object.h"
 #include "mud/creature.h"
@@ -34,6 +20,12 @@
 #include "mud/efactory.h"
 #include "mud/shadow-object.h"
 #include "mud/unique-object.h"
+#include "mud/room.h"
+#include "mud/color.h"
+#include "mud/server.h"
+#include "mud/player.h"
+#include "mud/npc.h"
+#include "mud/weather.h"
 
 /* constructor */
 Room::Room ()

@@ -8,12 +8,7 @@
 #ifndef ENTITY_H
 #define ENTITY_H
 
-#include <list>
-#include <vector>
-#include <algorithm>
-#include <map>
-#include <set>
-
+#include "common.h"
 #include "common/types.h"
 #include "common/error.h"
 #include "common/string.h"

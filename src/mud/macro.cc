@@ -5,10 +5,7 @@
  * http://www.sourcemud.org
  */
 
-#include <vector>
-
-#include <ctype.h>
-
+#include "common.h"
 #include "common/streams.h"
 #include "common/strbuf.h"
 #include "mud/macro.h"

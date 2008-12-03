@@ -8,10 +8,10 @@
 #ifndef SOURCEMUD_MUD_WEATHER_H
 #define SOURCEMUD_MUD_WEATHER_H
 
-#include <vector>
-#include "mud/fileobj.h"
+#include "common.h"
 #include "common/string.h"
 #include "common/imanager.h"
+#include "mud/fileobj.h"
 
 // description of a change in the weather, such as 'the rain starts falling more heavily'
 struct WeatherChange {

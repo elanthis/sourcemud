@@ -8,8 +8,7 @@
 #ifndef SOURCEMUD_COMMON_TIME_H
 #define SOURCEMUD_COMMON_TIME_H
 
-#include <time.h>
-
+#include "common.h"
 #include "common/string.h"
 
 // legacy cruft

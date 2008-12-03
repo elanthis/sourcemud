@@ -5,15 +5,7 @@
  * http://www.sourcemud.org
  */
 
-#include <unistd.h>
-#include <stdio.h>
-#include <ctype.h>
-#include <fcntl.h>
-#include <math.h>
-#include <fnmatch.h>
-#include <time.h>
-#include <sys/stat.h>
-
+#include "common.h"
 #include "common/string.h"
 #include "common/streams.h"
 #include "common/log.h"

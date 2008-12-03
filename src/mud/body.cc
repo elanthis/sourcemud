@@ -5,20 +5,15 @@
  * http://www.sourcemud.org
  */
 
-
-#include <stdlib.h>
-
-// STL stuffs
-#include <algorithm>
-
-#include "mud/body.h"
-#include "mud/object.h"
+#include "common.h"
 #include "common/error.h"
 #include "common/string.h"
+#include "common/streams.h"
+#include "mud/body.h"
+#include "mud/object.h"
 #include "mud/creature.h"
 #include "mud/server.h"
 #include "mud/room.h"
-#include "common/streams.h"
 #include "mud/settings.h"
 
 std::string GenderType::names[GenderType::COUNT] = {

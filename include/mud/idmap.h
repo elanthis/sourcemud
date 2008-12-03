@@ -8,11 +8,8 @@
 #ifndef IDMAP_H
 #define IDMAP_H
 
-#include <algorithm>
-
+#include "common.h"
 #include "common/string.h"
-#include <set>
-#include <vector>
 
 // NOTE:
 // The funky static methods to retrieve the name list and intptr_t map

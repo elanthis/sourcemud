@@ -26,3 +26,4 @@ tools/replace.sh
 *~
 sourcemud.pid
 data/session.key
+include/common.h.gch

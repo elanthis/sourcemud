@@ -8,15 +8,12 @@
 #ifndef __SOURCEMUD_MAIL_H__
 #define __SOURCEMUD_MAIL_H__
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
 #ifdef HAVE_SENDMAIL
 
-#include <vector>
+#include "common.h"
 #include "common/string.h"
 #include "common/strbuf.h"
+#include "config.h"
 
 class MailMessage {
 	private:

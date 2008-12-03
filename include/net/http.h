@@ -8,12 +8,8 @@
 #ifndef SOURCEMUD_MUD_HTTP_H
 #define SOURCEMUD_MUD_HTTP_H
 
-#ifdef HAVE_CONFIG_H
+#include "common.h"
 #include "config.h"
-#endif // HAVE_CONFIG_H
-
-#include <map>
-
 #include "common/types.h"
 #include "common/strbuf.h"
 #include "common/streams.h"

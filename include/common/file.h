@@ -8,7 +8,7 @@
 #ifndef SOURCEMUD_COMMON_FILE_H
 #define SOURCEMUD_COMMON_FILE_H
 
-#include <vector>
+#include "common.h"
 #include "common/string.h"
 
 namespace File {

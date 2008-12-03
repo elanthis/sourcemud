@@ -5,10 +5,9 @@
  * http://www.sourcemud.org
  */
 
-#include <assert.h>
-
-#include "mud/efactory.h"
+#include "common.h"
 #include "common/log.h"
+#include "mud/efactory.h"
 #include "mud/entity.h"
 
 _MEntityFactory MEntityFactory;

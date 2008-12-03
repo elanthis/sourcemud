@@ -5,31 +5,18 @@
  * http://www.sourcemud.org
  */
 
-#include <unistd.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <sys/time.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <sys/socket.h>
-#include <sys/un.h>
-#include <ctype.h>
-#include <netdb.h>
-#if defined(HAVE_POLL)
-#include <sys/poll.h>
-#endif
-#include <fcntl.h>
-
+#include "common.h"
 #include "common/log.h"
 #include "common/types.h"
 #include "mud/settings.h"
 #include "net/socket.h"
 #include "net/manager.h"
 #include "net/util.h"
-
-#include <vector>
-
 #include "config.h"
+
+#if defined(HAVE_POLL)
+#include <sys/poll.h>
+#endif
 
 _MNetwork MNetwork;
 

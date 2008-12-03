@@ -5,6 +5,7 @@
  * http://www.sourcemud.org
  */
 
+#include "common.h"
 #include "common/string.h"
 #include "common/streams.h"
 #include "common/file.h"
@@ -16,8 +17,6 @@
 #include "mud/macro.h"
 #include "mud/help.h"
 #include "net/telnet.h"
-
-#include <iostream>
 
 _MHelp MHelp;
 

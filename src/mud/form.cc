@@ -5,9 +5,9 @@
  * http://www.sourcemud.org
  */
 
-#include <map>
-#include "mud/form.h"
+#include "common.h"
 #include "common/string.h"
+#include "mud/form.h"
 
 StringList FormColor::names;
 

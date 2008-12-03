@@ -8,12 +8,7 @@
 #ifndef __FILEAPI_H__
 #define __FILEAPI_H__
 
-#include <sys/stat.h>
-
-#include <fstream>
-#include <map>
-#include <vector>
-
+#include "common.h"
 #include "common/string.h"
 #include "common/log.h"
 #include "mud/uniqid.h"

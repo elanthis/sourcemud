@@ -8,8 +8,7 @@
 #ifndef IMANAGER_H
 #define IMANAGER_H
 
-#include <vector>
-
+#include "common.h"
 #include "common/string.h"
 
 // all *Manager classes should derive from this...

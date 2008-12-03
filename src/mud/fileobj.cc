@@ -5,12 +5,7 @@
  * http://www.sourcemud.org
  */
 
-#include <iostream>
-
-#include <ctype.h>
-#include <string.h>
-#include <stdlib.h>
-
+#include "common.h"
 #include "common/string.h"
 #include "common/log.h"
 #include "common/file.h"

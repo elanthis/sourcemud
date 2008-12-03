@@ -5,18 +5,13 @@
  * http://www.sourcemud.org
  */
 
-#ifdef HAVE_SENDMAIL
-
-#include <sys/types.h>
-#include <sys/wait.h>
-#include <unistd.h>
-#include <errno.h>
-
+#include "common.h"
 #include "common/mail.h"
 #include "common/log.h"
 #include "mud/settings.h"
-
 #include "config.h"
+
+#ifdef HAVE_SENDMAIL
 
 void
 MailMessage::append (const std::string& data)

@@ -5,20 +5,7 @@
  * http://www.sourcemud.org
  */
 
-#define HTTP_REQUEST_TIMEOUT 30 // 30 seconds
-#define HTTP_HEADER_LINE_MAX 2048 // arbitrary max line length
-#define HTTP_POST_BODY_MAX (16*1024) // 16K
-
-#include <fstream>
-
-#include <stdio.h>
-#include <unistd.h>
-#include <ctype.h>
-#include <errno.h>
-#include <string.h>
-#include <stdarg.h>
-#include <sys/stat.h>
-
+#include "common.h"
 #include "common/error.h"
 #include "common/streams.h"
 #include "common/log.h"
@@ -35,6 +22,10 @@
 #include "lua/print.h"
 #include "lua/exec.h"
 #include "config.h"
+
+#define HTTP_REQUEST_TIMEOUT 30 // 30 seconds
+#define HTTP_HEADER_LINE_MAX 2048 // arbitrary max line length
+#define HTTP_POST_BODY_MAX (16*1024) // 16K
 
 SHTTPManager HTTPManager;
 

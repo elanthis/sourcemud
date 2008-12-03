@@ -5,16 +5,10 @@
  * http://www.sourcemud.org
  */
 
-#include <unistd.h>
-#include <sys/types.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <sys/socket.h>
-
+#include "common.h"
 #include "common/log.h"
 #include "common/types.h"
 #include "net/socket.h"
-
 #include "config.h"
 
 SocketConnection::SocketConnection (int s_sock) : output(), sock(s_sock),

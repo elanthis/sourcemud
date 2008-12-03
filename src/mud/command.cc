@@ -5,10 +5,7 @@
  * http://www.sourcemud.org
  */
 
-#include <ctype.h>
-
-#include <vector>
-
+#include "common.h"
 #include "common/error.h"
 #include "common/streams.h"
 #include "mud/command.h"

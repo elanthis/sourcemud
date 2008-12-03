@@ -8,8 +8,7 @@
 #ifndef SOURCEMUD_STREAMS_H
 #define SOURCEMUD_STREAMS_H
 
-#include <assert.h>
-
+#include "common.h"
 #include "common/string.h"
 
 // pre-defines

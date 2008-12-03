@@ -8,15 +8,15 @@
 #ifndef OBJECT_H
 #define OBJECT_H
 
-#include "mud/entity.h"
+#include "common.h"
 #include "common/string.h"
 #include "common/error.h"
+#include "common/imanager.h"
+#include "common/bitset.h"
+#include "mud/entity.h"
 #include "mud/body.h"
 #include "mud/elist.h"
 #include "mud/server.h"
-#include "common/imanager.h"
-#include <map>
-#include "common/bitset.h"
 
 // Object flags
 struct ObjectFlag {

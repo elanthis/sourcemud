@@ -5,22 +5,18 @@
  * http://www.sourcemud.org
  */
 
-#include <stdlib.h>
-#include <unistd.h>
-#include <ctype.h>
-#include <climits>
-
+#include "common.h"
+#include "common/error.h"
+#include "common/string.h"
+#include "common/rand.h"
+#include "common/streams.h"
 #include "mud/entity.h"
 #include "mud/creature.h"
-#include "common/error.h"
 #include "mud/server.h"
-#include "common/string.h"
 #include "mud/body.h"
 #include "mud/room.h"
-#include "common/rand.h"
 #include "mud/player.h"
 #include "mud/macro.h"
-#include "common/streams.h"
 #include "mud/action.h"
 #include "mud/caffect.h"
 #include "mud/clock.h"

@@ -8,10 +8,8 @@
 #ifndef EVENT_H 
 #define EVENT_H
 
-#include <deque>
-
+#include "common.h"
 #include "mud/fileobj.h"
-#include "common/imanager.h"
 
 /* external classes */
 class Room;

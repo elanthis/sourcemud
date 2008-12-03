@@ -5,8 +5,7 @@
  * http://www.sourcemud.org
  */
 
-#include <fnmatch.h>
-
+#include "common.h"
 #include "common/file.h"
 #include "mud/player.h"
 #include "mud/account.h"

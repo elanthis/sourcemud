@@ -1,3 +1,11 @@
+/*
+ * Source MUD
+ * Copyright (C) 2008  Sean Middleditch
+ * See the file COPYING for license details
+ * http://www.sourcemud.org
+ */
+
+#include "common.h"
 #include "mud/room.h"
 #include "mud/portal.h"
 #include "mud/object.h"

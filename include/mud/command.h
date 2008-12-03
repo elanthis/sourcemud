@@ -8,11 +8,11 @@
 #ifndef COMMAND_LINE_H
 #define COMMAND_LINE_H
 
+#include "common.h"
 #include "common/string.h"
+#include "common/imanager.h"
 #include "mud/account.h"
 #include "mud/server.h"
-#include "common/imanager.h"
-#include <vector>
 
 #define MAX_COMMAND_ARGS 10
 #define MAX_COMMAND_WORDS 25

@@ -8,8 +8,8 @@
 #ifndef SOURCEMUD_MUD_CAFFECT_H
 #define SOURCEMUD_MUD_CAFFECT_H
 
+#include "common.h"
 #include "common/string.h"
-#include <vector>
 #include "mud/creature.h"
 
 class CreatureAffectType

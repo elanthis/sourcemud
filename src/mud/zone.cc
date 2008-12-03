@@ -5,8 +5,7 @@
  * http://www.sourcemud.org
  */
 
-#include <time.h>
-
+#include "common.h"
 #include "common/rand.h"
 #include "common/streams.h"
 #include "common/file.h"

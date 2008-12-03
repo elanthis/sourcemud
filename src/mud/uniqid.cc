@@ -5,14 +5,10 @@
  * http://www.sourcemud.org
  */
 
-#include <sys/time.h>
-#include <unistd.h>
-#include <errno.h>
-#include <cstdlib>
-
+#include "common.h"
+#include "common/log.h"
 #include "mud/settings.h"
 #include "mud/uniqid.h"
-#include "common/log.h"
 
 _MUniqueID MUniqueID;
 

@@ -5,12 +5,7 @@
  * http://www.sourcemud.org
  */
 
-
-#include <stdlib.h>
-#include <stdio.h>
-#include <typeinfo>
-#include <algorithm>
-
+#include "common.h"
 #include "common/error.h"
 #include "common/string.h"
 #include "common/streams.h"

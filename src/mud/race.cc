@@ -5,14 +5,14 @@
  * http://www.sourcemud.org
  */
 
+#include "common.h"
 #include "common/rand.h"
+#include "common/log.h"
 #include "mud/race.h"
 #include "mud/settings.h"
 #include "mud/fileobj.h"
-#include "common/log.h"
 #include "mud/creature.h"
 #include "mud/form.h"
-
 #include "config.h"
 
 _MRace MRace;

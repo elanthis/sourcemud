@@ -8,8 +8,7 @@
 #ifndef SETTINGS_H
 #define SETTINGS_H
 
-#include <map>
-
+#include "common.h"
 #include "common/string.h"
 #include "common/imanager.h"
 #include "mud/server.h"

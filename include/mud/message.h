@@ -8,10 +8,10 @@
 #ifndef SOURCEMUD_MUD_MESSAGE_H
 #define SOURCEMUD_MUD_MESSAGE_H
 
+#include "common.h"
 #include "common/string.h"
-#include "mud/server.h"
 #include "common/imanager.h"
-#include <map>
+#include "mud/server.h"
 
 class _MMessage : public IManager
 {

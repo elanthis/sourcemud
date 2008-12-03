@@ -8,15 +8,7 @@
 #ifndef RACE_H
 #define RACE_H
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
-#include <algorithm>
-
-#include <vector>
-#include <map>
-#include <set>
+#include "common.h"
 #include "common/string.h"
 #include "mud/fileobj.h"
 #include "mud/creature.h"

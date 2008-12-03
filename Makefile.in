@@ -11,6 +11,8 @@ DEPDIR = .deps
 
 # FILES
 HEADERS = \
+	include/common.h \
+	include/common.h.gch \
 	include/common/base64.h \
 	include/common/bitset.h \
 	include/common/error.h \
@@ -289,15 +291,19 @@ sourcemud-bin: $(OBJECTS)
 	@echo Linking $@
 	@$(CXX) -o $@ $^ $(LFLAGS) $(LIBS)
 
-# DATE FILES
+# HTTP SESSION KEY GENERATION
 data/session.key:
-	@echo "Generating HTTP session key (this may take a few moments)"
+	@echo "Generating HTTP secret session key (this may take a few moments)"
 	@head -c 512 /dev/urandom | base64 -w0 > $@
 
 # GENERATED SOURCE
 src/generated/commands.cc: tools/parse-commands.pl $(wildcard src/cmd/*.cc)
 	@echo Generating $@
 	@$(PERL) tools/parse-commands.pl
+
+include/common.h.gch: include/common.h
+	@echo Compiling $<
+	@$(CXX) -o $@ $(CXXFLAGS) $<
 
 # BUILD FILES
 Makefile: Makefile.in configure

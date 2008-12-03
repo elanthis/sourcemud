@@ -5,8 +5,9 @@
  * http://www.sourcemud.org
  */
 
-#include "mud/server.h"
+#include "common.h"
 #include "common/rand.h"
+#include "mud/server.h"
 #include "mud/fileobj.h"
 #include "mud/weather.h"
 #include "mud/settings.h"

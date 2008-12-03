@@ -8,14 +8,7 @@
 #ifndef SOURCEMUD_NET_MANAGER_H
 #define SOURCEMUD_NET_MANAGER_H
 
-#include <unistd.h>
-#include <sys/types.h>
-#include <sys/time.h>
-#include <netinet/in.h>
-#include <sys/socket.h>
-
-#include <vector>
-
+#include "common.h"
 #include "common/types.h"
 #include "common/string.h"
 #include "common/imanager.h"

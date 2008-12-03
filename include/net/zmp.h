@@ -32,8 +32,7 @@
 #if !defined(ZMP_H)
 #define ZMP_H 1
 
-#include <vector>
-
+#include "common.h"
 #include "common/string.h"
 #include "common/types.h"
 #include "common/imanager.h"

@@ -8,10 +8,8 @@
 #ifndef SOURCEMUD_MUD_ELIST_H
 #define SOURCEMUD_MUD_ELIST_H
 
-#include <algorithm>
-
+#include "common.h"
 #include "common/string.h"
-#include <vector>
 #include "common/error.h"
 
 // --- EList Definition ---

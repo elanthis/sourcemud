@@ -8,14 +8,7 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif // HAVE_CONFIG_H
-
-#include <vector>
-#include <map>
-#include <algorithm>
-
+#include "common.h"
 #include "common/string.h"
 #include "common/imanager.h"
 #include "common/time.h"
@@ -26,10 +19,6 @@
 #include "mud/skill.h"
 #include "mud/pconn.h"
 #include "net/socket.h"
-
-#ifdef HAVE_LIBZ
-#include <zlib.h>
-#endif // HAVE_LIBZ
 
 // player name length requirements
 #define PLAYER_NAME_MIN_LEN 3

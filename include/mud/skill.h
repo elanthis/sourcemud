@@ -8,9 +8,9 @@
 #ifndef MUD_SKILL_H 
 #define MUD_SKILL_H
 
+#include "common.h"
 #include "common/types.h"
 #include "common/string.h"
-#include <vector>
 
 class SkillID {
 	public:

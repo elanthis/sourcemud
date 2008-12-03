@@ -5,8 +5,7 @@
  * http://www.sourcemud.org
  */
 
-#include <ctype.h>
-
+#include "common.h"
 #include "common/streams.h"
 #include "mud/creature.h"
 #include "mud/server.h"

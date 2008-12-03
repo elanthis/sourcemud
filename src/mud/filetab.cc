@@ -5,16 +5,11 @@
  * http://www.sourcemud.org
  */
 
-#include <iostream>
-
-#include <ctype.h>
-#include <string.h>
-#include <stdlib.h>
-
+#include "common.h"
 #include "common/string.h"
 #include "common/strbuf.h"
-#include "mud/filetab.h"
 #include "common/log.h"
+#include "mud/filetab.h"
 
 int
 File::TabReader::open (const std::string& filename)

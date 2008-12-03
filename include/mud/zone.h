@@ -8,10 +8,10 @@
 #ifndef SOURCEMUD_MUD_ZONE_H
 #define SOURCEMUD_MUD_ZONE_H
 
-#include "mud/entity.h"
-#include <vector>
-#include "mud/server.h"
+#include "common.h"
 #include "common/imanager.h"
+#include "mud/entity.h"
+#include "mud/server.h"
 
 // announce flags
 enum AnnounceFlags {

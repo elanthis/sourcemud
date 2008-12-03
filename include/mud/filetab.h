@@ -8,11 +8,7 @@
 #ifndef SOURCEMUD_MUD_FILETAB_H
 #define SOURCEMUD_MUD_FILETAB_H
 
-#include <sys/stat.h>
-
-#include <fstream>
-#include <vector>
-
+#include "common.h"
 #include "common/string.h"
 
 namespace File

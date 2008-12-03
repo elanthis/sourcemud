@@ -8,9 +8,7 @@
 #ifndef SOURCEMUD_COMMON_AWEREGEX_H
 #define SOURCEMUD_COMMON_AWEREGEX_H 1
 
-#include <sys/types.h>
-#include <regex.h>
-
+#include "common.h"
 #include "common/string.h"
 
 class RegEx {

@@ -8,8 +8,7 @@
 #ifndef SOURCEMUD_MUD_MACRO_H
 #define SOURCEMUD_MUD_MACRO_H
 
-#include <map>
-#include <vector>
+#include "common.h"
 #include "common/streams.h"
 
 class MacroValue;

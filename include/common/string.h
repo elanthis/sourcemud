@@ -8,11 +8,7 @@
 #ifndef SOURCEMUD_COMMON_STRING_H
 #define SOURCEMUD_COMMON_STRING_H
 
-#include <string>
-#include <sstream>
-#include <cstring>
-#include <vector>
-
+#include "common.h"
 #include "types.h"
 
 #define isvowel (ch) ((ch) == 'a' || (ch) == 'e' || (ch) == 'i' || (ch) == 'o' || (ch) == 'u' || (ch) == 'y')
