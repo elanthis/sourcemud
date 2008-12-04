@@ -3,6 +3,7 @@ Version 0.27
 
   * AweMUD is now Source MUD
   * Removed Scriptix
+  * Added Lua scripting
   * Removed use of Boehm GC
   * Reduced use of XML code generation
   * Removed custon String class
