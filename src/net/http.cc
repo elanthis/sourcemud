@@ -34,7 +34,7 @@ namespace Log {
 	LogWrapper HTTP(LOG_HTTP);
 }
 
-HTTPHandler::HTTPHandler (int s_sock, const SockStorage& s_netaddr) :  SocketConnection(s_sock)
+HTTPHandler::HTTPHandler (int s_sock, const NetAddr& s_netaddr) :  SocketConnection(s_sock)
 {
 	addr = s_netaddr;
 	state = REQ;
@@ -435,7 +435,7 @@ void HTTPHandler::log(int error)
 	const std::string& user_agent = getHeader("user-agent");
 	const std::string& referer = getHeader("referer");
 	Log::HTTP
-		<< Network::get_addr_name(addr, false) << ' '
+		<< addr.getString(false) << ' '
 		<< "- " // RFC 1413 identify -- apache log compatibility place-holder
 	 	<< (get_account() ? get_account()->get_id().c_str() : "-") << ' '
 		<< '[' << StreamTime("%d/%b/%Y:%H:%M:%S %z") << "] "

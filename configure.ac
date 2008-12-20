@@ -75,28 +75,6 @@ AC_CHECK_FUNC(regcomp,,AC_MSG_ERROR([can't find regcomp()]))
 # Standard types
 AC_CHECK_TYPE(intptr_t,,[AC_MSG_ERROR([Type intptr_t not available])])
 
-# Check for sockaddr_storage
-AC_CHECK_TYPE(struct sockaddr_storage,
-	[
-		AC_DEFINE(HAVE_SOCKADDR_STORAGE,1,[Have struct sockaddr_storage])
-
-		# Check for IPv6
-		AC_MSG_CHECKING([for IPv6 support])
-		AC_TRY_COMPILE([
-				#include <netinet/in.h>
-			],[
-				struct sockaddr_in6 ipv6_addr; /* check for IPv6 */
-			],[
-				AC_MSG_RESULT([yes])
-				AC_DEFINE(HAVE_IPV6,1,[IPv6 support])
-				IPV6='yes'
-			],[
-				AC_MSG_RESULT([no])
-			])
-	],[],[
-		#include <netinet/in.h>
-	])
-
 # Math library
 AC_CHECK_LIB(m,cos,,)
 

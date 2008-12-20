@@ -231,7 +231,7 @@ TextBuffer::release ()
 	}
 }
 
-TelnetHandler::TelnetHandler (int s_sock, const SockStorage& s_netaddr) : SocketConnection(s_sock)
+TelnetHandler::TelnetHandler (int s_sock, const NetAddr& s_netaddr) : SocketConnection(s_sock)
 {
 	addr = s_netaddr;
 
@@ -327,7 +327,7 @@ void
 TelnetHandler::disconnect ()
 {
 	// log
-	Log::Network << "Telnet client disconnected: " << Network::get_addr_name(addr);
+	Log::Network << "Telnet client disconnected: " << addr.getString();
 
 	// reduce count
 	MNetwork.connections.remove(addr);
@@ -1214,7 +1214,7 @@ TelnetHandler::check_timeout ()
 	if ((time(NULL) - in_stamp) >= (int)(timeout * 60)) {
 		// disconnect the dink
 		*this << CADMIN "You are being disconnected for lack of activity." CNORMAL "\n";
-		Log::Network << "Telnet timeout (" << timeout << " minutes of no input) for " << Network::get_addr_name(addr);
+		Log::Network << "Telnet timeout (" << timeout << " minutes of no input) for " << addr.getString();
 		disconnect();
 	}
 }

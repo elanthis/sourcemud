@@ -8,32 +8,26 @@
 #ifndef SOURCEMUD_NET_UTIL_H
 #define SOURCEMUD_NET_UTIL_H
 
-#include "net/socket.h"
+#include "net/netaddr.h"
 
 namespace Network {
-	// get the printable form of an IP address
-	std::string get_addr_name(const SockStorage& addr, bool show_port = true);
-
 	// return 0 if the two addresses are the same
-	int addrcmp(const SockStorage& addr1, const SockStorage& addr2);
+	int addrcmp(const NetAddr& addr1, const NetAddr& addr2);
 
 	// compare addresses - with mask applied to *first* address(only)
-	int addrcmp_mask(const SockStorage& addr1, const SockStorage& addr2, uint mask);
+	int addrcmp_mask(const NetAddr& addr1, const NetAddr& addr2, uint mask);
 
 	// return the UID of the peer connection on a UNIX socket
 	int get_peer_uid(int sock, uid_t& uid);
-
-	// return true if address is local
-	bool is_addr_local(const SockStorage& addr);
 
 	// listen on TCP
 	int listen_tcp(int port, int family);
 
 	// get socket from a tcp listener
-	int accept_tcp(int sock, SockStorage& addr);
+	int accept_tcp(int sock, NetAddr& addr);
 
 	// parse a network name into an address and possible mask
-	int parse_addr(const char* item, SockStorage* host, uint* mask);
+	int parse_addr(const char* item, NetAddr* host, uint* mask);
 };
 
 #endif

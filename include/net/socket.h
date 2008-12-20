@@ -12,15 +12,6 @@
 #include "common/types.h"
 #include "common/strbuf.h"
 #include "mud/server.h"
-#include "config.h"
-
-// sockaddr_storage workarounds
-#ifdef HAVE_SOCKADDR_STORAGE
-typedef struct sockaddr_storage SockStorage;
-#else // HAVE_SOCKADDR_STORAGE
-typedef struct sockaddr_in SockStorage;
-#define ss_family sin_family
-#endif // HAVE_SOCKADDR_STORAGE
 
 class ISocketHandler {
 	public:

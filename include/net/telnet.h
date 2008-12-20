@@ -13,6 +13,7 @@
 #include "common/streams.h"
 #include "common/string.h"
 #include "mud/color.h"
+#include "net/netaddr.h"
 #include "net/socket.h"
 #include "config.h"
 
@@ -119,7 +120,7 @@ class ITelnetMode
 class TelnetHandler : public SocketConnection, public IStreamSink
 {
 	public:
-	TelnetHandler(int s_sock, const SockStorage& s_netaddr);
+	TelnetHandler(int s_sock, const NetAddr& s_netaddr);
 
 	// color info
 	inline uint get_color(uint i) const { return color_set[i] < 0 ? color_type_defaults[i] : color_set[i]; }
@@ -213,7 +214,7 @@ class TelnetHandler : public SocketConnection, public IStreamSink
 	ITelnetMode* mode;
 
 	// network info
-	SockStorage addr;
+	NetAddr addr;
 
 #ifdef HAVE_LIBZ
 	// compression

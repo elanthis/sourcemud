@@ -59,7 +59,7 @@ int IPDenyList::save(const std::string& path)
 	}
 
 	for (std::vector<IPDeny>::iterator i = denylist.begin(); i != denylist.end(); ++i)
-		fprintf(file, "%s/%u\n", Network::get_addr_name(i->addr).c_str(), i->mask);
+		fprintf(file, "%s/%u\n", i->addr.getString().c_str(), i->mask);
 
 	fclose(file);
 
@@ -68,7 +68,7 @@ int IPDenyList::save(const std::string& path)
 
 int IPDenyList::remove(const std::string& line)
 {
-	SockStorage addr;
+	NetAddr addr;
 	uint mask;
 
 	if (Network::parse_addr(line.c_str(), &addr, &mask))
@@ -85,7 +85,7 @@ int IPDenyList::remove(const std::string& line)
 
 int IPDenyList::add(const std::string& line)
 {
-	SockStorage addr;
+	NetAddr addr;
 	uint mask;
 
 	if (Network::parse_addr(line.c_str(), &addr, &mask))
@@ -103,7 +103,7 @@ int IPDenyList::add(const std::string& line)
 }
 
 bool
-IPDenyList::exists (SockStorage& addr)
+IPDenyList::exists (NetAddr& addr)
 {
 	for (uint i = 0; i < denylist.size(); ++i)
 		if (Network::addrcmp_mask(addr, denylist[i].addr, denylist[i].mask))
@@ -115,20 +115,19 @@ IPDenyList::exists (SockStorage& addr)
  * Connection Tracker *
  **********************/
 
-int
-IPConnList::add (SockStorage& addr)
+int IPConnList::add(NetAddr& addr)
 {
 	// NOTE: we never limit connections from localhost
 
 	// too many total connections?
-	if (!Network::is_addr_local(addr) && total_conns >= MSettings.get_max_clients())
+	if (!addr.isLocal() && total_conns >= MSettings.get_max_clients())
 		return -1;
 
 	// find existing connection from host
 	for (std::vector<IPTrack>::iterator i = connections.begin(); i != connections.end(); ++i) {
 		if (!Network::addrcmp(addr, i->addr)) {
 			// too many from this host?
-			if (!Network::is_addr_local(addr) && i->conns >= MSettings.get_max_per_host())
+			if (!addr.isLocal() && i->conns >= MSettings.get_max_per_host())
 				return -2;
 
 			// inc, and return OK
@@ -146,7 +145,7 @@ IPConnList::add (SockStorage& addr)
 }
 
 void
-IPConnList::remove (SockStorage& addr)
+IPConnList::remove (NetAddr& addr)
 {
 	// find existing connection from host
 	for (std::vector<IPTrack>::iterator i = connections.begin(); i != connections.end(); ++i) {

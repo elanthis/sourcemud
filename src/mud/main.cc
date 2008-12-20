@@ -186,7 +186,7 @@ namespace {
 	TelnetListener::sock_in_ready ()
 	{
 		// accept client
-		SockStorage addr;
+		NetAddr addr;
 		int client = Network::accept_tcp(sock, addr);
 		if (client == -1) {
 			Log::Error << "accept() failed: " << strerror(errno);
@@ -196,7 +196,7 @@ namespace {
 		// deny blocked hosts
 		if (MNetwork.denies.exists(addr)) {
 			fdprintf(client, "Your host or network has been banned from this server.\r\n");
-			Log::Network << "Telnet client rejected: " << Network::get_addr_name(addr) << ": host or network banned";
+			Log::Network << "Telnet client rejected: " << addr.getString() << ": host or network banned";
 			close(client);
 			return;
 		}
@@ -205,19 +205,19 @@ namespace {
 		int err = MNetwork.connections.add(addr);
 		if (err == -1) {
 			fdprintf(client, "Too many users connected.\r\n");
-			Log::Network << "Telnet client rejected: " << Network::get_addr_name(addr) << ": too many users";
+			Log::Network << "Telnet client rejected: " << addr.getString() << ": too many users";
 			close(client);
 			return;
 		}
 		if (err == -2) {
 			fdprintf(client, "Too many users connected from your host.\r\n");
-			Log::Network << "Telnet client rejected: " << Network::get_addr_name(addr) << ": too many users from client host";
+			Log::Network << "Telnet client rejected: " << addr.getString() << ": too many users from client host";
 			close(client);
 			return;
 		}
 
 		// log connection
-		Log::Network << "Telnet client connected: " << Network::get_addr_name(addr);
+		Log::Network << "Telnet client connected: " << addr.getString();
 		
 		// create a new telnet handler
 		TelnetHandler *telnet = new TelnetHandler(client, addr);
@@ -256,7 +256,7 @@ namespace {
 	HTTPListener::sock_in_ready ()
 	{
 		// accept client
-		SockStorage addr;
+		NetAddr addr;
 		int client = Network::accept_tcp(sock, addr);
 		if (client == -1) {
 			Log::Error << "accept() failed: " << strerror(errno);
@@ -266,7 +266,7 @@ namespace {
 		// deny blocked hosts
 		if (MNetwork.denies.exists(addr)) {
 			fdprintf(client, "HTTP/1.0 403 Forbidden\n\nYour host or network has been banned from this server.\n");
-			Log::Network << "HTTP client rejected: " << Network::get_addr_name(addr) << ": host or network banned";
+			Log::Network << "HTTP client rejected: " << addr.getString() << ": host or network banned";
 			close(client);
 			return;
 		}
@@ -275,13 +275,13 @@ namespace {
 		int err = MNetwork.connections.add(addr);
 		if (err == -1) {
 			fdprintf(client, "HTTP/1.0 503 Service Unavailable\n\nToo many users connected.\n");
-			Log::Network << "HTTP client rejected: " << Network::get_addr_name(addr) << ": too many users";
+			Log::Network << "HTTP client rejected: " << addr.getString() << ": too many users";
 			close(client);
 			return;
 		}
 		if (err == -2) {
 			fdprintf(client, "HTTP/1.0 503 Service Unavailable\n\nToo many users connected from your host.\n");
-			Log::Network << "HTTP client rejected: " << Network::get_addr_name(addr) << ": too many users from client host";
+			Log::Network << "HTTP client rejected: " << addr.getString() << ": too many users from client host";
 			close(client);
 			return;
 		}

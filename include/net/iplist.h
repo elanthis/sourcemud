@@ -8,6 +8,8 @@
 #ifndef SOURCEMUD_NET_IPLIST_H 
 #define SOURCEMUD_NET_IPLIST_H 
 
+#include "net/netaddr.h"
+
 class IPDenyList {
 	public:
 	int load(const std::string& file);
@@ -17,11 +19,11 @@ class IPDenyList {
 	int add(const std::string& addr);
 	int remove(const std::string& addr);
 
-	bool exists(SockStorage& addr);
+	bool exists(NetAddr& addr);
 
 	private:
 	struct IPDeny {
-		SockStorage addr;
+		NetAddr addr;
 		uint mask;
 	};
 	std::vector<IPDeny> denylist;
@@ -30,14 +32,14 @@ class IPDenyList {
 class IPConnList {
 	public:
 	struct IPTrack {
-		SockStorage addr;
+		NetAddr addr;
 		int conns;
 	};
 	typedef std::vector<IPTrack> ConnList;
 
 	// return -1 if at max total users, -2 if max per host, 0 on success
-	int add(SockStorage& addr);
-	void remove(SockStorage& addr);
+	int add(NetAddr& addr);
+	void remove(NetAddr& addr);
 
 	const ConnList& get_conn_list() const { return connections; }
 	inline uint get_total() { return total_conns; }

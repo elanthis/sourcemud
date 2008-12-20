@@ -43,13 +43,13 @@ namespace {
 
 // compare addresses
 int
-Network::addrcmp (const SockStorage& addr1, const SockStorage& addr2)
+Network::addrcmp (const NetAddr& addr1, const NetAddr& addr2)
 {
 	// same family, yes?
-	if (addr1.ss_family != addr2.ss_family)
+	if (addr1.family != addr2.family)
 		return -1;
 
-	switch (addr1.ss_family) {
+	switch (addr1.family) {
 		/* IPv4 */
 		case AF_INET: {
 			const sockaddr_in* sin1 = (sockaddr_in*)&addr1;
@@ -74,15 +74,15 @@ Network::addrcmp (const SockStorage& addr1, const SockStorage& addr2)
 
 // compare addresses - with mask applied to *first* address (only)
 int
-Network::addrcmp_mask (const SockStorage& in_addr1, const SockStorage& addr2, uint mask)
+Network::addrcmp_mask (const NetAddr& in_addr1, const NetAddr& addr2, uint mask)
 {
 	// same family, yes?
-	if (in_addr1.ss_family != addr2.ss_family)
+	if (in_addr1.family != addr2.family)
 		return -1;
 
-	SockStorage addr1 = in_addr1;
+	NetAddr addr1 = in_addr1;
 
-	switch (addr1.ss_family) {
+	switch (addr1.family) {
 		/* IPv4 */
 		case AF_INET: {
 			sockaddr_in sin1 = *(sockaddr_in*)&addr1;
@@ -107,41 +107,6 @@ Network::addrcmp_mask (const SockStorage& in_addr1, const SockStorage& addr2, ui
 		default:
 			return -1;
 	}
-}
-
-// get name of socket
-std::string Network::get_addr_name(const SockStorage& addr, bool show_port)
-{
-	char hostbuf[512];
-	char servbuf[512];
-	char buffer[512];
-
-	// get the info
-#if HAVE_GETNAMEINFO
-	getnameinfo((sockaddr*)&addr, sizeof(addr), hostbuf, sizeof(hostbuf), servbuf, sizeof(servbuf), NI_NUMERICHOST | NI_NUMERICSERV);
-#elif defined(HAVE_INET_PTON)
-	struct sockaddr_in* sin = (struct sockaddr_in*)&addr;
-	inet_ntop(AF_INET, &sin->sin_addr, hostbuf, sizeof(hostbuf));
-	snprintf(servbuf, sizeof(servbuf), "%d", ntohs(sin->sin_port));
-#else
-	return "<unknown>";
-#endif
-
-	// no port?  just return the address
-	if (!strlen(servbuf))
-		return std::string(hostbuf);
-
-	// display the port, and optionally port
-	if (show_port) {
-		if (strchr(hostbuf, ':'))
-			snprintf(buffer, sizeof(buffer), "%s.%s", hostbuf, servbuf);
-		else
-			snprintf(buffer, sizeof(buffer), "%s:%s", hostbuf, servbuf);
-	} else {
-		snprintf(buffer, sizeof(buffer), "%s", hostbuf);
-	}
-
-	return std::string(buffer);
 }
 
 // get peer uid on AF_UNIX sockets
@@ -176,7 +141,7 @@ Network::get_peer_uid (int sock, uid_t& uid)
 int
 Network::listen_tcp (int port, int family)
 {
-	SockStorage ss;
+	NetAddr ss;
 	size_t ss_len = sizeof(ss);
 	int i_opt;
 	int sock;
@@ -203,8 +168,8 @@ Network::listen_tcp (int port, int family)
 		// IPv6
 		ss_len = sizeof(sockaddr_in6);
 		memset(&ss, 0, sizeof(ss));
-		ss.ss_family = AF_INET6;
-		((sockaddr_in6*)&ss)->sin6_port = htons (port);
+		ss.family = AF_INET6;
+		ss.in6.sin6_port = htons (port);
 
 #ifdef IPV6_V6ONLY
 		// set IPV6-only
@@ -217,7 +182,7 @@ Network::listen_tcp (int port, int family)
 		// IPv4
 		ss_len = sizeof(sockaddr_in);
 		memset(&ss, 0, sizeof(ss));
-		ss.ss_family = AF_INET;
+		ss.family = AF_INET;
 		((sockaddr_in*)&ss)->sin_port = htons (port);
 	}
 
@@ -240,7 +205,7 @@ Network::listen_tcp (int port, int family)
 
 // accept incoming connections
 int
-Network::accept_tcp (int sock, SockStorage& addr)
+Network::accept_tcp (int sock, NetAddr& addr)
 {
 	// accept socket
 	socklen_t sslen = sizeof(addr);
@@ -253,26 +218,7 @@ Network::accept_tcp (int sock, SockStorage& addr)
 	return client;
 }
 
-
-// true if address is local
-bool
-Network::is_addr_local (const SockStorage& addr)
-{
-	if (addr.ss_family == AF_INET) {
-		if (((const sockaddr_in*)&addr)->sin_addr.s_addr == htonl(INADDR_LOOPBACK))
-			return true;
-	}
-#ifdef HAVE_IPV6
-	else if (addr.ss_family == AF_INET6) {
-		if (IN6_IS_ADDR_LOOPBACK(&((const sockaddr_in6*)&addr)->sin6_addr))
-			return true;
-	}
-#endif // HAVE_IPV6
-
-	return false;
-}
-
-int Network::parse_addr(const char* item, SockStorage* host, uint* mask)
+int Network::parse_addr(const char* item, NetAddr* host, uint* mask)
 {
 	char buffer[128];
 
@@ -300,7 +246,7 @@ int Network::parse_addr(const char* item, SockStorage* host, uint* mask)
 	}
 
 	// parse address
-	SockStorage ss;
+	NetAddr ss;
 #ifdef HAVE_IPV6
 	// try IPv6 first
 	if (inet_pton(AF_INET6, buffer, &((sockaddr_in6*)&ss)->sin6_addr) > 0) { // match
@@ -310,8 +256,8 @@ int Network::parse_addr(const char* item, SockStorage* host, uint* mask)
 		else if (inmask < 0)
 			inmask = 128;
 		addr_apply_mask((uint8*)&((sockaddr_in6*)&ss)->sin6_addr, 16, inmask);
-		ss.ss_family = AF_INET6;
-		*host = SockStorage(ss);
+		ss.family = AF_INET6;
+		*host = NetAddr(ss);
 		*mask = inmask;
 		return 0;
 	} else
@@ -325,8 +271,8 @@ int Network::parse_addr(const char* item, SockStorage* host, uint* mask)
 		else if (inmask < 0)
 			inmask = 32;
 		addr_apply_mask((uint8*)&((sockaddr_in*)&ss)->sin_addr, 4, inmask);
-		ss.ss_family = AF_INET;
-		*host = SockStorage(ss);
+		ss.family = AF_INET;
+		*host = NetAddr(ss);
 		*mask = inmask;
 		return 0;
 #else // HAVE_INET_PTON
@@ -337,8 +283,8 @@ int Network::parse_addr(const char* item, SockStorage* host, uint* mask)
 		else if (inmask < 0)
 			inmask = 32;
 		addr_apply_mask((uint8*)&((sockaddr_in*)&ss)->sin_addr, 4, inmask);
-		ss.ss_family = AF_INET;
-		*host = SockStorage(ss);
+		ss.family = AF_INET;
+		*host = NetAddr(ss);
 		*mask = inmask;
 		return 0;
 #endif

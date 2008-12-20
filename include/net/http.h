@@ -15,12 +15,13 @@
 #include "common/streams.h"
 #include "common/imanager.h"
 #include "mud/account.h"
+#include "net/netaddr.h"
 #include "net/socket.h"
 
 class HTTPHandler : public SocketConnection, public IStreamSink
 {
 	public:
-	HTTPHandler(int s_sock, const SockStorage& s_netaddr);
+	HTTPHandler(int s_sock, const NetAddr& s_netaddr);
 
 	// output
 	virtual void stream_put(const char*, size_t len);
@@ -68,7 +69,7 @@ class HTTPHandler : public SocketConnection, public IStreamSink
 	// parse urlencoded data (GET/POST)
 	void parse_request_data(std::map<std::string,std::string>& map, const char* input) const;
 
-	SockStorage addr;
+	NetAddr addr;
 
 	// HTTP parsing
 	StringBuffer line;

@@ -79,6 +79,7 @@ HEADERS = \
 	include/net/http.h \
 	include/net/iplist.h \
 	include/net/manager.h \
+	include/net/netaddr.h \
 	include/net/socket.h \
 	include/net/telnet.h \
 	include/net/util.h \
@@ -150,6 +151,7 @@ SOURCES = \
 	src/net/http.cc \
 	src/net/iplist.cc \
 	src/net/manager.cc \
+	src/net/netaddr.cc \
 	src/net/socket.cc \
 	src/net/telnet.cc \
 	src/net/util.cc \
