@@ -187,7 +187,7 @@ namespace {
 	{
 		// accept client
 		NetAddr addr;
-		int client = Network::accept_tcp(sock, addr);
+		int client = accept(addr);
 		if (client == -1) {
 			Log::Error << "accept() failed: " << strerror(errno);
 			return;
@@ -257,7 +257,7 @@ namespace {
 	{
 		// accept client
 		NetAddr addr;
-		int client = Network::accept_tcp(sock, addr);
+		int client = accept(addr);
 		if (client == -1) {
 			Log::Error << "accept() failed: " << strerror(errno);
 			return;

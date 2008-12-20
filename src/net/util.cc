@@ -126,21 +126,6 @@ Network::listen_tcp (int port, int family)
 	return sock;
 }
 
-// accept incoming connections
-int
-Network::accept_tcp (int sock, NetAddr& addr)
-{
-	// accept socket
-	socklen_t sslen = sizeof(addr);
-	int client = accept(sock, (struct sockaddr*)&addr, &sslen);
-	if (client == -1)
-		return -1;
-
-	// set non-blocking flag
-	fcntl(client, F_SETFL, O_NONBLOCK);
-	return client;
-}
-
 int Network::parse_addr(const char* item, NetAddr* host, uint* mask)
 {
 	char buffer[128];

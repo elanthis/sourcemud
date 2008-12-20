@@ -18,9 +18,6 @@ namespace Network {
 	// listen on TCP
 	int listen_tcp(int port, int family);
 
-	// get socket from a tcp listener
-	int accept_tcp(int sock, NetAddr& addr);
-
 	// parse a network name into an address and possible mask
 	int parse_addr(const char* item, NetAddr* host, uint* mask);
 };

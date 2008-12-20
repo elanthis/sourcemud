@@ -33,7 +33,12 @@ class SocketListener : public ISocketHandler {
 	inline SocketListener(int s_sock) : sock(s_sock) {}
 
 	// sub_classes provide sock_in_ready to accept() incoming connections
+	virtual void sock_in_ready() = 0;
 
+	int accept(class NetAddr& out) const;
+
+	private:
+	// never need be called
 	virtual void sock_flush() {}
 	virtual void sock_out_ready() {}
 	virtual void sock_hangup() {}
@@ -55,8 +60,8 @@ class SocketConnection : public ISocketHandler {
 	virtual void sock_input(char* buffer, size_t size) = 0;
 
 	// sub-classes must implement:
-	//  void sock_flush()
-	//  void sock_hangup()
+	virtual void sock_flush() = 0;
+	virtual void sock_hangup() = 0;
 
 	// request close
 	void sock_disconnect();
@@ -64,6 +69,11 @@ class SocketConnection : public ISocketHandler {
 	// add data to the output buffer
 	void sock_buffer(const char* data, size_t size);
 
+	// stats
+	size_t get_in_bytes() const { return in_bytes; }
+	size_t get_out_bytes() const { return out_bytes; }
+
+	private:
 	// internal
 	virtual void sock_in_ready();
 	virtual void sock_out_ready();
@@ -71,10 +81,6 @@ class SocketConnection : public ISocketHandler {
 	virtual bool sock_is_out_waiting() { return !output.empty(); }
 	virtual bool sock_is_disconnect_waiting() { return disconnect; }
 	virtual void sock_complete_disconnect();
-
-	// stats
-	size_t get_in_bytes() const { return in_bytes; }
-	size_t get_out_bytes() const { return out_bytes; }
 
 	private:
 	std::vector<char> output;

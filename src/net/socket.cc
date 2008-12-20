@@ -8,8 +8,22 @@
 #include "common.h"
 #include "common/log.h"
 #include "common/types.h"
+#include "net/netaddr.h"
 #include "net/socket.h"
 #include "config.h"
+
+int SocketListener::accept(NetAddr& addr) const
+{
+	// accept socket
+	socklen_t sslen = sizeof(addr);
+	int client = ::accept(sock, (struct sockaddr*)&addr, &sslen);
+	if (client == -1)
+		return -1;
+
+	// set non-blocking flag
+	fcntl(client, F_SETFL, O_NONBLOCK);
+	return client;
+}
 
 SocketConnection::SocketConnection (int s_sock) : output(), sock(s_sock),
 	disconnect(false), in_bytes(0), out_bytes(0)
