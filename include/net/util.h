@@ -29,14 +29,8 @@ namespace Network {
 	// listen on TCP
 	int listen_tcp(int port, int family);
 
-	// listen on UNIX
-	int listen_unix(const std::string& path);
-
 	// get socket from a tcp listener
 	int accept_tcp(int sock, SockStorage& addr);
-
-	// get socket from a UNIX listener
-	int accept_unix(int sock, uid_t& uid);
 
 	// parse a network name into an address and possible mask
 	int parse_addr(const char* item, SockStorage* host, uint* mask);
