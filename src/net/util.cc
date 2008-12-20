@@ -11,64 +11,26 @@
 #include "net/util.h"
 #include "config.h"
 
-/********************
- * Misc Helper Code *
- ********************/
-
-// apply mask to an IP address
-// math/algorithm found in FreeBSD 'route' command - thanks guys!
-namespace {
-	void
-	addr_apply_mask (uint8* addr, uint size, uint mask)
-	{
-		assert(mask <= size * 8);
-
-		// buffer to hold mask
-		uint8 maskbuf[size];
-		memset(maskbuf, 0, size);
-
-		// number of whole bytes
-		uint q = mask >> 3;
-		if (q > 0) memset(maskbuf, 0xff, q);
-		
-		// remainder bytes
-		uint r = mask & 7;
-		if (r > 0) *(maskbuf + q) = (0xff00 >> r) & 0xff;
-
-		// apply to addr
-		for (uint i = 0; i < size; ++i) 
-			addr[i] &= maskbuf[i];
-	}
-}
-
 // compare addresses
-int
-Network::addrcmp (const NetAddr& addr1, const NetAddr& addr2)
+int Network::addrcmp(const NetAddr& addr1, const NetAddr& addr2)
 {
 	// same family, yes?
 	if (addr1.family != addr2.family)
-		return -1;
+		return addr1.family < addr2.family ? -1 : 1;
 
 	switch (addr1.family) {
 		/* IPv4 */
-		case AF_INET: {
-			const sockaddr_in* sin1 = (sockaddr_in*)&addr1;
-			const sockaddr_in* sin2 = (sockaddr_in*)&addr2;
-
-			return *(uint32*)&sin1->sin_addr != *(uint32*)&sin2->sin_addr;
-		}
+		case AF_INET:
+			return memcmp(&addr1.in.sin_addr, &addr2.in.sin_addr,
+					sizeof(addr1.in.sin_addr));
 		/* IPv6 */
 #ifdef HAVE_IPV6
-		case AF_INET6: {
-			const sockaddr_in6* sin1 = (sockaddr_in6*)&addr1;
-			const sockaddr_in6* sin2 = (sockaddr_in6*)&addr2;
-
+		case AF_INET6:
 			return !IN6_ARE_ADDR_EQUAL(&sin1->sin6_addr, &sin2->sin6_addr);
-		}
 #endif
 		/* Unknown */
 		default:
-			return -1;
+			assert(0 && "unknown address type");
 	}
 }
 
@@ -81,31 +43,20 @@ Network::addrcmp_mask (const NetAddr& in_addr1, const NetAddr& addr2, uint mask)
 		return -1;
 
 	NetAddr addr1 = in_addr1;
+	addr1.applyMask(mask);
 
 	switch (addr1.family) {
 		/* IPv4 */
-		case AF_INET: {
-			sockaddr_in sin1 = *(sockaddr_in*)&addr1;
-			const sockaddr_in sin2 = *(sockaddr_in*)&addr2;
-
-			addr_apply_mask((uint8*)&sin1.sin_addr, sizeof(sin1.sin_addr), mask);
-
-			return memcmp(&sin1.sin_addr, &sin2.sin_addr, sizeof(sin1.sin_addr));
-		}
+		case AF_INET:
+			return memcmp(&addr1.in.sin_addr, &addr2.in.sin_addr, sizeof(addr1.in.sin_addr));
 		/* IPv6 */
 #ifdef HAVE_IPV6
-		case AF_INET6: {
-			sockaddr_in6 sin1 = *(sockaddr_in6*)&addr1;
-			const sockaddr_in6 sin2 = *(sockaddr_in6*)&addr2;
-
-			addr_apply_mask((uint8*)&sin1.sin6_addr, sizeof(sin1.sin6_addr), mask);
-
-			return !IN6_ARE_ADDR_EQUAL(&sin1.sin6_addr, &sin2.sin6_addr);
-		}
+		case AF_INET6:
+			return !IN6_ARE_ADDR_EQUAL(&addr1.in6.sin6_addr, &addr2.in6.sin6_addr);
 #endif
 		/* Unknown */
 		default:
-			return -1;
+			assert(0 && "unknown address type");
 	}
 }
 
@@ -242,7 +193,7 @@ int Network::parse_addr(const char* item, NetAddr* host, uint* mask)
 			return -1; // FAIL
 		else if (inmask < 0)
 			inmask = 32;
-		addr_apply_mask((uint8*)&((sockaddr_in*)&ss)->sin_addr, 4, inmask);
+		ss.applyMask(inmask);
 		ss.family = AF_INET;
 		*host = NetAddr(ss);
 		*mask = inmask;
@@ -254,7 +205,7 @@ int Network::parse_addr(const char* item, NetAddr* host, uint* mask)
 			return -1; // FAIL
 		else if (inmask < 0)
 			inmask = 32;
-		addr_apply_mask((uint8*)&((sockaddr_in*)&ss)->sin_addr, 4, inmask);
+		ss.applyMask(inmask);
 		ss.family = AF_INET;
 		*host = NetAddr(ss);
 		*mask = inmask;

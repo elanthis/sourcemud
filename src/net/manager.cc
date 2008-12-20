@@ -48,7 +48,7 @@ _MNetwork::initialize ()
 
 	// load IP block list
 	if (!MSettings.get_deny_file().empty()) {
-		Log::Info << "Reading denied host list";
+		Log::Info << "Reading denied hosts from " << MSettings.get_deny_file();
 
 		if (denies.load(MSettings.get_deny_file()))
 			return 1;

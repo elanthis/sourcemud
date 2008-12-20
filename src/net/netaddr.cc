@@ -8,6 +8,7 @@
 #include "common.h"
 #include "config.h"
 
+#include "common/types.h"
 #include "net/netaddr.h"
 
 std::string NetAddr::getString(bool show_port) const
@@ -57,4 +58,39 @@ bool NetAddr::isLocal() const
 #endif // HAVE_IPV6
 
 	return false;
+}
+
+void NetAddr::applyMask(uint mask)
+{
+	// determine appropriate addr and size
+#ifdef HAVE_IPV6
+	uint8* addr = family == AF_INET6 ? (uint8*)&in6.sin6_addr :
+			(uint8*)&in.sin_addr;
+	const size_t size = family == AF_INET6 ? sizeof(in6.sin6_addr) :
+			sizeof(in.sin_addr);
+#else
+	uint8* addr = (uint8*)&in.sin_addr;
+	const size_t size = sizeof(in.sin_addr);
+#endif
+
+	// ensure mask is within the limits of size
+	assert(mask <= size * 8);
+
+	// buffer to hold mask
+	uint8 maskbuf[sizeof(*this)];
+	memset(maskbuf, 0, size);
+
+	// number of whole bytes
+	uint q = mask >> 3;
+	if (q > 0)
+		memset(maskbuf, 0xff, q);
+	
+	// remainder bits
+	uint r = mask & 7;
+	if (r > 0)
+		*(maskbuf + q) = (0xff00 >> r) & 0xff;
+
+	// apply to addr
+	for (uint i = 0; i < size; ++i) 
+		addr[i] &= maskbuf[i];
 }

@@ -22,6 +22,8 @@ struct NetAddr {
 
 	std::string getString(bool port = true) const;
 	bool isLocal() const;
+
+	void applyMask(uint mask);
 };
 
 #endif

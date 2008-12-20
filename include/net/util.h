@@ -13,9 +13,7 @@
 namespace Network {
 	// return 0 if the two addresses are the same
 	int addrcmp(const NetAddr& addr1, const NetAddr& addr2);
-
-	// compare addresses - with mask applied to *first* address(only)
-	int addrcmp_mask(const NetAddr& addr1, const NetAddr& addr2, uint mask);
+	int addrcmp_mask(const NetAddr& in_addr1, const NetAddr& addr2, uint mask);
 
 	// listen on TCP
 	int listen_tcp(int port, int family);

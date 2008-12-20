@@ -27,15 +27,20 @@ int IPDenyList::load(const std::string& path)
 	while (fgets(line, sizeof(line), file) != NULL) {
 		++lcnt;
 
+		// remove comment bits
+		char* c = strchr(line, '#');
+		if (c != 0)
+			*c = 0;
+
 		// chew off end of line
-		for (char* c = line + strlen(line) - 1; c >= line; --c)
-			if (isspace(*c))
-				*c = 0;
+		for (char* e = line + strlen(line) - 1; e >= line; --e)
+			if (isspace(*e))
+				*e = 0;
 			else
 				break;
 
 		// empty? skip
-		if (!strlen(line))
+		if (line[0] == 0)
 			continue;
 
 		// add and handle return codes
@@ -43,6 +48,7 @@ int IPDenyList::load(const std::string& path)
 		if (err == -1)
 			Log::Warning << "Invalid IP deny line at " << path << ":" << lcnt;
 	}
+
 
 	fclose(file);
 	return 0;
@@ -92,7 +98,7 @@ int IPDenyList::add(const std::string& line)
 		return -1;
 
 	for (uint i = 0; i < denylist.size(); ++i)
-		if (Network::addrcmp(addr, denylist[i].addr))
+		if (Network::addrcmp(addr, denylist[i].addr) == 0)
 			return 1;
 
 	IPDeny deny;
@@ -106,7 +112,7 @@ bool
 IPDenyList::exists (NetAddr& addr)
 {
 	for (uint i = 0; i < denylist.size(); ++i)
-		if (Network::addrcmp_mask(addr, denylist[i].addr, denylist[i].mask))
+		if (Network::addrcmp_mask(addr, denylist[i].addr, denylist[i].mask) == 0)
 			return true;
 	return false;
 }

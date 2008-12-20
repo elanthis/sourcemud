@@ -1,4 +1,12 @@
-127.0.0.1
-1.2.3.4
-4.3.2.7/24
-2.4.0.0/16
+## Example to ban local IP
+## you probably shouldn't do this
+#127.0.0.1
+
+## Ban a particular address
+#216.27.61.137
+
+## Ban a C-class address block
+#216.27.61.137/24
+
+## Ban an A-class address block
+#216.0.0.0/8
