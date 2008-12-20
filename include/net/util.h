@@ -17,9 +17,6 @@ namespace Network {
 	// compare addresses - with mask applied to *first* address(only)
 	int addrcmp_mask(const NetAddr& addr1, const NetAddr& addr2, uint mask);
 
-	// return the UID of the peer connection on a UNIX socket
-	int get_peer_uid(int sock, uid_t& uid);
-
 	// listen on TCP
 	int listen_tcp(int port, int family);
 

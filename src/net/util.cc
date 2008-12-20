@@ -109,34 +109,6 @@ Network::addrcmp_mask (const NetAddr& in_addr1, const NetAddr& addr2, uint mask)
 	}
 }
 
-// get peer uid on AF_UNIX sockets
-int
-Network::get_peer_uid (int sock, uid_t& uid)
-{
-#if defined(HAVE_GETPEEREID)
-	// use getpeereid
-	uid_t gid;
-	if (getpeereid(sock, &uid, &gid) != 0) {
-		Log::Error << "getpeereid() failed: " << strerror(errno);
-		return errno;
-	}
-	return 0;
-#elif defined(SO_PEERCRED)
-	// use Linux SO_PEERCRED getsockopt ability
-	struct ucred peercred;
-	socklen_t cred_len = sizeof(peercred);
-	if (getsockopt(sock, SOL_SOCKET, SO_PEERCRED, &peercred, &cred_len)) {
-		Log::Error << "getsockopt() failed: " << strerror(errno);
-		return errno;
-	}
-	uid = peercred.uid;
-	return 0;
-#else
-	// not supported - fail
-	return EOPNOTSUPP;
-#endif
-}
-
 // listen/server connection
 int
 Network::listen_tcp (int port, int family)
