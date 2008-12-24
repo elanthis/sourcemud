@@ -8,7 +8,6 @@
 #ifndef SERVER_H
 #define SERVER_H
 
-
 #define SERVER_MAX_CLIENTS 10000
 
 namespace MUD {

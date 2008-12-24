@@ -8,8 +8,6 @@
 #ifndef SOURCEMUD_MUD_FILETAB_H
 #define SOURCEMUD_MUD_FILETAB_H
 
-#include "common.h"
-
 namespace File
 {
 	class TabReader

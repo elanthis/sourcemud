@@ -8,8 +8,6 @@
 #ifndef SOURCEMUD_ERROR_H
 #define SOURCEMUD_ERROR_H
 
-#include "common.h"
-
 void fatal (char const *, ...);		// server will immediately die
 
 #undef assert

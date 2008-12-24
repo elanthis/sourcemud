@@ -10,7 +10,6 @@
 #include "common/types.h"
 #include "net/netaddr.h"
 #include "net/socket.h"
-#include "config.h"
 
 int SocketListener::accept(NetAddr& addr) const
 {

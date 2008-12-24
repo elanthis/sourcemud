@@ -8,8 +8,6 @@
 #ifndef SOURCEMUD_COMMON_TIME_H
 #define SOURCEMUD_COMMON_TIME_H
 
-#include "common.h"
-
 // legacy cruft
 std::string time_to_str (time_t time);
 time_t str_to_time (const std::string& str);

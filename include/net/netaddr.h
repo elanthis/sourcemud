@@ -8,9 +8,6 @@
 #ifndef SOURCEMUD_NET_NETADDR_H 
 #define SOURCEMUD_NET_NETADDR_H
 
-#include "common.h"
-#include "config.h"
-
 struct NetAddr {
 	union {
 		unsigned short int family;

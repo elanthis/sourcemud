@@ -5,9 +5,7 @@
  * http://www.sourcemud.org
  */
 
-#include <algorithm>
-
-#include <map>
+#include "common.h"
 #include "common/imanager.h"
 
 std::vector<IManager*>* IManager::managers = NULL;

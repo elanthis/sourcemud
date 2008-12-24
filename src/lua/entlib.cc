@@ -5,6 +5,7 @@
  * http://www.sourcemud.org
  */
 
+#include "common.h"
 #include "mud/entity.h"
 #include "lua/core.h"
 #include "lib/lua51/lua.h"

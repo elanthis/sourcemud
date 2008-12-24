@@ -5,6 +5,7 @@
  * http://www.sourcemud.org
  */
 
+#include "common.h"
 #include "common/streams.h"
 #include "mud/macro.h"
 

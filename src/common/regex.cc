@@ -5,6 +5,7 @@
  * http://www.sourcemud.org
  */
 
+#include "common.h"
 #include "common/regex.h"
 
 RegEx::RegEx(const std::string& pattern, bool nocase)

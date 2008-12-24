@@ -8,7 +8,6 @@
 #ifndef RACE_H
 #define RACE_H
 
-#include "common.h"
 #include "mud/fileobj.h"
 #include "mud/creature.h"
 #include "mud/form.h"

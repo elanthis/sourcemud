@@ -5,6 +5,7 @@
  * http://www.sourcemud.org
  */
 
+#include "common.h"
 #include "mud/idmap.h"
 
 MID::MID ()

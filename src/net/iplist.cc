@@ -5,6 +5,7 @@
  * http://www.sourcemud.org
  */
 
+#include "common.h"
 #include "common/log.h"
 #include "mud/settings.h"
 #include "net/socket.h"

@@ -1,3 +1,6 @@
+// SOURCE MUD CONFIGURATION HEADER
+#include "config.h"
+
 // C++ Language Support
 #include <typeinfo>
 
@@ -28,6 +31,9 @@
 // POSIX
 #include <arpa/inet.h>
 #include <sys/ioctl.h>
+#if defined(HAVE_POLL)
+#	include <sys/poll.h>
+#endif
 #include <sys/socket.h>
 #include <sys/stat.h>
 #include <sys/time.h>
@@ -47,3 +53,23 @@
 #include <termios.h>
 #include <time.h>
 #include <unistd.h>
+
+// Standard C (C99/optional)
+#if defined(HAVE_STDINT_H) || defined(HAVE_INTTYPES_H)
+#	if defined(HAVE_STDINT_H)
+#		include <stdint.h>
+#	endif
+#	if defined(HAVE_INTTYPES_H)
+#		include <inttypes.h>
+#	endif
+#else
+#	error "stdint.h or inttypes.h required"
+#endif
+
+// Libraries
+#ifdef HAVE_LIBZ
+#	include <zlib.h>
+#endif // HAVE_LIBZ
+
+// common.h has been define
+#define COMMON_H 1

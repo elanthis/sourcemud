@@ -8,7 +8,6 @@
 #ifndef SOURCEMUD_MUD_BODY_H
 #define SOURCEMUD_MUD_BODY_H
 
-#include "common.h"
 #include "mud/fileobj.h"
 #include "mud/server.h"
 

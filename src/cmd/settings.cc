@@ -5,6 +5,7 @@
  * http://www.sourcemud.org
  */
 
+#include "common.h"
 #include "common/streams.h"
 #include "common/mail.h"
 #include "mud/player.h"

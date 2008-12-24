@@ -9,7 +9,6 @@
 #include "common/mail.h"
 #include "common/log.h"
 #include "mud/settings.h"
-#include "config.h"
 
 #ifdef HAVE_SENDMAIL
 

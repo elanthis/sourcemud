@@ -8,18 +8,10 @@
  * Each section of code carries its own copyright and licensing headers.
  */
 
-#include <string>
-
-#include <sys/types.h>
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include <inttypes.h>
-
+#include "common.h"
 #include "common/md5.h"
 #include "common/rand.h"
 #include "common/types.h"
-#include "config.h"
 
 // make private
 namespace {
@@ -317,9 +309,6 @@ void MD5Transform(uint32 buf[4], uint32 const in[16])
  *  Modified 2002 by Sean Middleditch for Source MUD
  */
 
-#include <sys/types.h>
-#include "common/rand.h"
-
 static char itoa64[] =		/* 0 ... 63 => ascii - 64 */
 	"./0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
 
@@ -344,12 +333,6 @@ _crypt_to64(char *s, u_long v, int n)
  *
  * Modified 2002 by Sean Middleditch for Source MUD
  */
-
-
-#include <unistd.h>
-#include <stdio.h>
-#include <string.h>
-#include <errno.h>
 
 /*
  * UNIX password

@@ -5,10 +5,8 @@
  * http://www.sourcemud.org
  */
 
-#ifndef SOURCEMUD_STREAMS_H
-#define SOURCEMUD_STREAMS_H
-
-#include "common.h"
+#ifndef SOURCEMUD_COMMON_STREAMS_H
+#define SOURCEMUD_COMMON_STREAMS_H 1
 
 // pre-defines
 class Creature;

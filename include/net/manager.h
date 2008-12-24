@@ -8,14 +8,12 @@
 #ifndef SOURCEMUD_NET_MANAGER_H
 #define SOURCEMUD_NET_MANAGER_H
 
-#include "common.h"
 #include "common/types.h"
 #include "common/imanager.h"
 #include "common/strbuf.h"
 #include "mud/server.h"
 #include "net/socket.h"
 #include "net/iplist.h"
-#include "config.h"
 
 // defaults
 static const uint DEFAULT_MAX_HOST_CONNS = 10;

@@ -8,7 +8,6 @@
 #ifndef COMMAND_LINE_H
 #define COMMAND_LINE_H
 
-#include "common.h"
 #include "common/imanager.h"
 #include "mud/account.h"
 #include "mud/server.h"

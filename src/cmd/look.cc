@@ -5,15 +5,16 @@
  * http://www.sourcemud.org
  */
 
-#include "mud/creature.h"
+#include "common.h"
 #include "common/error.h"
+#include "common/streams.h"
+#include "mud/creature.h"
 #include "mud/server.h"
 #include "mud/room.h"
 #include "mud/command.h"
 #include "mud/body.h"
 #include "mud/player.h"
 #include "mud/macro.h"
-#include "common/streams.h"
 #include "mud/object.h"
 
 /* BEGIN COMMAND

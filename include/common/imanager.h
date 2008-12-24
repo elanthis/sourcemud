@@ -8,8 +8,6 @@
 #ifndef IMANAGER_H
 #define IMANAGER_H
 
-#include "common.h"
-
 // all *Manager classes should derive from this...
 class IManager
 {

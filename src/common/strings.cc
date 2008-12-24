@@ -5,29 +5,11 @@
  * http://www.sourcemud.org
  */
 
-#include <stdlib.h>
-#include <string.h>
-#include <stdarg.h>
-#include <stdio.h>
-#include <ctype.h>
-#include <unistd.h>
-
-#include <cctype>
-#include <cstring>
-#include <algorithm>
-#include <vector>
-#include <sstream>
-
-#ifdef HAVE_REGEX
-#include <regex.h>
-#endif
-
+#include "common.h"
 #include "common/types.h"
 #include "common/string.h"
 #include "common/error.h"
 #include "common/log.h"
-
-#include "config.h"
 
 // for portability
 #ifndef __va_copy

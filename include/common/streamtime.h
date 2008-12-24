@@ -8,7 +8,6 @@
 #ifndef SOURCEMUD_COMMON_STREAMTIME_H
 #define SOURCEMUD_COMMON_STREAMTIME_H 1
 
-#include "common.h"
 #include "common/streams.h"
 #include "common/time.h"
 

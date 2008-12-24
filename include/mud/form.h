@@ -8,7 +8,6 @@
 #ifndef SOURCEMUD_MUD_FORM_H
 #define SOURCEMUD_MUD_FORM_H
 
-#include "common.h"
 #include "common/types.h"
 
 class FormColor {

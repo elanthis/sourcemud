@@ -8,8 +8,6 @@
 #ifndef IDMAP_H
 #define IDMAP_H
 
-#include "common.h"
-
 // NOTE:
 // The funky static methods to retrieve the name list and intptr_t map
 // are necessary but sickeningly ugly hacks to make sure that

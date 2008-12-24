@@ -8,8 +8,6 @@
 #ifndef SOURCEMUD_COMMON_AWEREGEX_H
 #define SOURCEMUD_COMMON_AWEREGEX_H 1
 
-#include "common.h"
-
 class RegEx {
 	public:
 	RegEx (const std::string& pattern, bool nocase = false);

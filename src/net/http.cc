@@ -22,7 +22,6 @@
 #include "lua/core.h"
 #include "lua/print.h"
 #include "lua/exec.h"
-#include "config.h"
 
 #define HTTP_REQUEST_TIMEOUT 30 // 30 seconds
 #define HTTP_HEADER_LINE_MAX 2048 // arbitrary max line length

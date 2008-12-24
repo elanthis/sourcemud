@@ -5,6 +5,7 @@
  * http://www.sourcemud.org
  */
 
+#include "common.h"
 #include "common/log.h"
 #include "lua/core.h"
 #include "lua/exec.h"

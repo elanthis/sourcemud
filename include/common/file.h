@@ -8,8 +8,6 @@
 #ifndef SOURCEMUD_COMMON_FILE_H
 #define SOURCEMUD_COMMON_FILE_H
 
-#include "common.h"
-
 namespace File {
 
 // gets a list of files in a particular directory.  does

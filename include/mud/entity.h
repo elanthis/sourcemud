@@ -8,7 +8,6 @@
 #ifndef ENTITY_H
 #define ENTITY_H
 
-#include "common.h"
 #include "common/types.h"
 #include "common/error.h"
 #include "common/imanager.h"

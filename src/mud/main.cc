@@ -30,7 +30,6 @@
 #include "net/http.h"
 #include "net/util.h"
 #include "lua/core.h"
-#include "config.h"
 
 // DECLARATIONS
 namespace {

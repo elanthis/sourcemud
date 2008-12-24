@@ -5,10 +5,9 @@
  * http://www.sourcemud.org
  */
 
-#ifndef __LOG_H__
-#define __LOG_H__
+#ifndef __SOURCEMUD_COMMON_LOG_H__
+#define __SOURCEMUD_COMMON_LOG_H__ 1
 
-#include "common.h"
 #include "common/error.h"
 #include "common/streams.h"
 #include "common/imanager.h"

@@ -14,7 +14,6 @@
 #include "mud/fileobj.h"
 #include "mud/creature.h"
 #include "mud/form.h"
-#include "config.h"
 
 _MRace MRace;
 

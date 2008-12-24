@@ -8,8 +8,6 @@
 #ifndef SOURCEMUD_MUD_HTTP_H
 #define SOURCEMUD_MUD_HTTP_H
 
-#include "common.h"
-#include "config.h"
 #include "common/types.h"
 #include "common/strbuf.h"
 #include "common/streams.h"

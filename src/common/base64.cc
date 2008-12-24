@@ -2,9 +2,7 @@
 // cleaned up and modified for SourceMUD's needs
 // this code is in the public domain
 
-#include <string.h>
-#include <sstream>
-
+#include "common.h"
 #include "common/base64.h"
 
 namespace {

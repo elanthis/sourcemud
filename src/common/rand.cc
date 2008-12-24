@@ -5,9 +5,7 @@
  * http://www.sourcemud.org
  */
 
-
-#include <stdlib.h>
-#include <time.h>
+#include "common.h"
 
 void
 init_random (void)

@@ -8,7 +8,6 @@
 #ifndef SOURCEMUD_MUD_MESSAGE_H
 #define SOURCEMUD_MUD_MESSAGE_H
 
-#include "common.h"
 #include "common/imanager.h"
 #include "mud/server.h"
 

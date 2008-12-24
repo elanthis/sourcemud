@@ -5,11 +5,12 @@
  * http://www.sourcemud.org
  */
 
+#include "common.h"
+#include "common/rand.h"
 #include "mud/player.h"
 #include "mud/object.h"
 #include "mud/server.h"
 #include "mud/room.h"
-#include "common/rand.h"
 #include "mud/macro.h"
 #include "mud/action.h"
 

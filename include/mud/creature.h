@@ -8,11 +8,11 @@
 #ifndef SOURCEMUD_MUD_CREATURE_H
 #define SOURCEMUD_MUD_CREATURE_H
 
-#include "mud/entity.h"
 #include "common/types.h"
-#include "mud/body.h"
 #include "common/streams.h"
 #include "common/bitset.h"
+#include "mud/body.h"
+#include "mud/entity.h"
 
 class IAction;
 

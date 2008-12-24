@@ -5,6 +5,7 @@
  * http://www.sourcemud.org
  */
 
+#include "common.h"
 #include "lua/core.h"
 #include "lua/print.h"
 #include "lib/lua51/lua.h"

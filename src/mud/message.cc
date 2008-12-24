@@ -5,10 +5,11 @@
  * http://www.sourcemud.org
  */
 
+#include "common.h"
+#include "common/log.h"
 #include "mud/message.h"
 #include "mud/fileobj.h"
 #include "mud/settings.h"
-#include "common/log.h"
 
 _MMessage MMessage;
 

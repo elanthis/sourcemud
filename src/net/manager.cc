@@ -12,11 +12,6 @@
 #include "net/socket.h"
 #include "net/manager.h"
 #include "net/util.h"
-#include "config.h"
-
-#if defined(HAVE_POLL)
-#include <sys/poll.h>
-#endif
 
 _MNetwork MNetwork;
 

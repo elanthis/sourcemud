@@ -8,18 +8,12 @@
 #ifndef SOURCEMUD_MUD_TELNET_H
 #define SOURCEMUD_MUD_TELNET_H
 
-#include "common.h"
 #include "common/types.h"
 #include "common/streams.h"
 #include "common/string.h"
 #include "mud/color.h"
 #include "net/netaddr.h"
 #include "net/socket.h"
-#include "config.h"
-
-#ifdef HAVE_LIBZ
-#include <zlib.h>
-#endif // HAVE_LIBZ
 
 // default window size
 #define TELNET_DEFAULT_WIDTH 80

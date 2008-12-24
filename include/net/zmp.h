@@ -32,7 +32,6 @@
 #if !defined(ZMP_H)
 #define ZMP_H 1
 
-#include "common.h"
 #include "common/types.h"
 #include "common/imanager.h"
 #include "net/telnet.h"

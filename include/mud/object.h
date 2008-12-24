@@ -8,7 +8,6 @@
 #ifndef OBJECT_H
 #define OBJECT_H
 
-#include "common.h"
 #include "common/error.h"
 #include "common/imanager.h"
 #include "common/bitset.h"

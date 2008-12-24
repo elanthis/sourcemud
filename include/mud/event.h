@@ -8,7 +8,6 @@
 #ifndef EVENT_H 
 #define EVENT_H
 
-#include "common.h"
 #include "mud/fileobj.h"
 
 /* external classes */

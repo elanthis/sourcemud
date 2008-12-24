@@ -13,7 +13,6 @@
 #include "mud/gametime.h"
 #include "mud/player.h"
 #include "net/manager.h"
-#include "config.h"
 
 #define MACRO_OUT_SIZE 2048
 #define MACRO_BUFFER_SIZE 4096

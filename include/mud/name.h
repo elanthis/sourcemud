@@ -8,7 +8,6 @@
 #ifndef MUD_NAME_H
 #define MUD_NAME_H
 
-
 class EntityArticleClass {
 	public:
 	typedef enum {

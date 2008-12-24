@@ -6,7 +6,6 @@
  */
 
 #include "common.h"
-#include "config.h"
 
 #include "common/types.h"
 #include "net/netaddr.h"

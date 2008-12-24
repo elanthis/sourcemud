@@ -9,7 +9,6 @@
 #include "common/log.h"
 #include "net/socket.h"
 #include "net/util.h"
-#include "config.h"
 
 // compare addresses
 int Network::addrcmp(const NetAddr& addr1, const NetAddr& addr2)
@@ -31,6 +30,7 @@ int Network::addrcmp(const NetAddr& addr1, const NetAddr& addr2)
 		/* Unknown */
 		default:
 			assert(0 && "unknown address type");
+			return 0;
 	}
 }
 
@@ -57,6 +57,7 @@ Network::addrcmp_mask (const NetAddr& in_addr1, const NetAddr& addr2, uint mask)
 		/* Unknown */
 		default:
 			assert(0 && "unknown address type");
+			return 0;
 	}
 }
 

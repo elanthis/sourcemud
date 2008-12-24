@@ -5,11 +5,7 @@
  * http://www.sourcemud.org
  */
 
-#include <unistd.h>
-#include <stdio.h>
-#include <errno.h>
-#include <stdarg.h>
-
+#include "common.h"
 #include "common/log.h"
 
 int

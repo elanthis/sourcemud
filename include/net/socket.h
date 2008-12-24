@@ -8,7 +8,6 @@
 #ifndef SOURCEMUD_NET_SOCKET_H 
 #define SOURCEMUD_NET_SOCKET_H
 
-#include "common.h"
 #include "common/types.h"
 #include "common/strbuf.h"
 #include "mud/server.h"

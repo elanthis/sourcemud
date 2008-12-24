@@ -8,7 +8,6 @@
 #ifndef MUD_SKILL_H 
 #define MUD_SKILL_H
 
-#include "common.h"
 #include "common/types.h"
 
 class SkillID {

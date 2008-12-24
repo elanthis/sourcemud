@@ -8,7 +8,6 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
-#include "common.h"
 #include "common/imanager.h"
 #include "common/time.h"
 #include "mud/creature.h"

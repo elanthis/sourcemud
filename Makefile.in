@@ -271,11 +271,11 @@ all: $(BUILD) $(TOOLS) $(XML) $(HEADERS) $(LUA_HEADERS) \
 
 clean:
 	@echo Cleaning
-	@rm -fr $(BINARIES) $(OBJECTS) $(DEPDIR) $(BUILDDIR)
+	@rm -fr $(BINARIES) $(OBJECTS) $(DEPDIR) $(BUILDDIR) include/common.gch
 
 $(BUILDDIR)/%.o: %.cc
 	@echo Compiling $<
-	@[ -d $(dir $@) ] || mkdir -p $(dir $@)
+	@[ -d $(dir $@) ] || mkdir -p $(dir $@) || true
 	@$(CXX) -c -o $@ $(CXXFLAGS) $<
 	@[ -d $(DEPDIR) ] || mkdir $(DEPDIR)
 	@depfile=$(DEPDIR)/$(shell echo "$@" | \
@@ -328,3 +328,5 @@ make-dist: configure $(DIST) $(TOOLS) $(XML) $(HEADERS) $(SOURCES) \
 	@for file in $^ ; do install -D $$file $(PACKAGE)/$$file; done
 	@tar -zcf $(PACKAGE).tar.gz $(PACKAGE)
 	@rm -fr $(PACKAGE)
+
+.PHONY: all clean dist make-dist

@@ -5,12 +5,7 @@
  * http://www.sourcemud.org
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdarg.h>
-#include <unistd.h>
-#include <fcntl.h>
-
+#include "common.h"
 #include "common/error.h"
 #include "common/log.h"
 

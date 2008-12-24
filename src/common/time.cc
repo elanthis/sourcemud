@@ -5,6 +5,7 @@
  * http://www.sourcemud.org
  */
 
+#include "common.h"
 #include "common/time.h"
 
 const std::string Time::RFC_822_FORMAT = "%a, %d %b %Y %H:%M:%S %z";

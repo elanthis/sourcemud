@@ -20,7 +20,6 @@
 #include "net/telnet.h"
 #include "net/zmp.h"
 #include "net/util.h"
-#include "config.h"
 
 // include telnet, along with optional globals
 #define TELCMDS 1
