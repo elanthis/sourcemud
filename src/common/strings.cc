@@ -62,11 +62,6 @@ bool str_is_number(const std::string& string)
 
 bool str_is_email(const std::string& string)
 {
-#ifdef HAVE_REGEX
-	static RegEx regex ("^[a-z0-9._-]+@[a-z0-9_-]+(\\.[a-z0-9_-]+)+$", true);
-	return regex.grep(string);
-
-#else // HAVE_REGEX
 	const char *valid =
 		"abcdefghijklmnopqrstuvwxyz"
 		"ABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -98,8 +93,6 @@ bool str_is_email(const std::string& string)
 
 	// those are good enough checks for me
 	return true;
-
-#endif // HAVE_REGEX
 }
 
 bool str_is_true(const std::string& string)

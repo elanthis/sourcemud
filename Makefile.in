@@ -22,7 +22,6 @@ HEADERS = \
 	include/common/mail.h \
 	include/common/md5.h \
 	include/common/rand.h \
-	include/common/regex.h \
 	include/common/streams.h \
 	include/common/streamtime.h \
 	include/common/strbuf.h \
@@ -93,7 +92,6 @@ SOURCES = \
 	src/common/log.cc \
 	src/common/md5.cc \
 	src/common/rand.cc \
-	src/common/regex.cc \
 	src/common/streams.cc \
 	src/common/strbuf.cc \
 	src/common/strings.cc \
@@ -275,7 +273,7 @@ clean:
 	@rm -fr $(BINARIES) $(OBJECTS) $(DEPDIR) $(BUILDDIR) \
 		src/generated/commands.cc include/common.h.gch
 
-$(BUILDDIR)/%.o: %.cc
+$(BUILDDIR)/%.o: %.cc include/common.h.gch
 	@echo Compiling $<
 	@[ -d $(dir $@) ] || mkdir -p $(dir $@) || true
 	@$(CXX) -c -o $@ $(CXXFLAGS) $<

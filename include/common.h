@@ -48,7 +48,6 @@
 #include <grp.h>
 #include <netdb.h>
 #include <pwd.h>
-#include <regex.h>
 #include <signal.h>
 #include <termios.h>
 #include <time.h>
