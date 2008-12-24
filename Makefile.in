@@ -12,7 +12,6 @@ DEPDIR = .deps
 # FILES
 HEADERS = \
 	include/common.h \
-	include/common.h.gch \
 	include/common/base64.h \
 	include/common/bitset.h \
 	include/common/error.h \
@@ -264,14 +263,17 @@ HTTPKEY = data/session.key
 
 OBJECTS = $(SOURCES:%.cc=$(BUILDDIR)/%.o) $(LUA_SOURCES:%.cc=$(BUILDDIR)/%.o)
 
+GENERATED = src/generated/commands.cc include/common.h.gch
+
 # CORE BUILD
-all: $(BUILD) $(TOOLS) $(XML) $(HEADERS) $(LUA_HEADERS) \
-		$(SOURCES) $(LUA_SOURCES) $(OBJECTS) $(BINARIES) \
-		$(HTTPKEY) $(SCRIPTS) $(DATA)
+all: $(BUILD) $(TOOLS) $(XML) $(HEADERS) $(LUA_HEADERS) $(GENERATED) \
+		$(SOURCES) $(LUA_SOURCES) $(OBJECTS) $(BINARIES) $(HTTPKEY) \
+		$(SCRIPTS) $(DATA)
 
 clean:
 	@echo Cleaning
-	@rm -fr $(BINARIES) $(OBJECTS) $(DEPDIR) $(BUILDDIR) include/common.gch
+	@rm -fr $(BINARIES) $(OBJECTS) $(DEPDIR) $(BUILDDIR) \
+		src/generated/commands.cc include/common.h.gch
 
 $(BUILDDIR)/%.o: %.cc
 	@echo Compiling $<
@@ -306,7 +308,7 @@ src/generated/commands.cc: tools/parse-commands.pl $(wildcard src/cmd/*.cc)
 	@$(PERL) tools/parse-commands.pl
 
 include/common.h.gch: include/common.h
-	@echo Compiling $<
+	@echo Pre-compiling $<
 	@$(CXX) -o $@ $(CXXFLAGS) $<
 
 # BUILD FILES
