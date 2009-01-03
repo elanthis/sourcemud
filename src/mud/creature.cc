@@ -214,7 +214,7 @@ Creature::load_node(File::Reader& reader, File::Node& node)
 }
 
 int
-Creature::load_finish(void)
+Creature::load_finish()
 {
 	recalc();
 
@@ -253,7 +253,7 @@ Creature::set_owner(Entity* s_owner)
 }
 
 Entity*
-Creature::get_owner(void) const
+Creature::get_owner() const
 {
 	return location;
 }
@@ -274,7 +274,7 @@ Creature::add_action(IAction* action)
 }
 
 IAction*
-Creature::get_action(void) const
+Creature::get_action() const
 {
 	if (actions.empty())
 		return NULL;
@@ -283,7 +283,7 @@ Creature::get_action(void) const
 }
 
 void
-Creature::cancel_action(void)
+Creature::cancel_action()
 {
 	// no actions?  blegh
 	if (actions.empty()) {
@@ -311,7 +311,7 @@ Creature::cancel_action(void)
 
 // get the round time
 uint
-Creature::get_round_time(void) const
+Creature::get_round_time() const
 {
 	// no actions?  no round time
 	if (actions.empty())
@@ -331,7 +331,7 @@ Creature::get_round_time(void) const
 }
 
 bool
-Creature::check_alive(void)
+Creature::check_alive()
 {
 	if (is_dead()) {
 		*this << "You are only a ghost.\n";
@@ -341,7 +341,7 @@ Creature::check_alive(void)
 }
 
 bool
-Creature::check_move(void)
+Creature::check_move()
 {
 	// can't move if you're dead
 	if (!check_alive())
@@ -356,7 +356,7 @@ Creature::check_move(void)
 }
 
 bool
-Creature::check_see(void)
+Creature::check_see()
 {
 	if (!can_see()) {
 		*this << "You cannot see.\n";
@@ -366,7 +366,7 @@ Creature::check_see(void)
 }
 
 bool
-Creature::check_rt(void)
+Creature::check_rt()
 {
 	// round time?
 	uint rounds = get_round_time();
@@ -495,7 +495,7 @@ Creature::take_coins(uint amount)
 }
 
 void
-Creature::heartbeat(void)
+Creature::heartbeat()
 {
 	// pending actions?
 	if (!actions.empty()) {
@@ -551,7 +551,7 @@ Creature::heartbeat(void)
 }
 
 void
-Creature::activate(void)
+Creature::activate()
 {
 	Entity::activate();
 
@@ -561,7 +561,7 @@ Creature::activate(void)
 }
 
 void
-Creature::deactivate(void)
+Creature::deactivate()
 {
 	Object* obj;
 	for (int i = 0; (obj = get_equip_at(i)) != NULL; ++i)
@@ -618,7 +618,7 @@ Creature::macro_property(const StreamControl& stream, const std::string& comm, c
 
 // recalc stats
 void
-Creature::recalc_stats(void)
+Creature::recalc_stats()
 {
 	for (int i = 0; i < CreatureStatID::COUNT; ++i)
 		effective_stats[i] = get_base_stat(i);
@@ -626,7 +626,7 @@ Creature::recalc_stats(void)
 
 // recalc max health
 void
-Creature::recalc_health(void)
+Creature::recalc_health()
 {
 	health.max = (10 + get_stat_modifier(CreatureStatID::FORTITUDE)) * 10;
 
@@ -637,7 +637,7 @@ Creature::recalc_health(void)
 
 // recalculate various stuff
 void
-Creature::recalc(void)
+Creature::recalc()
 {
 	recalc_stats();
 	recalc_health();

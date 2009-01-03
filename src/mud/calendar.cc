@@ -13,7 +13,7 @@
 #include "mud/filetab.h"
 
 int
-GameCalendar::load(void)
+GameCalendar::load()
 {
 	std::string path = MSettings.get_misc_path() + "/calendar";
 

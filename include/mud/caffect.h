@@ -26,11 +26,11 @@ public:
 
 public:
 	inline CreatureAffectType(int s_value) : value((type_t)s_value) {}
-	inline CreatureAffectType(void) : value(UNKNOWN) {}
+	inline CreatureAffectType() : value(UNKNOWN) {}
 
-	inline bool valid(void) const { return value != UNKNOWN; }
-	inline std::string get_name(void) const { return names[value]; }
-	inline type_t get_value(void) const { return value; }
+	inline bool valid() const { return value != UNKNOWN; }
+	inline std::string get_name() const { return names[value]; }
+	inline type_t get_value() const { return value; }
 
 	static CreatureAffectType lookup(const std::string& name);
 
@@ -66,9 +66,9 @@ public:
 
 	void update(Creature* character);
 
-	inline std::string get_title(void) const { return title; }
-	inline CreatureAffectType get_type(void) const { return type; }
-	inline uint get_time_left(void) const { return duration; }
+	inline std::string get_title() const { return title; }
+	inline CreatureAffectType get_type() const { return type; }
+	inline uint get_time_left() const { return duration; }
 
 private:
 	typedef std::vector<ICreatureAffect*> AffectList;

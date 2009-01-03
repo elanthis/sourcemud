@@ -101,17 +101,17 @@ ZMPPack::add(ulong i)
 	return *this;
 }
 
-SZMPManager::SZMPManager(void) : commands()
+SZMPManager::SZMPManager() : commands()
 {
 }
 
-SZMPManager::~SZMPManager(void)
+SZMPManager::~SZMPManager()
 {
 }
 
 // initialize ZMP commands
 int
-SZMPManager::initialize(void)
+SZMPManager::initialize()
 {
 	if (add("zmp.ping", handle_zmp_ping))
 		return -1;

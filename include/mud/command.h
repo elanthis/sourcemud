@@ -45,14 +45,14 @@ public:
 	CommandFormat(class Command* s_command, const std::string& format, PlayerCommandFunc s_func, int s_priority = 100) : command(s_command), ch_func(NULL), ply_func(s_func), priority(s_priority) { build(format); }
 
 	// get the basics
-	inline std::string get_format(void) const { return format; }
-	inline int get_priority(void) const { return priority; }
+	inline std::string get_format() const { return format; }
+	inline int get_priority() const { return priority; }
 
 	// construct format; return non-zero on failure
 	int build(const std::string& format);
 
 	// get the command desc
-	inline Command* get_command(void) const { return command; }
+	inline Command* get_command() const { return command; }
 
 	// sort
 	bool operator< (const CommandFormat& format) const;
@@ -92,9 +92,9 @@ public:
 	inline Command(const std::string& s_name, const std::string& s_usage, AccessID s_access) : name(s_name), usage(s_usage), access(s_access)  {}
 
 	// basics
-	const std::string& get_name(void) const { return name; }
-	const std::string& get_usage(void) const { return usage; }
-	AccessID get_access(void) const { return access; }
+	const std::string& get_name() const { return name; }
+	const std::string& get_usage() const { return usage; }
+	AccessID get_access() const { return access; }
 
 	// display help
 	void show_man(class StreamControl& player);

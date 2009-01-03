@@ -8,7 +8,7 @@
 #include "common.h"
 
 void
-init_random(void)
+init_random()
 {
 	srandom(time(NULL));
 }

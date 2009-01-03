@@ -44,10 +44,10 @@ class ActionAttackCreature : public IAction
 public:
 	ActionAttackCreature(Creature* s_ch, Creature* s_victim, bool s_repeat) : IAction(s_ch), victim(s_victim), rounds(5), repeat(s_repeat) {}
 
-	virtual uint get_rounds(void) const { return rounds; }
+	virtual uint get_rounds() const { return rounds; }
 	virtual void describe(const StreamControl& stream) const { stream << "attacking " << StreamName(victim, INDEFINITE); }
 
-	virtual int start(void) {
+	virtual int start() {
 		Creature* attacker = get_actor();
 
 		// checks
@@ -169,7 +169,7 @@ public:
 		return 0;
 	}
 
-	virtual void finish(void) {
+	virtual void finish() {
 		// re-attack if repeat is on
 		if (repeat && !victim->is_dead() && victim->get_room() == get_actor()->get_room())
 			get_actor()->add_action(this);
@@ -203,19 +203,19 @@ Creature::do_kill(Creature* victim)
 
 // handle player combat abilities
 uint
-Player::get_combat_dodge(void) const
+Player::get_combat_dodge() const
 {
 	return 10; // FIXME
 }
 
 uint
-Player::get_combat_attack(void) const
+Player::get_combat_attack() const
 {
 	return 10; // FIXME
 }
 
 uint
-Player::get_combat_damage(void) const
+Player::get_combat_damage() const
 {
 	return 10; // FIXME
 }

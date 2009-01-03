@@ -190,7 +190,7 @@ Creature::release_object(Object *obj)
 }
 
 int
-Creature::free_hands(void) const
+Creature::free_hands() const
 {
 	int hands = 0;
 	if (equipment.right_held == NULL)
@@ -342,7 +342,7 @@ Creature::find_equip(const std::string& name, uint count, uint *matches) const
 }
 
 void
-Creature::swap_hands(void)
+Creature::swap_hands()
 {
 	Object *temp = equipment.right_held;
 	equipment.right_held = equipment.left_held;

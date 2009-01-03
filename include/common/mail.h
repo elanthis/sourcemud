@@ -34,7 +34,7 @@ public:
 
 	void header(const std::string& name, const std::string& value);
 
-	int send(void) const;
+	int send() const;
 };
 
 #endif // HAVE_SENDMAIL

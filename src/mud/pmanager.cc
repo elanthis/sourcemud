@@ -94,7 +94,7 @@ _MPlayer::list(const StreamControl& stream)
 }
 
 size_t
-_MPlayer::count(void)
+_MPlayer::count()
 {
 	size_t count = 0;
 	for (PlayerList::iterator i = player_list.begin(); i != player_list.end(); ++i)
@@ -104,7 +104,7 @@ _MPlayer::count(void)
 }
 
 int
-_MPlayer::initialize(void)
+_MPlayer::initialize()
 {
 	// modules we need to operate
 	if (require(MAccount) != 0)
@@ -116,7 +116,7 @@ _MPlayer::initialize(void)
 }
 
 void
-_MPlayer::shutdown(void)
+_MPlayer::shutdown()
 {
 	// quit all players
 	while (!player_list.empty()) {
@@ -217,7 +217,7 @@ _MPlayer::destroy(const std::string& name)
 }
 
 void
-_MPlayer::save(void)
+_MPlayer::save()
 {
 	for (PlayerList::iterator i = player_list.begin(); i != player_list.end(); ++i)
 		if ((*i)->is_active())

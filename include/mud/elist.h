@@ -17,7 +17,7 @@ class EList : public std::vector<EntType*>
 	typedef std::vector<EntType*> vtype;
 
 public:
-	EList<EntType> (void) : std::vector<EntType*>() {}
+	EList<EntType> () : std::vector<EntType*>() {}
 	EList<EntType> (size_t size) : std::vector<EntType*>(size) {}
 
 	void add(EntType* ent);

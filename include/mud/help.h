@@ -20,10 +20,10 @@ class _MHelp : public IManager
 {
 public:
 	// startup the manager
-	virtual int initialize(void);
+	virtual int initialize();
 
 	// close the manager
-	virtual void shutdown(void);
+	virtual void shutdown();
 
 	// print out help to a player
 	void print(StreamControl& stream, const std::string& section);

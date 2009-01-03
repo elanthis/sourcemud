@@ -17,8 +17,8 @@
 // current number of game ticks
 namespace MUD
 {
-unsigned long get_ticks(void);
-unsigned long get_rounds(void);
+unsigned long get_ticks();
+unsigned long get_rounds();
 }
 
 // NOTE: code in server.cc

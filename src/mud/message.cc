@@ -35,7 +35,7 @@ int _MMessage::initialize()
 }
 
 void
-_MMessage::shutdown(void)
+_MMessage::shutdown()
 {
 	messages.clear();
 }

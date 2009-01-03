@@ -28,7 +28,7 @@ MailMessage::header(const std::string& name, const std::string& value)
 }
 
 int
-MailMessage::send(void) const
+MailMessage::send() const
 {
 	// sanity
 	if (!to || !subject) {

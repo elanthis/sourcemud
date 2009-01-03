@@ -24,18 +24,18 @@ public:
 
 public:
 	inline GenderType(int s_value) : value((type_t)s_value) {}
-	inline GenderType(void) : value(NONE) {}
+	inline GenderType() : value(NONE) {}
 
-	inline const std::string& get_name(void) const { return names[value]; }
+	inline const std::string& get_name() const { return names[value]; }
 
-	inline const std::string& get_hisher(void) const { return hisher[value]; }
-	inline const std::string& get_hishers(void) const { return hishers[value]; }
-	inline const std::string& get_heshe(void) const { return heshe[value]; }
-	inline const std::string& get_himher(void) const { return himher[value]; }
-	inline const std::string& get_manwoman(void) const { return manwoman[value]; }
-	inline const std::string& get_malefemale(void) const { return malefemale[value]; }
+	inline const std::string& get_hisher() const { return hisher[value]; }
+	inline const std::string& get_hishers() const { return hishers[value]; }
+	inline const std::string& get_heshe() const { return heshe[value]; }
+	inline const std::string& get_himher() const { return himher[value]; }
+	inline const std::string& get_manwoman() const { return manwoman[value]; }
+	inline const std::string& get_malefemale() const { return malefemale[value]; }
 
-	inline type_t get_value(void) const { return value; }
+	inline type_t get_value() const { return value; }
 
 	static GenderType lookup(const std::string& name);
 
@@ -75,13 +75,13 @@ public:
 
 public:
 	EquipSlot(int s_value) : value((type_t)s_value) {}
-	EquipSlot(void) : value(NONE) {}
+	EquipSlot() : value(NONE) {}
 
-	bool valid(void) const { return value != NONE; }
+	bool valid() const { return value != NONE; }
 
-	std::string get_name(void) const { return names[value]; }
+	std::string get_name() const { return names[value]; }
 
-	type_t get_value(void) const { return value; }
+	type_t get_value() const { return value; }
 
 	static EquipSlot lookup(const std::string& name);
 
