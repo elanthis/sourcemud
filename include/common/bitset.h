@@ -22,7 +22,7 @@
 
 template<typename E> class BitSet
 {
-	public:
+public:
 	typedef E bit_t;
 
 	BitSet<E>() { clear(); }
@@ -32,14 +32,14 @@ template<typename E> class BitSet
 	bool check(E n) const { return bits[BITSET_BYTE(n)] & BITSET_SHIFT(n); }
 	void set_on(E n) { bits[BITSET_BYTE(n)] |= BITSET_SHIFT(n); }
 	void set_off(E n) { bits[BITSET_BYTE(n)] &= ~BITSET_SHIFT(n); }
-	void set(E n, bool b) { if(b) set_on(n); else set_off(n); }
+	void set(E n, bool b) { if (b) set_on(n); else set_off(n); }
 
-	uint size() const { return E::MAX-1; }
+	uint size() const { return E::MAX - 1; }
 	uint bytes() const { return sizeof(bits); }
 
 	const unsigned char* get() const { return bits; }
 
-	private:
+private:
 	unsigned char bits[BITSET_MAX(E::MAX-1)];
 };
 

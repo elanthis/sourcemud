@@ -61,10 +61,11 @@ enum OLCMode {
 	} }
 
 // private stuff
-namespace OLC {
+namespace OLC
+{
 	// lookup entity
-	bool 
-	lookup_editable (Player* builder, const std::string& tname, const std::string& name, Entity*& entity)
+	bool
+	lookup_editable(Player* builder, const std::string& tname, const std::string& name, Entity*& entity)
 	{
 		// init
 		entity = NULL;
@@ -91,7 +92,7 @@ namespace OLC {
 
 		// find creature?
 		if (type == tNone || type == tCreature) {
-			Creature* creature = builder->cl_find_creature (name, true);
+			Creature* creature = builder->cl_find_creature(name, true);
 			if (creature != NULL) {
 				entity = creature;
 				return true;
@@ -99,7 +100,7 @@ namespace OLC {
 		}
 		// limit to NPCs?
 		if (type == tNPC) {
-			Creature* creature = builder->cl_find_creature (name);
+			Creature* creature = builder->cl_find_creature(name);
 			if (NPC(creature)) {
 				entity = creature;
 				return true;
@@ -122,7 +123,7 @@ namespace OLC {
 
 		// find object?
 		if (type == tNone || type == tObject) {
-			Object* object = builder->cl_find_object (name, GOC_ANY, true);
+			Object* object = builder->cl_find_object(name, GOC_ANY, true);
 			if (object != NULL) {
 				entity = object;
 				return true;
@@ -131,7 +132,7 @@ namespace OLC {
 
 		// find portal?
 		if (type == tNone) {
-			Portal* portal = builder->cl_find_portal (name, true);
+			Portal* portal = builder->cl_find_portal(name, true);
 			if (portal != NULL) {
 				entity = portal;
 				return true;
@@ -143,7 +144,7 @@ namespace OLC {
 				*builder << "You are not in a room.\n";
 				return false;
 			}
-			Portal* portal = builder->cl_find_portal (name, true);
+			Portal* portal = builder->cl_find_portal(name, true);
 			if (portal == NULL) {
 				*builder << "Cannot find portal '" << name << "'.\n";
 				return false;
@@ -155,7 +156,7 @@ namespace OLC {
 		// find room?
 		if (type == tRoom) {
 			Room* room = NULL;
-			if (!name.empty()) 
+			if (!name.empty())
 				room = MZone.get_room(name);
 			else
 				room = builder->get_room();
@@ -192,65 +193,65 @@ namespace OLC {
 	}
 
 	void
-	do_olc (Player* user, OLCMode olc_mode, Entity* olc_entity, const std::string& olc_attr, const std::string& value)
+	do_olc(Player* user, OLCMode olc_mode, Entity* olc_entity, const std::string& olc_attr, const std::string& value)
 	{
 		bool olc_ok = false;
 
 		// ----- BEGIN OLC BLOCK -----
 
-OLC_BEGIN_TYPE(Entity)
-	OLC_BEGIN_ATTR(uniqid)
+		OLC_BEGIN_TYPE(Entity)
+		OLC_BEGIN_ATTR(uniqid)
 		OLC_GET
-			OLC_DISPLAY(MUniqueID.encode(edit->get_uid()))
-	OLC_END_ATTR
-	OLC_BEGIN_ATTR(name)
+		OLC_DISPLAY(MUniqueID.encode(edit->get_uid()))
+		OLC_END_ATTR
+		OLC_BEGIN_ATTR(name)
 		OLC_GET
-			OLC_DISPLAY(edit->get_name().get_name())
-	OLC_END_ATTR
-	OLC_BEGIN_ATTR(desc)
+		OLC_DISPLAY(edit->get_name().get_name())
+		OLC_END_ATTR
+		OLC_BEGIN_ATTR(desc)
 		OLC_GET
-			OLC_DISPLAY(edit->get_desc())
-	OLC_END_ATTR
-OLC_END_TYPE
+		OLC_DISPLAY(edit->get_desc())
+		OLC_END_ATTR
+		OLC_END_TYPE
 
-OLC_BEGIN_TYPE(Creature)
-	OLC_BEGIN_ATTR(hp)
+		OLC_BEGIN_TYPE(Creature)
+		OLC_BEGIN_ATTR(hp)
 		OLC_GET
-			OLC_DISPLAY(edit->get_hp())
+		OLC_DISPLAY(edit->get_hp())
 		OLC_SET
-			edit->set_hp(tolong(value));
-	OLC_END_ATTR
-OLC_END_TYPE
+		edit->set_hp(tolong(value));
+		OLC_END_ATTR
+		OLC_END_TYPE
 
-OLC_BEGIN_TYPE(ShadowObject)
-	OLC_BEGIN_ATTR(blueprint)
+		OLC_BEGIN_TYPE(ShadowObject)
+		OLC_BEGIN_ATTR(blueprint)
 		OLC_GET
-			OLC_DISPLAY(edit->get_blueprint()->get_id())
+		OLC_DISPLAY(edit->get_blueprint()->get_id())
 		OLC_SET
-			ObjectBP* blueprint = MObjectBP.lookup(value);
-			if (blueprint != NULL)
-				edit->set_blueprint(blueprint);
-			else
-				*user << "Blueprint not found.\n";
-	OLC_END_ATTR
-OLC_END_TYPE
+		ObjectBP* blueprint = MObjectBP.lookup(value);
+		if (blueprint != NULL)
+			edit->set_blueprint(blueprint);
+		else
+			*user << "Blueprint not found.\n";
+		OLC_END_ATTR
+		OLC_END_TYPE
 
-OLC_BEGIN_TYPE(Npc)
-	OLC_BEGIN_ATTR(blueprint)
+		OLC_BEGIN_TYPE(Npc)
+		OLC_BEGIN_ATTR(blueprint)
 		OLC_GET
-			OLC_DISPLAY(edit->get_blueprint()->get_id())
+		OLC_DISPLAY(edit->get_blueprint()->get_id())
 		OLC_SET
-			NpcBP* blueprint = MNpcBP.lookup(value);
-			if (blueprint != NULL)
-				edit->set_blueprint(blueprint);
-			else
-				*user << "Blueprint not found.\n";
-	OLC_END_ATTR
-OLC_END_TYPE
+		NpcBP* blueprint = MNpcBP.lookup(value);
+		if (blueprint != NULL)
+			edit->set_blueprint(blueprint);
+		else
+			*user << "Blueprint not found.\n";
+		OLC_END_ATTR
+		OLC_END_TYPE
 
-OLC_BEGIN_TYPE(Portal)
-OLC_END_TYPE
-		
+		OLC_BEGIN_TYPE(Portal)
+		OLC_END_TYPE
+
 		// ----- END OLC BLOCK -----
 
 		if (!olc_ok && olc_mode != OLC_MODE_LIST)

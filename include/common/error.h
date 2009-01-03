@@ -8,7 +8,7 @@
 #ifndef SOURCEMUD_ERROR_H
 #define SOURCEMUD_ERROR_H
 
-void fatal (char const *, ...);		// server will immediately die
+void fatal(char const *, ...);		// server will immediately die
 
 #undef assert
 #ifndef NDEBUG

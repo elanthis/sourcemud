@@ -10,16 +10,17 @@
 
 #include "net/netaddr.h"
 
-namespace Network {
-	// return 0 if the two addresses are the same
-	int addrcmp(const NetAddr& addr1, const NetAddr& addr2);
-	int addrcmp_mask(const NetAddr& in_addr1, const NetAddr& addr2, uint mask);
+namespace Network
+{
+// return 0 if the two addresses are the same
+int addrcmp(const NetAddr& addr1, const NetAddr& addr2);
+int addrcmp_mask(const NetAddr& in_addr1, const NetAddr& addr2, uint mask);
 
-	// listen on TCP
-	int listen_tcp(int port, int family);
+// listen on TCP
+int listen_tcp(int port, int family);
 
-	// parse a network name into an address and possible mask
-	int parse_addr(const char* item, NetAddr* host, uint* mask);
+// parse a network name into an address and possible mask
+int parse_addr(const char* item, NetAddr* host, uint* mask);
 };
 
 #endif

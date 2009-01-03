@@ -19,7 +19,7 @@ struct SettingInfo;
 
 class _MSettings : public IManager
 {
-	public:
+public:
 	int initialize();
 	void shutdown() {}
 
@@ -73,7 +73,7 @@ class _MSettings : public IManager
 	SETTING_BOOL(backup_accounts)
 	SETTING_BOOL(backup_zones)
 
-	private:
+private:
 	std::map<std::string, SettingInfo*> by_name;
 };
 

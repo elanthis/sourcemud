@@ -26,7 +26,8 @@
  * format: get :0* from :2under :1*
  *
  * END COMMAND */
-void command_get (Creature* ch, std::string argv[]) {
+void command_get(Creature* ch, std::string argv[])
+{
 	if (!argv[2].empty()) { // in, on, etc.
 		ObjectLocation type;
 		if (argv[1] == "on")
@@ -35,7 +36,7 @@ void command_get (Creature* ch, std::string argv[]) {
 			type = ObjectLocation::IN;
 
 		// get container
-		Object* cobj = ch->cl_find_object (argv[2], GOC_ANY);
+		Object* cobj = ch->cl_find_object(argv[2], GOC_ANY);
 		if (!cobj)
 			return;
 
@@ -48,7 +49,7 @@ void command_get (Creature* ch, std::string argv[]) {
 		} else if (!cobj->has_location(type)) {
 			type = ObjectLocation::NONE; // invalidate type
 		}
-			
+
 		// no valid type?
 		if (type == ObjectLocation::NONE) {
 			*ch << "You can't do that with " << StreamName(*cobj, DEFINITE) << ".\n";
@@ -58,10 +59,10 @@ void command_get (Creature* ch, std::string argv[]) {
 		// get object from container
 		Object* obj = ch->cl_find_object(argv[0], cobj, type);
 		if (obj)
-			ch->do_get (obj, cobj, type);
+			ch->do_get(obj, cobj, type);
 		else
 			*ch << "Can't find '" << argv[0] << "' " << argv[1] << " " << StreamName(*cobj, DEFINITE) << ".\n";
-	// get from the room
+		// get from the room
 	} else {
 		// coins?
 		if (!argv[0].empty()) {
@@ -107,11 +108,11 @@ void command_get (Creature* ch, std::string argv[]) {
 				*ch << "You pick up " << amount << " coins.\n";
 				*room << StreamIgnore(ch) << StreamName(ch, DEFINITE, true) << " picks up " << amount << " coins.\n";
 			}
-		// object
+			// object
 		} else {
-			Object* obj = ch->cl_find_object (argv[0], GOC_ROOM);
+			Object* obj = ch->cl_find_object(argv[0], GOC_ROOM);
 			if (obj)
-				ch->do_get (obj, NULL, ObjectLocation::NONE);
+				ch->do_get(obj, NULL, ObjectLocation::NONE);
 		}
 	}
 }
@@ -124,14 +125,14 @@ void command_get (Creature* ch, std::string argv[]) {
  * format: drop :0*
  *
  * END COMMAND */
-void command_drop (Creature* ch, std::string argv[])
+void command_drop(Creature* ch, std::string argv[])
 {
 	// object?
 	if (argv[0].empty()) {
-		Object* obj = ch->cl_find_object (argv[0], GOC_HELD);
+		Object* obj = ch->cl_find_object(argv[0], GOC_HELD);
 		if (obj)
-			ch->do_drop (obj);
-	// coins
+			ch->do_drop(obj);
+		// coins
 	} else {
 		// must be numeric
 		if (!str_is_number(argv[1])) {
@@ -182,19 +183,20 @@ void command_drop (Creature* ch, std::string argv[])
  * format: put :0* :2under :1*
  *
  * END COMMAND */
-void command_put (Creature* ch, std::string argv[]) {
-	Object* obj = ch->cl_find_object (argv[0], GOC_HELD);
-	if (!obj) 
+void command_put(Creature* ch, std::string argv[])
+{
+	Object* obj = ch->cl_find_object(argv[0], GOC_HELD);
+	if (!obj)
 		return;
 
-	Object* cobj = ch->cl_find_object (argv[2], GOC_ANY);
+	Object* cobj = ch->cl_find_object(argv[2], GOC_ANY);
 	if (!cobj)
 		return;
 
 	if (argv[1] == "on")
-		ch->do_put (obj, cobj, ObjectLocation::ON);
+		ch->do_put(obj, cobj, ObjectLocation::ON);
 	else if (argv[1] == "in")
-		ch->do_put (obj, cobj, ObjectLocation::IN);
+		ch->do_put(obj, cobj, ObjectLocation::IN);
 }
 
 /* BEGIN COMMAND
@@ -207,11 +209,11 @@ void command_put (Creature* ch, std::string argv[]) {
  * format: equip :0*
  *
  * END COMMAND */
-void command_wear (Creature* ch, std::string argv[])
+void command_wear(Creature* ch, std::string argv[])
 {
-	Object* obj = ch->cl_find_object (argv[0], GOC_HELD);
+	Object* obj = ch->cl_find_object(argv[0], GOC_HELD);
 	if (obj)
-		ch->do_wear (obj);
+		ch->do_wear(obj);
 }
 
 /* BEGIN COMMAND
@@ -222,11 +224,11 @@ void command_wear (Creature* ch, std::string argv[])
  * format: remove :0*
  *
  * END COMMAND */
-void command_remove (Creature* ch, std::string argv[])
+void command_remove(Creature* ch, std::string argv[])
 {
-	Object* obj = ch->cl_find_object (argv[0], GOC_WORN);
+	Object* obj = ch->cl_find_object(argv[0], GOC_WORN);
 	if (obj)
-		ch->do_remove (obj);
+		ch->do_remove(obj);
 }
 
 /* BEGIN COMMAND
@@ -234,9 +236,9 @@ void command_remove (Creature* ch, std::string argv[])
  * name: inventory
  *
  * END COMMAND */
-void command_inventory (Player* player, std::string[])
+void command_inventory(Player* player, std::string[])
 {
-	player->display_inventory ();
+	player->display_inventory();
 }
 
 /* BEGIN COMMAND
@@ -249,7 +251,7 @@ void command_inventory (Player* player, std::string[])
 void command_swap(Creature* ch, std::string[])
 {
 	*ch << "You swap the contents of your hands.\n";
-	ch->swap_hands ();
+	ch->swap_hands();
 }
 
 /* BEGIN COMMAND
@@ -281,5 +283,5 @@ void command_give(Creature* ch, std::string argv[])
 		return;
 
 	// do give
-	ch->do_give_coins (target, amount);
+	ch->do_give_coins(target, amount);
 }

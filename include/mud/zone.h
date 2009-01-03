@@ -22,9 +22,9 @@ enum AnnounceFlags {
 class _MZone;
 class Zone;
 
-class Spawn 
+class Spawn
 {
-	protected:
+protected:
 	TagID tag;
 	std::vector<std::string> blueprints;
 	std::vector<std::string> rooms;
@@ -32,59 +32,59 @@ class Spawn
 	uint delay;
 	uint dcount;
 
-	public:
-	Spawn () : tag(), blueprints(), rooms(), min(1), delay(0), dcount(0) {}
+public:
+	Spawn() : tag(), blueprints(), rooms(), min(1), delay(0), dcount(0) {}
 
-	bool check (const class Zone* zone) const;
-	void spawn (class Zone* zone) const;
-	bool heartbeat ();
+	bool check(const class Zone* zone) const;
+	void spawn(class Zone* zone) const;
+	bool heartbeat();
 
-	int load (File::Reader& reader);
-	void save (File::Writer& writer) const;
+	int load(File::Reader& reader);
+	void save(File::Writer& writer) const;
 };
 
 class Zone
 {
-	public:
-	Zone ();
+public:
+	Zone();
 
 	// zone ID
-	std::string get_id () const { return id; }
-	void set_id (const std::string& new_id) { id = new_id; }
+	std::string get_id() const { return id; }
+	void set_id(const std::string& new_id) { id = new_id; }
 
 	// name information
-	std::string get_name () const { return name; }
-	void set_name (const std::string& s_name) { name = s_name; }
+	std::string get_name() const { return name; }
+	void set_name(const std::string& s_name) { name = s_name; }
 
 	// find rooms
-	class Room* get_room (const std::string& name) const;
-	class Room* get_room_at (size_t index) const;
-	size_t get_room_count () const;
+	class Room* get_room(const std::string& name) const;
+	class Room* get_room_at(size_t index) const;
+	size_t get_room_count() const;
 
 	// manage rooms
-	void add_room (class Room*);
+	void add_room(class Room*);
 
 	// events
-	void broadcast_event (const Event& event);
+	void broadcast_event(const Event& event);
 
 	// load/save
-	int load (const std::string& path);
-	void save ();
+	int load(const std::string& path);
+	void save();
 
 	// announce to all rooms
-	void announce (const std::string& text, AnnounceFlags type = ANFL_NONE) const;
+	void announce(const std::string& text, AnnounceFlags type = ANFL_NONE) const;
 
 	// update zone
-	void heartbeat ();
+	void heartbeat();
 
 	// (de)activate children rooms
-	void activate ();
-	void deactivate ();
+	void activate();
+	void deactivate();
 
 	// delete the zone
-	void destroy ();
+	void destroy();
 
-	protected:
+protected:
 	std::string id;
 	std::string name;
 
@@ -99,33 +99,33 @@ class Zone
 
 class _MZone : public IManager
 {
-	public:
-	virtual int initialize ();
-	virtual void shutdown ();
-	virtual void save ();
+public:
+	virtual int initialize();
+	virtual void shutdown();
+	virtual void save();
 
 	// load the world
-	int load_world ();
+	int load_world();
 
 	// lookup entries
-	Zone* get_zone (const std::string&);
-	Zone* get_zone_at (size_t index);
-	class Room* get_room (const std::string&);
+	Zone* get_zone(const std::string&);
+	Zone* get_zone_at(size_t index);
+	class Room* get_room(const std::string&);
 
 	// send an announcement to all the rooms in all the zones
-	void announce (const std::string&, AnnounceFlags = ANFL_NONE);
+	void announce(const std::string&, AnnounceFlags = ANFL_NONE);
 
 	// add a new zone
-	void add_zone (Zone*);
+	void add_zone(Zone*);
 
 	// show all rooms
-	void list_rooms (const class StreamControl& stream);
+	void list_rooms(const class StreamControl& stream);
 
-	private:
+private:
 	typedef std::vector<Zone*> ZoneList;
 	ZoneList zones;
 
-	friend void Zone::destroy ();
+	friend void Zone::destroy();
 };
 extern _MZone MZone;
 

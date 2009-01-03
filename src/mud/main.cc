@@ -32,10 +32,11 @@
 #include "lua/core.h"
 
 // DECLARATIONS
-namespace {
+namespace
+{
 	class TelnetListener : public SocketListener
 	{
-		public:
+	public:
 		inline TelnetListener(int s_sock) : SocketListener(s_sock) {}
 
 		virtual void sock_in_ready();
@@ -43,7 +44,7 @@ namespace {
 
 	class HTTPListener : public SocketListener
 	{
-		public:
+	public:
 		inline HTTPListener(int s_sock) : SocketListener(s_sock) {}
 
 		virtual void sock_in_ready();
@@ -55,7 +56,8 @@ namespace {
 }
 
 // GLOBALS
-namespace {
+namespace
+{
 	// time
 	unsigned long int game_ticks;
 	time_t start_time;
@@ -69,36 +71,37 @@ namespace {
 }
 
 // FUNCTIONS
-namespace {
+namespace
+{
 
 	// termination signal handler
 	void
-	sigterm_handler (int)
+	sigterm_handler(int)
 	{
 		signaled_shutdown = true;
 	}
 
 	// interrupt signal handler
 	void
-	sigint_handler (int)
+	sigint_handler(int)
 	{
 		signaled_shutdown = true;
 	}
 
 	// hangup signal handler
 	void
-	sighup_handler (int)
+	sighup_handler(int)
 	{
 		signaled_reload = true;
 	}
 
 	// write out our pid file
 	int
-	write_pid_file (const std::string& path)
+	write_pid_file(const std::string& path)
 	{
 		// open it up
 		int fd;
-		if ((fd = open(path.c_str(), O_WRONLY|O_CREAT, 0640)) < 0) {
+		if ((fd = open(path.c_str(), O_WRONLY | O_CREAT, 0640)) < 0) {
 			// fatal error
 			Log::Error << "Failed to create or open PID file '" << path << "': " << strerror(errno);
 			return -1;
@@ -140,7 +143,7 @@ namespace {
 	}
 
 	void
-	cleanup ()
+	cleanup()
 	{
 		// remember paths
 		std::string pid_path = MSettings.get_pid_file();
@@ -151,7 +154,7 @@ namespace {
 	}
 
 	inline void
-	timeval_add_ms (struct timeval& tv, long msecs)
+	timeval_add_ms(struct timeval& tv, long msecs)
 	{
 		tv.tv_sec += msecs / 1000;
 		tv.tv_usec += (msecs % 1000) * 1000;
@@ -162,7 +165,7 @@ namespace {
 	}
 
 	inline long
-	ms_until_timeval (struct timeval& tv)
+	ms_until_timeval(struct timeval& tv)
 	{
 		struct timeval now;
 		gettimeofday(&now, NULL);
@@ -182,7 +185,7 @@ namespace {
 	}
 
 	void
-	TelnetListener::sock_in_ready ()
+	TelnetListener::sock_in_ready()
 	{
 		// accept client
 		NetAddr addr;
@@ -217,7 +220,7 @@ namespace {
 
 		// log connection
 		Log::Network << "Telnet client connected: " << addr.getString();
-		
+
 		// create a new telnet handler
 		TelnetHandler *telnet = new TelnetHandler(client, addr);
 		if (telnet == NULL) {
@@ -240,9 +243,9 @@ namespace {
 		// banner
 		telnet->clear_scr();
 		*telnet <<
-			"\n ----===[ Source MUD V" PACKAGE_VERSION " ]===----\n\n"
-			"Source MUD Copyright (C) 2000-2005  Sean Middleditch\n"
-			"Visit http://www.sourcemud.org for more details.\n";
+		"\n ----===[ Source MUD V" PACKAGE_VERSION " ]===----\n\n"
+		"Source MUD Copyright (C) 2000-2005  Sean Middleditch\n"
+		"Visit http://www.sourcemud.org for more details.\n";
 
 		// connect message
 		*telnet << StreamMacro(MMessage.get("connect"));
@@ -252,7 +255,7 @@ namespace {
 	}
 
 	void
-	HTTPListener::sock_in_ready ()
+	HTTPListener::sock_in_ready()
 	{
 		// accept client
 		NetAddr addr;
@@ -307,29 +310,29 @@ namespace {
 }
 
 void
-MUD::shutdown ()
+MUD::shutdown()
 {
 	Log::Info << "Shutting down server";
 	running = false;
 }
 
 ulong
-MUD::get_ticks ()
+MUD::get_ticks()
 {
 	return game_ticks;
 }
 
 ulong
-MUD::get_rounds ()
+MUD::get_rounds()
 {
 	return TICKS_TO_ROUNDS(game_ticks);
 }
 
 std::string
-MUD::get_uptime ()
+MUD::get_uptime()
 {
 	StringBuffer uptime;
-	uint secs = (::time (NULL) - start_time); 
+	uint secs = (::time(NULL) - start_time);
 	uint seconds = secs % 60;
 	secs /= 60;
 	uint minutes = secs % 60;
@@ -362,14 +365,14 @@ MUD::get_uptime ()
 }
 
 int
-main (int argc, char **argv)
+main(int argc, char **argv)
 {
 	// print out information
 	printf("Source MUD server V" PACKAGE_VERSION "\n"
-		"Copyright (C) 2000-2005, Sean Middleditch\n"
-		"Source MUD comes with ABSOLUTELY NO WARRANTY; see COPYING for details.\n"
-		"This is free software, and you are welcome to redistribute it\n"
-		"under certain conditions; for details, see the file COPYING.\n");
+	       "Copyright (C) 2000-2005, Sean Middleditch\n"
+	       "Source MUD comes with ABSOLUTELY NO WARRANTY; see COPYING for details.\n"
+	       "This is free software, and you are welcome to redistribute it\n"
+	       "under certain conditions; for details, see the file COPYING.\n");
 
 	// load settings
 	if (IManager::require(MSettings))
@@ -393,34 +396,34 @@ main (int argc, char **argv)
 
 	// fork daemon
 	if (MSettings.get_daemon()) {
-		if (fork ())
+		if (fork())
 			_exit(0);
 
 		// close controlling TTY
 #ifdef TIOCNOTTY
-		int ttyfd = open ("/dev/tty", O_RDWR);
-		ioctl (ttyfd, TIOCNOTTY);
-		close (ttyfd);
+		int ttyfd = open("/dev/tty", O_RDWR);
+		ioctl(ttyfd, TIOCNOTTY);
+		close(ttyfd);
 #endif
 
 		// new process group
-		setpgid (0, 0);
+		setpgid(0, 0);
 
 		// we don't need these at all, don't want them
-		close (0); // STDIN
-		close (1); // STDOUT
-		close (2); // STDERR
+		close(0);  // STDIN
+		close(1);  // STDOUT
+		close(2);  // STDERR
 
 		// legacy code/crap, /dev/null as our stdin/stdout/stderr - yay...
-		int base_fd = open ("/dev/null", O_RDWR); // stdin
-		dup (base_fd); // stdout
-		dup (base_fd); // stderr
+		int base_fd = open("/dev/null", O_RDWR);  // stdin
+		dup(base_fd);  // stdout
+		dup(base_fd);  // stderr
 
 		Log::Info << "Forked daemon";
 	}
 
 	// set time
-	::time (&start_time);
+	::time(&start_time);
 
 	// write PID
 	std::string pid_path = MSettings.get_pid_file();
@@ -431,8 +434,8 @@ main (int argc, char **argv)
 	// read group/user info
 	struct group *grp = NULL;
 	std::string group_name = MSettings.get_group();
-	if (!group_name.empty() && !str_is_number (group_name)) {
-		if (str_is_number (group_name))
+	if (!group_name.empty() && !str_is_number(group_name)) {
+		if (str_is_number(group_name))
 			grp = getgrgid(tolong(group_name));
 		else
 			grp = getgrnam(group_name.c_str());
@@ -444,7 +447,7 @@ main (int argc, char **argv)
 	struct passwd *usr = NULL;
 	std::string user_name = MSettings.get_user();
 	if (!user_name.empty()) {
-		if (str_is_number (user_name))
+		if (str_is_number(user_name))
 			usr = getpwuid(tolong(user_name));
 		else
 			usr = getpwnam(user_name.c_str());
@@ -458,10 +461,10 @@ main (int argc, char **argv)
 	std::string chroot_dir = MSettings.get_chroot();
 	if (!chroot_dir.empty()) {
 		if (chroot(chroot_dir.c_str())) {
-			Log::Error << "chroot() failed: " << strerror (errno);
+			Log::Error << "chroot() failed: " << strerror(errno);
 			return 1;
 		}
-		chdir ("/"); // activate chroot
+		chdir("/");  // activate chroot
 		Log::Info << "Chrooted to '" << chroot_dir << "'";
 	}
 
@@ -470,32 +473,32 @@ main (int argc, char **argv)
 
 	// seting up signal handlers
 	struct sigaction sa;
-	memset (&sa, 0, sizeof (sa));
+	memset(&sa, 0, sizeof(sa));
 	sa.sa_handler = sigterm_handler;
-	if (sigaction (SIGTERM, &sa, NULL)) {
+	if (sigaction(SIGTERM, &sa, NULL)) {
 		Log::Error << "sigaction() failed (SIGTERM)";
 		return 1;
 	}
-	memset (&sa, 0, sizeof (sa));
+	memset(&sa, 0, sizeof(sa));
 	sa.sa_handler = sigint_handler;
-	if (sigaction (SIGINT, &sa, NULL)) {
+	if (sigaction(SIGINT, &sa, NULL)) {
 		Log::Error << "sigaction() failed (SIGINT)";
 		return 1;
 	}
-	memset (&sa, 0, sizeof (sa));
+	memset(&sa, 0, sizeof(sa));
 	sa.sa_handler = SIG_IGN;
-	if (sigaction (SIGPIPE, &sa, NULL)) {
+	if (sigaction(SIGPIPE, &sa, NULL)) {
 		Log::Error << "sigaction() failed (SIGPIPE)";
 		return 1;
 	}
-	memset (&sa, 0, sizeof (sa));
+	memset(&sa, 0, sizeof(sa));
 	sa.sa_handler = sighup_handler;
-	if (sigaction (SIGHUP, &sa, NULL)) {
+	if (sigaction(SIGHUP, &sa, NULL)) {
 		Log::Error << "sigaction() failed (SIGHUP)";
 		return 1;
 	}
 
-	init_random (); // random info
+	init_random();  // random info
 
 	// load all managers
 	if (IManager::initialize_all())

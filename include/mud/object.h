@@ -29,8 +29,8 @@ struct ObjectFlag {
 		MAX
 	};
 
-	ObjectFlag (bits b) : v(b) {}
-	explicit ObjectFlag (int i) : v((bits)(i>=1&&i<MAX?i:1)) {}
+	ObjectFlag(bits b) : v(b) {}
+	explicit ObjectFlag(int i) : v((bits)(i >= 1 && i < MAX ? i : 1)) {}
 	operator bits() const { return v; }
 
 	bits v;
@@ -46,8 +46,8 @@ struct ObjectLocation {
 		MAX
 	};
 
-	ObjectLocation (bits b) : v(b) {}
-	explicit ObjectLocation (int i) : v((bits)(i>=1&&i<MAX?i:1)) {}
+	ObjectLocation(bits b) : v(b) {}
+	explicit ObjectLocation(int i) : v((bits)(i >= 1 && i < MAX ? i : 1)) {}
 	ObjectLocation() : v(NONE) {}
 	operator bits() const { return v; }
 
@@ -76,29 +76,29 @@ struct ObjectLocation {
 //  the trash timer should be configurable...
 
 #define OBJECT_TRASH_TICKS ROUNDS_TO_TICKS(60 * 20)
-  // trash objects after 20 minutes
+// trash objects after 20 minutes
 #define OBJECT_ROT_TICKS ROUNDS_TO_TICKS(60 * 1)
-  // rotting objects wither away after 1 minute
+// rotting objects wither away after 1 minute
 
 // Object control
 class
-Object : public Entity
+			Object : public Entity
 {
-	public:
+public:
 	Object();
 
 	// name info
-	virtual bool set_name (const std::string&) = 0;
+	virtual bool set_name(const std::string&) = 0;
 	virtual EntityName get_name() const = 0;
 
 	// description
 	virtual std::string get_desc() const = 0;
 
 	// save/load
-	virtual int load_node (File::Reader& reader, File::Node& node);
+	virtual int load_node(File::Reader& reader, File::Node& node);
 	virtual int load_finish();
-	virtual void save_data (File::Writer& writer);
-	virtual void save_hook (File::Writer& writer);
+	virtual void save_data(File::Writer& writer);
+	virtual void save_hook(File::Writer& writer);
 
 	// weight
 	inline uint get_weight() const { return calc_weight + get_real_weight(); }
@@ -106,12 +106,12 @@ Object : public Entity
 
 	// owner tracking - see entity.h
 	virtual inline Entity* get_owner() const { return owner; }
-	virtual void set_owner (Entity* s_owner);
-	virtual void owner_release (Entity* child);
+	virtual void set_owner(Entity* s_owner);
+	virtual void owner_release(Entity* child);
 
 	// events
-	virtual void handle_event (const Event& event);
-	virtual void broadcast_event (const Event& event);
+	virtual void handle_event(const Event& event);
+	virtual void broadcast_event(const Event& event);
 
 	// returns the room the object is in (tracing through parents) or the
 	// character holding the object (again, tracing through parenst)
@@ -122,14 +122,14 @@ Object : public Entity
 	virtual const char* ncolor() const { return CITEM; }
 
 	// for parsing, pull a property based on a char*
-	virtual int macro_property (const class StreamControl& stream, const std::string& method, const MacroList& argv) const;
+	virtual int macro_property(const class StreamControl& stream, const std::string& method, const MacroList& argv) const;
 
 	// object properties
 	virtual uint get_cost() const = 0;
 	virtual EquipSlot get_equip() const = 0;
 
 	// check flags
-	virtual bool get_flag (ObjectFlag flag) const = 0;
+	virtual bool get_flag(ObjectFlag flag) const = 0;
 	bool is_hidden() const { return get_flag(ObjectFlag::HIDDEN); }
 	bool is_touchable() const { return get_flag(ObjectFlag::TOUCH); }
 	bool is_gettable() const { return get_flag(ObjectFlag::GET); }
@@ -145,14 +145,14 @@ Object : public Entity
 	void heartbeat();
 
 	// containers
-	virtual bool has_location (ObjectLocation type) const = 0;
-	bool add_object (Object *sub, ObjectLocation type);
-	void remove_object (Object *sub, ObjectLocation type);
-	Object *find_object (const std::string& name, uint index, ObjectLocation type, uint *matches = NULL) const;
-	void show_contents (class Player *player, ObjectLocation type) const;
+	virtual bool has_location(ObjectLocation type) const = 0;
+	bool add_object(Object *sub, ObjectLocation type);
+	void remove_object(Object *sub, ObjectLocation type);
+	Object *find_object(const std::string& name, uint index, ObjectLocation type, uint *matches = NULL) const;
+	void show_contents(class Player *player, ObjectLocation type) const;
 
 	// data
-	private:
+private:
 	Entity *owner;
 	ObjectLocation container;
 	uint calc_weight; // calculated weight of children objects
@@ -163,7 +163,7 @@ Object : public Entity
 	// weight tracking
 	void recalc_weight();
 
-	protected:
+protected:
 	virtual ~Object();
 
 	E_TYPE(Object)

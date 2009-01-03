@@ -5,7 +5,7 @@
  * http://www.sourcemud.org
  */
 
-#ifndef SOURCEMUD_NET_NETADDR_H 
+#ifndef SOURCEMUD_NET_NETADDR_H
 #define SOURCEMUD_NET_NETADDR_H
 
 struct NetAddr {

@@ -30,13 +30,13 @@
 
 class TextBufferList
 {
-	private:
+private:
 	std::vector<char*> list;
 	const size_t size;
 	size_t allocs, pallocs, out;
 
-	public:
-	TextBufferList (size_t s_size) : list(), size(s_size), allocs(0), pallocs(0), out(0) {}
+public:
+	TextBufferList(size_t s_size) : list(), size(s_size), allocs(0), pallocs(0), out(0) {}
 	~TextBufferList() {
 		for (std::vector<char*>::iterator i = list.begin(); i != list.end(); ++i)
 			if (*i)
@@ -46,14 +46,14 @@ class TextBufferList
 	size_t get_size() const { return size; }
 
 	char* alloc();
-	void release (char* buf) {
+	void release(char* buf) {
 		-- out;
 		list.push_back(buf);
 	}
 };
-class TextBuffer 
+class TextBuffer
 {
-	public:
+public:
 	typedef enum {
 		EMPTY = -1,
 		SIZE_2048 = 0,
@@ -62,15 +62,15 @@ class TextBuffer
 		SIZE_16384,
 		COUNT
 	} SizeType;
-	
-	private:
+
+private:
 	SizeType bsize;
 	char* bdata;
 
 	// the buffers
 	static TextBufferList lists[COUNT];
 
-	public:
+public:
 	TextBuffer() : bsize(EMPTY), bdata(NULL) {}
 	~TextBuffer() { release(); }
 
@@ -80,7 +80,7 @@ class TextBuffer
 	int alloc(SizeType size);
 	int grow();
 
-	TextBuffer& copy (TextBuffer& buffer) {
+	TextBuffer& copy(TextBuffer& buffer) {
 		if (bdata != NULL)
 			release();
 		bsize = buffer.bsize;
@@ -93,27 +93,27 @@ class TextBuffer
 
 class ITelnetMode
 {
-	public:
-	ITelnetMode (class TelnetHandler* s_handler) : handler(s_handler) {}
+public:
+	ITelnetMode(class TelnetHandler* s_handler) : handler(s_handler) {}
 	virtual ~ITelnetMode() {}
 
 	// basics
 	virtual int initialize() = 0;
 	virtual void prompt() = 0;
-	virtual void process (char* line) = 0;
+	virtual void process(char* line) = 0;
 	virtual void shutdown() = 0;
 	virtual void finish(); // disconnect session by default
 
 	// the handler this mode is connected to
 	inline class TelnetHandler* get_handler() const { return handler; }
 
-	private:
+private:
 	class TelnetHandler* handler;
 };
 
 class TelnetHandler : public SocketConnection, public IStreamSink
 {
-	public:
+public:
 	TelnetHandler(int s_sock, const NetAddr& s_netaddr);
 
 	// color info
@@ -155,11 +155,11 @@ class TelnetHandler : public SocketConnection, public IStreamSink
 	virtual void sock_hangup();
 	virtual void sock_flush();
 
-	protected:
+protected:
 	// destructor
 	~TelnetHandler() {}
 
-	protected:
+protected:
 	TextBuffer input; // player input buffer
 	TextBuffer outchunk; // chunk of output
 	TextBuffer subrequest; // telnet-subrequest input
@@ -178,10 +178,24 @@ class TelnetHandler : public SocketConnection, public IStreamSink
 	z_stream* zstate; // compression
 #endif
 	struct IOFlags {
-		int use_ansi:1, need_prompt:1, need_newline:1, do_echo:1,
-			do_eor:1, want_echo:1, xterm:1, force_echo:1, zmp:1,
-			ready:1, soft_break:1, ansi_term:1,
-			zmp_color:1, auto_indent:1;
+int use_ansi:
+1, need_prompt:
+1, need_newline:
+1, do_echo:
+		1,
+do_eor:
+1, want_echo:
+1, xterm:
+1, force_echo:
+1, zmp:
+		1,
+ready:
+1, soft_break:
+1, ansi_term:
+		1,
+zmp_color:
+1, auto_indent:
+		1;
 	} io_flags;
 
 	// input states - telnet
@@ -239,17 +253,16 @@ class TelnetHandler : public SocketConnection, public IStreamSink
 // indent stream
 class StreamIndent
 {
-	public:
+public:
 	inline StreamIndent(uint16 s_len) : len(s_len) {}
 
 	inline friend
 	const StreamControl&
-	operator << (const StreamControl& stream, const StreamIndent& indent)
-	{
+	operator << (const StreamControl& stream, const StreamIndent& indent) {
 		return stream << "\e!I" << indent.len << "!";
 	}
 
-	private:
+private:
 	uint16 len;
 };
 

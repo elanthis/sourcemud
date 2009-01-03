@@ -24,7 +24,8 @@
  * access: ADMIN
  *
  * END COMMAND */
-void command_admin_grant (Player* admin, std::string argv[]) {
+void command_admin_grant(Player* admin, std::string argv[])
+{
 	std::tr1::shared_ptr<Account> account = MAccount.get(argv[0]);
 	if (account == NULL) {
 		*admin << "Account '" << argv[0] << "' not found.\n";
@@ -52,7 +53,8 @@ void command_admin_grant (Player* admin, std::string argv[]) {
  * access: ADMIN
  *
  * END COMMAND */
-void command_admin_revoke (Player* admin, std::string argv[]) {
+void command_admin_revoke(Player* admin, std::string argv[])
+{
 	std::tr1::shared_ptr<Account> account = MAccount.get(argv[0]);
 	if (account == NULL) {
 		*admin << "Account '" << argv[0] << "' does not exist.\n";
@@ -78,10 +80,11 @@ void command_admin_revoke (Player* admin, std::string argv[]) {
  * access: ADMIN
  *
  * END COMMAND */
-void command_admin_shutdown (Player* admin, std::string[]) {
+void command_admin_shutdown(Player* admin, std::string[])
+{
 	*admin << CADMIN "Shutdown issued." CNORMAL "\n";
 	Log::Admin << "Shutdown issued by " << admin->get_account()->getId();
-	MZone.announce ("Shutting down, NOW!");
+	MZone.announce("Shutting down, NOW!");
 	MUD::shutdown();
 }
 
@@ -94,7 +97,8 @@ void command_admin_shutdown (Player* admin, std::string[]) {
  * access: ADMIN
  *
  * END COMMAND */
-void command_admin_blockip (Player* admin, std::string argv[]) {
+void command_admin_blockip(Player* admin, std::string argv[])
+{
 	*admin << CADMIN "TEMPORARLY DISABLED" CNORMAL << "\n";
 	// FIXME: fix this
 	/*

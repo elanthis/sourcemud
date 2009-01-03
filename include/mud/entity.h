@@ -40,12 +40,12 @@ typedef std::map<UniqueID, Entity*> UniqueIDMap; // NOTE: also non-GC scanning
 // entity control
 class Entity : public IMacroObject
 {
-	public:
+public:
 	Entity();
 
 	// factory handling
 	virtual const char* factory_type() const = 0;
-	static Entity* create (const std::string& type); // efactory.cc
+	static Entity* create(const std::string& type);  // efactory.cc
 
 	// get unique ID
 	inline const UniqueID& get_uid() const { return uid; }
@@ -62,7 +62,7 @@ class Entity : public IMacroObject
 
 	// events
 	inline const EventList& get_events() const { return events; }
-	EventHandler* get_event (EventID event);
+	EventHandler* get_event(EventID event);
 
 	// active
 	inline bool is_active() const { return state == ACTIVE; }
@@ -75,34 +75,34 @@ class Entity : public IMacroObject
 	virtual void destroy();
 
 	// tags
-	bool has_tag (TagID tag) const;
-	int add_tag (TagID tag);
-	int remove_tag (TagID tag);
+	bool has_tag(TagID tag) const;
+	int add_tag(TagID tag);
+	int remove_tag(TagID tag);
 	inline const TagList& get_tags() const { return tags; }
 
 	// output
-	virtual void display_desc (const class StreamControl& stream) const;
+	virtual void display_desc(const class StreamControl& stream) const;
 	virtual const char* ncolor() const { return CNORMAL; }
 
 	// save/load
-	static Entity* load (const std::string& factory, File::Reader& reader);
-	int load (File::Reader& reader);
-	virtual int load_node (File::Reader& reader, File::Node& node);
+	static Entity* load(const std::string& factory, File::Reader& reader);
+	int load(File::Reader& reader);
+	virtual int load_node(File::Reader& reader, File::Node& node);
 	virtual int load_finish() = 0;
-	void save (File::Writer& writer, const std::string& ns, const std::string& name);
-	virtual void save_data (File::Writer& writer);
-	virtual void save_hook (File::Writer& writer);
+	void save(File::Writer& writer, const std::string& ns, const std::string& name);
+	virtual void save_data(File::Writer& writer);
+	virtual void save_hook(File::Writer& writer);
 
 	// check name
-	virtual bool name_match (const std::string& name) const;
+	virtual bool name_match(const std::string& name) const;
 
 	// event triggers
-	virtual void handle_event (const Event& event);
-	virtual void broadcast_event (const Event& event) = 0;
+	virtual void handle_event(const Event& event);
+	virtual void broadcast_event(const Event& event) = 0;
 
 	// for parsing, pull a property based on a char
-	virtual int macro_property (const class StreamControl& stream, const std::string& method, const MacroList& argv) const;
-	virtual void macro_default (const class StreamControl& stream) const;
+	virtual int macro_property(const class StreamControl& stream, const std::string& method, const MacroList& argv) const;
+	virtual void macro_default(const class StreamControl& stream) const;
 
 	// heartbeat
 	virtual void heartbeat() = 0;
@@ -112,9 +112,9 @@ class Entity : public IMacroObject
 
 	// our custom type checking system
 	inline static const void *get_setype()
-		{ return (const void *)Entity::get_setype; }
-	inline virtual bool check_etype (const void *type) const
-		{ return (type == Entity::get_setype()); }
+	{ return (const void *)Entity::get_setype; }
+	inline virtual bool check_etype(const void *type) const
+	{ return (type == Entity::get_setype()); }
 
 	// owner management
 	// set_owner() should *only* be called from an owning object's add*()
@@ -131,11 +131,11 @@ class Entity : public IMacroObject
 	virtual void owner_release(Entity* child) = 0;
 
 	// big list for updates
-	private:
+private:
 	UniqueID uid;
 
 	// various data
-	protected:
+protected:
 	TagList tags;
 	EventList events;
 
@@ -144,15 +144,15 @@ class Entity : public IMacroObject
 	// DEAD: object removed from active world tree
 	enum State { FLOAT, ACTIVE, DEAD } state;
 
-	private:
+private:
 	// linked list tracking all entities
 	Entity* link_prev;
 	Entity* link_next;
 
 	// event handler
-	int perform_event (EventHandler *ea, Entity* trigger, Entity* target);
+	int perform_event(EventHandler *ea, Entity* trigger, Entity* target);
 
-	protected:
+protected:
 	// protected destructor
 	virtual ~Entity();
 	friend class _MEntity;
@@ -161,7 +161,7 @@ class Entity : public IMacroObject
 // manage all entities
 class _MEntity : public IManager
 {
-	public:
+public:
 	_MEntity();
 	~_MEntity();
 
@@ -175,18 +175,18 @@ class _MEntity : public IManager
 	virtual void heartbeat();
 
 	// fetch by tag
-	std::pair<TagTable::const_iterator, TagTable::const_iterator> tag_list (TagID tag) const;
+	std::pair<TagTable::const_iterator, TagTable::const_iterator> tag_list(TagID tag) const;
 
 	// fetch by ID
-	Entity* get (const UniqueID& uid) const;
+	Entity* get(const UniqueID& uid) const;
 
 	// count by tag
-	size_t tag_count (TagID tag) const;
+	size_t tag_count(TagID tag) const;
 
 	// free all dead entities
 	void collect();
 
-	private:
+private:
 	Entity* all;
 	Entity* dead;
 
@@ -212,10 +212,10 @@ extern _MEntity MEntity;
 
 template <class TYPE>
 struct _e_cast {
-	static inline TYPE* cast (Entity* base) {
+	static inline TYPE* cast(Entity* base) {
 		return (base && base->check_etype(TYPE::get_setype())) ? (TYPE*)(base) : NULL;
 	}
-	static inline const TYPE* cast (const Entity* base) {
+	static inline const TYPE* cast(const Entity* base) {
 		return (base && base->check_etype(TYPE::get_setype())) ? (TYPE*)(base) : NULL;
 	}
 };

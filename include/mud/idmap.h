@@ -17,18 +17,18 @@
 
 class MID
 {
-	public:
+public:
 	typedef std::set<std::string> IDMap;
 
-	MID ();
-	~MID ();
-	
-	const std::string* lookup (const std::string& name);
-	const std::string* create (const std::string& name);
+	MID();
+	~MID();
 
-	const IDMap& get_all () const { return id_map; }
+	const std::string* lookup(const std::string& name);
+	const std::string* create(const std::string& name);
 
-	private:
+	const IDMap& get_all() const { return id_map; }
+
+private:
 	IDMap id_map;
 };
 
@@ -36,34 +36,34 @@ class MID
 template <typename tag>
 class BaseID
 {
-	private:
-	explicit BaseID (const std::string* s_id) : id(s_id) {}
+private:
+	explicit BaseID(const std::string* s_id) : id(s_id) {}
 
-	public:
-	BaseID () : id(NULL) {}
-	BaseID (const BaseID<tag>& s_id) : id(s_id.id) {}
+public:
+	BaseID() : id(NULL) {}
+	BaseID(const BaseID<tag>& s_id) : id(s_id.id) {}
 
-	bool valid () const { return id != 0; }
+	bool valid() const { return id != 0; }
 
-	static BaseID<tag> lookup (const std::string& idname) { return BaseID<tag>(get_manager().lookup(idname)); }
-	static BaseID<tag> create (const std::string& idname) { return BaseID<tag>(get_manager().create(idname)); }
-	std::string name () const { return id != NULL ? *id : std::string(); }
-	static std::string nameof (BaseID<tag> id) { return id.name(); }
+	static BaseID<tag> lookup(const std::string& idname) { return BaseID<tag>(get_manager().lookup(idname)); }
+	static BaseID<tag> create(const std::string& idname) { return BaseID<tag>(get_manager().create(idname)); }
+	std::string name() const { return id != NULL ? *id : std::string(); }
+	static std::string nameof(BaseID<tag> id) { return id.name(); }
 
-	static const MID::IDMap& get_all () { return get_manager().get_all(); }
+	static const MID::IDMap& get_all() { return get_manager().get_all(); }
 
 	bool operator< (const BaseID<tag>& cmp) const { return id < cmp.id; }
 	bool operator== (const BaseID<tag>& cmp) const { return id == cmp.id; }
 
-	protected:
+protected:
 	const std::string* id;
 
-	static MID& get_manager ();
+	static MID& get_manager();
 };
 
 template <typename tag>
 MID&
-BaseID<tag>::get_manager ()
+BaseID<tag>::get_manager()
 {
 	static MID manager;
 	return manager;

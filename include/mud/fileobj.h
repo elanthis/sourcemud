@@ -13,181 +13,181 @@
 
 namespace File
 {
-	class Error
-	{
-		protected:
-		std::string what;
+class Error
+{
+protected:
+	std::string what;
 
-		public:
-		Error () : what() {}
-		Error (const std::string& s_what) : what(s_what) {}
+public:
+	Error() : what() {}
+	Error(const std::string& s_what) : what(s_what) {}
 
-		inline const std::string& get_what () const { return what; }
+	inline const std::string& get_what() const { return what; }
+};
+
+class Value
+{
+public:
+	enum Type {
+		TYPE_NONE,
+		TYPE_STRING,
+		TYPE_INT,
+		TYPE_BOOL,
+		TYPE_ID,
+		TYPE_LIST,
 	};
 
-	class Value
-	{
-		public:
-		enum Type {
-			TYPE_NONE,
-			TYPE_STRING,
-			TYPE_INT,
-			TYPE_BOOL,
-			TYPE_ID,
-			TYPE_LIST,
-		};
+	Value() : type(TYPE_NONE), value(), list() {}
+	Value(Type s_type, const std::string& s_value) : type(s_type), value(s_value), list() {}
+	Value(const std::vector<Value>& s_list) : type(TYPE_LIST), value(), list(s_list) {}
 
-		Value () : type(TYPE_NONE), value(), list() {}
-		Value (Type s_type, const std::string& s_value) : type(s_type), value(s_value), list() {}
-		Value (const std::vector<Value>& s_list) : type(TYPE_LIST), value(), list(s_list) {}
+	Type get_type() const { return type; }
+	std::string get_value() const { return value; }
+	const std::vector<Value>& get_list() const { return list; }
 
-		Type get_type () const { return type; }
-		std::string get_value () const { return value; }
-		const std::vector<Value>& get_list () const { return list; }
+private:
+	Type type;
+	std::string value;
+	std::vector<Value> list;
+};
 
-		private:
-		Type type;
-		std::string value;
-		std::vector<Value> list;
+class Node
+{
+public:
+	enum Type {
+		ATTR,  // normal ns.name = data
+		BEGIN_UNTYPED, // object form ns.name { data }
+		BEGIN_TYPED, // object form ns.name = type { data }
+		END,   // } after a BEGIN_UNTYPED or BEGIN_TYPED
+		ERROR // error
 	};
 
-	class Node
-	{
-		public:
-		enum Type {
-			ATTR,  // normal ns.name = data
-			BEGIN_UNTYPED, // object form ns.name { data }
-			BEGIN_TYPED, // object form ns.name = type { data }
-			END,   // } after a BEGIN_UNTYPED or BEGIN_TYPED
-			ERROR // error
-		};
+	Node(class Reader& s_reader) : reader(s_reader) {}
 
-		Node (class Reader& s_reader) : reader(s_reader) {}
+	inline std::string get_ns() const { return ns; }
+	inline std::string get_name() const { return name; }
+	inline Value::Type get_value_type() const { return value.get_type(); }
 
-		inline std::string get_ns () const { return ns; }
-		inline std::string get_name () const { return name; }
-		inline Value::Type get_value_type () const { return value.get_type(); }
+	// type checking getters; throws File::Error on type-mismatch
+	std::string get_string() const;
+	bool get_bool() const;
+	int get_int() const;
+	UniqueID get_id() const;
 
-		// type checking getters; throws File::Error on type-mismatch
-		std::string get_string () const;
-		bool get_bool () const;
-		int get_int () const;
-		UniqueID get_id () const;
+	const std::vector<Value>& get_list() const;
+	const std::vector<Value>& get_list(size_t size) const;
 
-		const std::vector<Value>& get_list () const;
-		const std::vector<Value>& get_list (size_t size) const;
+	std::string get_string(size_t index) const;
+	int get_int(size_t index) const;
 
-		std::string get_string (size_t index) const;
-		int get_int (size_t index) const;
+	// file info
+	class Reader& get_reader() const { return reader; }
+	inline size_t get_line() const { return line; }
 
-		// file info
-		class Reader& get_reader () const { return reader; }
-		inline size_t get_line () const { return line; }
+	// type of node
+	inline bool is_attr() const { return type == ATTR; }
+	inline bool is_end() const { return type == END; }
+	inline bool is_begin() const { return type == BEGIN_UNTYPED || type == BEGIN_TYPED; }
+	inline bool is_begin_untyped() const { return type == BEGIN_UNTYPED; }
+	inline bool is_begin_typed() const { return type == BEGIN_TYPED; }
+	inline Type get_node_type() const { return type; }
 
-		// type of node
-		inline bool is_attr () const { return type == ATTR; }
-		inline bool is_end () const { return type == END; }
-		inline bool is_begin () const { return type == BEGIN_UNTYPED || type == BEGIN_TYPED; }
-		inline bool is_begin_untyped () const { return type == BEGIN_UNTYPED; }
-		inline bool is_begin_typed () const { return type == BEGIN_TYPED; }
-		inline Type get_node_type () const { return type; }
+private:
+	Type type;
+	class Reader& reader;
+	std::string ns;
+	std::string name;
+	Value value;
+	size_t line; // line node came from
 
-		private:
-		Type type;
-		class Reader& reader;
-		std::string ns;
-		std::string name;
-		Value value;
-		size_t line; // line node came from
+	friend class Reader;
+};
 
-		friend class Reader;
-	};
+class Reader
+{
+public:
+	Reader() : in(), filename(), line(0) {}
+	~Reader() { close(); }
 
-	class Reader
-	{
-		public:
-		Reader () : in(), filename(), line(0) {}
-		~Reader () { close(); }
+	const std::string get_filename() const { return filename; }
+	int open(const std::string& file);
+	bool is_open() const { return in; }
+	void close() { if (in) in.close(); }
 
-		const std::string get_filename () const { return filename; }
-		int open (const std::string& file);
-		bool is_open () const { return in; }
-		void close () { if (in) in.close(); }
+	// fetch another node from the input
+	bool get(Node& node);
+	// consume the rest of the current begin
+	void consume();
 
-		// fetch another node from the input
-		bool get (Node& node);
-		// consume the rest of the current begin
-		void consume ();
+	// get the current path
+	std::string get_path() const { return filename; }
 
-		// get the current path
-		std::string get_path () const { return filename; }
+	// get current line
+	inline size_t get_line() const { return line; }
 
-		// get current line
-		inline size_t get_line () const { return line; }
+private:
+	std::ifstream in;
+	std::string filename;
+	size_t line;
 
-		private:
-		std::ifstream in;
-		std::string filename;
-		size_t line;
+	enum Token { TOKEN_ERROR, TOKEN_EOF, TOKEN_STRING, TOKEN_NUMBER, TOKEN_TRUE, TOKEN_FALSE, TOKEN_BEGIN, TOKEN_END, TOKEN_SET, TOKEN_ID, TOKEN_KEY, TOKEN_START_LIST, TOKEN_END_LIST, TOKEN_COMMA, TOKEN_NAME };
 
-		enum Token { TOKEN_ERROR, TOKEN_EOF, TOKEN_STRING, TOKEN_NUMBER, TOKEN_TRUE, TOKEN_FALSE, TOKEN_BEGIN, TOKEN_END, TOKEN_SET, TOKEN_ID, TOKEN_KEY, TOKEN_START_LIST, TOKEN_END_LIST, TOKEN_COMMA, TOKEN_NAME };
+	Token read_token(std::string& data);
+	bool set_value(Token type, std::string& data, Value& value);
+};
 
-		Token read_token(std::string& data);
-		bool set_value (Token type, std::string& data, Value& value);
-	};
+class Writer
+{
+public:
+	Writer() : out(), indent(0) {}
+	Writer(const std::string& file) : out(), indent(0) { open(file); }
+	~Writer() { close(); }
 
-	class Writer
-	{
-		public:
-		Writer () : out(), indent(0) {}
-		Writer (const std::string& file) : out(), indent(0) { open(file); }
-		~Writer () { close(); }
+	int open(const std::string& file);
+	bool is_open() const { return out; }
+	void close();
 
-		int open (const std::string& file);
-		bool is_open () const { return out; }
-		void close ();
+	// attributes
+	void attr(const std::string& ns, const std::string& name, const std::string& data);
+	void attr(const std::string& ns, const std::string& name, long data);
+	void attr(const std::string& ns, const std::string& name, bool data);
+	void attr(const std::string& ns, const std::string& name, const UniqueID& data);
+	void attr(const std::string& ns, const std::string& name, const std::vector<Value>& list);
 
-		// attributes
-		void attr (const std::string& ns, const std::string& name, const std::string& data);
-		void attr (const std::string& ns, const std::string& name, long data);
-		void attr (const std::string& ns, const std::string& name, bool data);
-		void attr (const std::string& ns, const std::string& name, const UniqueID& data);
-		void attr (const std::string& ns, const std::string& name, const std::vector<Value>& list);
+	inline void attr(const std::string& ns, const std::string& name, unsigned long data) { attr(ns, name, (long)data); }
+	inline void attr(const std::string& ns, const std::string& name, int data) { attr(ns, name, (long)data); }
+	inline void attr(const std::string& ns, const std::string& name, unsigned int data) { attr(ns, name, (long)data); }
+	inline void attr(const std::string& ns, const std::string& name, short data) { attr(ns, name, (long)data); }
+	inline void attr(const std::string& ns, const std::string& name, unsigned short data) { attr(ns, name, (long)data); }
 
-		inline void attr (const std::string& ns, const std::string& name, unsigned long data) { attr(ns, name, (long)data); }
-		inline void attr (const std::string& ns, const std::string& name, int data) { attr(ns, name, (long)data); }
-		inline void attr (const std::string& ns, const std::string& name, unsigned int data) { attr(ns, name, (long)data); }
-		inline void attr (const std::string& ns, const std::string& name, short data) { attr(ns, name, (long)data); }
-		inline void attr (const std::string& ns, const std::string& name, unsigned short data) { attr(ns, name, (long)data); }
+	// output a data block
+	void block(const std::string& ns, const std::string& name, const std::string& data);
 
-		// output a data block
-		void block (const std::string& ns, const std::string& name, const std::string& data);
+	// begin a new section
+	void begin(const std::string& ns, const std::string& name);
 
-		// begin a new section
-		void begin (const std::string& ns, const std::string& name);
+	// open begin... MUST be followed by a regular begin
+	void begin_attr(const std::string& ns, const std::string& name, const std::string& type);
 
-		// open begin... MUST be followed by a regular begin
-		void begin_attr (const std::string& ns, const std::string& name, const std::string& type);
+	// end a section
+	void end();
 
-		// end a section
-		void end ();
+	// output a comment
+	void comment(const std::string& text);
 
-		// output a comment
-		void comment (const std::string& text);
+	// add a blank line to output
+	inline void bl() { if (out) out << "\n"; }
 
-		// add a blank line to output
-		inline void bl () { if(out) out << "\n"; }
+private:
+	std::string path;
+	std::ofstream out;
+	size_t indent;
 
-		private:
-		std::string path;
-		std::ofstream out;
-		size_t indent;
+	void do_indent();
+};
 
-		void do_indent();
-	};
-
-	// return true if a valid attribute/object name
-	bool valid_name (const std::string& name);
+// return true if a valid attribute/object name
+bool valid_name(const std::string& name);
 }
 
 // stream a node

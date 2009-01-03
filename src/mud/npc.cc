@@ -25,7 +25,7 @@ Npc::Npc() : Creature()
 	initialize();
 }
 
-Npc::Npc (NpcBP* s_blueprint) : Creature()
+Npc::Npc(NpcBP* s_blueprint) : Creature()
 {
 	initialize();
 	blueprint = NULL;
@@ -50,12 +50,12 @@ Npc::load_finish()
 {
 	if (Creature::load_finish())
 		return -1;
-	
+
 	if (blueprint == NULL) {
 		Log::Error << "NPC has no blueprint";
 		return -1;
 	}
-		
+
 	return 0;
 }
 
@@ -63,19 +63,19 @@ int
 Npc::load_node(File::Reader& reader, File::Node& node)
 {
 	FO_NODE_BEGIN
-		FO_ATTR("npc", "blueprint")
-			NpcBP* blueprint;
-			if ((blueprint = MNpcBP.lookup(node.get_string())) == NULL)
-				Log::Error << "Could not find npc blueprint '" << node.get_string() << "'";
-			else
-				set_blueprint(blueprint);
-		FO_ATTR("npc", "roomtag")
-			room_tag = TagID::create(node.get_string());
-		FO_ATTR("npc", "zonelock")
-			flags.zonelock = node.get_bool();
-		FO_ATTR("npc", "reverse_roomtag")
-			flags.revroomtag = node.get_bool();
-		FO_PARENT(Creature)
+	FO_ATTR("npc", "blueprint")
+	NpcBP* blueprint;
+	if ((blueprint = MNpcBP.lookup(node.get_string())) == NULL)
+		Log::Error << "Could not find npc blueprint '" << node.get_string() << "'";
+	else
+		set_blueprint(blueprint);
+	FO_ATTR("npc", "roomtag")
+	room_tag = TagID::create(node.get_string());
+	FO_ATTR("npc", "zonelock")
+	flags.zonelock = node.get_bool();
+	FO_ATTR("npc", "reverse_roomtag")
+	flags.revroomtag = node.get_bool();
+	FO_PARENT(Creature)
 	FO_NODE_END
 }
 
@@ -101,7 +101,7 @@ Npc::save_hook(File::Writer& writer)
 	Creature::save_hook(writer);
 	Hooks::save_npc(this, writer);
 }
-	
+
 EntityName
 Npc::get_name() const
 {
@@ -202,7 +202,7 @@ Npc::load_blueprint(const std::string& name)
 	NpcBP* blueprint = MNpcBP.lookup(name);
 	if (!blueprint)
 		return NULL;
-	
+
 	// create it
 	Npc* npc = new Npc(blueprint);
 	if (npc == NULL)
@@ -265,7 +265,7 @@ Npc::can_use_portal(Portal* portal) const
 			// reversed?
 			if (is_room_tag_reversed())
 				return false;
-		// does not have tag
+			// does not have tag
 		} else {
 			// required it?
 			if (!is_room_tag_reversed())
@@ -304,7 +304,7 @@ Npc::name_match(const std::string& match) const
 	NpcBP* blueprint = get_blueprint();
 	while (blueprint != NULL) {
 		for (std::vector<std::string>::const_iterator i = blueprint->get_keywords().begin(); i != blueprint->get_keywords().end(); i ++)
-			if (phrase_match (*i, match))
+			if (phrase_match(*i, match))
 				return true;
 
 		blueprint = blueprint->get_parent();
@@ -315,5 +315,5 @@ Npc::name_match(const std::string& match) const
 }
 
 BEGIN_EFACTORY(NPC)
-	return new Npc();
+return new Npc();
 END_EFACTORY

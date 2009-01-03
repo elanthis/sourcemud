@@ -16,32 +16,31 @@ using namespace std;
 
 #define VALID_NAME_CHAR(c) (isalnum(c) || (c) == '_')
 
-namespace {
-	struct EscapeString
-	{
-		inline EscapeString (const std::string& s_string) : string(s_string) {}
+namespace
+{
+	struct EscapeString {
+		inline EscapeString(const std::string& s_string) : string(s_string) {}
 
-		inline friend ostream& operator << (ostream& os, const EscapeString& esc)
-		{
+		inline friend ostream& operator << (ostream& os, const EscapeString& esc) {
 			os << '"';
 			for (std::string::const_iterator i = esc.string.begin(); i != esc.string.end(); ++i) {
 				switch (*i) {
-					case '\t':
-						os << "\\t";
-						break;
-					case '\n':
-						os << "\\n";
-						break;
-					case '\\':
-						os << "\\\\";
-						break;
-					case '"':
-						os << "\\\"";
-						break;
-					case '\0':
-						break;
-					default:
-						os << *i;
+				case '\t':
+					os << "\\t";
+					break;
+				case '\n':
+					os << "\\n";
+					break;
+				case '\\':
+					os << "\\\\";
+					break;
+				case '"':
+					os << "\\\"";
+					break;
+				case '\0':
+					break;
+				default:
+					os << *i;
 				}
 			}
 			os << '"';
@@ -52,12 +51,10 @@ namespace {
 		const std::string& string;
 	};
 
-	struct ScrubString
-	{
-		inline ScrubString (const std::string& s_string) : string(s_string) {}
+	struct ScrubString {
+		inline ScrubString(const std::string& s_string) : string(s_string) {}
 
-		inline friend ostream& operator << (ostream& os, const ScrubString& esc)
-		{
+		inline friend ostream& operator << (ostream& os, const ScrubString& esc) {
 			os << '"';
 			for (std::string::const_iterator i = esc.string.begin(); i != esc.string.end(); ++i) {
 				if (isalpha(*i) || (isdigit(*i) && i != esc.string.begin()) || *i == '_')
@@ -72,7 +69,7 @@ namespace {
 }
 
 int
-File::Reader::open (const std::string& filename)
+File::Reader::open(const std::string& filename)
 {
 	// open
 	in.open(filename.c_str());
@@ -128,7 +125,7 @@ File::Reader::Token File::Reader::read_token(std::string& outstr)
 	} else if (test == ',') {
 		return TOKEN_COMMA;
 
-	// string
+		// string
 	} else if (test == '"') {
 		StringBuffer data;
 		// read in string
@@ -137,7 +134,7 @@ File::Reader::Token File::Reader::read_token(std::string& outstr)
 			if (test == '\n') {
 				throw File::Error("Line break in string");
 
-			// escape?
+				// escape?
 			} else if (test == '\\') {
 				in.get();
 				test = in.peek();
@@ -155,7 +152,7 @@ File::Reader::Token File::Reader::read_token(std::string& outstr)
 				// consume the op
 				in.get();
 
-			// normal creature
+				// normal creature
 			} else {
 				data << (char)in.get();
 			}
@@ -167,7 +164,7 @@ File::Reader::Token File::Reader::read_token(std::string& outstr)
 		outstr = data.str();
 		return TOKEN_STRING;
 
-	// number
+		// number
 	} else if (isdigit(test) || test == '-') {
 		StringBuffer data;
 		// read in name
@@ -178,7 +175,7 @@ File::Reader::Token File::Reader::read_token(std::string& outstr)
 		outstr = data.str();
 		return TOKEN_NUMBER;
 
-	// ID
+		// ID
 	} else if (test == '<') {
 		StringBuffer data;
 		while (in && isdigit(in.peek()))
@@ -190,7 +187,7 @@ File::Reader::Token File::Reader::read_token(std::string& outstr)
 
 		return TOKEN_ID;
 
-	// %begin
+		// %begin
 	} else if (test == '%') {
 		StringBuffer data;
 		// read in name
@@ -240,7 +237,7 @@ File::Reader::Token File::Reader::read_token(std::string& outstr)
 			throw File::Error("Syntax error: unknown symbol: " + outstr);
 		}
 
-	// name
+		// name
 	} else if (isalpha(test) || test == '_') {
 		StringBuffer data;
 		// read in name
@@ -274,7 +271,7 @@ File::Reader::Token File::Reader::read_token(std::string& outstr)
 }
 
 bool
-File::Reader::get (Node& node)
+File::Reader::get(Node& node)
 {
 	Token op;
 	std::string opstr;
@@ -341,13 +338,13 @@ File::Reader::get (Node& node)
 				throw File::Error("Macro error: { expected after name");
 			node.type = Node::BEGIN_TYPED;
 			return true;
-	
-		// can we read the value?
+
+			// can we read the value?
 		} else if (set_value(type, data, node.value)) {
 			node.type = Node::ATTR;
 			return true;
 
-		// no value
+			// no value
 		} else {
 			// unknown type
 			throw File::Error("Macro error: value expected after =");
@@ -400,7 +397,7 @@ bool File::Reader::set_value(File::Reader::Token type, std::string& data, File::
 }
 
 void
-File::Reader::consume ()
+File::Reader::consume()
 {
 	Node node(*this);
 	size_t depth = 0;
@@ -418,7 +415,7 @@ File::Reader::consume ()
 }
 
 int
-File::Writer::open (const std::string& filename)
+File::Writer::open(const std::string& filename)
 {
 	// open and write to a temp file
 	path = filename;
@@ -432,7 +429,7 @@ File::Writer::open (const std::string& filename)
 }
 
 void
-File::Writer::close ()
+File::Writer::close()
 {
 	if (out) {
 		out << "# vim: set shiftwidth=2 tabstop=2 expandtab:\n";
@@ -444,14 +441,14 @@ File::Writer::close ()
 }
 
 void
-File::Writer::do_indent ()
+File::Writer::do_indent()
 {
 	for (unsigned long i = 0; i < indent; ++i)
 		out << "  ";
 }
 
 void
-File::Writer::attr (const std::string& ns, const std::string& name, const std::string& data)
+File::Writer::attr(const std::string& ns, const std::string& name, const std::string& data)
 {
 	if (!out)
 		return;
@@ -466,7 +463,7 @@ File::Writer::attr (const std::string& ns, const std::string& name, const std::s
 }
 
 void
-File::Writer::attr (const std::string& ns, const std::string& name, long data)
+File::Writer::attr(const std::string& ns, const std::string& name, long data)
 {
 	if (!out)
 		return;
@@ -481,7 +478,7 @@ File::Writer::attr (const std::string& ns, const std::string& name, long data)
 }
 
 void
-File::Writer::attr (const std::string& ns, const std::string& name, bool data)
+File::Writer::attr(const std::string& ns, const std::string& name, bool data)
 {
 	if (!out)
 		return;
@@ -496,7 +493,7 @@ File::Writer::attr (const std::string& ns, const std::string& name, bool data)
 }
 
 void
-File::Writer::attr (const std::string& ns, const std::string& name, const UniqueID& data)
+File::Writer::attr(const std::string& ns, const std::string& name, const UniqueID& data)
 {
 	if (!out)
 		return;
@@ -512,7 +509,7 @@ File::Writer::attr (const std::string& ns, const std::string& name, const Unique
 }
 
 void
-File::Writer::attr (const std::string& ns, const std::string& name, const std::vector<Value>& list)
+File::Writer::attr(const std::string& ns, const std::string& name, const std::vector<Value>& list)
 {
 	if (!out)
 		return;
@@ -528,27 +525,27 @@ File::Writer::attr (const std::string& ns, const std::string& name, const std::v
 		if (i != list.begin())
 			out << ", ";
 		switch (i->get_type()) {
-			case Value::TYPE_NONE:
-			case Value::TYPE_LIST:
-				out << "\"\"";
-				break;
-			case Value::TYPE_STRING:
-				out << EscapeString(i->get_value());
-				break;
-			case Value::TYPE_ID:
-				out  << '<' << i->get_value() << '>';
-				break;
-			case Value::TYPE_INT:
-			case Value::TYPE_BOOL:
-				out << i->get_value();
-				break;
+		case Value::TYPE_NONE:
+		case Value::TYPE_LIST:
+			out << "\"\"";
+			break;
+		case Value::TYPE_STRING:
+			out << EscapeString(i->get_value());
+			break;
+		case Value::TYPE_ID:
+			out  << '<' << i->get_value() << '>';
+			break;
+		case Value::TYPE_INT:
+		case Value::TYPE_BOOL:
+			out << i->get_value();
+			break;
 		}
 	}
 	out << " ]\n";
 }
 
 void
-File::Writer::block (const std::string& ns, const std::string& name, const std::string& data)
+File::Writer::block(const std::string& ns, const std::string& name, const std::string& data)
 {
 	if (!out)
 		return;
@@ -572,13 +569,13 @@ File::Writer::block (const std::string& ns, const std::string& name, const std::
 }
 
 void
-File::Writer::begin (const std::string& ns, const std::string& name)
+File::Writer::begin(const std::string& ns, const std::string& name)
 {
 	if (!out)
 		return;
 
 	if (!File::valid_name(ns) || !File::valid_name(name)) {
-		Log::Error << "Attempted to write id '" << ns << '.' << name<< "'";
+		Log::Error << "Attempted to write id '" << ns << '.' << name << "'";
 		return;
 	}
 
@@ -588,7 +585,7 @@ File::Writer::begin (const std::string& ns, const std::string& name)
 }
 
 void
-File::Writer::begin_attr (const std::string& ns, const std::string& name, const std::string& type)
+File::Writer::begin_attr(const std::string& ns, const std::string& name, const std::string& type)
 {
 	if (!out)
 		return;
@@ -609,7 +606,7 @@ File::Writer::begin_attr (const std::string& ns, const std::string& name, const 
 }
 
 void
-File::Writer::end ()
+File::Writer::end()
 {
 	if (!out)
 		return;
@@ -621,7 +618,7 @@ File::Writer::end ()
 }
 
 void
-File::Writer::comment (const std::string& text)
+File::Writer::comment(const std::string& text)
 {
 	if (!out)
 		return;
@@ -647,7 +644,7 @@ File::Writer::comment (const std::string& text)
 }
 
 bool
-File::valid_name (const std::string& name)
+File::valid_name(const std::string& name)
 {
 	// not empty
 	if (name.empty())
@@ -667,7 +664,7 @@ File::valid_name (const std::string& name)
 }
 
 int
-File::Node::get_int () const
+File::Node::get_int() const
 {
 	if (value.get_type() != Value::TYPE_INT) {
 		Log::Error << "Incorrect data type for '" << get_ns() << '.' << get_name() << "' at :" << get_line();
@@ -678,7 +675,7 @@ File::Node::get_int () const
 }
 
 bool
-File::Node::get_bool () const
+File::Node::get_bool() const
 {
 	if (value.get_type() != Value::TYPE_BOOL) {
 		Log::Error << "Incorrect data type for '" << get_ns() << '.' << get_name() << "' at :" << get_line();
@@ -688,17 +685,17 @@ File::Node::get_bool () const
 }
 
 std::string
-File::Node::get_string () const
+File::Node::get_string() const
 {
 	if (value.get_type() != Value::TYPE_STRING) {
-		Log::Error << "Incorrect data type for '" << get_ns () << '.' << get_name() << "' at :" << get_line();
+		Log::Error << "Incorrect data type for '" << get_ns() << '.' << get_name() << "' at :" << get_line();
 		throw(File::Error("data type mismatch"));
 	}
 	return value.get_value();
 }
 
 UniqueID
-File::Node::get_id () const
+File::Node::get_id() const
 {
 	if (value.get_type() != Value::TYPE_ID) {
 		Log::Error << "Incorrect data type for '" << get_ns() << '.' << get_name() << "' at :" << get_line();
@@ -708,7 +705,7 @@ File::Node::get_id () const
 }
 
 const std::vector<File::Value>&
-File::Node::get_list () const
+File::Node::get_list() const
 {
 	if (value.get_type() != Value::TYPE_LIST) {
 		Log::Error << "Incorrect data type for '" << get_ns() << '.' << get_name() << "' at :" << get_line();
@@ -718,7 +715,7 @@ File::Node::get_list () const
 }
 
 const std::vector<File::Value>&
-File::Node::get_list (size_t size) const
+File::Node::get_list(size_t size) const
 {
 	if (value.get_type() != Value::TYPE_LIST) {
 		Log::Error << "Incorrect data type for '" << get_ns() << '.' << get_name() << "' at :" << get_line();
@@ -732,10 +729,10 @@ File::Node::get_list (size_t size) const
 }
 
 std::string
-File::Node::get_string (size_t index) const
+File::Node::get_string(size_t index) const
 {
 	if (value.get_type() != Value::TYPE_LIST) {
-		Log::Error << "Incorrect data type for '" << get_ns () << '.' << get_name() << "' at :" << get_line();
+		Log::Error << "Incorrect data type for '" << get_ns() << '.' << get_name() << "' at :" << get_line();
 		throw(File::Error("data type mismatch"));
 	}
 	if (value.get_list().size() <= index) {
@@ -743,17 +740,17 @@ File::Node::get_string (size_t index) const
 		throw(File::Error("list size mismatch"));
 	}
 	if (value.get_list()[index].get_type() != Value::TYPE_STRING) {
-		Log::Error << "Incorrect data type for element " << (index + 1) << " of '" << get_ns () << '.' << get_name() << "' at :" << get_line();
+		Log::Error << "Incorrect data type for element " << (index + 1) << " of '" << get_ns() << '.' << get_name() << "' at :" << get_line();
 		throw(File::Error("data type mismatch"));
 	}
 	return value.get_list()[index].get_value();
 }
 
 int
-File::Node::get_int (size_t index) const
+File::Node::get_int(size_t index) const
 {
 	if (value.get_type() != Value::TYPE_LIST) {
-		Log::Error << "Incorrect data type for '" << get_ns () << '.' << get_name() << "' at :" << get_line();
+		Log::Error << "Incorrect data type for '" << get_ns() << '.' << get_name() << "' at :" << get_line();
 		throw(File::Error("data type mismatch"));
 	}
 	if (value.get_list().size() <= index) {
@@ -761,7 +758,7 @@ File::Node::get_int (size_t index) const
 		throw(File::Error("list size mismatch"));
 	}
 	if (value.get_list()[index].get_type() != Value::TYPE_INT) {
-		Log::Error << "Incorrect data type for element " << (index + 1) << " of '" << get_ns () << '.' << get_name() << "' at :" << get_line();
+		Log::Error << "Incorrect data type for element " << (index + 1) << " of '" << get_ns() << '.' << get_name() << "' at :" << get_line();
 		throw(File::Error("data type mismatch"));
 	}
 	return tolong(value.get_list()[index].get_value());
@@ -772,34 +769,48 @@ operator<< (const StreamControl& stream, const File::Node& node)
 {
 	stream << node.get_reader().get_path() << ',' << node.get_line() << ": ";
 	switch (node.get_node_type()) {
-		case File::Node::ATTR:
-			stream << node.get_ns() << '.' << node.get_name() << " (";
-			switch (node.get_value_type()) {
-				case File::Value::TYPE_NONE: stream << "nil"; break;
-				case File::Value::TYPE_STRING: stream << "string"; break;
-				case File::Value::TYPE_INT: stream << "int"; break;
-				case File::Value::TYPE_BOOL: stream << (node.get_bool()?"true":"false"); break;
-				case File::Value::TYPE_ID: stream << "id"; break;
-				case File::Value::TYPE_LIST: stream << "list"; break;
-				default: stream << "unknown"; break;
-			}
-			stream << ')';
+	case File::Node::ATTR:
+		stream << node.get_ns() << '.' << node.get_name() << " (";
+		switch (node.get_value_type()) {
+		case File::Value::TYPE_NONE:
+			stream << "nil";
 			break;
-		case File::Node::BEGIN_TYPED:
-			stream << node.get_ns() << '.' << node.get_name() << " (" << node.get_string() << ')';
+		case File::Value::TYPE_STRING:
+			stream << "string";
 			break;
-		case File::Node::BEGIN_UNTYPED:
-			stream << node.get_ns() << '.' << node.get_name();
+		case File::Value::TYPE_INT:
+			stream << "int";
 			break;
-		case File::Node::END:
-			stream << "$eof";
+		case File::Value::TYPE_BOOL:
+			stream << (node.get_bool() ? "true" : "false");
 			break;
-		case File::Node::ERROR:
-			stream << "<error>";
+		case File::Value::TYPE_ID:
+			stream << "id";
+			break;
+		case File::Value::TYPE_LIST:
+			stream << "list";
 			break;
 		default:
 			stream << "unknown";
 			break;
+		}
+		stream << ')';
+		break;
+	case File::Node::BEGIN_TYPED:
+		stream << node.get_ns() << '.' << node.get_name() << " (" << node.get_string() << ')';
+		break;
+	case File::Node::BEGIN_UNTYPED:
+		stream << node.get_ns() << '.' << node.get_name();
+		break;
+	case File::Node::END:
+		stream << "$eof";
+		break;
+	case File::Node::ERROR:
+		stream << "<error>";
+		break;
+	default:
+		stream << "unknown";
+		break;
 	}
 
 	return stream;

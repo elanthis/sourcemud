@@ -8,16 +8,16 @@
 #include "common.h"
 #include "mud/idmap.h"
 
-MID::MID ()
+MID::MID()
 {
 }
 
-MID::~MID ()
+MID::~MID()
 {
 }
 
 const std::string*
-MID::lookup (const std::string& idname)
+MID::lookup(const std::string& idname)
 {
 	IDMap::iterator i = id_map.find(idname);
 	if (i != id_map.end())
@@ -26,7 +26,7 @@ MID::lookup (const std::string& idname)
 }
 
 const std::string*
-MID::create (const std::string& idname)
+MID::create(const std::string& idname)
 {
 	if (idname.empty())
 		return NULL;

@@ -37,7 +37,7 @@ Object::Object()
 
 ShadowObject::ShadowObject() : Object(), blueprint(0) { }
 
-ShadowObject::ShadowObject (ObjectBP* s_blueprint) : Object(), blueprint(0)
+ShadowObject::ShadowObject(ObjectBP* s_blueprint) : Object(), blueprint(0)
 {
 	set_blueprint(s_blueprint);
 }
@@ -143,18 +143,18 @@ int
 Object::load_node(File::Reader& reader, File::Node& node)
 {
 	FO_NODE_BEGIN
-		FO_ATTR("object", "location")
-			if (node.get_string() == "in")
-				container = ObjectLocation::IN;
-			else if (node.get_string() == "on")
-				container = ObjectLocation::ON;
-			else
-				throw File::Error("Object has invalid container attribute");
-		FO_ENTITY("object", "child")
-			if (OBJECT(entity) == NULL) throw File::Error("Object child is not an Object");
-			OBJECT(entity)->set_owner (this);
-			children.add (OBJECT(entity));
-		FO_PARENT(Entity)
+	FO_ATTR("object", "location")
+	if (node.get_string() == "in")
+		container = ObjectLocation::IN;
+	else if (node.get_string() == "on")
+		container = ObjectLocation::ON;
+	else
+		throw File::Error("Object has invalid container attribute");
+	FO_ENTITY("object", "child")
+	if (OBJECT(entity) == NULL) throw File::Error("Object child is not an Object");
+	OBJECT(entity)->set_owner(this);
+	children.add(OBJECT(entity));
+	FO_PARENT(Entity)
 	FO_NODE_END
 }
 
@@ -162,16 +162,16 @@ int
 ShadowObject::load_node(File::Reader& reader, File::Node& node)
 {
 	FO_NODE_BEGIN
-		FO_ATTR("object", "blueprint")
-			// sets a real blueprint
-			ObjectBP* blueprint = NULL;
-			if ((blueprint = MObjectBP.lookup(node.get_string())) == NULL)
-				Log::Error << "Could not find object blueprint '" << node.get_string() << "'";
-			else
-				set_blueprint(blueprint);
-		FO_ATTR("object", "name")
-			name.set_name(node.get_string());
-		FO_PARENT(Entity)
+	FO_ATTR("object", "blueprint")
+	// sets a real blueprint
+	ObjectBP* blueprint = NULL;
+	if ((blueprint = MObjectBP.lookup(node.get_string())) == NULL)
+		Log::Error << "Could not find object blueprint '" << node.get_string() << "'";
+	else
+		set_blueprint(blueprint);
+	FO_ATTR("object", "name")
+	name.set_name(node.get_string());
+	FO_PARENT(Entity)
 	FO_NODE_END
 }
 
@@ -179,38 +179,38 @@ int
 UniqueObject::load_node(File::Reader& reader, File::Node& node)
 {
 	FO_NODE_BEGIN
-		FO_ATTR("object", "name")
-			set_name(node.get_string());
-		FO_ATTR("object", "keyword")
-			keywords.push_back(node.get_string());
-		FO_ATTR("object", "desc")
-			set_desc(node.get_string());
-		FO_ATTR("object", "weight")
-			set_weight(node.get_int());
-		FO_ATTR("object", "cost")
-			set_cost(node.get_int());
-		FO_ATTR("object", "equip")
-			set_equip(EquipSlot::lookup(node.get_string()));
-		FO_ATTR("object", "gettable")
-			set_flag(ObjectFlag::GET, node.get_bool());
-		FO_ATTR("object", "touchable")
-			set_flag(ObjectFlag::TOUCH, node.get_bool());
-		FO_ATTR("object", "hidden")
-			set_flag(ObjectFlag::HIDDEN, node.get_bool());
-		FO_ATTR("object", "dropable")
-			set_flag(ObjectFlag::DROP, node.get_bool());
-		FO_ATTR("object", "trashable")
-			set_flag(ObjectFlag::TRASH, node.get_bool());
-		FO_ATTR("object", "rotting")
-			set_flag(ObjectFlag::ROT, node.get_bool());
-		FO_ATTR("object", "container")
-			if (node.get_string() == "on") {
-				locations.set_on(ObjectLocation::ON);
-			} else if (node.get_string() == "in") {
-				locations.set_on(ObjectLocation::IN);
-			} else
-				Log::Warning << "Unknown container type '" << node.get_string() << "' at " << reader.get_filename() << ':' << node.get_line();
-		FO_PARENT(Object)
+	FO_ATTR("object", "name")
+	set_name(node.get_string());
+	FO_ATTR("object", "keyword")
+	keywords.push_back(node.get_string());
+	FO_ATTR("object", "desc")
+	set_desc(node.get_string());
+	FO_ATTR("object", "weight")
+	set_weight(node.get_int());
+	FO_ATTR("object", "cost")
+	set_cost(node.get_int());
+	FO_ATTR("object", "equip")
+	set_equip(EquipSlot::lookup(node.get_string()));
+	FO_ATTR("object", "gettable")
+	set_flag(ObjectFlag::GET, node.get_bool());
+	FO_ATTR("object", "touchable")
+	set_flag(ObjectFlag::TOUCH, node.get_bool());
+	FO_ATTR("object", "hidden")
+	set_flag(ObjectFlag::HIDDEN, node.get_bool());
+	FO_ATTR("object", "dropable")
+	set_flag(ObjectFlag::DROP, node.get_bool());
+	FO_ATTR("object", "trashable")
+	set_flag(ObjectFlag::TRASH, node.get_bool());
+	FO_ATTR("object", "rotting")
+	set_flag(ObjectFlag::ROT, node.get_bool());
+	FO_ATTR("object", "container")
+	if (node.get_string() == "on") {
+		locations.set_on(ObjectLocation::ON);
+	} else if (node.get_string() == "in") {
+		locations.set_on(ObjectLocation::IN);
+	} else
+		Log::Warning << "Unknown container type '" << node.get_string() << "' at " << reader.get_filename() << ':' << node.get_line();
+	FO_PARENT(Object)
 	FO_NODE_END
 }
 
@@ -255,7 +255,7 @@ Object::heartbeat()
 				*room << StreamName(this, INDEFINITE, true) << " rots away.\n";
 				destroy();
 
-			// not rotting - normal trash
+				// not rotting - normal trash
 			} else if (trash_timer >= OBJECT_TRASH_TICKS) {
 				// room must not have any players in it
 				if (room->count_players() == 0) {
@@ -293,7 +293,7 @@ Object::deactivate()
 bool
 Object::add_object(Object *object, ObjectLocation container)
 {
-	assert (object != NULL);
+	assert(object != NULL);
 
 	// has contianer?
 	if (!has_location(container))
@@ -317,7 +317,7 @@ void
 Object::show_contents(Player *player, ObjectLocation container) const
 {
 	*player << "You see ";
-	
+
 	Object* last = NULL;
 	int displayed = 0;
 
@@ -362,17 +362,17 @@ Object::show_contents(Player *player, ObjectLocation container) const
 Object *
 Object::find_object(const std::string& name, uint index, ObjectLocation container, uint *matches) const
 {
-	assert (index != 0);
+	assert(index != 0);
 
 	// clear matches
 	if (matches)
 		*matches = 0;
-	
+
 	for (EList<Object>::const_iterator i = children.begin(); i != children.end(); ++i) {
 		// right container container
 		if ((*i)->container == container) {
 			// check name
-			if ((*i)->name_match (name)) {
+			if ((*i)->name_match(name)) {
 				if (matches)
 					++ *matches;
 				if ((-- index) == 0)
@@ -407,7 +407,7 @@ Object::get_room() const
 }
 
 // find parent owner
-Creature* 
+Creature*
 Object::get_holder() const
 {
 	Entity* owner = get_owner();
@@ -552,7 +552,7 @@ ShadowObject::load_blueprint(const std::string& name)
 	ObjectBP* blueprint = MObjectBP.lookup(name);
 	if (!blueprint)
 		return NULL;
-	
+
 	return new ShadowObject(blueprint);
 }
 
@@ -577,7 +577,7 @@ ShadowObject::name_match(const std::string& match) const
 	ObjectBP* blueprint = get_blueprint();
 	if (blueprint != NULL) {
 		for (std::vector<std::string>::const_iterator i = blueprint->get_keywords().begin(); i != blueprint->get_keywords().end(); ++i)
-			if (phrase_match (*i, match))
+			if (phrase_match(*i, match))
 				return true;
 	}
 
@@ -586,9 +586,9 @@ ShadowObject::name_match(const std::string& match) const
 }
 
 BEGIN_EFACTORY(SObject)
-	return new ShadowObject();
+return new ShadowObject();
 END_EFACTORY
 
 BEGIN_EFACTORY(UObject)
-	return new UniqueObject();
+return new UniqueObject();
 END_EFACTORY

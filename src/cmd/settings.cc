@@ -25,7 +25,7 @@
  *
  * END COMMAND */
 
-void command_set_color (Player* player, std::string argv[])
+void command_set_color(Player* player, std::string argv[])
 {
 	// must have a telnet connection
 	if (player->get_conn() == NULL) {
@@ -67,7 +67,7 @@ void command_set_color (Player* player, std::string argv[])
 			*player << "\n";
 		player->set_indent(0);
 
-	// invalid color
+		// invalid color
 	} else if (color_value_names[cvalue].empty()) {
 		// determine column count
 		int max_col = (player->get_width() - 3) / 20; // figure max size
@@ -92,9 +92,9 @@ void command_set_color (Player* player, std::string argv[])
 			*player << "\n";
 		player->set_indent(0);
 
-	// set color
+		// set color
 	} else {
-		player->get_conn()->pconn_set_color (ctype, cvalue);
-		*player << "Color '" << color_type_names [ctype]<< "' set to " << color_values[cvalue] << color_value_names[cvalue] << CNORMAL "\n";
+		player->get_conn()->pconn_set_color(ctype, cvalue);
+		*player << "Color '" << color_type_names [ctype] << "' set to " << color_values[cvalue] << color_value_names[cvalue] << CNORMAL "\n";
 	}
 }

@@ -14,14 +14,14 @@
 
 // helper function to generate path names
 std::string
-_MPlayer::path (const std::string& name)
+_MPlayer::path(const std::string& name)
 {
 	return MSettings.get_player_path() + "/" + strlower(name) + ".ply";
 }
 
 // check if a name is valid
 bool
-_MPlayer::valid_name (const std::string& name)
+_MPlayer::valid_name(const std::string& name)
 {
 	// empty?  just fail
 	if (name.empty())
@@ -30,7 +30,7 @@ _MPlayer::valid_name (const std::string& name)
 	// check size
 	int len = name.size();
 	if (len < PLAYER_NAME_MIN_LEN || len > PLAYER_NAME_MAX_LEN)
-			return false;
+		return false;
 
 	// alpha only
 	for (int i = 0; i < len; i ++)
@@ -47,7 +47,7 @@ _MPlayer::valid_name (const std::string& name)
 	}
 
 	char t_name[512];
-	while ((badnames.getline(t_name, sizeof (t_name))))
+	while ((badnames.getline(t_name, sizeof(t_name))))
 		if (!fnmatch(t_name, name.c_str(), FNM_CASEFOLD))
 			return false;
 
@@ -56,13 +56,13 @@ _MPlayer::valid_name (const std::string& name)
 
 // find a Player
 Player *
-_MPlayer::get (const std::string& name)
+_MPlayer::get(const std::string& name)
 {
 	assert(!name.empty() && "name must not be empty");
 
 	// try loading alive
 	for (PlayerList::iterator i = player_list.begin(); i != player_list.end(); ++i)
-		if (((*i)->is_active()) && str_eq (name, (*i)->get_id()))
+		if (((*i)->is_active()) && str_eq(name, (*i)->get_id()))
 			return *i;
 
 	// not found
@@ -70,7 +70,7 @@ _MPlayer::get (const std::string& name)
 }
 
 void
-_MPlayer::list (const StreamControl& stream)
+_MPlayer::list(const StreamControl& stream)
 {
 	stream << "Currently logged in players:\n";
 	size_t count = 0;
@@ -94,7 +94,7 @@ _MPlayer::list (const StreamControl& stream)
 }
 
 size_t
-_MPlayer::count (void)
+_MPlayer::count(void)
 {
 	size_t count = 0;
 	for (PlayerList::iterator i = player_list.begin(); i != player_list.end(); ++i)
@@ -104,7 +104,7 @@ _MPlayer::count (void)
 }
 
 int
-_MPlayer::initialize (void)
+_MPlayer::initialize(void)
 {
 	// modules we need to operate
 	if (require(MAccount) != 0)
@@ -116,7 +116,7 @@ _MPlayer::initialize (void)
 }
 
 void
-_MPlayer::shutdown (void)
+_MPlayer::shutdown(void)
 {
 	// quit all players
 	while (!player_list.empty()) {
@@ -140,7 +140,7 @@ Player* _MPlayer::load(std::tr1::shared_ptr<Account> account, const std::string&
 	File::Reader reader;
 	if (reader.open(MPlayer.path(name)))
 		return NULL;
-	
+
 	// create player
 	player = new Player(account, name);
 	if (player == NULL) {
@@ -157,7 +157,7 @@ Player* _MPlayer::load(std::tr1::shared_ptr<Account> account, const std::string&
 }
 
 bool
-_MPlayer::exists (const std::string& name)
+_MPlayer::exists(const std::string& name)
 {
 	// must be a valid name
 	if (!valid_name(name))
@@ -175,17 +175,17 @@ _MPlayer::exists (const std::string& name)
 	// check if player file exists
 	std::string path = MPlayer.path(name);
 	struct stat st;
-	int res = stat (path.c_str(), &st);
+	int res = stat(path.c_str(), &st);
 	if (res == 0)
 		return true;
 	if (res == -1 && errno == ENOENT)
 		return false;
-	Log::Error << "stat() failed for " << path << ": " << strerror(errno);	
+	Log::Error << "stat() failed for " << path << ": " << strerror(errno);
 	return true;
 }
 
 int
-_MPlayer::destroy (const std::string& name)
+_MPlayer::destroy(const std::string& name)
 {
 	// must be a valid name
 	if (!valid_name(name))
@@ -217,7 +217,7 @@ _MPlayer::destroy (const std::string& name)
 }
 
 void
-_MPlayer::save (void)
+_MPlayer::save(void)
 {
 	for (PlayerList::iterator i = player_list.begin(); i != player_list.end(); ++i)
 		if ((*i)->is_active())

@@ -15,7 +15,7 @@ int SocketListener::accept(NetAddr& addr) const
 {
 	// accept socket
 	socklen_t sslen = sizeof(addr);
-	int client = ::accept(sock, (struct sockaddr*)&addr, &sslen);
+	int client = ::accept(sock, (struct sockaddr*) & addr, &sslen);
 	if (client == -1)
 		return -1;
 
@@ -24,17 +24,17 @@ int SocketListener::accept(NetAddr& addr) const
 	return client;
 }
 
-SocketConnection::SocketConnection (int s_sock) : output(), sock(s_sock),
-	disconnect(false), in_bytes(0), out_bytes(0)
+SocketConnection::SocketConnection(int s_sock) : output(), sock(s_sock),
+		disconnect(false), in_bytes(0), out_bytes(0)
 {}
 
 void
-SocketConnection::sock_in_ready ()
+SocketConnection::sock_in_ready()
 {
 	char buffer[2048];
 	int err = recv(sock, buffer, sizeof(buffer), 0);
 
-	// fatal error 
+	// fatal error
 	if (err == -1 && errno != EAGAIN && errno != EINTR) {
 		Log::Error << "recv() failed: " << strerror(errno);
 		close(sock);
@@ -43,7 +43,7 @@ SocketConnection::sock_in_ready ()
 		sock_hangup();
 		return;
 
-	// eof
+		// eof
 	} else if (err == 0) {
 		close(sock);
 		sock = -1;
@@ -51,7 +51,7 @@ SocketConnection::sock_in_ready ()
 		sock_hangup();
 		return;
 
-	// real data
+		// real data
 	} else if (err > 0 && !disconnect) {
 		in_bytes += err;
 		sock_input(buffer, err);
@@ -60,7 +60,7 @@ SocketConnection::sock_in_ready ()
 
 
 void
-SocketConnection::sock_out_ready ()
+SocketConnection::sock_out_ready()
 {
 	int ret = send(sock, &output[0], output.size(), 0);
 	if (ret > 0) {
@@ -75,7 +75,7 @@ SocketConnection::sock_out_ready ()
 }
 
 void
-SocketConnection::sock_buffer (const char* bytes, size_t len)
+SocketConnection::sock_buffer(const char* bytes, size_t len)
 {
 	out_bytes += len;
 	if (output.size() + len > output.capacity()) {
@@ -89,13 +89,13 @@ SocketConnection::sock_buffer (const char* bytes, size_t len)
 }
 
 void
-SocketConnection::sock_disconnect ()
+SocketConnection::sock_disconnect()
 {
 	disconnect = true;
 }
 
 void
-SocketConnection::sock_complete_disconnect ()
+SocketConnection::sock_complete_disconnect()
 {
 	shutdown(sock, SHUT_RDWR);
 	close(sock);

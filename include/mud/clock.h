@@ -15,9 +15,10 @@
 #define ROUNDS_TO_TICKS(s) ((s) * TICKS_PER_ROUND)
 
 // current number of game ticks
-namespace MUD {
-	unsigned long get_ticks (void);
-	unsigned long get_rounds (void);
+namespace MUD
+{
+unsigned long get_ticks(void);
+unsigned long get_rounds(void);
 }
 
 // NOTE: code in server.cc

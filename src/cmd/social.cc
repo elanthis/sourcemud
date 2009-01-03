@@ -27,7 +27,7 @@
  * END COMMAND */
 void command_emote(Creature* ch, std::string argv[])
 {
-	ch->do_emote (argv[0]);
+	ch->do_emote(argv[0]);
 }
 
 /* BEGIN COMMAND
@@ -58,7 +58,7 @@ void command_laugh(Creature* ch, std::string argv[])
 			*ch << "You laugh evilly.\n";
 			*ch->get_room() << StreamIgnore(ch) << StreamName(ch, INDEFINITE, true) << " laughs evilly.";
 		}
-	// no adverb
+		// no adverb
 	} else {
 		if (target) {
 			*ch << "You laugh at " << StreamName(target, DEFINITE) << ".\n";

@@ -20,7 +20,8 @@
 
 #include <string>
 
-namespace Lua {
+namespace Lua
+{
 
 // creates a new user data that contains the provided pointer,
 // using the metatable with the given name.  The userdata is

@@ -14,8 +14,9 @@ class Room;
 class StreamControl;
 
 // base stream type
-class IStreamSink {
-	public:
+class IStreamSink
+{
+public:
 	virtual ~IStreamSink() {}
 
 	virtual void stream_put(const char* text, size_t len = 0) = 0;
@@ -25,8 +26,9 @@ class IStreamSink {
 
 // base stream type
 class
-StreamControl {
-	public:
+			StreamControl
+{
+public:
 	// create sink
 	inline StreamControl(IStreamSink* sptr) : sink(sptr) { assert(sink != NULL); }
 	inline StreamControl(IStreamSink& sref) : sink(&sref) { assert(sink != NULL); }
@@ -54,7 +56,7 @@ StreamControl {
 		return *this;
 	}
 
-	private:
+private:
 	IStreamSink* sink;
 };
 
@@ -62,8 +64,7 @@ StreamControl {
 struct StreamIgnore {
 	explicit StreamIgnore(class Creature* s_ch) : ch(s_ch) {}
 
-	friend const StreamControl& operator <<(const StreamControl& stream, const StreamIgnore& ignore)
-	{
+	friend const StreamControl& operator <<(const StreamControl& stream, const StreamIgnore& ignore) {
 		return stream.stream_ignore(ignore.ch);
 	}
 
@@ -73,10 +74,9 @@ struct StreamIgnore {
 // stream a chunk of a string
 struct StreamChunk {
 	explicit StreamChunk(const char* s_text, size_t s_len) : text(s_text), len(s_len) {}
-	explicit StreamChunk(const char* s_text, const char* s_last) : text(s_text), len(s_last-s_text+1) {}
+	explicit StreamChunk(const char* s_text, const char* s_last) : text(s_text), len(s_last - s_text + 1) {}
 
-	friend const StreamControl& operator <<(const StreamControl& stream, const StreamChunk& chunk)
-	{
+	friend const StreamControl& operator <<(const StreamControl& stream, const StreamChunk& chunk) {
 		return stream.stream_put(chunk.text, chunk.len);
 	}
 
@@ -89,38 +89,38 @@ inline
 const StreamControl& operator <<(const StreamControl& stream, long i)
 {
 	char buf[40];
-	snprintf(buf,sizeof(buf),"%ld",i);
+	snprintf(buf, sizeof(buf), "%ld", i);
 	return stream.stream_put(buf);
 }
 inline
 const StreamControl& operator <<(const StreamControl& stream, unsigned long ui)
 {
 	char buf[40];
-	snprintf(buf,sizeof(buf),"%lu",ui);
+	snprintf(buf, sizeof(buf), "%lu", ui);
 	return stream.stream_put(buf);
 }
 inline
 const StreamControl& operator <<(const StreamControl& stream, long long lli)
 {
 	char buf[40];
-	snprintf(buf,sizeof(buf),"%lld",lli);
+	snprintf(buf, sizeof(buf), "%lld", lli);
 	return stream.stream_put(buf);
 }
 inline
 const StreamControl& operator <<(const StreamControl& stream, int i)
 {
-	return stream <<(long)i;
+	return stream << (long)i;
 }
 inline
 const StreamControl& operator <<(const StreamControl& stream, unsigned int ui)
 {
-	return stream <<(unsigned long)ui;
+	return stream << (unsigned long)ui;
 }
 inline
 const StreamControl& operator <<(const StreamControl& stream, const void* ptr)
 {
 	char buf[40];
-	snprintf(buf,sizeof(buf),"%p",ptr);
+	snprintf(buf, sizeof(buf), "%p", ptr);
 	return stream.stream_put(buf);
 }
 inline

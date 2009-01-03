@@ -12,7 +12,7 @@
 #include "mud/filetab.h"
 
 int
-File::TabReader::open (const std::string& filename)
+File::TabReader::open(const std::string& filename)
 {
 	// open
 	in.open(filename.c_str());
@@ -27,7 +27,7 @@ File::TabReader::open (const std::string& filename)
 }
 
 int
-File::TabReader::load ()
+File::TabReader::load()
 {
 	std::vector<std::string> cent;
 	StringBuffer cword;
@@ -45,67 +45,67 @@ File::TabReader::load ()
 			continue;
 
 		switch (state) {
-			case WS:
-				if (c == '\n') {
-					if (!cent.empty()) {
-						entries.push_back(Entry(line, cent));
-						cent.clear();
-					}
-					++line;
-				} else if (c == '"')
-					state = QUOTE;
-				else if (c == '#')
-					state = COMMENT;
-				else if (!isspace(c)) {
-					cword << (char)c;
-					state = WORD;
-				}
-				break;
-			case WORD:
-				if (isspace(c) || c == '#') {
-					cent.push_back(cword.str());
-					cword.clear();
-				}
-				if (c == '\n') {
+		case WS:
+			if (c == '\n') {
+				if (!cent.empty()) {
 					entries.push_back(Entry(line, cent));
 					cent.clear();
-					++line;
-					state = WS;
-				} else if (c == '#') {
-					state = COMMENT;
-				} else if (c == '"') {
-					state = QUOTE;
-				} else if (isspace(c)) {
-					state = WS;
-				} else {
-					cword << (char)c;
 				}
-				break;
-			case QUOTE:
-				if (c == '\n') {
-					cent.push_back(cword.str());
-					cword.clear();
+				++line;
+			} else if (c == '"')
+				state = QUOTE;
+			else if (c == '#')
+				state = COMMENT;
+			else if (!isspace(c)) {
+				cword << (char)c;
+				state = WORD;
+			}
+			break;
+		case WORD:
+			if (isspace(c) || c == '#') {
+				cent.push_back(cword.str());
+				cword.clear();
+			}
+			if (c == '\n') {
+				entries.push_back(Entry(line, cent));
+				cent.clear();
+				++line;
+				state = WS;
+			} else if (c == '#') {
+				state = COMMENT;
+			} else if (c == '"') {
+				state = QUOTE;
+			} else if (isspace(c)) {
+				state = WS;
+			} else {
+				cword << (char)c;
+			}
+			break;
+		case QUOTE:
+			if (c == '\n') {
+				cent.push_back(cword.str());
+				cword.clear();
+				entries.push_back(Entry(line, cent));
+				cent.clear();
+				Log::Warning << "Unterminated quoted string at " << filename << ":" << line;
+				++line;
+				state = WS;
+			} else if (c == '"') {
+				state = WORD;
+			} else {
+				cword << (char)c;
+			}
+			break;
+		case COMMENT:
+			if (c == '\n') {
+				if (!cent.empty()) {
 					entries.push_back(Entry(line, cent));
 					cent.clear();
-					Log::Warning << "Unterminated quoted string at " << filename << ":" << line;
-					++line;
-					state = WS;
-				} else if (c == '"') {
-					state = WORD;
-				} else {
-					cword << (char)c;
 				}
-				break;
-			case COMMENT:
-				if (c == '\n') {
-					if (!cent.empty()) {
-						entries.push_back(Entry(line, cent));
-						cent.clear();
-					}
-					state = WS;
-					++line;
-				}
-				break;
+				state = WS;
+				++line;
+			}
+			break;
 		}
 	}
 
@@ -121,7 +121,7 @@ File::TabReader::load ()
 }
 
 std::string
-File::TabReader::get (size_t line, size_t col) const
+File::TabReader::get(size_t line, size_t col) const
 {
 	if (entries[line].second.size() <= col)
 		return std::string();

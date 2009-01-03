@@ -17,9 +17,9 @@
 
 _MRace MRace;
 
-Race::Race (const std::string& s_name, Race *s_next) :
-	name(s_name.c_str()),
-	next(s_next) {}
+Race::Race(const std::string& s_name, Race *s_next) :
+		name(s_name.c_str()),
+		next(s_next) {}
 
 int
 Race::load(File::Reader& reader)
@@ -39,40 +39,40 @@ Race::load(File::Reader& reader)
 		stats[i] = 0;
 
 	FO_READ_BEGIN
-		FO_ATTR("race", "name")
-			name = node.get_string();
-		FO_ATTR("race", "adj")
-			adj = node.get_string();
-		FO_ATTR("race", "body")
-			body = node.get_string();
-		FO_ATTR("race", "desc")
-			desc = node.get_string();
-		FO_ATTR("race", "about")
-			about = node.get_string();
-		FO_ATTR("race", "eye_color")
-			eye_colors.push_back(FormColor::create(node.get_string()));
-		FO_ATTR("race", "hair_color")
-			hair_colors.push_back(FormColor::create(node.get_string()));
-		FO_ATTR("race", "skin_color")
-			skin_colors.push_back(FormColor::create(node.get_string()));
-		FO_ATTR("race", "min_age")
-			age_min = node.get_int();
-		FO_ATTR("race", "max_age")
-			age_max = node.get_int();
-		FO_ATTR("race", "lifespan")
-			life_span = node.get_int();
-		FO_ATTR("race", "neuter_height")
-			height[GenderType::NONE] = node.get_int();
-		FO_ATTR("race", "female_height")
-			height[GenderType::FEMALE] = node.get_int();
-		FO_ATTR("race", "male_height")
-			height[GenderType::MALE] = node.get_int();
-		FO_ATTR("race", "stat_bonus")
-			CreatureStatID stat = CreatureStatID::lookup(node.get_string(0));
-			if (stat)
-				stats[stat.get_value()] = node.get_int(1);
+	FO_ATTR("race", "name")
+	name = node.get_string();
+	FO_ATTR("race", "adj")
+	adj = node.get_string();
+	FO_ATTR("race", "body")
+	body = node.get_string();
+	FO_ATTR("race", "desc")
+	desc = node.get_string();
+	FO_ATTR("race", "about")
+	about = node.get_string();
+	FO_ATTR("race", "eye_color")
+	eye_colors.push_back(FormColor::create(node.get_string()));
+	FO_ATTR("race", "hair_color")
+	hair_colors.push_back(FormColor::create(node.get_string()));
+	FO_ATTR("race", "skin_color")
+	skin_colors.push_back(FormColor::create(node.get_string()));
+	FO_ATTR("race", "min_age")
+	age_min = node.get_int();
+	FO_ATTR("race", "max_age")
+	age_max = node.get_int();
+	FO_ATTR("race", "lifespan")
+	life_span = node.get_int();
+	FO_ATTR("race", "neuter_height")
+	height[GenderType::NONE] = node.get_int();
+	FO_ATTR("race", "female_height")
+	height[GenderType::FEMALE] = node.get_int();
+	FO_ATTR("race", "male_height")
+	height[GenderType::MALE] = node.get_int();
+	FO_ATTR("race", "stat_bonus")
+	CreatureStatID stat = CreatureStatID::lookup(node.get_string(0));
+	if (stat)
+		stats[stat.get_value()] = node.get_int(1);
 	FO_READ_ERROR
-		return -1;
+	return -1;
 	FO_READ_END
 
 	// fixup adjective
@@ -94,7 +94,7 @@ _MRace::get(const std::string& name)
 {
 	Race *race = head;
 	while (race != NULL) {
-		if (str_eq (race->get_name(), name))
+		if (str_eq(race->get_name(), name))
 			return race;
 		race = race->get_next();
 	}
@@ -114,14 +114,14 @@ _MRace::initialize()
 
 	// load
 	FO_READ_BEGIN
-		FO_OBJECT("races", "race")
-			// load race
-			Race *race = new Race (node.get_name(), head);
-			if (race->load (reader))
-				return -1;
-			head = race;
-	FO_READ_ERROR
+	FO_OBJECT("races", "race")
+	// load race
+	Race *race = new Race(node.get_name(), head);
+	if (race->load(reader))
 		return -1;
+	head = race;
+	FO_READ_ERROR
+	return -1;
 	FO_READ_END
 
 	return 0;

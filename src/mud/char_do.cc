@@ -19,14 +19,14 @@
 #include "mud/npc.h"
 
 void
-Creature::do_emote (const std::string& action)
+Creature::do_emote(const std::string& action)
 {
 	if (get_room())
 		*get_room() << "(" << StreamName(this, DEFINITE, true) << ") " << action << "\n";
 }
 
 void
-Creature::do_say (const std::string& text)
+Creature::do_say(const std::string& text)
 {
 	// don't say nothing
 	if (text.empty())
@@ -46,7 +46,7 @@ Creature::do_say (const std::string& text)
 
 	// blah says...
 	{
-		StreamControl stream (*get_room()); // ends at second bracket, sends text
+		StreamControl stream(*get_room());  // ends at second bracket, sends text
 		stream << StreamIgnore(this);
 		if (is_dead())
 			stream << "The ghostly voice of " << StreamName(this, INDEFINITE, false);
@@ -67,7 +67,7 @@ Creature::do_say (const std::string& text)
 }
 
 void
-Creature::do_sing (const std::string& text)
+Creature::do_sing(const std::string& text)
 {
 	// split into lines
 	std::vector<std::string> lines;
@@ -109,7 +109,7 @@ Creature::do_sing (const std::string& text)
 	*this << "You sing:\n" << output.str();
 
 	// blah sings...
-	StreamControl stream (*get_room());
+	StreamControl stream(*get_room());
 	stream << StreamIgnore(this);
 	if (is_dead())
 		stream << "The ghostly voice of " << StreamName(this, INDEFINITE, false);
@@ -119,7 +119,7 @@ Creature::do_sing (const std::string& text)
 }
 
 void
-Creature::do_look ()
+Creature::do_look()
 {
 	// check
 	if (!check_see()) return;
@@ -130,9 +130,9 @@ Creature::do_look ()
 }
 
 void
-Creature::do_look (Creature *ch)
+Creature::do_look(Creature *ch)
 {
-	assert (ch != NULL);
+	assert(ch != NULL);
 
 	// check
 	if (!check_see()) return;
@@ -154,17 +154,17 @@ Creature::do_look (Creature *ch)
 }
 
 void
-Creature::do_look (Object *obj, ObjectLocation type)
+Creature::do_look(Object *obj, ObjectLocation type)
 {
-	assert (obj != NULL);
+	assert(obj != NULL);
 
 	// check
 	if (!check_see()) return;
 
 	// specific container type
 	if (type != 0) {
-		if (obj->has_location(type)) 
-			obj->show_contents (PLAYER(this), type);
+		if (obj->has_location(type))
+			obj->show_contents(PLAYER(this), type);
 		else if (type == ObjectLocation::IN)
 			*this << StreamName(*obj, DEFINITE, true) << " cannot be looked inside of.\n";
 		else if (type == ObjectLocation::ON)
@@ -186,9 +186,9 @@ Creature::do_look (Object *obj, ObjectLocation type)
 }
 
 void
-Creature::do_look (Portal *portal)
+Creature::do_look(Portal *portal)
 {
-	assert (portal != NULL);
+	assert(portal != NULL);
 
 	// get target room
 	Room* target_room = NULL;
@@ -226,15 +226,14 @@ Creature::do_look (Portal *portal)
 
 class ActionChangePosition : public IAction
 {
-	public:
-	ActionChangePosition (Creature* s_ch, CreaturePosition s_position) : IAction(s_ch), position(s_position) {}
+public:
+	ActionChangePosition(Creature* s_ch, CreaturePosition s_position) : IAction(s_ch), position(s_position) {}
 
-	virtual uint get_rounds () const { return 1; }
-	virtual void describe (const StreamControl& stream) const { stream << position.get_verbing(); }
-	virtual void finish () {}
+	virtual uint get_rounds() const { return 1; }
+	virtual void describe(const StreamControl& stream) const { stream << position.get_verbing(); }
+	virtual void finish() {}
 
-	virtual int start ()
-	{
+	virtual int start() {
 		// checks
 		if (!get_actor()->check_move())
 			return 1;
@@ -252,28 +251,28 @@ class ActionChangePosition : public IAction
 		return 0;
 	}
 
-	private:
+private:
 	CreaturePosition position;
 };
 
 void
-Creature::do_position (CreaturePosition position)
+Creature::do_position(CreaturePosition position)
 {
 	add_action(new ActionChangePosition(this, position));
 }
 
 class ActionGet : public IAction
 {
-	public:
-	ActionGet (Creature* s_ch, Object* s_obj, Object* s_container, ObjectLocation s_type) :
+public:
+	ActionGet(Creature* s_ch, Object* s_obj, Object* s_container, ObjectLocation s_type) :
 			IAction(s_ch), obj(s_obj), container(s_container), type(s_type) {
 	}
 
-	virtual uint get_rounds () const { return 2; }
-	virtual void describe (const StreamControl& stream) const { stream << "getting " << StreamName(obj, INDEFINITE); }
-	virtual void finish () {}
+	virtual uint get_rounds() const { return 2; }
+	virtual void describe(const StreamControl& stream) const { stream << "getting " << StreamName(obj, INDEFINITE); }
+	virtual void finish() {}
 
-	virtual int start () {
+	virtual int start() {
 		if (!get_actor()->check_alive() || !get_actor()->check_move())
 			return 1;
 
@@ -285,7 +284,7 @@ class ActionGet : public IAction
 		} else if (!obj->is_gettable()) {
 			*get_actor() << "You cannot pickup " << StreamName(*obj, DEFINITE) << ".\n";
 			return 1;
-		} else if (get_actor()->hold (obj) < 0) {
+		} else if (get_actor()->hold(obj) < 0) {
 			*get_actor() << "Your hands are full.\n";
 			return 1;
 		} else {
@@ -306,32 +305,32 @@ class ActionGet : public IAction
 		}
 	}
 
-	private:
+private:
 	Object* obj;
 	Object* container;
 	ObjectLocation type;
 };
 
 void
-Creature::do_get (Object *obj, Object *contain, ObjectLocation type)
+Creature::do_get(Object *obj, Object *contain, ObjectLocation type)
 {
-	assert (obj != NULL);
+	assert(obj != NULL);
 
 	add_action(new ActionGet(this, obj, contain, type));
 }
 
 class ActionPut : public IAction
 {
-	public:
-	ActionPut (Creature* s_ch, Object* s_obj, Object* s_container, ObjectLocation s_type) :
+public:
+	ActionPut(Creature* s_ch, Object* s_obj, Object* s_container, ObjectLocation s_type) :
 			IAction(s_ch), obj(s_obj), container(s_container), type(s_type) {
 	}
 
-	virtual uint get_rounds () const { return 2; }
-	virtual void describe (const StreamControl& stream) const { stream << "putting " << StreamName(obj, INDEFINITE); }
-	virtual void finish () {}
+	virtual uint get_rounds() const { return 2; }
+	virtual void describe(const StreamControl& stream) const { stream << "putting " << StreamName(obj, INDEFINITE); }
+	virtual void finish() {}
 
-	virtual int start () {
+	virtual int start() {
 		if (!get_actor()->check_alive() || !get_actor()->check_move())
 			return 1;
 
@@ -342,38 +341,38 @@ class ActionPut : public IAction
 			return 1;
 		} else {
 			// should force let go
-			container->add_object (obj, type);
+			container->add_object(obj, type);
 			*get_actor() << "You put " << StreamName(*obj, DEFINITE) << " " << type.name() << " " << StreamName(container, DEFINITE) << ".\n";
 			return 0;
 		}
 	}
 
-	private:
+private:
 	Object* obj;
 	Object* container;
 	ObjectLocation type;
 };
 
 void
-Creature::do_put (Object *obj, Object *contain, ObjectLocation type)
+Creature::do_put(Object *obj, Object *contain, ObjectLocation type)
 {
-	assert (obj != NULL);
-	assert (contain != NULL);
+	assert(obj != NULL);
+	assert(contain != NULL);
 
 	add_action(new ActionPut(this, obj, contain, type));
 }
 
 class ActionGiveCoins : public IAction
 {
-	public:
-	ActionGiveCoins (Creature* s_ch, Creature* s_target, uint s_amount) :
-		IAction(s_ch), target(s_target), amount(s_amount) {}
+public:
+	ActionGiveCoins(Creature* s_ch, Creature* s_target, uint s_amount) :
+			IAction(s_ch), target(s_target), amount(s_amount) {}
 
-	virtual uint get_rounds () const { return 2; }
-	virtual void describe (const StreamControl& stream) const { stream << "giving coins to " << StreamName(target, INDEFINITE); }
-	virtual void finish () {}
+	virtual uint get_rounds() const { return 2; }
+	virtual void describe(const StreamControl& stream) const { stream << "giving coins to " << StreamName(target, INDEFINITE); }
+	virtual void finish() {}
 
-	virtual int start () {
+	virtual int start() {
 		// checks
 		if (!get_actor()->check_alive() || !get_actor()->check_move())
 			return 1;
@@ -400,31 +399,31 @@ class ActionGiveCoins : public IAction
 		return 0;
 	}
 
-	private:
+private:
 	Creature* target;
 	uint amount;
 };
 
 void
-Creature::do_give_coins (Creature* target, uint amount)
+Creature::do_give_coins(Creature* target, uint amount)
 {
-	assert (target != NULL);
-	assert (amount != 0);
+	assert(target != NULL);
+	assert(amount != 0);
 
 	add_action(new ActionGiveCoins(this, target, amount));
 }
 
 class ActionWear : public IAction
 {
-	public:
-	ActionWear (Creature* s_ch, Object* s_obj) :
-		IAction(s_ch), obj(s_obj) {}
+public:
+	ActionWear(Creature* s_ch, Object* s_obj) :
+			IAction(s_ch), obj(s_obj) {}
 
-	virtual uint get_rounds () const { return 5; }
-	virtual void describe (const StreamControl& stream) const { stream << "putting on " << StreamName(obj, INDEFINITE); }
-	virtual void finish () {}
+	virtual uint get_rounds() const { return 5; }
+	virtual void describe(const StreamControl& stream) const { stream << "putting on " << StreamName(obj, INDEFINITE); }
+	virtual void finish() {}
 
-	virtual int start () {
+	virtual int start() {
 		if (!get_actor()->check_move())
 			return 1;
 
@@ -433,7 +432,7 @@ class ActionWear : public IAction
 			return 1;
 		}
 
-		if (get_actor()->wear (obj) < 0) {
+		if (get_actor()->wear(obj) < 0) {
 			*get_actor() << "You can't wear " << StreamName(*obj, DEFINITE) << ".\n";
 			return 1;
 		}
@@ -444,29 +443,29 @@ class ActionWear : public IAction
 		return 0;
 	}
 
-	private:
+private:
 	Object* obj;
 };
 
 void
-Creature::do_wear (Object *obj)
+Creature::do_wear(Object *obj)
 {
-	assert (obj != NULL);
+	assert(obj != NULL);
 
 	add_action(new ActionWear(this, obj));
 }
 
 class ActionRemove : public IAction
 {
-	public:
-	ActionRemove (Creature* s_ch, Object* s_obj) :
-		IAction(s_ch), obj(s_obj) {}
+public:
+	ActionRemove(Creature* s_ch, Object* s_obj) :
+			IAction(s_ch), obj(s_obj) {}
 
-	virtual uint get_rounds () const { return 5; }
-	virtual void describe (const StreamControl& stream) const { stream << "removing " << StreamName(obj, INDEFINITE); }
-	virtual void finish () {}
+	virtual uint get_rounds() const { return 5; }
+	virtual void describe(const StreamControl& stream) const { stream << "removing " << StreamName(obj, INDEFINITE); }
+	virtual void finish() {}
 
-	virtual int start () {
+	virtual int start() {
 		if (!get_actor()->check_move())
 			return 1;
 
@@ -486,29 +485,28 @@ class ActionRemove : public IAction
 		return 0;
 	}
 
-	private:
+private:
 	Object* obj;
 };
 
 void
-Creature::do_remove (Object *obj)
+Creature::do_remove(Object *obj)
 {
-	assert (obj != NULL);
+	assert(obj != NULL);
 
 	add_action(new ActionRemove(this, obj));
 }
 
 class ActionDrop : public IInstantAction
 {
-	public:
-	ActionDrop (Creature* s_ch, Object* s_obj) : IInstantAction(s_ch), obj(s_obj) {}
+public:
+	ActionDrop(Creature* s_ch, Object* s_obj) : IInstantAction(s_ch), obj(s_obj) {}
 
-	virtual void perform ()
-	{
+	virtual void perform() {
 		if (!get_actor()->check_alive() || !get_actor()->check_move())
 			return;
 
-		if (!get_actor()->is_held (obj)) {
+		if (!get_actor()->is_held(obj)) {
 			*get_actor() << "You are not holding " << StreamName(*obj, DEFINITE) << ".\n";
 			return;
 		}
@@ -523,7 +521,7 @@ class ActionDrop : public IInstantAction
 		if (get_actor()->get_room())
 			*get_actor()->get_room() << StreamIgnore(get_actor()) << StreamName(get_actor(), INDEFINITE, true) << " drops " << StreamName(obj) << ".\n";
 
-		get_actor()->get_room()->add_object (obj);
+		get_actor()->get_room()->add_object(obj);
 
 		// send notification
 		Events::sendReleaseItem(get_actor()->get_room(), get_actor(), obj);
@@ -531,25 +529,24 @@ class ActionDrop : public IInstantAction
 		return;
 	}
 
-	private:
+private:
 	Object* obj;
 };
 
 void
-Creature::do_drop (Object *obj)
+Creature::do_drop(Object *obj)
 {
-	assert (obj != NULL);
+	assert(obj != NULL);
 
 	add_action(new ActionDrop(this, obj));
 }
 
 class ActionRead : public IInstantAction
 {
-	public:
-	ActionRead (Creature* s_ch, Object* s_obj) : IInstantAction(s_ch), obj(s_obj) {}
+public:
+	ActionRead(Creature* s_ch, Object* s_obj) : IInstantAction(s_ch), obj(s_obj) {}
 
-	virtual void perform ()
-	{
+	virtual void perform() {
 		// checks
 		if (!get_actor()->check_see())
 			return;
@@ -558,29 +555,28 @@ class ActionRead : public IInstantAction
 		*get_actor() << StreamName(*obj, DEFINITE, true) << " cannot be read.\n";
 	}
 
-	private:
+private:
 	Object* obj;
 };
 
 void
-Creature::do_read (Object *obj)
+Creature::do_read(Object *obj)
 {
-	assert (obj != NULL);
+	assert(obj != NULL);
 
 	add_action(new ActionRead(this, obj));
 }
 
 class ActionEat : public IAction
 {
-	public:
-	ActionEat (Creature* s_ch, Object* s_obj) : IAction(s_ch), obj(s_obj) {}
+public:
+	ActionEat(Creature* s_ch, Object* s_obj) : IAction(s_ch), obj(s_obj) {}
 
-	virtual uint get_rounds () const { return 4; }
-	virtual void describe (const StreamControl& stream) const { stream << "eating " << StreamName(obj, INDEFINITE); }
-	virtual void finish () {}
+	virtual uint get_rounds() const { return 4; }
+	virtual void describe(const StreamControl& stream) const { stream << "eating " << StreamName(obj, INDEFINITE); }
+	virtual void finish() {}
 
-	virtual int start ()
-	{
+	virtual int start() {
 		// checks
 		if (!get_actor()->check_move())
 			return 1;
@@ -590,29 +586,28 @@ class ActionEat : public IAction
 		return 1;
 	}
 
-	private:
+private:
 	Object* obj;
 };
 
 void
-Creature::do_eat (Object *obj)
+Creature::do_eat(Object *obj)
 {
-	assert (obj != NULL);
+	assert(obj != NULL);
 
 	add_action(new ActionEat(this, obj));
 }
 
 class ActionDrink : public IAction
 {
-	public:
-	ActionDrink (Creature* s_ch, Object* s_obj) : IAction(s_ch), obj(s_obj) {}
+public:
+	ActionDrink(Creature* s_ch, Object* s_obj) : IAction(s_ch), obj(s_obj) {}
 
-	virtual uint get_rounds () const { return 4; }
-	virtual void describe (const StreamControl& stream) const { stream << "drinking " << StreamName(obj, INDEFINITE); }
-	virtual void finish () {}
+	virtual uint get_rounds() const { return 4; }
+	virtual void describe(const StreamControl& stream) const { stream << "drinking " << StreamName(obj, INDEFINITE); }
+	virtual void finish() {}
 
-	virtual int start ()
-	{
+	virtual int start() {
 		// checks
 		if (!get_actor()->check_move())
 			return 1;
@@ -622,29 +617,28 @@ class ActionDrink : public IAction
 		return 1;
 	}
 
-	private:
+private:
 	Object* obj;
 };
 
 void
-Creature::do_drink (Object *obj)
+Creature::do_drink(Object *obj)
 {
-	assert (obj != NULL);
+	assert(obj != NULL);
 
 	add_action(new ActionDrink(this, obj));
 }
 
 class ActionRaise : public IAction
 {
-	public:
-	ActionRaise (Creature* s_ch, Object* s_obj) : IAction(s_ch), obj(s_obj) {}
+public:
+	ActionRaise(Creature* s_ch, Object* s_obj) : IAction(s_ch), obj(s_obj) {}
 
-	virtual uint get_rounds () const { return 2; }
-	virtual void describe (const StreamControl& stream) const { stream << "drinking " << StreamName(obj, INDEFINITE); }
-	virtual void finish () {}
+	virtual uint get_rounds() const { return 2; }
+	virtual void describe(const StreamControl& stream) const { stream << "drinking " << StreamName(obj, INDEFINITE); }
+	virtual void finish() {}
 
-	virtual int start ()
-	{
+	virtual int start() {
 		// checks
 		if (!get_actor()->check_move())
 			return 1;
@@ -664,25 +658,24 @@ class ActionRaise : public IAction
 		return 0;
 	}
 
-	private:
+private:
 	Object* obj;
 };
 
 void
-Creature::do_raise (Object *obj)
+Creature::do_raise(Object *obj)
 {
-	assert (obj != NULL);
+	assert(obj != NULL);
 
 	add_action(new ActionRaise(this, obj));
 }
 
 class ActionTouch : public IInstantAction
 {
-	public:
-	ActionTouch (Creature* s_ch, Object* s_obj) : IInstantAction(s_ch), obj(s_obj) {}
+public:
+	ActionTouch(Creature* s_ch, Object* s_obj) : IInstantAction(s_ch), obj(s_obj) {}
 
-	virtual void perform ()
-	{
+	virtual void perform() {
 		// checks
 		if (!get_actor()->check_move())
 			return;
@@ -702,29 +695,28 @@ class ActionTouch : public IInstantAction
 		return;
 	}
 
-	private:
+private:
 	Object* obj;
 };
 
 void
-Creature::do_touch (Object *obj)
+Creature::do_touch(Object *obj)
 {
-	assert (obj != NULL);
+	assert(obj != NULL);
 
 	add_action(new ActionTouch(this, obj));
 }
 
 class ActionKick : public IAction
 {
-	public:
-	ActionKick (Creature* s_ch, Object* s_obj) : IAction(s_ch), obj(s_obj) {}
+public:
+	ActionKick(Creature* s_ch, Object* s_obj) : IAction(s_ch), obj(s_obj) {}
 
-	virtual uint get_rounds () const { return 1; }
-	virtual void describe (const StreamControl& stream) const { stream << "drinking " << StreamName(obj, INDEFINITE); }
-	virtual void finish () {}
+	virtual uint get_rounds() const { return 1; }
+	virtual void describe(const StreamControl& stream) const { stream << "drinking " << StreamName(obj, INDEFINITE); }
+	virtual void finish() {}
 
-	virtual int start ()
-	{
+	virtual int start() {
 		// checks
 		if (!get_actor()->check_move())
 			return 1;
@@ -743,29 +735,28 @@ class ActionKick : public IAction
 		return 0;
 	}
 
-	private:
+private:
 	Object* obj;
 };
 
 void
-Creature::do_kick (Object *obj)
+Creature::do_kick(Object *obj)
 {
-	assert (obj != NULL);
+	assert(obj != NULL);
 
 	add_action(new ActionKick(this, obj));
 }
 
 class ActionOpenPortal : public IAction
 {
-	public:
-	ActionOpenPortal (Creature* s_ch, Portal* s_portal) : IAction(s_ch), portal(s_portal) {}
+public:
+	ActionOpenPortal(Creature* s_ch, Portal* s_portal) : IAction(s_ch), portal(s_portal) {}
 
-	virtual uint get_rounds () const { return 1; }
-	virtual void describe (const StreamControl& stream) const { stream << "opening " << StreamName(portal, INDEFINITE); }
-	virtual void finish () {}
+	virtual uint get_rounds() const { return 1; }
+	virtual void describe(const StreamControl& stream) const { stream << "opening " << StreamName(portal, INDEFINITE); }
+	virtual void finish() {}
 
-	virtual int start ()
-	{
+	virtual int start() {
 		// checks
 		if (!get_actor()->check_move())
 			return 1;
@@ -783,7 +774,7 @@ class ActionOpenPortal : public IAction
 		}
 
 		// locked?
-		if (portal->is_locked ()) {
+		if (portal->is_locked()) {
 			*get_actor() << "You try to open " << StreamName(*portal, DEFINITE, true) << ", but it is locked.\n";
 			if (get_actor()->get_room())
 				*get_actor()->get_room() << StreamIgnore(get_actor()) << StreamName(get_actor(), INDEFINITE, true) << " tries to open " << StreamName(portal, DEFINITE) << ", but it appears to be locked.\n";
@@ -793,7 +784,7 @@ class ActionOpenPortal : public IAction
 		}
 
 		// open it
-		portal->open (get_actor()->get_room(), get_actor());
+		portal->open(get_actor()->get_room(), get_actor());
 		*get_actor() << "You open " << StreamName(*portal, DEFINITE) << ".\n";
 		if (get_actor()->get_room())
 			*get_actor()->get_room() << StreamIgnore(get_actor()) << StreamName(get_actor(), INDEFINITE, true) << " opens " << StreamName(portal, DEFINITE) << ".\n";
@@ -803,29 +794,28 @@ class ActionOpenPortal : public IAction
 		return 0;
 	}
 
-	private:
+private:
 	Portal* portal;
 };
 
 void
-Creature::do_open (Portal *portal)
+Creature::do_open(Portal *portal)
 {
-	assert (portal != NULL);
+	assert(portal != NULL);
 
 	add_action(new ActionOpenPortal(this, portal));
 }
 
 class ActionClosePortal : public IAction
 {
-	public:
-	ActionClosePortal (Creature* s_ch, Portal* s_portal) : IAction(s_ch), portal(s_portal) {}
+public:
+	ActionClosePortal(Creature* s_ch, Portal* s_portal) : IAction(s_ch), portal(s_portal) {}
 
-	virtual uint get_rounds () const { return 1; }
-	virtual void describe (const StreamControl& stream) const { stream << "closing " << StreamName(portal, INDEFINITE); }
-	virtual void finish () {}
+	virtual uint get_rounds() const { return 1; }
+	virtual void describe(const StreamControl& stream) const { stream << "closing " << StreamName(portal, INDEFINITE); }
+	virtual void finish() {}
 
-	virtual int start ()
-	{
+	virtual int start() {
 		// checks
 		if (!get_actor()->check_move())
 			return 1;
@@ -843,7 +833,7 @@ class ActionClosePortal : public IAction
 		}
 
 		// close it
-		portal->close (get_actor()->get_room(), get_actor());
+		portal->close(get_actor()->get_room(), get_actor());
 		*get_actor() << "You close " << StreamName(*portal, DEFINITE) << ".\n";
 		if (get_actor()->get_room())
 			*get_actor()->get_room() << StreamIgnore(get_actor()) << StreamName(get_actor(), INDEFINITE, true) << " closes " << StreamName(portal, DEFINITE) << ".\n";
@@ -853,29 +843,28 @@ class ActionClosePortal : public IAction
 		return 0;
 	}
 
-	private:
+private:
 	Portal* portal;
 };
 
 void
-Creature::do_close (Portal *portal)
+Creature::do_close(Portal *portal)
 {
-	assert (portal != NULL);
+	assert(portal != NULL);
 
 	add_action(new ActionClosePortal(this, portal));
 }
 
 class ActionLockPortal : public IAction
 {
-	public:
-	ActionLockPortal (Creature* s_ch, Portal* s_portal) : IAction(s_ch), portal(s_portal) {}
+public:
+	ActionLockPortal(Creature* s_ch, Portal* s_portal) : IAction(s_ch), portal(s_portal) {}
 
-	virtual uint get_rounds () const { return 1; }
-	virtual void describe (const StreamControl& stream) const { stream << "locking " << StreamName(portal, INDEFINITE); }
-	virtual void finish () {}
+	virtual uint get_rounds() const { return 1; }
+	virtual void describe(const StreamControl& stream) const { stream << "locking " << StreamName(portal, INDEFINITE); }
+	virtual void finish() {}
 
-	virtual int start ()
-	{
+	virtual int start() {
 		// checks
 		if (!get_actor()->check_move())
 			return 1;
@@ -893,7 +882,7 @@ class ActionLockPortal : public IAction
 		}
 
 		// lock it
-		portal->lock (get_actor()->get_room(), get_actor());
+		portal->lock(get_actor()->get_room(), get_actor());
 		*get_actor() << "You lock " << StreamName(*portal, DEFINITE) << ".\n";
 		if (get_actor()->get_room())
 			*get_actor()->get_room() << StreamIgnore(get_actor()) << StreamName(get_actor(), INDEFINITE, true) << " locks " << StreamName(portal, DEFINITE) << ".\n";
@@ -903,29 +892,28 @@ class ActionLockPortal : public IAction
 		return 0;
 	}
 
-	private:
+private:
 	Portal* portal;
 };
 
 void
-Creature::do_lock (Portal *portal)
+Creature::do_lock(Portal *portal)
 {
-	assert (portal != NULL);
+	assert(portal != NULL);
 
 	add_action(new ActionLockPortal(this, portal));
 }
 
 class ActionUnlockPortal : public IAction
 {
-	public:
-	ActionUnlockPortal (Creature* s_ch, Portal* s_portal) : IAction(s_ch), portal(s_portal) {}
+public:
+	ActionUnlockPortal(Creature* s_ch, Portal* s_portal) : IAction(s_ch), portal(s_portal) {}
 
-	virtual uint get_rounds () const { return 1; }
-	virtual void describe (const StreamControl& stream) const { stream << "unlocking " << StreamName(portal, INDEFINITE); }
-	virtual void finish () {}
+	virtual uint get_rounds() const { return 1; }
+	virtual void describe(const StreamControl& stream) const { stream << "unlocking " << StreamName(portal, INDEFINITE); }
+	virtual void finish() {}
 
-	virtual int start ()
-	{
+	virtual int start() {
 		// checks
 		if (!get_actor()->check_move())
 			return 1;
@@ -943,7 +931,7 @@ class ActionUnlockPortal : public IAction
 		}
 
 		// unlock it
-		portal->unlock (get_actor()->get_room(), get_actor());
+		portal->unlock(get_actor()->get_room(), get_actor());
 		*get_actor() << "You unlock " << StreamName(*portal, DEFINITE) << ".\n";
 		if (get_actor()->get_room())
 			*get_actor()->get_room() << StreamIgnore(get_actor()) << StreamName(get_actor(), INDEFINITE, true) << " unlocks " << StreamName(portal, DEFINITE) << ".\n";
@@ -952,28 +940,27 @@ class ActionUnlockPortal : public IAction
 		return 0;
 	}
 
-	private:
+private:
 	Portal* portal;
 };
 
 void
-Creature::do_unlock (Portal *portal)
+Creature::do_unlock(Portal *portal)
 {
-	assert (portal != NULL);
+	assert(portal != NULL);
 
 	add_action(new ActionUnlockPortal(this, portal));
 }
 
 class ActionUsePortal : public IAction
 {
-	public:
-	ActionUsePortal (Creature* s_ch, Portal* s_portal) : IAction(s_ch), portal(s_portal), rounds(0) {}
+public:
+	ActionUsePortal(Creature* s_ch, Portal* s_portal) : IAction(s_ch), portal(s_portal), rounds(0) {}
 
-	virtual uint get_rounds () const { return rounds; }
-	virtual void describe (const StreamControl& stream) const { stream << "kicking " << StreamName(portal, INDEFINITE); }
+	virtual uint get_rounds() const { return rounds; }
+	virtual void describe(const StreamControl& stream) const { stream << "kicking " << StreamName(portal, INDEFINITE); }
 
-	virtual void finish ()
-	{
+	virtual void finish() {
 		// checks
 		if (!get_actor()->check_move())
 			return;
@@ -991,17 +978,16 @@ class ActionUsePortal : public IAction
 			return;
 		}
 
-		// set rounds 
+		// set rounds
 		// one round plus one per every 20% below max health
 		// add five if an NPC
 		rounds = 1 + (100 - (get_actor()->get_hp() * 100 / get_actor()->get_max_hp())) / 20 + (NPC(get_actor()) ? 5 : 0);
 
 		// do go
-		get_actor()->enter (new_room, portal);
+		get_actor()->enter(new_room, portal);
 	}
 
-	virtual int start ()
-	{
+	virtual int start() {
 		// checks
 		if (!get_actor()->check_move())
 			return 1;
@@ -1019,7 +1005,7 @@ class ActionUsePortal : public IAction
 			return 1;
 		}
 
-		// set rounds 
+		// set rounds
 		// one round plus one per every 20% below max health
 		// add five if an NPC
 		rounds = 1 + (100 - (get_actor()->get_hp() * 100 / get_actor()->get_max_hp())) / 20 + (NPC(get_actor()) ? 5 : 0);
@@ -1027,30 +1013,29 @@ class ActionUsePortal : public IAction
 		return 0;
 	}
 
-	private:
+private:
 	Portal* portal;
 	uint rounds;
 };
 
 void
-Creature::do_go (Portal *portal)
+Creature::do_go(Portal *portal)
 {
-	assert (portal != NULL);
+	assert(portal != NULL);
 
 	add_action(new ActionUsePortal(this, portal));
 }
 
 class ActionKickPortal : public IAction
 {
-	public:
-	ActionKickPortal (Creature* s_ch, Portal* s_portal) : IAction(s_ch), portal(s_portal) {}
+public:
+	ActionKickPortal(Creature* s_ch, Portal* s_portal) : IAction(s_ch), portal(s_portal) {}
 
-	virtual uint get_rounds () const { return 3; }
-	virtual void describe (const StreamControl& stream) const { stream << "kicking " << StreamName(portal, INDEFINITE); }
-	virtual void finish () {}
+	virtual uint get_rounds() const { return 3; }
+	virtual void describe(const StreamControl& stream) const { stream << "kicking " << StreamName(portal, INDEFINITE); }
+	virtual void finish() {}
 
-	virtual int start ()
-	{
+	virtual int start() {
 		// checks
 		if (!get_actor()->check_move())
 			return 1;
@@ -1078,14 +1063,14 @@ class ActionKickPortal : public IAction
 		return 0;
 	}
 
-	private:
+private:
 	Portal* portal;
 };
 
 void
-Creature::do_kick (Portal *portal)
+Creature::do_kick(Portal *portal)
 {
-	assert (portal != NULL);
+	assert(portal != NULL);
 
 	add_action(new ActionKickPortal(this, portal));
 }

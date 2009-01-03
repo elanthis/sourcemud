@@ -24,16 +24,17 @@
 _MCommand MCommand;
 
 // helper functions
-namespace {
+namespace
+{
 	char*
-	repair (char* word, int cnt)
+	repair(char* word, int cnt)
 	{
 		while (--cnt > 0)
 			word[strlen(word)] = ' ';
 		return word;
 	}
 	char*
-	repair (char** words)
+	repair(char** words)
 	{
 		int cnt = 0;
 		while (words[cnt] != NULL)
@@ -42,16 +43,18 @@ namespace {
 	}
 }
 
-namespace commands {
+namespace commands
+{
 	// get a single argument
 	char *
-	get_arg (char **c) {
+	get_arg(char **c)
+	{
 		char *arg;
 
-		assert (c != NULL);
+		assert(c != NULL);
 
 		// trim whitespace
-		while (isspace (**c))
+		while (isspace(**c))
 			++ (*c);
 
 		// portal if blank
@@ -61,7 +64,7 @@ namespace commands {
 
 		arg = *c; // Mark start
 		// search to next whitespace
-		while (**c != '\0' && !isspace (**c))
+		while (**c != '\0' && !isspace(**c))
 			++ (*c);
 
 		/* if we are not at the end of line, add null and point to
@@ -75,24 +78,26 @@ namespace commands {
 	}
 
 	bool
-	is_arg (char *comm) {
+	is_arg(char *comm)
+	{
 		if (comm == NULL)
 			return false;
 
 		// look for a non-whitespace char
 		while (*comm != '\0') {
-			if (!isspace (*comm))
+			if (!isspace(*comm))
 				return true;
 			++ comm;
 		}
-			
+
 		return false;
 	}
 
 	// add an arg back into line
 	char *
-	fix_arg (char *arg, char **c) {
-		int len = strlen (arg);
+	fix_arg(char *arg, char **c)
+	{
+		int len = strlen(arg);
 		// if arg is the last available argument, then arg+len will point to c
 		if (arg + len == *c) {
 			// just move head back
@@ -109,7 +114,8 @@ namespace commands {
 
 	// restore whole line
 	char *
-	restore (char *start, char **c) {
+	restore(char *start, char **c)
+	{
 		// loop until we hit end
 		char *ci = start;
 		while (ci != *c) {
@@ -126,11 +132,12 @@ namespace commands {
 }
 
 // custom dereferencing sorting operator...
-namespace {
+namespace
+{
 	template <typename T>
 	class DerefSort
 	{
-		public:
+	public:
 		bool operator()(const T* f1, const T* f2) {
 			return *f1 < *f2;
 		}
@@ -140,7 +147,7 @@ namespace {
 // add a command to the list
 void _MCommand::add(Command *command)
 {
-	assert (command != NULL);
+	assert(command != NULL);
 
 	// add the command
 	CommandList::iterator ci = std::lower_bound(commands.begin(), commands.end(), command, DerefSort<Command>());
@@ -148,7 +155,8 @@ void _MCommand::add(Command *command)
 }
 
 int
-_MCommand::call (Creature *ch, const std::string& comm) {
+_MCommand::call(Creature *ch, const std::string& comm)
+{
 	Player *ply = PLAYER(ch);
 
 	// break up words
@@ -185,7 +193,7 @@ _MCommand::call (Creature *ch, const std::string& comm) {
 				// all good - call function
 				if (f->ch_func) {
 					// call char functions
-					f->ch_func (ch, argv);
+					f->ch_func(ch, argv);
 					return 0;
 				} else if (f->ply_func && ply) {
 					// call player function
@@ -230,14 +238,14 @@ _MCommand::call (Creature *ch, const std::string& comm) {
 }
 
 void
-_MCommand::show_list (Player *player)
+_MCommand::show_list(Player *player)
 {
 	int col, max_col;
 	size_t colwidth;
 
 	// max width
 	colwidth = 1;
-	for(CommandList::iterator i = commands.begin(); i != commands.end(); ++i)
+	for (CommandList::iterator i = commands.begin(); i != commands.end(); ++i)
 		if ((*i)->name.size() >= colwidth)
 			colwidth = (*i)->name.size() + 1;
 
@@ -252,7 +260,7 @@ _MCommand::show_list (Player *player)
 	player->set_indent(2);
 
 	// loop over all commands
-	for(CommandList::iterator i = commands.begin(); i != commands.end(); ++i) {
+	for (CommandList::iterator i = commands.begin(); i != commands.end(); ++i) {
 		// skip empty commands
 		if ((*i)->name.empty())
 			continue;
@@ -270,7 +278,7 @@ _MCommand::show_list (Player *player)
 			*player << "\n";
 			col = 0;
 		}
-		
+
 		// set indent
 		player->set_indent(col * colwidth + 2);
 	}
@@ -281,8 +289,8 @@ _MCommand::show_list (Player *player)
 	player->set_indent(0);
 }
 
-void	
-Command::show_man (StreamControl& stream)
+void
+Command::show_man(StreamControl& stream)
 {
 	HelpTopic* topic = MHelp.get_topic(name);
 
@@ -303,7 +311,7 @@ Command::show_man (StreamControl& stream)
 
 // build command
 int
-CommandFormat::build (const std::string& s_format)
+CommandFormat::build(const std::string& s_format)
 {
 	int arg;
 	bool opt;
@@ -353,7 +361,7 @@ CommandFormat::build (const std::string& s_format)
 				// bounds modify arg
 				if (arg < 0) arg = 0;
 				if (arg >= MAX_COMMAND_ARGS) arg = MAX_COMMAND_ARGS - 1;
-			// text?
+				// text?
 			} else if (isalpha(*c)) {
 				// reset
 				StringBuffer buf;
@@ -373,16 +381,16 @@ CommandFormat::build (const std::string& s_format)
 
 		// handle the type
 		switch (type) {
-			case CommandFormatNode::NONE:
-				// sanity check - have a type?
-				Log::Error << "Command format '" << format << "' has no type for chunk " << nodes.size()+1;
-				return -1;
-			case CommandFormatNode::LITERAL:
-				nodes.push_back(CommandFormatNode(arg, opt, words.back()));
-				break;
-			default:
-				nodes.push_back(CommandFormatNode(type, arg, opt));
-				break;
+		case CommandFormatNode::NONE:
+			// sanity check - have a type?
+			Log::Error << "Command format '" << format << "' has no type for chunk " << nodes.size() + 1;
+			return -1;
+		case CommandFormatNode::LITERAL:
+			nodes.push_back(CommandFormatNode(arg, opt, words.back()));
+			break;
+		default:
+			nodes.push_back(CommandFormatNode(type, arg, opt));
+			break;
 		}
 	}
 
@@ -415,78 +423,78 @@ int CommandFormat::trymatch(int node, char** words, std::string argv[]) const
 
 	// do matching
 	switch (nodes[node].type) {
-		case CommandFormatNode::WORD:
-			// store the word
-			if (nodes[node].arg >= 0)
-				argv[nodes[node].arg] = std::string(words[0]);
+	case CommandFormatNode::WORD:
+		// store the word
+		if (nodes[node].arg >= 0)
+			argv[nodes[node].arg] = std::string(words[0]);
 
-			// try the next node, return on success
-			result = trymatch(node + 1, &words[1], argv);
-			if (result == -1)
-				return -1;
-
-			// clear out stored argument
-			if (nodes[node].arg >= 0)
-				argv[nodes[node].arg].clear();
-
-			// if we're optional, then try the next node in the chain
-			// otherwise, fail with match count
-			if (nodes[node].opt)
-				return trymatch(node + 1, words, argv);
-			else
-				return 1 + result;
-
-		case CommandFormatNode::PHRASE:
-			// if we're optional, we need 0 words, otherwise we need 1 word
-			cnt = nodes[node].opt ? 0 : 1;
-
-			// match the remainder of the nodes.  if the match fails,
-			// then we move the input word index forward by one, and try
-			// again, until we either get a match or run out of input
-			// words to try
-			while ((result = trymatch(node + 1, &words[cnt], argv)) >= 0) {
-				// was this the last word?  we fail!
-				if (words[cnt] == NULL)
-					return cnt + result;
-				++cnt;
-			}
-
-			// store phrase
-			if (nodes[node].arg >= 0)
-				argv[nodes[node].arg] = std::string(repair(words[0], cnt));
-
-			// we have successfully matched all following nodes already,
-			// so we can just return the success code
+		// try the next node, return on success
+		result = trymatch(node + 1, &words[1], argv);
+		if (result == -1)
 			return -1;
 
-		case CommandFormatNode::LITERAL:
-			// check for a match
-			if (!phrase_match(nodes[node].literal, words[0]))
-				return 0;
+		// clear out stored argument
+		if (nodes[node].arg >= 0)
+			argv[nodes[node].arg].clear();
 
-			// store the full literal in the argument list
-			if (nodes[node].arg >= 0)
-				argv[nodes[node].arg] = nodes[node].literal;
+		// if we're optional, then try the next node in the chain
+		// otherwise, fail with match count
+		if (nodes[node].opt)
+			return trymatch(node + 1, words, argv);
+		else
+			return 1 + result;
 
-			// try the next node, return on success
-			result = trymatch(node + 1, &words[1], argv);
-			if (result == -1)
-				return -1;
+	case CommandFormatNode::PHRASE:
+		// if we're optional, we need 0 words, otherwise we need 1 word
+		cnt = nodes[node].opt ? 0 : 1;
 
-			// clear the stored argument
-			if (nodes[node].arg >= 0)
-				argv[nodes[node].arg].clear();
+		// match the remainder of the nodes.  if the match fails,
+		// then we move the input word index forward by one, and try
+		// again, until we either get a match or run out of input
+		// words to try
+		while ((result = trymatch(node + 1, &words[cnt], argv)) >= 0) {
+			// was this the last word?  we fail!
+			if (words[cnt] == NULL)
+				return cnt + result;
+			++cnt;
+		}
 
-			// if we're optional, then try the next node in the chain
-			// otherwise, fail with match count
-			if (nodes[node].opt)
-				return trymatch(node + 1, words, argv);
-			else
-				return 1 + result;
+		// store phrase
+		if (nodes[node].arg >= 0)
+			argv[nodes[node].arg] = std::string(repair(words[0], cnt));
 
-		default:
-			// auto-fail
+		// we have successfully matched all following nodes already,
+		// so we can just return the success code
+		return -1;
+
+	case CommandFormatNode::LITERAL:
+		// check for a match
+		if (!phrase_match(nodes[node].literal, words[0]))
 			return 0;
+
+		// store the full literal in the argument list
+		if (nodes[node].arg >= 0)
+			argv[nodes[node].arg] = nodes[node].literal;
+
+		// try the next node, return on success
+		result = trymatch(node + 1, &words[1], argv);
+		if (result == -1)
+			return -1;
+
+		// clear the stored argument
+		if (nodes[node].arg >= 0)
+			argv[nodes[node].arg].clear();
+
+		// if we're optional, then try the next node in the chain
+		// otherwise, fail with match count
+		if (nodes[node].opt)
+			return trymatch(node + 1, words, argv);
+		else
+			return 1 + result;
+
+	default:
+		// auto-fail
+		return 0;
 	}
 }
 
@@ -508,14 +516,14 @@ CommandFormat::operator< (const CommandFormat& format) const
 			else if (!str_eq(nodes[i].literal, format.nodes[i].literal))
 				// normal string comparison
 				return nodes[i].literal < format.nodes[i].literal;
-		// single word trumps many words
+			// single word trumps many words
 		} else if (nodes[i].type == CommandFormatNode::WORD) {
 			if (format.nodes[i].type == CommandFormatNode::PHRASE)
 				return true;
-				// no-op
+			// no-op
 			else if (format.nodes[i].type != CommandFormatNode::WORD)
 				return false;
-		// if we're not both lists, format wins
+			// if we're not both lists, format wins
 		} else {
 			if (format.nodes[i].type != CommandFormatNode::PHRASE)
 				return false;
@@ -555,12 +563,12 @@ Command::operator< (const Command& command) const
 
 // show a man page; return false if cmd_name is not found
 bool
-_MCommand::show_man (StreamControl& stream, const std::string& name, bool quiet)
+_MCommand::show_man(StreamControl& stream, const std::string& name, bool quiet)
 {
 	// find exact match?
 	for (CommandList::iterator i = commands.begin(); i != commands.end(); ++i) {
 		if ((*i)->name == name) {
-			(*i)->show_man (stream);
+			(*i)->show_man(stream);
 			return true;
 		}
 	}
@@ -599,15 +607,16 @@ _MCommand::show_man (StreamControl& stream, const std::string& name, bool quiet)
 }
 
 void
-Creature::process_command (const std::string& line)
+Creature::process_command(const std::string& line)
 {
-	MCommand.call (this, line);
+	MCommand.call(this, line);
 }
 
 // Helper functions for the Creature::cl_find_* functions
-namespace {
+namespace
+{
 	// skip a word and following white space
-	void skip_word (const char*& ptr)
+	void skip_word(const char*& ptr)
 	{
 		// skip the word
 		while (*ptr != 0 && !isspace(*ptr))
@@ -619,7 +628,7 @@ namespace {
 	}
 
 	// return true if the string matches 'test' followed by a space or NUL
-	bool word_match (const char* string, const char* test)
+	bool word_match(const char* string, const char* test)
 	{
 		// if there's no match, it's false
 		if (strncasecmp(string, test, strlen(test)))
@@ -630,17 +639,17 @@ namespace {
 	}
 
 	// return true if a string has no more creatures
-	inline bool str_empty (const char* string)
+	inline bool str_empty(const char* string)
 	{
 		return string[0] == 0;
 	}
 
 	// return a numeric value of the next word in the input
-	uint str_value (const char* string)
+	uint str_value(const char* string)
 	{
 		// first, check for simple number
 		char* end;
-		int value = strtoul (string, &end, 10);
+		int value = strtoul(string, &end, 10);
 		if (end != NULL) {
 			// just a number:
 			if (*end == 0 || isspace(*end))
@@ -656,7 +665,7 @@ namespace {
 			else if ((value % 10 > 3 || value % 10 == 0 || (value >= 10 && value <= 13)) && word_match(end, "th"))
 				return value;
 		}
-		
+
 		// try the first, second (other), third, fourth, etc.
 		if (prefix_match("other", string))
 			return 2;
@@ -677,8 +686,8 @@ namespace {
 }
 
 // parse a command line to get an object
-Object* 
-Creature::cl_find_object (const std::string& line, int type, bool silent)
+Object*
+Creature::cl_find_object(const std::string& line, int type, bool silent)
 {
 	uint matches;
 	Object* object;
@@ -692,7 +701,7 @@ Creature::cl_find_object (const std::string& line, int type, bool silent)
 	}
 
 	// do we have a my keyword?
-	if (word_match (text, "my")) {
+	if (word_match(text, "my")) {
 		type &= ~GOC_FLOOR; // clear floor flag
 		skip_word(text);
 	} else if (word_match(text, "the")) {
@@ -714,11 +723,11 @@ Creature::cl_find_object (const std::string& line, int type, bool silent)
 	}
 
 	// store name
-	std::string name (text);
+	std::string name(text);
 
 	// search room
 	if (type & GOC_FLOOR && get_room() != NULL) {
-		object = get_room()->find_object (name, index, &matches);
+		object = get_room()->find_object(name, index, &matches);
 		if (object)
 			return object;
 		if (matches >= index) {
@@ -733,7 +742,7 @@ Creature::cl_find_object (const std::string& line, int type, bool silent)
 		for (EList<Object>::iterator iter = get_room()->objects.begin(); iter != get_room()->objects.end(); ++iter) {
 			// have an ON container - search inside
 			if (*iter != NULL && (*iter)->has_location(ObjectLocation::ON)) {
-				if ((object = (*iter)->find_object (name, index, ObjectLocation::ON, &matches))) {
+				if ((object = (*iter)->find_object(name, index, ObjectLocation::ON, &matches))) {
 					return object;
 				}
 				if (matches >= index) {
@@ -749,12 +758,12 @@ Creature::cl_find_object (const std::string& line, int type, bool silent)
 
 	// try held
 	if (type & GOC_HELD)
-		if ((object = find_held (name)) != NULL)
+		if ((object = find_held(name)) != NULL)
 			return object;
 
 	// try worn
 	if (type & GOC_WORN)
-		if ((object = find_worn (name)) != NULL)
+		if ((object = find_worn(name)) != NULL)
 			return object;
 
 	// print error
@@ -773,7 +782,7 @@ Creature::cl_find_object (const std::string& line, int type, bool silent)
 
 // find an object inside a particular container
 Object*
-Creature::cl_find_object (const std::string& line, Object* container, ObjectLocation type, bool silent)
+Creature::cl_find_object(const std::string& line, Object* container, ObjectLocation type, bool silent)
 {
 	const char* text = line.c_str();
 
@@ -785,9 +794,9 @@ Creature::cl_find_object (const std::string& line, Object* container, ObjectLoca
 	}
 
 	// ignore both 'my' and 'the'
-	if (word_match (text, "my") || word_match(text, "the"))
+	if (word_match(text, "my") || word_match(text, "the"))
 		skip_word(text);
-	
+
 	// get index
 	uint index = str_value(text);
 	if (index)
@@ -803,10 +812,10 @@ Creature::cl_find_object (const std::string& line, Object* container, ObjectLoca
 	}
 
 	// store name
-	std::string name (text);
+	std::string name(text);
 
 	// search room
-	Object* object = container->find_object (name, index, type);
+	Object* object = container->find_object(name, index, type);
 	if (object)
 		return object;
 
@@ -817,8 +826,8 @@ Creature::cl_find_object (const std::string& line, Object* container, ObjectLoca
 
 
 // parse a command line to get a creature
-Creature* 
-Creature::cl_find_creature (const std::string& line, bool silent)
+Creature*
+Creature::cl_find_creature(const std::string& line, bool silent)
 {
 	const char* text = line.c_str();
 
@@ -838,7 +847,7 @@ Creature::cl_find_creature (const std::string& line, bool silent)
 	if (word_match(text, "the"))
 		skip_word(text);
 
-	uint index = str_value (text);
+	uint index = str_value(text);
 	if (index)
 		skip_word(text);
 	else
@@ -858,8 +867,8 @@ Creature::cl_find_creature (const std::string& line, bool silent)
 }
 
 /* parse a command line to get an portal*/
-Portal* 
-Creature::cl_find_portal (const std::string& line, bool silent)
+Portal*
+Creature::cl_find_portal(const std::string& line, bool silent)
 {
 	const char* text = line.c_str();
 
@@ -893,7 +902,7 @@ Creature::cl_find_portal (const std::string& line, bool silent)
 	std::string name(text);
 	Portal* portal;
 	do {
-		portal = get_room()->find_portal (name, index++);
+		portal = get_room()->find_portal(name, index++);
 	} while (portal != NULL && portal->is_disabled());
 
 	if (portal == NULL && !silent) {
@@ -904,8 +913,8 @@ Creature::cl_find_portal (const std::string& line, bool silent)
 }
 
 // parse a command line to get a creature, object, or portal
-Entity* 
-Creature::cl_find_any (const std::string& line, bool silent)
+Entity*
+Creature::cl_find_any(const std::string& line, bool silent)
 {
 	uint matches;
 
@@ -945,7 +954,7 @@ Creature::cl_find_any (const std::string& line, bool silent)
 
 	// look for a creature
 	if (get_room()) {
-		Creature* ch = get_room()->find_creature (name, index, &matches);
+		Creature* ch = get_room()->find_creature(name, index, &matches);
 		if (ch != NULL)
 			return ch;
 		if (matches >= index) {
@@ -958,7 +967,7 @@ Creature::cl_find_any (const std::string& line, bool silent)
 
 	// search room for object
 	if (get_room() != NULL) {
-		Object* obj = get_room()->find_object (name, index, &matches);
+		Object* obj = get_room()->find_object(name, index, &matches);
 		if (obj)
 			return obj;
 		if (matches >= index) {
@@ -973,7 +982,7 @@ Creature::cl_find_any (const std::string& line, bool silent)
 			if (*iter != NULL) {
 				// have an ON container - search inside
 				if ((*iter)->has_location(ObjectLocation::ON)) {
-					if ((obj = (*iter)->find_object (name, index, ObjectLocation::ON, &matches))) {
+					if ((obj = (*iter)->find_object(name, index, ObjectLocation::ON, &matches))) {
 						return obj;
 					}
 					if (matches >= index) {
@@ -994,7 +1003,7 @@ Creature::cl_find_any (const std::string& line, bool silent)
 			break;
 		// matched and index was 1?
 		if (obj->name_match(name)) {
-			if(--index == 0)
+			if (--index == 0)
 				return obj;
 		}
 	}
@@ -1007,7 +1016,7 @@ Creature::cl_find_any (const std::string& line, bool silent)
 			break;
 		// matched and index was 1?
 		if (obj->name_match(name)) {
-			if(--index == 0)
+			if (--index == 0)
 				return obj;
 		}
 	}
@@ -1016,7 +1025,7 @@ Creature::cl_find_any (const std::string& line, bool silent)
 	if (get_room()) {
 		Portal* portal = NULL;
 		do {
-			portal = get_room()->find_portal (name, index++);
+			portal = get_room()->find_portal(name, index++);
 		} while (portal != NULL && portal->is_disabled());
 
 		if (portal != NULL)
@@ -1029,7 +1038,7 @@ Creature::cl_find_any (const std::string& line, bool silent)
 	return NULL;
 }
 
-void Player::process_command (const std::string& in_line)
+void Player::process_command(const std::string& in_line)
 {
 	if (str_eq(in_line, "quit")) {
 		end_session();
@@ -1046,8 +1055,7 @@ void Player::process_command (const std::string& in_line)
 		line = last_command = in_line;
 
 	/* check for talking with \", a special case */
-	if (line[0] == '\"' || line[0] == '\'')
-	{
+	if (line[0] == '\"' || line[0] == '\'') {
 		if (line[1] == '\0')
 			*this << "Say what?\n";
 		else
@@ -1056,8 +1064,7 @@ void Player::process_command (const std::string& in_line)
 	}
 
 	/* check for emote'ing with :, a special case */
-	if (line[0] == ':' || line[0] == ';')
-	{
+	if (line[0] == ':' || line[0] == ';') {
 		if (line[1] == '\0')
 			*this << "Do what?\n";
 		else
@@ -1071,7 +1078,7 @@ void Player::process_command (const std::string& in_line)
 void _MCommand::shutdown()
 {
 	for (std::vector<Command*>::iterator i = commands.begin(),
-			e = commands.end(); i != e; ++i)
+	        e = commands.end(); i != e; ++i)
 		delete *i;
 	commands.clear();
 }

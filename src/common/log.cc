@@ -14,7 +14,8 @@
 
 _MLog MLog;
 
-namespace Log {
+namespace Log
+{
 	LogWrapper Error(LOG_ERROR);
 	LogWrapper Warning(LOG_WARNING);
 	LogWrapper Info(LOG_NOTICE);
@@ -22,7 +23,7 @@ namespace Log {
 	LogWrapper Admin(LOG_ADMIN);
 
 	void
-	LogWrapper::stream_put (const char* text, size_t len)
+	LogWrapper::stream_put(const char* text, size_t len)
 	{
 		msg.write(text, len);
 	}
@@ -67,7 +68,7 @@ void _MLog::shutdown()
 		fclose(http_log);
 }
 
-void _MLog::print (LogClass klass, const std::string& msg)
+void _MLog::print(LogClass klass, const std::string& msg)
 {
 	// HTTP logs go to the HTTP log file, with no extra info
 	if (klass == LOG_HTTP) {
@@ -84,30 +85,30 @@ void _MLog::print (LogClass klass, const std::string& msg)
 	const char* prefix;
 	time_t t;
 	struct tm local;
-	time (&t);
+	time(&t);
 	FILE* out = log ? log : stderr;
 
 	switch (klass) {
-		case LOG_ERROR:
-			prefix = "**ERROR**: ";
-			break;
-		case LOG_WARNING:
-			prefix = "[warning]: ";
-			break;
-		case LOG_NETWORK:
-			prefix = "[network]: ";
-			break;
-		case LOG_ADMIN:
-			prefix = "[admin]: ";
-			break;
-		case LOG_NOTICE:
-		default:
-			prefix = "";
-			break;
+	case LOG_ERROR:
+		prefix = "**ERROR**: ";
+		break;
+	case LOG_WARNING:
+		prefix = "[warning]: ";
+		break;
+	case LOG_NETWORK:
+		prefix = "[network]: ";
+		break;
+	case LOG_ADMIN:
+		prefix = "[admin]: ";
+		break;
+	case LOG_NOTICE:
+	default:
+		prefix = "";
+		break;
 	}
 
-	strftime (tbuf, sizeof(tbuf) - 1, "%Y-%m-%d %T", localtime_r (&t, &local));
-	fprintf (out, "%s - %s%s\n", tbuf, prefix, msg.c_str());
+	strftime(tbuf, sizeof(tbuf) - 1, "%Y-%m-%d %T", localtime_r(&t, &local));
+	fprintf(out, "%s - %s%s\n", tbuf, prefix, msg.c_str());
 }
 
 void _MLog::reset()

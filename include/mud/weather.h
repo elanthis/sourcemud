@@ -20,10 +20,10 @@ struct WeatherChange {
 
 // a weather state, such as 'raining heavily' or 'snowing lightly'
 struct WeatherState {
-	inline WeatherState (const std::string& s_id) : id(s_id), changes(), descs() {}
-		
-	int load (File::Reader& reader);
-	void save (File::Writer& writer) const;
+	inline WeatherState(const std::string& s_id) : id(s_id), changes(), descs() {}
+
+	int load(File::Reader& reader);
+	void save(File::Writer& writer) const;
 
 	std::string id;
 	std::vector<WeatherChange> changes;
@@ -31,44 +31,45 @@ struct WeatherState {
 };
 
 // a single region of the world and its weather patterns
-class WeatherRegion {
-	public:
-	WeatherRegion () : states(), state(0), ticks(0) {}
+class WeatherRegion
+{
+public:
+	WeatherRegion() : states(), state(0), ticks(0) {}
 
-	int load (File::Reader& reader);
-	void save (File::Writer& writer) const;
+	int load(File::Reader& reader);
+	void save(File::Writer& writer) const;
 
-	int load ();
-	int save () const;
+	int load();
+	int save() const;
 
-	std::string get_current_desc () const;
+	std::string get_current_desc() const;
 
-	void update ();
+	void update();
 
-	protected:
+protected:
 	std::vector<WeatherState> states;
 	uint state;
 	uint ticks;
 
-	int get_state (const std::string& name) const;
+	int get_state(const std::string& name) const;
 };
 
 // manage all regions
 // FIXME: we should actually *have* multiple regions... ^^;
 class _MWeather : public IManager
 {
-	public:
-	virtual int initialize ();
-	virtual void shutdown ();
-	virtual void save ();
+public:
+	virtual int initialize();
+	virtual void shutdown();
+	virtual void save();
 
 	// update the manager (once per tick)
-	inline void update () { region.update(); }
+	inline void update() { region.update(); }
 
 	// get current weather description
-	inline std::string get_current_desc () const { return region.get_current_desc(); }
+	inline std::string get_current_desc() const { return region.get_current_desc(); }
 
-	private:
+private:
 	WeatherRegion region;
 };
 extern _MWeather MWeather;

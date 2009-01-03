@@ -13,7 +13,7 @@
 
 class StreamTime
 {
-	public:
+public:
 	explicit StreamTime(const char* s_format, time_t s_time) : format(s_format), time(s_time) {}
 	explicit StreamTime(const char* s_format) : format(s_format) { ::time(&time); }
 	StreamTime() : format(Time::RFC_822_FORMAT.c_str()) { ::time(&time); }
@@ -21,7 +21,7 @@ class StreamTime
 	const char* get_format() const { return format; }
 	const time_t& get_time() const { return time; }
 
-	private:
+private:
 	const char* format;
 	time_t time;
 };

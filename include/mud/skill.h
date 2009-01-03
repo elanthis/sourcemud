@@ -5,13 +5,14 @@
  * http://www.sourcemud.org
  */
 
-#ifndef MUD_SKILL_H 
+#ifndef MUD_SKILL_H
 #define MUD_SKILL_H
 
 #include "common/types.h"
 
-class SkillID {
-	public:
+class SkillID
+{
+public:
 	explicit SkillID(int s_value) : value(s_value) {}
 	SkillID(const SkillID& event) : value(event.value) {}
 	SkillID() : value(0) {}
@@ -28,7 +29,7 @@ class SkillID {
 	bool operator !=(SkillID dir) const { return dir.value != value; }
 	bool operator <(SkillID dir) const { return value < dir.value; }
 
-	private:
+private:
 	int value;
 
 	static std::vector<std::string> names;
@@ -36,14 +37,14 @@ class SkillID {
 
 class SkillSet
 {
-	public:
-	SkillSet ();
+public:
+	SkillSet();
 
-	uint8 getSkill (SkillID id) const;
-	uint8 setSkill (SkillID id, uint8 value);
-	bool hasSkill (SkillID id) const { return getSkill(id) > 0; }
+	uint8 getSkill(SkillID id) const;
+	uint8 setSkill(SkillID id, uint8 value);
+	bool hasSkill(SkillID id) const { return getSkill(id) > 0; }
 
-	private:
+private:
 	std::vector<int> skills;
 };
 

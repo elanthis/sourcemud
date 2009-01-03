@@ -167,7 +167,8 @@ TextBufferList TextBuffer::lists[] = {
 };
 
 char*
-TextBufferList::alloc () {
+TextBufferList::alloc()
+{
 	++ allocs;
 	++ out;
 	if (!list.empty()) {
@@ -181,7 +182,7 @@ TextBufferList::alloc () {
 }
 
 int
-TextBuffer::alloc (SizeType size)
+TextBuffer::alloc(SizeType size)
 {
 	if (size == EMPTY)
 		return -1;
@@ -197,7 +198,7 @@ TextBuffer::alloc (SizeType size)
 	return 0;
 }
 int
-TextBuffer::grow ()
+TextBuffer::grow()
 {
 	if (bsize == EMPTY) {
 		// base allocation
@@ -221,7 +222,7 @@ TextBuffer::grow ()
 	}
 }
 void
-TextBuffer::release ()
+TextBuffer::release()
 {
 	if (bdata != NULL) {
 		lists[bsize].release(bdata);
@@ -230,7 +231,7 @@ TextBuffer::release ()
 	}
 }
 
-TelnetHandler::TelnetHandler (int s_sock, const NetAddr& s_netaddr) : SocketConnection(s_sock)
+TelnetHandler::TelnetHandler(int s_sock, const NetAddr& s_netaddr) : SocketConnection(s_sock)
 {
 	addr = s_netaddr;
 
@@ -253,18 +254,18 @@ TelnetHandler::TelnetHandler (int s_sock, const NetAddr& s_netaddr) : SocketConn
 	io_flags.use_ansi = true;
 
 	// send our initial telnet state and support options
-	send_iac (2, WONT, TELOPT_ECHO);
-	send_iac (2, WILL, TELOPT_EOR);
-	send_iac (2, WILL, TELOPT_ZMP);
-	send_iac (2, DO, TELOPT_NEW_ENVIRON);
-	send_iac (2, DO, TELOPT_TTYPE);
-	send_iac (2, DO, TELOPT_NAWS);
-	send_iac (2, DO, TELOPT_LFLOW);
+	send_iac(2, WONT, TELOPT_ECHO);
+	send_iac(2, WILL, TELOPT_EOR);
+	send_iac(2, WILL, TELOPT_ZMP);
+	send_iac(2, DO, TELOPT_NEW_ENVIRON);
+	send_iac(2, DO, TELOPT_TTYPE);
+	send_iac(2, DO, TELOPT_NAWS);
+	send_iac(2, DO, TELOPT_LFLOW);
 
 	// have MCCP support?
 #ifdef HAVE_LIBZ
 	zstate = NULL;
-	send_iac (2, WILL, TELOPT_MCCP2);
+	send_iac(2, WILL, TELOPT_MCCP2);
 #endif // HAVE_LIBZ
 
 	// colors
@@ -281,11 +282,11 @@ TelnetHandler::TelnetHandler (int s_sock, const NetAddr& s_netaddr) : SocketConn
 
 // initialize compression
 bool
-TelnetHandler::begin_mccp ()
+TelnetHandler::begin_mccp()
 {
 	if (!zstate) {
 		// allocte
-		zstate = new (UseGC) z_stream;
+		zstate = new(UseGC) z_stream;
 		if (zstate == NULL) {
 			Log::Error << "Failed to allocate z_stream";
 			return false;
@@ -310,7 +311,7 @@ TelnetHandler::begin_mccp ()
 
 // end compressed stream
 void
-TelnetHandler::end_mccp ()
+TelnetHandler::end_mccp()
 {
 	if (zstate) {
 		// free
@@ -323,7 +324,7 @@ TelnetHandler::end_mccp ()
 
 // disconnect
 void
-TelnetHandler::disconnect ()
+TelnetHandler::disconnect()
 {
 	// log
 	Log::Network << "Telnet client disconnected: " << addr.getString();
@@ -350,10 +351,10 @@ TelnetHandler::disconnect ()
 
 // toggle echo
 bool
-TelnetHandler::toggle_echo (bool v)
+TelnetHandler::toggle_echo(bool v)
 {
 	io_flags.want_echo = v;
-	send_iac (2, v ? WONT : WILL, TELOPT_ECHO);
+	send_iac(2, v ? WONT : WILL, TELOPT_ECHO);
 
 	return v;
 }
@@ -363,13 +364,13 @@ TelnetHandler::toggle_echo (bool v)
  * escaping/removing/translating Source MUD commands
  */
 void
-TelnetHandler::stream_put (const char *text, size_t len) 
+TelnetHandler::stream_put(const char *text, size_t len)
 {
 	assert(text != NULL);
 
 	// output a newline if we need one, such as after a prompt
 	if (io_flags.need_newline) {
-		add_output ("\n\r", 2);
+		add_output("\n\r", 2);
 		io_flags.soft_break = false;
 		cur_col = 0;
 	}
@@ -381,167 +382,166 @@ TelnetHandler::stream_put (const char *text, size_t len)
 		c = text[ti];
 		switch (ostate) {
 			// normal text
-			case OSTATE_TEXT:
-				switch (c) {
-					// space?
-					case ' ':
-						end_chunk();
+		case OSTATE_TEXT:
+			switch (c) {
+				// space?
+			case ' ':
+				end_chunk();
 
-						// not soft-wrapped?
-						if (!io_flags.soft_break) {
-							// word wrap?
-							if (width && cur_col + 1 >= width - 2) {
-								add_output("\n\r", 2);
-								cur_col = 0;
-								io_flags.soft_break = true;
-							} else {
-								OUTPUT_INDENT()
-								add_output(" ", 1);
-								++cur_col;
-							}
-						}
-						break;
-					// newline?
-					case '\n':
-						end_chunk();
-						
-						// not after a soft-break
-						if (!io_flags.soft_break) {
-							add_output("\n\r", 2);
-							cur_col = 0;
-						}
-
-						// this _is_ a hard break
-						io_flags.soft_break = false;
-						break;
-					// escape sequence?
-					case '\033':
-						ostate = OSTATE_ESCAPE;
-						esc_buf[0] = '\033';
-						esc_cnt = 1;
-						break;
-					// tab?
-					case '\t':
-						end_chunk();
+				// not soft-wrapped?
+				if (!io_flags.soft_break) {
+					// word wrap?
+					if (width && cur_col + 1 >= width - 2) {
+						add_output("\n\r", 2);
+						cur_col = 0;
+						io_flags.soft_break = true;
+					} else {
 						OUTPUT_INDENT()
-						add_output("    ", 4 % cur_col);
-						cur_col += 4 % cur_col;
-						break;
-					// IAC byte
-					case '\255':
-						add_to_chunk("\255\255", 2); // escape IAC
-						++chunk_size;
-						break;
-					// just data
-					default:
-						add_to_chunk(&c, 1);
-						++chunk_size;
-						break;
-				}
-				break;
-			// escape
-			case OSTATE_ESCAPE:
-				// awecode?
-				if (c == '!') {
-					// we just want data
-					esc_cnt = 0;
-					ostate = OSTATE_AWECODE;
-				// ansi
-				} else if (c == '[') {
-					// we keep whole code
-					esc_buf[1] = c;
-					esc_cnt = 2;
-					ostate = OSTATE_ANSI;
-				// unsupported/invalid
-				} else {
-					ostate = OSTATE_TEXT;
-				}
-				break;
-			// awecode
-			case OSTATE_AWECODE:
-				// end?
-				if (c != '!') {
-					// add data
-					if (esc_cnt < TELNET_MAX_ESCAPE_SIZE - 1)
-						esc_buf[esc_cnt++] = c;
-					break;
-				}
-				esc_buf[esc_cnt] = 0;
-
-				// have we anything?
-				if (esc_cnt == 0) {
-					ostate = OSTATE_TEXT;
-					break;
-				}
-
-				// process
-				switch (esc_buf[0]) {
-					// color command
-					case 'C':
-						// zmp color?
-						if (io_flags.zmp_color) {
-							std::string argv[2] = {"color.use", &esc_buf[1]};
-							add_zmp(2, argv);
-						}
-						
-						// ansi color?
-						else if (io_flags.use_ansi) {
-							int color = atoi(&esc_buf[1]);
-
-							// reset color?
-							if (color == 0) {
-								// normalize colors
-								add_to_chunk (ANSI_NORMAL, strlen(ANSI_NORMAL));
-
-								// eat last color
-								if (!colors.empty())
-									colors.pop_back();
-
-								// old color?
-								if (!colors.empty())
-									add_to_chunk(color_values[colors.back()].c_str(), color_values[colors.back()].size());
-
-							// other color
-							} else if (color > 0 && color < NUM_CTYPES) {
-								// put color
-								int cvalue = get_color (color);
-								colors.push_back(cvalue);
-								add_to_chunk(color_values[cvalue].c_str(), color_values[cvalue].size());
-							}
-						}
-
-						break;
-					// indent
-					case 'I':
-					{
-						long mlen = strtol(&esc_buf[1], NULL, 10);
-						if (mlen >= 0)
-							set_indent(mlen);
-						break;
+						add_output(" ", 1);
+						++cur_col;
 					}
-					// auto-indent
-					case 'A':
-						io_flags.auto_indent = (esc_buf[1] == '1');
-						break;
+				}
+				break;
+				// newline?
+			case '\n':
+				end_chunk();
+
+				// not after a soft-break
+				if (!io_flags.soft_break) {
+					add_output("\n\r", 2);
+					cur_col = 0;
 				}
 
-				// done
+				// this _is_ a hard break
+				io_flags.soft_break = false;
+				break;
+				// escape sequence?
+			case '\033':
+				ostate = OSTATE_ESCAPE;
+				esc_buf[0] = '\033';
+				esc_cnt = 1;
+				break;
+				// tab?
+			case '\t':
+				end_chunk();
+				OUTPUT_INDENT()
+				add_output("    ", 4 % cur_col);
+				cur_col += 4 % cur_col;
+				break;
+				// IAC byte
+			case '\255':
+				add_to_chunk("\255\255", 2); // escape IAC
+				++chunk_size;
+				break;
+				// just data
+			default:
+				add_to_chunk(&c, 1);
+				++chunk_size;
+				break;
+			}
+			break;
+			// escape
+		case OSTATE_ESCAPE:
+			// awecode?
+			if (c == '!') {
+				// we just want data
+				esc_cnt = 0;
+				ostate = OSTATE_AWECODE;
+				// ansi
+			} else if (c == '[') {
+				// we keep whole code
+				esc_buf[1] = c;
+				esc_cnt = 2;
+				ostate = OSTATE_ANSI;
+				// unsupported/invalid
+			} else {
+				ostate = OSTATE_TEXT;
+			}
+			break;
+			// awecode
+		case OSTATE_AWECODE:
+			// end?
+			if (c != '!') {
+				// add data
+				if (esc_cnt < TELNET_MAX_ESCAPE_SIZE - 1)
+					esc_buf[esc_cnt++] = c;
+				break;
+			}
+			esc_buf[esc_cnt] = 0;
+
+			// have we anything?
+			if (esc_cnt == 0) {
 				ostate = OSTATE_TEXT;
 				break;
-			// ansi code
-			case OSTATE_ANSI:
-				// add data
-				if (esc_cnt < TELNET_MAX_ESCAPE_SIZE)
-					esc_buf[esc_cnt++] = c;
+			}
 
-				// end?
-				if (isalpha(c)) {
-					if (io_flags.use_ansi) {
-						add_to_chunk (esc_buf, esc_cnt);
-					}
-					ostate = OSTATE_TEXT;
+			// process
+			switch (esc_buf[0]) {
+				// color command
+			case 'C':
+				// zmp color?
+				if (io_flags.zmp_color) {
+					std::string argv[2] = {"color.use", &esc_buf[1]};
+					add_zmp(2, argv);
 				}
+
+				// ansi color?
+				else if (io_flags.use_ansi) {
+					int color = atoi(&esc_buf[1]);
+
+					// reset color?
+					if (color == 0) {
+						// normalize colors
+						add_to_chunk(ANSI_NORMAL, strlen(ANSI_NORMAL));
+
+						// eat last color
+						if (!colors.empty())
+							colors.pop_back();
+
+						// old color?
+						if (!colors.empty())
+							add_to_chunk(color_values[colors.back()].c_str(), color_values[colors.back()].size());
+
+						// other color
+					} else if (color > 0 && color < NUM_CTYPES) {
+						// put color
+						int cvalue = get_color(color);
+						colors.push_back(cvalue);
+						add_to_chunk(color_values[cvalue].c_str(), color_values[cvalue].size());
+					}
+				}
+
 				break;
+				// indent
+			case 'I': {
+				long mlen = strtol(&esc_buf[1], NULL, 10);
+				if (mlen >= 0)
+					set_indent(mlen);
+				break;
+			}
+			// auto-indent
+			case 'A':
+				io_flags.auto_indent = (esc_buf[1] == '1');
+				break;
+			}
+
+			// done
+			ostate = OSTATE_TEXT;
+			break;
+			// ansi code
+		case OSTATE_ANSI:
+			// add data
+			if (esc_cnt < TELNET_MAX_ESCAPE_SIZE)
+				esc_buf[esc_cnt++] = c;
+
+			// end?
+			if (isalpha(c)) {
+				if (io_flags.use_ansi) {
+					add_to_chunk(esc_buf, esc_cnt);
+				}
+				ostate = OSTATE_TEXT;
+			}
+			break;
 		}
 	}
 
@@ -551,7 +551,7 @@ TelnetHandler::stream_put (const char *text, size_t len)
 
 // clear the screen
 void
-TelnetHandler::clear_scr ()
+TelnetHandler::clear_scr()
 {
 	// try clear screen sequence
 	if (io_flags.use_ansi) {
@@ -566,7 +566,7 @@ TelnetHandler::clear_scr ()
 
 // set indentation/margin
 void
-TelnetHandler::set_indent (uint amount)
+TelnetHandler::set_indent(uint amount)
 {
 	end_chunk();
 	margin = amount;
@@ -574,7 +574,7 @@ TelnetHandler::set_indent (uint amount)
 
 // draw a progress bar
 void
-TelnetHandler::draw_bar (uint percent)
+TelnetHandler::draw_bar(uint percent)
 {
 	// 20 part bar
 	static const char* bar = "============";
@@ -596,7 +596,7 @@ TelnetHandler::draw_bar (uint percent)
 
 // process input
 void
-TelnetHandler::sock_input (char* buffer, size_t size)
+TelnetHandler::sock_input(char* buffer, size_t size)
 {
 	// time stamp
 	in_stamp = time(NULL);
@@ -607,228 +607,227 @@ TelnetHandler::sock_input (char* buffer, size_t size)
 	for (size_t i = 0; i < size; i ++) {
 		c = buffer[i];
 		switch (istate) {
-			case ISTATE_TEXT:
-				if (c == IAC) {
-					istate = ISTATE_IAC;
-					break;
+		case ISTATE_TEXT:
+			if (c == IAC) {
+				istate = ISTATE_IAC;
+				break;
+			}
+
+			// only printable creatures thank you
+			if (c == '\n' || isprint(c)) {
+				// need to grow?
+				if (in_cnt + 2 >= in_size) {
+					if (input.grow()) {
+						// input growth failure
+						break;
+					}
+					in_size = input.size();
 				}
 
-				// only printable creatures thank you
-				if (c == '\n' || isprint (c)) {
-					// need to grow?
-					if (in_cnt + 2 >= in_size) {
-						if (input.grow()) {
-							// input growth failure
-							break;
-						}
-						in_size = input.size();
-					}
+				// do add
+				input.data()[in_cnt ++] = c;
+				input.data()[in_cnt] = '\0';
 
-					// do add
-					input.data()[in_cnt ++] = c;
-					input.data()[in_cnt] = '\0';
-
-					// echo back normal creatures
-					if (c != '\n' && (io_flags.want_echo && io_flags.do_echo))
-						send_data (1, c);
+				// echo back normal creatures
+				if (c != '\n' && (io_flags.want_echo && io_flags.do_echo))
+					send_data(1, c);
 				// basic backspace support
-				} else if (c == 127) {
-					if (in_cnt > 0 && input.data()[in_cnt - 1] != '\n') {
-						input.data()[--in_cnt] = '\0';
+			} else if (c == 127) {
+				if (in_cnt > 0 && input.data()[in_cnt - 1] != '\n') {
+					input.data()[--in_cnt] = '\0';
 
-						if (io_flags.do_echo)
-							send_data (3, 127, ' ', 127);
-					}
-				}
-
-				// get a newline in?
-				if (c == '\n') {
-					// handle the input data
 					if (io_flags.do_echo)
-						send_data (2, '\r', '\n');
-					io_flags.need_newline = false;
-					io_flags.need_prompt = true;
+						send_data(3, 127, ' ', 127);
+				}
+			}
 
-					// count current lines
-					uint8 lines = 0;
-					for (size_t i = 0; i < in_cnt; ++i) {
-						// too many lines?
-						if (lines == TELNET_BUFFER_LINES) {
-							*this << CADMIN "You only have " << TELNET_BUFFER_LINES << " type-ahead lines." CNORMAL "\n";
-							input.data()[i] = '\0';
-							in_cnt = i;
-							break;
-						}
+			// get a newline in?
+			if (c == '\n') {
+				// handle the input data
+				if (io_flags.do_echo)
+					send_data(2, '\r', '\n');
+				io_flags.need_newline = false;
+				io_flags.need_prompt = true;
 
-						// increment data count
-						if (input.data()[i] == '\n')
-							++lines;
-					}
-				}
-				break;
-			case ISTATE_IAC:
-				istate = ISTATE_TEXT;
-				switch (c) {
-					case WILL:
-						istate = ISTATE_WILL;
-						break;
-					case WONT:
-						istate = ISTATE_WONT;
-						break;
-					case DO:
-						istate = ISTATE_DO;
-						break;
-					case DONT:
-						istate = ISTATE_DONT;
-						break;
-					case IAC:
-						break;
-					case SB:
-						istate = ISTATE_SB;
-						sb_cnt = 0;
-						break;
-					case EC:
-						break;
-					case EL:
-					{
-						if (in_size) {
-							// find last newline
-							char* nl = strrchr(input.data(), '\n');
-							if (nl == NULL) {
-								input.release();
-								in_cnt = 0;
-								in_size = 0;
-							} else {
-								// cut data
-								in_cnt = nl - input.data();
-								input.data()[in_cnt] = '\0';
-							}
-						}
+				// count current lines
+				uint8 lines = 0;
+				for (size_t i = 0; i < in_cnt; ++i) {
+					// too many lines?
+					if (lines == TELNET_BUFFER_LINES) {
+						*this << CADMIN "You only have " << TELNET_BUFFER_LINES << " type-ahead lines." CNORMAL "\n";
+						input.data()[i] = '\0';
+						in_cnt = i;
 						break;
 					}
-				}
-				break;
-			case ISTATE_SB:
-				if (c == IAC) {
-					istate = ISTATE_SE;
-				} else {
-					if (sb_cnt >= subrequest.size()) {
-						if (subrequest.grow()) {
-							// damn, growth failure
-							break;
-						}
-					}
-					subrequest.data()[sb_cnt++] = c;
-				}
-				break;
-			case ISTATE_SE:
-				if (c == SE) {
-					process_sb ();
-					subrequest.release();
-					sb_cnt = 0;
-					istate = ISTATE_TEXT;
-				} else {
-					istate = ISTATE_SB;
 
-					if (sb_cnt >= subrequest.size()) {
-						if (subrequest.grow()) {
-							// damn, growth failure
-							break;
-						}
+					// increment data count
+					if (input.data()[i] == '\n')
+						++lines;
+				}
+			}
+			break;
+		case ISTATE_IAC:
+			istate = ISTATE_TEXT;
+			switch (c) {
+			case WILL:
+				istate = ISTATE_WILL;
+				break;
+			case WONT:
+				istate = ISTATE_WONT;
+				break;
+			case DO:
+				istate = ISTATE_DO;
+				break;
+			case DONT:
+				istate = ISTATE_DONT;
+				break;
+			case IAC:
+				break;
+			case SB:
+				istate = ISTATE_SB;
+				sb_cnt = 0;
+				break;
+			case EC:
+				break;
+			case EL: {
+				if (in_size) {
+					// find last newline
+					char* nl = strrchr(input.data(), '\n');
+					if (nl == NULL) {
+						input.release();
+						in_cnt = 0;
+						in_size = 0;
+					} else {
+						// cut data
+						in_cnt = nl - input.data();
+						input.data()[in_cnt] = '\0';
 					}
-					subrequest.data()[sb_cnt++] = IAC;
 				}
 				break;
-			case ISTATE_WILL:
-				istate = ISTATE_TEXT;
-				switch (c) {
-					case TELOPT_NAWS:
-						// ignore
-						break;
-					case TELOPT_TTYPE:
-						send_iac (3, SB, TELOPT_TTYPE, 1); // 1 is 'SEND'
-						send_iac (1, SE);
-						break;
-					case TELOPT_NEW_ENVIRON:
-						send_iac (4, SB, TELOPT_NEW_ENVIRON, 1, 0); // 1 is 'SEND', 0 is 'VAR'
-						send_data (10, 'S', 'Y', 'S', 'T', 'E', 'M', 'T', 'Y', 'P', 'E');
-						send_iac (1, SE);
-						break;
-					default:
-						send_iac (2, DONT, c);
-						break;
-				}
-				break;
-			case ISTATE_WONT:
-				istate = ISTATE_TEXT;
-				switch (c) {
-					case TELOPT_NAWS:
-						// reset to default width
-						width = 70;
-						break;
-				}
-				break;
-			case ISTATE_DO:
-				istate = ISTATE_TEXT;
-				switch (c) {
-					case TELOPT_ECHO:
-						if (io_flags.want_echo)
-							io_flags.do_echo = true;
-						break;
-					case TELOPT_EOR:
-						if (!io_flags.do_eor) {
-							io_flags.do_eor = true;
-							send_iac (2, WILL, TELOPT_EOR);
-						}
-						break;
-#ifdef HAVE_LIBZ
-					case TELOPT_MCCP2:
-						begin_mccp();
-						break;
-#endif // HAVE_LIBZ
-					case TELOPT_ZMP: {
-						// enable ZMP support
-						io_flags.zmp = true;
-						// send zmp.ident command
-						std::string argv[4] = {"zmp.ident", "Source MUD", PACKAGE_VERSION, "Powerful C++ MUD server software" };
-						send_zmp(4, argv);
-						// check for net.sourcemud package
-						argv[0] = "zmp.check";
-						argv[1] = "net.sourcemud.";
-						send_zmp(2, argv);
-						// check for color.define command
-						argv[0] = "zmp.check";
-						argv[1] = "color.define";
-						send_zmp(2, argv);
+			}
+			}
+			break;
+		case ISTATE_SB:
+			if (c == IAC) {
+				istate = ISTATE_SE;
+			} else {
+				if (sb_cnt >= subrequest.size()) {
+					if (subrequest.grow()) {
+						// damn, growth failure
 						break;
 					}
-					default:
-						send_iac (2, WONT, c);
-						break;
 				}
-				break;
-			case ISTATE_DONT:
+				subrequest.data()[sb_cnt++] = c;
+			}
+			break;
+		case ISTATE_SE:
+			if (c == SE) {
+				process_sb();
+				subrequest.release();
+				sb_cnt = 0;
 				istate = ISTATE_TEXT;
-				switch (c) {
-					case TELOPT_ECHO:
-						if (!io_flags.force_echo)
-							io_flags.do_echo = false;
+			} else {
+				istate = ISTATE_SB;
+
+				if (sb_cnt >= subrequest.size()) {
+					if (subrequest.grow()) {
+						// damn, growth failure
 						break;
-					case TELOPT_EOR:
-						if (io_flags.do_eor) {
-							io_flags.do_eor = false;
-							send_iac (2, WONT, TELOPT_EOR);
-						}
-						break;
-					default:
-						send_iac (2, WONT, c);
-						break;
+					}
 				}
+				subrequest.data()[sb_cnt++] = IAC;
+			}
+			break;
+		case ISTATE_WILL:
+			istate = ISTATE_TEXT;
+			switch (c) {
+			case TELOPT_NAWS:
+				// ignore
 				break;
-			// NEWS negotiation
+			case TELOPT_TTYPE:
+				send_iac(3, SB, TELOPT_TTYPE, 1);  // 1 is 'SEND'
+				send_iac(1, SE);
+				break;
+			case TELOPT_NEW_ENVIRON:
+				send_iac(4, SB, TELOPT_NEW_ENVIRON, 1, 0);  // 1 is 'SEND', 0 is 'VAR'
+				send_data(10, 'S', 'Y', 'S', 'T', 'E', 'M', 'T', 'Y', 'P', 'E');
+				send_iac(1, SE);
+				break;
 			default:
-				istate = ISTATE_TEXT;
+				send_iac(2, DONT, c);
 				break;
+			}
+			break;
+		case ISTATE_WONT:
+			istate = ISTATE_TEXT;
+			switch (c) {
+			case TELOPT_NAWS:
+				// reset to default width
+				width = 70;
+				break;
+			}
+			break;
+		case ISTATE_DO:
+			istate = ISTATE_TEXT;
+			switch (c) {
+			case TELOPT_ECHO:
+				if (io_flags.want_echo)
+					io_flags.do_echo = true;
+				break;
+			case TELOPT_EOR:
+				if (!io_flags.do_eor) {
+					io_flags.do_eor = true;
+					send_iac(2, WILL, TELOPT_EOR);
+				}
+				break;
+#ifdef HAVE_LIBZ
+			case TELOPT_MCCP2:
+				begin_mccp();
+				break;
+#endif // HAVE_LIBZ
+			case TELOPT_ZMP: {
+				// enable ZMP support
+				io_flags.zmp = true;
+				// send zmp.ident command
+				std::string argv[4] = {"zmp.ident", "Source MUD", PACKAGE_VERSION, "Powerful C++ MUD server software" };
+				send_zmp(4, argv);
+				// check for net.sourcemud package
+				argv[0] = "zmp.check";
+				argv[1] = "net.sourcemud.";
+				send_zmp(2, argv);
+				// check for color.define command
+				argv[0] = "zmp.check";
+				argv[1] = "color.define";
+				send_zmp(2, argv);
+				break;
+			}
+			default:
+				send_iac(2, WONT, c);
+				break;
+			}
+			break;
+		case ISTATE_DONT:
+			istate = ISTATE_TEXT;
+			switch (c) {
+			case TELOPT_ECHO:
+				if (!io_flags.force_echo)
+					io_flags.do_echo = false;
+				break;
+			case TELOPT_EOR:
+				if (io_flags.do_eor) {
+					io_flags.do_eor = false;
+					send_iac(2, WONT, TELOPT_EOR);
+				}
+				break;
+			default:
+				send_iac(2, WONT, c);
+				break;
+			}
+			break;
+			// NEWS negotiation
+		default:
+			istate = ISTATE_TEXT;
+			break;
 		}
 	}
 
@@ -837,7 +836,7 @@ TelnetHandler::sock_input (char* buffer, size_t size)
 
 // handle entered commands
 void
-TelnetHandler::process_input ()
+TelnetHandler::process_input()
 {
 	// have we any input?
 	if (!in_cnt)
@@ -861,7 +860,7 @@ TelnetHandler::process_input ()
 
 // handle a specific command
 void
-TelnetHandler::process_command (char* cbuffer)
+TelnetHandler::process_command(char* cbuffer)
 {
 	// force output update
 	io_flags.need_prompt = true;
@@ -869,14 +868,14 @@ TelnetHandler::process_command (char* cbuffer)
 	// general input?
 	if (cbuffer[0] != '!' && mode) {
 		mode->process(cbuffer);
-	// if it starts with !, process as a telnet layer command
+		// if it starts with !, process as a telnet layer command
 	} else {
 		process_telnet_command(&cbuffer[1]);
 	}
 }
 
 void
-TelnetHandler::set_mode (ITelnetMode* new_mode)
+TelnetHandler::set_mode(ITelnetMode* new_mode)
 {
 	// close old mode
 	if (mode)
@@ -947,7 +946,7 @@ TelnetHandler::process_telnet_command(char* data)
 
 // process a telnet sub command
 void
-TelnetHandler::process_sb ()
+TelnetHandler::process_sb()
 {
 	char* data = subrequest.data();
 	if (data == NULL || sb_cnt == 0)
@@ -955,65 +954,64 @@ TelnetHandler::process_sb ()
 
 	switch (data[0]) {
 		// handle ZMP
-		case TELOPT_ZMP:
-			if (has_zmp())
-				process_zmp(sb_cnt - 1, (char*)&data[1]);
-			break;
+	case TELOPT_ZMP:
+		if (has_zmp())
+			process_zmp(sb_cnt - 1, (char*)&data[1]);
+		break;
 		// resize of telnet window
-		case TELOPT_NAWS:
-		{
-			uint16 new_width, new_height;
-			memcpy(&new_width, &data[1], 2);
-			memcpy(&new_height, &data[3], 2);
-			width = ntohs(new_width);
-			height = ntohs(new_height);
-			break;
-		}
-		// handle terminal type
-		case TELOPT_TTYPE:
-			// proper input?
-			if (sb_cnt > 2 && data[1] == 0) {
-				// xterm?
-				if (sb_cnt == 7 && !memcmp(&data[2], "XTERM", 5))
-					io_flags.xterm = true;
-				// ansi 
-				if (sb_cnt == 6 && !memcmp(&data[2], "ANSI", 4))
-					io_flags.ansi_term = true;
+	case TELOPT_NAWS: {
+		uint16 new_width, new_height;
+		memcpy(&new_width, &data[1], 2);
+		memcpy(&new_height, &data[3], 2);
+		width = ntohs(new_width);
+		height = ntohs(new_height);
+		break;
+	}
+	// handle terminal type
+	case TELOPT_TTYPE:
+		// proper input?
+		if (sb_cnt > 2 && data[1] == 0) {
+			// xterm?
+			if (sb_cnt == 7 && !memcmp(&data[2], "XTERM", 5))
+				io_flags.xterm = true;
+			// ansi
+			if (sb_cnt == 6 && !memcmp(&data[2], "ANSI", 4))
+				io_flags.ansi_term = true;
 
-				// set xterm title
-				if (io_flags.xterm) {
-					send_data (3, '\033', ']', ';');
-					add_output ("Source MUD", 10);
-					send_data (1, '\a');
-				}
+			// set xterm title
+			if (io_flags.xterm) {
+				send_data(3, '\033', ']', ';');
+				add_output("Source MUD", 10);
+				send_data(1, '\a');
 			}
-			break;
+		}
+		break;
 		// handle new environ
-		case TELOPT_NEW_ENVIRON:
-			// proper input - IS, VAR
-			if (sb_cnt > 3 && data[1] == 0 && data[2] == 0) {
-				// system type?
-				if (sb_cnt >= 13 && !memcmp(&data[3], "SYSTEMTYPE", 10)) {
-					// value is windows?
-					if (sb_cnt >= 19 && data[13] == 1 && !memcmp(&data[14], "WIN32", 5)) {
-						// we're running windows telnet, most likely
-						*this << "\n---\n" CADMIN "Warning:" CNORMAL " Source MUD has detected that "
-							"you are using the standard Windows telnet program.  Source MUD will "
-							"enable the slower server-side echoing.  You may disable this by "
-							"typing " CADMIN "!echo off" CNORMAL " at any time.\n---\n";
-						io_flags.force_echo = true;
-						if (io_flags.want_echo)
-							io_flags.do_echo = true;
-					}
+	case TELOPT_NEW_ENVIRON:
+		// proper input - IS, VAR
+		if (sb_cnt > 3 && data[1] == 0 && data[2] == 0) {
+			// system type?
+			if (sb_cnt >= 13 && !memcmp(&data[3], "SYSTEMTYPE", 10)) {
+				// value is windows?
+				if (sb_cnt >= 19 && data[13] == 1 && !memcmp(&data[14], "WIN32", 5)) {
+					// we're running windows telnet, most likely
+					*this << "\n---\n" CADMIN "Warning:" CNORMAL " Source MUD has detected that "
+					"you are using the standard Windows telnet program.  Source MUD will "
+					"enable the slower server-side echoing.  You may disable this by "
+					"typing " CADMIN "!echo off" CNORMAL " at any time.\n---\n";
+					io_flags.force_echo = true;
+					if (io_flags.want_echo)
+						io_flags.do_echo = true;
 				}
 			}
-			break;
+		}
+		break;
 	}
 }
 
 // flush out the output, write prompt
 void
-TelnetHandler::sock_flush ()
+TelnetHandler::sock_flush()
 {
 	// check timeout
 	check_timeout();
@@ -1038,12 +1036,12 @@ TelnetHandler::sock_flush ()
 
 		// clean output
 		end_chunk();
-		add_output (" ", 1);
+		add_output(" ", 1);
 
 		// GOAHEAD telnet command
 		if (io_flags.do_eor)
-			send_iac (1, EOR);
-		
+			send_iac(1, EOR);
+
 		io_flags.need_prompt = false;
 		io_flags.need_newline = true;
 		cur_col = 0;
@@ -1052,7 +1050,7 @@ TelnetHandler::sock_flush ()
 
 // send out a telnet command
 void
-TelnetHandler::send_iac (uint count, ...)
+TelnetHandler::send_iac(uint count, ...)
 {
 	va_list va;
 	unsigned char buffer[16]; // simple buffer
@@ -1060,15 +1058,15 @@ TelnetHandler::send_iac (uint count, ...)
 	uint byte;
 	buffer[0] = IAC; // we need to send an IAC
 
-	va_start (va, count);
+	va_start(va, count);
 	// loop thru args
 	for (uint i = 0; i < count; i ++) {
-		byte = va_arg (va, uint);
+		byte = va_arg(va, uint);
 
 		// add byte
 		buffer[bc ++] = byte;
 		if (bc >= 16) {
-			add_output ((char *)buffer, 16);
+			add_output((char *)buffer, 16);
 			bc = 0;
 		}
 
@@ -1076,34 +1074,34 @@ TelnetHandler::send_iac (uint count, ...)
 		if (byte == IAC)
 			buffer[bc ++] = IAC;
 		if (bc >= 16) {
-			add_output ((char *)buffer, 16);
+			add_output((char *)buffer, 16);
 			bc = 0;
 		}
 	}
 
 	// write out rest of buffer
 	if (bc)
-		add_output ((char *)buffer, bc);
+		add_output((char *)buffer, bc);
 }
 
 // send out telnet data
 void
-TelnetHandler::send_data (uint count, ...)
+TelnetHandler::send_data(uint count, ...)
 {
 	va_list va;
 	unsigned char buffer[16]; // simple buffer
 	uint bc = 0; // buffer index
 	uint byte;
 
-	va_start (va, count);
+	va_start(va, count);
 	// loop thru args
 	for (uint i = 0; i < count; i ++) {
-		byte = va_arg (va, uint);
+		byte = va_arg(va, uint);
 
 		// add byte
 		buffer[bc ++] = byte;
 		if (bc >= 16) {
-			add_output ((char *)buffer, 16);
+			add_output((char *)buffer, 16);
 			bc = 0;
 		}
 
@@ -1111,18 +1109,19 @@ TelnetHandler::send_data (uint count, ...)
 		if (byte == IAC)
 			buffer[bc ++] = IAC;
 		if (bc >= 16) {
-			add_output ((char *)buffer, 16);
+			add_output((char *)buffer, 16);
 			bc = 0;
 		}
 	}
 
 	// write out rest of buffer
 	if (bc)
-		add_output ((char *)buffer, bc);
+		add_output((char *)buffer, bc);
 }
 
 void
-TelnetHandler::add_to_chunk (const char *data, size_t len) {
+TelnetHandler::add_to_chunk(const char *data, size_t len)
+{
 	// output indenting
 	OUTPUT_INDENT()
 
@@ -1150,7 +1149,7 @@ TelnetHandler::add_to_chunk (const char *data, size_t len) {
 }
 
 void
-TelnetHandler::add_output (const char *data, size_t len)
+TelnetHandler::add_output(const char *data, size_t len)
 {
 #ifdef HAVE_LIBZ
 	if (zstate) {
@@ -1161,7 +1160,7 @@ TelnetHandler::add_output (const char *data, size_t len)
 		zstate->avail_in = len;
 		zstate->next_out = (Bytef*)buffer;
 		zstate->avail_out = sizeof(buffer);
-		
+
 		// keep compressing until we have no more input
 		do {
 			deflate(zstate, Z_NO_FLUSH);
@@ -1181,11 +1180,11 @@ TelnetHandler::add_output (const char *data, size_t len)
 	} else
 #endif // HAVE_LIBZ
 
-	sock_buffer(data, len);
+		sock_buffer(data, len);
 }
 
 void
-TelnetHandler::end_chunk ()
+TelnetHandler::end_chunk()
 {
 	// only if we have data
 	if (outchunk_cnt > 0) {
@@ -1208,7 +1207,7 @@ TelnetHandler::end_chunk ()
 
 // check various timeouts
 void
-TelnetHandler::check_timeout ()
+TelnetHandler::check_timeout()
 {
 	if ((time(NULL) - in_stamp) >= (int)(timeout * 60)) {
 		// disconnect the dink
@@ -1219,13 +1218,13 @@ TelnetHandler::check_timeout ()
 }
 
 void
-TelnetHandler::sock_hangup ()
+TelnetHandler::sock_hangup()
 {
 	disconnect();
 }
 
 void
-TelnetHandler::finish ()
+TelnetHandler::finish()
 {
 	if (mode)
 		mode->finish();
@@ -1234,7 +1233,7 @@ TelnetHandler::finish ()
 }
 
 void
-ITelnetMode::finish ()
+ITelnetMode::finish()
 {
 	handler->disconnect();
 }

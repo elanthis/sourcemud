@@ -29,11 +29,12 @@
 
 SHTTPManager HTTPManager;
 
-namespace Log {
+namespace Log
+{
 	LogWrapper HTTP(LOG_HTTP);
 }
 
-HTTPHandler::HTTPHandler (int s_sock, const NetAddr& s_netaddr) :  SocketConnection(s_sock)
+HTTPHandler::HTTPHandler(int s_sock, const NetAddr& s_netaddr) :  SocketConnection(s_sock)
 {
 	addr = s_netaddr;
 	state = REQ;
@@ -43,7 +44,7 @@ HTTPHandler::HTTPHandler (int s_sock, const NetAddr& s_netaddr) :  SocketConnect
 
 // disconnect
 void
-HTTPHandler::disconnect ()
+HTTPHandler::disconnect()
 {
 	// reduce count
 	MNetwork.connections.remove(addr);
@@ -57,14 +58,14 @@ HTTPHandler::disconnect ()
  * escaping/removing/translating Source MUD commands
  */
 void
-HTTPHandler::stream_put (const char *text, size_t len) 
+HTTPHandler::stream_put(const char *text, size_t len)
 {
 	sock_buffer(text, len);
 }
 
 // process input
 void
-HTTPHandler::sock_input (char* buffer, size_t size)
+HTTPHandler::sock_input(char* buffer, size_t size)
 {
 	timeout = time(NULL);
 
@@ -84,7 +85,7 @@ HTTPHandler::sock_input (char* buffer, size_t size)
 				line.write(buffer, size);
 				size = 0;
 			}
-		// if we're in REQ or HEADER, we need to read in lines
+			// if we're in REQ or HEADER, we need to read in lines
 		} else if (state == REQ || state == HEADER) {
 			char* c;
 			if ((c = strchr(buffer, '\n')) != NULL) {
@@ -109,7 +110,7 @@ HTTPHandler::sock_input (char* buffer, size_t size)
 				// append remaining data to our line buffer
 				line.write(buffer, size);
 			}
-		// other states; just ignore any further data
+			// other states; just ignore any further data
 		} else if (state == DONE || state == ERROR) {
 			break;
 		}
@@ -118,7 +119,7 @@ HTTPHandler::sock_input (char* buffer, size_t size)
 
 // flush out the output, write prompt
 void
-HTTPHandler::sock_flush ()
+HTTPHandler::sock_flush()
 {
 	// handle timeout
 	if (timeout != 0 && (time(NULL) - timeout) >= HTTP_REQUEST_TIMEOUT) {
@@ -132,7 +133,7 @@ HTTPHandler::sock_flush ()
 }
 
 void
-HTTPHandler::sock_hangup ()
+HTTPHandler::sock_hangup()
 {
 	disconnect();
 }
@@ -140,125 +141,122 @@ HTTPHandler::sock_hangup ()
 void HTTPHandler::process()
 {
 	switch (state) {
-		case REQ:
-		{
-			request = line.str();
+	case REQ: {
+		request = line.str();
 
-			// empty request?  ignore
-			if (request.empty())
-				return;
+		// empty request?  ignore
+		if (request.empty())
+			return;
 
-			// parse
-			std::vector<std::string> parts = explode(request, ' ');
+		// parse
+		std::vector<std::string> parts = explode(request, ' ');
 
-			// check size
-			if (parts.size() != 3) {
-				http_error(400);
-				return;
-			}
-
-			// http method
-			method = parts[0];
-			if (method != "GET" && method != "POST") {
-				http_error(405);
-				return;
-			}
-
-			// get URL
-			url = parts[1];
-			const char* sep = strchr(url.c_str(), '?');
-			if (sep != NULL) {
-				path = std::string(url.c_str(), sep - url.c_str());
-				parse_request_data(get, sep + 1);
-			} else {
-				path = url;
-			}
-			File::normalize(path);
-
-			state = HEADER;
-			break;
+		// check size
+		if (parts.size() != 3) {
+			http_error(400);
+			return;
 		}
-		case HEADER:
-		{
-			// no more headers
-			if (line.empty()) {
-				// determine content length of body, if any
-				content_length = tolong(getHeader("content-length"));
-				if (content_length > HTTP_POST_BODY_MAX) {
-					http_error(413);
+
+		// http method
+		method = parts[0];
+		if (method != "GET" && method != "POST") {
+			http_error(405);
+			return;
+		}
+
+		// get URL
+		url = parts[1];
+		const char* sep = strchr(url.c_str(), '?');
+		if (sep != NULL) {
+			path = std::string(url.c_str(), sep - url.c_str());
+			parse_request_data(get, sep + 1);
+		} else {
+			path = url;
+		}
+		File::normalize(path);
+
+		state = HEADER;
+		break;
+	}
+	case HEADER: {
+		// no more headers
+		if (line.empty()) {
+			// determine content length of body, if any
+			content_length = tolong(getHeader("content-length"));
+			if (content_length > HTTP_POST_BODY_MAX) {
+				http_error(413);
 				// if we have no content length, go straight to processing
-				} else if (content_length == 0) {
-					execute();
-					state = DONE;
+			} else if (content_length == 0) {
+				execute();
+				state = DONE;
 				// we must continue on with processing body
-				} else {
-					state = BODY;
-				}
-				break;
+			} else {
+				state = BODY;
 			}
+			break;
+		}
 
-			// parse the header
-			const char* c = strchr(line.c_str(), ':');
-			// require ': ' after header name
-			if (c == NULL || *(c + 1) != ' ') {
-				http_error(400);
-				return;
-			}
+		// parse the header
+		const char* c = strchr(line.c_str(), ':');
+		// require ': ' after header name
+		if (c == NULL || *(c + 1) != ' ') {
+			http_error(400);
+			return;
+		}
 
-			// store it away, lower-case the name
-			header[strlower(std::string(line.c_str(), c - line.c_str()))] = c + 2;
+		// store it away, lower-case the name
+		header[strlower(std::string(line.c_str(), c - line.c_str()))] = c + 2;
 
-/*
-			// determine which header we're dealing with
-			} else if (!strncasecmp("Cookie", line.c_str(), c - line.c_str())) {
-				// Cookie; look for session
-				const char* sid_start;
-				if ((sid_start = strstr(c + 2, "session=")) != NULL) {
-					sid_start = strchr(sid_start, '=') + 1;
-					const char* sid_end = strchr(sid_start, ';');
-					std::string sid;
-					if (sid_end == NULL)
-						sid = std::string(sid_start);
-					else
-						sid = std::string(sid_start, sid_end - sid_start);
+		/*
+					// determine which header we're dealing with
+					} else if (!strncasecmp("Cookie", line.c_str(), c - line.c_str())) {
+						// Cookie; look for session
+						const char* sid_start;
+						if ((sid_start = strstr(c + 2, "session=")) != NULL) {
+							sid_start = strchr(sid_start, '=') + 1;
+							const char* sid_end = strchr(sid_start, ';');
+							std::string sid;
+							if (sid_end == NULL)
+								sid = std::string(sid_start);
+							else
+								sid = std::string(sid_start, sid_end - sid_start);
 
-					// split session into hash, salt, and account ID
-					std::vector<std::string> parts = explode(sid, ':');
-					if (parts.size() == 3) {
-						std::string hash = parts[0];
-						std::string salt = parts[1];
-						std::string id = parts[2];
+							// split session into hash, salt, and account ID
+							std::vector<std::string> parts = explode(sid, ':');
+							if (parts.size() == 3) {
+								std::string hash = parts[0];
+								std::string salt = parts[1];
+								std::string id = parts[2];
 
-						// re-hash and compare
-						std::ostringstream buf;
-						buf << HTTPManager.get_session_key() << ':' << salt << ':' << id;
-						if (hash == MD5::hash(buf.str())) {
-							// lookup the account, we're successful
-							account = AccountManager.get(id);
+								// re-hash and compare
+								std::ostringstream buf;
+								buf << HTTPManager.get_session_key() << ':' << salt << ':' << id;
+								if (hash == MD5::hash(buf.str())) {
+									// lookup the account, we're successful
+									account = AccountManager.get(id);
+								}
+							}
 						}
-					}
-				}
-*/
+		*/
 
-			break;
-		}
-		case BODY:
-		{
-			// parse the post data, we we can
-			if (getHeader("content-type") == "application/x-www-form-urlencoded")
-				parse_request_data(post, line.c_str());
+		break;
+	}
+	case BODY: {
+		// parse the post data, we we can
+		if (getHeader("content-type") == "application/x-www-form-urlencoded")
+			parse_request_data(post, line.c_str());
 
-			// execute
-			execute();
-			break;
-		}
-		case DONE:
-		case ERROR:
-			break;
+		// execute
+		execute();
+		break;
+	}
+	case DONE:
+	case ERROR:
+		break;
 	}
 }
-	
-void HTTPHandler::parse_request_data(std::map<std::string,std::string>& map, const char* line) const
+
+void HTTPHandler::parse_request_data(std::map<std::string, std::string>& map, const char* line) const
 {
 	// parse the data
 	StringBuffer value;
@@ -278,7 +276,7 @@ void HTTPHandler::parse_request_data(std::map<std::string,std::string>& map, con
 		if (sep == NULL)
 			sep = end;
 
-		// decode the name 
+		// decode the name
 		value.clear();
 		for (const char* c = begin; c < sep; ++c) {
 			if (*c == '+') {
@@ -395,22 +393,22 @@ void HTTPHandler::serve(const std::string& full_path)
 
 	// see if the item should be cached
 	if (getHeader("if-modified-since") == mtime
-			&& getHeader("if-none-match") == etag) {
+	        && getHeader("if-none-match") == etag) {
 		*this <<
-			"HTTP/1.1 304 Not Modified\r\n"
-			"ETag: " << etag << "\r\n\r\n";
+		"HTTP/1.1 304 Not Modified\r\n"
+		"ETag: " << etag << "\r\n\r\n";
 		log(304);
 		return;
 	}
 
 	// simple headers
 	*this <<
-		"HTTP/1.0 200 OK\r\n"
-		"Content-Type: " << mime << "\r\n"
-		"Content-Length: " << size << "\r\n"
-		"Last-Modified: " << mtime << "\r\n"
-		"ETag: " << etag << "\r\n\r\n";
-	
+	"HTTP/1.0 200 OK\r\n"
+	"Content-Type: " << mime << "\r\n"
+	"Content-Length: " << size << "\r\n"
+	"Last-Modified: " << mtime << "\r\n"
+	"ETag: " << etag << "\r\n\r\n";
+
 	// file content
 	std::ifstream ifs;
 	ifs.open(full_path.c_str(), std::ios::binary);
@@ -434,15 +432,15 @@ void HTTPHandler::log(int error)
 	const std::string& user_agent = getHeader("user-agent");
 	const std::string& referer = getHeader("referer");
 	Log::HTTP
-		<< addr.getString(false) << ' '
-		<< "- " // RFC 1413 identify -- apache log compatibility place-holder
-	 	<< (get_account() ? get_account()->getId().c_str() : "-") << ' '
-		<< '[' << StreamTime("%d/%b/%Y:%H:%M:%S %z") << "] "
-		<< '"' << request << "\" " 
-		<< error << ' '
-		<< get_out_bytes() << ' '
-		<< '"' << (referer.empty() ? "-" : referer.c_str()) << "\" "
-		<< '"' << (user_agent.empty() ? "-" : user_agent.c_str()) << '"';
+	<< addr.getString(false) << ' '
+	<< "- " // RFC 1413 identify -- apache log compatibility place-holder
+	<< (get_account() ? get_account()->getId().c_str() : "-") << ' '
+	<< '[' << StreamTime("%d/%b/%Y:%H:%M:%S %z") << "] "
+	<< '"' << request << "\" "
+	<< error << ' '
+	<< get_out_bytes() << ' '
+	<< '"' << (referer.empty() ? "-" : referer.c_str()) << "\" "
+	<< '"' << (user_agent.empty() ? "-" : user_agent.c_str()) << '"';
 }
 
 void
@@ -451,24 +449,42 @@ HTTPHandler::http_error(int error)
 	// lookup HTTP error msg code
 	std::string http_msg;
 	switch (error) {
-		case 200: http_msg="OK"; break;
-		case 400: http_msg="Bad Request"; break;
-		case 403: http_msg="Access Denied"; break;
-		case 404: http_msg="Not Found"; break;
-		case 405: http_msg="Method Not Allowed"; break;
-		case 406: http_msg="Not Acceptable"; break;
-		case 408: http_msg="Request Timeout"; break;
-		case 413: http_msg="Request Entity Too Large"; break;
-		default: http_msg = "Unknown"; break;
+	case 200:
+		http_msg = "OK";
+		break;
+	case 400:
+		http_msg = "Bad Request";
+		break;
+	case 403:
+		http_msg = "Access Denied";
+		break;
+	case 404:
+		http_msg = "Not Found";
+		break;
+	case 405:
+		http_msg = "Method Not Allowed";
+		break;
+	case 406:
+		http_msg = "Not Acceptable";
+		break;
+	case 408:
+		http_msg = "Request Timeout";
+		break;
+	case 413:
+		http_msg = "Request Entity Too Large";
+		break;
+	default:
+		http_msg = "Unknown";
+		break;
 	}
 
 	// display error page
 	*this <<
-		"HTTP/1.1 " << error << ' ' << http_msg << "\r\n"
-		"Content-Type: text/html\r\n\r\n"
-		"<html><head><title>Error</title></head>"
-		"<body><h1>" << error << " Error</h1>"
-		"<p>" << http_msg << "</p></body></html>";
+	"HTTP/1.1 " << error << ' ' << http_msg << "\r\n"
+	"Content-Type: text/html\r\n\r\n"
+	"<html><head><title>Error</title></head>"
+	"<body><h1>" << error << " Error</h1>"
+	"<p>" << http_msg << "</p></body></html>";
 
 	// log error
 	log(error);
@@ -479,7 +495,7 @@ HTTPHandler::http_error(int error)
 
 const std::string& HTTPHandler::getHeader(const std::string& name) const
 {
-	std::map<std::string,std::string>::const_iterator i = header.find(name);
+	std::map<std::string, std::string>::const_iterator i = header.find(name);
 	if (i != header.end())
 		return i->second;
 	static const std::string empty;
@@ -488,7 +504,7 @@ const std::string& HTTPHandler::getHeader(const std::string& name) const
 
 const std::string& HTTPHandler::getCookie(const std::string& name) const
 {
-	std::map<std::string,std::string>::const_iterator i = cookie.find(name);
+	std::map<std::string, std::string>::const_iterator i = cookie.find(name);
 	if (i != cookie.end())
 		return i->second;
 	static const std::string empty;
@@ -497,7 +513,7 @@ const std::string& HTTPHandler::getCookie(const std::string& name) const
 
 const std::string& HTTPHandler::getGET(const std::string& name) const
 {
-	std::map<std::string,std::string>::const_iterator i = get.find(name);
+	std::map<std::string, std::string>::const_iterator i = get.find(name);
 	if (i != get.end())
 		return i->second;
 	static const std::string empty;
@@ -506,7 +522,7 @@ const std::string& HTTPHandler::getGET(const std::string& name) const
 
 const std::string& HTTPHandler::getPOST(const std::string& name) const
 {
-	std::map<std::string,std::string>::const_iterator i = post.find(name);
+	std::map<std::string, std::string>::const_iterator i = post.find(name);
 	if (i != post.end())
 		return i->second;
 	static const std::string empty;
@@ -516,7 +532,7 @@ const std::string& HTTPHandler::getPOST(const std::string& name) const
 const std::string& HTTPHandler::getRequest(const std::string& name) const
 {
 	// searches POST. GET. then cookie
-	std::map<std::string,std::string>::const_iterator i = post.find(name);
+	std::map<std::string, std::string>::const_iterator i = post.find(name);
 	if (i != post.end())
 		return i->second;
 	i = get.find(name);

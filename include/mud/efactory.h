@@ -15,7 +15,7 @@ class Entity;
 // Creates an entity from a DBEntry
 class IEntityFactory
 {
-	public:
+public:
 	virtual const char* get_name() const = 0;
 	virtual ~IEntityFactory() {}
 	virtual Entity* create() const = 0;
@@ -23,15 +23,15 @@ class IEntityFactory
 
 class _MEntityFactory : public IManager
 {
-	public:
-	int initialize ();
-	void shutdown ();
+public:
+	int initialize();
+	void shutdown();
 
-	Entity* create (const std::string& name) const;
+	Entity* create(const std::string& name) const;
 
-	static void register_factory (const IEntityFactory*);
+	static void register_factory(const IEntityFactory*);
 
-	private:
+private:
 	typedef std::map<std::string, const IEntityFactory*> FactoryList;
 	static FactoryList* factories;
 };

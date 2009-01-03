@@ -12,7 +12,7 @@ std::vector<IManager*>* IManager::managers = NULL;
 std::vector<IManager*>* IManager::pending = NULL;
 
 // add manager to registry
-IManager::IManager ()
+IManager::IManager()
 {
 	// make managers vector
 	if (!pending)
@@ -24,7 +24,7 @@ IManager::IManager ()
 
 // initialize a manager if not already handled
 int
-IManager::require (IManager& manager)
+IManager::require(IManager& manager)
 {
 	// make managers vector
 	if (!managers)
@@ -47,7 +47,7 @@ IManager::require (IManager& manager)
 
 // load all managers
 int
-IManager::initialize_all ()
+IManager::initialize_all()
 {
 	// load manager
 	for (std::vector<IManager*>::iterator i = pending->begin(); i != pending->end(); ++i)
@@ -63,7 +63,7 @@ IManager::initialize_all ()
 
 // shutdown all managers
 void
-IManager::shutdown_all ()
+IManager::shutdown_all()
 {
 	for (std::vector<IManager*>::reverse_iterator i = managers->rbegin(); i != managers->rend(); ++i)
 		(*i)->shutdown();
@@ -71,7 +71,7 @@ IManager::shutdown_all ()
 
 // save state for all managers
 void
-IManager::save_all ()
+IManager::save_all()
 {
 	for (std::vector<IManager*>::reverse_iterator i = managers->rbegin(); i != managers->rend(); ++i)
 		(*i)->save();

@@ -10,12 +10,13 @@
 
 #define SERVER_MAX_CLIENTS 10000
 
-namespace MUD {
-	// shutdown the server
-	void shutdown ();
+namespace MUD
+{
+// shutdown the server
+void shutdown();
 
-	// get uptime
-	std::string get_uptime ();
+// get uptime
+std::string get_uptime();
 }
 
 #endif

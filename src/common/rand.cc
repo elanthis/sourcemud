@@ -8,25 +8,25 @@
 #include "common.h"
 
 void
-init_random (void)
+init_random(void)
 {
-	srandom (time (NULL));
+	srandom(time(NULL));
 }
 
 int
-get_random (int range)
+get_random(int range)
 {
 	if (range)
-		return random () % range;
+		return random() % range;
 	else
 		return 0;
 }
 
 int
-roll_dice (int dice, int sides)
+roll_dice(int dice, int sides)
 {
 	int val = 0;
 	for (int i = 0; i < dice; i ++)
-		val += get_random (sides) + 1;
+		val += get_random(sides) + 1;
 	return val;
 }

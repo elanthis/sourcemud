@@ -5,13 +5,14 @@
  * http://www.sourcemud.org
  */
 
-#ifndef SOURCEMUD_NET_IPLIST_H 
-#define SOURCEMUD_NET_IPLIST_H 
+#ifndef SOURCEMUD_NET_IPLIST_H
+#define SOURCEMUD_NET_IPLIST_H
 
 #include "net/netaddr.h"
 
-class IPDenyList {
-	public:
+class IPDenyList
+{
+public:
 	int load(const std::string& file);
 	int save(const std::string& file);
 
@@ -21,7 +22,7 @@ class IPDenyList {
 
 	bool exists(NetAddr& addr);
 
-	private:
+private:
 	struct IPDeny {
 		NetAddr addr;
 		uint mask;
@@ -29,8 +30,9 @@ class IPDenyList {
 	std::vector<IPDeny> denylist;
 };
 
-class IPConnList {
-	public:
+class IPConnList
+{
+public:
 	struct IPTrack {
 		NetAddr addr;
 		int conns;
@@ -44,7 +46,7 @@ class IPConnList {
 	const ConnList& get_conn_list() const { return connections; }
 	inline uint get_total() { return total_conns; }
 
-	private:
+private:
 	ConnList connections;
 	int total_conns;
 };

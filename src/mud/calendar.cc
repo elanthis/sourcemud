@@ -13,7 +13,7 @@
 #include "mud/filetab.h"
 
 int
-GameCalendar::load (void)
+GameCalendar::load(void)
 {
 	std::string path = MSettings.get_misc_path() + "/calendar";
 
@@ -54,7 +54,7 @@ GameCalendar::load (void)
 				return -1;
 			}
 
-		// weekday
+			// weekday
 		} else if (type == "weekday") {
 			std::string name = reader.get(i, 1);
 			if (name.empty()) {
@@ -64,7 +64,7 @@ GameCalendar::load (void)
 
 			weekdays.push_back(name);
 
-		// month
+			// month
 		} else if (type == "month") {
 			std::string name = reader.get(i, 1);
 			ulong days = tolong(reader.get(i, 2));
@@ -81,7 +81,7 @@ GameCalendar::load (void)
 			month.leap_years = leap;
 			months.push_back(month);
 
-		// unknown
+			// unknown
 		} else {
 			Log::Error << "Macro error: " << path << ',' << reader.get_line(i) << ": Unknown entry type";
 			return -1;
@@ -104,15 +104,14 @@ GameCalendar::load (void)
 }
 
 uint8
-GameCalendar::get_weekday (const GameTime &gt) const
+GameCalendar::get_weekday(const GameTime &gt) const
 {
 	uint64 total_days = 0;
 
 	// what the hell was this supposed to be doing again?
 
-	for (std::vector<GameCalendar::Month>::const_iterator i = months.begin (); i != months.end (); i ++)
-	{
-		uint year = gt.get_year() - (gt.get_month() > months.end () - i + 1 ? 0 : 1);
+	for (std::vector<GameCalendar::Month>::const_iterator i = months.begin(); i != months.end(); i ++) {
+		uint year = gt.get_year() - (gt.get_month() > months.end() - i + 1 ? 0 : 1);
 		total_days += i->day_count * year;
 		if (i->leap_years && year % i->leap_years == 0)
 			total_days ++;
@@ -120,15 +119,15 @@ GameCalendar::get_weekday (const GameTime &gt) const
 	total_days += gt.get_day();
 
 	if (weekdays.size())
-		return total_days % weekdays.size ();
+		return total_days % weekdays.size();
 	else
 		return 0;
 }
 
 uint16
-GameCalendar::days_in_month (const GameTime &gt) const
+GameCalendar::days_in_month(const GameTime &gt) const
 {
-	if (gt.get_month() < 1 || gt.get_month() > months.size ())
+	if (gt.get_month() < 1 || gt.get_month() > months.size())
 		return 0;
 	if (months[gt.get_month() - 1].leap_years && (gt.get_year() % months[gt.get_month() - 1].leap_years) == 0)
 		return months[gt.get_month() - 1].day_count + 1;
@@ -137,7 +136,7 @@ GameCalendar::days_in_month (const GameTime &gt) const
 }
 
 std::string
-GameCalendar::get_holiday (const GameTime &gt) const
+GameCalendar::get_holiday(const GameTime &gt) const
 {
 	for (std::vector<GameCalendar::Holiday>::const_iterator i = holidays.begin(); i != holidays.end(); ++i) {
 		// check year
@@ -157,7 +156,7 @@ GameCalendar::get_holiday (const GameTime &gt) const
 }
 
 int
-GameCalendar::find_month (const std::string& name)
+GameCalendar::find_month(const std::string& name)
 {
 	uint ii = 0;
 	for (std::vector<GameCalendar::Month>::const_iterator i = months.begin(); i != months.end(); ++i, ++ii) {
@@ -168,7 +167,7 @@ GameCalendar::find_month (const std::string& name)
 }
 
 int
-GameCalendar::find_weekday (const std::string& name)
+GameCalendar::find_weekday(const std::string& name)
 {
 	uint ii = 0;
 	for (std::vector<std::string>::const_iterator i = weekdays.begin(); i != weekdays.end(); ++i, ++ii) {

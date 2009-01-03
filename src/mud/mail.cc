@@ -13,13 +13,13 @@
 #ifdef HAVE_SENDMAIL
 
 void
-MailMessage::append (const std::string& data)
+MailMessage::append(const std::string& data)
 {
 	body << data;
 }
 
 void
-MailMessage::header (const std::string& name, const std::string& value)
+MailMessage::header(const std::string& name, const std::string& value)
 {
 	Header h;
 	h.name = name;
@@ -28,7 +28,7 @@ MailMessage::header (const std::string& name, const std::string& value)
 }
 
 int
-MailMessage::send (void) const
+MailMessage::send(void) const
 {
 	// sanity
 	if (!to || !subject) {
@@ -41,7 +41,7 @@ MailMessage::send (void) const
 	if (!sendmail) {
 		Log::Error << "No sendmail binary configured";
 		return -1;
-	}	 
+	}
 
 	// pipes
 	int files[2];
@@ -55,9 +55,9 @@ MailMessage::send (void) const
 	if ((pid = fork()) == 0) {
 		// file handles - erg
 		close(files[1]);
-		close (0); // stdin
-		close (1); // stdout
-		close (2); // stderr
+		close(0);  // stdin
+		close(1);  // stdout
+		close(2);  // stderr
 		dup2(files[0], 0);
 		// exec sendmail
 		if (execl(sendmail.c_str(), sendmail.c_str(), "-oi", "-t", "-FSource MUD", NULL))
@@ -88,7 +88,7 @@ MailMessage::send (void) const
 	fprintf(fout, "To: %s\n", to.c_str());
 	fprintf(fout, "X-Source MUD: YES\n");
 	for (std::vector<Header>::const_iterator i = headers.begin(); i != headers.end(); ++i)
-		fprintf (fout, "%s: %s\n", i->name.c_str(), i->value.c_str());
+		fprintf(fout, "%s: %s\n", i->name.c_str(), i->value.c_str());
 	fprintf(fout, "\n%s\n", body.c_str());
 	fclose(fout);
 

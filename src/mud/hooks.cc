@@ -15,7 +15,8 @@
 #include "mud/npc.h"
 #include "mud/shadow-object.h"
 
-namespace Hooks {
+namespace Hooks
+{
 	bool save_creature(Creature* self, File::Writer& writer) { return false; }
 	bool creature_heartbeat(Creature* self) { return false; }
 	bool save_entity(Entity* self, File::Writer& writer) { return false; }

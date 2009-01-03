@@ -18,7 +18,8 @@
  * format: n (10)
  *
  * END COMMAND */
-void command_north (Creature* ch, std::string argv[]) {
+void command_north(Creature* ch, std::string argv[])
+{
 	// must be in a room
 	if (!ch->get_room()) {
 		*ch << "You are not in a room.\n";
@@ -26,7 +27,7 @@ void command_north (Creature* ch, std::string argv[]) {
 	}
 
 	// get portal
-	Portal* portal = ch->get_room()->get_portal_by_dir (PortalDir::NORTH);
+	Portal* portal = ch->get_room()->get_portal_by_dir(PortalDir::NORTH);
 	if (!portal) {
 		*ch << "You do not see an portal in that direction.\n";
 		return;
@@ -44,7 +45,8 @@ void command_north (Creature* ch, std::string argv[]) {
  * format: ne (12)
  *
  * END COMMAND */
-void command_northeast (Creature* ch, std::string argv[]) {
+void command_northeast(Creature* ch, std::string argv[])
+{
 	// must be in a room
 	if (!ch->get_room()) {
 		*ch << "You are not in a room.\n";
@@ -52,7 +54,7 @@ void command_northeast (Creature* ch, std::string argv[]) {
 	}
 
 	// get portal
-	Portal* portal = ch->get_room()->get_portal_by_dir (PortalDir::NORTHEAST);
+	Portal* portal = ch->get_room()->get_portal_by_dir(PortalDir::NORTHEAST);
 	if (!portal) {
 		*ch << "You do not see an portal in that direction.\n";
 		return;
@@ -70,7 +72,8 @@ void command_northeast (Creature* ch, std::string argv[]) {
  * format: e (10)
  *
  * END COMMAND */
-void command_east (Creature* ch, std::string argv[]) {
+void command_east(Creature* ch, std::string argv[])
+{
 	// must be in a room
 	if (!ch->get_room()) {
 		*ch << "You are not in a room.\n";
@@ -78,7 +81,7 @@ void command_east (Creature* ch, std::string argv[]) {
 	}
 
 	// get portal
-	Portal* portal = ch->get_room()->get_portal_by_dir (PortalDir::EAST);
+	Portal* portal = ch->get_room()->get_portal_by_dir(PortalDir::EAST);
 	if (!portal) {
 		*ch << "You do not see an portal in that direction.\n";
 		return;
@@ -96,7 +99,8 @@ void command_east (Creature* ch, std::string argv[]) {
  * format: se (12)
  *
  * END COMMAND */
-void command_southeast (Creature* ch, std::string argv[]) {
+void command_southeast(Creature* ch, std::string argv[])
+{
 	// must be in a room
 	if (!ch->get_room()) {
 		*ch << "You are not in a room.\n";
@@ -104,7 +108,7 @@ void command_southeast (Creature* ch, std::string argv[]) {
 	}
 
 	// get portal
-	Portal* portal = ch->get_room()->get_portal_by_dir (PortalDir::SOUTHEAST);
+	Portal* portal = ch->get_room()->get_portal_by_dir(PortalDir::SOUTHEAST);
 	if (!portal) {
 		*ch << "You do not see an portal in that direction.\n";
 		return;
@@ -122,7 +126,8 @@ void command_southeast (Creature* ch, std::string argv[]) {
  * format: s (10)
  *
  * END COMMAND */
-void command_south (Creature* ch, std::string argv[]) {
+void command_south(Creature* ch, std::string argv[])
+{
 	// must be in a room
 	if (!ch->get_room()) {
 		*ch << "You are not in a room.\n";
@@ -130,7 +135,7 @@ void command_south (Creature* ch, std::string argv[]) {
 	}
 
 	// get portal
-	Portal* portal = ch->get_room()->get_portal_by_dir (PortalDir::SOUTH);
+	Portal* portal = ch->get_room()->get_portal_by_dir(PortalDir::SOUTH);
 	if (!portal) {
 		*ch << "You do not see an portal in that direction.\n";
 		return;
@@ -148,7 +153,8 @@ void command_south (Creature* ch, std::string argv[]) {
  * format: sw (12)
  *
  * END COMMAND */
-void command_southwest (Creature* ch, std::string argv[]) {
+void command_southwest(Creature* ch, std::string argv[])
+{
 	// must be in a room
 	if (!ch->get_room()) {
 		*ch << "You are not in a room.\n";
@@ -156,7 +162,7 @@ void command_southwest (Creature* ch, std::string argv[]) {
 	}
 
 	// get portal
-	Portal* portal = ch->get_room()->get_portal_by_dir (PortalDir::SOUTHWEST);
+	Portal* portal = ch->get_room()->get_portal_by_dir(PortalDir::SOUTHWEST);
 	if (!portal) {
 		*ch << "You do not see an portal in that direction.\n";
 		return;
@@ -174,7 +180,8 @@ void command_southwest (Creature* ch, std::string argv[]) {
  * format: w (10)
  *
  * END COMMAND */
-void command_west (Creature* ch, std::string argv[]) {
+void command_west(Creature* ch, std::string argv[])
+{
 	// must be in a room
 	if (!ch->get_room()) {
 		*ch << "You are not in a room.\n";
@@ -182,7 +189,7 @@ void command_west (Creature* ch, std::string argv[]) {
 	}
 
 	// get portal
-	Portal* portal = ch->get_room()->get_portal_by_dir (PortalDir::WEST);
+	Portal* portal = ch->get_room()->get_portal_by_dir(PortalDir::WEST);
 	if (!portal) {
 		*ch << "You do not see an portal in that direction.\n";
 		return;
@@ -200,7 +207,8 @@ void command_west (Creature* ch, std::string argv[]) {
  * format: nw (12)
  *
  * END COMMAND */
-void command_northwest (Creature* ch, std::string argv[]) {
+void command_northwest(Creature* ch, std::string argv[])
+{
 	// must be in a room
 	if (!ch->get_room()) {
 		*ch << "You are not in a room.\n";
@@ -208,7 +216,7 @@ void command_northwest (Creature* ch, std::string argv[]) {
 	}
 
 	// get portal
-	Portal* portal = ch->get_room()->get_portal_by_dir (PortalDir::NORTHWEST);
+	Portal* portal = ch->get_room()->get_portal_by_dir(PortalDir::NORTHWEST);
 	if (!portal) {
 		*ch << "You do not see an portal in that direction.\n";
 		return;
@@ -234,9 +242,9 @@ void command_climb(Creature* ch, std::string argv[])
 	}
 
 	Portal* portal;
-	if ((portal = ch->cl_find_portal (argv[0])) != NULL) {
+	if ((portal = ch->cl_find_portal(argv[0])) != NULL) {
 		if (portal->get_usage() == PortalUsage::CLIMB) {
-			ch->do_go (portal);
+			ch->do_go(portal);
 		} else {
 			*ch << "You cannot climb " << StreamName(*portal, DEFINITE) << ".\n";
 		}
@@ -259,9 +267,9 @@ void command_crawl(Creature* ch, std::string argv[])
 	}
 
 	Portal* portal;
-	if ((portal = ch->cl_find_portal (argv[0])) != NULL) {
+	if ((portal = ch->cl_find_portal(argv[0])) != NULL) {
 		if (portal->get_usage() == PortalUsage::CRAWL) {
-			ch->do_go (portal);
+			ch->do_go(portal);
 		} else {
 			*ch << "You cannot crawl on " << StreamName(*portal, DEFINITE) << ".\n";
 		}
@@ -284,9 +292,9 @@ void command_go(Creature* ch, std::string argv[])
 	}
 
 	Portal* portal;
-	if ((portal = ch->cl_find_portal (argv[0])) != NULL) {
+	if ((portal = ch->cl_find_portal(argv[0])) != NULL) {
 		if (portal->get_usage() == PortalUsage::WALK) {
-			ch->do_go (portal);
+			ch->do_go(portal);
 		} else {
 			*ch << "You cannot do that with " << StreamName(*portal, DEFINITE) << ".\n";
 		}

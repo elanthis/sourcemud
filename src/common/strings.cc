@@ -49,13 +49,13 @@ bool str_is_number(const std::string& string)
 		c ++;
 
 	// scan
-	while (*c && isdigit (*c))
+	while (*c && isdigit(*c))
 		++c;
 
 	// stopped before end of line?  bad
 	if (*c)
 		return false;
-		
+
 	// finished at end of line?  good
 	return true;
 }
@@ -63,14 +63,14 @@ bool str_is_number(const std::string& string)
 bool str_is_email(const std::string& string)
 {
 	const char *valid =
-		"abcdefghijklmnopqrstuvwxyz"
-		"ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-		"-_."; // do not include @
+	    "abcdefghijklmnopqrstuvwxyz"
+	    "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+	    "-_."; // do not include @
 
 	const char* cptr = string.c_str();
 
 	// name part
-	int len = strspn (cptr, valid);
+	int len = strspn(cptr, valid);
 	if (len == 0) // no valid name part
 		return false;
 
@@ -82,12 +82,12 @@ bool str_is_email(const std::string& string)
 	cptr += len + 1;
 
 	// last part must be valid
-	len = strspn (cptr, valid);
+	len = strspn(cptr, valid);
 	if (len == 0)
 		return false;
 
 	// must be a . in the last part
-	char *dot = strchr (cptr, '.');
+	char *dot = strchr(cptr, '.');
 	if (dot == NULL)
 		return false;
 
@@ -98,21 +98,21 @@ bool str_is_email(const std::string& string)
 bool str_is_true(const std::string& string)
 {
 	return (
-		str_eq(string, "true") ||
-		str_eq(string, "yes") ||
-		str_eq(string, "on") ||
-		(str_is_number(string) && tolong(string) != 0)
-	);
+	           str_eq(string, "true") ||
+	           str_eq(string, "yes") ||
+	           str_eq(string, "on") ||
+	           (str_is_number(string) && tolong(string) != 0)
+	       );
 }
 
 bool str_is_false(const std::string& string)
 {
 	return (
-		str_eq(string, "false") ||
-		str_eq(string, "no") ||
-		str_eq(string, "off") ||
-		string == "0"
-	);
+	           str_eq(string, "false") ||
+	           str_eq(string, "no") ||
+	           str_eq(string, "off") ||
+	           string == "0"
+	       );
 }
 
 bool str_eq(const std::string& str_a, const std::string& str_b, size_t len)
@@ -125,7 +125,7 @@ bool str_eq(const std::string& str_a, const std::string& str_b, size_t len)
 }
 
 bool
-prefix_match (const char* string, const char* prefix)
+prefix_match(const char* string, const char* prefix)
 {
 	assert(string != NULL);
 	assert(prefix != NULL);
@@ -133,7 +133,7 @@ prefix_match (const char* string, const char* prefix)
 	return strncasecmp(string, prefix, strlen(prefix)) == 0;
 }
 
-bool phrase_match (const char* match, const char* test)
+bool phrase_match(const char* match, const char* test)
 {
 	assert(match != NULL);
 	assert(test != NULL);
@@ -149,7 +149,7 @@ bool phrase_match (const char* match, const char* test)
 
 	const char *c = test;
 	// skip leading spaces
-	while (*c != '\0' && isspace (*c))
+	while (*c != '\0' && isspace(*c))
 		++ c;
 	if (*c == '\0')
 		return false;
@@ -159,7 +159,7 @@ bool phrase_match (const char* match, const char* test)
 	chunks[cchunk - 1].base = c;
 	while (*c != '\0') {
 		// end of chunk
-		if (isspace (*c)) {
+		if (isspace(*c)) {
 			// break at max
 			if (cchunk == 5)
 				break;
@@ -168,7 +168,7 @@ bool phrase_match (const char* match, const char* test)
 			chunks[cchunk - 1].len = c - chunks[cchunk - 1].base;
 
 			// find next
-			while (*c != '\0' && isspace (*c))
+			while (*c != '\0' && isspace(*c))
 				++ c;
 			if (*c == '\0')
 				break;
@@ -186,9 +186,9 @@ bool phrase_match (const char* match, const char* test)
 	const char *word = c;
 	while (*c != '\0') {
 		// end of chunk
-		if (isspace (*c)) {
+		if (isspace(*c)) {
 			// compare current chunks to this word
-			if (chunks[matches].len <= c - word && !strncasecmp (word, chunks[matches].base, chunks[matches].len)) {
+			if (chunks[matches].len <= c - word && !strncasecmp(word, chunks[matches].base, chunks[matches].len)) {
 				// match
 				++ matches;
 				if (matches == cchunk)
@@ -196,7 +196,7 @@ bool phrase_match (const char* match, const char* test)
 			}
 
 			// find next word
-			while (*c != '\0' && isspace (*c))
+			while (*c != '\0' && isspace(*c))
 				++ c;
 			if (*c == '\0')
 				break;
@@ -204,7 +204,7 @@ bool phrase_match (const char* match, const char* test)
 		} else
 			++ c;
 	}
-	if (chunks[matches].len <= c - word && !strncasecmp (word, chunks[matches].base, chunks[matches].len)) {
+	if (chunks[matches].len <= c - word && !strncasecmp(word, chunks[matches].base, chunks[matches].len)) {
 		// match
 		++ matches;
 	}
@@ -214,14 +214,15 @@ bool phrase_match (const char* match, const char* test)
 }
 
 std::string
-get_num_suffix (unsigned int num) {
+get_num_suffix(unsigned int num)
+{
 	if (num == 11 || num == 12 || num == 13) { return "th"; }
 	num %= 10;
 	return num == 1 ? "st" : num == 2 ? "nd" : num == 3 ? "rd" : "th";
 }
 
 std::vector<std::string>&
-explode (std::vector<std::string>& list, const std::string& str, char ch)
+explode(std::vector<std::string>& list, const std::string& str, char ch)
 {
 	list.clear();
 
@@ -325,14 +326,15 @@ std::string strlower(const std::string& str)
 	return rs;
 }
 
-namespace {
+namespace
+{
 	struct Replace {
-		Replace (std::string s_from, const std::string& s_to) : from(s_from), to (s_to) {}
+		Replace(std::string s_from, const std::string& s_to) : from(s_from), to(s_to) {}
 
 		const std::string& from;
 		const std::string& to;
 
-		char operator ()(char c) {
+		char operator()(char c) {
 			char* r = strchr(from.c_str(), c);
 			if (r != NULL)
 				return to[(int)(from.c_str() - r)];
@@ -353,7 +355,7 @@ std::string trim(const std::string& source, const std::string& accept)
 }
 
 std::string
-str_tr (std::string source, const std::string& from, const std::string& to)
+str_tr(std::string source, const std::string& from, const std::string& to)
 {
 	StringBuffer result;
 
@@ -369,7 +371,7 @@ str_tr (std::string source, const std::string& from, const std::string& to)
 }
 
 std::string
-make_path (const char* path, const char* file)
+make_path(const char* path, const char* file)
 {
 	assert(path != NULL);
 	assert(file != NULL);
@@ -395,7 +397,7 @@ make_path (const char* path, const char* file)
 }
 
 std::string
-base_name (const char* path)
+base_name(const char* path)
 {
 	assert(path != NULL);
 
@@ -416,7 +418,7 @@ base_name (const char* path)
 }
 
 bool
-has_suffix (const char* base, const char* suffix)
+has_suffix(const char* base, const char* suffix)
 {
 	assert(base != NULL);
 	assert(suffix != NULL);

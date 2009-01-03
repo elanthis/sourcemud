@@ -20,14 +20,14 @@
 
 _MHelp MHelp;
 
-void command_help (Player* player, std::string argv[])
+void command_help(Player* player, std::string argv[])
 {
 	StreamControl stream(player);
-	MHelp.print (stream, argv[0]);
+	MHelp.print(stream, argv[0]);
 }
 
 HelpTopic*
-_MHelp::get_topic (const std::string& name)
+_MHelp::get_topic(const std::string& name)
 {
 	for (TopicList::iterator i = topics.begin(); i != topics.end(); ++i)
 		if (phrase_match((*i)->name, name))
@@ -36,7 +36,7 @@ _MHelp::get_topic (const std::string& name)
 }
 
 void
-_MHelp::print (StreamControl& stream, const std::string& name)
+_MHelp::print(StreamControl& stream, const std::string& name)
 {
 	// try a man page
 	if (!name.empty() && MCommand.show_man(stream, name, true))
@@ -55,7 +55,7 @@ _MHelp::print (StreamControl& stream, const std::string& name)
 }
 
 int
-_MHelp::initialize ()
+_MHelp::initialize()
 {
 	std::vector<std::string> files = File::dirlist(MSettings.get_help_path());
 	File::filter(files, "*.help");
@@ -76,22 +76,22 @@ _MHelp::initialize ()
 		while (!in.eof()) {
 			c = in.get();
 
-			// eof 
+			// eof
 			if (c == -1) {
 				break;
 
-			// comment
+				// comment
 			} else if (c == '#') {
 				do {
 					c = in.get();
 				} while (!in.eof() && c != '\n');
 				++line;
 
-			// blank line
+				// blank line
 			} else if (c == '\n') {
 				++line;
 
-			// white-space line
+				// white-space line
 			} else if (isspace(c)) {
 				do {
 					if (!isspace(c)) {
@@ -102,7 +102,7 @@ _MHelp::initialize ()
 				} while (!in.eof() && c != '\n');
 				++line;
 
-			// command token
+				// command token
 			} else if (c == '%') {
 				StringBuffer buf;
 
@@ -150,66 +150,66 @@ _MHelp::initialize ()
 				while (!in.eof() && state != END) {
 					c = in.get();
 					switch (state) {
-						case PRE:
-							// newline
-							if (c == '\n') {
-								++line;
-								state = NL;
+					case PRE:
+						// newline
+						if (c == '\n') {
+							++line;
+							state = NL;
 							// text
-							} else if (!isspace(c)) {
-								buf << (char)c;
-								state = TEXT;
-							// whitespace
-							} else {
-								++pre;
-							}
-							break;
-						case WS:
-							// newline
-							if (c == '\n') {
-								++line;
-								buf << '\n';
-								state = NL;
-							// text
-							} else if (!isspace(c)) {
-								buf << (char)c;
-								state = TEXT;
-							// whitespace
-							} else {
-								++cur;
-								if (cur > pre) {
-									buf << (char)c;
-									state = TEXT;
-								}
-							}
-							break;
-						case NL:
-							// end
-							if (c == '%') {
-								state = END;
-							// newline
-							} else if (c == '\n') {
-								buf << '\n';
-								++line;
-							// pre-line whitespace
-							} else if (isspace(c)) {
-								cur = 1;
-								state = WS;
-							// text
-							} else {
-								buf << (char)c;
-								state = TEXT;
-							}
-							break;
-						case TEXT:
+						} else if (!isspace(c)) {
 							buf << (char)c;
-							if (c == '\n') {
-								++line;
-								state = NL;
+							state = TEXT;
+							// whitespace
+						} else {
+							++pre;
+						}
+						break;
+					case WS:
+						// newline
+						if (c == '\n') {
+							++line;
+							buf << '\n';
+							state = NL;
+							// text
+						} else if (!isspace(c)) {
+							buf << (char)c;
+							state = TEXT;
+							// whitespace
+						} else {
+							++cur;
+							if (cur > pre) {
+								buf << (char)c;
+								state = TEXT;
 							}
-							break;
-						case END:
-							break;
+						}
+						break;
+					case NL:
+						// end
+						if (c == '%') {
+							state = END;
+							// newline
+						} else if (c == '\n') {
+							buf << '\n';
+							++line;
+							// pre-line whitespace
+						} else if (isspace(c)) {
+							cur = 1;
+							state = WS;
+							// text
+						} else {
+							buf << (char)c;
+							state = TEXT;
+						}
+						break;
+					case TEXT:
+						buf << (char)c;
+						if (c == '\n') {
+							++line;
+							state = NL;
+						}
+						break;
+					case END:
+						break;
 					}
 				}
 				if (in.eof()) {
@@ -228,7 +228,7 @@ _MHelp::initialize ()
 				topic->about = body;
 				topics.push_back(topic);
 
-			// garbage
+				// garbage
 			} else {
 				Log::Error << *i << ',' << line << ": Garbage on line";
 				return -1;
@@ -240,10 +240,10 @@ _MHelp::initialize ()
 }
 
 void
-_MHelp::shutdown ()
+_MHelp::shutdown()
 {
 	// delete all topics
 	for (TopicList::iterator i = topics.begin(); i != topics.end(); ++i)
-		delete (*i);
+		delete(*i);
 	topics.clear();
 }

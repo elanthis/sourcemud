@@ -40,10 +40,10 @@ using namespace OLC;
  * access: GM
  *
  * END COMMAND */
-void command_olc_create (Player* builder, std::string argv[])
+void command_olc_create(Player* builder, std::string argv[])
 {
 	// create npc from blueprint
-	if (str_eq (argv[0], "npc")) {
+	if (str_eq(argv[0], "npc")) {
 		Npc *new_npc = NULL;
 		if (!argv[1].empty()) {
 			new_npc = Npc::load_blueprint(argv[1]);
@@ -55,10 +55,10 @@ void command_olc_create (Player* builder, std::string argv[])
 			new_npc = new Npc();
 		}
 
-		new_npc->enter (builder->get_room(), NULL);
+		new_npc->enter(builder->get_room(), NULL);
 		*builder << "New NPC " << StreamName(*new_npc, NONE) << " created.\n";
-	// creat object from blueprint
-	} else if (str_eq (argv[0], "object")) {
+		// creat object from blueprint
+	} else if (str_eq(argv[0], "object")) {
 		Object* new_object = NULL;
 		if (!argv[1].empty()) {
 			new_object = ShadowObject::load_blueprint(argv[1]);
@@ -70,9 +70,9 @@ void command_olc_create (Player* builder, std::string argv[])
 			new_object = new UniqueObject();
 		}
 
-		builder->get_room()->add_object (new_object);
+		builder->get_room()->add_object(new_object);
 		*builder << "New object " << StreamName(*new_object, NONE) << " created.\n";
-	// create portal in room
+		// create portal in room
 	} else if (str_eq(argv[0], "portal")) {
 		Room* room = builder->get_room();
 		if (room == NULL) {
@@ -100,7 +100,7 @@ void command_olc_create (Player* builder, std::string argv[])
 		Portal* portal = room->new_portal(dir);
 		portal->set_target(target->get_id());
 		*builder << "Portal created.\n";
-	// create room in zone
+		// create room in zone
 	} else if (str_eq(argv[0], "room")) {
 		Zone *zone = NULL;
 		if (!argv[2].empty()) {
@@ -119,30 +119,30 @@ void command_olc_create (Player* builder, std::string argv[])
 			}
 		}
 
-		if (MZone.get_room (argv[1])) {
+		if (MZone.get_room(argv[1])) {
 			*builder << "Room '" << argv[1] << "' already exists.\n";
 			return;
 		}
 
-		Room *room = new Room ();
-		room->set_id (argv[1]);
-		room->set_name (argv[1]);
+		Room *room = new Room();
+		room->set_id(argv[1]);
+		room->set_name(argv[1]);
 
-		*builder << "Room '" << room->get_id () << "' added.\n";
-		zone->add_room (room);
-	// create zone
+		*builder << "Room '" << room->get_id() << "' added.\n";
+		zone->add_room(room);
+		// create zone
 	} else if (str_eq(argv[0], "zone")) {
-		if (MZone.get_zone (argv[1])) {
+		if (MZone.get_zone(argv[1])) {
 			*builder << "Zone '" << argv[1] << "' already exists.\n";
 			return;
 		}
 
-		Zone *zone = new Zone ();
-		zone->set_id (argv[1]);
-		zone->set_name (argv[1]);
+		Zone *zone = new Zone();
+		zone->set_id(argv[1]);
+		zone->set_name(argv[1]);
 
-		MZone.add_zone (zone);
-		*builder << "Zone '" << zone->get_id () << "' added.\n";
+		MZone.add_zone(zone);
+		*builder << "Zone '" << zone->get_id() << "' added.\n";
 	}
 }
 
@@ -160,7 +160,7 @@ void command_olc_create (Player* builder, std::string argv[])
  * access: GM
  *
  * END COMMAND */
-void command_olc_destroy (Player* builder, std::string argv[])
+void command_olc_destroy(Player* builder, std::string argv[])
 {
 	Entity* entity;
 
@@ -198,13 +198,13 @@ void command_olc_destroy (Player* builder, std::string argv[])
 
 	// find room?
 	if (ROOM(entity)) {
-		if (ROOM(entity) == builder->get_room ()) {
+		if (ROOM(entity) == builder->get_room()) {
 			*builder << "You cannot delete the room you are in.\n";
 			return;
 		}
 
 		entity->destroy();
-		*builder << "Room '" << ROOM(entity)->get_id () << "' destroyed.\n";
+		*builder << "Room '" << ROOM(entity)->get_id() << "' destroyed.\n";
 		return;
 	}
 
@@ -233,12 +233,12 @@ void command_olc_destroy (Player* builder, std::string argv[])
  * access: GM
  *
  * END COMMAND */
-void command_olc_portals (Player *builder, std::string argv[])
+void command_olc_portals(Player *builder, std::string argv[])
 {
 	Room *room = NULL;
-	
+
 	if (argv[0].empty()) {
-		room = ROOM(builder->get_room ());
+		room = ROOM(builder->get_room());
 		if (room == NULL) {
 			*builder << "You are not in a room.\n";
 			return;
@@ -253,5 +253,5 @@ void command_olc_portals (Player *builder, std::string argv[])
 
 	*builder << "Portal list:\n";
 
-	room->show_portals (*builder);
+	room->show_portals(*builder);
 }

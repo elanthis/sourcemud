@@ -14,35 +14,35 @@
 // Gender
 class GenderType
 {
-	public:
+public:
 	typedef enum {
 		NONE = 0,
 		FEMALE,
 		MALE,
 		COUNT
 	} type_t;
-	
-	public:
-	inline GenderType (int s_value) : value((type_t)s_value) {}
-	inline GenderType (void) : value(NONE) {}
+
+public:
+	inline GenderType(int s_value) : value((type_t)s_value) {}
+	inline GenderType(void) : value(NONE) {}
 
 	inline const std::string& get_name(void) const { return names[value]; }
 
-	inline const std::string& get_hisher (void) const { return hisher[value]; }
-	inline const std::string& get_hishers (void) const { return hishers[value]; }
-	inline const std::string& get_heshe (void) const { return heshe[value]; }
-	inline const std::string& get_himher (void) const { return himher[value]; }
-	inline const std::string& get_manwoman (void) const { return manwoman[value]; }
-	inline const std::string& get_malefemale (void) const { return malefemale[value]; }
+	inline const std::string& get_hisher(void) const { return hisher[value]; }
+	inline const std::string& get_hishers(void) const { return hishers[value]; }
+	inline const std::string& get_heshe(void) const { return heshe[value]; }
+	inline const std::string& get_himher(void) const { return himher[value]; }
+	inline const std::string& get_manwoman(void) const { return manwoman[value]; }
+	inline const std::string& get_malefemale(void) const { return malefemale[value]; }
 
-	inline type_t get_value (void) const { return value; }
+	inline type_t get_value(void) const { return value; }
 
-	static GenderType lookup (const std::string& name);
+	static GenderType lookup(const std::string& name);
 
 	inline bool operator == (const GenderType& gender) const { return gender.value == value; }
 	inline bool operator != (const GenderType& gender) const { return gender.value != value; }
 
-	private:
+private:
 	type_t value;
 
 	static std::string names[];
@@ -57,7 +57,7 @@ class GenderType
 // Equip slot types
 class EquipSlot
 {
-	public:
+public:
 	typedef enum {
 		NONE = 0,
 		HEAD,
@@ -72,23 +72,23 @@ class EquipSlot
 		WAIST,
 		COUNT
 	} type_t;
-	
-	public:
-	EquipSlot (int s_value) : value((type_t)s_value) {}
-	EquipSlot (void) : value(NONE) {}
 
-	bool valid (void) const { return value != NONE; }
+public:
+	EquipSlot(int s_value) : value((type_t)s_value) {}
+	EquipSlot(void) : value(NONE) {}
+
+	bool valid(void) const { return value != NONE; }
 
 	std::string get_name(void) const { return names[value]; }
 
-	type_t get_value (void) const { return value; }
+	type_t get_value(void) const { return value; }
 
-	static EquipSlot lookup (const std::string& name);
+	static EquipSlot lookup(const std::string& name);
 
 	inline bool operator == (const EquipSlot& dir) const { return dir.value == value; }
 	inline bool operator != (const EquipSlot& dir) const { return dir.value != value; }
 
-	private:
+private:
 	type_t value;
 
 	static std::string names[];

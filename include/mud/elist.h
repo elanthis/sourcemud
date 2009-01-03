@@ -16,14 +16,14 @@ class EList : public std::vector<EntType*>
 {
 	typedef std::vector<EntType*> vtype;
 
-	public:
+public:
 	EList<EntType> (void) : std::vector<EntType*>() {}
 	EList<EntType> (size_t size) : std::vector<EntType*>(size) {}
 
-	void add (EntType* ent);
-	void remove (EntType* ent);
-	bool has (EntType* ent);
-	EntType* match (const std::string& str, uint index = 1, uint *matches = NULL);
+	void add(EntType* ent);
+	void remove(EntType* ent);
+	bool has(EntType* ent);
+	EntType* match(const std::string& str, uint index = 1, uint *matches = NULL);
 };
 
 // --- EList Implementation ---
@@ -32,7 +32,7 @@ template<class EntType>
 void
 EList<EntType>::add(EntType* ent)
 {
-	assert (ent != NULL);
+	assert(ent != NULL);
 
 	// sorted insert...
 	for (typename vtype::iterator i = vtype::begin(); i != vtype::end(); ++i) {
@@ -54,8 +54,8 @@ template<class EntType>
 void
 EList<EntType>::remove(EntType* ent)
 {
-	assert (ent != NULL);
-	typename vtype::iterator i = std::find(vtype::begin(),vtype::end(),ent);
+	assert(ent != NULL);
+	typename vtype::iterator i = std::find(vtype::begin(), vtype::end(), ent);
 	if (i != vtype::end())
 		erase(i);
 }
@@ -64,17 +64,17 @@ template<class EntType>
 bool
 EList<EntType>::has(EntType* ent)
 {
-	assert (ent != NULL);
-	typename vtype::iterator i = std::find(vtype::begin(),vtype::end(),ent);
+	assert(ent != NULL);
+	typename vtype::iterator i = std::find(vtype::begin(), vtype::end(), ent);
 	return i != vtype::end();
 }
 
 template<class EntType>
 EntType*
-EList<EntType>::match (const std::string& str, uint index, uint *matches)
+EList<EntType>::match(const std::string& str, uint index, uint *matches)
 {
-	assert (!str.empty());
-	assert (index != 0);
+	assert(!str.empty());
+	assert(index != 0);
 
 	// loop info
 	uint count = 0;
@@ -82,7 +82,7 @@ EList<EntType>::match (const std::string& str, uint index, uint *matches)
 
 	// the loop
 	for (typename vtype::iterator i = vtype::begin(); i != vtype::end(); ++i)
-		if ((*i)->name_match (str))
+		if ((*i)->name_match(str))
 			if (++count == index) {
 				value = *i;
 				break;

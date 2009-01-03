@@ -81,7 +81,7 @@ Entity::activate()
 	MEntity.all = this;
 
 	// register tags
-	for (TagList::iterator i = tags.begin(); i != tags.end(); ++i) 
+	for (TagList::iterator i = tags.begin(); i != tags.end(); ++i)
 		MEntity.tag_map.insert(std::pair<TagID, Entity*> (*i, this));
 }
 
@@ -169,7 +169,7 @@ Entity::save_data(File::Writer& writer)
 	writer.attr("entity", "uid", uid);
 
 	// event handler list
-	for (EventList::const_iterator i = events.begin (); i != events.end (); i ++) {
+	for (EventList::const_iterator i = events.begin(); i != events.end(); i ++) {
 		writer.begin("entity", "event");
 		(*i)->save(writer);
 		writer.end();
@@ -205,7 +205,7 @@ Entity::load(const std::string& factory, File::Reader& reader)
 	// attempt load
 	if (entity->load(reader) != 0)
 		return NULL;
-	
+
 	// ok
 	return entity;
 }
@@ -215,9 +215,11 @@ Entity::load(File::Reader& reader)
 {
 	// load the thing
 	FO_READ_BEGIN
-		} else if (load_node(reader, node) == FO_SUCCESS_CODE) {
+}
+else if (load_node(reader, node) == FO_SUCCESS_CODE)
+{
 	FO_READ_ERROR
-		return -1;
+	return -1;
 	FO_READ_END
 
 	// final check
@@ -231,14 +233,14 @@ int
 Entity::load_node(File::Reader& reader, File::Node& node)
 {
 	FO_NODE_BEGIN
-		FO_ATTR("entity", "uid")
-			uid = node.get_id();
-		FO_ATTR("entity", "tag")
-			add_tag(TagID::create(node.get_string()));
-		FO_OBJECT("entity", "event")
-			EventHandler* event = new EventHandler();
-			if (!event->load(reader))
-					events.push_back(event);
+	FO_ATTR("entity", "uid")
+	uid = node.get_id();
+	FO_ATTR("entity", "tag")
+	add_tag(TagID::create(node.get_string()));
+	FO_OBJECT("entity", "event")
+	EventHandler* event = new EventHandler();
+	if (!event->load(reader))
+		events.push_back(event);
 	FO_NODE_END
 }
 
@@ -248,28 +250,28 @@ Entity::macro_property(const StreamControl& stream, const std::string& comm, con
 	// SPECIAL: one-letter name commands
 	if (comm.size() == 1) {
 		switch (comm[0]) {
-			case 'D':
-				stream << StreamName(this, DEFINITE, true);
-				return 0;
-			case 'd':
-				stream << StreamName(this, DEFINITE, false);
-				return 0;
-			case 'C':
-			case 'I':
-				stream << StreamName(this, INDEFINITE, true);
-				return 0;
-			case 'c':
-			case 'i':
-				stream << StreamName(this, INDEFINITE, false);
-				return 0;
-			case 'N':
-				stream << StreamName(this, NONE, true);
-				return 0;
-			case 'n':
-				stream << StreamName(this, NONE, false);
-				return 0;
-			default:
-				return -1;
+		case 'D':
+			stream << StreamName(this, DEFINITE, true);
+			return 0;
+		case 'd':
+			stream << StreamName(this, DEFINITE, false);
+			return 0;
+		case 'C':
+		case 'I':
+			stream << StreamName(this, INDEFINITE, true);
+			return 0;
+		case 'c':
+		case 'i':
+			stream << StreamName(this, INDEFINITE, false);
+			return 0;
+		case 'N':
+			stream << StreamName(this, NONE, true);
+			return 0;
+		case 'n':
+			stream << StreamName(this, NONE, false);
+			return 0;
+		default:
+			return -1;
 		}
 	}
 
@@ -277,7 +279,7 @@ Entity::macro_property(const StreamControl& stream, const std::string& comm, con
 	if (str_eq(comm, "name")) {
 		stream << StreamName(this);
 		return 0;
-	// ENTITY'S DESC
+		// ENTITY'S DESC
 	} else if (str_eq(comm, "desc")) {
 		display_desc(stream);
 		return 0;

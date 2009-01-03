@@ -28,42 +28,45 @@ std::string EventID::names[] = {
 	"PickupItem",
 };
 
-EventID EventID::lookup(const std::string& name) {
-  for (size_t i = 0; i < COUNT; ++i)
-    if (name == names[i])
-      return EventID(i);
-  return EventID();
+EventID EventID::lookup(const std::string& name)
+{
+	for (size_t i = 0; i < COUNT; ++i)
+		if (name == names[i])
+			return EventID(i);
+	return EventID();
 }
 
-EventHandler::EventHandler () : event(), script() {}
+EventHandler::EventHandler() : event(), script() {}
 
 int
-EventHandler::load (File::Reader& reader) {
+EventHandler::load(File::Reader& reader)
+{
 	FO_READ_BEGIN
-		FO_ATTR("event", "id")
-			event = EventID::lookup(node.get_string());
-			if (!event.valid()) 
-				Log::Warning << node << ": Unknown event '" << node.get_string() << "'";
-		FO_ATTR("event", "script")
-			script = node.get_string();
+	FO_ATTR("event", "id")
+	event = EventID::lookup(node.get_string());
+	if (!event.valid())
+		Log::Warning << node << ": Unknown event '" << node.get_string() << "'";
+	FO_ATTR("event", "script")
+	script = node.get_string();
 	FO_READ_ERROR
-		return -1;
+	return -1;
 	FO_READ_END
 
 	return 0;
 }
 
 void
-EventHandler::save (File::Writer& writer) const {
+EventHandler::save(File::Writer& writer) const
+{
 	writer.attr("event", "id", event.get_name());
 	if (!script.empty())
 		writer.block("event", "script", script);
 }
 
 void
-Entity::handle_event (const Event& event)
+Entity::handle_event(const Event& event)
 {
-	for (EventList::const_iterator i = events.begin (); i != events.end (); ++ i) {
+	for (EventList::const_iterator i = events.begin(); i != events.end(); ++ i) {
 		if (event.get_id() == (*i)->get_event()) {
 			//(*i)->get_func().run(len, argv);
 		}
@@ -71,22 +74,22 @@ Entity::handle_event (const Event& event)
 }
 
 int
-_MEvent::initialize ()
+_MEvent::initialize()
 {
 	return 0;
 }
 
 void
-_MEvent::shutdown ()
+_MEvent::shutdown()
 {
 	events.clear();
 }
 
 void
-_MEvent::send (EventID id, Entity* recipient, Entity* aux1, Entity* aux2, Entity* aux3)
+_MEvent::send(EventID id, Entity* recipient, Entity* aux1, Entity* aux2, Entity* aux3)
 {
-	assert (id.valid());
-	assert (recipient != NULL);
+	assert(id.valid());
+	assert(recipient != NULL);
 
 	// create event
 	Event event;
@@ -101,10 +104,10 @@ _MEvent::send (EventID id, Entity* recipient, Entity* aux1, Entity* aux2, Entity
 }
 
 void
-_MEvent::broadcast (EventID id, Entity* recipient, Entity* aux1, Entity* aux2, Entity* aux3)
+_MEvent::broadcast(EventID id, Entity* recipient, Entity* aux1, Entity* aux2, Entity* aux3)
 {
-	assert (id.valid());
-	assert (recipient != NULL);
+	assert(id.valid());
+	assert(recipient != NULL);
 
 	// create event
 	Event event;
@@ -119,7 +122,7 @@ _MEvent::broadcast (EventID id, Entity* recipient, Entity* aux1, Entity* aux2, E
 }
 
 void
-_MEvent::resend (const Event& event, Entity* recipient)
+_MEvent::resend(const Event& event, Entity* recipient)
 {
 	Event new_event = event;
 	new_event.recipient = recipient;
@@ -127,7 +130,7 @@ _MEvent::resend (const Event& event, Entity* recipient)
 }
 
 void
-_MEvent::process ()
+_MEvent::process()
 {
 	// remember how many events we started with
 	// this way, events which trigger more events
@@ -165,7 +168,8 @@ int _MEvent::compile(EventID id, const std::string& source, const std::string& f
 	return 0;
 }
 
-namespace Events {
+namespace Events
+{
 	void sendLook(Room* room, Creature* actor, Entity* target)
 	{
 		/*EventManager.send(EventID::Look,room,actor,target,aux);*/

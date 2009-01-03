@@ -18,11 +18,11 @@
  * format: drink :0*
  *
  * END COMMAND */
-void command_drink (Creature* ch, std::string argv[])
+void command_drink(Creature* ch, std::string argv[])
 {
-	Object* obj = ch->cl_find_object (argv[0], GOC_ANY);
+	Object* obj = ch->cl_find_object(argv[0], GOC_ANY);
 	if (obj)
-		ch->do_drink (obj);
+		ch->do_drink(obj);
 }
 
 /* BEGIN COMMAND
@@ -33,11 +33,11 @@ void command_drink (Creature* ch, std::string argv[])
  * format: eat :0*
  *
  * END COMMAND */
-void command_eat (Creature* ch, std::string argv[])
+void command_eat(Creature* ch, std::string argv[])
 {
-	Object* obj = ch->cl_find_object (argv[0], GOC_HELD);
+	Object* obj = ch->cl_find_object(argv[0], GOC_HELD);
 	if (obj)
-		ch->do_eat (obj);
+		ch->do_eat(obj);
 }
 
 /* BEGIN COMMAND
@@ -48,16 +48,16 @@ void command_eat (Creature* ch, std::string argv[])
  * format: kick :0*
  *
  * END COMMAND */
-void command_kick (Creature* ch, std::string argv[])
+void command_kick(Creature* ch, std::string argv[])
 {
-	Object* obj = ch->cl_find_object (argv[0], GOC_ANY, true);
+	Object* obj = ch->cl_find_object(argv[0], GOC_ANY, true);
 	if (obj) {
-		ch->do_kick (obj);
+		ch->do_kick(obj);
 		return;
 	}
-	Portal* portal = ch->cl_find_portal (argv[0]);
+	Portal* portal = ch->cl_find_portal(argv[0]);
 	if (portal) {
-		ch->do_kick (portal);
+		ch->do_kick(portal);
 		return;
 	}
 }
@@ -70,11 +70,11 @@ void command_kick (Creature* ch, std::string argv[])
  * format: raise :0*
  *
  * END COMMAND */
-void command_raise (Creature* ch, std::string argv[])
+void command_raise(Creature* ch, std::string argv[])
 {
-	Object* obj = ch->cl_find_object (argv[0], GOC_HELD);
+	Object* obj = ch->cl_find_object(argv[0], GOC_HELD);
 	if (obj)
-		ch->do_raise (obj);
+		ch->do_raise(obj);
 }
 
 /* BEGIN COMMAND
@@ -85,11 +85,11 @@ void command_raise (Creature* ch, std::string argv[])
  * format: read :0*
  *
  * END COMMAND */
-void command_read (Creature* ch, std::string argv[])
+void command_read(Creature* ch, std::string argv[])
 {
-	Object* obj = ch->cl_find_object (argv[0], GOC_ANY);
+	Object* obj = ch->cl_find_object(argv[0], GOC_ANY);
 	if (obj)
-		ch->do_read (obj);
+		ch->do_read(obj);
 }
 
 /* BEGIN COMMAND
@@ -100,9 +100,9 @@ void command_read (Creature* ch, std::string argv[])
  * format: touch :0*
  *
  * END COMMAND */
-void command_touch (Creature* ch, std::string argv[])
+void command_touch(Creature* ch, std::string argv[])
 {
-	Object* obj = ch->cl_find_object (argv[0], GOC_ANY);
+	Object* obj = ch->cl_find_object(argv[0], GOC_ANY);
 	if (obj)
-		ch->do_touch (obj);
+		ch->do_touch(obj);
 }
