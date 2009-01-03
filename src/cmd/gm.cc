@@ -55,7 +55,7 @@ void command_gm_boot (Player* gm, std::string argv[])
 		if (cn->get_conn()) {
 			*gm << "Booting " << StreamName(cn) << "...\n";
 			*cn << CADMIN "You are being booted by a GM." CNORMAL "\n";
-			Log::Info << "User " << cn->get_account()->get_id() << " booted by " << gm->get_account()->get_id();
+			Log::Info << "User " << cn->get_account()->getId() << " booted by " << gm->get_account()->getId();
 			cn->disconnect();
 		} else {
 			*gm << StreamName(cn, DEFINITE, true) << " is already disconnected.\n";

@@ -26,7 +26,7 @@ class Player : public Creature
 {
 	public:
 	// create and initialize
-	Player (class Account* s_account, const std::string& s_id);
+	Player (std::tr1::shared_ptr<class Account> s_account, const std::string& s_id);
 
 	virtual const char* factory_type() const { return "player"; }
 
@@ -55,7 +55,7 @@ class Player : public Creature
 	inline const char* ncolor() const { return CPLAYER; }
 
 	// account
-	inline class Account* get_account() const { return account; }
+	inline std::tr1::shared_ptr<class Account> get_account() const { return account; }
 
 	// connected?
 	//   currently in use by someone
@@ -146,7 +146,7 @@ class Player : public Creature
 	protected:
 	EntityName name;
 	IPlayerConnection* conn;
-	Account* account;
+	std::tr1::shared_ptr<Account> account;
 	std::string last_command;
 	std::string last_tell;
 	struct PDesc {
@@ -211,7 +211,7 @@ class _MPlayer : public IManager
 	Player* get (const std::string& name);
 
 	// load a player - from disk
-	Player* load (class Account* account, const std::string& name);
+	Player* load (std::tr1::shared_ptr<class Account> account, const std::string& name);
 
 	// DESTROY a player permanently (with backup)
 	int destroy (const std::string& name);

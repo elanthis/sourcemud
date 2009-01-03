@@ -18,6 +18,9 @@
 #include <fstream>
 #include <sstream>
 
+// C++ TR1
+#include <tr1/memory>
+
 // C++ ANSI C Wrappers
 #include <cassert>
 #include <cctype>

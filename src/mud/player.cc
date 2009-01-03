@@ -105,7 +105,7 @@ namespace {
 	}
 }
 
-Player::Player (class Account* s_account, const std::string& s_id)
+Player::Player(std::tr1::shared_ptr<class Account> s_account, const std::string& s_id)
 {
 	// initialize
 	account = s_account;
@@ -549,14 +549,14 @@ Player::activate ()
 	Creature::activate();
 
 	if (account != NULL)
-		account->inc_active();
+		account->incActive();
 }
 
 void
 Player::deactivate ()
 {
 	if (account != NULL)
-			account->dec_active();
+			account->decActive();
 
 	Creature::deactivate();
 }

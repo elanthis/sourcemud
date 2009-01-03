@@ -22,16 +22,15 @@ Account::Account(const std::string& s_id) : id(s_id), active(0), maxcharacters(0
 	time_lastlogin = (time_t)0;
 }
 
-Account::~Account ()
+Account::~Account()
 {
 	// remove from account list
-	_MAccount::AccountList::iterator i = find(MAccount.accounts.begin(), MAccount.accounts.end(), this);
+	_MAccount::AccountList::iterator i = MAccount.accounts.find(id);
 	if (i != MAccount.accounts.end())
 		MAccount.accounts.erase(i);
 }
 
-int
-Account::save () const
+int Account::save() const
 {
 	std::string path = MSettings.get_account_path() + "/" + strlower(id) + ".acct";
 
@@ -65,8 +64,7 @@ Account::save () const
 }
 
 // password management
-void
-Account::set_passphrase (const std::string& s_pass)
+void Account::setPassphrase(const std::string& s_pass)
 {
 	// encrypt
 	char enc_pass[MD5_BUFFER_SIZE];
@@ -80,8 +78,7 @@ Account::set_passphrase (const std::string& s_pass)
 }
 
 // check password
-bool
-Account::check_passphrase (const std::string& s_pass) const
+bool Account::checkPassphrase(const std::string& s_pass) const
 {
 	// empty?  auto-fail
 	if (s_pass.empty())
@@ -92,8 +89,7 @@ Account::check_passphrase (const std::string& s_pass) const
 }
 
 // add a new character
-void
-Account::add_character (const std::string& name)
+void Account::addCharacter(const std::string& name)
 {
 	// not already in list?
 	if (find(characters.begin(), characters.end(), name) != characters.end())
@@ -104,8 +100,7 @@ Account::add_character (const std::string& name)
 }
 
 // remove a character
-void
-Account::del_character (const std::string& name)
+void Account::delCharacter(const std::string& name)
 {
 	// find in list
 	std::vector<std::string>::iterator i;
@@ -117,8 +112,7 @@ Account::del_character (const std::string& name)
 }
 
 // get max characters allowed
-uint
-Account::get_max_characters () const
+uint Account::getMaxCharacters() const
 {
 	// explicit?
 	if (maxcharacters > 0)
@@ -129,8 +123,7 @@ Account::get_max_characters () const
 }
 
 // get max active characters allowed
-uint
-Account::get_max_active () const
+uint Account::getMaxActive() const
 {
 	// explicit?
 	if (maxactive > 0)
@@ -141,27 +134,25 @@ Account::get_max_active () const
 }
 
 // update login time
-void
-Account::update_time_lastlogin ()
+void Account::updateTimeLogin()
 {
 	time_lastlogin = time(NULL);
 }
 
 // access
-bool
-Account::has_access(AccessID id) const
+bool Account::hasAccess(AccessID id) const
 {
 	return access.find(id) != access.end();
 }
-bool
-Account::grant_access(AccessID id)
+
+bool Account::grantAccess(AccessID id)
 {
 	// grant it
 	access.insert(id);
 	return true;
 }
-bool
-Account::revoke_access(AccessID id)
+
+bool Account::revokeAccess(AccessID id)
 {
 	// find it
 	AccessList::iterator i = access.find(id);
@@ -172,8 +163,7 @@ Account::revoke_access(AccessID id)
 	return true;
 }
 
-int
-Account::macro_property (const StreamControl& stream, const std::string& method, const MacroList& argv) const
+int Account::macro_property(const StreamControl& stream, const std::string& method, const MacroList& argv) const
 {
 	if (method == "id") {
 		stream << id;
@@ -189,29 +179,27 @@ Account::macro_property (const StreamControl& stream, const std::string& method,
 	}
 }
 
-void
-Account::macro_default (const StreamControl& stream) const
+void Account::macro_default(const StreamControl& stream) const
 {
 	stream << id;
 }
 
-int
-_MAccount::initialize ()
+int _MAccount::initialize()
 {
 
 	return 0;
 }
 
-void
-_MAccount::shutdown ()
+void _MAccount::shutdown()
 {
 	// save all accounts
-	for (AccountList::iterator i = accounts.begin(); i != accounts.end(); ++i)
-		(*i)->save();
+	for (AccountList::iterator i = accounts.begin(); i != accounts.end(); ++i) {
+		i->second->save();
+		i->second.reset();
+	}
 }
 
-bool
-_MAccount::valid_name (const std::string& name)
+bool _MAccount::validName(const std::string& name)
 {
 	// length
 	if (name.size() < ACCOUNT_NAME_MIN_LEN || name.size() > ACCOUNT_NAME_MAX_LEN)
@@ -226,8 +214,7 @@ _MAccount::valid_name (const std::string& name)
 	return true;
 }
 
-bool
-_MAccount::valid_passphrase (const std::string& pass)
+bool _MAccount::validPassphrase(const std::string& pass)
 {
 	// length
 	if (pass.size() < ACCOUNT_PASS_MIN_LEN)
@@ -246,32 +233,31 @@ _MAccount::valid_passphrase (const std::string& pass)
 	return let && num;
 }
 
-Account*
-_MAccount::get (const std::string& in_name)
+std::tr1::shared_ptr<Account> _MAccount::get(const std::string& in_name)
 {
 	// force lower-case
 	std::string name = strlower(in_name);
 
 	// check validity
-	if (!valid_name(name))
-		return NULL;
+	if (!validName(name))
+		return std::tr1::shared_ptr<Account>();
 
 	// search loaded list
-	for (AccountList::iterator i = accounts.begin(); i != accounts.end(); ++i)
-		if ((*i)->id == name)
-			return *i;
+	AccountList::iterator i = accounts.find(name);
+	if (i != accounts.end())
+		return i->second;
 
 	// try load
 	File::Reader reader;
 
 	// open
 	if (reader.open(MSettings.get_account_path() + "/" + name + ".acct"))
-		return NULL;
+		return std::tr1::shared_ptr<Account>();
 
 	// create
-	Account* account = new Account(name);
-	if (account == NULL)
-		return NULL;
+	std::tr1::shared_ptr<Account> account(new Account(name));
+	if (!account)
+		return std::tr1::shared_ptr<Account>();
 
 	// read it in
 	FO_READ_BEGIN
@@ -298,37 +284,35 @@ _MAccount::get (const std::string& in_name)
 		FO_ATTR("account", "lastlogin")
 			account->time_lastlogin = str_to_time(node.get_string());
 	FO_READ_ERROR
-		account = NULL;
-		return NULL;
+		return std::tr1::shared_ptr<Account>();
 	FO_READ_END
 
 	// add to list
-	accounts.push_back(account);
+	accounts[account->getId()] = account;
 
 	return account;
 }
 
-Account*
-_MAccount::create (const std::string& name)
+std::tr1::shared_ptr<Account> _MAccount::create(const std::string& name)
 {
 	// check validity
-	if (!valid_name(name))
-		return NULL;
+	if (!validName(name))
+		return std::tr1::shared_ptr<Account>();
 
 	// check if account exists?
 	if (get(name) != NULL)
-		return NULL;
+		return std::tr1::shared_ptr<Account>();
 
 	// create
-	Account* account = new Account(name);
+	std::tr1::shared_ptr<Account> account(new Account(name));
 	if (account == NULL)
-		return NULL;
+		return std::tr1::shared_ptr<Account>();
 
 	// save
 	account->save();
 
 	// add to list
-	accounts.push_back(account);
+	accounts[account->getId()] = account;
 
 	return account;
 }
@@ -340,14 +324,13 @@ _MAccount::exists (const std::string& name)
 	strlower(name);
 
 	// must be a valid name
-	if (!valid_name(name))
+	if (!validName(name))
 		return false;
 
 	// look thru list for valid and/or connected players
-	for (AccountList::iterator i = accounts.begin(); i != accounts.end(); ++i) {
-		if ((*i)->get_name() == name)
-			return true;
-	}
+	AccountList::iterator i = accounts.find(name);
+	if (i != accounts.end())
+		return true;
 
 	// check if player file exists
 	std::string path = MSettings.get_account_path() + "/" + name + ".acct";

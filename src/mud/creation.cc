@@ -47,7 +47,7 @@ class TelnetModeRealNewCharacter : public TelnetModeNewCharacter
 		STATE_RENAME_CONFIRM
 	};
 
-	TelnetModeRealNewCharacter (TelnetHandler* s_handler, Account* s_account) : TelnetModeNewCharacter (s_handler), account(s_account), state(STATE_BEGIN) {}
+	TelnetModeRealNewCharacter (TelnetHandler* s_handler, std::tr1::shared_ptr<Account> s_account) : TelnetModeNewCharacter (s_handler), account(s_account), state(STATE_BEGIN) {}
 
 	virtual int initialize ();
 	virtual void prompt ();
@@ -63,7 +63,7 @@ class TelnetModeRealNewCharacter : public TelnetModeNewCharacter
 
 	static bool is_match (const std::string& test, const std::string& operand);
 
-	Account* account;
+	std::tr1::shared_ptr<Account> account;
 	std::string name;
 	state_t state;
 	int tokens;
@@ -79,7 +79,7 @@ class TelnetModeRealNewCharacter : public TelnetModeNewCharacter
 };
 
 TelnetModeNewCharacter*
-TelnetModeNewCharacter::create (TelnetHandler* handler, Account* account)
+TelnetModeNewCharacter::create (TelnetHandler* handler, std::tr1::shared_ptr<Account> account)
 {
 	return new TelnetModeRealNewCharacter (handler, account);
 }
@@ -617,9 +617,9 @@ void TelnetModeRealNewCharacter::create ()
 	player->save();
 
 	// add to account
-	account->add_character(player->get_id());
+	account->addCharacter(player->get_id());
 	account->save();
-	Log::Info << "Character '" << player->get_id() << "' added to account '" << account->get_id() << "'";
+	Log::Info << "Character '" << player->get_id() << "' added to account '" << account->getId() << "'";
 
 	// go to continue state
 	enter_state(STATE_CONTINUE);

@@ -25,8 +25,8 @@ int
 TelnetModeMainMenu::initialize ()
 {
 	// set timeout to account's value
-	if (account->get_timeout() != 0)
-		get_handler()->set_timeout(account->get_timeout());
+	if (account->getTimeout() != 0)
+		get_handler()->set_timeout(account->getTimeout());
 
 	// show menu
 	show_main();
@@ -38,7 +38,7 @@ TelnetModeMainMenu::show_banner ()
 {
 	get_handler()->clear_scr();
 	*get_handler() << StreamMacro(MMessage.get("menu_banner")) << "\n";
-	*get_handler() << "Greetings, " CPLAYER << account->get_name() << CNORMAL "!\n\n";
+	*get_handler() << "Greetings, " CPLAYER << account->getName() << CNORMAL "!\n\n";
 }
 
 void
@@ -62,13 +62,13 @@ TelnetModeMainMenu::show_characters()
 
 	*get_handler() << "Your available characters:\n\n";
 
-	if (account->get_char_list().empty()) {
+	if (account->getCharList().empty()) {
 		*get_handler() << " 1) Return to main menu\n";
 		*get_handler() << "\nYou do not have any characters created yet.\n";
 	} else {
 		uint i = 0;
-		for (; i < account->get_char_list().size(); ++i)
-			*get_handler() << " " << (i + 1) << ") " CPLAYER << account->get_char_list()[i] << CNORMAL "\n";
+		for (; i < account->getCharList().size(); ++i)
+			*get_handler() << " " << (i + 1) << ") " CPLAYER << account->getCharList()[i] << CNORMAL "\n";
 		*get_handler() << " " << (i + 1) << ") Return to main menu\n";
 	}
 
@@ -81,8 +81,8 @@ TelnetModeMainMenu::show_account ()
 {
 	show_banner();
 
-	*get_handler() << " 1) Name:   " << account->get_name() << "\n";
-	*get_handler() << " 2) E-Mail: " << account->get_email() << "\n";
+	*get_handler() << " 1) Name:   " << account->getName() << "\n";
+	*get_handler() << " 2) E-Mail: " << account->getEmail() << "\n";
 	*get_handler() << " 3) Passphrase\n";
 	*get_handler() << " 4) Return to main menu\n";
 
@@ -131,7 +131,7 @@ TelnetModeMainMenu::process (char* line)
 			// create?
 			} else if (input == "2" || prefix_match("create", input)) {
 				// check max
-				if (account->get_char_list().size() >= account->get_max_characters()) {
+				if (account->getCharList().size() >= account->getMaxCharacters()) {
 					show_main();
 					*get_handler() << "You already have the maximum number of characters allowed.\n\n";
 				} else {
@@ -162,7 +162,7 @@ TelnetModeMainMenu::process (char* line)
 		{
 			// conver input
 			int inopt = tolong(input) - 1;
-			if (inopt == (int)account->get_char_list().size() || prefix_match("return", input)) {
+			if (inopt == (int)account->getCharList().size() || prefix_match("return", input)) {
 				state = STATE_MENU;
 				show_main();
 				break;
@@ -170,8 +170,8 @@ TelnetModeMainMenu::process (char* line)
 
 			// whom did they ask for?
 			int choice = -1;
-			for (int i = 0; i < (int)account->get_char_list().size(); ++i) {
-				if (inopt == i || phrase_match(account->get_char_list()[i], input)) {
+			for (int i = 0; i < (int)account->getCharList().size(); ++i) {
+				if (inopt == i || phrase_match(account->getCharList()[i], input)) {
 					choice = i;
 					break;
 				}
@@ -184,7 +184,7 @@ TelnetModeMainMenu::process (char* line)
 			}
 
 			// get player
-			Player* player = MPlayer.load(account, account->get_char_list()[choice]);
+			Player* player = MPlayer.load(account, account->getCharList()[choice]);
 			if (player == NULL) {
 				show_characters();
 				*get_handler() << CADMIN "Error: Character cannot be found." CNORMAL "\n\n";
@@ -193,8 +193,8 @@ TelnetModeMainMenu::process (char* line)
 
 			// check active limit
 			if (!player->is_connected()) {
-				uint max_active = account->get_max_active();
-				if (account->get_active() >= max_active && !player->is_active()) {
+				uint max_active = account->getMaxActive();
+				if (account->getActive() >= max_active && !player->is_active()) {
 					state = STATE_MENU;
 					show_main();
 					*get_handler() << "You already have the maximum number of characters active at a time.\n\n";
@@ -211,13 +211,13 @@ TelnetModeMainMenu::process (char* line)
 			if (input == "1" || prefix_match("name", input)) {
 				state = STATE_CHANGE_NAME;
 				show_banner();
-				*get_handler() << "Current name: " << account->get_name() << ".\n\n";
+				*get_handler() << "Current name: " << account->getName() << ".\n\n";
 				*get_handler() << "You may correct your real-life name registered with this account.  To leave your name unchanged, do not enter and text and simple press return/enter.\n\n";
 			// change email?
 			} else if (input == "2" || prefix_match("email", input)) {
 				state = STATE_CHANGE_EMAIL;
 				show_banner();
-				*get_handler() << "Current email address: " << account->get_email() << ".\n\n";
+				*get_handler() << "Current email address: " << account->getEmail() << ".\n\n";
 				*get_handler() << "You may correct the email address registered with this account.  To leave your email address unchanged, do not enter and text and simple press return/enter.\n\n";
 			// change password?
 			} else if (input == "3" || prefix_match("passphrase", input)) {
@@ -241,7 +241,7 @@ TelnetModeMainMenu::process (char* line)
 
 			// not empty?  change
 			if (!input.empty()) {
-				account->set_name(input);
+				account->setName(input);
 				show_account();
 				*get_handler() << "Your name has been changed.\n\n";
 			} else {
@@ -254,7 +254,7 @@ TelnetModeMainMenu::process (char* line)
 
 			// not empty?  change
 			if (!input.empty()) {
-				account->set_email(input);
+				account->setEmail(input);
 				show_account();
 				*get_handler() << "Your email address has been changed.\n\n";
 			} else {
@@ -263,7 +263,7 @@ TelnetModeMainMenu::process (char* line)
 			break;
 		case STATE_CHPASS_CHALLENGE:
 			// check it
-			if (!account->check_passphrase(input)) {
+			if (!account->checkPassphrase(input)) {
 				state = STATE_ACCOUNT;
 				show_account();
 				*get_handler() << "Passphrase incorrect.\n\n";
@@ -278,7 +278,7 @@ TelnetModeMainMenu::process (char* line)
 			break;
 		case STATE_CHPASS_SELECT:
 			// must be valid
-			if (input.empty() || !MAccount.valid_passphrase(input)) {
+			if (input.empty() || !MAccount.validPassphrase(input)) {
 				state = STATE_ACCOUNT;
 				show_account();
 				*get_handler() << "Passphrases must be at least " << ACCOUNT_PASS_MIN_LEN << " characters, and have both letters and numbers.  Passphrases may also contain symbols or punctuation characters.\n\n";
@@ -308,7 +308,7 @@ TelnetModeMainMenu::process (char* line)
 
 
 			// set passphrase
-			account->set_passphrase(input);
+			account->setPassphrase(input);
 
 			// clear the tmp passphrase (no, this isn't for security - way too weak for that)
 			tmp.clear();
@@ -322,7 +322,7 @@ TelnetModeMainMenu::process (char* line)
 		{
 			// conver input
 			int inopt = tolong(input) - 1;
-			if (inopt == (int)account->get_char_list().size() || prefix_match("return", input)) {
+			if (inopt == (int)account->getCharList().size() || prefix_match("return", input)) {
 				state = STATE_MENU;
 				show_main();
 				break;
@@ -330,8 +330,8 @@ TelnetModeMainMenu::process (char* line)
 
 			// whom did they ask for?
 			int choice = -1;
-			for (int i = 0; i < (int)account->get_char_list().size(); ++i) {
-				if (inopt == i || phrase_match(account->get_char_list()[i], input)) {
+			for (int i = 0; i < (int)account->getCharList().size(); ++i) {
+				if (inopt == i || phrase_match(account->getCharList()[i], input)) {
 					choice = i;
 					break;
 				}
@@ -344,12 +344,12 @@ TelnetModeMainMenu::process (char* line)
 			}
 
 			// store choice
-			tmp = account->get_char_list()[choice];
+			tmp = account->getCharList()[choice];
 			
 			// go to confirmation
 			state = STATE_DELETE_CONFIRM;
 			show_banner();
-			*get_handler() << "Do you wish to delete " CPLAYER << account->get_char_list()[choice] << CNORMAL "?\n\n";
+			*get_handler() << "Do you wish to delete " CPLAYER << account->getCharList()[choice] << CNORMAL "?\n\n";
 			*get_handler() << CADMIN "Warning!!" CNORMAL "  If you delete a character, you will " CADMIN "not" CNORMAL " be able to get the character back, ever.\n\n";
 			*get_handler() << "To confirm the deletion of this character, you must type " CBOLD "I am sure!" CNORMAL " with that exact spelling, punctuation, and capitalization.  If you do not wish to delete this character, simply press enter/return.\n\n";
 			break;
@@ -369,8 +369,8 @@ TelnetModeMainMenu::process (char* line)
 				}
 
 				// message
-				account->del_character(tmp);
-				Log::Info << "Account '" << account->get_id() << "' deleted player '" << tmp << "'";
+				account->delCharacter(tmp);
+				Log::Info << "Account '" << account->getId() << "' deleted player '" << tmp << "'";
 				*get_handler() << "Character " CPLAYER << tmp << CNORMAL " has been permanently deleted.\n\n";
 				tmp.clear();
 			} else {

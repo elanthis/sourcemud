@@ -178,7 +178,7 @@ _MCommand::call (Creature *ch, const std::string& comm) {
 	for (std::vector<CommandFormat>::const_iterator f = formats.begin(), e = formats.end(); f != e; ++f) {
 		Command* command = f->get_command();
 		// must check privileges
-		if (!command->access.valid() || (ply != NULL && ply->get_account()->has_access(command->access))) {
+		if (!command->access.valid() || (ply != NULL && ply->get_account()->hasAccess(command->access))) {
 			// do match
 			result = f->match(words, argv);
 			if (result == -1) {
@@ -258,7 +258,7 @@ _MCommand::show_list (Player *player)
 			continue;
 
 		// must check privileges
-		if ((*i)->access.valid() && (player == NULL || !player->get_account()->has_access((*i)->access)))
+		if ((*i)->access.valid() && (player == NULL || !player->get_account()->hasAccess((*i)->access)))
 			continue;
 
 		// print command

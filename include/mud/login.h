@@ -15,7 +15,7 @@
 class TelnetModeLogin : public ITelnetMode
 {
 	public:
-	TelnetModeLogin (TelnetHandler* s_handler) : ITelnetMode (s_handler), account(NULL), pass(false), tries(0) {}
+	TelnetModeLogin (TelnetHandler* s_handler) : ITelnetMode (s_handler), account(), pass(false), tries(0) {}
 
 	virtual int initialize ();
 	virtual void prompt ();
@@ -23,7 +23,7 @@ class TelnetModeLogin : public ITelnetMode
 	virtual void shutdown ();
 
 	private:
-	class Account* account;
+	std::tr1::shared_ptr<Account> account;
 	bool pass;
 	int tries;
 };
@@ -58,7 +58,7 @@ class TelnetModeMainMenu : public ITelnetMode
 		STATE_CHPASS_CONFIRM };
 
 	public:
-	inline TelnetModeMainMenu (TelnetHandler* s_handler, Account* s_account) : ITelnetMode(s_handler), account(s_account), state(STATE_MENU) {}
+	inline TelnetModeMainMenu (TelnetHandler* s_handler, std::tr1::shared_ptr<Account> s_account) : ITelnetMode(s_handler), account(s_account), state(STATE_MENU) {}
 
 	virtual int initialize ();
 	inline virtual void shutdown () {}
@@ -66,7 +66,7 @@ class TelnetModeMainMenu : public ITelnetMode
 	virtual void prompt ();
 
 	private:
-	Account* account;
+	std::tr1::shared_ptr<Account> account;
 	int state;
 
 	// temps

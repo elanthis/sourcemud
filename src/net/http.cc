@@ -436,7 +436,7 @@ void HTTPHandler::log(int error)
 	Log::HTTP
 		<< addr.getString(false) << ' '
 		<< "- " // RFC 1413 identify -- apache log compatibility place-holder
-	 	<< (get_account() ? get_account()->get_id().c_str() : "-") << ' '
+	 	<< (get_account() ? get_account()->getId().c_str() : "-") << ' '
 		<< '[' << StreamTime("%d/%b/%Y:%H:%M:%S %z") << "] "
 		<< '"' << request << "\" " 
 		<< error << ' '

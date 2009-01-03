@@ -21,7 +21,7 @@
 // --- ACCOUNT CREATION ---
 
 int
-TelnetModeNewAccount::initialize (void)
+TelnetModeNewAccount::initialize()
 {
 	show_info();
 	state = STATE_ID;
@@ -29,7 +29,7 @@ TelnetModeNewAccount::initialize (void)
 }
 
 void
-TelnetModeNewAccount::show_info (void)
+TelnetModeNewAccount::show_info()
 {
 	get_handler()->clear_scr();
 	*get_handler() << "Account Information\n";
@@ -46,7 +46,7 @@ TelnetModeNewAccount::show_info (void)
 }
 
 void
-TelnetModeNewAccount::prompt (void)
+TelnetModeNewAccount::prompt()
 {
 	switch (state) {
 		case STATE_ID: *get_handler() << "Enter a name for your account:"; break;
@@ -68,7 +68,7 @@ TelnetModeNewAccount::process (char* data)
 		// select an ID
 		case STATE_ID:
 			// valid name?
-			if (!MAccount.valid_name(line)) {
+			if (!MAccount.validName(line)) {
 				*get_handler() << "\n" CADMIN "Account names must be between " << ACCOUNT_NAME_MIN_LEN << " and " << ACCOUNT_NAME_MAX_LEN << " characters, and consist of only letters and numbers." CNORMAL "\n";
 				break;
 			}
@@ -113,7 +113,7 @@ TelnetModeNewAccount::process (char* data)
 		// enter passphrase
 		case STATE_PASS:
 			// legal?
-			if (line.empty() || !MAccount.valid_passphrase(line)) {
+			if (line.empty() || !MAccount.validPassphrase(line)) {
 				*get_handler() << "\n" CADMIN "Passphrases must be at least " << ACCOUNT_PASS_MIN_LEN << " characters, and have both letters and numbers.  Passphrases may also contain symbols or punctuation characters." CNORMAL "\n";
 				break;
 			}
@@ -144,10 +144,10 @@ TelnetModeNewAccount::process (char* data)
 					state = STATE_ID;
 				} else {
 					// create the account!
-					Account* account = MAccount.create(id);
-					account->set_name(name);
-					account->set_email(email);
-					account->set_passphrase(passphrase);
+					std::tr1::shared_ptr<Account> account = MAccount.create(id);
+					account->setName(name);
+					account->setEmail(email);
+					account->setPassphrase(passphrase);
 
 					// enter main menu
 					get_handler()->set_mode(new TelnetModeMainMenu(get_handler(), account));
@@ -164,13 +164,13 @@ TelnetModeNewAccount::process (char* data)
 // --- LOGIN ---
 
 int
-TelnetModeLogin::initialize (void)
+TelnetModeLogin::initialize()
 {
 	return 0;
 }
 
 void
-TelnetModeLogin::prompt (void)
+TelnetModeLogin::prompt()
 {
 	if(!pass) *get_handler() << "Enter thy name:";
 	else *get_handler() << "Enter thy passphrase:";
@@ -194,7 +194,7 @@ TelnetModeLogin::process (char* line)
 	// not at passphrase stage?
 	if (!pass) {
 		// no name?
-		if (!data.empty()) {
+		if (data.empty()) {
 			// enabled?
 			if (MSettings.get_account_creation()) {
 				*get_handler() << "\nYou must enter your account name to login or type " CBOLD "new" CNORMAL " to begin creating a new account.\n\n";
@@ -216,7 +216,7 @@ TelnetModeLogin::process (char* line)
 		}
 
 		// invalid name?
-		if (!MAccount.valid_name (data)) {
+		if (!MAccount.validName(data)) {
 			*get_handler() << "\nAccount names must be between " << ACCOUNT_NAME_MIN_LEN << " and " << ACCOUNT_NAME_MAX_LEN << " characters, and consist of only letters and numbers.\n\n";
 			return;
 		}
@@ -234,7 +234,7 @@ TelnetModeLogin::process (char* line)
 		*get_handler() << "\n";
 
 		// check the account and passphrase
-		if (account == NULL || !account->check_passphrase(data)) {
+		if (account == NULL || !account->checkPassphrase(data)) {
 			*get_handler() << "\nIncorrect account name or passphrase.\n\n";
 
 			// too many failed attempts?
@@ -247,22 +247,22 @@ TelnetModeLogin::process (char* line)
 			}
 
 			// back to login name stage
-			account = NULL;
+			account.reset();
 			pass = false;
 			return;
 		}
 
 		// double check stuffs
-		if (account->is_disabled()) {
+		if (account->isDisabled()) {
 			*get_handler() << "\n" CADMIN "Your account has been disabled by an administrator." CNORMAL "\n";
-			Log::Info << "Disabled account '" << account->get_id() << "' attempted to login";
+			Log::Info << "Disabled account '" << account->getId() << "' attempted to login";
 			pass = false;
-			account = NULL;
+			account.reset();
 			return;
 		}
 
 		// set login time
-		account->update_time_lastlogin();
+		account->updateTimeLogin();
 
 		// ok, do login
 		get_handler()->set_mode(new TelnetModeMainMenu(get_handler(), account));
@@ -270,7 +270,7 @@ TelnetModeLogin::process (char* line)
 }
 
 void
-TelnetModeLogin::shutdown (void)
+TelnetModeLogin::shutdown()
 {
-	account = NULL;
+	account.reset();
 }

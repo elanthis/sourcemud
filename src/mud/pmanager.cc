@@ -78,11 +78,11 @@ _MPlayer::list (const StreamControl& stream)
 		if ((*i)->is_active()) {
 			++ count;
 			stream << "  " << StreamName(*i);
-			if ((*i)->get_account()->is_admin ())
+			if ((*i)->get_account()->isAdmin())
 				stream << CADMIN " (Admin)" CNORMAL;
-			else if ((*i)->get_account()->is_builder ())
+			else if ((*i)->get_account()->isBuilder())
 				stream << CSPECIAL " (Builder)" CNORMAL;
-			else if ((*i)->get_account()->is_gm ())
+			else if ((*i)->get_account()->isGM())
 				stream << CSPECIAL " (GM)" CNORMAL;
 			stream << "\n";
 		}
@@ -125,8 +125,7 @@ _MPlayer::shutdown (void)
 	player_list.resize(0);
 }
 
-Player*
-_MPlayer::load (Account* account, const std::string& name)
+Player* _MPlayer::load(std::tr1::shared_ptr<Account> account, const std::string& name)
 {
 	// must be valid before attempting load
 	if (!valid_name(name))

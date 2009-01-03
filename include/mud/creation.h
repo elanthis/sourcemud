@@ -16,7 +16,7 @@ class TelnetModeNewCharacter : public ITelnetMode
 	public:
 	TelnetModeNewCharacter (TelnetHandler* s_handler) : ITelnetMode (s_handler) {}
 
-	static TelnetModeNewCharacter* create(TelnetHandler* s_handler, Account* s_account);
+	static TelnetModeNewCharacter* create(TelnetHandler* s_handler, std::tr1::shared_ptr<Account> s_account);
 
 	virtual int initialize () = 0;
 	virtual void prompt () = 0;

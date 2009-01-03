@@ -25,19 +25,19 @@
  *
  * END COMMAND */
 void command_admin_grant (Player* admin, std::string argv[]) {
-	Account *account = MAccount.get(argv[0]);
+	std::tr1::shared_ptr<Account> account = MAccount.get(argv[0]);
 	if (account == NULL) {
 		*admin << "Account '" << argv[0] << "' not found.\n";
 		return;
 	} else {
 		AccessID access = AccessID::lookup(argv[1]);
-		if (!account->has_access(access)) {
-			account->grant_access(access);
+		if (!account->hasAccess(access)) {
+			account->grantAccess(access);
 			account->save();
-			*admin << "Granted '" << AccessID::nameof(access) << "' to " << account->get_id() << ".\n";
-			Log::Admin << admin->get_account()->get_id() << " granted '" << AccessID::nameof(access) << "' to " << account->get_id();
+			*admin << "Granted '" << AccessID::nameof(access) << "' to " << account->getId() << ".\n";
+			Log::Admin << admin->get_account()->getId() << " granted '" << AccessID::nameof(access) << "' to " << account->getId();
 		} else {
-			*admin << "Account " << account->get_id() << " already has '" << AccessID::nameof(access) << "'.\n";
+			*admin << "Account " << account->getId() << " already has '" << AccessID::nameof(access) << "'.\n";
 		}
 	}
 }
@@ -53,18 +53,18 @@ void command_admin_grant (Player* admin, std::string argv[]) {
  *
  * END COMMAND */
 void command_admin_revoke (Player* admin, std::string argv[]) {
-	Account *account = MAccount.get(argv[0]);
+	std::tr1::shared_ptr<Account> account = MAccount.get(argv[0]);
 	if (account == NULL) {
 		*admin << "Account '" << argv[0] << "' does not exist.\n";
 		return;
 	} else {
 		AccessID access = AccessID::lookup(argv[1]);
-		if (account->revoke_access(access)) {
+		if (account->revokeAccess(access)) {
 			account->save();
-			*admin << "Revoked '" << AccessID::nameof(access) << "' from " << account->get_id() << ".\n";
-			Log::Admin << admin->get_account()->get_id() << " revoked '" << AccessID::nameof(access) << "' from " << account->get_id();
+			*admin << "Revoked '" << AccessID::nameof(access) << "' from " << account->getId() << ".\n";
+			Log::Admin << admin->get_account()->getId() << " revoked '" << AccessID::nameof(access) << "' from " << account->getId();
 		} else {
-			*admin << "Account " << account->get_id() << " doesn't have '" << AccessID::nameof(access) << "'.\n";
+			*admin << "Account " << account->getId() << " doesn't have '" << AccessID::nameof(access) << "'.\n";
 		}
 	}
 }
@@ -80,7 +80,7 @@ void command_admin_revoke (Player* admin, std::string argv[]) {
  * END COMMAND */
 void command_admin_shutdown (Player* admin, std::string[]) {
 	*admin << CADMIN "Shutdown issued." CNORMAL "\n";
-	Log::Admin << "Shutdown issued by " << admin->get_account()->get_id();
+	Log::Admin << "Shutdown issued by " << admin->get_account()->getId();
 	MZone.announce ("Shutting down, NOW!");
 	MUD::shutdown();
 }
