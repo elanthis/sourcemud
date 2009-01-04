@@ -9,7 +9,7 @@
 #define __FILEAPI_H__
 
 #include "common/log.h"
-#include "mud/uniqid.h"
+#include "common/uniqid.h"
 
 namespace File
 {

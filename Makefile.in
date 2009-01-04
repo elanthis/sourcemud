@@ -28,6 +28,7 @@ HEADERS = \
 	include/common/string.h \
 	include/common/time.h \
 	include/common/types.h \
+	include/common/uniqid.h \
 	include/lua/core.h \
 	include/lua/exec.h \
 	include/lua/object.h \
@@ -71,7 +72,6 @@ HEADERS = \
 	include/mud/skill.h \
 	include/mud/tag.h \
 	include/mud/timer.h \
-	include/mud/uniqid.h \
 	include/mud/weather.h \
 	include/mud/zone.h \
 	include/net/http.h \
@@ -96,6 +96,7 @@ SOURCES = \
 	src/common/strbuf.cc \
 	src/common/strings.cc \
 	src/common/time.cc \
+	src/common/uniqid.cc \
 	src/generated/commands.cc \
 	src/lua/core.cc \
 	src/lua/entlib.cc \
@@ -142,7 +143,6 @@ SOURCES = \
 	src/mud/settings.cc \
 	src/mud/skill.cc \
 	src/mud/time.cc \
-	src/mud/uniqid.cc \
 	src/mud/weather.cc \
 	src/mud/zone.cc \
 	src/net/http.cc \

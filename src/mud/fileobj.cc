@@ -9,8 +9,8 @@
 #include "common/string.h"
 #include "common/log.h"
 #include "common/file.h"
+#include "common/uniqid.h"
 #include "mud/fileobj.h"
-#include "mud/uniqid.h"
 
 using namespace std;
 

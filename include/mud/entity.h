@@ -11,7 +11,7 @@
 #include "common/types.h"
 #include "common/error.h"
 #include "common/imanager.h"
-#include "mud/uniqid.h"
+#include "common/uniqid.h"
 #include "mud/event.h"
 #include "mud/color.h"
 #include "mud/tag.h"

@@ -5,10 +5,9 @@
  * http://www.sourcemud.org
  */
 
-#ifndef UNIQID_H
-#define UNIQID_H
+#ifndef SOURCEMUD_COMMON_UNIQID_H
+#define SOURCEMUD_COMMON_UNIQID_H 1
 
-#include "mud/server.h"
 #include "common/imanager.h"
 #include "common/types.h"
 
@@ -48,4 +47,4 @@ private:
 
 extern _MUniqueID MUniqueID;
 
-#endif
+#endif // SOURCEMUD_COMMON_UNIQUD_H

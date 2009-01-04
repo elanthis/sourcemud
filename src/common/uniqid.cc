@@ -7,8 +7,8 @@
 
 #include "common.h"
 #include "common/log.h"
+#include "common/uniqid.h"
 #include "mud/settings.h"
-#include "mud/uniqid.h"
 
 _MUniqueID MUniqueID;
 
