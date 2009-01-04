@@ -268,16 +268,19 @@ all: $(BUILD) $(TOOLS) $(XML) $(HEADERS) $(LUA_HEADERS) $(GENERATED) \
 		$(SOURCES) $(LUA_SOURCES) $(OBJECTS) $(BINARIES) $(HTTPKEY) \
 		$(SCRIPTS) $(DATA)
 
+.build/stamp:
+	@[ -d $(DEPDIR) ] || mkdir $(DEPDIR)
+	@for dir in $(addprefix $(BUILDDIR)/, $(sort $(dir $(SOURCES) $(LUA_SOURCES)))); do [ -d "$$dir" ] || mkdir -p "$$dir"; done
+	@touch .build/stamp
+
 clean:
 	@echo Cleaning
 	@rm -fr $(BINARIES) $(OBJECTS) $(DEPDIR) $(BUILDDIR) \
 		src/generated/commands.cc include/common.h.gch
 
-$(BUILDDIR)/%.o: %.cc include/common.h.gch
+$(BUILDDIR)/%.o: %.cc include/common.h.gch .build/stamp
 	@echo Compiling $<
-	@[ -d $(dir $@) ] || mkdir -p $(dir $@) || true
 	@$(CXX) -c -o $@ $(CXXFLAGS) $<
-	@[ -d $(DEPDIR) ] || mkdir $(DEPDIR)
 	@depfile=$(DEPDIR)/$(shell echo "$@" | \
 			sed -e 's/\//_/g' -e 's/^\.build_//' -e 's/[.]o$$/.P/'); \
 		$(CXX) -MM -MT $@ -o "$$depfile" $(CXXFLAGS) $<; \
