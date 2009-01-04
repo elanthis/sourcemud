@@ -23,8 +23,7 @@
 
 _MZone MZone;
 
-bool
-Spawn::check(const Zone* zone) const
+bool Spawn::check(const Zone* zone) const
 {
 	if (!tag.valid())
 		return false;
@@ -32,8 +31,7 @@ Spawn::check(const Zone* zone) const
 	return count < min;
 }
 
-bool
-Spawn::heartbeat()
+bool Spawn::heartbeat()
 {
 	// ready for update?
 	if (++dcount >= delay) {
@@ -44,8 +42,7 @@ Spawn::heartbeat()
 	return false;
 }
 
-void
-Spawn::spawn(Zone* zone) const
+void Spawn::spawn(Zone* zone) const
 {
 	// FIXME: print warnings for the returns below;
 	//        builders should know about this stuff...
@@ -92,8 +89,7 @@ Spawn::spawn(Zone* zone) const
 	}
 }
 
-int
-Spawn::load(File::Reader& reader)
+int Spawn::load(File::Reader& reader)
 {
 	min = 1;
 	tag = TagID();
@@ -121,8 +117,7 @@ Spawn::load(File::Reader& reader)
 }
 
 
-void
-Spawn::save(File::Writer& writer) const
+void Spawn::save(File::Writer& writer) const
 {
 	writer.begin("zone", "spawn");
 
@@ -142,8 +137,7 @@ Spawn::save(File::Writer& writer) const
 Zone::Zone()
 {}
 
-Room*
-Zone::get_room(const std::string& id) const
+Room* Zone::get_room(const std::string& id) const
 {
 	for (RoomList::const_iterator i = rooms.begin(); i != rooms.end(); ++i)
 		if (str_eq((*i)->get_id(), id))
@@ -152,8 +146,7 @@ Zone::get_room(const std::string& id) const
 	return NULL;
 }
 
-Room*
-Zone::get_room_at(size_t index) const
+Room* Zone::get_room_at(size_t index) const
 {
 	for (RoomList::const_iterator i = rooms.begin(); i != rooms.end(); ++i)
 		if (index-- == 0)
@@ -162,14 +155,12 @@ Zone::get_room_at(size_t index) const
 	return NULL;
 }
 
-size_t
-Zone::get_room_count() const
+size_t Zone::get_room_count() const
 {
 	return rooms.size();
 }
 
-int
-Zone::load(const std::string& path)
+int Zone::load(const std::string& path)
 {
 	File::Reader reader;
 	if (reader.open(path))
@@ -196,8 +187,7 @@ Zone::load(const std::string& path)
 	return 0;
 }
 
-void
-Zone::save()
+void Zone::save()
 {
 	std::string path = MSettings.get_zone_path() + "/" + get_id() + ".zone";
 
@@ -243,8 +233,7 @@ Zone::save()
 	writer.comment(" --- EOF ---");
 }
 
-void
-Zone::add_room(Room *room)
+void Zone::add_room(Room *room)
 {
 	assert(room != NULL);
 
@@ -252,8 +241,7 @@ Zone::add_room(Room *room)
 	rooms.push_back(room);
 }
 
-void
-Zone::heartbeat()
+void Zone::heartbeat()
 {
 	// spawn systems
 	for (SpawnList::iterator i = spawns.begin(); i != spawns.end(); ++i) {
@@ -263,22 +251,19 @@ Zone::heartbeat()
 	}
 }
 
-void
-Zone::activate()
+void Zone::activate()
 {
 	for (RoomList::iterator i = rooms.begin(); i != rooms.end(); ++i)
 		(*i)->activate();
 }
 
-void
-Zone::deactivate()
+void Zone::deactivate()
 {
 	for (RoomList::iterator i = rooms.begin(); i != rooms.end(); ++i)
 		(*i)->deactivate();
 }
 
-void
-Zone::destroy()
+void Zone::destroy()
 {
 	// save and backup
 	save();
@@ -294,15 +279,13 @@ Zone::destroy()
 	deactivate();
 }
 
-void
-Zone::broadcast_event(const Event& event)
+void Zone::broadcast_event(const Event& event)
 {
 	for (RoomList::iterator i = rooms.begin(); i != rooms.end(); ++i)
 		MEvent.resend(event, *i);
 }
 
-int
-_MZone::initialize()
+int _MZone::initialize()
 {
 	// modules we need
 	if (require(MUniqueID) != 0)
@@ -321,8 +304,7 @@ _MZone::initialize()
 }
 
 // load the world
-int
-_MZone::load_world()
+int _MZone::load_world()
 {
 	// read zones dir
 	std::vector<std::string> files = File::dirlist(MSettings.get_zone_path());
@@ -342,8 +324,7 @@ _MZone::load_world()
 }
 
 // close down zone manager
-void
-_MZone::shutdown()
+void _MZone::shutdown()
 {
 	// deactive all zones, which deactives all entities.
 	// we don't delete them until a collection is run, in order to
@@ -362,16 +343,14 @@ _MZone::shutdown()
 }
 
 // save zones
-void
-_MZone::save()
+void _MZone::save()
 {
 	for (ZoneList::iterator i = zones.begin(); i != zones.end(); ++i)
 		(*i)->save();
 }
 
 /* find a Zone */
-Zone*
-_MZone::get_zone(const std::string& id)
+Zone* _MZone::get_zone(const std::string& id)
 {
 	assert(!id.empty() && "id must not be empty");
 
@@ -383,8 +362,7 @@ _MZone::get_zone(const std::string& id)
 }
 
 /* get a Zone  by index */
-Zone*
-_MZone::get_zone_at(size_t index)
+Zone* _MZone::get_zone_at(size_t index)
 {
 	if (index >= zones.size())
 		return NULL;
@@ -393,8 +371,7 @@ _MZone::get_zone_at(size_t index)
 }
 
 /* find a Room */
-Room *
-_MZone::get_room(const std::string& id)
+Room* _MZone::get_room(const std::string& id)
 {
 	if (id.empty())
 		return NULL;
@@ -409,8 +386,7 @@ _MZone::get_room(const std::string& id)
 	return NULL;
 }
 
-void
-Zone::announce(const std::string& str, AnnounceFlags flags) const
+void Zone::announce(const std::string& str, AnnounceFlags flags) const
 {
 	for (RoomList::const_iterator i = rooms.begin(); i != rooms.end(); ++i) {
 		if (!flags ||
@@ -422,15 +398,13 @@ Zone::announce(const std::string& str, AnnounceFlags flags) const
 }
 
 /* announce to all rooms in a Room */
-void
-_MZone::announce(const std::string& str, AnnounceFlags flags)
+void _MZone::announce(const std::string& str, AnnounceFlags flags)
 {
 	for (ZoneList::iterator i = zones.begin(); i != zones.end(); ++i)
 		(*i)->announce(str, flags);
 }
 
-void
-_MZone::add_zone(Zone *zone)
+void _MZone::add_zone(Zone *zone)
 {
 	assert(zone != NULL);
 
@@ -445,8 +419,7 @@ _MZone::add_zone(Zone *zone)
 	// activate it
 }
 
-void
-_MZone::list_rooms(const StreamControl& stream)
+void _MZone::list_rooms(const StreamControl& stream)
 {
 	for (ZoneList::iterator i = zones.begin(); i != zones.end(); ++i) {
 		stream << " " << (*i)->get_name() << " <" << (*i)->get_id() << ">\n";

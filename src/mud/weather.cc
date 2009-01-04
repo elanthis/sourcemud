@@ -17,24 +17,20 @@
 
 _MWeather MWeather;
 
-int
-_MWeather::initialize()
+int _MWeather::initialize()
 {
 	return region.load();
 }
 
-void
-_MWeather::shutdown()
+void _MWeather::shutdown()
 {
 }
 
-void
-_MWeather::save()
+void _MWeather::save()
 {
 }
 
-int
-WeatherRegion::load(File::Reader& reader)
+int WeatherRegion::load(File::Reader& reader)
 {
 	states.clear();
 	state = 0;
@@ -95,8 +91,7 @@ WeatherRegion::load(File::Reader& reader)
 	return 0;
 }
 
-void
-WeatherRegion::save(File::Writer& writer) const
+void WeatherRegion::save(File::Writer& writer) const
 {
 	for (std::vector<WeatherState>::const_iterator si = states.begin(); si != states.end(); ++si) {
 		writer.begin("weather", "state");
@@ -117,8 +112,7 @@ WeatherRegion::save(File::Writer& writer) const
 	writer.attr("weather", "ticks", ticks);
 }
 
-int
-WeatherRegion::load()
+int WeatherRegion::load()
 {
 	std::string path = MSettings.get_world_path() + "/weather";
 
@@ -134,8 +128,7 @@ WeatherRegion::load()
 	return load(reader);
 }
 
-int
-WeatherRegion::save() const
+int WeatherRegion::save() const
 {
 	std::string path = MSettings.get_world_path() + "/weather";
 
@@ -151,8 +144,7 @@ WeatherRegion::save() const
 	return 0;
 }
 
-int
-WeatherRegion::get_state(const std::string& name) const
+int WeatherRegion::get_state(const std::string& name) const
 {
 	for (uint i = 0; i < states.size(); ++i)
 		if (states[i].id == name)
@@ -160,15 +152,13 @@ WeatherRegion::get_state(const std::string& name) const
 	return -1;
 }
 
-std::string
-WeatherRegion::get_current_desc() const
+std::string WeatherRegion::get_current_desc() const
 {
 	uint i = get_random(states[state].descs.size());
 	return states[state].descs[i];
 }
 
-void
-WeatherRegion::update()
+void WeatherRegion::update()
 {
 	// only if we actually have any states...
 	if (states.empty())

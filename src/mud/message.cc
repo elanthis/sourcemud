@@ -34,14 +34,12 @@ int _MMessage::initialize()
 	return 0;
 }
 
-void
-_MMessage::shutdown()
+void _MMessage::shutdown()
 {
 	messages.clear();
 }
 
-std::string
-_MMessage::get(const std::string& id)
+std::string _MMessage::get(const std::string& id)
 {
 	MessageMap::iterator i = messages.find(id);
 	return i != messages.end() ? i->second : std::string();

@@ -20,16 +20,14 @@
 
 // --- ACCOUNT CREATION ---
 
-int
-TelnetModeNewAccount::initialize()
+int TelnetModeNewAccount::initialize()
 {
 	show_info();
 	state = STATE_ID;
 	return 0;
 }
 
-void
-TelnetModeNewAccount::show_info()
+void TelnetModeNewAccount::show_info()
 {
 	get_handler()->clear_scr();
 	*get_handler() << "Account Information\n";
@@ -45,8 +43,7 @@ TelnetModeNewAccount::show_info()
 	*get_handler() << "\n";
 }
 
-void
-TelnetModeNewAccount::prompt()
+void TelnetModeNewAccount::prompt()
 {
 	switch (state) {
 	case STATE_ID:
@@ -73,8 +70,7 @@ TelnetModeNewAccount::prompt()
 	}
 }
 
-void
-TelnetModeNewAccount::process(char* data)
+void TelnetModeNewAccount::process(char* data)
 {
 	std::string line(data);
 
@@ -177,21 +173,18 @@ TelnetModeNewAccount::process(char* data)
 
 // --- LOGIN ---
 
-int
-TelnetModeLogin::initialize()
+int TelnetModeLogin::initialize()
 {
 	return 0;
 }
 
-void
-TelnetModeLogin::prompt()
+void TelnetModeLogin::prompt()
 {
 	if (!pass) *get_handler() << "Enter thy name:";
 	else *get_handler() << "Enter thy passphrase:";
 }
 
-void
-TelnetModeLogin::process(char* line)
+void TelnetModeLogin::process(char* line)
 {
 	std::string data(line);
 
@@ -283,8 +276,7 @@ TelnetModeLogin::process(char* line)
 	}
 }
 
-void
-TelnetModeLogin::shutdown()
+void TelnetModeLogin::shutdown()
 {
 	account.reset();
 }

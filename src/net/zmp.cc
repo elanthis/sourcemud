@@ -86,16 +86,14 @@ ZMPPack& ZMPPack::add(const std::string& command)
 }
 
 // add an 'int'
-ZMPPack&
-ZMPPack::add(long i)
+ZMPPack& ZMPPack::add(long i)
 {
 	args.push_back(tostr(i));
 	return *this;
 }
 
 // add a 'uint'
-ZMPPack&
-ZMPPack::add(ulong i)
+ZMPPack& ZMPPack::add(ulong i)
 {
 	args.push_back(tostr(i));
 	return *this;
@@ -110,8 +108,7 @@ SZMPManager::~SZMPManager()
 }
 
 // initialize ZMP commands
-int
-SZMPManager::initialize()
+int SZMPManager::initialize()
 {
 	if (add("zmp.ping", handle_zmp_ping))
 		return -1;
@@ -194,8 +191,7 @@ bool SZMPManager::match(const std::string& pattern)
 }
 
 // handle an ZMP command - size is size of chunk, data is chunk
-void
-TelnetHandler::process_zmp(size_t size, char* data)
+void TelnetHandler::process_zmp(size_t size, char* data)
 {
 	const size_t argv_size = 20; // argv[] element size
 	std::string argv[argv_size]; // arg list
@@ -289,8 +285,7 @@ void TelnetHandler::send_zmp(size_t argc, std::string argv[])
 }
 
 // add a zmp command (to insert mid-processing, basically for color - YUCJ)
-void
-TelnetHandler::add_zmp(size_t argc, std::string argv[])
+void TelnetHandler::add_zmp(size_t argc, std::string argv[])
 {
 	// check for ZMP support
 	if (!has_zmp())

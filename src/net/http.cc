@@ -27,14 +27,14 @@
 #define HTTP_HEADER_LINE_MAX 2048 // arbitrary max line length
 #define HTTP_POST_BODY_MAX (16*1024) // 16K
 
-SHTTPManager HTTPManager;
+_HTTPManager HTTPManager;
 
 namespace Log
 {
 	LogWrapper HTTP(LOG_HTTP);
 }
 
-HTTPHandler::HTTPHandler(int s_sock, const NetAddr& s_netaddr) :  SocketConnection(s_sock)
+HTTPHandler::HTTPHandler(int s_sock, const NetAddr& s_netaddr) : SocketConnection(s_sock)
 {
 	addr = s_netaddr;
 	state = REQ;
@@ -43,8 +43,7 @@ HTTPHandler::HTTPHandler(int s_sock, const NetAddr& s_netaddr) :  SocketConnecti
 }
 
 // disconnect
-void
-HTTPHandler::disconnect()
+void HTTPHandler::disconnect()
 {
 	// reduce count
 	MNetwork.connections.remove(addr);
@@ -57,15 +56,13 @@ HTTPHandler::disconnect()
  * deal with formatting new-lines and such, and also
  * escaping/removing/translating Source MUD commands
  */
-void
-HTTPHandler::stream_put(const char *text, size_t len)
+void HTTPHandler::stream_put(const char *text, size_t len)
 {
 	sock_buffer(text, len);
 }
 
 // process input
-void
-HTTPHandler::sock_input(char* buffer, size_t size)
+void HTTPHandler::sock_input(char* buffer, size_t size)
 {
 	timeout = time(NULL);
 
@@ -118,8 +115,7 @@ HTTPHandler::sock_input(char* buffer, size_t size)
 }
 
 // flush out the output, write prompt
-void
-HTTPHandler::sock_flush()
+void HTTPHandler::sock_flush()
 {
 	// handle timeout
 	if (timeout != 0 && (time(NULL) - timeout) >= HTTP_REQUEST_TIMEOUT) {
@@ -132,8 +128,7 @@ HTTPHandler::sock_flush()
 		disconnect();
 }
 
-void
-HTTPHandler::sock_hangup()
+void HTTPHandler::sock_hangup()
 {
 	disconnect();
 }
@@ -443,8 +438,7 @@ void HTTPHandler::log(int error)
 	<< '"' << (user_agent.empty() ? "-" : user_agent.c_str()) << '"';
 }
 
-void
-HTTPHandler::http_error(int error)
+void HTTPHandler::http_error(int error)
 {
 	// lookup HTTP error msg code
 	std::string http_msg;
@@ -545,8 +539,7 @@ const std::string& HTTPHandler::getRequest(const std::string& name) const
 	return empty;
 }
 
-int
-SHTTPManager::initialize()
+int _HTTPManager::initialize()
 {
 	StringBuffer buf;
 
@@ -562,7 +555,6 @@ SHTTPManager::initialize()
 	return 0;
 }
 
-void
-SHTTPManager::shutdown()
+void _HTTPManager::shutdown()
 {
 }

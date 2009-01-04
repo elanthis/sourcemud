@@ -109,8 +109,7 @@ int IPDenyList::add(const std::string& line)
 	return 0;
 }
 
-bool
-IPDenyList::exists(NetAddr& addr)
+bool IPDenyList::exists(NetAddr& addr)
 {
 	for (uint i = 0; i < denylist.size(); ++i)
 		if (Network::addrcmp_mask(addr, denylist[i].addr, denylist[i].mask) == 0)
@@ -151,8 +150,7 @@ int IPConnList::add(NetAddr& addr)
 	return 0;
 }
 
-void
-IPConnList::remove(NetAddr& addr)
+void IPConnList::remove(NetAddr& addr)
 {
 	// find existing connection from host
 	for (std::vector<IPTrack>::iterator i = connections.begin(); i != connections.end(); ++i) {

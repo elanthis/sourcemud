@@ -32,8 +32,7 @@ Npc::Npc(NpcBP* s_blueprint) : Creature()
 	set_blueprint(s_blueprint);
 }
 
-void
-Npc::initialize()
+void Npc::initialize()
 {
 	blueprint = NULL;
 	flags.zonelock = false;
@@ -45,8 +44,7 @@ Npc::~Npc()
 {
 }
 
-int
-Npc::load_finish()
+int Npc::load_finish()
 {
 	if (Creature::load_finish())
 		return -1;
@@ -59,8 +57,7 @@ Npc::load_finish()
 	return 0;
 }
 
-int
-Npc::load_node(File::Reader& reader, File::Node& node)
+int Npc::load_node(File::Reader& reader, File::Node& node)
 {
 	FO_NODE_BEGIN
 	FO_ATTR("npc", "blueprint")
@@ -79,8 +76,7 @@ Npc::load_node(File::Reader& reader, File::Node& node)
 	FO_NODE_END
 }
 
-void
-Npc::save_data(File::Writer& writer)
+void Npc::save_data(File::Writer& writer)
 {
 	if (get_blueprint())
 		writer.attr("npc", "blueprint", get_blueprint()->get_id());
@@ -95,64 +91,55 @@ Npc::save_data(File::Writer& writer)
 		writer.attr("npc", "reverse_roomtag", true);
 }
 
-void
-Npc::save_hook(File::Writer& writer)
+void Npc::save_hook(File::Writer& writer)
 {
 	Creature::save_hook(writer);
 	Hooks::save_npc(this, writer);
 }
 
-EntityName
-Npc::get_name() const
+EntityName Npc::get_name() const
 {
 	assert(blueprint != NULL);
 	return blueprint->get_name();
 }
 
-std::string
-Npc::get_desc() const
+std::string Npc::get_desc() const
 {
 	assert(blueprint != NULL);
 	return blueprint->get_desc();
 }
 
-GenderType
-Npc::get_gender() const
+GenderType Npc::get_gender() const
 {
 	assert(blueprint != NULL);
 	return blueprint->get_gender();
 }
 
-int
-Npc::get_base_stat(CreatureStatID stat) const
+int Npc::get_base_stat(CreatureStatID stat) const
 {
 	assert(blueprint != NULL);
 	return blueprint->get_stat(stat);
 }
 
-uint
-Npc::get_combat_dodge() const
+uint Npc::get_combat_dodge() const
 {
 	assert(blueprint != NULL);
 	return blueprint->get_combat_dodge();
 }
 
-uint
-Npc::get_combat_attack() const
+uint Npc::get_combat_attack() const
 {
 	assert(blueprint != NULL);
 	return blueprint->get_combat_attack();
 }
 
-uint
-Npc::get_combat_damage() const
+uint Npc::get_combat_damage() const
 {
 	assert(blueprint != NULL);
 	return blueprint->get_combat_damage();
 }
 
-void
-Npc::kill(Creature *killer)
+void Npc::kill(Creature *killer)
 {
 	// death message
 	if (get_room())
@@ -168,15 +155,13 @@ Npc::kill(Creature *killer)
 	}
 }
 
-void
-Npc::handle_event(const Event& event)
+void Npc::handle_event(const Event& event)
 {
 	// normal event handler
 	Entity::handle_event(event);
 }
 
-void
-Npc::heartbeat()
+void Npc::heartbeat()
 {
 	// do creature update
 	Creature::heartbeat();
@@ -185,8 +170,7 @@ Npc::heartbeat()
 	Hooks::npc_heartbeat(this);
 }
 
-void
-Npc::set_blueprint(NpcBP* s_blueprint)
+void Npc::set_blueprint(NpcBP* s_blueprint)
 {
 	blueprint = s_blueprint;
 	for (int i = 0; i < CreatureStatID::COUNT; ++i)
@@ -195,8 +179,7 @@ Npc::set_blueprint(NpcBP* s_blueprint)
 }
 
 // load npc from a blueprint
-Npc*
-Npc::load_blueprint(const std::string& name)
+Npc* Npc::load_blueprint(const std::string& name)
 {
 	// lookup the blueprint
 	NpcBP* blueprint = MNpcBP.lookup(name);
@@ -227,8 +210,7 @@ Npc::load_blueprint(const std::string& name)
 }
 
 // display NPC description
-void
-Npc::display_desc(const StreamControl& stream)
+void Npc::display_desc(const StreamControl& stream)
 {
 	if (!get_desc().empty())
 		stream << StreamMacro(get_desc(), "npc", this); // FIXME: re-enable 'actor'(looker)
@@ -236,8 +218,7 @@ Npc::display_desc(const StreamControl& stream)
 		stream << StreamName(this, DEFINITE, true) << " doesn't appear very interesting.";
 }
 
-bool
-Npc::can_use_portal(Portal* portal) const
+bool Npc::can_use_portal(Portal* portal) const
 {
 	assert(portal != NULL);
 
@@ -279,8 +260,7 @@ Npc::can_use_portal(Portal* portal) const
 	return true;
 }
 
-bool
-Npc::is_blueprint(const std::string& name) const
+bool Npc::is_blueprint(const std::string& name) const
 {
 	NpcBP* blueprint = get_blueprint();
 
@@ -294,8 +274,7 @@ Npc::is_blueprint(const std::string& name) const
 	return false;
 }
 
-bool
-Npc::name_match(const std::string& match) const
+bool Npc::name_match(const std::string& match) const
 {
 	if (get_name().matches(match))
 		return true;

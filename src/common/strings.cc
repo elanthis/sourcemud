@@ -124,8 +124,7 @@ bool str_eq(const std::string& str_a, const std::string& str_b, size_t len)
 		return !strcasecmp(str_a.c_str(), str_b.c_str());
 }
 
-bool
-prefix_match(const char* string, const char* prefix)
+bool prefix_match(const char* string, const char* prefix)
 {
 	assert(string != NULL);
 	assert(prefix != NULL);
@@ -213,16 +212,14 @@ bool phrase_match(const char* match, const char* test)
 	return matches == cchunk ? true : false;
 }
 
-std::string
-get_num_suffix(unsigned int num)
+std::string get_num_suffix(unsigned int num)
 {
 	if (num == 11 || num == 12 || num == 13) { return "th"; }
 	num %= 10;
 	return num == 1 ? "st" : num == 2 ? "nd" : num == 3 ? "rd" : "th";
 }
 
-std::vector<std::string>&
-explode(std::vector<std::string>& list, const std::string& str, char ch)
+std::vector<std::string>& explode(std::vector<std::string>& list, const std::string& str, char ch)
 {
 	list.clear();
 
@@ -354,8 +351,7 @@ std::string trim(const std::string& source, const std::string& accept)
 	return ret.str();
 }
 
-std::string
-str_tr(std::string source, const std::string& from, const std::string& to)
+std::string str_tr(std::string source, const std::string& from, const std::string& to)
 {
 	StringBuffer result;
 
@@ -370,8 +366,7 @@ str_tr(std::string source, const std::string& from, const std::string& to)
 	return result.str();
 }
 
-std::string
-make_path(const char* path, const char* file)
+std::string make_path(const char* path, const char* file)
 {
 	assert(path != NULL);
 	assert(file != NULL);
@@ -396,8 +391,7 @@ make_path(const char* path, const char* file)
 	return res.str();
 }
 
-std::string
-base_name(const char* path)
+std::string base_name(const char* path)
 {
 	assert(path != NULL);
 
@@ -417,8 +411,7 @@ base_name(const char* path)
 		return std::string(start, ext - start);
 }
 
-bool
-has_suffix(const char* base, const char* suffix)
+bool has_suffix(const char* base, const char* suffix)
 {
 	assert(base != NULL);
 	assert(suffix != NULL);

@@ -142,8 +142,7 @@ Player::~Player()
 		MPlayer.player_list.erase(i);
 }
 
-void
-Player::save_data(File::Writer& writer)
+void Player::save_data(File::Writer& writer)
 {
 	Creature::save_data(writer);
 
@@ -186,8 +185,7 @@ Player::save_data(File::Writer& writer)
 	}
 }
 
-void
-Player::save()
+void Player::save()
 {
 	std::string path = MPlayer.path(get_id());
 
@@ -221,15 +219,13 @@ Player::save()
 	return;
 }
 
-void
-Player::save_hook(File::Writer& writer)
+void Player::save_hook(File::Writer& writer)
 {
 	Creature::save_hook(writer);
 	Hooks::save_player(this, writer);
 }
 
-int
-Player::load_node(File::Reader& reader, File::Node& node)
+int Player::load_node(File::Reader& reader, File::Node& node)
 {
 	FO_NODE_BEGIN
 	FO_PARENT(Creature)
@@ -297,8 +293,7 @@ Player::load_node(File::Reader& reader, File::Node& node)
 }
 
 // 'startup' the player session
-int
-Player::start_session()
+int Player::start_session()
 {
 	// login message
 	clear_scr();
@@ -353,8 +348,7 @@ Player::start_session()
 	return 0;
 }
 
-void
-Player::end_session()
+void Player::end_session()
 {
 	// update playtime
 	total_playtime += time(NULL) - time_lastlogin;
@@ -372,8 +366,7 @@ Player::end_session()
 	disconnect();
 }
 
-uint
-Player::get_age() const
+uint Player::get_age() const
 {
 	// calculate the age in years, based on birthdate and current time
 	uint years = MTime.time.get_year() - birthday.get_year();
@@ -385,8 +378,7 @@ Player::get_age() const
 	return years;
 }
 
-void
-Player::kill(Creature *killer)
+void Player::kill(Creature *killer)
 {
 	// death message
 	if (get_room())
@@ -400,8 +392,7 @@ Player::kill(Creature *killer)
 	Hooks::player_death(this, killer);
 }
 
-void
-Player::display_inventory()
+void Player::display_inventory()
 {
 	// start - worn
 	*this << "You are wearing ";
@@ -471,8 +462,7 @@ Player::display_inventory()
 	*this << ".  You have " << coins << " coins.\n";
 }
 
-void
-Player::display_skills()
+void Player::display_skills()
 {
 	*this << "Skills:\n";
 
@@ -486,14 +476,12 @@ Player::display_skills()
 	set_indent(0);
 }
 
-void
-Player::grant_exp(uint amount)
+void Player::grant_exp(uint amount)
 {
 	experience += amount;
 }
 
-void
-Player::recalc_stats()
+void Player::recalc_stats()
 {
 	Creature::recalc_stats();
 
@@ -504,14 +492,12 @@ Player::recalc_stats()
 	}
 }
 
-void
-Player::recalc()
+void Player::recalc()
 {
 	Creature::recalc();
 }
 
-void
-Player::heartbeat()
+void Player::heartbeat()
 {
 	// do creature update
 	Creature::heartbeat();
@@ -546,8 +532,7 @@ Player::heartbeat()
 	Hooks::player_heartbeat(this);
 }
 
-void
-Player::activate()
+void Player::activate()
 {
 	Creature::activate();
 
@@ -555,8 +540,7 @@ Player::activate()
 		account->incActive();
 }
 
-void
-Player::deactivate()
+void Player::deactivate()
 {
 	if (account != NULL)
 		account->decActive();
@@ -564,14 +548,12 @@ Player::deactivate()
 	Creature::deactivate();
 }
 
-void
-Player::show_prompt()
+void Player::show_prompt()
 {
 	*this << "< HP:" << get_hp() << "/" << get_max_hp() << " RT:" << get_round_time() << " >";
 }
 
-int
-Player::macro_property(const StreamControl& stream, const std::string& comm, const MacroList& argv) const
+int Player::macro_property(const StreamControl& stream, const std::string& comm, const MacroList& argv) const
 {
 	// RACE
 	if (str_eq(comm, "race")) {
@@ -603,8 +585,7 @@ Player::macro_property(const StreamControl& stream, const std::string& comm, con
 }
 
 // connect to a telnet handler
-void
-Player::connect(IPlayerConnection* handler)
+void Player::connect(IPlayerConnection* handler)
 {
 	// can't be same connection
 	assert(handler != conn);
@@ -625,8 +606,7 @@ Player::connect(IPlayerConnection* handler)
 }
 
 // disconnect from a telnet handler
-void
-Player::disconnect()
+void Player::disconnect()
 {
 	// already disconnected?
 	if (!get_conn())
@@ -643,32 +623,28 @@ Player::disconnect()
 }
 
 // output text
-void
-Player::stream_put(const char* data, size_t len)
+void Player::stream_put(const char* data, size_t len)
 {
 	if (get_conn())
 		get_conn()->pconn_write(data, len);
 }
 
 // toggle echo
-void
-Player::toggle_echo(bool value)
+void Player::toggle_echo(bool value)
 {
 	if (get_conn())
 		get_conn()->pconn_set_echo(value);
 }
 
 // set indent
-void
-Player::set_indent(uint level)
+void Player::set_indent(uint level)
 {
 	if (get_conn())
 		get_conn()->pconn_set_indent(level);
 }
 
 // get width of view
-uint
-Player::get_width()
+uint Player::get_width()
 {
 	if (get_conn())
 		return get_conn()->pconn_get_width();
@@ -677,16 +653,14 @@ Player::get_width()
 }
 
 // clear screen
-void
-Player::clear_scr()
+void Player::clear_scr()
 {
 	if (get_conn())
 		get_conn()->pconn_clear();
 }
 
 // show player description
-void
-Player::display_desc(const StreamControl& stream) const
+void Player::display_desc(const StreamControl& stream) const
 {
 	stream << StreamMacro(get_race()->get_desc(), "self", this);
 }

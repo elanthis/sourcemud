@@ -12,14 +12,12 @@
 
 #ifdef HAVE_SENDMAIL
 
-void
-MailMessage::append(const std::string& data)
+void MailMessage::append(const std::string& data)
 {
 	body << data;
 }
 
-void
-MailMessage::header(const std::string& name, const std::string& value)
+void MailMessage::header(const std::string& name, const std::string& value)
 {
 	Header h;
 	h.name = name;
@@ -27,8 +25,7 @@ MailMessage::header(const std::string& name, const std::string& value)
 	headers.push_back(h);
 }
 
-int
-MailMessage::send() const
+int MailMessage::send() const
 {
 	// sanity
 	if (!to || !subject) {

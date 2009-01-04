@@ -18,15 +18,13 @@
 #include "mud/object.h"
 #include "mud/npc.h"
 
-void
-Creature::do_emote(const std::string& action)
+void Creature::do_emote(const std::string& action)
 {
 	if (get_room())
 		*get_room() << "(" << StreamName(this, DEFINITE, true) << ") " << action << "\n";
 }
 
-void
-Creature::do_say(const std::string& text)
+void Creature::do_say(const std::string& text)
 {
 	// don't say nothing
 	if (text.empty())
@@ -66,8 +64,7 @@ Creature::do_say(const std::string& text)
 	// FIXME EVENT
 }
 
-void
-Creature::do_sing(const std::string& text)
+void Creature::do_sing(const std::string& text)
 {
 	// split into lines
 	std::vector<std::string> lines;
@@ -118,8 +115,7 @@ Creature::do_sing(const std::string& text)
 	stream << " sings:\n" << output;
 }
 
-void
-Creature::do_look()
+void Creature::do_look()
 {
 	// check
 	if (!check_see()) return;
@@ -129,8 +125,7 @@ Creature::do_look()
 	Events::sendLook(get_room(), this, get_room());
 }
 
-void
-Creature::do_look(Creature *ch)
+void Creature::do_look(Creature *ch)
 {
 	assert(ch != NULL);
 
@@ -153,8 +148,7 @@ Creature::do_look(Creature *ch)
 	Events::sendLook(get_room(), this, ch);
 }
 
-void
-Creature::do_look(Object *obj, ObjectLocation type)
+void Creature::do_look(Object *obj, ObjectLocation type)
 {
 	assert(obj != NULL);
 
@@ -185,8 +179,7 @@ Creature::do_look(Object *obj, ObjectLocation type)
 	Events::sendLook(get_room(), this, obj);
 }
 
-void
-Creature::do_look(Portal *portal)
+void Creature::do_look(Portal *portal)
 {
 	assert(portal != NULL);
 
@@ -255,8 +248,7 @@ private:
 	CreaturePosition position;
 };
 
-void
-Creature::do_position(CreaturePosition position)
+void Creature::do_position(CreaturePosition position)
 {
 	add_action(new ActionChangePosition(this, position));
 }
@@ -311,8 +303,7 @@ private:
 	ObjectLocation type;
 };
 
-void
-Creature::do_get(Object *obj, Object *contain, ObjectLocation type)
+void Creature::do_get(Object *obj, Object *contain, ObjectLocation type)
 {
 	assert(obj != NULL);
 
@@ -353,8 +344,7 @@ private:
 	ObjectLocation type;
 };
 
-void
-Creature::do_put(Object *obj, Object *contain, ObjectLocation type)
+void Creature::do_put(Object *obj, Object *contain, ObjectLocation type)
 {
 	assert(obj != NULL);
 	assert(contain != NULL);
@@ -404,8 +394,7 @@ private:
 	uint amount;
 };
 
-void
-Creature::do_give_coins(Creature* target, uint amount)
+void Creature::do_give_coins(Creature* target, uint amount)
 {
 	assert(target != NULL);
 	assert(amount != 0);
@@ -447,8 +436,7 @@ private:
 	Object* obj;
 };
 
-void
-Creature::do_wear(Object *obj)
+void Creature::do_wear(Object *obj)
 {
 	assert(obj != NULL);
 
@@ -489,8 +477,7 @@ private:
 	Object* obj;
 };
 
-void
-Creature::do_remove(Object *obj)
+void Creature::do_remove(Object *obj)
 {
 	assert(obj != NULL);
 
@@ -533,8 +520,7 @@ private:
 	Object* obj;
 };
 
-void
-Creature::do_drop(Object *obj)
+void Creature::do_drop(Object *obj)
 {
 	assert(obj != NULL);
 
@@ -559,8 +545,7 @@ private:
 	Object* obj;
 };
 
-void
-Creature::do_read(Object *obj)
+void Creature::do_read(Object *obj)
 {
 	assert(obj != NULL);
 
@@ -590,8 +575,7 @@ private:
 	Object* obj;
 };
 
-void
-Creature::do_eat(Object *obj)
+void Creature::do_eat(Object *obj)
 {
 	assert(obj != NULL);
 
@@ -621,8 +605,7 @@ private:
 	Object* obj;
 };
 
-void
-Creature::do_drink(Object *obj)
+void Creature::do_drink(Object *obj)
 {
 	assert(obj != NULL);
 
@@ -662,8 +645,7 @@ private:
 	Object* obj;
 };
 
-void
-Creature::do_raise(Object *obj)
+void Creature::do_raise(Object *obj)
 {
 	assert(obj != NULL);
 
@@ -699,8 +681,7 @@ private:
 	Object* obj;
 };
 
-void
-Creature::do_touch(Object *obj)
+void Creature::do_touch(Object *obj)
 {
 	assert(obj != NULL);
 
@@ -739,8 +720,7 @@ private:
 	Object* obj;
 };
 
-void
-Creature::do_kick(Object *obj)
+void Creature::do_kick(Object *obj)
 {
 	assert(obj != NULL);
 
@@ -798,8 +778,7 @@ private:
 	Portal* portal;
 };
 
-void
-Creature::do_open(Portal *portal)
+void Creature::do_open(Portal *portal)
 {
 	assert(portal != NULL);
 
@@ -847,8 +826,7 @@ private:
 	Portal* portal;
 };
 
-void
-Creature::do_close(Portal *portal)
+void Creature::do_close(Portal *portal)
 {
 	assert(portal != NULL);
 
@@ -896,8 +874,7 @@ private:
 	Portal* portal;
 };
 
-void
-Creature::do_lock(Portal *portal)
+void Creature::do_lock(Portal *portal)
 {
 	assert(portal != NULL);
 
@@ -944,8 +921,7 @@ private:
 	Portal* portal;
 };
 
-void
-Creature::do_unlock(Portal *portal)
+void Creature::do_unlock(Portal *portal)
 {
 	assert(portal != NULL);
 
@@ -1018,8 +994,7 @@ private:
 	uint rounds;
 };
 
-void
-Creature::do_go(Portal *portal)
+void Creature::do_go(Portal *portal)
 {
 	assert(portal != NULL);
 
@@ -1067,8 +1042,7 @@ private:
 	Portal* portal;
 };
 
-void
-Creature::do_kick(Portal *portal)
+void Creature::do_kick(Portal *portal)
 {
 	assert(portal != NULL);
 

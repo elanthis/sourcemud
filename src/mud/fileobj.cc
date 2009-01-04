@@ -643,8 +643,7 @@ File::Writer::comment(const std::string& text)
 	out << '\n';
 }
 
-bool
-File::valid_name(const std::string& name)
+bool File::valid_name(const std::string& name)
 {
 	// not empty
 	if (name.empty())

@@ -21,8 +21,7 @@
 
 // --- MAIN MENU ----
 
-int
-TelnetModeMainMenu::initialize()
+int TelnetModeMainMenu::initialize()
 {
 	// set timeout to account's value
 	if (account->getTimeout() != 0)
@@ -33,16 +32,14 @@ TelnetModeMainMenu::initialize()
 	return 0;
 }
 
-void
-TelnetModeMainMenu::show_banner()
+void TelnetModeMainMenu::show_banner()
 {
 	get_handler()->clear_scr();
 	*get_handler() << StreamMacro(MMessage.get("menu_banner")) << "\n";
 	*get_handler() << "Greetings, " CPLAYER << account->getName() << CNORMAL "!\n\n";
 }
 
-void
-TelnetModeMainMenu::show_main()
+void TelnetModeMainMenu::show_main()
 {
 	show_banner();
 
@@ -55,8 +52,7 @@ TelnetModeMainMenu::show_main()
 	*get_handler() << "\n";
 }
 
-void
-TelnetModeMainMenu::show_characters()
+void TelnetModeMainMenu::show_characters()
 {
 	show_banner();
 
@@ -76,8 +72,7 @@ TelnetModeMainMenu::show_characters()
 	*get_handler() << "\n";
 }
 
-void
-TelnetModeMainMenu::show_account()
+void TelnetModeMainMenu::show_account()
 {
 	show_banner();
 
@@ -89,8 +84,7 @@ TelnetModeMainMenu::show_account()
 	*get_handler() << "\n";
 }
 
-void
-TelnetModeMainMenu::prompt()
+void TelnetModeMainMenu::prompt()
 {
 	switch (state) {
 	case STATE_MENU:
@@ -126,16 +120,14 @@ TelnetModeMainMenu::prompt()
 	}
 }
 
-void
-TelnetModeMainMenu::show_create()
+void TelnetModeMainMenu::show_create()
 {
 	show_banner();
 
 	*get_handler() << "Enter the name of your new character, or type " CBOLD "return" CNORMAL " to return to the main menu.\n\n";
 }
 
-void
-TelnetModeMainMenu::process(char* line)
+void TelnetModeMainMenu::process(char* line)
 {
 	std::string input(line);
 
@@ -401,8 +393,7 @@ TelnetModeMainMenu::process(char* line)
 }
 
 // --- PLAY ---
-int
-TelnetModePlay::initialize()
+int TelnetModePlay::initialize()
 {
 	player->connect(this);
 
@@ -418,34 +409,29 @@ TelnetModePlay::initialize()
 	return 0;
 }
 
-void
-TelnetModePlay::pconn_disconnect()
+void TelnetModePlay::pconn_disconnect()
 {
 	player = NULL;
 	get_handler()->disconnect();
 }
 
-void
-TelnetModePlay::prompt()
+void TelnetModePlay::prompt()
 {
 	player->show_prompt();
 }
 
-void
-TelnetModePlay::process(char* line)
+void TelnetModePlay::process(char* line)
 {
 	player->process_command(line);
 }
 
-void
-TelnetModePlay::finish()
+void TelnetModePlay::finish()
 {
 	// disconnect if necessary
 	get_handler()->set_mode(new TelnetModeMainMenu(get_handler(), player->get_account()));
 }
 
-void
-TelnetModePlay::shutdown()
+void TelnetModePlay::shutdown()
 {
 	if (player && dynamic_cast<TelnetHandler*>(player->get_conn()) == get_handler()) {
 		player->disconnect();

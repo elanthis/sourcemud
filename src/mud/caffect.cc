@@ -19,8 +19,7 @@ std::string CreatureAffectType::names[] = {
 	"tech",
 };
 
-CreatureAffectType
-CreatureAffectType::lookup(const std::string& name)
+CreatureAffectType CreatureAffectType::lookup(const std::string& name)
 {
 	for (uint i = 0; i < COUNT; ++i)
 		if (str_eq(name, names[i]))
@@ -32,15 +31,13 @@ CreatureAffectGroup::CreatureAffectGroup(const std::string& s_title, CreatureAff
 {
 }
 
-int
-CreatureAffectGroup::add_affect(ICreatureAffect* affect)
+int CreatureAffectGroup::add_affect(ICreatureAffect* affect)
 {
 	affects.push_back(affect);
 	return 0;
 }
 
-int
-CreatureAffectGroup::apply(Creature* creature) const
+int CreatureAffectGroup::apply(Creature* creature) const
 {
 	for (AffectList::const_iterator i = affects.begin(); i != affects.end(); ++i)
 		if ((*i)->apply(creature))
@@ -48,15 +45,13 @@ CreatureAffectGroup::apply(Creature* creature) const
 	return 0;
 }
 
-void
-CreatureAffectGroup::remove(Creature* creature) const
+void CreatureAffectGroup::remove(Creature* creature) const
 {
 	for (AffectList::const_iterator i = affects.begin(); i != affects.end(); ++i)
 		(*i)->remove(creature);
 }
 
-void
-CreatureAffectGroup::update(Creature* creature)
+void CreatureAffectGroup::update(Creature* creature)
 {
 	if (duration > 0)
 		--duration;

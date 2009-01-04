@@ -21,8 +21,7 @@ Race::Race(const std::string& s_name, Race *s_next) :
 		name(s_name.c_str()),
 		next(s_next) {}
 
-int
-Race::load(File::Reader& reader)
+int Race::load(File::Reader& reader)
 {
 	// clear and/or defaults
 	adj.clear();
@@ -89,8 +88,7 @@ Race::load(File::Reader& reader)
 	return 0;
 }
 
-Race *
-_MRace::get(const std::string& name)
+Race* _MRace::get(const std::string& name)
 {
 	Race *race = head;
 	while (race != NULL) {
@@ -101,8 +99,7 @@ _MRace::get(const std::string& name)
 	return NULL;
 }
 
-int
-_MRace::initialize()
+int _MRace::initialize()
 {
 	File::Reader reader;
 	std::string path = MSettings.get_misc_path() + "/races";
@@ -127,8 +124,7 @@ _MRace::initialize()
 	return 0;
 }
 
-void
-_MRace::shutdown()
+void _MRace::shutdown()
 {
 	while (head != NULL) {
 		Race* r = head->get_next();

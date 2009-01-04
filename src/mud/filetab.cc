@@ -11,8 +11,7 @@
 #include "common/log.h"
 #include "mud/filetab.h"
 
-int
-File::TabReader::open(const std::string& filename)
+int File::TabReader::open(const std::string& filename)
 {
 	// open
 	in.open(filename.c_str());
@@ -26,8 +25,7 @@ File::TabReader::open(const std::string& filename)
 	return 0;
 }
 
-int
-File::TabReader::load()
+int File::TabReader::load()
 {
 	std::vector<std::string> cent;
 	StringBuffer cword;
@@ -120,8 +118,7 @@ File::TabReader::load()
 	return 0;
 }
 
-std::string
-File::TabReader::get(size_t line, size_t col) const
+std::string File::TabReader::get(size_t line, size_t col) const
 {
 	if (entries[line].second.size() <= col)
 		return std::string();

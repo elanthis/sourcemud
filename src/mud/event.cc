@@ -38,8 +38,7 @@ EventID EventID::lookup(const std::string& name)
 
 EventHandler::EventHandler() : event(), script() {}
 
-int
-EventHandler::load(File::Reader& reader)
+int EventHandler::load(File::Reader& reader)
 {
 	FO_READ_BEGIN
 	FO_ATTR("event", "id")
@@ -55,16 +54,14 @@ EventHandler::load(File::Reader& reader)
 	return 0;
 }
 
-void
-EventHandler::save(File::Writer& writer) const
+void EventHandler::save(File::Writer& writer) const
 {
 	writer.attr("event", "id", event.get_name());
 	if (!script.empty())
 		writer.block("event", "script", script);
 }
 
-void
-Entity::handle_event(const Event& event)
+void Entity::handle_event(const Event& event)
 {
 	for (EventList::const_iterator i = events.begin(); i != events.end(); ++ i) {
 		if (event.get_id() == (*i)->get_event()) {
@@ -73,20 +70,17 @@ Entity::handle_event(const Event& event)
 	}
 }
 
-int
-_MEvent::initialize()
+int _MEvent::initialize()
 {
 	return 0;
 }
 
-void
-_MEvent::shutdown()
+void _MEvent::shutdown()
 {
 	events.clear();
 }
 
-void
-_MEvent::send(EventID id, Entity* recipient, Entity* aux1, Entity* aux2, Entity* aux3)
+void _MEvent::send(EventID id, Entity* recipient, Entity* aux1, Entity* aux2, Entity* aux3)
 {
 	assert(id.valid());
 	assert(recipient != NULL);
@@ -103,8 +97,7 @@ _MEvent::send(EventID id, Entity* recipient, Entity* aux1, Entity* aux2, Entity*
 	events.push_back(event);
 }
 
-void
-_MEvent::broadcast(EventID id, Entity* recipient, Entity* aux1, Entity* aux2, Entity* aux3)
+void _MEvent::broadcast(EventID id, Entity* recipient, Entity* aux1, Entity* aux2, Entity* aux3)
 {
 	assert(id.valid());
 	assert(recipient != NULL);
@@ -121,16 +114,14 @@ _MEvent::broadcast(EventID id, Entity* recipient, Entity* aux1, Entity* aux2, En
 	recipient->broadcast_event(event);
 }
 
-void
-_MEvent::resend(const Event& event, Entity* recipient)
+void _MEvent::resend(const Event& event, Entity* recipient)
 {
 	Event new_event = event;
 	new_event.recipient = recipient;
 	events.push_back(new_event);
 }
 
-void
-_MEvent::process()
+void _MEvent::process()
 {
 	// remember how many events we started with
 	// this way, events which trigger more events

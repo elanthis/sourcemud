@@ -14,8 +14,7 @@
 
 _MTime MTime;
 
-void
-GameTime::time_str(char *buf, int len) const
+void GameTime::time_str(char *buf, int len) const
 {
 	snprintf(buf, len, "%d:%02d %s",
 	         hour == 0 ? 12 : (hour <= 12 ? hour : hour - 12),
@@ -23,16 +22,14 @@ GameTime::time_str(char *buf, int len) const
 	         (hour < 12) ? "am" : "pm");
 }
 
-std::string
-GameTime::time_str() const
+std::string GameTime::time_str() const
 {
 	char buffer[32];
 	time_str(buffer, sizeof(buffer));
 	return std::string(buffer);
 }
 
-void
-GameTime::date_str(char *buf, int len) const
+void GameTime::date_str(char *buf, int len) const
 {
 	// base date string
 	size_t add = snprintf(buf, len, "%s, %d%s of %s, %d",
@@ -48,23 +45,20 @@ GameTime::date_str(char *buf, int len) const
 	}
 }
 
-std::string
-GameTime::date_str() const
+std::string GameTime::date_str() const
 {
 	char buffer[256];
 	date_str(buffer, sizeof(buffer));
 	return std::string(buffer);
 }
 
-void
-GameTime::update(uint ticks)
+void GameTime::update(uint ticks)
 {
 	ticks_in_hour += ticks;
 	clip_time();
 }
 
-void
-GameTime::clip_time()
+void GameTime::clip_time()
 {
 	while (ticks_in_hour >= TICKS_PER_HOUR) {
 		ticks_in_hour -= TICKS_PER_HOUR;
@@ -88,16 +82,14 @@ GameTime::clip_time()
 		month = 1;
 }
 
-std::string
-GameTime::encode() const
+std::string GameTime::encode() const
 {
 	char buffer[32];
 	snprintf(buffer, sizeof(buffer), "%04d/%02d/%02d %02d.%02d", year, month, day, hour, ticks_in_hour);
 	return std::string(buffer);
 }
 
-int
-GameTime::decode(const std::string& str)
+int GameTime::decode(const std::string& str)
 {
 	uint s_year, s_month, s_day, s_hour, s_ticks;
 	if (sscanf(str.c_str(), "%u/%u/%u %u.%u", &s_year, &s_month, &s_day, &s_hour, &s_ticks) != 5)
@@ -129,8 +121,7 @@ GameTime:: operator != (const GameTime& other) const
 	       ticks_in_hour != other.ticks_in_hour;
 }
 
-int
-_MTime::initialize()
+int _MTime::initialize()
 {
 	// initialize calendar
 	if (calendar.load())
@@ -151,8 +142,7 @@ _MTime::initialize()
 	return 0;
 }
 
-void
-_MTime::save()
+void _MTime::save()
 {
 	// open
 	File::Writer writer;
@@ -166,7 +156,6 @@ _MTime::save()
 	writer.close();
 }
 
-void
-_MTime::shutdown()
+void _MTime::shutdown()
 {
 }

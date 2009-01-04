@@ -154,8 +154,7 @@ void _MCommand::add(Command *command)
 	commands.insert(ci, command);
 }
 
-int
-_MCommand::call(Creature *ch, const std::string& comm)
+int _MCommand::call(Creature *ch, const std::string& comm)
 {
 	Player *ply = PLAYER(ch);
 
@@ -237,8 +236,7 @@ _MCommand::call(Creature *ch, const std::string& comm)
 	return 1;
 }
 
-void
-_MCommand::show_list(Player *player)
+void _MCommand::show_list(Player *player)
 {
 	int col, max_col;
 	size_t colwidth;
@@ -289,8 +287,7 @@ _MCommand::show_list(Player *player)
 	player->set_indent(0);
 }
 
-void
-Command::show_man(StreamControl& stream)
+void Command::show_man(StreamControl& stream)
 {
 	HelpTopic* topic = MHelp.get_topic(name);
 
@@ -310,8 +307,7 @@ Command::show_man(StreamControl& stream)
 }
 
 // build command
-int
-CommandFormat::build(const std::string& s_format)
+int CommandFormat::build(const std::string& s_format)
 {
 	int arg;
 	bool opt;
@@ -498,8 +494,7 @@ int CommandFormat::trymatch(int node, char** words, std::string argv[]) const
 	}
 }
 
-bool
-CommandFormat::operator< (const CommandFormat& format) const
+bool CommandFormat::operator< (const CommandFormat& format) const
 {
 	// priorities rule all...
 	if (priority < format.priority)
@@ -554,16 +549,14 @@ CommandFormat::operator< (const CommandFormat& format) const
 	return false;
 }
 
-bool
-Command::operator< (const Command& command) const
+bool Command::operator< (const Command& command) const
 {
 	// compare command names
 	return strcasecmp(name.c_str(), command.name.c_str()) < 0;
 }
 
 // show a man page; return false if cmd_name is not found
-bool
-_MCommand::show_man(StreamControl& stream, const std::string& name, bool quiet)
+bool _MCommand::show_man(StreamControl& stream, const std::string& name, bool quiet)
 {
 	// find exact match?
 	for (CommandList::iterator i = commands.begin(); i != commands.end(); ++i) {
@@ -606,8 +599,7 @@ _MCommand::show_man(StreamControl& stream, const std::string& name, bool quiet)
 	return match;
 }
 
-void
-Creature::process_command(const std::string& line)
+void Creature::process_command(const std::string& line)
 {
 	MCommand.call(this, line);
 }
@@ -867,8 +859,7 @@ Creature::cl_find_creature(const std::string& line, bool silent)
 }
 
 /* parse a command line to get an portal*/
-Portal*
-Creature::cl_find_portal(const std::string& line, bool silent)
+Portal* Creature::cl_find_portal(const std::string& line, bool silent)
 {
 	const char* text = line.c_str();
 
@@ -913,8 +904,7 @@ Creature::cl_find_portal(const std::string& line, bool silent)
 }
 
 // parse a command line to get a creature, object, or portal
-Entity*
-Creature::cl_find_any(const std::string& line, bool silent)
+Entity* Creature::cl_find_any(const std::string& line, bool silent)
 {
 	uint matches;
 

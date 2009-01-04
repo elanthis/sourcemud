@@ -15,8 +15,7 @@
 #include "mud/action.h"
 
 // attack command
-void
-command_attack(Creature* attacker, std::string argv[])
+void command_attack(Creature* attacker, std::string argv[])
 {
 	// check status
 	if (!attacker->check_alive() || !attacker->check_move() || !attacker->check_rt())
@@ -182,8 +181,7 @@ private:
 };
 
 // attack a creature
-void
-Creature::do_attack(Creature* victim)
+void Creature::do_attack(Creature* victim)
 {
 	// no NULL
 	assert(victim != NULL);
@@ -192,8 +190,7 @@ Creature::do_attack(Creature* victim)
 }
 
 // attack a creature until dead
-void
-Creature::do_kill(Creature* victim)
+void Creature::do_kill(Creature* victim)
 {
 	// no NULL
 	assert(victim != NULL);
@@ -202,20 +199,17 @@ Creature::do_kill(Creature* victim)
 }
 
 // handle player combat abilities
-uint
-Player::get_combat_dodge() const
+uint Player::get_combat_dodge() const
 {
 	return 10; // FIXME
 }
 
-uint
-Player::get_combat_attack() const
+uint Player::get_combat_attack() const
 {
 	return 10; // FIXME
 }
 
-uint
-Player::get_combat_damage() const
+uint Player::get_combat_damage() const
 {
 	return 10; // FIXME
 }

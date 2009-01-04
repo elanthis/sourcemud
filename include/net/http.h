@@ -90,7 +90,7 @@ protected:
 	Account* account;
 };
 
-class SHTTPManager : public IManager
+class _HTTPManager : public IManager
 {
 public:
 	virtual int initialize();
@@ -101,6 +101,6 @@ public:
 private:
 	std::string session_key;
 };
-extern SHTTPManager HTTPManager;
+extern _HTTPManager HTTPManager;
 
 #endif

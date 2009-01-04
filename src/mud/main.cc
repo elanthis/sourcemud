@@ -309,27 +309,23 @@ namespace
 	}
 }
 
-void
-MUD::shutdown()
+void MUD::shutdown()
 {
 	Log::Info << "Shutting down server";
 	running = false;
 }
 
-ulong
-MUD::get_ticks()
+ulong MUD::get_ticks()
 {
 	return game_ticks;
 }
 
-ulong
-MUD::get_rounds()
+ulong MUD::get_rounds()
 {
 	return TICKS_TO_ROUNDS(game_ticks);
 }
 
-std::string
-MUD::get_uptime()
+std::string MUD::get_uptime()
 {
 	StringBuffer uptime;
 	uint secs = (::time(NULL) - start_time);
@@ -364,8 +360,7 @@ MUD::get_uptime()
 	return uptime.str();
 }
 
-int
-main(int argc, char **argv)
+int main(int argc, char **argv)
 {
 	// print out information
 	printf("Source MUD server V" PACKAGE_VERSION "\n"

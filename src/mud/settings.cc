@@ -81,8 +81,7 @@ namespace
 	};
 }
 
-int
-_MSettings::initialize()
+int _MSettings::initialize()
 {
 	for (int i = 0; settings[i].name != NULL; ++i) {
 		by_name[settings[i].name] = &settings[i];

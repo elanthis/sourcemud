@@ -35,8 +35,7 @@ int Network::addrcmp(const NetAddr& addr1, const NetAddr& addr2)
 }
 
 // compare addresses - with mask applied to *first* address (only)
-int
-Network::addrcmp_mask(const NetAddr& in_addr1, const NetAddr& addr2, uint mask)
+int Network::addrcmp_mask(const NetAddr& in_addr1, const NetAddr& addr2, uint mask)
 {
 	// same family, yes?
 	if (in_addr1.family != addr2.family)
@@ -62,8 +61,7 @@ Network::addrcmp_mask(const NetAddr& in_addr1, const NetAddr& addr2, uint mask)
 }
 
 // listen/server connection
-int
-Network::listen_tcp(int port, int family)
+int Network::listen_tcp(int port, int family)
 {
 	NetAddr ss;
 	size_t ss_len = sizeof(ss);

@@ -24,34 +24,29 @@ ObjectBP::ObjectBP()
 	cost = 0;
 }
 
-bool
-ObjectBP::set_name(const std::string& s_name)
+bool ObjectBP::set_name(const std::string& s_name)
 {
 	bool ret = name.set_name(s_name);
 	return ret;
 }
 
-EntityName
-ObjectBP::get_name() const
+EntityName ObjectBP::get_name() const
 {
 	return name;
 }
 
-bool
-ObjectBP::has_tag(TagID tag) const
+bool ObjectBP::has_tag(TagID tag) const
 {
 	return tags.find(tag) != tags.end();
 }
 
-int
-ObjectBP::add_tag(TagID tag)
+int ObjectBP::add_tag(TagID tag)
 {
 	tags.insert(tag);
 	return 0;
 }
 
-int
-ObjectBP::remove_tag(TagID tag)
+int ObjectBP::remove_tag(TagID tag)
 {
 	// find
 	TagList::iterator ti = std::find(tags.begin(), tags.end(), tag);
@@ -64,8 +59,7 @@ ObjectBP::remove_tag(TagID tag)
 	return 0;
 }
 
-void
-ObjectBP::save(File::Writer& writer)
+void ObjectBP::save(File::Writer& writer)
 {
 	if (!id.empty())
 		writer.attr("blueprint", "id", id);
@@ -100,8 +94,7 @@ ObjectBP::save(File::Writer& writer)
 	Hooks::save_object_blueprint(this, writer);
 }
 
-int
-ObjectBP::load(File::Reader& reader)
+int ObjectBP::load(File::Reader& reader)
 {
 	FO_READ_BEGIN
 	FO_ATTR("blueprint", "id")
@@ -146,8 +139,7 @@ ObjectBP::load(File::Reader& reader)
 	return 0;
 }
 
-int
-_MObjectBP::initialize()
+int _MObjectBP::initialize()
 {
 	// requirements
 	if (require(MEvent) != 0)
@@ -182,16 +174,14 @@ _MObjectBP::initialize()
 	return 0;
 }
 
-void
-_MObjectBP::shutdown()
+void _MObjectBP::shutdown()
 {
 	for (BlueprintMap::iterator i = blueprints.begin(), e = blueprints.end();
 	        i != e; ++i)
 		delete i->second;
 }
 
-ObjectBP*
-_MObjectBP::lookup(const std::string& id)
+ObjectBP* _MObjectBP::lookup(const std::string& id)
 {
 	BlueprintMap::iterator iter = blueprints.find(id);
 	if (iter == blueprints.end())

@@ -13,15 +13,13 @@
 #include "mud/settings.h"
 
 // helper function to generate path names
-std::string
-_MPlayer::path(const std::string& name)
+std::string _MPlayer::path(const std::string& name)
 {
 	return MSettings.get_player_path() + "/" + strlower(name) + ".ply";
 }
 
 // check if a name is valid
-bool
-_MPlayer::valid_name(const std::string& name)
+bool _MPlayer::valid_name(const std::string& name)
 {
 	// empty?  just fail
 	if (name.empty())
@@ -55,8 +53,7 @@ _MPlayer::valid_name(const std::string& name)
 }
 
 // find a Player
-Player *
-_MPlayer::get(const std::string& name)
+Player* _MPlayer::get(const std::string& name)
 {
 	assert(!name.empty() && "name must not be empty");
 
@@ -69,8 +66,7 @@ _MPlayer::get(const std::string& name)
 	return NULL;
 }
 
-void
-_MPlayer::list(const StreamControl& stream)
+void _MPlayer::list(const StreamControl& stream)
 {
 	stream << "Currently logged in players:\n";
 	size_t count = 0;
@@ -93,8 +89,7 @@ _MPlayer::list(const StreamControl& stream)
 		stream << "There are " << count << " players on-line.\n";
 }
 
-size_t
-_MPlayer::count()
+size_t _MPlayer::count()
 {
 	size_t count = 0;
 	for (PlayerList::iterator i = player_list.begin(); i != player_list.end(); ++i)
@@ -103,8 +98,7 @@ _MPlayer::count()
 	return count;
 }
 
-int
-_MPlayer::initialize()
+int _MPlayer::initialize()
 {
 	// modules we need to operate
 	if (require(MAccount) != 0)
@@ -115,8 +109,7 @@ _MPlayer::initialize()
 	return 0;
 }
 
-void
-_MPlayer::shutdown()
+void _MPlayer::shutdown()
 {
 	// quit all players
 	while (!player_list.empty()) {
@@ -156,8 +149,7 @@ Player* _MPlayer::load(std::tr1::shared_ptr<Account> account, const std::string&
 	return player;
 }
 
-bool
-_MPlayer::exists(const std::string& name)
+bool _MPlayer::exists(const std::string& name)
 {
 	// must be a valid name
 	if (!valid_name(name))
@@ -184,8 +176,7 @@ _MPlayer::exists(const std::string& name)
 	return true;
 }
 
-int
-_MPlayer::destroy(const std::string& name)
+int _MPlayer::destroy(const std::string& name)
 {
 	// must be a valid name
 	if (!valid_name(name))
@@ -216,8 +207,7 @@ _MPlayer::destroy(const std::string& name)
 	return 0;
 }
 
-void
-_MPlayer::save()
+void _MPlayer::save()
 {
 	for (PlayerList::iterator i = player_list.begin(); i != player_list.end(); ++i)
 		if ((*i)->is_active())

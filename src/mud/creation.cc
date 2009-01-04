@@ -78,8 +78,7 @@ private:
 	FormHairStyle hair_style;
 };
 
-TelnetModeNewCharacter*
-TelnetModeNewCharacter::create(TelnetHandler* handler, std::tr1::shared_ptr<Account> account)
+TelnetModeNewCharacter* TelnetModeNewCharacter::create(TelnetHandler* handler, std::tr1::shared_ptr<Account> account)
 {
 	return new TelnetModeRealNewCharacter(handler, account);
 }

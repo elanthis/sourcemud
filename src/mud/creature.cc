@@ -45,8 +45,7 @@ std::string CreatureStatID::short_names[CreatureStatID::COUNT] = {
 	"WI",
 };
 
-CreatureStatID
-CreatureStatID::lookup(const std::string& name)
+CreatureStatID CreatureStatID::lookup(const std::string& name)
 {
 	for (uint i = 0; i < COUNT; ++i)
 		if (str_eq(name, names[i]))
@@ -66,8 +65,7 @@ std::string stat_levels[] = {
 	"Awesome",
 };
 
-std::string
-get_stat_level(uint stat)
+std::string get_stat_level(uint stat)
 {
 	if (stat <= 15)
 		return stat_levels[0];
@@ -89,8 +87,7 @@ get_stat_level(uint stat)
 		return stat_levels[8];
 }
 
-std::string
-get_stat_color(uint stat)
+std::string get_stat_color(uint stat)
 {
 	if (stat <= 35)
 		return CSTAT_BAD2;
@@ -131,8 +128,7 @@ std::string CreaturePosition::verbings[CreaturePosition::COUNT] = {
 	"kneeling",
 };
 
-CreaturePosition
-CreaturePosition::lookup(const std::string& name)
+CreaturePosition CreaturePosition::lookup(const std::string& name)
 {
 	for (uint i = 0; i < COUNT; ++i)
 		if (str_eq(name, names[i]))
@@ -142,8 +138,7 @@ CreaturePosition::lookup(const std::string& name)
 
 // ----- Creature -----
 
-void
-Creature::save_data(File::Writer& writer)
+void Creature::save_data(File::Writer& writer)
 {
 	Entity::save_data(writer);
 
@@ -169,15 +164,13 @@ Creature::save_data(File::Writer& writer)
 		equipment.waist_worn->save(writer, "creature", "equip_waist");
 }
 
-void
-Creature::save_hook(File::Writer& writer)
+void Creature::save_hook(File::Writer& writer)
 {
 	Entity::save_hook(writer);
 	Hooks::save_creature(this, writer);
 }
 
-int
-Creature::load_node(File::Reader& reader, File::Node& node)
+int Creature::load_node(File::Reader& reader, File::Node& node)
 {
 	FO_NODE_BEGIN
 	FO_PARENT(Entity)
@@ -213,8 +206,7 @@ Creature::load_node(File::Reader& reader, File::Node& node)
 	FO_NODE_END
 }
 
-int
-Creature::load_finish()
+int Creature::load_finish()
 {
 	recalc();
 
@@ -241,8 +233,7 @@ Creature::Creature()
 		effective_stats[i] = 0;
 }
 
-void
-Creature::set_owner(Entity* s_owner)
+void Creature::set_owner(Entity* s_owner)
 {
 	// type check
 	assert(ROOM(s_owner));
@@ -252,15 +243,13 @@ Creature::set_owner(Entity* s_owner)
 	location = (Room*)s_owner;
 }
 
-Entity*
-Creature::get_owner() const
+Entity* Creature::get_owner() const
 {
 	return location;
 }
 
 // add an action
-void
-Creature::add_action(IAction* action)
+void Creature::add_action(IAction* action)
 {
 	// insert action before this point
 	actions.push_back(action);
@@ -273,8 +262,7 @@ Creature::add_action(IAction* action)
 	}
 }
 
-IAction*
-Creature::get_action() const
+IAction* Creature::get_action() const
 {
 	if (actions.empty())
 		return NULL;
@@ -282,8 +270,7 @@ Creature::get_action() const
 		return actions.front();
 }
 
-void
-Creature::cancel_action()
+void Creature::cancel_action()
 {
 	// no actions?  blegh
 	if (actions.empty()) {
@@ -310,8 +297,7 @@ Creature::cancel_action()
 }
 
 // get the round time
-uint
-Creature::get_round_time() const
+uint Creature::get_round_time() const
 {
 	// no actions?  no round time
 	if (actions.empty())
@@ -330,8 +316,7 @@ Creature::get_round_time() const
 	return rounds - round_time;
 }
 
-bool
-Creature::check_alive()
+bool Creature::check_alive()
 {
 	if (is_dead()) {
 		*this << "You are only a ghost.\n";
@@ -340,8 +325,7 @@ Creature::check_alive()
 	return true;
 }
 
-bool
-Creature::check_move()
+bool Creature::check_move()
 {
 	// can't move if you're dead
 	if (!check_alive())
@@ -355,8 +339,7 @@ Creature::check_move()
 	return true;
 }
 
-bool
-Creature::check_see()
+bool Creature::check_see()
 {
 	if (!can_see()) {
 		*this << "You cannot see.\n";
@@ -365,8 +348,7 @@ Creature::check_see()
 	return true;
 }
 
-bool
-Creature::check_rt()
+bool Creature::check_rt()
 {
 	// round time?
 	uint rounds = get_round_time();
@@ -389,8 +371,7 @@ Creature::check_rt()
 // -------------------- FUNCS ----------------------
 
 // move into a new room
-bool
-Creature::enter(Room *new_room, Portal *old_portal)
+bool Creature::enter(Room *new_room, Portal *old_portal)
 {
 	assert(new_room != NULL);
 	Room* old_room = get_room();
@@ -441,8 +422,7 @@ Creature::enter(Room *new_room, Portal *old_portal)
 	return true;
 }
 
-void
-Creature::heal(uint amount)
+void Creature::heal(uint amount)
 {
 	bool was_dead = is_dead();
 	health.cur += amount;
@@ -456,8 +436,7 @@ Creature::heal(uint amount)
 	}
 }
 
-bool
-Creature::damage(uint amount, Creature *trigger)
+bool Creature::damage(uint amount, Creature *trigger)
 {
 	// already dead?  no reason to continue
 	if (is_dead())
@@ -475,8 +454,7 @@ Creature::damage(uint amount, Creature *trigger)
 	return false;
 }
 
-uint
-Creature::give_coins(uint amount)
+uint Creature::give_coins(uint amount)
 {
 	uint space = UINT_MAX - coins;
 	if (space < amount)
@@ -485,8 +463,7 @@ Creature::give_coins(uint amount)
 		return coins += amount;
 }
 
-uint
-Creature::take_coins(uint amount)
+uint Creature::take_coins(uint amount)
 {
 	if (amount > coins)
 		return coins = 0;
@@ -494,8 +471,7 @@ Creature::take_coins(uint amount)
 		return coins -= amount;
 }
 
-void
-Creature::heartbeat()
+void Creature::heartbeat()
 {
 	// pending actions?
 	if (!actions.empty()) {
@@ -550,8 +526,7 @@ Creature::heartbeat()
 	Hooks::creature_heartbeat(this);
 }
 
-void
-Creature::activate()
+void Creature::activate()
 {
 	Entity::activate();
 
@@ -560,8 +535,7 @@ Creature::activate()
 		obj->activate();
 }
 
-void
-Creature::deactivate()
+void Creature::deactivate()
 {
 	Object* obj;
 	for (int i = 0; (obj = get_equip_at(i)) != NULL; ++i)
@@ -570,8 +544,7 @@ Creature::deactivate()
 	Entity::deactivate();
 }
 
-int
-Creature::macro_property(const StreamControl& stream, const std::string& comm, const MacroList& argv) const
+int Creature::macro_property(const StreamControl& stream, const std::string& comm, const MacroList& argv) const
 {
 	// HE / SHE
 	if (str_eq(comm, "he")) {
@@ -617,16 +590,14 @@ Creature::macro_property(const StreamControl& stream, const std::string& comm, c
 }
 
 // recalc stats
-void
-Creature::recalc_stats()
+void Creature::recalc_stats()
 {
 	for (int i = 0; i < CreatureStatID::COUNT; ++i)
 		effective_stats[i] = get_base_stat(i);
 }
 
 // recalc max health
-void
-Creature::recalc_health()
+void Creature::recalc_health()
 {
 	health.max = (10 + get_stat_modifier(CreatureStatID::FORTITUDE)) * 10;
 
@@ -636,15 +607,13 @@ Creature::recalc_health()
 }
 
 // recalculate various stuff
-void
-Creature::recalc()
+void Creature::recalc()
 {
 	recalc_stats();
 	recalc_health();
 }
 
-void
-Creature::display_equip(const StreamControl& stream) const
+void Creature::display_equip(const StreamControl& stream) const
 {
 	// inventory variables
 	uint loc = 0;
@@ -737,8 +706,7 @@ Creature::display_equip(const StreamControl& stream) const
 	}
 }
 
-void
-Creature::display_affects(const StreamControl& stream) const
+void Creature::display_affects(const StreamControl& stream) const
 {
 	bool found = false;
 	for (AffectStatusList::const_iterator i = affects.begin(); i != affects.end(); ++i) {
@@ -756,8 +724,7 @@ Creature::display_affects(const StreamControl& stream) const
 }
 
 // stat modifier
-int
-Creature::get_stat_modifier(CreatureStatID stat) const
+int Creature::get_stat_modifier(CreatureStatID stat) const
 {
 	assert(stat);
 
@@ -765,8 +732,7 @@ Creature::get_stat_modifier(CreatureStatID stat) const
 }
 
 // add an affect
-int
-Creature::add_affect(CreatureAffectGroup* affect)
+int Creature::add_affect(CreatureAffectGroup* affect)
 {
 	if (affect->apply(this))
 		return -1;
@@ -776,14 +742,12 @@ Creature::add_affect(CreatureAffectGroup* affect)
 }
 
 // events
-void
-Creature::handle_event(const Event& event)
+void Creature::handle_event(const Event& event)
 {
 	Entity::handle_event(event);
 }
 
-void
-Creature::broadcast_event(const Event& event)
+void Creature::broadcast_event(const Event& event)
 {
 	if (equipment.right_held)
 		MEvent.resend(event, equipment.right_held);

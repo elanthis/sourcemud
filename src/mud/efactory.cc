@@ -14,20 +14,17 @@
 _MEntityFactory MEntityFactory;
 _MEntityFactory::FactoryList* _MEntityFactory::factories = 0;
 
-int
-_MEntityFactory::initialize()
+int _MEntityFactory::initialize()
 {
 	return 0;
 }
 
-void
-_MEntityFactory::shutdown()
+void _MEntityFactory::shutdown()
 {
 	delete factories;
 }
 
-void
-_MEntityFactory::register_factory(const IEntityFactory* factory)
+void _MEntityFactory::register_factory(const IEntityFactory* factory)
 {
 	assert(factory != NULL);
 
@@ -37,8 +34,7 @@ _MEntityFactory::register_factory(const IEntityFactory* factory)
 	factories->insert(std::pair<std::string, const IEntityFactory*>(strlower(factory->get_name()), factory));
 }
 
-Entity*
-_MEntityFactory::create(const std::string& name) const
+Entity* _MEntityFactory::create(const std::string& name) const
 {
 	assert(factories != NULL);
 
@@ -53,8 +49,7 @@ _MEntityFactory::create(const std::string& name) const
 	return i->second->create();
 }
 
-Entity*
-Entity::create(const std::string& name)
+Entity* Entity::create(const std::string& name)
 {
 	return MEntityFactory.create(name);
 }

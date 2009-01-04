@@ -19,8 +19,7 @@ std::string EntityArticleClass::names[] = {
 	"vowel"
 };
 
-EntityArticleClass
-EntityArticleClass::lookup(const std::string& text)
+EntityArticleClass EntityArticleClass::lookup(const std::string& text)
 {
 	for (uint i = 0; i < COUNT; ++i)
 		if (str_eq(text, names[i]))
@@ -28,8 +27,7 @@ EntityArticleClass::lookup(const std::string& text)
 	return NORMAL;
 }
 
-std::string
-EntityName::get_name() const
+std::string EntityName::get_name() const
 {
 	switch (article.get_value()) {
 	case EntityArticleClass::NORMAL:
@@ -53,8 +51,7 @@ EntityName::get_name() const
 	}
 }
 
-bool
-EntityName::set_name(const std::string& s_text)
+bool EntityName::set_name(const std::string& s_text)
 {
 	// empty text?  no article, no text
 	if (s_text.empty()) {
@@ -104,14 +101,12 @@ EntityName::set_name(const std::string& s_text)
 	}
 }
 
-bool
-EntityName::matches(const std::string& match) const
+bool EntityName::matches(const std::string& match) const
 {
 	return phrase_match(get_text(), match);
 }
 
-const StreamControl&
-operator << (const StreamControl& stream, const StreamName& name)
+const StreamControl& operator << (const StreamControl& stream, const StreamName& name)
 {
 	std::string text = name.ref.get_name().get_text();
 	EntityArticleClass article = name.ref.get_name().get_article();

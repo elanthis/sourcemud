@@ -9,8 +9,7 @@
 #include "common/error.h"
 #include "common/log.h"
 
-void
-fatal(char const *err_text, ...)
+void fatal(char const *err_text, ...)
 {
 	va_list va;
 	char buf[1024];

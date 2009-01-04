@@ -7,14 +7,12 @@
 
 #include "common.h"
 
-void
-init_random()
+void init_random()
 {
 	srandom(time(NULL));
 }
 
-int
-get_random(int range)
+int get_random(int range)
 {
 	if (range)
 		return random() % range;
@@ -22,8 +20,7 @@ get_random(int range)
 		return 0;
 }
 
-int
-roll_dice(int dice, int sides)
+int roll_dice(int dice, int sides)
 {
 	int val = 0;
 	for (int i = 0; i < dice; i ++)
