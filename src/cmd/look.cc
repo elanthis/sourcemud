@@ -32,23 +32,24 @@
  *
  * END COMMAND */
 
-void command_look (Creature* ch, std::string argv[]) {
+void command_look(Creature* ch, std::string argv[])
+{
 	// have we a target (argv[1])
 	if (argv[1].empty()) {
-		ch->do_look ();
+		ch->do_look();
 		return;
 	}
 
 	// looking in/on/etc. container?
 	if (!argv[0].empty() && argv[0] != "at") {
-		Object* obj = ch->cl_find_object (argv[1], GOC_ANY);
+		Object* obj = ch->cl_find_object(argv[1], GOC_ANY);
 		if (obj) {
 			if (argv[0] == "on")
-				ch->do_look (obj, ObjectLocation::ON);
+				ch->do_look(obj, ObjectLocation::ON);
 			else if (argv[0] == "in")
-				ch->do_look (obj, ObjectLocation::IN);
+				ch->do_look(obj, ObjectLocation::IN);
 			else
-				ch->do_look (obj, ObjectLocation::NONE);
+				ch->do_look(obj, ObjectLocation::NONE);
 		}
 		return;
 	}

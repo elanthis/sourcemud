@@ -15,8 +15,7 @@
 #include "mud/action.h"
 
 // attack command
-void
-command_attack (Creature* attacker, std::string argv[])
+void command_attack(Creature* attacker, std::string argv[])
 {
 	// check status
 	if (!attacker->check_alive() || !attacker->check_move() || !attacker->check_rt())
@@ -34,21 +33,20 @@ command_attack (Creature* attacker, std::string argv[])
 
 	// do attack
 	if (argv[0][0] == 'k') // KILL
-		attacker->do_kill (victim);
+		attacker->do_kill(victim);
 	else // ATTACK
-		attacker->do_attack (victim);
+		attacker->do_attack(victim);
 }
 
 class ActionAttackCreature : public IAction
 {
-	public:
-	ActionAttackCreature (Creature* s_ch, Creature* s_victim, bool s_repeat) : IAction(s_ch), victim(s_victim), rounds(5), repeat(s_repeat) {}
+public:
+	ActionAttackCreature(Creature* s_ch, Creature* s_victim, bool s_repeat) : IAction(s_ch), victim(s_victim), rounds(5), repeat(s_repeat) {}
 
-	virtual uint get_rounds (void) const { return rounds; }
-	virtual void describe (const StreamControl& stream) const { stream << "attacking " << StreamName(victim, INDEFINITE); }
+	virtual uint get_rounds() const { return rounds; }
+	virtual void describe(const StreamControl& stream) const { stream << "attacking " << StreamName(victim, INDEFINITE); }
 
-	virtual int start (void)
-	{
+	virtual int start() {
 		Creature* attacker = get_actor();
 
 		// checks
@@ -112,21 +110,21 @@ class ActionAttackCreature : public IAction
 
 				// message to victim
 				*victim << StreamName(attacker, DEFINITE, true) << " hit YOU with " << StreamName(weapon, INDEFINITE) << "!\n";
-				
+
 				// message to room
 				*attacker->get_room() << StreamIgnore(attacker) << StreamIgnore(victim) << StreamName(attacker, DEFINITE, true) << " hit " << StreamName(victim, DEFINITE) << " with " << StreamName(weapon, INDEFINITE) << "!\n";
 
 				// accounting
 				total_damage += damage;
 				++ hits;
-			// miss...
+				// miss...
 			} else {
 				// message to attacker
 				*attacker << "You attack " << StreamName(victim, DEFINITE) << " with " << StreamName(weapon, YOUR) << ", but miss!\n";
 
 				// message to victim
 				*victim << StreamName(attacker, DEFINITE, true) << " attacks YOU with " << StreamName(weapon, INDEFINITE) << ", but missed!\n";
-				
+
 				// message to room
 				*attacker->get_room() << StreamIgnore(attacker) << StreamIgnore(victim) << StreamName(attacker, DEFINITE, true) << " attacks " << StreamName(victim, DEFINITE) << " with " << StreamName(weapon, INDEFINITE) << ", but misses!\n";
 			}
@@ -170,22 +168,20 @@ class ActionAttackCreature : public IAction
 		return 0;
 	}
 
-	virtual void finish (void)
-	{
+	virtual void finish() {
 		// re-attack if repeat is on
 		if (repeat && !victim->is_dead() && victim->get_room() == get_actor()->get_room())
 			get_actor()->add_action(this);
 	}
 
-	private:
+private:
 	Creature* victim;
 	int rounds;
 	bool repeat;
 };
 
 // attack a creature
-void
-Creature::do_attack (Creature* victim)
+void Creature::do_attack(Creature* victim)
 {
 	// no NULL
 	assert(victim != NULL);
@@ -194,8 +190,7 @@ Creature::do_attack (Creature* victim)
 }
 
 // attack a creature until dead
-void
-Creature::do_kill (Creature* victim)
+void Creature::do_kill(Creature* victim)
 {
 	// no NULL
 	assert(victim != NULL);
@@ -204,20 +199,17 @@ Creature::do_kill (Creature* victim)
 }
 
 // handle player combat abilities
-uint
-Player::get_combat_dodge (void) const
+uint Player::get_combat_dodge() const
 {
 	return 10; // FIXME
 }
 
-uint
-Player::get_combat_attack (void) const
+uint Player::get_combat_attack() const
 {
 	return 10; // FIXME
 }
 
-uint
-Player::get_combat_damage (void) const
+uint Player::get_combat_damage() const
 {
 	return 10; // FIXME
 }

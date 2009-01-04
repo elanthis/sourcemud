@@ -68,7 +68,7 @@ void Account::setPassphrase(const std::string& s_pass)
 {
 	// encrypt
 	char enc_pass[MD5_BUFFER_SIZE];
-	MD5::encrypt (s_pass.c_str(), enc_pass);
+	MD5::encrypt(s_pass.c_str(), enc_pass);
 
 	// store
 	pass = std::string(enc_pass);
@@ -85,7 +85,7 @@ bool Account::checkPassphrase(const std::string& s_pass) const
 		return false;
 
 	// do compare
-	return MD5::compare (pass.c_str(), s_pass.c_str());
+	return MD5::compare(pass.c_str(), s_pass.c_str());
 }
 
 // add a new character
@@ -261,30 +261,30 @@ std::tr1::shared_ptr<Account> _MAccount::get(const std::string& in_name)
 
 	// read it in
 	FO_READ_BEGIN
-		FO_ATTR("account", "name")
-			account->name = node.get_string();
-		FO_ATTR("account", "email")
-			account->email = node.get_string();
-		FO_ATTR("account", "passphrase")
-			account->pass = node.get_string();
-		FO_ATTR("account", "character")
-			account->characters.push_back(node.get_string());
-		FO_ATTR("account", "maxcharacters")
-			account->maxcharacters = node.get_int();
-		FO_ATTR("account", "maxactive")
-			account->maxactive = node.get_int();
-		FO_ATTR("account", "timeout")
-			account->timeout = node.get_int();
-		FO_ATTR("account", "disabled")
-			account->flags.disabled = node.get_bool();
-		FO_ATTR("account", "access")
-			account->access.insert(AccessID::create(node.get_string()));
-		FO_ATTR("account", "created")
-			account->time_created = str_to_time(node.get_string());
-		FO_ATTR("account", "lastlogin")
-			account->time_lastlogin = str_to_time(node.get_string());
+	FO_ATTR("account", "name")
+	account->name = node.get_string();
+	FO_ATTR("account", "email")
+	account->email = node.get_string();
+	FO_ATTR("account", "passphrase")
+	account->pass = node.get_string();
+	FO_ATTR("account", "character")
+	account->characters.push_back(node.get_string());
+	FO_ATTR("account", "maxcharacters")
+	account->maxcharacters = node.get_int();
+	FO_ATTR("account", "maxactive")
+	account->maxactive = node.get_int();
+	FO_ATTR("account", "timeout")
+	account->timeout = node.get_int();
+	FO_ATTR("account", "disabled")
+	account->flags.disabled = node.get_bool();
+	FO_ATTR("account", "access")
+	account->access.insert(AccessID::create(node.get_string()));
+	FO_ATTR("account", "created")
+	account->time_created = str_to_time(node.get_string());
+	FO_ATTR("account", "lastlogin")
+	account->time_lastlogin = str_to_time(node.get_string());
 	FO_READ_ERROR
-		return std::tr1::shared_ptr<Account>();
+	return std::tr1::shared_ptr<Account>();
 	FO_READ_END
 
 	// add to list
@@ -318,7 +318,7 @@ std::tr1::shared_ptr<Account> _MAccount::create(const std::string& name)
 }
 
 bool
-_MAccount::exists (const std::string& name)
+_MAccount::exists(const std::string& name)
 {
 	// must be lower-case
 	strlower(name);
@@ -335,11 +335,11 @@ _MAccount::exists (const std::string& name)
 	// check if player file exists
 	std::string path = MSettings.get_account_path() + "/" + name + ".acct";
 	struct stat st;
-	int res = stat (path.c_str(), &st);
+	int res = stat(path.c_str(), &st);
 	if (res == 0)
 		return true;
 	if (res == -1 && errno == ENOENT)
 		return false;
-	Log::Error << "stat() failed for " << path << ": " << strerror(errno);	
+	Log::Error << "stat() failed for " << path << ": " << strerror(errno);
 	return true;
 }

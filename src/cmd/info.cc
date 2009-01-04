@@ -24,7 +24,7 @@
  * format: affects
  *
  * END COMMAND */
-void command_affects (Creature* ch, std::string argv[])
+void command_affects(Creature* ch, std::string argv[])
 {
 	ch->display_affects(*ch);
 }
@@ -34,9 +34,9 @@ void command_affects (Creature* ch, std::string argv[])
  * name: commands
  *
  * END COMMAND */
-void command_commands (Player *ply, std::string[])
+void command_commands(Player *ply, std::string[])
 {
-	MCommand.show_list (ply);
+	MCommand.show_list(ply);
 }
 
 /* BEGIN COMMAND
@@ -47,7 +47,7 @@ void command_commands (Player *ply, std::string[])
  * format: man :0*?
  *
  * END COMMAND */
-void command_man (Player* player, std::string argv[])
+void command_man(Player* player, std::string argv[])
 {
 	StreamControl stream(player);
 	MCommand.show_man(stream, argv[0]);
@@ -58,7 +58,7 @@ void command_man (Player* player, std::string argv[])
  * name: server
  *
  * END COMMAND */
-void command_server (Player *player, std::string[])
+void command_server(Player *player, std::string[])
 {
 	*player << "Source MUD V" PACKAGE_VERSION "\nBuild: " __DATE__ " " __TIME__ "\nUptime: " << MUD::get_uptime() << "\n";
 }
@@ -68,9 +68,9 @@ void command_server (Player *player, std::string[])
  * name: skills
  *
  * END COMMAND */
-void command_skills (Player* player, std::string[])
+void command_skills(Player* player, std::string[])
 {
-	player->display_skills ();
+	player->display_skills();
 }
 
 /* BEGIN COMMAND
@@ -78,14 +78,14 @@ void command_skills (Player* player, std::string[])
  * name: time
  *
  * END COMMAND */
-void command_time (Player *player, std::string[])
+void command_time(Player *player, std::string[])
 {
 	char time_str[40];
 	char date_str[120];
-	MTime.time.time_str (time_str, sizeof (time_str));
-	MTime.time.date_str (date_str, sizeof (date_str));
+	MTime.time.time_str(time_str, sizeof(time_str));
+	MTime.time.date_str(date_str, sizeof(date_str));
 	*player << "It is currently " << time_str << " on " << date_str << ".  ";
-	if (MTime.time.is_day ())
+	if (MTime.time.is_day())
 		*player << "It is daytime.  The Sun will set in " << (SUN_DOWN_HOUR - MTime.time.get_hour()) << " hours.\n";
 	else
 		*player << "It is nighttime.  The Sun will rise in " << ((MTime.time.get_hour() < SUN_UP_HOUR) ? SUN_UP_HOUR - MTime.time.get_hour() : SUN_UP_HOUR + 24 - MTime.time.get_hour()) << " hours.\n";
@@ -96,7 +96,7 @@ void command_time (Player *player, std::string[])
  * name: who
  *
  * END COMMAND */
-void command_who (Player *player, std::string[])
+void command_who(Player *player, std::string[])
 {
-	MPlayer.list (*player);
+	MPlayer.list(*player);
 }

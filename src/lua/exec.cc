@@ -14,7 +14,8 @@
 #include "lib/lua51/lauxlib.h"
 #include "lib/lua51/lualib.h"
 
-namespace Lua {
+namespace Lua
+{
 	extern lua_State* state;
 }
 

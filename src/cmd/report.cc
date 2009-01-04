@@ -46,10 +46,10 @@ void command_report_abuse(Player* player, std::string argv[])
 	body << argv[1] << "\n";
 	body << "# -- END --\n";
 	body << '\0';
-	MailMessage msg (rcpt, S("Abuse Report"), body.str());
+	MailMessage msg(rcpt, S("Abuse Report"), body.str());
 	msg.send();
 
-	// send message 
+	// send message
 	Log::Info << "Player " << player->get_account()->get_id() << " issued an abuse report.";
 	*player << "Your abuse report has been sent.\n";
 #else // HAVE_SENDMAIL
@@ -86,10 +86,10 @@ void command_report_bug(Player* player, std::string argv[])
 	body << argv[0] << "\n";
 	body << "# -- END --\n";
 	body << '\0';
-	MailMessage msg (rcpt, S("Bug Report"), body.str());
+	MailMessage msg(rcpt, S("Bug Report"), body.str());
 	msg.send();
 
-	// send message 
+	// send message
 	Log::Info << "Player " << player->get_account()->get_id() << " issued a bug report.";
 	*player << "Your bug report has been sent.\n";
 #else // HAVE_SENDMAIL

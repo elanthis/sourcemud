@@ -49,7 +49,7 @@ SkillID SkillID::create(const std::string& name)
 	SkillID id = lookup(name);
 	if (id)
 		return id;
-	
+
 	names.push_back(name);
 	return SkillID(names.size());
 }

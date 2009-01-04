@@ -20,8 +20,7 @@ struct PollData {
 	std::vector<ISocketHandler*> add;
 };
 
-int
-_MNetwork::initialize ()
+int _MNetwork::initialize()
 {
 	p_data = new PollData();
 
@@ -52,31 +51,28 @@ _MNetwork::initialize ()
 	return 0;
 }
 
-void
-_MNetwork::shutdown ()
+void _MNetwork::shutdown()
 {
 	for (std::vector<ISocketHandler*>::iterator i = p_data->sockets.begin(),
-			e = p_data->sockets.end(); i != e; ++i)
+	        e = p_data->sockets.end(); i != e; ++i)
 		delete *i;
 	p_data->sockets.clear();
 
 	for (std::vector<ISocketHandler*>::iterator i = p_data->add.begin(),
-			e = p_data->add.end(); i != e; ++i)
+	        e = p_data->add.end(); i != e; ++i)
 		delete *i;
 	p_data->add.clear();
 
 	delete p_data;
 }
 
-int
-_MNetwork::add_socket (ISocketHandler* socket)
+int _MNetwork::add_socket(ISocketHandler* socket)
 {
 	p_data->add.push_back(socket);
 	return 0;
 }
 
-int
-_MNetwork::poll (long timeout)
+int _MNetwork::poll(long timeout)
 {
 	fd_set cread;
 	fd_set cwrite;
@@ -108,7 +104,7 @@ _MNetwork::poll (long timeout)
 			i = p_data->sockets.erase(i);
 			continue;
 		}
-			
+
 		if (sock > max_sock)
 			max_sock = sock;
 

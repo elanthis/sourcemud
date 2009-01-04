@@ -41,8 +41,7 @@ std::string FormHairStyle::names [] = {
 	"short, curly",
 };
 
-std::string
-FormColor::get_name () const
+std::string FormColor::get_name() const
 {
 	if (!valid())
 		return std::string();
@@ -50,29 +49,26 @@ FormColor::get_name () const
 		return names[value-1];
 }
 
-FormColor
-FormColor::lookup (const std::string& name)
+FormColor FormColor::lookup(const std::string& name)
 {
 	for (size_t i = 0; i < names.size(); ++i) {
 		if (names[i] == name)
-			return FormColor(i+1);
+			return FormColor(i + 1);
 	}
 	return FormColor();
 }
 
-FormColor
-FormColor::create (const std::string& name)
+FormColor FormColor::create(const std::string& name)
 {
 	for (size_t i = 0; i < names.size(); ++i) {
 		if (names[i] == name)
-			return FormColor(i+1);
+			return FormColor(i + 1);
 	}
 	names.push_back(name);
 	return FormColor(names.size());
 }
 
-FormBuild
-FormBuild::lookup (const std::string& name)
+FormBuild FormBuild::lookup(const std::string& name)
 {
 	for (size_t i = 0; i < COUNT; ++i) {
 		if (names[i] == name)
@@ -81,8 +77,7 @@ FormBuild::lookup (const std::string& name)
 	return FormBuild();
 }
 
-FormHeight
-FormHeight::lookup (const std::string& name)
+FormHeight FormHeight::lookup(const std::string& name)
 {
 	for (size_t i = 0; i < COUNT; ++i) {
 		if (names[i] == name)
@@ -91,8 +86,7 @@ FormHeight::lookup (const std::string& name)
 	return FormHeight();
 }
 
-FormHairStyle
-FormHairStyle::lookup (const std::string& name)
+FormHairStyle FormHairStyle::lookup(const std::string& name)
 {
 	for (size_t i = 0; i < COUNT; ++i) {
 		if (names[i] == name)

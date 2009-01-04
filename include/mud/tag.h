@@ -5,7 +5,7 @@
  * http://www.sourcemud.org
  */
 
-#ifndef TAG_H 
+#ifndef TAG_H
 #define TAG_H
 
 #include "idmap.h"

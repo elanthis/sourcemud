@@ -8,6 +8,6 @@
 #ifndef SOURCEMUD_COMMON_FDPRINTF_H
 #define SOURCEMUD_COMMON_FDPRINTF_H 1
 
-int fdprintf (int fd, const char* format, ...);
+int fdprintf(int fd, const char* format, ...);
 
 #endif

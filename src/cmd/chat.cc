@@ -27,7 +27,7 @@
  * END COMMAND */
 void command_say(Creature* ch, std::string argv[])
 {
-	ch->do_say (argv[0]);
+	ch->do_say(argv[0]);
 }
 
 /* BEGIN COMMAND

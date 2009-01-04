@@ -17,64 +17,60 @@
 
 _MWeather MWeather;
 
-int
-_MWeather::initialize ()
+int _MWeather::initialize()
 {
 	return region.load();
 }
 
-void
-_MWeather::shutdown ()
+void _MWeather::shutdown()
 {
 }
 
-void
-_MWeather::save ()
+void _MWeather::save()
 {
 }
 
-int
-WeatherRegion::load (File::Reader& reader)
+int WeatherRegion::load(File::Reader& reader)
 {
 	states.clear();
 	state = 0;
 	ticks = 0;
-	
+
 	FO_READ_BEGIN
-		FO_OBJECT("weather", "state")
-			WeatherState state(node.get_name());
-			FO_READ_BEGIN
-				FO_ATTR("state", "id")
-					state.id = node.get_string();
-				FO_ATTR("state", "desc")
-					state.descs.push_back(node.get_string());
-				FO_OBJECT("state", "change")
-					WeatherChange change;
-					FO_READ_BEGIN
-						FO_ATTR("change", "target")
-							change.to = node.get_string();
-						FO_ATTR("change", "chance")
-							change.chance = node.get_int();
-						FO_ATTR("change", "text")
-							change.desc = node.get_string();
-					FO_READ_ERROR
-						throw error;
-					FO_READ_END
-					state.changes.push_back(change);
-			FO_READ_ERROR
-				throw error;
-			FO_READ_END
-			states.push_back(state);
-		FO_ATTR("weather", "current")
-			state = get_state(node.get_string());
-			if (state < 0)
-				throw File::Error("Current state out of range");
-		FO_ATTR("weather", "ticks")
-			ticks = node.get_int();
-			if (ticks > 500) // ludicrous
-				ticks = 500;
+	FO_OBJECT("weather", "state")
+	WeatherState state(node.get_name());
+	FO_READ_BEGIN
+	FO_ATTR("state", "id")
+	state.id = node.get_string();
+	FO_ATTR("state", "desc")
+	state.descs.push_back(node.get_string());
+	FO_OBJECT("state", "change")
+	WeatherChange change;
+	FO_READ_BEGIN
+	FO_ATTR("change", "target")
+	change.to = node.get_string();
+	FO_ATTR("change", "chance")
+	change.chance = node.get_int();
+	FO_ATTR("change", "text")
+	change.desc = node.get_string();
 	FO_READ_ERROR
-		return -1;
+	throw error;
+	FO_READ_END
+	state.changes.push_back(change);
+	FO_READ_ERROR
+	throw error;
+	FO_READ_END
+	states.push_back(state);
+	FO_ATTR("weather", "current")
+	state = get_state(node.get_string());
+	if (state < 0)
+		throw File::Error("Current state out of range");
+	FO_ATTR("weather", "ticks")
+	ticks = node.get_int();
+	if (ticks > 500) // ludicrous
+		ticks = 500;
+	FO_READ_ERROR
+	return -1;
 	FO_READ_END
 
 	// must have patterns
@@ -95,8 +91,7 @@ WeatherRegion::load (File::Reader& reader)
 	return 0;
 }
 
-void
-WeatherRegion::save (File::Writer& writer) const
+void WeatherRegion::save(File::Writer& writer) const
 {
 	for (std::vector<WeatherState>::const_iterator si = states.begin(); si != states.end(); ++si) {
 		writer.begin("weather", "state");
@@ -117,8 +112,7 @@ WeatherRegion::save (File::Writer& writer) const
 	writer.attr("weather", "ticks", ticks);
 }
 
-int
-WeatherRegion::load ()
+int WeatherRegion::load()
 {
 	std::string path = MSettings.get_world_path() + "/weather";
 
@@ -134,8 +128,7 @@ WeatherRegion::load ()
 	return load(reader);
 }
 
-int
-WeatherRegion::save () const
+int WeatherRegion::save() const
 {
 	std::string path = MSettings.get_world_path() + "/weather";
 
@@ -151,22 +144,22 @@ WeatherRegion::save () const
 	return 0;
 }
 
-int
-WeatherRegion::get_state (const std::string& name) const {
+int WeatherRegion::get_state(const std::string& name) const
+{
 	for (uint i = 0; i < states.size(); ++i)
 		if (states[i].id == name)
 			return i;
 	return -1;
 }
 
-std::string
-WeatherRegion::get_current_desc () const {
+std::string WeatherRegion::get_current_desc() const
+{
 	uint i = get_random(states[state].descs.size());
 	return states[state].descs[i];
 }
 
-void
-WeatherRegion::update () {
+void WeatherRegion::update()
+{
 	// only if we actually have any states...
 	if (states.empty())
 		return;
@@ -199,6 +192,6 @@ WeatherRegion::update () {
 		}
 
 		// update time
-		ticks = (get_random (4) + 1) * TICKS_PER_HOUR;
+		ticks = (get_random(4) + 1) * TICKS_PER_HOUR;
 	}
 }

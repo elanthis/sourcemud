@@ -25,8 +25,8 @@ typedef std::set<AccessID> AccessList;
 
 class Account : public IMacroObject
 {
-	public:
-	Account (const std::string& s_id);
+public:
+	Account(const std::string& s_id);
 	~Account();
 
 	// the ID
@@ -34,19 +34,19 @@ class Account : public IMacroObject
 
 	// account info
 	std::string getName() const { return name; }
-	void setName (const std::string& s_name) { name = s_name; }
+	void setName(const std::string& s_name) { name = s_name; }
 
 	std::string getEmail() const { return email; }
-	void setEmail (const std::string& s_email) { email = s_email; }
+	void setEmail(const std::string& s_email) { email = s_email; }
 
 	// pass phrases
-	bool checkPassphrase (const std::string& check) const;
-	void setPassphrase (const std::string& s_pass);
+	bool checkPassphrase(const std::string& check) const;
+	void setPassphrase(const std::string& s_pass);
 
 	// character list
 	const std::vector<std::string>& getCharList() const { return characters; }
-	void addCharacter (const std::string& name);
-	void delCharacter (const std::string& name);
+	void addCharacter(const std::string& name);
+	void delCharacter(const std::string& name);
 
 	// times
 	time_t getTimeCreated() const { return time_created; }
@@ -66,16 +66,16 @@ class Account : public IMacroObject
 	uint getMaxCharacters() const;
 	uint getMaxActive() const;
 	uint getTimeout() const { return timeout; }
-	void setMaxCharacters (uint value) { maxcharacters = value; }
-	void setMaxActive (uint value) { maxactive = value; }
-	void setTimeout (uint value) { timeout = value; }
+	void setMaxCharacters(uint value) { maxcharacters = value; }
+	void setMaxActive(uint value) { maxactive = value; }
+	void setTimeout(uint value) { timeout = value; }
 	bool isDisabled() const { return flags.disabled; }
-	void setDisabled (bool value) { flags.disabled = value; }
+	void setDisabled(bool value) { flags.disabled = value; }
 
 	// access privileges
-	bool hasAccess (AccessID) const; // true if we do, false if we don't
-	bool grantAccess (AccessID); // returns true if added, false is we already have
-	bool revokeAccess (AccessID); // returns true if removed, flase if we didn't have it
+	bool hasAccess(AccessID) const;  // true if we do, false if we don't
+	bool grantAccess(AccessID);  // returns true if added, false is we already have
+	bool revokeAccess(AccessID);  // returns true if removed, flase if we didn't have it
 	const AccessList& getAccess() const { return access; }
 	bool isGM() const { return hasAccess(AccessID::lookup("gm")); }
 	bool isAdmin() const { return hasAccess(AccessID::lookup("admin")); }
@@ -85,10 +85,10 @@ class Account : public IMacroObject
 	void grantBuilder() { grantAccess(AccessID::lookup("builder")); }
 
 	// parsing
-	virtual int macro_property (const class StreamControl& stream, const std::string& method, const MacroList& argv) const;
-	virtual void macro_default (const class StreamControl& stream) const;
+	virtual int macro_property(const class StreamControl& stream, const std::string& method, const MacroList& argv) const;
+	virtual void macro_default(const class StreamControl& stream) const;
 
-	private:
+private:
 	std::string id;
 	std::string name;
 	std::string email;
@@ -103,7 +103,8 @@ class Account : public IMacroObject
 	AccessList access;
 
 	struct AccountFlags {
-		int disabled:1; // no login allowed
+int disabled:
+		1; // no login allowed
 	} flags;
 
 	friend class _MAccount;
@@ -111,20 +112,20 @@ class Account : public IMacroObject
 
 class _MAccount : public IManager
 {
-	public:
+public:
 	virtual int initialize();
 	virtual void shutdown();
 
-	std::tr1::shared_ptr<Account> get (const std::string& name); // need a copy for get
+	std::tr1::shared_ptr<Account> get(const std::string& name);  // need a copy for get
 
-	std::tr1::shared_ptr<Account> create (const std::string& id); // create a new account
+	std::tr1::shared_ptr<Account> create(const std::string& id);  // create a new account
 
-	bool validName (const std::string& name); // is a name a valid account name?
-	bool validPassphrase (const std::string& check); // a valid passphrase?
+	bool validName(const std::string& name);  // is a name a valid account name?
+	bool validPassphrase(const std::string& check);  // a valid passphrase?
 
-	bool exists (const std::string& name); // account already exists
+	bool exists(const std::string& name);  // account already exists
 
-	private:
+private:
 	typedef std::map<std::string, std::tr1::shared_ptr<Account> > AccountList;
 	AccountList accounts;
 

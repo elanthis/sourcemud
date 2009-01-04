@@ -33,7 +33,8 @@ struct SettingInfo {
 	bool def_bool;
 };
 
-namespace {
+namespace
+{
 	SettingInfo settings[] = {
 		SETTING_STRING(log_file, 'l', "log", "log_file", "")
 		SETTING_STRING(http_log_file, 0, "http_log", "http_log_file", "")
@@ -80,8 +81,7 @@ namespace {
 	};
 }
 
-int
-_MSettings::initialize()
+int _MSettings::initialize()
 {
 	for (int i = 0; settings[i].name != NULL; ++i) {
 		by_name[settings[i].name] = &settings[i];
@@ -132,8 +132,8 @@ int _MSettings::parseArgv(int argc, char** argv)
 		bool found = false;
 		for (int i = 0; settings[i].name != NULL; ++i) {
 			if (
-				(settings[i].short_opt != 0 && argv[opt][0] == '-' && argv[opt][1] == settings[i].short_opt && argv[opt][2] == 0) ||
-				(settings[i].long_opt != 0 && !strncmp(argv[opt], "--", 2) && !strcmp(argv[opt] + 2, settings[i].long_opt))
+			    (settings[i].short_opt != 0 && argv[opt][0] == '-' && argv[opt][1] == settings[i].short_opt && argv[opt][2] == 0) ||
+			    (settings[i].long_opt != 0 && !strncmp(argv[opt], "--", 2) && !strcmp(argv[opt] + 2, settings[i].long_opt))
 			) {
 				found = true;
 
@@ -216,7 +216,7 @@ int _MSettings::loadFile(const std::string& path)
 		// not blank?
 		if (*start == 0)
 			continue;
-		
+
 		// find separator
 		sep = strchr(start, '=');
 		if (sep == NULL) {

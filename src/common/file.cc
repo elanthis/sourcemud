@@ -107,7 +107,7 @@ std::string& File::normalize(std::string& path)
 	// FIXME: this is not exactly a speedy way of doing this.  but it
 	// does work quite well.  a more efficient implementation is definitely
 	// possible without _too_ much extra effort
-	
+
 	// break the path into components
 	std::vector<std::string> parts;
 	explode(parts, path, '/');
@@ -118,15 +118,15 @@ std::string& File::normalize(std::string& path)
 		// remove . components
 		if (*i == ".") {
 			i = parts.erase(i);
-		// ignore empty components
+			// ignore empty components
 		} else if (i->empty()) {
 			i = parts.erase(i);
-		// for .. component, remove both it and the previous component
+			// for .. component, remove both it and the previous component
 		} else if (*i == "..") {
 			i = parts.erase(i);
 			if (i != parts.begin())
 				i = parts.erase(--i);
-		// keep everything else
+			// keep everything else
 		} else {
 			++i;
 		}

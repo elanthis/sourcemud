@@ -3,19 +3,19 @@
  * *Heavily* modified for Source MUD usage
  * http://www.sourcemud.org/zmp/
  */
- 
+
 /* Copyright (C) 2004  Sean Middleditch
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  *  * Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  *  * Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -51,22 +51,22 @@ struct ZMPCommand {
 // build a ZMP pack to send
 class ZMPPack
 {
-	public:
-	ZMPPack (const std::string& command);
+public:
+	ZMPPack(const std::string& command);
 
 	// add an argument
-	ZMPPack& add (const std::string& arg);
-	ZMPPack& add (long);
-	ZMPPack& add (ulong);
-	inline ZMPPack& add (int i) { return add((long)i); }
-	inline ZMPPack& add (uint i) { return add((ulong)i); }
+	ZMPPack& add(const std::string& arg);
+	ZMPPack& add(long);
+	ZMPPack& add(ulong);
+	inline ZMPPack& add(int i) { return add((long)i); }
+	inline ZMPPack& add(uint i) { return add((ulong)i); }
 
 	// send the ZMP pack along!
 	inline void
-	send (TelnetHandler* telnet)
+	send(TelnetHandler* telnet)
 	{ telnet->send_zmp(args.size(), &args[0]); }
 
-	private:
+private:
 	std::vector<std::string> args;
 };
 
@@ -74,26 +74,26 @@ class ZMPPack
 
 class SZMPManager : public IManager
 {
-	public:
-	SZMPManager ();
-	~SZMPManager ();
+public:
+	SZMPManager();
+	~SZMPManager();
 
 	// initialize basic system
-	virtual int initialize ();
+	virtual int initialize();
 
 	// shutdown system
-	virtual void shutdown ();
+	virtual void shutdown();
 
 	// find a command
-	ZMPCommand* lookup (const std::string& name);
+	ZMPCommand* lookup(const std::string& name);
 
 	// add a new command
-	int add (const std::string& name, ZMPFunction func);
+	int add(const std::string& name, ZMPFunction func);
 
 	// see if a specific command/package is supported
-	bool match (const std::string& pattern);
+	bool match(const std::string& pattern);
 
-	private:
+private:
 	// the list of commands
 	typedef std::vector<ZMPCommand> ZMPCommandList;
 	ZMPCommandList commands;

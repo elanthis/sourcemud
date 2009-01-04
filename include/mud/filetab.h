@@ -10,39 +10,39 @@
 
 namespace File
 {
-	class TabReader
-	{
-		public:
-		TabReader () : in(), filename(), line(0) {}
-		~TabReader () { close(); }
+class TabReader
+{
+public:
+	TabReader() : in(), filename(), line(0) {}
+	~TabReader() { close(); }
 
-		const std::string get_filename () const { return filename; }
-		int open (const std::string& file);
-		bool is_open () const { return in; }
-		void close () { if (in) in.close(); }
+	const std::string get_filename() const { return filename; }
+	int open(const std::string& file);
+	bool is_open() const { return in; }
+	void close() { if (in) in.close(); }
 
-		// read in the file
-		int load ();
+	// read in the file
+	int load();
 
-		// get the number of lines
-		size_t size () const { return entries.size(); }
+	// get the number of lines
+	size_t size() const { return entries.size(); }
 
-		// get the entry on a given line/column
-		std::string get (size_t line, size_t col) const;
+	// get the entry on a given line/column
+	std::string get(size_t line, size_t col) const;
 
-		// get the actual line of a particular entry
-		size_t get_line (size_t line) { return entries[line].first; }
+	// get the actual line of a particular entry
+	size_t get_line(size_t line) { return entries[line].first; }
 
-		private:
-		std::ifstream in;
-		std::string filename;
-		size_t line;
+private:
+	std::ifstream in;
+	std::string filename;
+	size_t line;
 
-		typedef std::pair<size_t, std::vector<std::string> > Entry;
-		typedef std::vector<Entry> Entries;
+	typedef std::pair<size_t, std::vector<std::string> > Entry;
+	typedef std::vector<Entry> Entries;
 
-		Entries entries;
-	};
+	Entries entries;
+};
 }
 
 #endif

@@ -13,7 +13,8 @@
 #include "lib/lua51/lualib.h"
 
 // globals
-namespace Lua {
+namespace Lua
+{
 	extern lua_State* state;
 	IStreamSink* sink;
 }
@@ -25,7 +26,8 @@ void Lua::setPrint(IStreamSink* sink)
 }
 
 // this is our actual print function
-namespace {
+namespace
+{
 	int do_print(lua_State* s)
 	{
 		// check that we have a stream sink
@@ -47,7 +49,8 @@ namespace {
 }
 
 // our initialization routine
-namespace Lua {
+namespace Lua
+{
 	bool initializePrint()
 	{
 		// register our print function as 'print'

@@ -24,8 +24,9 @@ enum PollHandlerFlags {
 	POLLSYS_WRITE = 2
 };
 
-class _MNetwork : public IManager {
-	public:
+class _MNetwork : public IManager
+{
+public:
 	virtual int initialize();
 	virtual void shutdown();
 
@@ -41,7 +42,7 @@ class _MNetwork : public IManager {
 	// IP deny list
 	IPDenyList denies;
 
-	private:
+private:
 	std::string host;
 
 	class PollData* p_data; // private implementation data

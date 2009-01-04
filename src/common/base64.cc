@@ -5,16 +5,18 @@
 #include "common.h"
 #include "common/base64.h"
 
-namespace {
+namespace
+{
 	const std::string alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 }
 
-std::string Base64::decode(const std::string& str) {
+std::string Base64::decode(const std::string& str)
+{
 	std::ostringstream buf;
 	uint32_t bits = 0, count = 0;
 
 	for (std::string::const_iterator i = str.begin(), e = str.end();
-			i != e; ++i) {
+	        i != e; ++i) {
 		// we're at the padding, end now
 		if (*i == '=')
 			break;

@@ -13,13 +13,13 @@
 
 class _MMessage : public IManager
 {
-	public:
+public:
 	virtual int initialize();
 	virtual void shutdown();
 
-	std::string get (const std::string& id);
+	std::string get(const std::string& id);
 
-	private:
+private:
 	typedef std::map<std::string, std::string> MessageMap;
 	MessageMap messages;
 };

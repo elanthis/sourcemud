@@ -18,21 +18,21 @@ struct HelpTopic {
 
 class _MHelp : public IManager
 {
-	public:
+public:
 	// startup the manager
-	virtual int initialize (void);
+	virtual int initialize();
 
 	// close the manager
-	virtual void shutdown (void);
+	virtual void shutdown();
 
 	// print out help to a player
-	void print (StreamControl& stream, const std::string& section);
+	void print(StreamControl& stream, const std::string& section);
 
 	// get a topic; category is optional, its use limits
 	// the topic search to topics in the given category
-	HelpTopic* get_topic (const std::string& name);
+	HelpTopic* get_topic(const std::string& name);
 
-	private:
+private:
 	typedef std::vector<HelpTopic*> TopicList;
 	TopicList topics;
 };

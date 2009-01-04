@@ -18,7 +18,7 @@
 
 class HTTPHandler : public SocketConnection, public IStreamSink
 {
-	public:
+public:
 	HTTPHandler(int s_sock, const NetAddr& s_netaddr);
 
 	// output
@@ -43,7 +43,7 @@ class HTTPHandler : public SocketConnection, public IStreamSink
 
 	// low-level IO
 	void disconnect();
-	virtual void sock_input (char* buffer, size_t size);
+	virtual void sock_input(char* buffer, size_t size);
 	virtual void sock_hangup();
 	virtual void sock_flush();
 
@@ -60,12 +60,12 @@ class HTTPHandler : public SocketConnection, public IStreamSink
 	const std::string& getPOST(const std::string& name) const;
 	const std::string& getRequest(const std::string& name) const;
 
-	protected:
+protected:
 	~HTTPHandler() {}
 
-	protected:
+protected:
 	// parse urlencoded data (GET/POST)
-	void parse_request_data(std::map<std::string,std::string>& map, const char* input) const;
+	void parse_request_data(std::map<std::string, std::string>& map, const char* input) const;
 
 	NetAddr addr;
 
@@ -90,17 +90,17 @@ class HTTPHandler : public SocketConnection, public IStreamSink
 	Account* account;
 };
 
-class SHTTPManager : public IManager
+class _HTTPManager : public IManager
 {
-	public:
+public:
 	virtual int initialize();
 	virtual void shutdown();
 
 	std::string get_session_key() { return session_key; }
 
-	private:
+private:
 	std::string session_key;
 };
-extern SHTTPManager HTTPManager;
+extern _HTTPManager HTTPManager;
 
 #endif

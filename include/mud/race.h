@@ -16,22 +16,22 @@
 
 /* store information about a race */
 class
-Race
+			Race
 {
-	public:
+public:
 	// this is an ugly hack, but it lets us construct the linked
 	// list as we need to do
-	Race (const std::string& s_name, Race* s_next);
+	Race(const std::string& s_name, Race* s_next);
 
-	int load (File::Reader&);
+	int load(File::Reader&);
 
 	int get_life_span() const { return life_span; }
 	int get_age_min() const { return age_min; }
 	int get_age_max() const { return age_max; }
 
-	int get_stat (int i) const { if (i >= 0 && i < CreatureStatID::COUNT) return stats[i] ; else return 0; }
+	int get_stat(int i) const { if (i >= 0 && i < CreatureStatID::COUNT) return stats[i] ; else return 0; }
 
-	int get_average_height (GenderType gender) const { return height[gender.get_value()]; }
+	int get_average_height(GenderType gender) const { return height[gender.get_value()]; }
 
 	std::string get_name() const { return name; }
 	std::string get_adj() const { return adj; }
@@ -46,7 +46,7 @@ Race
 	Race* get_next() const { return next; }
 
 	// ---- data ----
-	protected:
+protected:
 	std::string name;
 	std::string adj;
 	std::string body;
@@ -68,16 +68,16 @@ Race
 
 class _MRace : public IManager
 {
-	public:
+public:
 	_MRace() : head(NULL) {}
 
 	int initialize();
 	void shutdown();
 
-	Race* get (const std::string& name);
+	Race* get(const std::string& name);
 	Race* first() { return head; }
 
-	private:
+private:
 	Race* head;
 };
 extern _MRace MRace;

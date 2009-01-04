@@ -24,8 +24,7 @@ _MNpcBP MNpcBP;
 
 NpcBP::NpcBP() : parent(NULL) {}
 
-void
-NpcBP::reset_name()
+void NpcBP::reset_name()
 {
 	// clear
 	name.set_name("an npc");
@@ -38,8 +37,7 @@ NpcBP::reset_name()
 	}
 }
 
-void
-NpcBP::reset_desc()
+void NpcBP::reset_desc()
 {
 	// clear
 	desc = std::string("npc");
@@ -51,8 +49,7 @@ NpcBP::reset_desc()
 		desc = data->get_desc();
 }
 
-void
-NpcBP::reset_gender()
+void NpcBP::reset_gender()
 {
 	// reset
 	gender = GenderType::NONE;
@@ -64,8 +61,7 @@ NpcBP::reset_gender()
 		gender = data->get_gender();
 }
 
-void
-NpcBP::reset_combat_dodge()
+void NpcBP::reset_combat_dodge()
 {
 	// reset
 	combat.dodge = 0;
@@ -77,8 +73,7 @@ NpcBP::reset_combat_dodge()
 		combat.dodge = data->get_combat_dodge();
 }
 
-void
-NpcBP::reset_combat_attack()
+void NpcBP::reset_combat_attack()
 {
 	// reset
 	combat.attack = 0;
@@ -90,8 +85,7 @@ NpcBP::reset_combat_attack()
 		combat.attack = data->get_combat_attack();
 }
 
-void
-NpcBP::reset_combat_damage()
+void NpcBP::reset_combat_damage()
 {
 	// reset
 	combat.damage = 0;
@@ -103,8 +97,7 @@ NpcBP::reset_combat_damage()
 		combat.damage = data->get_combat_damage();
 }
 
-void
-NpcBP::reset_stats()
+void NpcBP::reset_stats()
 {
 	// reset
 	for (int i = 0; i < CreatureStatID::COUNT; ++i)
@@ -118,8 +111,7 @@ NpcBP::reset_stats()
 			base_stats[i] = data->get_stat(i);
 }
 
-void
-NpcBP::refresh()
+void NpcBP::refresh()
 {
 	if (!set_flags.name)
 		reset_name();
@@ -137,58 +129,55 @@ NpcBP::refresh()
 		reset_stats();
 }
 
-void
-NpcBP::set_parent(NpcBP* blueprint)
+void NpcBP::set_parent(NpcBP* blueprint)
 {
 	parent = blueprint;
 	refresh();
 }
 
-int
-NpcBP::load(File::Reader& reader)
+int NpcBP::load(File::Reader& reader)
 {
 	FO_READ_BEGIN
-		FO_ATTR("blueprint", "id")
-			id = node.get_string();
-		FO_ATTR("blueprint", "parent")
-			NpcBP* blueprint = MNpcBP.lookup(node.get_string());
-			if (blueprint)
-				set_parent(blueprint);
-			else
-				Log::Warning << "Undefined parent npc blueprint '" << node.get_string() << "' at " << reader.get_filename() << ':' << node.get_line();
-		FO_ATTR("blueprint", "equip")
-			equip_list.push_back(node.get_string());
-		FO_ATTR("blueprint", "name")
-			set_name(node.get_string());
-		FO_ATTR("blueprint", "keyword")
-			keywords.push_back(node.get_string());
-		FO_ATTR("blueprint", "desc")
-			set_desc(node.get_string());
-		FO_ATTR("blueprint", "gender")
-			set_gender(GenderType::lookup(node.get_string()));
-		FO_ATTR("combat", "dodge")
-			combat.dodge = node.get_int();
-			set_flags.dodge = true;
-		FO_ATTR("combat", "attack")
-			combat.attack = node.get_int();
-			set_flags.attack = true;
-		FO_ATTR("combat", "damage")
-			combat.damage = node.get_int();
-			set_flags.damage = true;
-		FO_ATTR("blueprint", "stat")
-			CreatureStatID stat = CreatureStatID::lookup(node.get_string(0));
-			if (stat) {
-				base_stats[stat.get_value()] = node.get_int(1);
-			}
+	FO_ATTR("blueprint", "id")
+	id = node.get_string();
+	FO_ATTR("blueprint", "parent")
+	NpcBP* blueprint = MNpcBP.lookup(node.get_string());
+	if (blueprint)
+		set_parent(blueprint);
+	else
+		Log::Warning << "Undefined parent npc blueprint '" << node.get_string() << "' at " << reader.get_filename() << ':' << node.get_line();
+	FO_ATTR("blueprint", "equip")
+	equip_list.push_back(node.get_string());
+	FO_ATTR("blueprint", "name")
+	set_name(node.get_string());
+	FO_ATTR("blueprint", "keyword")
+	keywords.push_back(node.get_string());
+	FO_ATTR("blueprint", "desc")
+	set_desc(node.get_string());
+	FO_ATTR("blueprint", "gender")
+	set_gender(GenderType::lookup(node.get_string()));
+	FO_ATTR("combat", "dodge")
+	combat.dodge = node.get_int();
+	set_flags.dodge = true;
+	FO_ATTR("combat", "attack")
+	combat.attack = node.get_int();
+	set_flags.attack = true;
+	FO_ATTR("combat", "damage")
+	combat.damage = node.get_int();
+	set_flags.damage = true;
+	FO_ATTR("blueprint", "stat")
+	CreatureStatID stat = CreatureStatID::lookup(node.get_string(0));
+	if (stat) {
+		base_stats[stat.get_value()] = node.get_int(1);
+	}
 	FO_READ_ERROR
-		return -1;
+	return -1;
 	FO_READ_END
 
 	return 0;
 }
 
-void
-NpcBP::save(File::Writer& writer)
+void NpcBP::save(File::Writer& writer)
 {
 	if (set_flags.name)
 		writer.attr("blueprint", "name", name.get_name());
@@ -214,8 +203,7 @@ NpcBP::save(File::Writer& writer)
 		writer.attr("combat", "damage", combat.damage);
 }
 
-int
-_MNpcBP::initialize()
+int _MNpcBP::initialize()
 {
 	// requirements
 	if (require(MObjectBP) != 0)
@@ -230,37 +218,35 @@ _MNpcBP::initialize()
 		if (reader.open(*i))
 			return -1;
 		FO_READ_BEGIN
-			FO_OBJECT("blueprint", "npc")
-				NpcBP* blueprint = new NpcBP();
-				if (blueprint->load(reader)) {
-					Log::Warning << "Failed to load blueprint in " << reader.get_filename() << " at " << node.get_line();
-					return -1;
-				}
-
-				if (blueprint->get_id().empty()) {
-					Log::Warning << "Blueprint has no ID in " << reader.get_filename() << " at " << node.get_line();
-					return -1;
-				}
-
-				blueprints[blueprint->get_id()] = blueprint;
-		FO_READ_ERROR
+		FO_OBJECT("blueprint", "npc")
+		NpcBP* blueprint = new NpcBP();
+		if (blueprint->load(reader)) {
+			Log::Warning << "Failed to load blueprint in " << reader.get_filename() << " at " << node.get_line();
 			return -1;
+		}
+
+		if (blueprint->get_id().empty()) {
+			Log::Warning << "Blueprint has no ID in " << reader.get_filename() << " at " << node.get_line();
+			return -1;
+		}
+
+		blueprints[blueprint->get_id()] = blueprint;
+		FO_READ_ERROR
+		return -1;
 		FO_READ_END
 	}
 
 	return 0;
 }
 
-void
-_MNpcBP::shutdown()
+void _MNpcBP::shutdown()
 {
 	for (BlueprintMap::iterator i = blueprints.begin(), e = blueprints.end();
-			i != e; ++i)
+	        i != e; ++i)
 		delete i->second;
 }
 
-NpcBP*
-_MNpcBP::lookup(const std::string& id)
+NpcBP* _MNpcBP::lookup(const std::string& id)
 {
 	BlueprintMap::iterator iter = blueprints.find(id);
 	if (iter == blueprints.end())

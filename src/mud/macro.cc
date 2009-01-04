@@ -23,7 +23,8 @@
 #define CHUNK_LEN(start, end) ((end)-(start)+1)
 
 // macro value
-namespace {
+namespace
+{
 	// if statements
 	enum if_state {
 		IF_DONE = 0,	// this if group has already had a true value
@@ -64,39 +65,42 @@ namespace {
 		const MacroArgs& argv;
 		int disable;
 
-		inline MacroState (const MacroArgs& s_argv) : if_stack(), argv(s_argv), disable(0) {}
+		inline MacroState(const MacroArgs& s_argv) : if_stack(), argv(s_argv), disable(0) {}
 	};
 
-	class MacroIn {
-		public:
-		MacroIn (const char* s_cur, const char* s_end) : cur(s_cur), end(s_end) {}
+	class MacroIn
+	{
+	public:
+		MacroIn(const char* s_cur, const char* s_end) : cur(s_cur), end(s_end) {}
 
-		char get () { if (cur == end) return 0; else return *cur++; }
-		char peek () const { if (cur == end) return 0; else return *cur; }
+		char get() { if (cur == end) return 0; else return *cur++; }
+		char peek() const { if (cur == end) return 0; else return *cur; }
 
-		bool eof () const { return cur == end; }
+		bool eof() const { return cur == end; }
 
-		protected:
+	protected:
 		const char* cur;
 		const char* end;
 	};
 
-	token_type get_token (const char** in, const char* end, StringBuffer& namebuf);
-	void skip (const char** in, const char* end);
-	std::string get_arg (MacroArgs& argv, uint index);
-	int invoke_method (const StreamControl& stream, MacroValue self, const std::string& method, MacroList& argv);
-	int do_macro (const char** in, const char* end, MacroState& state, const StreamControl& stream, int depth, bool if_allowed);
+	token_type get_token(const char** in, const char* end, StringBuffer& namebuf);
+	void skip(const char** in, const char* end);
+	std::string get_arg(MacroArgs& argv, uint index);
+	int invoke_method(const StreamControl& stream, MacroValue self, const std::string& method, MacroList& argv);
+	int do_macro(const char** in, const char* end, MacroState& state, const StreamControl& stream, int depth, bool if_allowed);
 	int do_text(const StreamControl& stream, const std::string& in, MacroState& state, int depth);
 }
 
-namespace macro {
-	int exec_macro (const StreamControl& stream, const std::string& macro, MacroList& argv);
+namespace macro
+{
+	int exec_macro(const StreamControl& stream, const std::string& macro, MacroList& argv);
 }
 
 // function definitions
-namespace {
+namespace
+{
 	// get a token
-	token_type get_token (MacroIn& in, StringBuffer& namebuf)
+	token_type get_token(MacroIn& in, StringBuffer& namebuf)
 	{
 		// clear buffer
 		namebuf.reset();
@@ -115,28 +119,28 @@ namespace {
 		// ! is a bang
 		if (c == '!') {
 			return TOK_BANG;
-		// == is an equals comparison
+			// == is an equals comparison
 		} else if (c == '=' && in.peek() == '=') {
 			in.get(); // consume second =
 			return TOK_EQ;
-		// != is a not-equals comparison
+			// != is a not-equals comparison
 		} else if (c == '!' && in.peek() == '=') {
 			in.get(); // consume =
 			return TOK_NEQ;
-		// { is a begin
+			// { is a begin
 		} else if (c == '{') {
 			return TOK_BEGIN;
-		// } is an end
+			// } is an end
 		} else if (c == '}') {
 			return TOK_END;
-		// $ is a variable
+			// $ is a variable
 		} else if (c == '$') {
 			return TOK_VAR;
-		// . is method syntactic sugar
+			// . is method syntactic sugar
 		} else if (c == '.') {
 			return TOK_METHOD;
 
-		// alphanumeric is a name
+			// alphanumeric is a name
 		} else if (isalnum(c) || c == '_') {
 			namebuf << c;
 			while (!in.eof() && (isalnum(in.peek()) || in.peek() == '-' || in.peek() == '_')) {
@@ -154,7 +158,7 @@ namespace {
 				return TOK_ENDIF;
 			return TOK_NAME;
 
-		// ' or " is a string
+			// ' or " is a string
 		} else if (c == '"' || c == '\'') {
 			// find end of string
 			while (!in.eof() && in.peek() != c)
@@ -171,7 +175,7 @@ namespace {
 	}
 
 	// skip to end of processing
-	void skip (MacroIn& in)
+	void skip(MacroIn& in)
 	{
 		int nest = 0;
 		char quote = 0;
@@ -183,18 +187,18 @@ namespace {
 				// de-quote?
 				if (in.peek() == quote)
 					quote = 0;
-			// not in quote
+				// not in quote
 			} else {
 				// nest on {
 				if (in.peek() == '{') {
 					++nest;
-				// ignore \\ sequence
+					// ignore \\ sequence
 				} else if (in.peek() == '\\') {
 					in.get(); // eat character
-				// handle quote
+					// handle quote
 				} else if (in.peek() == '"' || in.peek() == '\'') {
 					quote = in.peek();
-				// un-nest
+					// un-nest
 				} else if (in.peek() == '}') {
 					if (nest == 0) {
 						in.get(); // consume
@@ -209,7 +213,7 @@ namespace {
 	}
 
 	// get an argument as a string
-	std::string get_arg (MacroList& argv, uint index)
+	std::string get_arg(MacroList& argv, uint index)
 	{
 		// bounds check
 		if (index >= argv.size())
@@ -220,13 +224,13 @@ namespace {
 	}
 
 	// invoke a method
-	int invoke_method (const StreamControl& stream, MacroValue self, const std::string& method, MacroList& argv)
+	int invoke_method(const StreamControl& stream, MacroValue self, const std::string& method, MacroList& argv)
 	{
 		// if it's an object, invoke Entity::macro_property();
 		if (self.is_object()) {
 			return self.get_object()->macro_property(stream, method, argv);
 		}
-		
+
 		// it's a string, so process it ourself
 		if (self.is_string()) {
 			std::string string = self.get_string();
@@ -242,7 +246,7 @@ namespace {
 	}
 
 	// handle a macro
-	int do_macro (MacroIn& in, MacroState& state, const StreamControl& stream, int depth, bool if_allowed)
+	int do_macro(MacroIn& in, MacroState& state, const StreamControl& stream, int depth, bool if_allowed)
 	{
 		token_type token;
 		bool is_if = false;
@@ -276,7 +280,7 @@ namespace {
 				// if disabled, go no further
 				if (state.disable)
 					return 0;
-			// execute another if
+				// execute another if
 			} else if (token == TOK_ELIF) {
 				// check we're not empty
 				if (state.if_stack.empty()) {
@@ -284,18 +288,18 @@ namespace {
 					stream << "{error: elif without if}";
 					return -1;
 
-				// already had true state - all done
+					// already had true state - all done
 				} else if (state.if_stack.back() == IF_TRUE || state.if_stack.back() == IF_DONE) {
 					state.if_stack.back() = IF_DONE;
 					skip(in);
 					++state.disable;
 					return 0;
 
-				// we were false, so now we _may_ be true...
+					// we were false, so now we _may_ be true...
 				} else {
 					is_if = true;
 				}
-			// alternate to true state
+				// alternate to true state
 			} else if (token == TOK_ELSE) {
 				// chek we're not empty
 				if (state.if_stack.empty()) {
@@ -303,12 +307,12 @@ namespace {
 					stream << "{error: else without if}";
 					return -1;
 
-				// already had true state - all done
+					// already had true state - all done
 				} else if (state.if_stack.back() == IF_TRUE) {
 					state.if_stack.back() = IF_DONE;
 					++state.disable;
 
-				// we were false, so now we are true
+					// we were false, so now we are true
 				} else if (state.if_stack.back() == IF_FALSE) {
 					state.if_stack.back() = IF_TRUE;
 					--state.disable;
@@ -316,7 +320,7 @@ namespace {
 
 				skip(in);
 				return 0;
-			// end if block
+				// end if block
 			} else if (token == TOK_ENDIF) {
 				// chek we're not empty
 				if (state.if_stack.empty()) {
@@ -324,7 +328,7 @@ namespace {
 					stream << "{error: endif without if}";
 					return -1;
 
-				// just end the if block
+					// just end the if block
 				} else {
 					skip(in);
 				}
@@ -406,7 +410,7 @@ namespace {
 				return -1;
 			}
 
-		// if we have no method, then we can have no arguments
+			// if we have no method, then we can have no arguments
 		} else if (token != TOK_END) {
 			skip(in);
 			stream << "{error: arguments given to non-function}";
@@ -418,14 +422,14 @@ namespace {
 			// string
 			if (token == TOK_STRING) {
 				argv.push_back(buffer.str());
-			// sub-macro
+				// sub-macro
 			} else if (token == TOK_BEGIN) {
 				if (do_macro(in, state, buffer, depth + 1, false)) {
 					stream << "{error: unknown macro}";
 					return -1;
 				}
 				argv.push_back(buffer.str());
-			// something else
+				// something else
 			} else {
 				skip(in);
 				stream << "{error: macro error}";
@@ -447,14 +451,14 @@ namespace {
 					stream << "{error: unknown method}";
 					return -1;
 				}
-			// just a value
+				// just a value
 			} else {
 				if (value.is_string())
 					buffer << value.get_string();
 				else if (value.is_object())
 					value.get_object()->macro_default(buffer);
 			}
-		// just a function?
+			// just a function?
 		} else if (!method.empty()) {
 			if (macro::exec_macro(buffer, method, argv)) {
 				stream << "{error: macro failed}";
@@ -475,7 +479,7 @@ namespace {
 				state.if_stack.back() = IF_FALSE;
 				++state.disable;
 			}
-		// or expand bang
+			// or expand bang
 		} else if (is_bang) {
 			MacroState bstate(state.argv);
 			StringBuffer bbuffer;
@@ -484,7 +488,7 @@ namespace {
 				return -1;
 			}
 			stream << bbuffer;
-		// or output text
+			// or output text
 		} else {
 			stream << buffer;
 		}
@@ -522,10 +526,10 @@ namespace {
 					// anything else is unsupported, ignore
 				}
 
-			// begin macro macro
+				// begin macro macro
 			} else if (c == '{') {
 				do_macro(in, state, stream, depth, true);
-			// just text
+				// just text
 			} else if (!state.disable) {
 				stream << c;
 			}
@@ -536,7 +540,8 @@ namespace {
 }
 
 // parsing
-namespace macro {
+namespace macro
+{
 	// macro text
 	const StreamControl&
 	text(const StreamControl& stream, const std::string& in, const MacroArgs& argv)
@@ -549,7 +554,7 @@ namespace macro {
 		return stream;
 	}
 
-	int exec_macro (const StreamControl& stream, const std::string& _cmd_name, MacroList& _cmd_argv)
+	int exec_macro(const StreamControl& stream, const std::string& _cmd_name, MacroList& _cmd_argv)
 	{
 		if (str_eq(_cmd_name, "eq")) {
 			if (_cmd_argv.size() != 2)

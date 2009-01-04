@@ -26,8 +26,9 @@ class IAction;
 #define GOC_ANY (GOC_ROOM|GOC_EQUIP)
 
 // Creature statistic ID
-class CreatureStatID {
-	public:
+class CreatureStatID
+{
+public:
 	typedef enum {
 		NONE = -1,
 		STRENGTH = 0,
@@ -38,22 +39,22 @@ class CreatureStatID {
 		WILLPOWER,
 		COUNT,
 	} type_t;
-	
-	CreatureStatID (int s_value) : value((type_t)s_value) {}
-	CreatureStatID () : value(NONE) {}
+
+	CreatureStatID(int s_value) : value((type_t)s_value) {}
+	CreatureStatID() : value(NONE) {}
 
 	std::string get_name() const { return names[value]; }
 	std::string get_short_name() const { return short_names[value]; }
 
-	type_t get_value () const { return value; }
+	type_t get_value() const { return value; }
 
-	static CreatureStatID lookup (const std::string& name);
+	static CreatureStatID lookup(const std::string& name);
 
 	bool operator == (CreatureStatID dir) const { return dir.value == value; }
 	bool operator != (CreatureStatID dir) const { return dir.value != value; }
 	operator bool () const { return value != NONE; }
 
-	private:
+private:
 	type_t value;
 
 	static std::string names[];
@@ -61,18 +62,20 @@ class CreatureStatID {
 };
 
 // character stat array
-class CreatureStatArray {
-	public:
-	inline const uint16 operator[] (CreatureStatID stat) const { return stat ? stats[stat.get_value()] : 0; }
-	inline uint16& operator[] (CreatureStatID stat) { return stats[stat ? stat.get_value() : 0]; }
+class CreatureStatArray
+{
+public:
+	inline const uint16 operator[](CreatureStatID stat) const { return stat ? stats[stat.get_value()] : 0; }
+	inline uint16& operator[](CreatureStatID stat) { return stats[stat ? stat.get_value() : 0]; }
 
-	private:
+private:
 	uint16 stats[CreatureStatID::COUNT];
 };
 
 // Creature Position object
-class CreaturePosition {
-	public:
+class CreaturePosition
+{
+public:
 	typedef enum {
 		STAND = 0,
 		SIT,
@@ -80,23 +83,23 @@ class CreaturePosition {
 		KNEEL,
 		COUNT
 	} type_t;
-	
-	inline CreaturePosition (int s_value) : value((type_t)s_value) {}
-	inline CreaturePosition () : value(STAND) {}
+
+	inline CreaturePosition(int s_value) : value((type_t)s_value) {}
+	inline CreaturePosition() : value(STAND) {}
 
 	inline std::string get_name() const { return names[value]; }
 	inline std::string get_verb() const { return verbs[value]; }
 	inline std::string get_sverb() const { return sverbs[value]; }
 	inline std::string get_verbing() const { return verbings[value]; }
 
-	inline type_t get_value () const { return value; }
+	inline type_t get_value() const { return value; }
 
-	static CreaturePosition lookup (const std::string& name);
+	static CreaturePosition lookup(const std::string& name);
 
 	inline bool operator == (CreaturePosition dir) const { return dir.value == value; }
 	inline bool operator != (CreaturePosition dir) const { return dir.value != value; }
 
-	private:
+private:
 	type_t value;
 
 	static std::string names[];
@@ -107,201 +110,201 @@ class CreaturePosition {
 
 // Creature control
 class
-Creature : public Entity, public IStreamSink
+			Creature : public Entity, public IStreamSink
 {
-	public:
+public:
 	Creature();
 
 	// save/load
-	virtual int load_node (File::Reader& reader, File::Node& node);
-	virtual int load_finish ();
-	virtual void save_data (File::Writer& writer);
-	virtual void save_hook (File::Writer& writer);
+	virtual int load_node(File::Reader& reader, File::Node& node);
+	virtual int load_finish();
+	virtual void save_data(File::Writer& writer);
+	virtual void save_hook(File::Writer& writer);
 
 	// streaming
-	IStreamSink* get_stream () { return this; }
+	IStreamSink* get_stream() { return this; }
 
 	// positon
-	CreaturePosition get_pos () const { return position; }
-	CreaturePosition set_pos (CreaturePosition p) { return position = p; }
+	CreaturePosition get_pos() const { return position; }
+	CreaturePosition set_pos(CreaturePosition p) { return position = p; }
 
 	// health
-	inline int get_hp () const { return health.cur; }
-	inline int set_hp (int new_hp) { return health.cur = new_hp; } // NOTE: avoid use of, only necessary in rare cases
-	inline int get_max_hp () const { return health.max; }
-	inline int set_max_hp (int new_mhp) { return health.max = new_mhp; } // NOTE: avoid use of
+	inline int get_hp() const { return health.cur; }
+	inline int set_hp(int new_hp) { return health.cur = new_hp; }  // NOTE: avoid use of, only necessary in rare cases
+	inline int get_max_hp() const { return health.max; }
+	inline int set_max_hp(int new_mhp) { return health.max = new_mhp; }  // NOTE: avoid use of
 
 	// check data
-	inline bool is_dead () const { return dead; }
+	inline bool is_dead() const { return dead; }
 
 	// gender
-	virtual GenderType get_gender () const = 0;
+	virtual GenderType get_gender() const = 0;
 
 	// stats
-	virtual int get_base_stat (CreatureStatID stat) const = 0;
-	inline int get_effective_stat (CreatureStatID stat) const { assert (stat); return effective_stats[stat.get_value()]; }
-	inline void set_effective_stat (CreatureStatID stat, int val) { assert (stat); effective_stats[stat.get_value()] = val; }
-	int get_stat_modifier (CreatureStatID stat) const;
+	virtual int get_base_stat(CreatureStatID stat) const = 0;
+	inline int get_effective_stat(CreatureStatID stat) const { assert(stat); return effective_stats[stat.get_value()]; }
+	inline void set_effective_stat(CreatureStatID stat, int val) { assert(stat); effective_stats[stat.get_value()] = val; }
+	int get_stat_modifier(CreatureStatID stat) const;
 
 	// combat
-	virtual uint get_combat_dodge () const = 0; // dodge skill
-	virtual uint get_combat_attack () const = 0; // attack accuracy
-	virtual uint get_combat_damage () const = 0; // damage factor
+	virtual uint get_combat_dodge() const = 0;  // dodge skill
+	virtual uint get_combat_attack() const = 0;  // attack accuracy
+	virtual uint get_combat_damage() const = 0;  // damage factor
 
 	// events
-	virtual void handle_event (const Event& event);
-	virtual void broadcast_event (const Event& event);
+	virtual void handle_event(const Event& event);
+	virtual void broadcast_event(const Event& event);
 
 	// equipment
-	int hold (class Object*);
-	int wear (class Object*);
-	int equip (class Object*);
+	int hold(class Object*);
+	int wear(class Object*);
+	int equip(class Object*);
 
-	bool is_held (class Object*) const;
-	bool is_worn (class Object*) const;
-	bool is_equipped (class Object*) const;
+	bool is_held(class Object*) const;
+	bool is_worn(class Object*) const;
+	bool is_equipped(class Object*) const;
 
-	void drop_held (class Room*);
-	void drop_all (class Room*);
+	void drop_held(class Room*);
+	void drop_all(class Room*);
 
-	class Object* get_held_at (uint index) const;
-	class Object* get_worn_at (uint index) const;
-	class Object* get_equip_at (uint index) const;
+	class Object* get_held_at(uint index) const;
+	class Object* get_worn_at(uint index) const;
+	class Object* get_equip_at(uint index) const;
 
-	class Object* get_held_by_loc (uint loc) const;
-	class Object* get_worn_by_loc (uint loc) const;
-	class Object* get_equip_by_loc (uint loc) const;
+	class Object* get_held_by_loc(uint loc) const;
+	class Object* get_worn_by_loc(uint loc) const;
+	class Object* get_equip_by_loc(uint loc) const;
 
-	class Object* find_held (const std::string& name, uint count = 1, uint* matches = NULL) const;
-	class Object* find_worn (const std::string& name, uint count = 1, uint* matches = NULL) const;
-	class Object* find_equip (const std::string& name, uint count = 1, uint* matches = NULL) const;
+	class Object* find_held(const std::string& name, uint count = 1, uint* matches = NULL) const;
+	class Object* find_worn(const std::string& name, uint count = 1, uint* matches = NULL) const;
+	class Object* find_equip(const std::string& name, uint count = 1, uint* matches = NULL) const;
 
-	void release_object (class Object*); // *ONLY* for use by Object::release() !!!!
+	void release_object(class Object*);  // *ONLY* for use by Object::release() !!!!
 
 	// hands
-	int free_hands () const;
-	void swap_hands ();
+	int free_hands() const;
+	void swap_hands();
 
 	// currency
-	inline uint get_coins () const { return coins; }
-	inline uint set_coins (uint amount) { return coins = amount; }
-	uint give_coins (uint amount);
-	uint take_coins (uint amount);
+	inline uint get_coins() const { return coins; }
+	inline uint set_coins(uint amount) { return coins = amount; }
+	uint give_coins(uint amount);
+	uint take_coins(uint amount);
 
 	// health
-	void heal (uint amount);
-	bool damage (uint amount, Creature *attacker); // returns true if damage killed
-	virtual void kill (Creature *killer) = 0;
+	void heal(uint amount);
+	bool damage(uint amount, Creature *attacker);  // returns true if damage killed
+	virtual void kill(Creature *killer) = 0;
 
 	// Creature abilities
-	inline bool can_move () const { return !is_dead(); }
-	inline bool can_see () const { return true; }
-	inline bool can_talk () const { return true; }
-	inline bool can_act () const { return !is_dead(); }
+	inline bool can_move() const { return !is_dead(); }
+	inline bool can_see() const { return true; }
+	inline bool can_talk() const { return true; }
+	inline bool can_act() const { return !is_dead(); }
 
 	// affects
-	int add_affect (class CreatureAffectGroup* affect);
+	int add_affect(class CreatureAffectGroup* affect);
 
 	// actions
-	void add_action (IAction* action);
-	IAction* get_action () const;
-	void cancel_action ();
+	void add_action(IAction* action);
+	IAction* get_action() const;
+	void cancel_action();
 
 	// round time
-	uint get_round_time () const;
+	uint get_round_time() const;
 
 	// action checks w/ error messages
-	bool check_alive (); // must be alive
-	bool check_move (); // can move
-	bool check_rt (); // roundtime has expired
-	bool check_see (); // can see stuff
+	bool check_alive();  // must be alive
+	bool check_move();  // can move
+	bool check_rt();  // roundtime has expired
+	bool check_see();  // can see stuff
 
 	// input/output
-	virtual void stream_put (const char*, size_t len) {};
-	virtual void process_command (const std::string&);
+	virtual void stream_put(const char*, size_t len) {};
+	virtual void process_command(const std::string&);
 
 	// command processing utility funcs
-	class Object* cl_find_object (const std::string& name, int type, bool silent = false);
-	class Object* cl_find_object (const std::string& name, class Object* container, class ObjectLocation loc, bool silent = false);
+	class Object* cl_find_object(const std::string& name, int type, bool silent = false);
+	class Object* cl_find_object(const std::string& name, class Object* container, class ObjectLocation loc, bool silent = false);
 
-	class Creature* cl_find_creature (const std::string& name, bool silent = false);
-	class Portal* cl_find_portal (const std::string& name, bool silent = false);
+	class Creature* cl_find_creature(const std::string& name, bool silent = false);
+	class Portal* cl_find_portal(const std::string& name, bool silent = false);
 	/* cl_find_any looks for a creature, then an object, then an portal.
 	 * Object searching is the same as using cl_find_object w/ GOC_ANY. */
-	class Entity* cl_find_any (const std::string& name, bool silent = false);
+	class Entity* cl_find_any(const std::string& name, bool silent = false);
 
 	// heartbeat
-	virtual void heartbeat ();
+	virtual void heartbeat();
 
 	// must (de)activate equipment
-	virtual void activate ();
-	virtual void deactivate ();
+	virtual void activate();
+	virtual void deactivate();
 
 	// owner - see entity.h
-	virtual void set_owner (Entity* s_owner);
-	virtual void owner_release (Entity* child);
-	virtual class Entity* get_owner () const;
-	inline class Room* get_room () const { return location; }
+	virtual void set_owner(Entity* s_owner);
+	virtual void owner_release(Entity* child);
+	virtual class Entity* get_owner() const;
+	inline class Room* get_room() const { return location; }
 
 	// enter a room
-	bool enter (class Room*, class Portal *in_portal);
+	bool enter(class Room*, class Portal *in_portal);
 
 	// recalculate stuff
-	virtual void recalc_stats ();
-	virtual void recalc_health ();
-	virtual void recalc ();
+	virtual void recalc_stats();
+	virtual void recalc_health();
+	virtual void recalc();
 
 	// parsing
-	virtual int macro_property (const class StreamControl& stream, const std::string& method, const MacroList& argv) const;
+	virtual int macro_property(const class StreamControl& stream, const std::string& method, const MacroList& argv) const;
 
 	// output description of character or equipment lsit
-	void display_equip (const class StreamControl& stream) const;
+	void display_equip(const class StreamControl& stream) const;
 
 	// output a list of affects
-	void display_affects (const class StreamControl& stream) const;
+	void display_affects(const class StreamControl& stream) const;
 
 	// == ACTIONS ==
-	void do_emote (const std::string& text);
-	void do_say (const std::string& text);
-	void do_sing (const std::string& text);
+	void do_emote(const std::string& text);
+	void do_say(const std::string& text);
+	void do_sing(const std::string& text);
 
-	void do_look ();
-	void do_look (Creature *who);
-	void do_look (class Object *what, class ObjectLocation container);
-	void do_look (class Portal *what);
+	void do_look();
+	void do_look(Creature *who);
+	void do_look(class Object *what, class ObjectLocation container);
+	void do_look(class Portal *what);
 
-	void do_move (int dir);
+	void do_move(int dir);
 
-	void do_position (CreaturePosition);
+	void do_position(CreaturePosition);
 
-	void do_get (class Object*, class Object*, class ObjectLocation container);
-	void do_put (class Object*, class Object*, class ObjectLocation container);
-	void do_give_coins (class Creature* target, uint amount);
-	void do_drop (class Object*);
+	void do_get(class Object*, class Object*, class ObjectLocation container);
+	void do_put(class Object*, class Object*, class ObjectLocation container);
+	void do_give_coins(class Creature* target, uint amount);
+	void do_drop(class Object*);
 
-	void do_wear (class Object*);
-	void do_remove (class Object*);
+	void do_wear(class Object*);
+	void do_remove(class Object*);
 
-	void do_read (class Object*);
+	void do_read(class Object*);
 	void do_kick(class Object*);
-	void do_eat (class Object*);
-	void do_drink (class Object*);
-	void do_raise (class Object*);
-	void do_touch (class Object*);
+	void do_eat(class Object*);
+	void do_drink(class Object*);
+	void do_raise(class Object*);
+	void do_touch(class Object*);
 
-	void do_open (class Portal*);
-	void do_close (class Portal*);
-	void do_unlock (class Portal*);
-	void do_lock (class Portal*);
-	void do_kick (class Portal*);
+	void do_open(class Portal*);
+	void do_close(class Portal*);
+	void do_unlock(class Portal*);
+	void do_lock(class Portal*);
+	void do_kick(class Portal*);
 
-	void do_attack (class Creature*);
-	void do_kill (class Creature*);
+	void do_attack(class Creature*);
+	void do_kill(class Creature*);
 
-	void do_go (class Portal*);
+	void do_go(class Portal*);
 
 	// == DATA ITEMS ==
-	protected:
+protected:
 	typedef std::vector<IAction*> ActionList;
 	typedef std::vector<CreatureAffectGroup*> AffectStatusList;
 
@@ -325,28 +328,28 @@ Creature : public Entity, public IStreamSink
 	ActionList actions;
 	AffectStatusList affects;
 
-	protected:
+protected:
 	E_TYPE(Creature)
 };
 
 // stream out character descriptions
-class StreamCreatureDesc {
-	public:
-	inline StreamCreatureDesc (Creature* s_ch) : ch(s_ch) {}
+class StreamCreatureDesc
+{
+public:
+	inline StreamCreatureDesc(Creature* s_ch) : ch(s_ch) {}
 
 	inline friend const StreamControl&
-	operator << (const StreamControl& stream, const StreamCreatureDesc& desc)
-	{
+	operator << (const StreamControl& stream, const StreamCreatureDesc& desc) {
 		desc.ch->display_desc(stream);
 		return stream;
 	}
 
-	private:
+private:
 	Creature* ch;
 };
 
 
-std::string get_stat_level (uint);
+std::string get_stat_level(uint);
 
 #define CHARACTER(ent) E_CAST(ent,Creature)
 

@@ -12,15 +12,16 @@
 
 #include "common/imanager.h"
 
-namespace Lua {
-	// Initialize the Lua subsystem
-	bool initialize();
+namespace Lua
+{
+// Initialize the Lua subsystem
+bool initialize();
 
-	// Close Lua
-	void shutdown();
+// Close Lua
+void shutdown();
 
-	// Load and execute a script file
-	bool runfile(const std::string& path);
+// Load and execute a script file
+bool runfile(const std::string& path);
 }
 
 #endif

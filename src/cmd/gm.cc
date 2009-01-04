@@ -27,9 +27,9 @@
  * access: GM
  *
  * END COMMAND */
-void command_gm_announce (Player* gm, std::string argv[])
+void command_gm_announce(Player* gm, std::string argv[])
 {
-	MZone.announce (std::string(CADMIN "Announcement: " CNORMAL) + std::string(argv[0]));
+	MZone.announce(std::string(CADMIN "Announcement: " CNORMAL) + std::string(argv[0]));
 }
 
 /* BEGIN COMMAND
@@ -42,7 +42,7 @@ void command_gm_announce (Player* gm, std::string argv[])
  * access: GM
  *
  * END COMMAND */
-void command_gm_boot (Player* gm, std::string argv[])
+void command_gm_boot(Player* gm, std::string argv[])
 {
 	Player *cn = MPlayer.get(argv[0]);
 	if (cn == gm) {

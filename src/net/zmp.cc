@@ -3,19 +3,19 @@
  * Modified for Source MUD usage
  * http://www.sourcemud.org/zmp/
  */
- 
+
 /* Copyright (C) 2004	Sean Middleditch
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  *	* Redistributions of source code must retain the above copyright notice,
  *		this list of conditions and the following disclaimer.
  *	* Redistributions in binary form must reproduce the above copyright
  *		notice, this list of conditions and the following disclaimer in the
  *		documentation and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -41,15 +41,17 @@
 SZMPManager ZMPManager;
 
 // built-in handlers
-namespace {
-	void handle_zmp_ping (TelnetHandler* telnet, size_t argc, std::string argv[]);
-	void handle_zmp_check (TelnetHandler* telnet, size_t argc, std::string argv[]);
-	void handle_zmp_support (TelnetHandler* telnet, size_t argc, std::string argv[]);
-	void handle_zmp_input (TelnetHandler* telnet, size_t argc, std::string argv[]);
+namespace
+{
+	void handle_zmp_ping(TelnetHandler* telnet, size_t argc, std::string argv[]);
+	void handle_zmp_check(TelnetHandler* telnet, size_t argc, std::string argv[]);
+	void handle_zmp_support(TelnetHandler* telnet, size_t argc, std::string argv[]);
+	void handle_zmp_input(TelnetHandler* telnet, size_t argc, std::string argv[]);
 }
 
 // return 0 if not valid, or non-0 if valid
-namespace {
+namespace
+{
 	bool check_zmp_chunk(size_t size, const char* data)
 	{
 		// size must be at least two bytes
@@ -84,32 +86,29 @@ ZMPPack& ZMPPack::add(const std::string& command)
 }
 
 // add an 'int'
-ZMPPack&
-ZMPPack::add (long i)
+ZMPPack& ZMPPack::add(long i)
 {
 	args.push_back(tostr(i));
 	return *this;
 }
 
 // add a 'uint'
-ZMPPack&
-ZMPPack::add (ulong i)
+ZMPPack& ZMPPack::add(ulong i)
 {
 	args.push_back(tostr(i));
 	return *this;
 }
 
-SZMPManager::SZMPManager (void) : commands()
+SZMPManager::SZMPManager() : commands()
 {
 }
 
-SZMPManager::~SZMPManager (void)
+SZMPManager::~SZMPManager()
 {
 }
 
 // initialize ZMP commands
-int
-SZMPManager::initialize (void)
+int SZMPManager::initialize()
 {
 	if (add("zmp.ping", handle_zmp_ping))
 		return -1;
@@ -192,19 +191,18 @@ bool SZMPManager::match(const std::string& pattern)
 }
 
 // handle an ZMP command - size is size of chunk, data is chunk
-void
-TelnetHandler::process_zmp(size_t size, char* data)
+void TelnetHandler::process_zmp(size_t size, char* data)
 {
 	const size_t argv_size = 20; // argv[] element size
 	std::string argv[argv_size]; // arg list
 	size_t argc; // number of args
 	char* cptr; // for searching
 	ZMPCommand* command;
-	
+
 	// check the data chunk is valid
 	if (!check_zmp_chunk(size, data))
 		return;
-	
+
 	// add command to argv
 	argv[0] = std::string(data);
 	argc = 1;
@@ -215,24 +213,24 @@ TelnetHandler::process_zmp(size_t size, char* data)
 		// command not found
 		return;
 	}
-	
+
 	cptr = data; // init searching
-	
+
 	// parse loop - keep going as long as we have room in argv
 	while (argc < argv_size) {
 		// find NUL
 		while (*cptr != '\0')
 			++cptr;
-	
+
 		// is this NUL the last byte?
 		if ((size_t)(cptr - data) == size - 1)
 			break;
-	
+
 		// an argument follows
 		++cptr; // move past the NUL byte
 		argv[argc++] = std::string(cptr); // get argument
 	}
-		
+
 	// invoke the proper command handler
 	command->function(this, argc, argv);
 }
@@ -259,13 +257,13 @@ void TelnetHandler::send_zmp(size_t argc, std::string argv[])
 
 	// send request start
 	add_output(start_sb, 3);
-	
+
 	// loop through argv[], which has argc elements
 	for (i = 0; i < argc; ++i) {
 		// to handle escaping, we will send this in chunks
-	
+
 		start = argv[i].c_str(); // string section we are working on now
-	
+
 		// loop finding any IAC bytes
 		while ((cptr = strchr(start, IAC)) != NULL) {
 			// send the bytes from start until cptr
@@ -275,7 +273,7 @@ void TelnetHandler::send_zmp(size_t argc, std::string argv[])
 			// the byte _following_ the IAC is the new start
 			start = cptr + 1;
 		}
-	
+
 		/* send the rest of the argument - send one extra byte past
 			 the remainder length, so we get the NUL byte in the string,
 			 which we need to send for the ZMP specification. */
@@ -287,8 +285,7 @@ void TelnetHandler::send_zmp(size_t argc, std::string argv[])
 }
 
 // add a zmp command (to insert mid-processing, basically for color - YUCJ)
-void
-TelnetHandler::add_zmp(size_t argc, std::string argv[])
+void TelnetHandler::add_zmp(size_t argc, std::string argv[])
 {
 	// check for ZMP support
 	if (!has_zmp())
@@ -309,13 +306,13 @@ TelnetHandler::add_zmp(size_t argc, std::string argv[])
 
 	// send request start
 	add_to_chunk(start_sb, 3);
-	
+
 	// loop through argv[], which has argc elements
 	for (i = 0; i < argc; ++i) {
 		// to handle escaping, we will send this in chunks
-	
+
 		start = argv[i].c_str(); // string section we are working on now
-	
+
 		// loop finding any IAC bytes
 		while ((cptr = strchr(start, IAC)) != NULL) {
 			// send the bytes from start until cptr
@@ -325,7 +322,7 @@ TelnetHandler::add_zmp(size_t argc, std::string argv[])
 			// the byte _following_ the IAC is the new start
 			start = cptr + 1;
 		}
-	
+
 		/* send the rest of the argument - send one extra byte past
 			 the remainder length, so we get the NUL byte in the string,
 			 which we need to send for the ZMP specification. */
@@ -357,10 +354,11 @@ void TelnetHandler::zmp_support(const std::string& pkg, bool value)
 }
 
 // built-in handlers
-namespace {
+namespace
+{
 	// handle a zmp.ping command
 	void
-	handle_zmp_ping (TelnetHandler* telnet, size_t argc, std::string argv[])
+	handle_zmp_ping(TelnetHandler* telnet, size_t argc, std::string argv[])
 	{
 		// generate response
 		char buffer[40];
@@ -374,7 +372,7 @@ namespace {
 
 	// handle a zmp.check command
 	void
-	handle_zmp_check (TelnetHandler* telnet, size_t argc, std::string argv[])
+	handle_zmp_check(TelnetHandler* telnet, size_t argc, std::string argv[])
 	{
 		// valid args?
 		if (argc != 2)
@@ -384,7 +382,7 @@ namespace {
 		if (ZMPManager.match(argv[1])) {
 			argv[0] = "zmp.support";
 			telnet->send_zmp(2, argv);
-		// nope
+			// nope
 		} else {
 			argv[0] = "zmp.no-support";
 			telnet->send_zmp(2, argv);
@@ -393,7 +391,7 @@ namespace {
 
 	// handle a zmp.support command
 	void
-	handle_zmp_support (TelnetHandler* telnet, size_t argc, std::string argv[])
+	handle_zmp_support(TelnetHandler* telnet, size_t argc, std::string argv[])
 	{
 		// valid args?
 		if (argc != 2)
@@ -405,7 +403,7 @@ namespace {
 
 	// handle a zmp.no-support command
 	void
-	handle_zmp_nosupport (TelnetHandler* telnet, size_t argc, std::string argv[])
+	handle_zmp_nosupport(TelnetHandler* telnet, size_t argc, std::string argv[])
 	{
 		// valid args?
 		if (argc != 2)
@@ -417,7 +415,7 @@ namespace {
 
 	// handle a zmp.input command
 	void
-	handle_zmp_input (TelnetHandler* telnet, size_t argc, std::string argv[])
+	handle_zmp_input(TelnetHandler* telnet, size_t argc, std::string argv[])
 	{
 		// valid args
 		if (argc != 2)

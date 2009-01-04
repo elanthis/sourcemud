@@ -8,8 +8,7 @@
 #include "common.h"
 #include "common/log.h"
 
-int
-fdprintf (int fd, const char* format, ...)
+int fdprintf(int fd, const char* format, ...)
 {
 	char buffer[2048];
 	char* ptr;

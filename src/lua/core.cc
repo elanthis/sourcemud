@@ -12,7 +12,8 @@
 #include "lib/lua51/lauxlib.h"
 #include "lib/lua51/lualib.h"
 
-namespace Lua {
+namespace Lua
+{
 	lua_State* state = NULL;
 
 	extern bool initializePrint();
@@ -70,7 +71,7 @@ bool Lua::runfile(const std::string& path)
 		lua_pop(state, 1);
 		return false;
 	}
-	
+
 	// execute the script
 	rs = lua_pcall(state, 0, 0, 0);
 	if (rs != 0) {

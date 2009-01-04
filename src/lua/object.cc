@@ -11,7 +11,8 @@
 #include "lib/lua51/lua.h"
 #include "lib/lua51/lauxlib.h"
 
-namespace Lua {
+namespace Lua
+{
 	extern lua_State* state;
 }
 
@@ -27,7 +28,7 @@ bool Lua::createObject(void* obj, const char* metatable)
 		// remove our user data and our nil
 		lua_pop(Lua::state, 2);
 		Log::Error << "Attempt to create Lua object with unknown "
-			"metatable `" << metatable << "'";
+		"metatable `" << metatable << "'";
 		return false;
 	}
 

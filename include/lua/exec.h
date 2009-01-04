@@ -47,11 +47,13 @@
 
 #include "common/streams.h"
 
-namespace Lua {
+namespace Lua
+{
 
 // Execution manager
-class Exec {
-	public:
+class Exec
+{
+public:
 	// pass in the name of the function to be called
 	Exec(const std::string& funcname);
 	~Exec() { cleanup(); }
@@ -112,7 +114,7 @@ class Exec {
 	// but the Exec object isn't going out of scope.
 	void cleanup();
 
-	protected:
+protected:
 	// tracks how many items are on the stack that we need to pop
 	// we destructed.
 	size_t stack;
@@ -120,14 +122,14 @@ class Exec {
 	IStreamSink* print;
 
 	// just for ExecHook
-	protected:
+protected:
 	Exec() : stack(0), print(NULL) {}
 
 };
 
 class ExecHook : public Exec
 {
-	public:
+public:
 	ExecHook(const std::string& hookname);
 };
 

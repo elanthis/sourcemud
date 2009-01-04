@@ -9,10 +9,11 @@
 #define SOURCEMUD_COMMON_TIME_H
 
 // legacy cruft
-std::string time_to_str (time_t time);
-time_t str_to_time (const std::string& str);
+std::string time_to_str(time_t time);
+time_t str_to_time(const std::string& str);
 
-namespace Time {
+namespace Time
+{
 
 // RFC 822 time format
 extern const std::string RFC_822_FORMAT;

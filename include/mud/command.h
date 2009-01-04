@@ -18,11 +18,10 @@
 class Creature;
 class Player;
 
-typedef void (*CreatureCommandFunc) (class Creature*, std::string argv[]); // can manipulate argv
-typedef void (*PlayerCommandFunc) (class Player*, std::string argv[]); // can manipulate argv
+typedef void (*CreatureCommandFunc)(class Creature*, std::string argv[]);  // can manipulate argv
+typedef void (*PlayerCommandFunc)(class Player*, std::string argv[]);  // can manipulate argv
 
-struct CommandFormatNode
-{
+struct CommandFormatNode {
 	enum type_t { NONE, WORD, PHRASE, LITERAL } type; // type
 	int arg; // argument index
 	bool opt; // optional, can skip?
@@ -30,30 +29,30 @@ struct CommandFormatNode
 
 	// new LITERAL node
 	CommandFormatNode(int s_arg, bool s_opt, const std::string& s_literal) :
-		type(LITERAL), arg(s_arg), opt(s_opt), literal(s_literal) {}
+			type(LITERAL), arg(s_arg), opt(s_opt), literal(s_literal) {}
 	// new WORD or PHRASE node
 	CommandFormatNode(type_t s_type, int s_arg, bool s_opt) :
-		type(s_type), arg(s_arg), opt(s_opt), literal() {}
+			type(s_type), arg(s_arg), opt(s_opt), literal() {}
 	// copy contrusctor
 	CommandFormatNode(const CommandFormatNode& node) :
-		type(node.type), arg(node.arg), opt(node.opt), literal(node.literal) {}
+			type(node.type), arg(node.arg), opt(node.opt), literal(node.literal) {}
 };
 
 class CommandFormat
 {
-	public:
-	CommandFormat (class Command* s_command, const std::string& format, CreatureCommandFunc s_func, int s_priority = 100) : command(s_command), ch_func(s_func), ply_func(NULL), priority(s_priority) { build(format); }
-	CommandFormat (class Command* s_command, const std::string& format, PlayerCommandFunc s_func, int s_priority = 100) : command(s_command), ch_func(NULL), ply_func(s_func), priority(s_priority) { build(format); }
+public:
+	CommandFormat(class Command* s_command, const std::string& format, CreatureCommandFunc s_func, int s_priority = 100) : command(s_command), ch_func(s_func), ply_func(NULL), priority(s_priority) { build(format); }
+	CommandFormat(class Command* s_command, const std::string& format, PlayerCommandFunc s_func, int s_priority = 100) : command(s_command), ch_func(NULL), ply_func(s_func), priority(s_priority) { build(format); }
 
 	// get the basics
-	inline std::string get_format (void) const { return format; }
-	inline int get_priority (void) const { return priority; }
+	inline std::string get_format() const { return format; }
+	inline int get_priority() const { return priority; }
 
 	// construct format; return non-zero on failure
-	int build (const std::string& format);
+	int build(const std::string& format);
 
 	// get the command desc
-	inline Command* get_command (void) const { return command; }
+	inline Command* get_command() const { return command; }
 
 	// sort
 	bool operator< (const CommandFormat& format) const;
@@ -63,9 +62,9 @@ class CommandFormat
 	// 0 on no match, and positive on partial match; closer the match,
 	// higher the positive return value.  The argv MUST be at least
 	// COMMAND_MAX_ARGS elements in size.
-	inline int match (char** words, std::string argv[]) const { return trymatch(0, words, argv); }
+	inline int match(char** words, std::string argv[]) const { return trymatch(0, words, argv); }
 
-	private:
+private:
 	class Command* command;
 	std::string format;
 	CreatureCommandFunc ch_func;
@@ -74,7 +73,7 @@ class CommandFormat
 	std::vector<CommandFormatNode> nodes;
 
 	// do the matching
-	int trymatch (int node, char** words, std::string argv[]) const;
+	int trymatch(int node, char** words, std::string argv[]) const;
 
 	// let command manager see us
 	friend class _MCommand;
@@ -82,23 +81,23 @@ class CommandFormat
 
 class Command
 {
-	private:
+private:
 	// data
 	std::string name;
 	std::string usage;
 	AccessID access; // required permission
 
-	public:
+public:
 	// constructor/destructor - virtual
-	inline Command (const std::string& s_name, const std::string& s_usage, AccessID s_access) : name(s_name), usage(s_usage), access (s_access)  {}
+	inline Command(const std::string& s_name, const std::string& s_usage, AccessID s_access) : name(s_name), usage(s_usage), access(s_access)  {}
 
 	// basics
-	const std::string& get_name (void) const { return name; }
-	const std::string& get_usage (void) const { return usage; }
-	AccessID get_access (void) const { return access; }
+	const std::string& get_name() const { return name; }
+	const std::string& get_usage() const { return usage; }
+	AccessID get_access() const { return access; }
 
 	// display help
-	void show_man (class StreamControl& player);
+	void show_man(class StreamControl& player);
 
 	// sort
 	bool operator< (const Command& command) const;
@@ -109,7 +108,7 @@ class Command
 
 class _MCommand : public IManager
 {
-	public:
+public:
 	// initialize
 	virtual int initialize();
 
@@ -121,26 +120,27 @@ class _MCommand : public IManager
 	void add(const CommandFormat& format) { formats.push_back(format); }
 
 	// invoke a command
-	int call (class Creature* character, const std::string& cmd_line);
+	int call(class Creature* character, const std::string& cmd_line);
 
 	// show a man page; return false if cmd_name is not found
-	bool show_man (class StreamControl& stream, const std::string& cmd_name, bool quiet = false);
+	bool show_man(class StreamControl& stream, const std::string& cmd_name, bool quiet = false);
 
 	// show a command list
-	void show_list (class Player* player);
+	void show_list(class Player* player);
 
-	private:
+private:
 	typedef std::vector<Command*> CommandList;
 	CommandList commands;
 	std::vector<CommandFormat> formats;
 };
 extern _MCommand MCommand;
 
-namespace commands {
-	char *get_arg (char **); /* updates pointer, returns arg */
-	bool is_arg (char *);
-	char *fix_arg (char *, char **); /* give an arg and current pointer, it moves pointer back and unsets the null bit, making it reparsable/complete */
-	char *restore (char *, char **); /* like fix_arg, but fixes from a start location to the current location, restoring possibly multiple arguments */
+namespace commands
+{
+char *get_arg(char **);  /* updates pointer, returns arg */
+bool is_arg(char *);
+char *fix_arg(char *, char **);  /* give an arg and current pointer, it moves pointer back and unsets the null bit, making it reparsable/complete */
+char *restore(char *, char **);  /* like fix_arg, but fixes from a start location to the current location, restoring possibly multiple arguments */
 }
 
 #define COMMAND(name,usage,func,access,klass) \

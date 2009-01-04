@@ -17,54 +17,56 @@
 // -------------------
 //   BINDINGS
 // -------------------
-namespace {
-namespace bindings {
+namespace
+{
+	namespace bindings {
 
 // -------------------
 //   CLASS ENTITY
 // -------------------
-namespace entity {
+		namespace entity {
 
-int getName(lua_State*);
-const luaL_Reg methods[] = {
-	{ "getName", getName },
-	{ NULL, NULL }
-};
+			int getName(lua_State*);
+			const luaL_Reg methods[] = {
+				{ "getName", getName },
+				{ NULL, NULL }
+			};
 
-/**
- * name: Entity:getName
- * return: string
- */
-int getName(lua_State* s)
-{
-	CHECKSELF(Entity);
+			/**
+			 * name: Entity:getName
+			 * return: string
+			 */
+			int getName(lua_State* s)
+			{
+				CHECKSELF(Entity);
 
-	// push the name, return
-	lua_pushstring(s, self->get_name().get_name().c_str());
-	return 1;
-}
+				// push the name, return
+				lua_pushstring(s, self->get_name().get_name().c_str());
+				return 1;
+			}
 
-} // namespace entity
+		} // namespace entity
 
 // -------------------
 //   END BINDINGS
 // -------------------
 
-} // namespace bindings
+	} // namespace bindings
 } // anonymous
 
-namespace Lua {
-
-extern lua_State* state;
-
-bool initializeEntlib()
+namespace Lua
 {
-	// create the Entity metatable
-	luaL_newmetatable(Lua::state, "Entity");
-	luaL_register(Lua::state, NULL, bindings::entity::methods);
-	lua_pop(Lua::state, 1);
 
-	return true;
-}
+	extern lua_State* state;
+
+	bool initializeEntlib()
+	{
+		// create the Entity metatable
+		luaL_newmetatable(Lua::state, "Entity");
+		luaL_register(Lua::state, NULL, bindings::entity::methods);
+		lua_pop(Lua::state, 1);
+
+		return true;
+	}
 
 }

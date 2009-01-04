@@ -10,24 +10,24 @@
 #include "mud/macro.h"
 
 StreamMacro::StreamMacro(const std::string& s_text)
-	: text(s_text), argv()
+		: text(s_text), argv()
 {}
 
 StreamMacro::StreamMacro(const std::string& s_text, const std::string& s_name, MacroValue s_value)
-	: text(s_text)
+		: text(s_text)
 {
 	argv[s_name] = s_value;
 }
 
 StreamMacro::StreamMacro(const std::string& s_text, const std::string& s_name1, MacroValue s_value1, const std::string& s_name2, MacroValue s_value2)
-	: text(s_text)
+		: text(s_text)
 {
 	argv[s_name1] = s_value1;
 	argv[s_name2] = s_value2;
 }
 
 StreamMacro::StreamMacro(const std::string& s_text, const std::string& s_name1, MacroValue s_value1, const std::string& s_name2, MacroValue s_value2, const std::string& s_name3, MacroValue s_value3)
-	: text(s_text)
+		: text(s_text)
 {
 	argv[s_name1] = s_value1;
 	argv[s_name2] = s_value2;

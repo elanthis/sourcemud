@@ -14,8 +14,7 @@ _MUniqueID MUniqueID;
 
 const size_t LIMIT_AMOUNT = 1024;
 
-int
-_MUniqueID::initialize ()
+int _MUniqueID::initialize()
 {
 	next = 0;
 	limit = 0;
@@ -36,8 +35,7 @@ _MUniqueID::initialize ()
 	return 0;
 }
 
-void
-_MUniqueID::shutdown ()
+void _MUniqueID::shutdown()
 {
 	FILE* file = fopen((MSettings.get_misc_path() + "/uniqid").c_str(), "w");
 	if (file == NULL) {
@@ -52,8 +50,7 @@ _MUniqueID::shutdown ()
 	fclose(file);
 }
 
-int
-_MUniqueID::reserve ()
+int _MUniqueID::reserve()
 {
 	limit = next + LIMIT_AMOUNT;
 
@@ -72,13 +69,11 @@ _MUniqueID::reserve ()
 	return 0;
 }
 
-void
-_MUniqueID::save ()
+void _MUniqueID::save()
 {
 }
 
-UniqueID
-_MUniqueID::create ()
+UniqueID _MUniqueID::create()
 {
 	UniqueID id;
 
@@ -86,20 +81,18 @@ _MUniqueID::create ()
 		reserve();
 
 	id.id = next++;
-	
+
 	return id;
 }
 
-std::string
-_MUniqueID::encode (UniqueID uid)
+std::string _MUniqueID::encode(UniqueID uid)
 {
 	StringBuffer buffer;
 	buffer << uid.id;
 	return buffer.str();
 }
 
-UniqueID
-_MUniqueID::decode (const std::string& string)
+UniqueID _MUniqueID::decode(const std::string& string)
 {
 	UniqueID uid;
 	uid.id = strtol(string.c_str(), NULL, 10);

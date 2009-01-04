@@ -5,15 +5,16 @@
  * http://www.sourcemud.org
  */
 
-#ifndef SOURCEMUD_NET_SOCKET_H 
+#ifndef SOURCEMUD_NET_SOCKET_H
 #define SOURCEMUD_NET_SOCKET_H
 
 #include "common/types.h"
 #include "common/strbuf.h"
 #include "mud/server.h"
 
-class ISocketHandler {
-	public:
+class ISocketHandler
+{
+public:
 	virtual ~ISocketHandler() {}
 
 	virtual void sock_flush() = 0;
@@ -27,8 +28,9 @@ class ISocketHandler {
 	virtual void sock_complete_disconnect() = 0;
 };
 
-class SocketListener : public ISocketHandler {
-	public:
+class SocketListener : public ISocketHandler
+{
+public:
 	inline SocketListener(int s_sock) : sock(s_sock) {}
 
 	// sub_classes provide sock_in_ready to accept() incoming connections
@@ -36,7 +38,7 @@ class SocketListener : public ISocketHandler {
 
 	int accept(class NetAddr& out) const;
 
-	private:
+private:
 	// never need be called
 	virtual void sock_flush() {}
 	virtual void sock_out_ready() {}
@@ -47,12 +49,13 @@ class SocketListener : public ISocketHandler {
 	virtual bool sock_is_disconnect_waiting() { return false; }
 	virtual void sock_complete_disconnect() {}
 
-	protected:
+protected:
 	int sock;
 };
 
-class SocketConnection : public ISocketHandler {
-	public:
+class SocketConnection : public ISocketHandler
+{
+public:
 	SocketConnection(int s_sock);
 
 	// called with input
@@ -72,7 +75,7 @@ class SocketConnection : public ISocketHandler {
 	size_t get_in_bytes() const { return in_bytes; }
 	size_t get_out_bytes() const { return out_bytes; }
 
-	private:
+private:
 	// internal
 	virtual void sock_in_ready();
 	virtual void sock_out_ready();
@@ -81,7 +84,7 @@ class SocketConnection : public ISocketHandler {
 	virtual bool sock_is_disconnect_waiting() { return disconnect; }
 	virtual void sock_complete_disconnect();
 
-	private:
+private:
 	std::vector<char> output;
 	int sock;
 	bool disconnect;

@@ -5,7 +5,8 @@
  * http://www.sourcemud.org
  */
 
-namespace Base64 {
+namespace Base64
+{
 
 // decode base64-encoding string
 std::string decode(const std::string& str);

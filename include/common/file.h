@@ -8,7 +8,8 @@
 #ifndef SOURCEMUD_COMMON_FILE_H
 #define SOURCEMUD_COMMON_FILE_H
 
-namespace File {
+namespace File
+{
 
 // gets a list of files in a particular directory.  does
 // not return files that start with a . or end with a ~.
@@ -43,7 +44,7 @@ pathinfo_t& pathinfo(const std::string& path, pathinfo_t& out);
 std::string& normalize(std::string& path);
 
 // get mime type (for now, just uses the extension)
-const std::string& getMimeType(const std::string& path); 
+const std::string& getMimeType(const std::string& path);
 
 } // namespace file
 

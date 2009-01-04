@@ -66,7 +66,7 @@ enum {
 };
 
 #define CNORMAL		"\033!C0!"
-#define CTITLE		"\033!C1!"	
+#define CTITLE		"\033!C1!"
 #define CDESC		"\033!C2!"
 #define CPLAYER		"\033!C3!"
 #define CNPC		"\033!C4!"

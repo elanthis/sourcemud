@@ -39,8 +39,7 @@ Entity::~Entity()
 	Lua::releaseObject(this);
 }
 
-EventHandler*
-Entity::get_event(EventID name)
+EventHandler* Entity::get_event(EventID name)
 {
 	for (EventList::iterator i = events.begin(); i != events.end(); ++i) {
 		if ((*i)->get_event() == name)
@@ -49,8 +48,7 @@ Entity::get_event(EventID name)
 	return NULL;
 }
 
-void
-Entity::activate()
+void Entity::activate()
 {
 	// must be in FLOAT state
 	assert(state == FLOAT && "state must be FLOAT to activate");
@@ -81,12 +79,11 @@ Entity::activate()
 	MEntity.all = this;
 
 	// register tags
-	for (TagList::iterator i = tags.begin(); i != tags.end(); ++i) 
+	for (TagList::iterator i = tags.begin(); i != tags.end(); ++i)
 		MEntity.tag_map.insert(std::pair<TagID, Entity*> (*i, this));
 }
 
-void
-Entity::deactivate()
+void Entity::deactivate()
 {
 	// must be active
 	assert(state == ACTIVE && "state must be ACTIVE to deactivate");
@@ -130,8 +127,7 @@ Entity::deactivate()
 	}
 }
 
-void
-Entity::destroy()
+void Entity::destroy()
 {
 	Entity* owner = get_owner();
 	if (owner != NULL)
@@ -140,8 +136,7 @@ Entity::destroy()
 		deactivate();
 }
 
-bool
-Entity::name_match(const std::string& match) const
+bool Entity::name_match(const std::string& match) const
 {
 	return get_name().matches(match);
 
@@ -149,27 +144,24 @@ Entity::name_match(const std::string& match) const
 	return false;
 }
 
-void
-Entity::display_desc(const StreamControl& stream) const
+void Entity::display_desc(const StreamControl& stream) const
 {
 	stream << StreamMacro(get_desc(), "self", this);
 }
 
-void
-Entity::save(File::Writer& writer, const std::string& ns, const std::string& name)
+void Entity::save(File::Writer& writer, const std::string& ns, const std::string& name)
 {
 	writer.begin_attr(ns, name, factory_type());
 	save_data(writer);
 	writer.end();
 }
 
-void
-Entity::save_data(File::Writer& writer)
+void Entity::save_data(File::Writer& writer)
 {
 	writer.attr("entity", "uid", uid);
 
 	// event handler list
-	for (EventList::const_iterator i = events.begin (); i != events.end (); i ++) {
+	for (EventList::const_iterator i = events.begin(); i != events.end(); i ++) {
 		writer.begin("entity", "event");
 		(*i)->save(writer);
 		writer.end();
@@ -183,15 +175,13 @@ Entity::save_data(File::Writer& writer)
 	save_hook(writer);
 }
 
-void
-Entity::save_hook(File::Writer& writer)
+void Entity::save_hook(File::Writer& writer)
 {
 	Hooks::save_entity(this, writer);
 }
 
 // load
-Entity*
-Entity::load(const std::string& factory, File::Reader& reader)
+Entity* Entity::load(const std::string& factory, File::Reader& reader)
 {
 	Entity* entity;
 
@@ -205,19 +195,20 @@ Entity::load(const std::string& factory, File::Reader& reader)
 	// attempt load
 	if (entity->load(reader) != 0)
 		return NULL;
-	
+
 	// ok
 	return entity;
 }
 
-int
-Entity::load(File::Reader& reader)
+int Entity::load(File::Reader& reader)
 {
 	// load the thing
 	FO_READ_BEGIN
-		} else if (load_node(reader, node) == FO_SUCCESS_CODE) {
+}
+else if (load_node(reader, node) == FO_SUCCESS_CODE)
+{
 	FO_READ_ERROR
-		return -1;
+	return -1;
 	FO_READ_END
 
 	// final check
@@ -227,49 +218,47 @@ Entity::load(File::Reader& reader)
 	return 0;
 }
 
-int
-Entity::load_node(File::Reader& reader, File::Node& node)
+int Entity::load_node(File::Reader& reader, File::Node& node)
 {
 	FO_NODE_BEGIN
-		FO_ATTR("entity", "uid")
-			uid = node.get_id();
-		FO_ATTR("entity", "tag")
-			add_tag(TagID::create(node.get_string()));
-		FO_OBJECT("entity", "event")
-			EventHandler* event = new EventHandler();
-			if (!event->load(reader))
-					events.push_back(event);
+	FO_ATTR("entity", "uid")
+	uid = node.get_id();
+	FO_ATTR("entity", "tag")
+	add_tag(TagID::create(node.get_string()));
+	FO_OBJECT("entity", "event")
+	EventHandler* event = new EventHandler();
+	if (!event->load(reader))
+		events.push_back(event);
 	FO_NODE_END
 }
 
-int
-Entity::macro_property(const StreamControl& stream, const std::string& comm, const MacroList& argv) const
+int Entity::macro_property(const StreamControl& stream, const std::string& comm, const MacroList& argv) const
 {
 	// SPECIAL: one-letter name commands
 	if (comm.size() == 1) {
 		switch (comm[0]) {
-			case 'D':
-				stream << StreamName(this, DEFINITE, true);
-				return 0;
-			case 'd':
-				stream << StreamName(this, DEFINITE, false);
-				return 0;
-			case 'C':
-			case 'I':
-				stream << StreamName(this, INDEFINITE, true);
-				return 0;
-			case 'c':
-			case 'i':
-				stream << StreamName(this, INDEFINITE, false);
-				return 0;
-			case 'N':
-				stream << StreamName(this, NONE, true);
-				return 0;
-			case 'n':
-				stream << StreamName(this, NONE, false);
-				return 0;
-			default:
-				return -1;
+		case 'D':
+			stream << StreamName(this, DEFINITE, true);
+			return 0;
+		case 'd':
+			stream << StreamName(this, DEFINITE, false);
+			return 0;
+		case 'C':
+		case 'I':
+			stream << StreamName(this, INDEFINITE, true);
+			return 0;
+		case 'c':
+		case 'i':
+			stream << StreamName(this, INDEFINITE, false);
+			return 0;
+		case 'N':
+			stream << StreamName(this, NONE, true);
+			return 0;
+		case 'n':
+			stream << StreamName(this, NONE, false);
+			return 0;
+		default:
+			return -1;
 		}
 	}
 
@@ -277,7 +266,7 @@ Entity::macro_property(const StreamControl& stream, const std::string& comm, con
 	if (str_eq(comm, "name")) {
 		stream << StreamName(this);
 		return 0;
-	// ENTITY'S DESC
+		// ENTITY'S DESC
 	} else if (str_eq(comm, "desc")) {
 		display_desc(stream);
 		return 0;
@@ -286,20 +275,17 @@ Entity::macro_property(const StreamControl& stream, const std::string& comm, con
 	return -1;
 }
 
-void
-Entity::macro_default(const StreamControl& stream) const
+void Entity::macro_default(const StreamControl& stream) const
 {
 	stream << StreamName(*this);
 }
 
-bool
-Entity::has_tag(TagID tag) const
+bool Entity::has_tag(TagID tag) const
 {
 	return tags.find(tag) != tags.end();
 }
 
-int
-Entity::add_tag(TagID tag)
+int Entity::add_tag(TagID tag)
 {
 	// no duplicates
 	if (has_tag(tag))
@@ -316,8 +302,7 @@ Entity::add_tag(TagID tag)
 	return 0;
 }
 
-int
-Entity::remove_tag(TagID tag)
+int Entity::remove_tag(TagID tag)
 {
 	// find
 	TagList::iterator ti = std::find(tags.begin(), tags.end(), tag);
@@ -344,8 +329,7 @@ Entity::remove_tag(TagID tag)
 	}
 }
 
-void
-Entity::set_owner(Entity* owner)
+void Entity::set_owner(Entity* owner)
 {
 	assert(owner != NULL);
 
@@ -377,21 +361,18 @@ _MEntity::~_MEntity()
 {
 }
 
-int
-_MEntity::initialize()
+int _MEntity::initialize()
 {
 	return 0; // no error
 }
 
-void
-_MEntity::shutdown()
+void _MEntity::shutdown()
 {
 	tag_map.clear();
 	collect();
 }
 
-void
-_MEntity::heartbeat()
+void _MEntity::heartbeat()
 {
 	// loop over all entities, running the heartbeat method.
 	// keep track of the next entity to be run, so that
@@ -407,20 +388,17 @@ _MEntity::heartbeat()
 	}
 }
 
-size_t
-_MEntity::tag_count(TagID tag) const
+size_t _MEntity::tag_count(TagID tag) const
 {
 	return tag_map.count(tag);
 }
 
-std::pair<TagTable::const_iterator, TagTable::const_iterator>
-_MEntity::tag_list(TagID tag) const
+std::pair<TagTable::const_iterator, TagTable::const_iterator> _MEntity::tag_list(TagID tag) const
 {
 	return tag_map.equal_range(tag);
 }
 
-Entity*
-_MEntity::get(const UniqueID& uid) const
+Entity* _MEntity::get(const UniqueID& uid) const
 {
 	UniqueIDMap::const_iterator i = id_map.find(uid);
 	if (i != id_map.end())

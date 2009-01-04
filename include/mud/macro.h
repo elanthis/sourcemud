@@ -17,49 +17,50 @@ typedef std::vector<MacroValue> MacroList;
 
 class IMacroObject
 {
-	public:
-	virtual ~IMacroObject () {}
+public:
+	virtual ~IMacroObject() {}
 
 	// return non-zero if the requested method/property does not exist
-	virtual int macro_property (const class StreamControl& stream, const std::string& method, const MacroList& argv) const = 0;
+	virtual int macro_property(const class StreamControl& stream, const std::string& method, const MacroList& argv) const = 0;
 
 	// stream a default desc/name/whatever
-	virtual void macro_default (const class StreamControl& stream) const = 0;
+	virtual void macro_default(const class StreamControl& stream) const = 0;
 };
 
 class MacroValue
 {
-	public:
+public:
 	enum Type { T_OBJECT, T_STRING, T_NULL };
 
 	// constructors
-	MacroValue () : type(T_NULL), object(NULL), string() {}
-	MacroValue (const IMacroObject* s_object) : type(s_object == NULL ? T_NULL : T_OBJECT), object(s_object), string() {}
-	MacroValue (const std::string& s_string) : type(T_STRING), object(NULL), string(s_string) {}
+	MacroValue() : type(T_NULL), object(NULL), string() {}
+	MacroValue(const IMacroObject* s_object) : type(s_object == NULL ? T_NULL : T_OBJECT), object(s_object), string() {}
+	MacroValue(const std::string& s_string) : type(T_STRING), object(NULL), string(s_string) {}
 
 	// fetch the type of the mixed value
-	Type get_type () const { return type; }
-	bool is_object () const { return type == T_OBJECT; }
-	bool is_string () const { return type == T_STRING; }
-	bool is_null () const { return type == T_NULL; }
+	Type get_type() const { return type; }
+	bool is_object() const { return type == T_OBJECT; }
+	bool is_string() const { return type == T_STRING; }
+	bool is_null() const { return type == T_NULL; }
 
 	// specific getters
-	const IMacroObject* get_object () const { return this->object; }
-	const std::string& get_string () const { return this->string; }
+	const IMacroObject* get_object() const { return this->object; }
+	const std::string& get_string() const { return this->string; }
 
 	// assign
 	const IMacroObject* operator= (const IMacroObject* object) { type = (object == NULL ? T_NULL : T_OBJECT); return this->object = object; }
 	const std::string& operator= (const std::string& string) { type = T_STRING; return this->string = string; }
 	MacroValue& operator= (const MacroValue& base) { type = base.type; object = base.object; string = base.string; return *this; }
 
-	private:
+private:
 	Type type;
 	const IMacroObject* object;
 	std::string string;
 };
 
-namespace macro {
-	const StreamControl& text (const StreamControl& stream, const std::string& format, const MacroArgs& argv);
+namespace macro
+{
+const StreamControl& text(const StreamControl& stream, const std::string& format, const MacroArgs& argv);
 }
 
 // macro info
@@ -69,16 +70,15 @@ struct StreamMacro {
 	StreamMacro(const std::string& s_text, const std::string& s_name1, MacroValue s_value1, const std::string& s_name2, MacroValue s_value2);
 	StreamMacro(const std::string& s_text, const std::string& s_name1, MacroValue s_value1, const std::string& s_name2, MacroValue s_value2, const std::string& s_name3, MacroValue s_value3);
 
-	StreamMacro& add (const std::string& s_name, MacroValue s_value);
+	StreamMacro& add(const std::string& s_name, MacroValue s_value);
 
 	friend inline
 	const StreamControl&
-	operator << (const StreamControl& stream, const StreamMacro& smacro)
-	{
+	operator << (const StreamControl& stream, const StreamMacro& smacro) {
 		return macro::text(stream, smacro.text, smacro.argv);
 	}
 
-	private:
+private:
 	std::string text;
 	MacroArgs argv;
 };

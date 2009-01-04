@@ -77,7 +77,8 @@ PortalDir::dir_t PortalDir::opposites[] = {
 };
 
 // local tables
-namespace {
+namespace
+{
 	// When You go {the-portal}
 	const std::string portal_go_table[PortalDetail::COUNT][PortalUsage::COUNT] = {
 		{
@@ -212,8 +213,7 @@ namespace {
 	};
 }
 
-PortalDir
-PortalDir::lookup (const std::string& name)
+PortalDir PortalDir::lookup(const std::string& name)
 {
 	for (uint i = 0; i < COUNT; ++i)
 		if (names[i] == name)
@@ -221,8 +221,7 @@ PortalDir::lookup (const std::string& name)
 	return NONE;
 }
 
-PortalUsage
-PortalUsage::lookup (const std::string& name)
+PortalUsage PortalUsage::lookup(const std::string& name)
 {
 	for (uint i = 0; i < COUNT; ++i)
 		if (names[i] == name)
@@ -230,8 +229,7 @@ PortalUsage::lookup (const std::string& name)
 	return WALK;
 }
 
-PortalDetail
-PortalDetail::lookup (const std::string& name)
+PortalDetail PortalDetail::lookup(const std::string& name)
 {
 	for (uint i = 0; i < COUNT; ++i)
 		if (names[i] == name)
@@ -242,8 +240,7 @@ PortalDetail::lookup (const std::string& name)
 Portal::Portal() : parent_room(NULL)
 {}
 
-EntityName
-Portal::get_name () const
+EntityName Portal::get_name() const
 {
 	// default name w/ direction
 	if (name.empty())
@@ -252,20 +249,18 @@ Portal::get_name () const
 		return name;
 }
 
-void
-Portal::add_keyword (const std::string& keyword)
+void Portal::add_keyword(const std::string& keyword)
 {
 	keywords.push_back(keyword);
 }
 
-Room *
-Portal::get_relative_target (Room* base) const
+Room* Portal::get_relative_target(Room* base) const
 {
 	assert(base != NULL);
 
 	// if we're asking about the owner, return the 'target' room
 	if (base == parent_room)
-		return MZone.get_room (target);
+		return MZone.get_room(target);
 	// if we're the target room, return the owner
 	else if (base->get_id() == target)
 		return parent_room;
@@ -274,8 +269,7 @@ Portal::get_relative_target (Room* base) const
 		return NULL;
 }
 
-Portal*
-Portal::get_relative_portal (Room* base) const
+Portal* Portal::get_relative_portal(Room* base) const
 {
 	assert(base != NULL);
 
@@ -295,8 +289,7 @@ Portal::get_relative_portal (Room* base) const
 	return NULL;
 }
 
-PortalDir
-Portal::get_relative_dir (Room* base) const
+PortalDir Portal::get_relative_dir(Room* base) const
 {
 	assert(base != NULL);
 
@@ -311,30 +304,27 @@ Portal::get_relative_dir (Room* base) const
 		return PortalDir();
 }
 
-bool
-Portal::has_room (Room* base) const
+bool Portal::has_room(Room* base) const
 {
 	assert(base != NULL);
 
 	return (base == parent_room || base->get_id() == target);
 }
 
-bool
-Portal::is_valid () const
+bool Portal::is_valid() const
 {
 	return !target.empty() && MZone.get_room(target);
 }
 
-void
-Portal::save_data (File::Writer& writer)
+void Portal::save_data(File::Writer& writer)
 {
 	if (!name.empty())
 		writer.attr("portal", "name", name.get_name());
 
 	if (!desc.empty())
 		writer.attr("portal", "desc", desc);
-	
-	Entity::save_data (writer);
+
+	Entity::save_data(writer);
 
 	for (std::vector<std::string>::const_iterator i = keywords.begin(); i != keywords.end(); ++i)
 		writer.attr("portal", "keyword", *i);
@@ -365,59 +355,55 @@ Portal::save_data (File::Writer& writer)
 		writer.attr("portal", "target", target);
 }
 
-void
-Portal::save_hook (File::Writer& writer)
+void Portal::save_hook(File::Writer& writer)
 {
 	Entity::save_hook(writer);
 	Hooks::save_portal(this, writer);
 }
 
-int
-Portal::load_node (File::Reader& reader, File::Node& node)
+int Portal::load_node(File::Reader& reader, File::Node& node)
 {
 	FO_NODE_BEGIN
-		FO_ATTR("portal", "name")
-			set_name(node.get_string());
-		FO_ATTR("portal", "keyword")
-			keywords.push_back(node.get_string());
-		FO_ATTR("portal", "desc")
-			set_desc(node.get_string());
-		FO_ATTR("portal", "usage")
-			usage = PortalUsage::lookup(node.get_string());
-		FO_ATTR("portal", "dir")
-			dir = PortalDir::lookup(node.get_string());
-		FO_ATTR("portal", "direction") // duplicate of above - should we keep this?
-			dir = PortalDir::lookup(node.get_string());
-		FO_ATTR("portal", "detail")
-			detail = PortalDetail::lookup(node.get_string());
-		FO_ATTR("portal", "hidden")
-			set_hidden(node.get_bool());
-		FO_ATTR("portal", "door")
-			set_door(node.get_bool());
-		FO_ATTR("portal", "closed")
-			set_closed(node.get_bool());
-		FO_ATTR("portal", "locked")
-			set_locked(node.get_bool());
-		FO_ATTR("portal", "oneway")
-			set_oneway(node.get_bool());
-		FO_ATTR("portal", "nolook")
-			set_nolook(node.get_bool());
-		FO_ATTR("portal", "disabled")
-			set_disabled(node.get_bool());
-		FO_ATTR("portal", "target")
-			target = node.get_string();
-		FO_PARENT(Entity)
+	FO_ATTR("portal", "name")
+	set_name(node.get_string());
+	FO_ATTR("portal", "keyword")
+	keywords.push_back(node.get_string());
+	FO_ATTR("portal", "desc")
+	set_desc(node.get_string());
+	FO_ATTR("portal", "usage")
+	usage = PortalUsage::lookup(node.get_string());
+	FO_ATTR("portal", "dir")
+	dir = PortalDir::lookup(node.get_string());
+	FO_ATTR("portal", "direction") // duplicate of above - should we keep this?
+	dir = PortalDir::lookup(node.get_string());
+	FO_ATTR("portal", "detail")
+	detail = PortalDetail::lookup(node.get_string());
+	FO_ATTR("portal", "hidden")
+	set_hidden(node.get_bool());
+	FO_ATTR("portal", "door")
+	set_door(node.get_bool());
+	FO_ATTR("portal", "closed")
+	set_closed(node.get_bool());
+	FO_ATTR("portal", "locked")
+	set_locked(node.get_bool());
+	FO_ATTR("portal", "oneway")
+	set_oneway(node.get_bool());
+	FO_ATTR("portal", "nolook")
+	set_nolook(node.get_bool());
+	FO_ATTR("portal", "disabled")
+	set_disabled(node.get_bool());
+	FO_ATTR("portal", "target")
+	target = node.get_string();
+	FO_PARENT(Entity)
 	FO_NODE_END
 }
 
-int
-Portal::load_finish ()
+int Portal::load_finish()
 {
 	return 0;
 }
 
-void
-Portal::open (Room* base, Creature* actor)
+void Portal::open(Room* base, Creature* actor)
 {
 	flags.closed = false;
 
@@ -428,8 +414,7 @@ Portal::open (Room* base, Creature* actor)
 	}
 }
 
-void
-Portal::close (Room* base, Creature* actor)
+void Portal::close(Room* base, Creature* actor)
 {
 	flags.closed = true;;
 
@@ -440,8 +425,7 @@ Portal::close (Room* base, Creature* actor)
 	}
 }
 
-void
-Portal::unlock (Room* base, Creature* actor)
+void Portal::unlock(Room* base, Creature* actor)
 {
 	flags.locked = false;
 
@@ -452,8 +436,7 @@ Portal::unlock (Room* base, Creature* actor)
 	}
 }
 
-void
-Portal::lock (Room* base, Creature* actor)
+void Portal::lock(Room* base, Creature* actor)
 {
 	flags.locked = true;;
 
@@ -464,70 +447,61 @@ Portal::lock (Room* base, Creature* actor)
 	}
 }
 
-void
-Portal::heartbeat ()
+void Portal::heartbeat()
 {
 }
 
-void
-Portal::set_owner (Entity* owner)
+void Portal::set_owner(Entity* owner)
 {
 	assert(ROOM(owner));
 	Entity::set_owner(owner);
 	parent_room = (Room*)owner;
 }
 
-Entity*
-Portal::get_owner () const
+Entity* Portal::get_owner() const
 {
 	return parent_room;
 }
 
-void
-Portal::owner_release (Entity* child)
+void Portal::owner_release(Entity* child)
 {
 	// we have no children
 	assert(false);
 }
 
-std::string
-Portal::get_go () const
+std::string Portal::get_go() const
 {
 	// use table
 	return portal_go_table[detail.get_value()][usage.get_value()];
 }
 
-std::string
-Portal::get_leaves () const
+std::string Portal::get_leaves() const
 {
 	// use table
 	return portal_leaves_table[detail.get_value()][usage.get_value()];
 }
 
-std::string
-Portal::get_enters () const
+std::string Portal::get_enters() const
 {
 	// use table
 	return portal_enters_table[detail.get_value()][usage.get_value()];
 }
 
-bool
-Portal::name_match (const std::string& match) const
+bool Portal::name_match(const std::string& match) const
 {
 	if (name.matches(match))
 		return true;
 
 	// try keywords
 	for (std::vector<std::string>::const_iterator i = keywords.begin(); i != keywords.end(); i ++)
-		if (phrase_match (*i, match))
+		if (phrase_match(*i, match))
 			return true;
 
 	// no match
 	return false;
 }
 
-void
-Portal::activate ()
+void Portal::activate()
 {
 	Entity::activate();
 
@@ -542,8 +516,7 @@ Portal::activate ()
 	}
 }
 
-void
-Portal::deactivate ()
+void Portal::deactivate()
 {
 	if (!is_oneway()) {
 		Room* room = MZone.get_room(target);
@@ -554,17 +527,15 @@ Portal::deactivate ()
 	Entity::deactivate();
 }
 
-void
-Portal::handle_event (const Event& event)
+void Portal::handle_event(const Event& event)
 {
 	Entity::handle_event(event);
 }
 
-void
-Portal::broadcast_event (const Event& event)
+void Portal::broadcast_event(const Event& event)
 {
 }
 
 BEGIN_EFACTORY(Portal)
-	return new Portal();
+return new Portal();
 END_EFACTORY
