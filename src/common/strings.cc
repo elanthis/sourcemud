@@ -87,7 +87,7 @@ bool str_is_email(const std::string& string)
 		return false;
 
 	// must be a . in the last part
-	char *dot = strchr(cptr, '.');
+	const char *dot = strchr(cptr, '.');
 	if (dot == NULL)
 		return false;
 
@@ -332,7 +332,7 @@ namespace
 		const std::string& to;
 
 		char operator()(char c) {
-			char* r = strchr(from.c_str(), c);
+			const char* r = strchr(from.c_str(), c);
 			if (r != NULL)
 				return to[(int)(from.c_str() - r)];
 			return c;
