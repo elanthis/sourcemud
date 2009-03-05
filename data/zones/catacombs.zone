@@ -18,11 +18,6 @@ zone.child = room {
     portal.target = "catacomb_3_3"
   }
   room.child = portal {
-    entity.uid = <4565>
-    portal.dir = "southwest"
-    portal.target = "catacomb_2_3"
-  }
-  room.child = portal {
     portal.name = "a rope"
     entity.uid = <4566>
     portal.dir = "up"
@@ -31,6 +26,11 @@ zone.child = room {
     portal.hidden = true
     portal.oneway = true
     portal.target = "saladhin_square"
+  }
+  room.child = portal {
+    entity.uid = <4565>
+    portal.dir = "southwest"
+    portal.target = "catacomb_2_3"
   }
 }
 zone.child = room {

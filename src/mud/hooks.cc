@@ -13,7 +13,6 @@
 #include "mud/creature.h"
 #include "mud/player.h"
 #include "mud/npc.h"
-#include "mud/shadow-object.h"
 
 namespace Hooks
 {

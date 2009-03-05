@@ -80,19 +80,99 @@ struct ObjectLocation {
 #define OBJECT_ROT_TICKS ROUNDS_TO_TICKS(60 * 1)
 // rotting objects wither away after 1 minute
 
+// Object blueprint
+class
+ObjectBP
+{
+public:
+	ObjectBP();
+
+	// blueprint id
+	inline std::string get_id() const { return id; }
+	inline bool isAnonymous() const { return id.empty(); }
+
+	// name
+	virtual EntityName get_name() const;
+	bool set_name(const std::string& s_name);
+
+	const std::vector<std::string>& get_keywords() const { return keywords; }
+
+	// description
+	const std::string& get_desc() const { return desc; }
+	void set_desc(const std::string& s_desc) { desc = s_desc; }
+
+	// weight
+	uint get_weight() const { return weight; }
+	void set_weight(uint s_weight) { weight = s_weight; }
+
+	// cost
+	uint get_cost() const { return cost; }
+	void set_cost(uint s_cost) { cost = s_cost; }
+
+	// container
+	bool has_location(ObjectLocation type) const { return locations & type; }
+
+	// equip location
+	EquipSlot get_equip() const { return equip; }
+	void set_equip(EquipSlot s_equip) { equip = s_equip; }
+
+	// flags
+	bool get_flag(ObjectFlag flag) const { return flags & flag; }
+	void set_flag(ObjectFlag flag, bool b) { flags.set(flag, b); }
+
+	// tags
+	bool has_tag(TagID tag) const;
+	int add_tag(TagID tag);
+	int remove_tag(TagID tag);
+	inline const TagList& get_tags() const { return tags; }
+
+	// load
+	int load(File::Reader& reader);
+	void save(File::Writer& writer);
+
+private:
+	std::string id;
+	std::string desc;
+	EntityName name;
+	uint weight;
+	uint cost;
+	EquipSlot equip;
+	std::vector<std::string> keywords;
+	TagList tags;
+
+	// flags
+	BitSet<ObjectFlag> flags;
+
+	// locations
+	BitSet<ObjectLocation> locations;
+};
+
 // Object control
 class
-			Object : public Entity
+Object : public Entity
 {
 public:
 	Object();
+	Object(ObjectBP* s_blueprint);
+
+	// factory name
+	virtual const char* factory_type() const { return "object"; }
+
+	// return ture if we derive from the named blueprint
+	bool is_blueprint(const std::string& blueprint) const;
+
+	// blueprint information
+	virtual ObjectBP* get_blueprint() const { return blueprint; }
+	void set_blueprint(ObjectBP* blueprint);
+	static Object* load_blueprint(const std::string& name);
 
 	// name info
-	virtual bool set_name(const std::string&) = 0;
-	virtual EntityName get_name() const = 0;
+	bool set_name(const std::string&);
+	EntityName get_name() const;
+	bool name_match(const std::string& name) const;
 
 	// description
-	virtual std::string get_desc() const = 0;
+	std::string get_desc() const;
 
 	// save/load
 	virtual int load_node(File::Reader& reader, File::Node& node);
@@ -102,7 +182,7 @@ public:
 
 	// weight
 	inline uint get_weight() const { return calc_weight + get_real_weight(); }
-	virtual uint get_real_weight() const = 0;
+	uint get_real_weight() const;
 
 	// owner tracking - see entity.h
 	virtual inline Entity* get_owner() const { return owner; }
@@ -125,11 +205,11 @@ public:
 	virtual int macro_property(const class StreamControl& stream, const std::string& method, const MacroList& argv) const;
 
 	// object properties
-	virtual uint get_cost() const = 0;
-	virtual EquipSlot get_equip() const = 0;
+	uint get_cost() const;
+	EquipSlot get_equip() const;
 
 	// check flags
-	virtual bool get_flag(ObjectFlag flag) const = 0;
+	bool get_flag(ObjectFlag flag) const { return blueprint->get_flag(flag); }
 	bool is_hidden() const { return get_flag(ObjectFlag::HIDDEN); }
 	bool is_touchable() const { return get_flag(ObjectFlag::TOUCH); }
 	bool is_gettable() const { return get_flag(ObjectFlag::GET); }
@@ -145,7 +225,7 @@ public:
 	void heartbeat();
 
 	// containers
-	virtual bool has_location(ObjectLocation type) const = 0;
+	bool has_location(ObjectLocation type) const { return blueprint->has_location(type); }
 	bool add_object(Object *sub, ObjectLocation type);
 	void remove_object(Object *sub, ObjectLocation type);
 	Object *find_object(const std::string& name, uint index, ObjectLocation type, uint *matches = NULL) const;
@@ -154,7 +234,9 @@ public:
 	// data
 private:
 	Entity *owner;
-	ObjectLocation container;
+	EntityName name;
+	ObjectBP* blueprint;
+	ObjectLocation in_container; // the type of container this object is in
 	uint calc_weight; // calculated weight of children objects
 	uint trash_timer; // ticks until trashed
 
@@ -165,9 +247,24 @@ private:
 
 protected:
 	virtual ~Object();
-
-	E_TYPE(Object)
 };
+
+class _MObjectBP : public IManager
+{
+	typedef std::map<std::string, ObjectBP*> BlueprintMap;
+
+public:
+	int initialize();
+
+	void shutdown();
+
+	ObjectBP* lookup(const std::string& id);
+
+private:
+	BlueprintMap blueprints;
+};
+
+extern _MObjectBP MObjectBP;
 
 #define OBJECT(ent) E_CAST(ent,Object)
 

@@ -14,7 +14,6 @@
 #include "mud/object.h"
 #include "mud/server.h"
 #include "mud/settings.h"
-#include "mud/shadow-object.h"
 
 _MObjectBP MObjectBP;
 
@@ -61,7 +60,7 @@ int ObjectBP::remove_tag(TagID tag)
 
 void ObjectBP::save(File::Writer& writer)
 {
-	if (!id.empty())
+	if (!isAnonymous())
 		writer.attr("blueprint", "id", id);
 
 	writer.attr("blueprint", "name", name.get_name());

@@ -22,20 +22,22 @@ zone.child = room {
     portal.oneway = true
     portal.target = "saladhin_ranath_chamber"
   }
-  room.child = uobject {
-    object.name = "the River Styx"
-    object.desc = "The dark river is quite calm, and rather peaceful in appearance.  Despite this tranquil facade, supernatural fear still penetrates into the core of your soul when you look at it.  {$self.C} is none other than the River Styx, one of the few ways spoken of in legends to forever destroy a soul."
-    object.keyword = "murky river"
-    object.equip = "none"
-    object.cost = 0
-    object.weight = 0
-    object.hidden = true
-    object.gettable = false
-    object.touchable = false
-    object.dropable = false
-    object.trashable = false
-    object.rotting = false
+  room.child = object {
     entity.uid = <407>
+    object.blueprint {
+      blueprint.name = "the River Styx"
+      blueprint.desc = "The dark river is quite calm, and rather peaceful in appearance.  Despite this tranquil facade, supernatural fear still penetrates into the core of your soul when you look at it.  {$self.C} is none other than the River Styx, one of the few ways spoken of in legends to forever destroy a soul."
+      blueprint.keyword = "murky river"
+      blueprint.equip = "none"
+      blueprint.cost = 0
+      blueprint.weight = 0
+      blueprint.hidden = true
+      blueprint.gettable = false
+      blueprint.touchable = false
+      blueprint.dropable = false
+      blueprint.trashable = false
+      blueprint.rotting = false
+    }
   }
 }
 

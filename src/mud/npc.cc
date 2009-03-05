@@ -17,7 +17,6 @@
 #include "mud/object.h"
 #include "mud/skill.h"
 #include "mud/hooks.h"
-#include "mud/shadow-object.h"
 #include "mud/efactory.h"
 
 Npc::Npc() : Creature()
@@ -194,7 +193,7 @@ Npc* Npc::load_blueprint(const std::string& name)
 	// equip
 	while (blueprint != NULL) {
 		for (std::vector<std::string>::const_iterator i = blueprint->get_equip_list().begin(); i != blueprint->get_equip_list().end(); ++i) {
-			Object* object = ShadowObject::load_blueprint(*i);
+			Object* object = Object::load_blueprint(*i);
 			if (object != NULL)
 				npc->equip(object);
 			else

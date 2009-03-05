@@ -59,8 +59,6 @@ HEADERS = \
 	include/mud/name.h \
 	include/mud/npc.h \
 	include/mud/object.h \
-	include/mud/unique-object.h \
-	include/mud/shadow-object.h \
 	include/mud/olc.h \
 	include/mud/pconn.h \
 	include/mud/player.h \

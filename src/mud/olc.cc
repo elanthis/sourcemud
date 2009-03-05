@@ -19,7 +19,6 @@
 #include "mud/help.h"
 #include "mud/olc.h"
 #include "mud/account.h"
-#include "mud/shadow-object.h"
 #include "net/telnet.h"
 
 enum OLCMode {
@@ -223,7 +222,7 @@ namespace OLC
 		OLC_END_ATTR
 		OLC_END_TYPE
 
-		OLC_BEGIN_TYPE(ShadowObject)
+		OLC_BEGIN_TYPE(Object)
 		OLC_BEGIN_ATTR(blueprint)
 		OLC_GET
 		OLC_DISPLAY(edit->get_blueprint()->get_id())

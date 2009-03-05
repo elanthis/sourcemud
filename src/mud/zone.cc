@@ -19,7 +19,6 @@
 #include "mud/weather.h"
 #include "mud/object.h"
 #include "mud/hooks.h"
-#include "mud/shadow-object.h"
 
 _MZone MZone;
 
@@ -78,7 +77,7 @@ void Spawn::spawn(Zone* zone) const
 		npc->enter(room, NULL);
 	} else {
 		// try to spawn as object
-		Object* object = ShadowObject::load_blueprint(tempname);
+		Object* object = Object::load_blueprint(tempname);
 		if (object != NULL) {
 			// make sure object has the tag
 			object->add_tag(tag);

@@ -12,19 +12,21 @@ zone.child = room {
   room.name = "Template of Ranath: Chamber of Absolution"
   room.desc = "Blue tiles cover the floor of the small, circular room.  The vaulted ceiling, made of the same white marble as the walls, stretches beyond the meager illumination of the candelabras set in the chamber's walls.  Against the far end of the chamber is a statue of Ranath the Merciful."
   entity.uid = <409>
-  room.child = uobject {
-    object.name = "the statue of Ranath the Merciful"
-    object.desc = "The statue depicts one of the many aspects of Ranath.  The statue's long arms are draped in exquisite robes of real silk, and the cupped hands form a basin filled with an oddly reflective liquid.  The ageless face of Ranath of Merciful looks anything but, with a gaze more befitting of a blood-thirsty warlord than a divine benefactor."
-    object.equip = "none"
-    object.cost = 0
-    object.weight = 0
-    object.hidden = true
-    object.gettable = false
-    object.touchable = false
-    object.dropable = false
-    object.trashable = false
-    object.rotting = false
+  room.child = object {
     entity.uid = <410>
+    object.blueprint {
+      blueprint.name = "the statue of Ranath the Merciful"
+      blueprint.desc = "The statue depicts one of the many aspects of Ranath.  The statue's long arms are draped in exquisite robes of real silk, and the cupped hands form a basin filled with an oddly reflective liquid.  The ageless face of Ranath of Merciful looks anything but, with a gaze more befitting of a blood-thirsty warlord than a divine benefactor."
+      blueprint.equip = "none"
+      blueprint.cost = 0
+      blueprint.weight = 0
+      blueprint.hidden = true
+      blueprint.gettable = false
+      blueprint.touchable = false
+      blueprint.dropable = false
+      blueprint.trashable = false
+      blueprint.rotting = false
+    }
   }
 }
 zone.child = room {
@@ -100,6 +102,22 @@ zone.child = room {
     portal.dir = "east"
     portal.target = "saladhin_rosewood_armorer"
   }
+  room.child = object {
+    entity.uid = <1445>
+    object.blueprint {
+      blueprint.name = "a clock tower"
+      blueprint.desc = "The clock tower rises overhead, proclaiming the time to be {time}."
+      blueprint.equip = "none"
+      blueprint.cost = 0
+      blueprint.weight = 0
+      blueprint.hidden = true
+      blueprint.gettable = false
+      blueprint.touchable = false
+      blueprint.dropable = false
+      blueprint.trashable = false
+      blueprint.rotting = false
+    }
+  }
   room.child = portal {
     portal.name = "a stone well"
     entity.uid = <4559>
@@ -110,47 +128,37 @@ zone.child = room {
     portal.oneway = true
     portal.target = "catacomb_well"
   }
-  room.child = uobject {
-    object.name = "a clock tower"
-    object.desc = "The clock tower rises overhead, proclaiming the time to be {time}."
-    object.equip = "none"
-    object.cost = 0
-    object.weight = 0
-    object.hidden = true
-    object.gettable = false
-    object.touchable = false
-    object.dropable = false
-    object.trashable = false
-    object.rotting = false
-    entity.uid = <1445>
-  }
-  room.child = uobject {
-    object.name = "a stone well"
-    object.desc = "The stone well is of simple yet sturdy construction.  The bottom stretches into darkness."
-    object.equip = "none"
-    object.cost = 0
-    object.weight = 0
-    object.hidden = true
-    object.gettable = false
-    object.touchable = false
-    object.dropable = false
-    object.trashable = false
-    object.rotting = false
+  room.child = object {
     entity.uid = <1446>
+    object.blueprint {
+      blueprint.name = "a stone well"
+      blueprint.desc = "The stone well is of simple yet sturdy construction.  The bottom stretches into darkness."
+      blueprint.equip = "none"
+      blueprint.cost = 0
+      blueprint.weight = 0
+      blueprint.hidden = true
+      blueprint.gettable = false
+      blueprint.touchable = false
+      blueprint.dropable = false
+      blueprint.trashable = false
+      blueprint.rotting = false
+    }
   }
-  room.child = uobject {
-    object.name = "a fountain"
-    object.desc = "The fountain is comprised of several statues, each of a different Avatar of Ranath, spraying water into a large basin filled with colorful fish."
-    object.equip = "none"
-    object.cost = 0
-    object.weight = 0
-    object.hidden = true
-    object.gettable = false
-    object.touchable = false
-    object.dropable = false
-    object.trashable = false
-    object.rotting = false
+  room.child = object {
     entity.uid = <1447>
+    object.blueprint {
+      blueprint.name = "a fountain"
+      blueprint.desc = "The fountain is comprised of several statues, each of a different Avatar of Ranath, spraying water into a large basin filled with colorful fish."
+      blueprint.equip = "none"
+      blueprint.cost = 0
+      blueprint.weight = 0
+      blueprint.hidden = true
+      blueprint.gettable = false
+      blueprint.touchable = false
+      blueprint.dropable = false
+      blueprint.trashable = false
+      blueprint.rotting = false
+    }
   }
 }
 zone.child = room {

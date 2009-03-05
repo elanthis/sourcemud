@@ -22,8 +22,6 @@
 #include "mud/clock.h"
 #include "mud/object.h"
 #include "mud/hooks.h"
-#include "mud/shadow-object.h"
-#include "mud/unique-object.h"
 
 // ----- CreatureStatID -----
 

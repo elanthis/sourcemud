@@ -17,7 +17,6 @@
 #include "mud/object.h"
 #include "mud/skill.h"
 #include "mud/hooks.h"
-#include "mud/shadow-object.h"
 #include "mud/efactory.h"
 
 _MNpcBP MNpcBP;

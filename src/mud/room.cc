@@ -18,8 +18,6 @@
 #include "mud/portal.h"
 #include "mud/hooks.h"
 #include "mud/efactory.h"
-#include "mud/shadow-object.h"
-#include "mud/unique-object.h"
 #include "mud/room.h"
 #include "mud/color.h"
 #include "mud/server.h"
