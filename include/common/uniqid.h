@@ -11,7 +11,7 @@
 #include "common/imanager.h"
 #include "common/types.h"
 
-typedef uint32 UniqueIDBase; // FIXME: should probably default to uin64
+typedef unsigned long UniqueIDBase;
 
 class UniqueID
 {
