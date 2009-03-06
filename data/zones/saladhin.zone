@@ -11,9 +11,7 @@ zone.child = room {
   room.id = "saladhin_ranath_chamber"
   room.name = "Template of Ranath: Chamber of Absolution"
   room.desc = "Blue tiles cover the floor of the small, circular room.  The vaulted ceiling, made of the same white marble as the walls, stretches beyond the meager illumination of the candelabras set in the chamber's walls.  Against the far end of the chamber is a statue of Ranath the Merciful."
-  entity.uid = <409>
   room.child = object {
-    entity.uid = <410>
     object.blueprint {
       blueprint.name = "the statue of Ranath the Merciful"
       blueprint.desc = "The statue depicts one of the many aspects of Ranath.  The statue's long arms are draped in exquisite robes of real silk, and the cupped hands form a basin filled with an oddly reflective liquid.  The ageless face of Ranath of Merciful looks anything but, with a gaze more befitting of a blood-thirsty warlord than a divine benefactor."
@@ -33,10 +31,8 @@ zone.child = room {
   room.id = "saladhin_ranath_mainhall"
   room.name = "Temple of Ranath: Main Hall"
   room.desc = "Great marble columns stretch down the length of hallway.  Tapestries depicting many of the legendary adventures of the mortal Ranath decorate the cold stone walls.  {if eq {day-or-night} 'day'}The sun's light touches the tiled floors, let in by the glass windows set high along the hall's walls.{else}Thousands of candles set in small, ornate chandeliers softly but completely lights the hallway.{endif}"
-  entity.uid = <411>
   room.child = portal {
     portal.name = "an oaken door"
-    entity.uid = <412>
     portal.dir = "west"
     portal.detail = "through"
     portal.door = true
@@ -47,10 +43,8 @@ zone.child = room {
   room.id = "saladhin_ranath_courtyard"
   room.name = "Temple of Ranath: Courtyard"
   room.desc = "To the north lies the vast complex of the Temple of Ranath.  Its outer walls are constructed of a curious red stone, save for the dome of the central cathedral, which is made of a pure white marble.  The courtyard itself is delicately but finely landscaped, with many plants not native to the region growing happily among the gardens.  {if eq {day-or-night} 'day'}Multitudes hurry back and forth along the street just south of the courtyard's towering gates.{else}The occasional figure slinks past along the dark street just south of the courtyard's towering gates.{endif}"
-  entity.uid = <413>
   room.child = portal {
     portal.name = "an iron door"
-    entity.uid = <414>
     portal.dir = "north"
     portal.detail = "through"
     portal.door = true
@@ -61,16 +55,13 @@ zone.child = room {
   room.id = "saladhin_rosewood_temple"
   room.name = "Saladhin: Rosewood Road, Temple of Ranath"
   room.desc = "The tree-lined road stretches from east to west, its dark cobblestones littered with the leaves of the road's namesake trees.  On the north side of the road is a massive iron gate, behind which can be seen the impressive Temple of Ranath."
-  entity.uid = <1439>
   room.child = portal {
     portal.name = "the template gate"
-    entity.uid = <4555>
     portal.dir = "north"
     portal.detail = "through"
     portal.target = "saladhin_ranath_courtyard"
   }
   room.child = portal {
-    entity.uid = <4556>
     portal.dir = "east"
     portal.target = "saladhin_rosewood_park"
   }
@@ -79,15 +70,12 @@ zone.child = room {
   room.id = "saladhin_rosewood_park"
   room.name = "Saladhin: Rosewood Road, City Park"
   room.desc = "Rosewood Road ends at the entrance to the city park.  The merchant stalls here are built for the sale of food, not goods, and the aroma of the day's business settles over the park entrance like a shroud."
-  entity.uid = <1442>
 }
 zone.child = room {
   room.id = "saladhin_rosewood_armorer"
   room.name = "Saladhin: Rosewood Road, Armorer"
   room.desc = "The road stretches from the city square to the west out towards the east in a desperate grasp for the city limits.  A sign hanging from the dingy building on the south side of the road proclaims the place to be an armorer's shop."
-  entity.uid = <1443>
   room.child = portal {
-    entity.uid = <4557>
     portal.dir = "east"
     portal.target = "saladhin_rosewood_temple"
   }
@@ -96,14 +84,11 @@ zone.child = room {
   room.id = "saladhin_square"
   room.name = "Saladhin: Central Square"
   room.desc = "The central square of Saladhin is perhaps the busiest section of the city, night or day.  The city's major thoroughfares all come to this place.  A magnificent clock tower rises on the north edge of the square, standing atop a stone archway through which the gold road runs.  On the south edge of the square is an elaborate fountain, and next to it is a stone well."
-  entity.uid = <1444>
   room.child = portal {
-    entity.uid = <4558>
     portal.dir = "east"
     portal.target = "saladhin_rosewood_armorer"
   }
   room.child = object {
-    entity.uid = <1445>
     object.blueprint {
       blueprint.name = "a clock tower"
       blueprint.desc = "The clock tower rises overhead, proclaiming the time to be {time}."
@@ -120,7 +105,6 @@ zone.child = room {
   }
   room.child = portal {
     portal.name = "a stone well"
-    entity.uid = <4559>
     portal.dir = "down"
     portal.usage = "climb"
     portal.detail = "down"
@@ -129,10 +113,9 @@ zone.child = room {
     portal.target = "catacomb_well"
   }
   room.child = object {
-    entity.uid = <1446>
     object.blueprint {
-      blueprint.name = "a stone well"
-      blueprint.desc = "The stone well is of simple yet sturdy construction.  The bottom stretches into darkness."
+      blueprint.name = "a fountain"
+      blueprint.desc = "The fountain is comprised of several statues, each of a different Avatar of Ranath, spraying water into a large basin filled with colorful fish."
       blueprint.equip = "none"
       blueprint.cost = 0
       blueprint.weight = 0
@@ -145,10 +128,9 @@ zone.child = room {
     }
   }
   room.child = object {
-    entity.uid = <1447>
     object.blueprint {
-      blueprint.name = "a fountain"
-      blueprint.desc = "The fountain is comprised of several statues, each of a different Avatar of Ranath, spraying water into a large basin filled with colorful fish."
+      blueprint.name = "a stone well"
+      blueprint.desc = "The stone well is of simple yet sturdy construction.  The bottom stretches into darkness."
       blueprint.equip = "none"
       blueprint.cost = 0
       blueprint.weight = 0
@@ -165,9 +147,7 @@ zone.child = room {
   room.id = "saladhin_kingsrow_bank"
   room.name = "Saladhin: Kings' Row, Bank"
   room.desc = "The Kings' Row begins its journey from the city square here, with the Saladhin Bank nestled comfortably along the north side of the street.  Many small palaces, the homes of rich merchants and minor nobility line the King's Row for some distance to the west."
-  entity.uid = <1461>
   room.child = portal {
-    entity.uid = <4560>
     portal.dir = "east"
     portal.target = "saladhin_square"
   }
@@ -176,9 +156,7 @@ zone.child = room {
   room.id = "saladhin_kingsrow_empty"
   room.name = "Saladhin: Kings' Row"
   room.desc = "Ostentatious palaces line the Kings' Row, home of the wealthy or noble born.  To the east, between the parapets of one of the more gaudy of the places, can be seen the outline of the clock tower in the central city square.  To the west is the metropolis's western gate."
-  entity.uid = <1462>
   room.child = portal {
-    entity.uid = <4561>
     portal.dir = "east"
     portal.target = "saladhin_kingsrow_bank"
   }
@@ -187,15 +165,12 @@ zone.child = room {
   room.id = "saladhin_westgate"
   room.name = "Saladhin: West Gate"
   room.desc = "The high wall of Saladhin nestles up against the Kings' Row and the palaces lining its fine cobblestones.  The western gate is housed here, providing passage to travellers and protection to city folk from the dangers of the dark wood beyond."
-  entity.uid = <1463>
   room.child = portal {
-    entity.uid = <4562>
     portal.dir = "east"
     portal.target = "saladhin_kingsrow_empty"
   }
   room.child = portal {
     portal.name = "the west gate"
-    entity.uid = <4563>
     portal.dir = "west"
     portal.door = true
     portal.target = "darkwood_saladhin"

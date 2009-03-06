@@ -9,7 +9,6 @@
 #include "common/string.h"
 #include "common/log.h"
 #include "common/file.h"
-#include "common/uniqid.h"
 #include "mud/fileobj.h"
 
 using namespace std;
@@ -174,18 +173,6 @@ File::Reader::Token File::Reader::read_token(std::string& outstr)
 
 		outstr = data.str();
 		return TOKEN_NUMBER;
-
-		// ID
-	} else if (test == '<') {
-		StringBuffer data;
-		while (in && isdigit(in.peek()))
-			data << (char)in.get();
-		if (in.get() != '>')
-			throw File::Error("Invalid ID format");
-
-		outstr = data.str();
-
-		return TOKEN_ID;
 
 		// %begin
 	} else if (test == '%') {
@@ -365,8 +352,6 @@ bool File::Reader::set_value(File::Reader::Token type, std::string& data, File::
 		value = Value(Value::TYPE_BOOL, "false");
 	} else if (type == TOKEN_STRING) {
 		value = Value(Value::TYPE_STRING, data);
-	} else if (type == TOKEN_ID) {
-		value = Value(Value::TYPE_ID, data);
 	} else if (type == TOKEN_START_LIST) {
 		std::vector<Value> list;
 		while (true) {
@@ -493,22 +478,6 @@ File::Writer::attr(const std::string& ns, const std::string& name, bool data)
 }
 
 void
-File::Writer::attr(const std::string& ns, const std::string& name, const UniqueID& data)
-{
-	if (!out)
-		return;
-
-	if (!File::valid_name(ns) || !File::valid_name(name)) {
-		Log::Error << "Attempted to write id '" << ns << "." << name << "'";
-		return;
-	}
-
-	do_indent();
-
-	out << ns << "." << name << " = <" << MUniqueID.encode(data) << ">\n";
-}
-
-void
 File::Writer::attr(const std::string& ns, const std::string& name, const std::vector<Value>& list)
 {
 	if (!out)
@@ -531,9 +500,6 @@ File::Writer::attr(const std::string& ns, const std::string& name, const std::ve
 			break;
 		case Value::TYPE_STRING:
 			out << EscapeString(i->get_value());
-			break;
-		case Value::TYPE_ID:
-			out  << '<' << i->get_value() << '>';
 			break;
 		case Value::TYPE_INT:
 		case Value::TYPE_BOOL:
@@ -693,16 +659,6 @@ File::Node::get_string() const
 	return value.get_value();
 }
 
-UniqueID
-File::Node::get_id() const
-{
-	if (value.get_type() != Value::TYPE_ID) {
-		Log::Error << "Incorrect data type for '" << get_ns() << '.' << get_name() << "' at :" << get_line();
-		throw(File::Error("data type mismatch"));
-	}
-	return MUniqueID.decode(value.get_value());
-}
-
 const std::vector<File::Value>&
 File::Node::get_list() const
 {
@@ -782,9 +738,6 @@ operator<< (const StreamControl& stream, const File::Node& node)
 			break;
 		case File::Value::TYPE_BOOL:
 			stream << (node.get_bool() ? "true" : "false");
-			break;
-		case File::Value::TYPE_ID:
-			stream << "id";
 			break;
 		case File::Value::TYPE_LIST:
 			stream << "list";

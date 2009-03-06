@@ -199,10 +199,6 @@ namespace OLC
 		// ----- BEGIN OLC BLOCK -----
 
 		OLC_BEGIN_TYPE(Entity)
-		OLC_BEGIN_ATTR(uniqid)
-		OLC_GET
-		OLC_DISPLAY(MUniqueID.encode(edit->get_uid()))
-		OLC_END_ATTR
 		OLC_BEGIN_ATTR(name)
 		OLC_GET
 		OLC_DISPLAY(edit->get_name().get_name())

@@ -56,13 +56,6 @@ void Entity::activate()
 	// set as active
 	state = ACTIVE;
 
-	// assign unique ID if it has none
-	if (!uid)
-		uid = MUniqueID.create();
-
-	// insert into unique ID table
-	MEntity.id_map.insert(std::pair<UniqueID, Entity*>(uid, this));
-
 	// remove from dead list
 	if (link_next)
 		link_next->link_prev = link_prev;
@@ -90,11 +83,6 @@ void Entity::deactivate()
 
 	// quite dead, thank you
 	state = DEAD;
-
-	// ID MAP
-	UniqueIDMap::iterator i = MEntity.id_map.find(uid);
-	if (i != MEntity.id_map.end())
-		MEntity.id_map.erase(i);
 
 	// if we're the next heartbeat target, update the heartbeat pointer
 	if (this == MEntity.next)
@@ -158,8 +146,6 @@ void Entity::save(File::Writer& writer, const std::string& ns, const std::string
 
 void Entity::save_data(File::Writer& writer)
 {
-	writer.attr("entity", "uid", uid);
-
 	// event handler list
 	for (EventList::const_iterator i = events.begin(); i != events.end(); i ++) {
 		writer.begin("entity", "event");
@@ -221,8 +207,6 @@ else if (load_node(reader, node) == FO_SUCCESS_CODE)
 int Entity::load_node(File::Reader& reader, File::Node& node)
 {
 	FO_NODE_BEGIN
-	FO_ATTR("entity", "uid")
-	uid = node.get_id();
 	FO_ATTR("entity", "tag")
 	add_tag(TagID::create(node.get_string()));
 	FO_OBJECT("entity", "event")
@@ -396,14 +380,6 @@ size_t _MEntity::tag_count(TagID tag) const
 std::pair<TagTable::const_iterator, TagTable::const_iterator> _MEntity::tag_list(TagID tag) const
 {
 	return tag_map.equal_range(tag);
-}
-
-Entity* _MEntity::get(const UniqueID& uid) const
-{
-	UniqueIDMap::const_iterator i = id_map.find(uid);
-	if (i != id_map.end())
-		return i->second;
-	return NULL;
 }
 
 void _MEntity::collect()

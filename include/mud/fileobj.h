@@ -9,7 +9,6 @@
 #define __FILEAPI_H__
 
 #include "common/log.h"
-#include "common/uniqid.h"
 
 namespace File
 {
@@ -33,7 +32,6 @@ public:
 		TYPE_STRING,
 		TYPE_INT,
 		TYPE_BOOL,
-		TYPE_ID,
 		TYPE_LIST,
 	};
 
@@ -72,7 +70,6 @@ public:
 	std::string get_string() const;
 	bool get_bool() const;
 	int get_int() const;
-	UniqueID get_id() const;
 
 	const std::vector<Value>& get_list() const;
 	const std::vector<Value>& get_list(size_t size) const;
@@ -130,7 +127,7 @@ private:
 	std::string filename;
 	size_t line;
 
-	enum Token { TOKEN_ERROR, TOKEN_EOF, TOKEN_STRING, TOKEN_NUMBER, TOKEN_TRUE, TOKEN_FALSE, TOKEN_BEGIN, TOKEN_END, TOKEN_SET, TOKEN_ID, TOKEN_KEY, TOKEN_START_LIST, TOKEN_END_LIST, TOKEN_COMMA, TOKEN_NAME };
+	enum Token { TOKEN_ERROR, TOKEN_EOF, TOKEN_STRING, TOKEN_NUMBER, TOKEN_TRUE, TOKEN_FALSE, TOKEN_BEGIN, TOKEN_END, TOKEN_SET, TOKEN_KEY, TOKEN_START_LIST, TOKEN_END_LIST, TOKEN_COMMA, TOKEN_NAME };
 
 	Token read_token(std::string& data);
 	bool set_value(Token type, std::string& data, Value& value);
@@ -151,7 +148,6 @@ public:
 	void attr(const std::string& ns, const std::string& name, const std::string& data);
 	void attr(const std::string& ns, const std::string& name, long data);
 	void attr(const std::string& ns, const std::string& name, bool data);
-	void attr(const std::string& ns, const std::string& name, const UniqueID& data);
 	void attr(const std::string& ns, const std::string& name, const std::vector<Value>& list);
 
 	inline void attr(const std::string& ns, const std::string& name, unsigned long data) { attr(ns, name, (long)data); }

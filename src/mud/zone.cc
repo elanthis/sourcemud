@@ -287,8 +287,6 @@ void Zone::broadcast_event(const Event& event)
 int _MZone::initialize()
 {
 	// modules we need
-	if (require(MUniqueID) != 0)
-		return 1;
 	if (require(MEntity) != 0)
 		return 1;
 	if (require(MNpcBP) != 0)

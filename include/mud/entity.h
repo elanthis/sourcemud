@@ -11,7 +11,6 @@
 #include "common/types.h"
 #include "common/error.h"
 #include "common/imanager.h"
-#include "common/uniqid.h"
 #include "mud/event.h"
 #include "mud/color.h"
 #include "mud/tag.h"
@@ -33,7 +32,6 @@ typedef std::list<Entity*> EntityList; // NOTE: no gc_alloc, don't want GC to sc
 typedef std::set<TagID> TagList;
 typedef std::multimap<TagID, Entity*> TagTable; // NOTE: also non-GC scanning
 typedef std::vector<EventHandler*> EventList;
-typedef std::map<UniqueID, Entity*> UniqueIDMap; // NOTE: also non-GC scanning
 
 // --- Entity Definiton ---
 
@@ -46,9 +44,6 @@ public:
 	// factory handling
 	virtual const char* factory_type() const = 0;
 	static Entity* create(const std::string& type);  // efactory.cc
-
-	// get unique ID
-	inline const UniqueID& get_uid() const { return uid; }
 
 	// Lua scripting support -- returns a userdata representing the
 	// Entity in question.
@@ -130,10 +125,6 @@ public:
 	virtual Entity* get_owner() const = 0;
 	virtual void owner_release(Entity* child) = 0;
 
-	// big list for updates
-private:
-	UniqueID uid;
-
 	// various data
 protected:
 	TagList tags;
@@ -177,9 +168,6 @@ public:
 	// fetch by tag
 	std::pair<TagTable::const_iterator, TagTable::const_iterator> tag_list(TagID tag) const;
 
-	// fetch by ID
-	Entity* get(const UniqueID& uid) const;
-
 	// count by tag
 	size_t tag_count(TagID tag) const;
 
@@ -195,9 +183,6 @@ private:
 	// entities end up being moved to the dead list, we
 	// still iterate to the proper entity.
 	Entity* next;
-
-	// lookup by uniqid
-	UniqueIDMap id_map;
 
 	// tag map: no GC
 	TagTable tag_map;

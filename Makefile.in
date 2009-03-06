@@ -28,7 +28,6 @@ HEADERS = \
 	include/common/string.h \
 	include/common/time.h \
 	include/common/types.h \
-	include/common/uniqid.h \
 	include/lua/core.h \
 	include/lua/exec.h \
 	include/lua/object.h \
@@ -94,7 +93,6 @@ SOURCES = \
 	src/common/strbuf.cc \
 	src/common/strings.cc \
 	src/common/time.cc \
-	src/common/uniqid.cc \
 	src/generated/commands.cc \
 	src/lua/core.cc \
 	src/lua/entlib.cc \
@@ -240,7 +238,6 @@ DATA = \
 	data/blueprints/undead.npcs \
 	data/skills \
 	data/traits \
-	data/uniqid \
 	data/weather \
 	data/html/tpl/header.tpl \
 	data/html/tpl/footer.tpl \
