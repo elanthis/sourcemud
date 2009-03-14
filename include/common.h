@@ -69,9 +69,9 @@
 #endif
 
 // Libraries
-#ifdef HAVE_LIBZ
+#ifdef HAVE_ZLIB
 #	include <zlib.h>
-#endif // HAVE_LIBZ
+#endif // HAVE_ZLIB
 
 // common.h has been define
 #define COMMON_H 1

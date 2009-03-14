@@ -174,7 +174,7 @@ protected:
 	time_t in_stamp; // last input time
 	int color_set[NUM_CTYPES]; // color codes
 	std::vector<int> colors; // current color stack
-#ifdef HAVE_LIBZ
+#ifdef HAVE_ZLIB
 	z_stream* zstate; // compression
 #endif
 	struct IOFlags {
@@ -224,11 +224,11 @@ zmp_color:
 	// network info
 	NetAddr addr;
 
-#ifdef HAVE_LIBZ
+#ifdef HAVE_ZLIB
 	// compression
 	bool begin_mccp();
 	void end_mccp();
-#endif // HAVE_LIBZ
+#endif // HAVE_ZLIB
 
 	// processing
 	void process_input();

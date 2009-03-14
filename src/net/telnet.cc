@@ -243,6 +243,9 @@ TelnetHandler::TelnetHandler(int s_sock, const NetAddr& s_netaddr) : SocketConne
 	mode = NULL;
 	memset(&io_flags, 0, sizeof(IOFlags));
 	timeout = MSettings.get_telnet_timeout();
+#ifdef HAVE_ZLIB
+	zstate = NULL;
+#endif // HAVE_ZLIB
 
 	// initial telnet options
 	io_flags.want_echo = true;
@@ -256,12 +259,9 @@ TelnetHandler::TelnetHandler(int s_sock, const NetAddr& s_netaddr) : SocketConne
 	send_iac(2, DO, TELOPT_NEW_ENVIRON);
 	send_iac(2, DO, TELOPT_TTYPE);
 	send_iac(2, DO, TELOPT_NAWS);
-
-	// have MCCP support?
-#ifdef HAVE_LIBZ
-	zstate = NULL;
+#ifdef HAVE_ZLIB
 	send_iac(2, WILL, TELOPT_MCCP2);
-#endif // HAVE_LIBZ
+#endif // HAVE_ZLIB
 
 	// colors
 	for (int i = 0; i < NUM_CTYPES; ++ i) {
@@ -273,29 +273,32 @@ TelnetHandler::TelnetHandler(int s_sock, const NetAddr& s_netaddr) : SocketConne
 }
 
 // ----- COMPRESSION -----
-#ifdef HAVE_LIBZ
+#ifdef HAVE_ZLIB
 
 // initialize compression
 bool TelnetHandler::begin_mccp()
 {
-	if (!zstate) {
+	if (zstate == 0) {
 		// allocte
-		zstate = new(UseGC) z_stream;
-		if (zstate == NULL) {
+		z_stream* z = new z_stream;
+		if (z == NULL) {
 			Log::Error << "Failed to allocate z_stream";
 			return false;
 		}
 
 		// initialize
-		memset(zstate, 0, sizeof(z_stream));
-		if (deflateInit(zstate, Z_DEFAULT_COMPRESSION) != Z_OK) {
-			Log::Error << "Failed to initialize z_stream: " << zstate->msg;
+		memset(z, 0, sizeof(z_stream));
+		if (deflateInit(z, Z_DEFAULT_COMPRESSION) != Z_OK) {
+			Log::Error << "Failed to initialize z_stream: " << z->msg;
 			return false;
 		}
 
 		// send the "all data will be compressed now message"
 		send_iac(2, SB, TELOPT_MCCP2);
 		send_iac(1, SE);
+
+		// and store our z_stream
+		zstate = z;
 
 		return true;
 	}
@@ -306,14 +309,15 @@ bool TelnetHandler::begin_mccp()
 // end compressed stream
 void TelnetHandler::end_mccp()
 {
-	if (zstate) {
+	if (zstate != 0) {
 		// free
 		deflateEnd(zstate);
+		delete zstate;
 		zstate = NULL;
 	}
 }
 
-#endif // HAVE_LIBZ
+#endif // HAVE_ZLIB
 
 // disconnect
 void TelnetHandler::disconnect()
@@ -324,9 +328,9 @@ void TelnetHandler::disconnect()
 	// reduce count
 	MNetwork.connections.remove(addr);
 
-#ifdef HAVE_LIBZ
+#ifdef HAVE_ZLIB
 	end_mccp();
-#endif // HAVE_LIBZ
+#endif // HAVE_ZLIB
 
 	// shutdown current mode
 	if (mode) {
@@ -766,11 +770,11 @@ void TelnetHandler::sock_input(char* buffer, size_t size)
 					send_iac(2, WILL, TELOPT_EOR);
 				}
 				break;
-#ifdef HAVE_LIBZ
+#ifdef HAVE_ZLIB
 			case TELOPT_MCCP2:
 				begin_mccp();
 				break;
-#endif // HAVE_LIBZ
+#endif // HAVE_ZLIB
 			case TELOPT_ZMP: {
 				// enable ZMP support
 				io_flags.zmp = true;
@@ -1130,12 +1134,12 @@ void TelnetHandler::add_to_chunk(const char *data, size_t len)
 
 void TelnetHandler::add_output(const char *data, size_t len)
 {
-#ifdef HAVE_LIBZ
-	if (zstate) {
-		char buffer[512]; // good enough for now
+#ifdef HAVE_ZLIB
+	if (zstate != 0) {
+		char buffer[4096];
 
 		// setup
-		zstate->next_in = (Bytef*)bytes;
+		zstate->next_in = (Bytef*)data;
 		zstate->avail_in = len;
 		zstate->next_out = (Bytef*)buffer;
 		zstate->avail_out = sizeof(buffer);
@@ -1157,7 +1161,7 @@ void TelnetHandler::add_output(const char *data, size_t len)
 		if (zstate->avail_out < sizeof(buffer))
 			sock_buffer(buffer, sizeof(buffer) - zstate->avail_out);
 	} else
-#endif // HAVE_LIBZ
+#endif // HAVE_ZLIB
 
 		sock_buffer(data, len);
 }
