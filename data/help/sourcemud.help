@@ -1,5 +1,5 @@
 # Source MUD - Help data
-# Copyright (C) 2003-2005  AwesomePlay Productions Inc.
+# Copyright (C) 2003-2005  Sean Middleditch
 # Sean Middleditch <elanthis@sourcemud.org>
 
 %begin general
@@ -100,7 +100,7 @@
 
 %begin license
   Source MUD Engine
-  Copyright (c) 2000,2001,2003-2005  AwesomePlay Productions, Inc. and contributors.  All rights reserved.
+  Copyright (c) 2000,2001,2003-2005  Sean Middleditch and contributors.  All rights reserved.
 
   Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
 

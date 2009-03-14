@@ -1,5 +1,5 @@
 // String routines for AweMUG NG
-// Copyright (C) 2003  AwesomePlay Productions, Inc.
+// Copyright (C) 2003  Sean Middleditch
 
 // add matches() to String
 function init()

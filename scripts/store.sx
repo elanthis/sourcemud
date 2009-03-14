@@ -1,5 +1,5 @@
 // Stores for Source MUD
-// Copyright (C) 2003  AwesomePlay Productions, Inc.
+// Copyright (C) 2003  Sean Middleditch
 
 function show_menu (player)
 	// get room

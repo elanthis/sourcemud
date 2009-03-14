@@ -1,5 +1,5 @@
 // Extension routines for AweMUG NG
-// Copyright (C) 2003  AwesomePlay Productions, Inc.
+// Copyright (C) 2003  Sean Middleditch
 
 // Pause for X ticks
 public function pause (ticks)

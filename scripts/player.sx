@@ -1,5 +1,5 @@
 // Player extensions
-// Copyright (C) 2002  AwesomePlay Productions, Inc.
+// Copyright (C) 2002  Sean Middleditch
 
 // show experience
 function playerShowExp(self)

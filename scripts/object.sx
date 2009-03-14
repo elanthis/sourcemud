@@ -1,5 +1,5 @@
 // Object extensions
-// Copyright (C) 2002  AwesomePlay Productions, Inc.
+// Copyright (C) 2002  Sean Middleditch
 
 function saveObjectBlueprint(blueprint, writer)
 	if String(blueprint.read_text) then

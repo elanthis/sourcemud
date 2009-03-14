@@ -1,6 +1,6 @@
 Source MUD Event System
 Source MUD
-Copyright (C) 2006  AwesomePlay Productions, Inc.
+Copyright (C) 2006  Sean Middleditch
 Sean Middleditch <elanthis@sourcemud.org>
 -------------------------------------------------
 

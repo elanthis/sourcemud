@@ -1,7 +1,7 @@
           /======================================================\
           ||  Game mechanics and rules                          ||
           ||  Source MUD MUD Server Software                        ||
-          ||  Copyright (C) 2006  AwesomePlay Productions, Inc. ||
+          ||  Copyright (C) 2006  Sean Middleditch ||
           ||  Sean Middleditch <elanthis@sourcemud.org>            ||
           \======================================================/
 

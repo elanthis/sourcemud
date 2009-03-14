@@ -1,5 +1,5 @@
 // Web server routines
-// Copyright (C) 2006  AwesomePlay Productions, Inc.
+// Copyright (C) 2006  Sean Middleditch
 
 // display site statistics
 function pageStats(page, http)

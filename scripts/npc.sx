@@ -1,5 +1,5 @@
 // NPC extensions
-// Copyright (C) 2002  AwesomePlay Productions, Inc.
+// Copyright (C) 2002  Sean Middleditch
 
 // random portal walking for NPCs
 function goRandomPortal(self)

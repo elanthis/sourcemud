@@ -1,5 +1,5 @@
 # Source MUD Next Generation - Animal AI
-# Copyright (C) 2003  AwesomePlay Productions Inc.
+# Copyright (C) 2003  Sean Middleditch
 # Sean Middleditch <elanthis@sourcemud.org>
 
 ai.id = "monster"
