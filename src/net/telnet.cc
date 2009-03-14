@@ -257,7 +257,6 @@ TelnetHandler::TelnetHandler(int s_sock, const NetAddr& s_netaddr) : SocketConne
 	send_iac(2, DO, TELOPT_NEW_ENVIRON);
 	send_iac(2, DO, TELOPT_TTYPE);
 	send_iac(2, DO, TELOPT_NAWS);
-	send_iac(2, DO, TELOPT_LFLOW);
 
 	// have MCCP support?
 #ifdef HAVE_LIBZ
