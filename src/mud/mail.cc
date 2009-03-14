@@ -28,14 +28,14 @@ void MailMessage::header(const std::string& name, const std::string& value)
 int MailMessage::send() const
 {
 	// sanity
-	if (!to || !subject) {
+	if (to.empty() || subject.empty()) {
 		Log::Error << "Attempt to send a message without both a recipient and a subject.";
 		return -1;
 	}
 
 	// configuration
 	std::string sendmail = MSettings.get_sendmail_bin();
-	if (!sendmail) {
+	if (sendmail.empty()) {
 		Log::Error << "No sendmail binary configured";
 		return -1;
 	}
