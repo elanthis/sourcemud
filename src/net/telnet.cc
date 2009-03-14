@@ -362,7 +362,7 @@ void TelnetHandler::stream_put(const char *text, size_t len)
 
 	// output a newline if we need one, such as after a prompt
 	if (io_flags.need_newline) {
-		add_output("\n\r", 2);
+		add_output("\r\n", 2);
 		io_flags.soft_break = false;
 		cur_col = 0;
 	}
@@ -384,7 +384,7 @@ void TelnetHandler::stream_put(const char *text, size_t len)
 				if (!io_flags.soft_break) {
 					// word wrap?
 					if (width && cur_col + 1 >= width - 2) {
-						add_output("\n\r", 2);
+						add_output("\r\n", 2);
 						cur_col = 0;
 						io_flags.soft_break = true;
 					} else {
@@ -400,7 +400,7 @@ void TelnetHandler::stream_put(const char *text, size_t len)
 
 				// not after a soft-break
 				if (!io_flags.soft_break) {
-					add_output("\n\r", 2);
+					add_output("\r\n", 2);
 					cur_col = 0;
 				}
 
@@ -1167,7 +1167,7 @@ void TelnetHandler::end_chunk()
 	if (outchunk_cnt > 0) {
 		// need to word-wrap?
 		if (width > 0 && chunk_size + cur_col >= width - 2) {
-			add_output("\n\r", 2);
+			add_output("\r\n", 2);
 			cur_col = 0;
 			OUTPUT_INDENT()
 		}
