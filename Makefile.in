@@ -300,6 +300,7 @@ data/session.key:
 
 # GENERATED SOURCE
 src/generated/commands.cc: tools/parse-commands.pl $(wildcard src/cmd/*.cc)
+	@[ -d src/generated ] || mkdir src/generated
 	@echo Generating $@
 	@$(PERL) tools/parse-commands.pl
 
