@@ -807,6 +807,9 @@ void TelnetHandler::sock_input(char* buffer, size_t size)
 					send_iac(2, WONT, TELOPT_EOR);
 				}
 				break;
+			case TELOPT_ZMP:
+				// ignore
+				break;
 			default:
 				send_iac(2, WONT, c);
 				break;
