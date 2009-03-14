@@ -251,7 +251,6 @@ TelnetHandler::TelnetHandler(int s_sock, const NetAddr& s_netaddr) : SocketConne
 	io_flags.use_ansi = true;
 
 	// send our initial telnet state and support options
-	send_iac(2, WONT, TELOPT_ECHO);
 	send_iac(2, WILL, TELOPT_EOR);
 	send_iac(2, WILL, TELOPT_ZMP);
 	send_iac(2, DO, TELOPT_NEW_ENVIRON);
