@@ -14,82 +14,25 @@
 #include "mud/color.h"
 #include "net/netaddr.h"
 #include "net/socket.h"
+#include "libtelnet.h"
 
 // default window size
-#define TELNET_DEFAULT_WIDTH 80
-#define TELNET_DEFAULT_HEIGHT 24
+const size_t TELNET_DEFAULT_WIDTH = 80;
+const size_t TELNET_DEFAULT_HEIGHT = 24;
 
 // default timeout in minutes
-#define TELNET_DEFAULT_TIMEOUT 15
+const size_t TELNET_DEFAULT_TIMEOUT = 15;
 
 // max pre-input lines
-#define TELNET_BUFFER_LINES 3
+const size_t TELNET_BUFFER_LINES = 3;
+
+// input/output buffer sizes
+const size_t TELNET_INPUT_BUFFER_SIZE = 256;
+const size_t TELNET_OUTPUT_BUFFER_SIZE = 16384;
+const size_t TELNET_CHUNK_BUFFER_SIZE = 32;
 
 // maximum escape length
-#define TELNET_MAX_ESCAPE_SIZE 32
-
-class TextBufferList
-{
-private:
-	std::vector<char*> list;
-	const size_t size;
-	size_t allocs, pallocs, out;
-
-public:
-	TextBufferList(size_t s_size) : list(), size(s_size), allocs(0), pallocs(0), out(0) {}
-	~TextBufferList() {
-		for (std::vector<char*>::iterator i = list.begin(); i != list.end(); ++i)
-			if (*i)
-				delete[] *i;
-	}
-
-	size_t get_size() const { return size; }
-
-	char* alloc();
-	void release(char* buf) {
-		-- out;
-		list.push_back(buf);
-	}
-};
-class TextBuffer
-{
-public:
-	typedef enum {
-		EMPTY = -1,
-		SIZE_2048 = 0,
-		SIZE_4096,
-		SIZE_8192,
-		SIZE_16384,
-		COUNT
-	} SizeType;
-
-private:
-	SizeType bsize;
-	char* bdata;
-
-	// the buffers
-	static TextBufferList lists[COUNT];
-
-public:
-	TextBuffer() : bsize(EMPTY), bdata(NULL) {}
-	~TextBuffer() { release(); }
-
-	size_t size() const { return bsize != EMPTY ? lists[bsize].get_size() : 0; }
-	char *data() const { return bdata; }
-	void release();
-	int alloc(SizeType size);
-	int grow();
-
-	TextBuffer& copy(TextBuffer& buffer) {
-		if (bdata != NULL)
-			release();
-		bsize = buffer.bsize;
-		bdata = buffer.bdata;
-		buffer.bsize = EMPTY;
-		buffer.bdata = NULL;
-		return *this;
-	}
-};
+const size_t TELNET_MAX_ESCAPE_SIZE = 32;
 
 class ITelnetMode
 {
@@ -160,10 +103,11 @@ protected:
 	~TelnetHandler() {}
 
 protected:
-	TextBuffer input; // player input buffer
-	TextBuffer outchunk; // chunk of output
-	TextBuffer subrequest; // telnet-subrequest input
-	uint in_cnt, sb_cnt, outchunk_cnt; // counts for buffers
+	libtelnet_t telnet;
+	char input[TELNET_INPUT_BUFFER_SIZE];
+	char output[TELNET_OUTPUT_BUFFER_SIZE];
+	char chunk[TELNET_CHUNK_BUFFER_SIZE];
+	uint inpos, outpos, chunkpos, chunkwidth;
 	char esc_buf[TELNET_MAX_ESCAPE_SIZE]; // output escape sequences
 	uint esc_cnt; // count of escape characters
 	uint width, height; // terminal size
@@ -174,41 +118,22 @@ protected:
 	time_t in_stamp; // last input time
 	int color_set[NUM_CTYPES]; // color codes
 	std::vector<int> colors; // current color stack
-#ifdef HAVE_ZLIB
-	z_stream* zstate; // compression
-#endif
 	struct IOFlags {
-int use_ansi:
-1, need_prompt:
-1, need_newline:
-1, do_echo:
-		1,
-do_eor:
-1, want_echo:
-1, xterm:
-1, force_echo:
-1, zmp:
-		1,
-ready:
-1, soft_break:
-1, ansi_term:
-		1,
-zmp_color:
-1, auto_indent:
-		1;
+	int use_ansi: 1,
+		need_prompt: 1,
+		need_newline: 1,
+		do_echo: 1,
+		do_eor: 1,
+		want_echo: 1,
+		xterm: 1,
+		force_echo: 1,
+		zmp: 1,
+		ready: 1,
+		soft_break: 1,
+		ansi_term: 1,
+		zmp_color: 1,
+		auto_indent: 1;
 	} io_flags;
-
-	// input states - telnet
-	enum {
-		ISTATE_TEXT,
-		ISTATE_IAC,
-		ISTATE_WILL,
-		ISTATE_WONT,
-		ISTATE_DO,
-		ISTATE_DONT,
-		ISTATE_SB,
-		ISTATE_SE,
-	} istate;
 
 	// output states - formatting
 	enum {
@@ -224,30 +149,25 @@ zmp_color:
 	// network info
 	NetAddr addr;
 
-#ifdef HAVE_ZLIB
-	// compression
-	bool begin_mccp();
-	void end_mccp();
-#endif // HAVE_ZLIB
-
 	// processing
 	void process_input();
-	void process_sb();
+	void process_sb(const char* data, size_t size);
 	void process_zmp(size_t size, char* chunk);
 
 	// command handling
 	void process_telnet_command(char* cmd);
 
 	// data output
-	void add_output(const char* data, size_t len);
-	void add_to_chunk(const char* data, size_t len);
+	void add_to_chunk(const char* data, size_t len, bool invis);
+	void buffer_output(const char* data, size_t len) { libtelnet_send_data(&telnet, (unsigned char*)data, len); }
 	void end_chunk();
-	void send_iac(uint, ...); // build iac
-	void send_data(uint, ...); // don't escape
 	void add_zmp(size_t argc, std::string argv[]);
 
 	// timeout handling
 	virtual void check_timeout(); // check to see if we should disconnect
+
+public:
+	void libtelnet_event(libtelnet_event_t* ev);
 };
 
 // indent stream

@@ -1,5 +1,5 @@
 # CONFIG
-CXXFLAGS = -I. -Iinclude -Ilib/lua51 @CXXFLAGS@ -DLUA_USE_POSIX=1
+CXXFLAGS = -I. -Iinclude -Ilib/lua51 -Ilib/libtelnet @CXXFLAGS@ -DLUA_USE_POSIX=1
 LIBS = @LIBS@
 
 VERSION = @PACKAGE_VERSION@
@@ -212,6 +212,10 @@ LUA_SOURCES = \
 	lib/lua51/lzio.cc \
 	lib/lua51/print.cc
 
+LIBTELNET_HEADERS = lib/libtelnet/libtelnet.h
+
+LIBTELNET_SOURCES = lib/libtelnet/libtelnet.c
+
 SCRIPTS = \
 	scripts/init.lua \
 	scripts/http.lua \
@@ -254,18 +258,19 @@ BUILD = Makefile configure
 DIST = configure configure.ac Makefile.in sourcemud.in include/config.h.in
 HTTPKEY = data/session.key
 
-OBJECTS = $(SOURCES:%.cc=$(BUILDDIR)/%.o) $(LUA_SOURCES:%.cc=$(BUILDDIR)/%.o)
+OBJECTS = $(SOURCES:%.cc=$(BUILDDIR)/%.o) $(LUA_SOURCES:%.cc=$(BUILDDIR)/%.o) \
+	$(LIBTELNET_SOURCES:%.c=$(BUILDDIR)/%.o)
 
 GENERATED = src/generated/commands.cc include/common.h.gch
 
 # CORE BUILD
-all: $(BUILD) $(TOOLS) $(XML) $(HEADERS) $(LUA_HEADERS) $(GENERATED) \
-		$(SOURCES) $(LUA_SOURCES) $(OBJECTS) $(BINARIES) $(HTTPKEY) \
-		$(SCRIPTS) $(DATA)
+all: $(BUILD) $(TOOLS) $(XML) $(HEADERS) $(LUA_HEADERS) $(LIBTELNET_HEADERS) \
+		$(GENERATED) $(SOURCES) $(LUA_SOURCES) $(OBJECTS) $(BINARIES) \
+		$(HTTPKEY) $(SCRIPTS) $(DATA)
 
 .build/stamp:
 	@[ -d $(DEPDIR) ] || mkdir $(DEPDIR)
-	@for dir in $(addprefix $(BUILDDIR)/, $(sort $(dir $(SOURCES) $(LUA_SOURCES)))); do [ -d "$$dir" ] || mkdir -p "$$dir"; done
+	@for dir in $(addprefix $(BUILDDIR)/, $(sort $(dir $(SOURCES) $(LUA_SOURCES) $(LIBTELNET_SOURCES)))); do [ -d "$$dir" ] || mkdir -p "$$dir"; done
 	@touch .build/stamp
 
 clean:
@@ -284,6 +289,10 @@ $(BUILDDIR)/%.o: %.cc include/common.h.gch .build/stamp
 			-e '/^$$/ d' -e 's/$$/ :/' \
 			< "$$depfile.tmp" >> "$$depfile"; \
 		rm -f "$$depfile.tmp"
+
+$(BUILDDIR)/lib/libtelnet/libtelnet.o: lib/libtelnet/libtelnet.c lib/libtelnet/libtelnet.h .build/stamp
+	@echo Compiling $<
+	@$(CXX) -c -o $@ $(CXXFLAGS) $<
 
 # DEPENDENCIES
 -include $(DEPDIR)/*.P
