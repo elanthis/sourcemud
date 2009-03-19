@@ -21,14 +21,6 @@
 #include "net/zmp.h"
 #include "net/util.h"
 
-// include telnet, along with optional globals
-#define TELCMDS 1
-#define TELOPTS 1
-#define SLC_NAMES 1
-#include <arpa/telnet.h>
-
-#define TELOPT_MCCP2 86
-
 // otput spacing in put()
 #define OUTPUT_INDENT() \
 	if (cur_col < margin) { \
@@ -189,13 +181,13 @@ TelnetHandler::TelnetHandler(int s_sock, const NetAddr& s_netaddr) : SocketConne
 	io_flags.use_ansi = true;
 
 	// send our initial telnet state and support options
-	telnet_send_telopt(&telnet, WILL, TELOPT_EOR);
-	telnet_send_telopt(&telnet, WILL, TELOPT_ZMP);
-	telnet_send_telopt(&telnet, DO, TELOPT_NEW_ENVIRON);
-	telnet_send_telopt(&telnet, DO, TELOPT_TTYPE);
-	telnet_send_telopt(&telnet, DO, TELOPT_NAWS);
+	telnet_send_negotiate(&telnet, TELNET_WILL, TELNET_TELOPT_EOR);
+	telnet_send_negotiate(&telnet, TELNET_WILL, TELNET_TELOPT_ZMP);
+	telnet_send_negotiate(&telnet, TELNET_DO, TELNET_TELOPT_NEW_ENVIRON);
+	telnet_send_negotiate(&telnet, TELNET_DO, TELNET_TELOPT_TTYPE);
+	telnet_send_negotiate(&telnet, TELNET_DO, TELNET_TELOPT_NAWS);
 #ifdef HAVE_ZLIB
-	telnet_send_telopt(&telnet, WILL, TELOPT_MCCP2);
+	telnet_send_negotiate(&telnet, TELNET_WILL, TELNET_TELOPT_COMPRESS2);
 #endif // HAVE_ZLIB
 
 	// colors
@@ -236,7 +228,7 @@ void TelnetHandler::disconnect()
 bool TelnetHandler::toggle_echo(bool v)
 {
 	io_flags.want_echo = v;
-	telnet_send_telopt(&telnet, v ? WONT : WILL, TELOPT_ECHO);
+	telnet_send_negotiate(&telnet, v ? TELNET_WONT : TELNET_WILL, TELNET_TELOPT_ECHO);
 
 	return v;
 }
@@ -536,6 +528,72 @@ void TelnetHandler::telnet_event(telnet_event_t* ev) {
 	case TELNET_EV_SEND:
 		sock_buffer((const char*)ev->buffer, ev->size);
 		break;
+	case TELNET_EV_WILL:
+		switch (ev->telopt) {
+		case TELNET_TELOPT_TTYPE:
+			ev->accept = 1;
+			// FIXME: this is ugly
+			telnet_send_telopt(&telnet, TELNET_SB, TELNET_TELOPT_TTYPE);
+			telnet_printf2(&telnet, "\x01"); // 1 is 'SEND'
+			telnet_send_command(&telnet, TELNET_SE);
+			break;
+		case TELNET_TELOPT_NEW_ENVIRON:
+			ev->accept = 1;
+			// FIXME: this is ugly; also the embedded NUL won't even work
+			telnet_send_telopt(&telnet, TELNET_SB, TELNET_TELOPT_NEW_ENVIRON);
+			telnet_printf2(&telnet, "\x01\x00SYSTEMTYPE"); // 1 is SEND, 0 is VAR
+			telnet_send_command(&telnet, TELNET_SE);
+			break;
+		}
+		break;
+	case TELNET_EV_WONT:
+		break;
+	case TELNET_EV_DO:
+		switch (ev->telopt) {
+		case TELNET_TELOPT_ECHO:
+			ev->accept = 1;
+			if (io_flags.want_echo)
+				io_flags.do_echo = true;
+			break;
+		case TELNET_TELOPT_EOR:
+			ev->accept = 1;
+			if (!io_flags.do_eor)
+				io_flags.do_eor = true;
+			break;
+		case TELNET_TELOPT_COMPRESS2:
+			ev->accept = 1;
+			telnet_begin_compress2(&telnet);
+			break;
+		case TELNET_TELOPT_ZMP:
+			ev->accept = 1;
+			// enable ZMP support
+			io_flags.zmp = true;
+			// send zmp.ident command
+			std::string argv[4] = {"zmp.ident", "Source MUD", PACKAGE_VERSION, "Powerful C++ MUD server software" };
+			send_zmp(4, argv);
+			// check for net.sourcemud package
+			argv[0] = "zmp.check";
+			argv[1] = "net.sourcemud.";
+			send_zmp(2, argv);
+			// check for color.define command
+			argv[0] = "zmp.check";
+			argv[1] = "color.define";
+			send_zmp(2, argv);
+			break;
+		}
+		break;
+	case TELNET_EV_DONT:
+		switch (ev->telopt) {
+		case TELNET_TELOPT_ECHO:
+			if (!io_flags.force_echo)
+				io_flags.do_echo = false;
+			break;
+		case TELNET_TELOPT_EOR:
+			if (io_flags.do_eor)
+				io_flags.do_eor = false;
+			break;
+		}
+		break;
 	case TELNET_EV_SUBNEGOTIATION:
 		process_sb((const char*)ev->buffer, ev->size);
 		break;
@@ -700,17 +758,17 @@ void TelnetHandler::sock_input(char* buffer, size_t size)
 		case ISTATE_WILL:
 			istate = ISTATE_TEXT;
 			switch (c) {
-			case TELOPT_NAWS:
+			case TELNET_TELOPT_NAWS:
 				// ignore
 				break;
-			case TELOPT_TTYPE:
-				send_iac(3, SB, TELOPT_TTYPE, 1);  // 1 is 'SEND'
-				send_iac(1, SE);
+			case TELNET_TELOPT_TTYPE:
+				telnet_send_command(&telnet, 3, SB, TELNET_TELOPT_TTYPE, 1);  // 1 is 'SEND'
+				telnet_send_command(&telnet, 1, SE);
 				break;
-			case TELOPT_NEW_ENVIRON:
-				send_iac(4, SB, TELOPT_NEW_ENVIRON, 1, 0);  // 1 is 'SEND', 0 is 'VAR'
+			case TELNET_TELOPT_NEW_ENVIRON:
+				telnet_send_command(&telnet, 4, SB, TELNET_TELOPT_NEW_ENVIRON, 1, 0);  // 1 is 'SEND', 0 is 'VAR'
 				send_data(10, 'S', 'Y', 'S', 'T', 'E', 'M', 'T', 'Y', 'P', 'E');
-				send_iac(1, SE);
+				telnet_send_command(&telnet, 1, SE);
 				break;
 			default:
 				telnet_send_telopt(&telnet, DONT, c);
@@ -720,7 +778,7 @@ void TelnetHandler::sock_input(char* buffer, size_t size)
 		case ISTATE_WONT:
 			istate = ISTATE_TEXT;
 			switch (c) {
-			case TELOPT_NAWS:
+			case TELNET_TELOPT_NAWS:
 				// reset to default width
 				width = 70;
 				break;
@@ -729,22 +787,22 @@ void TelnetHandler::sock_input(char* buffer, size_t size)
 		case ISTATE_DO:
 			istate = ISTATE_TEXT;
 			switch (c) {
-			case TELOPT_ECHO:
+			case TELNET_TELOPT_ECHO:
 				if (io_flags.want_echo)
 					io_flags.do_echo = true;
 				break;
-			case TELOPT_EOR:
+			case TELNET_TELOPT_EOR:
 				if (!io_flags.do_eor) {
 					io_flags.do_eor = true;
-					telnet_send_telopt(&telnet, WILL, TELOPT_EOR);
+					telnet_send_telopt(&telnet, WILL, TELNET_TELOPT_EOR);
 				}
 				break;
 #ifdef HAVE_ZLIB
-			case TELOPT_MCCP2:
+			case TELNET_TELOPT_MCCP2:
 				begin_mccp();
 				break;
 #endif // HAVE_ZLIB
-			case TELOPT_ZMP: {
+			case TELNET_TELOPT_ZMP: {
 				// enable ZMP support
 				io_flags.zmp = true;
 				// send zmp.ident command
@@ -768,17 +826,17 @@ void TelnetHandler::sock_input(char* buffer, size_t size)
 		case ISTATE_DONT:
 			istate = ISTATE_TEXT;
 			switch (c) {
-			case TELOPT_ECHO:
+			case TELNET_TELOPT_ECHO:
 				if (!io_flags.force_echo)
 					io_flags.do_echo = false;
 				break;
-			case TELOPT_EOR:
+			case TELNET_TELOPT_EOR:
 				if (io_flags.do_eor) {
 					io_flags.do_eor = false;
-					telnet_send_telopt(&telnet, WONT, TELOPT_EOR);
+					telnet_send_telopt(&telnet, WONT, TELNET_TELOPT_EOR);
 				}
 				break;
-			case TELOPT_ZMP:
+			case TELNET_TELOPT_ZMP:
 				// ignore
 				break;
 			default:
@@ -888,7 +946,7 @@ void TelnetHandler::process_telnet_command(char* data)
 		} else if (args[1] == "off") {
 			io_flags.force_echo = false;
 			if (io_flags.want_echo)
-				telnet_send_telopt(&telnet, WONT, TELOPT_ECHO);
+				telnet_send_negotiate(&telnet, TELNET_WONT, TELNET_TELOPT_ECHO);
 			*this << CADMIN "Echo Disabled" CNORMAL "\n";
 			return;
 		}
@@ -907,12 +965,12 @@ void TelnetHandler::process_sb(const char* data, size_t size)
 {
 	switch (data[0]) {
 		// handle ZMP
-	case TELOPT_ZMP:
+	case TELNET_TELOPT_ZMP:
 		if (has_zmp())
 			process_zmp(size - 1, (char*)&data[1]);
 		break;
 		// resize of telnet window
-	case TELOPT_NAWS: {
+	case TELNET_TELOPT_NAWS: {
 		uint16 new_width, new_height;
 		memcpy(&new_width, &data[1], 2);
 		memcpy(&new_height, &data[3], 2);
@@ -921,7 +979,7 @@ void TelnetHandler::process_sb(const char* data, size_t size)
 		break;
 	}
 	// handle terminal type
-	case TELOPT_TTYPE:
+	case TELNET_TELOPT_TTYPE:
 		// proper input?
 		if (size > 2 && data[1] == 0) {
 			// xterm?
@@ -937,7 +995,7 @@ void TelnetHandler::process_sb(const char* data, size_t size)
 		}
 		break;
 		// handle new environ
-	case TELOPT_NEW_ENVIRON:
+	case TELNET_TELOPT_NEW_ENVIRON:
 		// proper input - IS, VAR
 		if (size > 3 && data[1] == 0 && data[2] == 0) {
 			// system type?
@@ -989,7 +1047,7 @@ void TelnetHandler::sock_flush()
 
 		// GOAHEAD telnet command
 		if (io_flags.do_eor)
-			telnet_send_command(&telnet, EOR);
+			telnet_send_command(&telnet, TELNET_EOR);
 
 		io_flags.need_prompt = false;
 		io_flags.need_newline = true;
