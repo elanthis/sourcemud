@@ -103,7 +103,7 @@ protected:
 	~TelnetHandler() {}
 
 protected:
-	libtelnet_t telnet;
+	telnet_t telnet;
 	char input[TELNET_INPUT_BUFFER_SIZE];
 	char output[TELNET_OUTPUT_BUFFER_SIZE];
 	char chunk[TELNET_CHUNK_BUFFER_SIZE];
@@ -158,8 +158,8 @@ protected:
 	void process_telnet_command(char* cmd);
 
 	// data output
-	void add_to_chunk(const char* data, size_t len, bool invis);
-	void buffer_output(const char* data, size_t len) { libtelnet_send_data(&telnet, (unsigned char*)data, len); }
+	void add_to_chunk(const char* data, size_t len);
+	void buffer_output(const char* data, size_t len) { telnet_send_data(&telnet, data, len); }
 	void end_chunk();
 	void add_zmp(size_t argc, std::string argv[]);
 
@@ -167,7 +167,7 @@ protected:
 	virtual void check_timeout(); // check to see if we should disconnect
 
 public:
-	void libtelnet_event(libtelnet_event_t* ev);
+	void telnet_event(telnet_event_t* ev);
 };
 
 // indent stream

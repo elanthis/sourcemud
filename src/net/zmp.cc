@@ -247,14 +247,14 @@ void TelnetHandler::send_zmp(size_t argc, std::string argv[])
 		return;
 
 	// send request start
-	libtelnet_send_telopt(&telnet, LIBTELNET_SB, 93);
+	telnet_send_telopt(&telnet, TELNET_SB, 93);
 
 	// loop through argv[], which has argc elements
 	for (size_t i = 0; i < argc; ++i)
-		libtelnet_send_data(&telnet, (const unsigned char*)argv[i].c_str(), argv[i].size() + 1);
+		telnet_send_data(&telnet, argv[i].c_str(), argv[i].size() + 1);
 
 	// send request end
-	libtelnet_send_command(&telnet, LIBTELNET_SE);
+	telnet_send_command(&telnet, TELNET_SE);
 }
 
 // add a zmp command (to insert mid-processing, basically for color - YUCJ)
@@ -268,42 +268,18 @@ void TelnetHandler::add_zmp(size_t argc, std::string argv[])
 	if (!argc)
 		return;
 
-	// telnet codes
-	static char start_sb[3] = { IAC, SB, 93 }; // begin; 93 is ZMP code
-	static char end_sb[2] = { IAC, SE }; // end request
-	static char double_iac[2] = { IAC, IAC }; // for IAC escaping
-
-	size_t i; // current argument index
-	const char* start; // for handling argument chunks
-	const char* cptr; // for searching
+	// clear chunk
+	end_chunk();
 
 	// send request start
-	add_to_chunk(start_sb, 3, true);
+	telnet_send_telopt(&telnet, TELNET_SB, TELNET_TELOPT_ZMP);
 
 	// loop through argv[], which has argc elements
-	for (i = 0; i < argc; ++i) {
-		// to handle escaping, we will send this in chunks
-
-		start = argv[i].c_str(); // string section we are working on now
-
-		// loop finding any IAC bytes
-		while ((cptr = strchr(start, IAC)) != NULL) {
-			// send the bytes from start until cptr
-			add_to_chunk(start, cptr - start, true);
-			// send the double IAC bytes
-			add_to_chunk(double_iac, 2, true);
-			// the byte _following_ the IAC is the new start
-			start = cptr + 1;
-		}
-
-		/* send the rest of the argument - send one extra byte past
-			 the remainder length, so we get the NUL byte in the string,
-			 which we need to send for the ZMP specification. */
-		add_to_chunk(start, strlen(start) + 1, true);
-	}
+	for (size_t i = 0; i < argc; ++i)
+		telnet_send_data(&telnet, argv[i].c_str(), argv[i].size() + 1);
 
 	// send request end
-	add_to_chunk(end_sb, 2, true);
+	telnet_send_command(&telnet, TELNET_SE);
 }
 
 // deal with ZMP support/no-support
