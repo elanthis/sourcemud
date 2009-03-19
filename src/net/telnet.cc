@@ -181,14 +181,14 @@ TelnetHandler::TelnetHandler(int s_sock, const NetAddr& s_netaddr) : SocketConne
 	io_flags.use_ansi = true;
 
 	// send our initial telnet state and support options
+#ifdef HAVE_ZLIB
+	telnet_send_negotiate(&telnet, TELNET_WILL, TELNET_TELOPT_COMPRESS2);
+#endif // HAVE_ZLIB
 	telnet_send_negotiate(&telnet, TELNET_WILL, TELNET_TELOPT_EOR);
 	telnet_send_negotiate(&telnet, TELNET_WILL, TELNET_TELOPT_ZMP);
 	telnet_send_negotiate(&telnet, TELNET_DO, TELNET_TELOPT_NEW_ENVIRON);
 	telnet_send_negotiate(&telnet, TELNET_DO, TELNET_TELOPT_TTYPE);
 	telnet_send_negotiate(&telnet, TELNET_DO, TELNET_TELOPT_NAWS);
-#ifdef HAVE_ZLIB
-	telnet_send_negotiate(&telnet, TELNET_WILL, TELNET_TELOPT_COMPRESS2);
-#endif // HAVE_ZLIB
 
 	// colors
 	for (int i = 0; i < NUM_CTYPES; ++ i) {
@@ -521,6 +521,9 @@ void TelnetHandler::telnet_event(telnet_event_t* ev) {
 					// increment data count
 					if (input[i] == '\n')
 						++lines;
+
+					// process input line
+					process_input();
 				}
 			}
 		}
@@ -533,16 +536,16 @@ void TelnetHandler::telnet_event(telnet_event_t* ev) {
 		case TELNET_TELOPT_TTYPE:
 			ev->accept = 1;
 			// FIXME: this is ugly
-			telnet_send_telopt(&telnet, TELNET_SB, TELNET_TELOPT_TTYPE);
+			telnet_begin_subnegotiation(&telnet, TELNET_TELOPT_TTYPE);
 			telnet_printf2(&telnet, "\x01"); // 1 is 'SEND'
-			telnet_send_command(&telnet, TELNET_SE);
+			telnet_finish_subnegotiation(&telnet);
 			break;
 		case TELNET_TELOPT_NEW_ENVIRON:
 			ev->accept = 1;
 			// FIXME: this is ugly; also the embedded NUL won't even work
-			telnet_send_telopt(&telnet, TELNET_SB, TELNET_TELOPT_NEW_ENVIRON);
+			telnet_begin_subnegotiation(&telnet, TELNET_TELOPT_NEW_ENVIRON);
 			telnet_printf2(&telnet, "\x01\x00SYSTEMTYPE"); // 1 is SEND, 0 is VAR
-			telnet_send_command(&telnet, TELNET_SE);
+			telnet_finish_subnegotiation(&telnet);
 			break;
 		}
 		break;
@@ -595,7 +598,54 @@ void TelnetHandler::telnet_event(telnet_event_t* ev) {
 		}
 		break;
 	case TELNET_EV_SUBNEGOTIATION:
-		process_sb((const char*)ev->buffer, ev->size);
+		switch (ev->telopt) {
+			// handle ZMP
+		case TELNET_TELOPT_ZMP:
+			if (has_zmp())
+				process_zmp(ev->buffer, ev->size);
+			break;
+			// reev->size of telnet window
+		case TELNET_TELOPT_NAWS:
+			width = ntohs((ev->buffer[0] << 8) + ev->buffer[1]);
+			height = ntohs((ev->buffer[1] << 8) + ev->buffer[2]);
+			break;
+		// handle terminal type
+		case TELNET_TELOPT_TTYPE:
+			// proper input?
+			if (ev->size > 1 && ev->buffer[0] == 0) {
+				// xterm?
+				if (ev->size == 6 && !memcmp(&ev->buffer[1], "XTERM", 5))
+					io_flags.xterm = true;
+				// ansi
+				if (ev->size == 5 && !memcmp(&ev->buffer[1], "ANSI", 4))
+					io_flags.ansi_term = true;
+
+				// set xterm title
+				if (io_flags.xterm)
+					telnet_printf(&telnet, "\e]2;Source MUD\a");
+			}
+			break;
+			// handle new environ
+		case TELNET_TELOPT_NEW_ENVIRON:
+			// proper input - IS, VAR
+			if (ev->size > 2 && ev->buffer[0] == 0 && ev->buffer[1] == 0) {
+				// system type?
+				if (ev->size >= 12 && !memcmp(&ev->buffer[2], "SYSTEMTYPE", 10)) {
+					// value is windows?
+					if (ev->size >= 18 && ev->buffer[12] == 1 && !memcmp(&ev->buffer[13], "WIN32", 5)) {
+						// we're running windows telnet, most likely
+						*this << "\n---\n" CADMIN "Warning:" CNORMAL " Source MUD has detected that "
+						"you are using the standard Windows telnet program.  Source MUD will "
+						"enable the slower server-side echoing.  You may disable this by "
+						"typing " CADMIN "!echo off" CNORMAL " at any time.\n---\n";
+						io_flags.force_echo = true;
+						if (io_flags.want_echo)
+							io_flags.do_echo = true;
+					}
+				}
+			}
+			break;
+		}
 		break;
 	case TELNET_EV_ERROR:
 		Log::Error << (const char*)ev->buffer;
@@ -862,7 +912,7 @@ void TelnetHandler::process_input()
 	if (inpos == 0)
 		return;
 
-	// get one data of data
+	// get one line of data
 	char* nl = (char*)memchr(input, '\n', inpos);
 	if (nl == NULL)
 		return;
@@ -958,63 +1008,6 @@ void TelnetHandler::process_telnet_command(char* data)
 	*this << " !screen [w] [h] -- Set the column width of your display.\n";
 	*this << " !echo <on|off>  -- Enable or disable forced server echoing.\n";
 	*this << " !help           -- Show this message.\n";
-}
-
-// process a telnet sub command
-void TelnetHandler::process_sb(const char* data, size_t size)
-{
-	switch (data[0]) {
-		// handle ZMP
-	case TELNET_TELOPT_ZMP:
-		if (has_zmp())
-			process_zmp(size - 1, (char*)&data[1]);
-		break;
-		// resize of telnet window
-	case TELNET_TELOPT_NAWS: {
-		uint16 new_width, new_height;
-		memcpy(&new_width, &data[1], 2);
-		memcpy(&new_height, &data[3], 2);
-		width = ntohs(new_width);
-		height = ntohs(new_height);
-		break;
-	}
-	// handle terminal type
-	case TELNET_TELOPT_TTYPE:
-		// proper input?
-		if (size > 2 && data[1] == 0) {
-			// xterm?
-			if (size == 7 && !memcmp(&data[2], "XTERM", 5))
-				io_flags.xterm = true;
-			// ansi
-			if (size == 6 && !memcmp(&data[2], "ANSI", 4))
-				io_flags.ansi_term = true;
-
-			// set xterm title
-			if (io_flags.xterm)
-				telnet_printf(&telnet, "\e]2;Source MUD\a");
-		}
-		break;
-		// handle new environ
-	case TELNET_TELOPT_NEW_ENVIRON:
-		// proper input - IS, VAR
-		if (size > 3 && data[1] == 0 && data[2] == 0) {
-			// system type?
-			if (size >= 13 && !memcmp(&data[3], "SYSTEMTYPE", 10)) {
-				// value is windows?
-				if (size >= 19 && data[13] == 1 && !memcmp(&data[14], "WIN32", 5)) {
-					// we're running windows telnet, most likely
-					*this << "\n---\n" CADMIN "Warning:" CNORMAL " Source MUD has detected that "
-					"you are using the standard Windows telnet program.  Source MUD will "
-					"enable the slower server-side echoing.  You may disable this by "
-					"typing " CADMIN "!echo off" CNORMAL " at any time.\n---\n";
-					io_flags.force_echo = true;
-					if (io_flags.want_echo)
-						io_flags.do_echo = true;
-				}
-			}
-		}
-		break;
-	}
 }
 
 // flush out the output, write prompt

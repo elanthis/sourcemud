@@ -191,12 +191,12 @@ bool SZMPManager::match(const std::string& pattern)
 }
 
 // handle an ZMP command - size is size of chunk, data is chunk
-void TelnetHandler::process_zmp(size_t size, char* data)
+void TelnetHandler::process_zmp(const char* data, size_t size)
 {
 	const size_t argv_size = 20; // argv[] element size
 	std::string argv[argv_size]; // arg list
 	size_t argc; // number of args
-	char* cptr; // for searching
+	const char* cptr; // for searching
 	ZMPCommand* command;
 
 	// check the data chunk is valid
@@ -247,14 +247,14 @@ void TelnetHandler::send_zmp(size_t argc, std::string argv[])
 		return;
 
 	// send request start
-	telnet_send_telopt(&telnet, TELNET_SB, 93);
+	telnet_begin_subnegotiation(&telnet, TELNET_TELOPT_ZMP);
 
 	// loop through argv[], which has argc elements
 	for (size_t i = 0; i < argc; ++i)
 		telnet_send_data(&telnet, argv[i].c_str(), argv[i].size() + 1);
 
 	// send request end
-	telnet_send_command(&telnet, TELNET_SE);
+	telnet_finish_subnegotiation(&telnet);
 }
 
 // add a zmp command (to insert mid-processing, basically for color - YUCJ)
@@ -272,14 +272,14 @@ void TelnetHandler::add_zmp(size_t argc, std::string argv[])
 	end_chunk();
 
 	// send request start
-	telnet_send_telopt(&telnet, TELNET_SB, TELNET_TELOPT_ZMP);
+	telnet_begin_subnegotiation(&telnet, TELNET_TELOPT_ZMP);
 
 	// loop through argv[], which has argc elements
 	for (size_t i = 0; i < argc; ++i)
 		telnet_send_data(&telnet, argv[i].c_str(), argv[i].size() + 1);
 
 	// send request end
-	telnet_send_command(&telnet, TELNET_SE);
+	telnet_finish_subnegotiation(&telnet);
 }
 
 // deal with ZMP support/no-support

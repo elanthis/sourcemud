@@ -151,8 +151,7 @@ protected:
 
 	// processing
 	void process_input();
-	void process_sb(const char* data, size_t size);
-	void process_zmp(size_t size, char* chunk);
+	void process_zmp(const char* buffer, size_t size);
 
 	// command handling
 	void process_telnet_command(char* cmd);

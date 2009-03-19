@@ -292,7 +292,7 @@ $(BUILDDIR)/%.o: %.cc include/common.h.gch .build/stamp
 
 $(BUILDDIR)/lib/libtelnet/libtelnet.o: lib/libtelnet/libtelnet.c lib/libtelnet/libtelnet.h .build/stamp
 	@echo Compiling $<
-	@$(CXX) -c -o $@ $(CXXFLAGS) $<
+	@$(CXX) -c -o $@ $(CXXFLAGS) @LIBTELNET_HAVE_ZLIB@ $<
 
 # DEPENDENCIES
 -include $(DEPDIR)/*.P

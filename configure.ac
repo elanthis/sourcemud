@@ -83,6 +83,8 @@ AC_CHECK_LIB(z,deflate,ZLIB=yes,ZLIB=no)
 if test "x$ZLIB" = "xyes" ; then
 	LIBS="$LIBS -lz"
 	AC_DEFINE(HAVE_ZLIB, 1, [We have zlib])
+	LIBTELNET_HAVE_ZLIB="-DHAVE_ZLIB"
+	AC_SUBST(LIBTELNET_HAVE_ZLIB)
 fi
 
 # Debugging, always
