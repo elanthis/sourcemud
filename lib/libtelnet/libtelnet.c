@@ -170,7 +170,7 @@ static void _send(telnet_t *telnet, const char *buffer,
 
 /* retrieve RFC1143 option state */
 telnet_rfc1143_t _get_rfc1143(telnet_t *telnet, unsigned char telopt) {
-	static const telnet_rfc1143_t empty = { 0, 0, 0};
+	const telnet_rfc1143_t empty = { telopt, 0, 0};
 	int i;
 
 	/* search for entry */
@@ -198,7 +198,7 @@ void _set_rfc1143(telnet_t *telnet, telnet_rfc1143_t q) {
 	/* we're going to need to track state for it, so grow the queue
 	 * and put the telopt into it; bail on allocation error
 	 */
-	if ((qtmp = (telnet_rfc1143_t *)malloc(sizeof(
+	if ((qtmp = (telnet_rfc1143_t *)realloc(telnet->q, sizeof(
 			telnet_rfc1143_t) * (telnet->q_size + 1))) == 0) {
 		_error(telnet, __LINE__, __func__, TELNET_ENOMEM, 0,
 				"malloc() failed: %s", strerror(errno));
