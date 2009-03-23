@@ -158,7 +158,7 @@ protected:
 
 	// data output
 	void add_to_chunk(const char* data, size_t len);
-	void buffer_output(const char* data, size_t len) { telnet_send_data(&telnet, data, len); }
+	void buffer_output(const char* data, size_t len) { telnet_send(&telnet, data, len); }
 	void end_chunk();
 	void add_zmp(size_t argc, std::string argv[]);
 

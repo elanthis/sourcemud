@@ -32,6 +32,16 @@
 		cur_col = margin; \
 	}
 
+// ---- TELNET OPTION SUPPORT ----
+static const telnet_telopt_t telopts[] = {
+	{ TELNET_TELOPT_ECHO,			TELNET_WILL, TELNET_DONT },
+	{ TELNET_TELOPT_EOR,			TELNET_WILL, TELNET_DONT },
+	{ TELNET_TELOPT_TTYPE,			TELNET_WONT, TELNET_DO   },
+	{ TELNET_TELOPT_NEW_ENVIRON,	TELNET_WONT, TELNET_DO   },
+	{ TELNET_TELOPT_COMPRESS2,		TELNET_WILL, TELNET_DONT },
+	{ TELNET_TELOPT_ZMP,			TELNET_WILL, TELNET_DONT },
+	{ -1, 0, 0 }
+};
 
 // ---- BEGIN COLOURS ----
 
@@ -172,7 +182,7 @@ TelnetHandler::TelnetHandler(int s_sock, const NetAddr& s_netaddr) : SocketConne
 	mode = NULL;
 	memset(&io_flags, 0, sizeof(IOFlags));
 	timeout = MSettings.get_telnet_timeout();
-	telnet_init(&telnet, _telnet_event, 0, this);
+	telnet_init(&telnet, telopts, _telnet_event, 0, this);
 
 	// initial telnet options
 	io_flags.want_echo = true;
@@ -182,13 +192,13 @@ TelnetHandler::TelnetHandler(int s_sock, const NetAddr& s_netaddr) : SocketConne
 
 	// send our initial telnet state and support options
 #ifdef HAVE_ZLIB
-	telnet_send_negotiate(&telnet, TELNET_WILL, TELNET_TELOPT_COMPRESS2);
+	telnet_negotiate(&telnet, TELNET_WILL, TELNET_TELOPT_COMPRESS2);
 #endif // HAVE_ZLIB
-	telnet_send_negotiate(&telnet, TELNET_WILL, TELNET_TELOPT_EOR);
-	telnet_send_negotiate(&telnet, TELNET_WILL, TELNET_TELOPT_ZMP);
-	telnet_send_negotiate(&telnet, TELNET_DO, TELNET_TELOPT_NEW_ENVIRON);
-	telnet_send_negotiate(&telnet, TELNET_DO, TELNET_TELOPT_TTYPE);
-	telnet_send_negotiate(&telnet, TELNET_DO, TELNET_TELOPT_NAWS);
+	telnet_negotiate(&telnet, TELNET_WILL, TELNET_TELOPT_EOR);
+	telnet_negotiate(&telnet, TELNET_WILL, TELNET_TELOPT_ZMP);
+	telnet_negotiate(&telnet, TELNET_DO, TELNET_TELOPT_NEW_ENVIRON);
+	telnet_negotiate(&telnet, TELNET_DO, TELNET_TELOPT_TTYPE);
+	telnet_negotiate(&telnet, TELNET_DO, TELNET_TELOPT_NAWS);
 
 	// colors
 	for (int i = 0; i < NUM_CTYPES; ++ i) {
@@ -228,7 +238,7 @@ void TelnetHandler::disconnect()
 bool TelnetHandler::toggle_echo(bool v)
 {
 	io_flags.want_echo = v;
-	telnet_send_negotiate(&telnet, v ? TELNET_WONT : TELNET_WILL, TELNET_TELOPT_ECHO);
+	telnet_negotiate(&telnet, v ? TELNET_WONT : TELNET_WILL, TELNET_TELOPT_ECHO);
 
 	return v;
 }
@@ -362,7 +372,7 @@ void TelnetHandler::stream_put(const char *text, size_t len)
 					// reset color?
 					if (color == 0) {
 						// normalize colors
-						telnet_send_data(&telnet, ANSI_NORMAL, strlen(ANSI_NORMAL));
+						telnet_send(&telnet, ANSI_NORMAL, strlen(ANSI_NORMAL));
 
 						// eat last color
 						if (!colors.empty())
@@ -370,14 +380,14 @@ void TelnetHandler::stream_put(const char *text, size_t len)
 
 						// old color?
 						if (!colors.empty())
-							telnet_send_data(&telnet, color_values[colors.back()].c_str(), color_values[colors.back()].size());
+							telnet_send(&telnet, color_values[colors.back()].c_str(), color_values[colors.back()].size());
 
 						// other color
 					} else if (color > 0 && color < NUM_CTYPES) {
 						// put color
 						int cvalue = get_color(color);
 						colors.push_back(cvalue);
-						telnet_send_data(&telnet, color_values[cvalue].c_str(), color_values[cvalue].size());
+						telnet_send(&telnet, color_values[cvalue].c_str(), color_values[cvalue].size());
 					}
 				}
 
@@ -407,7 +417,7 @@ void TelnetHandler::stream_put(const char *text, size_t len)
 			// end?
 			if (isalpha(c)) {
 				if (io_flags.use_ansi)
-					telnet_send_data(&telnet, esc_buf, esc_cnt);
+					telnet_send(&telnet, esc_buf, esc_cnt);
 				ostate = OSTATE_TEXT;
 			}
 			break;
@@ -534,18 +544,10 @@ void TelnetHandler::telnet_event(telnet_event_t* ev) {
 	case TELNET_EV_WILL:
 		switch (ev->telopt) {
 		case TELNET_TELOPT_TTYPE:
-			ev->accept = 1;
-			// FIXME: this is ugly
-			telnet_begin_subnegotiation(&telnet, TELNET_TELOPT_TTYPE);
-			telnet_printf2(&telnet, "\x01"); // 1 is 'SEND'
-			telnet_finish_subnegotiation(&telnet);
+			telnet_format_sb(&telnet, TELNET_TELOPT_TTYPE, 1, TELNET_TTYPE_SEND, "");
 			break;
 		case TELNET_TELOPT_NEW_ENVIRON:
-			ev->accept = 1;
-			// FIXME: this is ugly; also the embedded NUL won't even work
-			telnet_begin_subnegotiation(&telnet, TELNET_TELOPT_NEW_ENVIRON);
-			telnet_printf2(&telnet, "\x01\x00SYSTEMTYPE"); // 1 is SEND, 0 is VAR
-			telnet_finish_subnegotiation(&telnet);
+			telnet_format_sb(&telnet, TELNET_TELOPT_NEW_ENVIRON, 2, TELNET_ENVIRON_SEND, "", TELNET_ENVIRON_VAR, "SYSTEMTYPE");
 			break;
 		}
 		break;
@@ -554,21 +556,17 @@ void TelnetHandler::telnet_event(telnet_event_t* ev) {
 	case TELNET_EV_DO:
 		switch (ev->telopt) {
 		case TELNET_TELOPT_ECHO:
-			ev->accept = 1;
 			if (io_flags.want_echo)
 				io_flags.do_echo = true;
 			break;
 		case TELNET_TELOPT_EOR:
-			ev->accept = 1;
 			if (!io_flags.do_eor)
 				io_flags.do_eor = true;
 			break;
 		case TELNET_TELOPT_COMPRESS2:
-			ev->accept = 1;
 			telnet_begin_compress2(&telnet);
 			break;
 		case TELNET_TELOPT_ZMP:
-			ev->accept = 1;
 			// enable ZMP support
 			io_flags.zmp = true;
 			// send zmp.ident command
@@ -664,7 +662,7 @@ void TelnetHandler::sock_input(char* buffer, size_t size)
 	in_stamp = time(NULL);
 
 	// process
-	telnet_push(&telnet, buffer, size);
+	telnet_recv(&telnet, buffer, size);
 
 	/*
 
@@ -812,13 +810,13 @@ void TelnetHandler::sock_input(char* buffer, size_t size)
 				// ignore
 				break;
 			case TELNET_TELOPT_TTYPE:
-				telnet_send_command(&telnet, 3, SB, TELNET_TELOPT_TTYPE, 1);  // 1 is 'SEND'
-				telnet_send_command(&telnet, 1, SE);
+				telnet_iac(&telnet, 3, SB, TELNET_TELOPT_TTYPE, 1);  // 1 is 'SEND'
+				telnet_iac(&telnet, 1, SE);
 				break;
 			case TELNET_TELOPT_NEW_ENVIRON:
-				telnet_send_command(&telnet, 4, SB, TELNET_TELOPT_NEW_ENVIRON, 1, 0);  // 1 is 'SEND', 0 is 'VAR'
+				telnet_iac(&telnet, 4, SB, TELNET_TELOPT_NEW_ENVIRON, 1, 0);  // 1 is 'SEND', 0 is 'VAR'
 				send_data(10, 'S', 'Y', 'S', 'T', 'E', 'M', 'T', 'Y', 'P', 'E');
-				telnet_send_command(&telnet, 1, SE);
+				telnet_iac(&telnet, 1, SE);
 				break;
 			default:
 				telnet_send_telopt(&telnet, DONT, c);
@@ -996,7 +994,7 @@ void TelnetHandler::process_telnet_command(char* data)
 		} else if (args[1] == "off") {
 			io_flags.force_echo = false;
 			if (io_flags.want_echo)
-				telnet_send_negotiate(&telnet, TELNET_WONT, TELNET_TELOPT_ECHO);
+				telnet_negotiate(&telnet, TELNET_WONT, TELNET_TELOPT_ECHO);
 			*this << CADMIN "Echo Disabled" CNORMAL "\n";
 			return;
 		}
@@ -1022,7 +1020,7 @@ void TelnetHandler::sock_flush()
 	// fix up color
 	if (!colors.empty()) {
 		if (io_flags.use_ansi)
-			telnet_send_data(&telnet, ANSI_NORMAL, strlen(ANSI_NORMAL));
+			telnet_send(&telnet, ANSI_NORMAL, strlen(ANSI_NORMAL));
 		colors.resize(0);
 	}
 
@@ -1040,7 +1038,7 @@ void TelnetHandler::sock_flush()
 
 		// GOAHEAD telnet command
 		if (io_flags.do_eor)
-			telnet_send_command(&telnet, TELNET_EOR);
+			telnet_iac(&telnet, TELNET_EOR);
 
 		io_flags.need_prompt = false;
 		io_flags.need_newline = true;
@@ -1079,7 +1077,7 @@ void TelnetHandler::end_chunk()
 	}
 
 	// do output
-	telnet_send_data(&telnet, chunk, chunkpos);
+	telnet_send(&telnet, chunk, chunkpos);
 	cur_col += chunkpos;
 	chunkpos = 0;
 	chunkwidth = 0;

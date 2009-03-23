@@ -247,14 +247,14 @@ void TelnetHandler::send_zmp(size_t argc, std::string argv[])
 		return;
 
 	// send request start
-	telnet_begin_subnegotiation(&telnet, TELNET_TELOPT_ZMP);
+	telnet_begin_sb(&telnet, TELNET_TELOPT_ZMP);
 
 	// loop through argv[], which has argc elements
 	for (size_t i = 0; i < argc; ++i)
-		telnet_send_data(&telnet, argv[i].c_str(), argv[i].size() + 1);
+		telnet_send(&telnet, argv[i].c_str(), argv[i].size() + 1);
 
 	// send request end
-	telnet_finish_subnegotiation(&telnet);
+	telnet_finish_sb(&telnet);
 }
 
 // add a zmp command (to insert mid-processing, basically for color - YUCJ)
@@ -272,14 +272,14 @@ void TelnetHandler::add_zmp(size_t argc, std::string argv[])
 	end_chunk();
 
 	// send request start
-	telnet_begin_subnegotiation(&telnet, TELNET_TELOPT_ZMP);
+	telnet_begin_sb(&telnet, TELNET_TELOPT_ZMP);
 
 	// loop through argv[], which has argc elements
 	for (size_t i = 0; i < argc; ++i)
-		telnet_send_data(&telnet, argv[i].c_str(), argv[i].size() + 1);
+		telnet_send(&telnet, argv[i].c_str(), argv[i].size() + 1);
 
 	// send request end
-	telnet_finish_subnegotiation(&telnet);
+	telnet_finish_sb(&telnet);
 }
 
 // deal with ZMP support/no-support
