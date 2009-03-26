@@ -1,25 +1,21 @@
 # Player file: Admin
-# Timestamp: Tue Nov 25 06:02:27 2008
+# Timestamp: Thu Mar 26 17:42:35 2009
 # 
 
-entity.uid = <1>
 creature.position = "stand"
 creature.hp = 150
-creature.equip_rhand = sobject {
+creature.equip_rhand = object {
   object.blueprint = "sw_long"
-  entity.uid = <1466>
 }
-creature.equip_body = sobject {
+creature.equip_body = object {
   object.blueprint = "ar_chain_shirt"
-  entity.uid = <7>
 }
-creature.equip_back = sobject {
+creature.equip_back = object {
   object.blueprint = "co_leather_backpack"
-  entity.uid = <23>
 }
 player.created = "2000-01-01 00:00:00"
-player.lastlogin = "2008-11-25 06:02:24"
-player.playtime = 2151
+player.lastlogin = "2009-03-26 17:42:22"
+player.playtime = 2164
 player.race = "human"
 player.birthday = "0001/06/10 09.14"
 player.stat = [ "Strength", 100 ]
