@@ -91,7 +91,7 @@ void Creature::do_sing(const std::string& text)
 	}
 
 	// form output
-	StringBuffer output;
+	std::ostringstream output;
 	output << "  " CTALK << lines[0];
 	for (size_t i = 1; i < lines.size(); ++i) {
 		if (i % 2 == 0)

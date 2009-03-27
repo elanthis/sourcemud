@@ -241,11 +241,11 @@ std::vector<std::string>& explode(std::vector<std::string>& list, const std::str
 
 std::string& implode(std::string& string, const std::vector<std::string>& list, char ch)
 {
-	StringBuffer buffer;
+	std::ostringstream buffer;
 
 	// keep adding to string
 	for (std::vector<std::string>::const_iterator i = list.begin(); i != list.end(); ++i) {
-		if (!buffer.empty())
+		if (i != list.begin())
 			buffer << ch;
 		buffer << *i;
 	}
@@ -257,7 +257,7 @@ std::string& capwords(std::string& out, const std::string& string)
 {
 	bool space = true;
 	char ch;
-	StringBuffer buffer;
+	std::ostringstream buffer;
 	for (size_t i = 0; i < string.size(); ++i) {
 		ch = string[i];
 		if (isspace(ch)) {
@@ -274,7 +274,7 @@ std::string& capwords(std::string& out, const std::string& string)
 
 std::string tostr(long num)
 {
-	StringBuffer str;
+	std::ostringstream str;
 	str << num;
 	return str.str();
 }
@@ -342,7 +342,7 @@ namespace
 
 std::string trim(const std::string& source, const std::string& accept)
 {
-	StringBuffer ret;
+	std::ostringstream ret;
 
 	for (const char* c = source.c_str(); *c != 0; ++c)
 		if (strchr(accept.c_str(), *c))
@@ -353,7 +353,7 @@ std::string trim(const std::string& source, const std::string& accept)
 
 std::string str_tr(std::string source, const std::string& from, const std::string& to)
 {
-	StringBuffer result;
+	std::ostringstream result;
 
 	for (const char* c = source.c_str(); *c != 0; ++c) {
 		const char* l = std::strchr(from.c_str(), *c);
@@ -379,11 +379,11 @@ std::string make_path(const char* path, const char* file)
 	if (path[0] == 0)
 		return std::string(file);
 
-	StringBuffer res;
+	std::ostringstream res;
 	res << path;
 
 	// if the path does not alrady end in a /, add one
-	if (res[res.size()-1] != '/')
+	if (path[strlen(path) - 1] != '/')
 		res << '/';
 
 	res << file;

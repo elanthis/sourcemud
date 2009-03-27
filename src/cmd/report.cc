@@ -36,7 +36,7 @@ void command_report_abuse(Player* player, std::string argv[])
 	}
 
 	// sent bug report
-	StringBuffer body;
+	std::ostringstream body;
 	body << "# -- HEADER --\n";
 	body << "Issue: ABUSE\n";
 	body << "Host: " << MNetwork.get_host() << "\n";
@@ -77,7 +77,7 @@ void command_report_bug(Player* player, std::string argv[])
 	}
 
 	// sent bug report
-	StringBuffer body;
+	std::ostringstream body;
 	body << "# -- HEADER --\n";
 	body << "Issue: BUG\n";
 	body << "Host: " << MNetwork.get_host() << "\n";

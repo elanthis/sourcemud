@@ -101,7 +101,7 @@ int _MHelp::initialize()
 
 				// command token
 			} else if (c == '%') {
-				StringBuffer buf;
+				std::ostringstream buf;
 
 				// consume rest of % command
 				while (!in.eof() && isalpha(c = in.get()))
@@ -113,7 +113,7 @@ int _MHelp::initialize()
 
 				// command must be 'begin'
 				if ("begin" != buf.str()) {
-					Log::Error << *i << ',' << line << ": Unrecognized command '" << buf.c_str() << "'";
+					Log::Error << *i << ',' << line << ": Unrecognized command '" << buf.str() << "'";
 					return -1;
 				}
 

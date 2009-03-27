@@ -533,7 +533,7 @@ public:
 
 private:
 	class Room& room;
-	StringBuffer buffer;
+	std::ostringstream buffer;
 	typedef std::vector<class Creature*> IgnoreList;
 	IgnoreList ignores;
 };

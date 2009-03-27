@@ -327,7 +327,8 @@ ulong MUD::get_rounds()
 
 std::string MUD::get_uptime()
 {
-	StringBuffer uptime;
+	std::ostringstream uptime;
+
 	uint secs = (::time(NULL) - start_time);
 	uint seconds = secs % 60;
 	secs /= 60;

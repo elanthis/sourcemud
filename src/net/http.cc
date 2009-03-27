@@ -254,7 +254,7 @@ void HTTPHandler::process()
 void HTTPHandler::parse_request_data(std::map<std::string, std::string>& map, const char* line) const
 {
 	// parse the data
-	StringBuffer value;
+	std::ostringstream value;
 	const char* begin;
 	const char* end;
 	const char* sep;
@@ -541,7 +541,7 @@ const std::string& HTTPHandler::getRequest(const std::string& name) const
 
 int _HTTPManager::initialize()
 {
-	StringBuffer buf;
+	std::ostringstream buf;
 
 	std::ifstream ifs(MSettings.get_skey_path().c_str());
 	if (!ifs) {

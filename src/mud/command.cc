@@ -360,7 +360,7 @@ int CommandFormat::build(const std::string& s_format)
 				// text?
 			} else if (isalpha(*c)) {
 				// reset
-				StringBuffer buf;
+				std::ostringstream buf;
 				do {
 					buf << *c;
 				} while (isalpha(*++c));

@@ -126,7 +126,7 @@ File::Reader::Token File::Reader::read_token(std::string& outstr)
 
 		// string
 	} else if (test == '"') {
-		StringBuffer data;
+		std::ostringstream data;
 		// read in string
 		while (in && (test = in.peek()) != '"') {
 			// line breaks not allowed
@@ -165,7 +165,7 @@ File::Reader::Token File::Reader::read_token(std::string& outstr)
 
 		// number
 	} else if (isdigit(test) || test == '-') {
-		StringBuffer data;
+		std::ostringstream data;
 		// read in name
 		data << (char)test;
 		while (in && isdigit(in.peek()))
@@ -176,7 +176,7 @@ File::Reader::Token File::Reader::read_token(std::string& outstr)
 
 		// %begin
 	} else if (test == '%') {
-		StringBuffer data;
+		std::ostringstream data;
 		// read in name
 		while (in) {
 			test = in.peek();
@@ -200,7 +200,7 @@ File::Reader::Token File::Reader::read_token(std::string& outstr)
 			outstr.clear();
 			while (in) {
 				// read a line
-				StringBuffer data;
+				std::ostringstream data;
 				do {
 					char ch = in.get();
 					data << ch;
@@ -226,7 +226,7 @@ File::Reader::Token File::Reader::read_token(std::string& outstr)
 
 		// name
 	} else if (isalpha(test) || test == '_') {
-		StringBuffer data;
+		std::ostringstream data;
 		// read in name
 		data << (char)test;
 		while (in) {
@@ -249,7 +249,7 @@ File::Reader::Token File::Reader::read_token(std::string& outstr)
 	}
 
 	// error
-	StringBuffer data;
+	std::ostringstream data;
 	data << (char)test;
 	while (in && !isspace(in.peek()))
 		data << (char)in.get();
