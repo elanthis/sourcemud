@@ -6,6 +6,7 @@
 
 // C++ STL
 #include <algorithm>
+#include <bitset>
 #include <deque>
 #include <list>
 #include <map>

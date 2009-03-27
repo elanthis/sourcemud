@@ -74,16 +74,16 @@ void ObjectBP::save(File::Writer& writer)
 	writer.attr("blueprint", "cost", cost);
 	writer.attr("blueprint", "weight", weight);
 
-	writer.attr("blueprint", "hidden", flags.check(ObjectFlag::HIDDEN));
-	writer.attr("blueprint", "gettable", flags.check(ObjectFlag::GET));
-	writer.attr("blueprint", "touchable", flags.check(ObjectFlag::TOUCH));
-	writer.attr("blueprint", "dropable", flags.check(ObjectFlag::DROP));
-	writer.attr("blueprint", "trashable", flags.check(ObjectFlag::TRASH));
-	writer.attr("blueprint", "rotting", flags.check(ObjectFlag::ROT));
+	writer.attr("blueprint", "hidden", flags.test(ObjectFlag::HIDDEN));
+	writer.attr("blueprint", "gettable", flags.test(ObjectFlag::GET));
+	writer.attr("blueprint", "touchable", flags.test(ObjectFlag::TOUCH));
+	writer.attr("blueprint", "dropable", flags.test(ObjectFlag::DROP));
+	writer.attr("blueprint", "trashable", flags.test(ObjectFlag::TRASH));
+	writer.attr("blueprint", "rotting", flags.test(ObjectFlag::ROT));
 
-	if (locations.check(ObjectLocation::IN))
+	if (locations.test(ObjectLocation::IN))
 		writer.attr("blueprint", "container", "in");
-	if (locations.check(ObjectLocation::ON))
+	if (locations.test(ObjectLocation::ON))
 		writer.attr("blueprint", "container", "on");
 
 	for (TagList::iterator i = tags.begin(); i != tags.end(); ++i)
@@ -124,9 +124,9 @@ int ObjectBP::load(File::Reader& reader)
 	set_flag(ObjectFlag::ROT, node.get_bool());
 	FO_ATTR("blueprint", "container")
 	if (node.get_string() == "on") {
-		locations.set_on(ObjectLocation::ON);
+		locations.set(ObjectLocation::ON);
 	} else if (node.get_string() == "in") {
-		locations.set_on(ObjectLocation::IN);
+		locations.set(ObjectLocation::IN);
 	} else
 		Log::Warning << "Unknown container type '" << node.get_string() << "' at " << reader.get_filename() << ':' << node.get_line();
 	FO_ATTR("blueprint", "tag")

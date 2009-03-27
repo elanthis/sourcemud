@@ -13,7 +13,6 @@ DEPDIR = .deps
 HEADERS = \
 	include/common.h \
 	include/common/base64.h \
-	include/common/bitset.h \
 	include/common/error.h \
 	include/common/fdprintf.h \
 	include/common/file.h \

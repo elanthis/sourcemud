@@ -10,7 +10,6 @@
 
 #include "common/types.h"
 #include "common/streams.h"
-#include "common/bitset.h"
 #include "mud/body.h"
 #include "mud/entity.h"
 

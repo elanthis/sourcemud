@@ -10,7 +10,6 @@
 
 #include "common/error.h"
 #include "common/imanager.h"
-#include "common/bitset.h"
 #include "mud/entity.h"
 #include "mud/body.h"
 #include "mud/elist.h"
@@ -110,14 +109,14 @@ public:
 	void set_cost(uint s_cost) { cost = s_cost; }
 
 	// container
-	bool has_location(ObjectLocation type) const { return locations & type; }
+	bool has_location(ObjectLocation type) const { return locations.test(type); }
 
 	// equip location
 	EquipSlot get_equip() const { return equip; }
 	void set_equip(EquipSlot s_equip) { equip = s_equip; }
 
 	// flags
-	bool get_flag(ObjectFlag flag) const { return flags & flag; }
+	bool get_flag(ObjectFlag flag) const { return flags.test(flag); }
 	void set_flag(ObjectFlag flag, bool b) { flags.set(flag, b); }
 
 	// tags
@@ -141,10 +140,10 @@ private:
 	TagList tags;
 
 	// flags
-	BitSet<ObjectFlag> flags;
+	std::bitset<ObjectFlag::MAX> flags;
 
 	// locations
-	BitSet<ObjectLocation> locations;
+	std::bitset<ObjectLocation::MAX> locations;
 };
 
 // Object control
