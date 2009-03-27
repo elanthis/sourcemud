@@ -62,7 +62,7 @@ int File::TabReader::load()
 		case WORD:
 			if (isspace(c) || c == '#') {
 				cent.push_back(cword.str());
-				cword.clear();
+				cword.str("");
 			}
 			if (c == '\n') {
 				entries.push_back(Entry(line, cent));
@@ -82,7 +82,7 @@ int File::TabReader::load()
 		case QUOTE:
 			if (c == '\n') {
 				cent.push_back(cword.str());
-				cword.clear();
+				cword.str("");
 				entries.push_back(Entry(line, cent));
 				cent.clear();
 				Log::Warning << "Unterminated quoted string at " << filename << ":" << line;
