@@ -14,10 +14,6 @@
 #include "mud/player.h"
 #include "net/manager.h"
 
-#define MACRO_OUT_SIZE 2048
-#define MACRO_BUFFER_SIZE 4096
-#define MAX_COMM_NAME 32
-#define MAX_COMM_DATA 128
 #define MACRO_MAX_DEPTH 8
 
 #define CHUNK_LEN(start, end) ((end)-(start)+1)
