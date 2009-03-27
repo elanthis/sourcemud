@@ -22,7 +22,7 @@ std::string CreatureAffectType::names[] = {
 CreatureAffectType CreatureAffectType::lookup(const std::string& name)
 {
 	for (uint i = 0; i < COUNT; ++i)
-		if (str_eq(name, names[i]))
+		if (strEq(name, names[i]))
 			return i;
 	return UNKNOWN;
 }
@@ -31,7 +31,7 @@ CreatureAffectGroup::CreatureAffectGroup(const std::string& s_title, CreatureAff
 {
 }
 
-int CreatureAffectGroup::add_affect(ICreatureAffect* affect)
+int CreatureAffectGroup::addAffect(ICreatureAffect* affect)
 {
 	affects.push_back(affect);
 	return 0;

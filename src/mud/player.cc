@@ -33,7 +33,7 @@ _MPlayer MPlayer;
 namespace
 {
 	// make a roman-numeral - FIXME: put somewhere better, make more correct
-	const char* get_roman(int n)
+	const char* getRoman(int n)
 	{
 		static char b[128];
 		char* c = b;
@@ -127,8 +127,8 @@ Player::Player(std::tr1::shared_ptr<class Account> s_account, const std::string&
 	total_playtime = 0;
 
 	// set name
-	name.set_text(s_id);
-	name.set_article(EntityArticleClass::PROPER);
+	name.setText(s_id);
+	name.setArticle(EntityArticleClass::PROPER);
 
 	// register
 	MPlayer.player_list.push_back(this);
@@ -142,36 +142,36 @@ Player::~Player()
 		MPlayer.player_list.erase(i);
 }
 
-void Player::save_data(File::Writer& writer)
+void Player::saveData(File::Writer& writer)
 {
-	Creature::save_data(writer);
+	Creature::saveData(writer);
 
-	writer.attr("player", "created", time_to_str(time_created));
-	writer.attr("player", "lastlogin", time_to_str(time_lastlogin));
+	writer.attr("player", "created", timeToStr(time_created));
+	writer.attr("player", "lastlogin", timeToStr(time_lastlogin));
 	writer.attr("player", "playtime", total_playtime);
 
 	if (race != NULL)
-		writer.attr("player", "race", race->get_name());
+		writer.attr("player", "race", race->getName());
 
 	writer.attr("player", "birthday", birthday.encode());
 
 	for (int i = 0; i < CreatureStatID::COUNT; ++i) {
 		std::vector<File::Value> list;
-		list.push_back(File::Value(File::Value::TYPE_STRING, CreatureStatID(i).get_name()));
+		list.push_back(File::Value(File::Value::TYPE_STRING, CreatureStatID(i).getName()));
 		list.push_back(File::Value(File::Value::TYPE_INT, tostr(base_stats[i])));
 		writer.attr("player", "stat", list);
 	}
 
-	writer.attr("player", "gender", form.gender.get_name());
-	writer.attr("player", "build", form.build.get_name());
-	writer.attr("player", "height", form.height.get_name());
-	writer.attr("player", "skin_color", form.skin_color.get_name());
-	writer.attr("player", "eye_color", form.eye_color.get_name());
-	writer.attr("player", "hair_color", form.hair_color.get_name());
-	writer.attr("player", "hair_style", form.hair_style.get_name());
+	writer.attr("player", "gender", form.gender.getName());
+	writer.attr("player", "build", form.build.getName());
+	writer.attr("player", "height", form.height.getName());
+	writer.attr("player", "skin_color", form.skin_color.getName());
+	writer.attr("player", "eye_color", form.eye_color.getName());
+	writer.attr("player", "hair_color", form.hair_color.getName());
+	writer.attr("player", "hair_style", form.hair_style.getName());
 
-	if (get_room())
-		writer.attr("player", "location", get_room()->get_id());
+	if (getRoom())
+		writer.attr("player", "location", getRoom()->getId());
 
 	writer.attr("player", "experience", experience);
 
@@ -187,10 +187,10 @@ void Player::save_data(File::Writer& writer)
 
 void Player::save()
 {
-	std::string path = MPlayer.path(get_id());
+	std::string path = MPlayer.path(getId());
 
 	// backup player file
-	if (MSettings.get_backup_players()) {
+	if (MSettings.getBackupPlayers()) {
 		// only if it exists
 		struct stat st;
 		if (!stat(path.c_str(), &st)) {
@@ -207,139 +207,139 @@ void Player::save()
 	// do save
 	mode_t omask = umask(0066);
 	File::Writer writer(path);
-	writer.comment("Player file: " + get_id());
+	writer.comment("Player file: " + getId());
 	time_t t;
 	time(&t);
 	writer.comment("Timestamp: " + std::string(ctime(&t)));
 	writer.bl();
-	save_data(writer);
+	saveData(writer);
 	writer.close();
 	umask(omask);
 
 	return;
 }
 
-void Player::save_hook(File::Writer& writer)
+void Player::saveHook(File::Writer& writer)
 {
-	Creature::save_hook(writer);
-	Hooks::save_player(this, writer);
+	Creature::saveHook(writer);
+	Hooks::savePlayer(this, writer);
 }
 
-int Player::load_node(File::Reader& reader, File::Node& node)
+int Player::loadNode(File::Reader& reader, File::Node& node)
 {
 	FO_NODE_BEGIN
 	FO_PARENT(Creature)
 	// our primary name
 	FO_ATTR("player", "name")
-	name.set_text(node.get_string());
-	name.set_article(EntityArticleClass::PROPER);
+	name.setText(node.getString());
+	name.setArticle(EntityArticleClass::PROPER);
 	// description
 	FO_ATTR("player", "desc")
-	set_desc(node.get_string());
+	setDesc(node.getString());
 	FO_ATTR("player", "gender")
-	set_gender(GenderType::lookup(node.get_string()));
+	setGender(GenderType::lookup(node.getString()));
 	FO_ATTR("player", "build")
-	form.build = FormBuild::lookup(node.get_string());
+	form.build = FormBuild::lookup(node.getString());
 	FO_ATTR("player", "height")
-	form.height = FormHeight::lookup(node.get_string());
+	form.height = FormHeight::lookup(node.getString());
 	FO_ATTR("player", "skin_color")
-	form.skin_color = FormColor::create(node.get_string());
+	form.skin_color = FormColor::create(node.getString());
 	FO_ATTR("player", "eye_color")
-	form.eye_color = FormColor::create(node.get_string());
+	form.eye_color = FormColor::create(node.getString());
 	FO_ATTR("player", "hair_color")
-	form.hair_color = FormColor::create(node.get_string());
+	form.hair_color = FormColor::create(node.getString());
 	FO_ATTR("player", "hair_style")
-	form.hair_style = FormHairStyle::lookup(node.get_string());
+	form.hair_style = FormHairStyle::lookup(node.getString());
 	FO_ATTR("player", "race")
-	race = MRace.get(node.get_string());
+	race = MRace.get(node.getString());
 	if (race == NULL) {
 		Log::Error << node << ": Player has invalid race";
 		throw File::Error();
 	}
 	FO_ATTR("player", "birthday")
-	if (birthday.decode(node.get_string()))
+	if (birthday.decode(node.getString()))
 		throw File::Error("Invalid birthday");
 	FO_ATTR("player", "location")
-	location = MZone.get_room(node.get_string());
+	location = MZone.getRoom(node.getString());
 	if (location == NULL) {
 		Log::Error << node << ": Unknown room";
 		throw File::Error();
 	}
 	FO_ATTR("player", "experience")
-	experience = node.get_int();
+	experience = node.getInt();
 	FO_ATTR("player", "stat")
-	CreatureStatID stat = CreatureStatID::lookup(node.get_string(0));
+	CreatureStatID stat = CreatureStatID::lookup(node.getString(0));
 	if (stat) {
-		base_stats[stat.get_value()] = node.get_int(1);
+		base_stats[stat.getValue()] = node.getInt(1);
 	} else {
-		Log::Error << "Unknown stat '" << node.get_string(0) << "'";
+		Log::Error << "Unknown stat '" << node.getString(0) << "'";
 		return -1;
 	}
 	FO_ATTR("player", "skill")
-	SkillID skill = SkillID::lookup(node.get_string(0));
+	SkillID skill = SkillID::lookup(node.getString(0));
 	if (skill) {
-		skills.setSkill(skill, node.get_int(1));
+		skills.setSkill(skill, node.getInt(1));
 	} else {
-		Log::Error << node << ": Unknown skill: " << node.get_string(0);
+		Log::Error << node << ": Unknown skill: " << node.getString(0);
 		throw File::Error();
 	}
 	FO_ATTR("player", "created")
-	time_created = str_to_time(node.get_string());
+	time_created = strToTime(node.getString());
 	FO_ATTR("player", "lastlogin")
-	time_lastlogin = str_to_time(node.get_string());
+	time_lastlogin = strToTime(node.getString());
 	FO_ATTR("player", "playtime")
-	total_playtime = node.get_int();
+	total_playtime = node.getInt();
 	FO_NODE_END
 }
 
 // 'startup' the player session
-int Player::start_session()
+int Player::startSession()
 {
 	// login message
-	clear_scr();
+	clearScr();
 	*this << "\n" << StreamMacro(MMessage.get("login"), "player", this) << "\n";
 
 	// not already active?  add to room...
-	if (!is_active()) {
+	if (!isActive()) {
 		if (location) {
 			// announce arrival
-			MZone.announce(CADMIN "**" CNORMAL " " CPLAYER + get_id() + CNORMAL " has entered this world, leaving behind " + get_gender().get_hisher() + " mundane life. " CADMIN "**" CNORMAL);
+			MZone.announce(CADMIN "**" CNORMAL " " CPLAYER + getId() + CNORMAL " has entered this world, leaving behind " + getGender().getHisHer() + " mundane life. " CADMIN "**" CNORMAL);
 
 			// try to enter room
 			if (!enter(location, NULL)) {
 				*this << CADMIN "Internal error: could not enter room" CNORMAL;
-				Log::Error << "Player '" << get_id() << "' could not enter '" << location->get_id() << "' at login";
+				Log::Error << "Player '" << getId() << "' could not enter '" << location->getId() << "' at login";
 				return -1;
 			}
 		} else {
 			// location/room doesn't exist - go back to 'starting' location
-			if (Hooks::player_start(this) == 0) {
+			if (Hooks::playerStart(this) == 0) {
 				*this << CADMIN "Internal error: no player_start hook" CNORMAL;
-				Log::Error << "Player '" << get_id() << "' could not login because there is no player_start hook";
+				Log::Error << "Player '" << getId() << "' could not login because there is no player_start hook";
 				return -1;
 			}
 
 			// no valid location - eek!
 			if (!location) {
 				*this << CADMIN "Internal error: no start location given" CNORMAL;
-				Log::Error << "Player '" << get_id() << "' could not login because the player_start hook did not assign a start location";
+				Log::Error << "Player '" << getId() << "' could not login because the player_start hook did not assign a start location";
 				return -1;
 			}
 
 			// announce login
-			MZone.announce(CADMIN "**" CNORMAL " " CPLAYER + get_id() + CNORMAL " has entered this world, leaving behind " + get_gender().get_hisher() + " mundane life. " CADMIN "**" CNORMAL);
+			MZone.announce(CADMIN "**" CNORMAL " " CPLAYER + getId() + CNORMAL " has entered this world, leaving behind " + getGender().getHisHer() + " mundane life. " CADMIN "**" CNORMAL);
 		}
 
 		// Example affect - make strong
 		CreatureAffectGroup* strong = new CreatureAffectGroup("Strength", CreatureAffectType::INNATE, 60 * 30);
-		strong->add_affect(new CreatureAffectStat(CreatureStatID::STRENGTH, 10));
-		add_affect(strong);
+		strong->addAffect(new CreatureAffectStat(CreatureStatID::STRENGTH, 10));
+		addAffect(strong);
 
 		// update login time
 		time_lastlogin = time(NULL);
 		// already active... just "refresh" room
 	} else {
-		do_look();
+		doLook();
 	}
 
 	// no timeout - yet
@@ -348,7 +348,7 @@ int Player::start_session()
 	return 0;
 }
 
-void Player::end_session()
+void Player::endSession()
 {
 	// update playtime
 	total_playtime += time(NULL) - time_lastlogin;
@@ -357,7 +357,7 @@ void Player::end_session()
 	save();
 
 	// quit message
-	MZone.announce(CADMIN "**" CNORMAL " " CPLAYER + get_id() + CNORMAL " has left this world, returning to " + get_gender().get_hisher() + " mundane life. " CADMIN "**" CNORMAL);
+	MZone.announce(CADMIN "**" CNORMAL " " CPLAYER + getId() + CNORMAL " has left this world, returning to " + getGender().getHisHer() + " mundane life. " CADMIN "**" CNORMAL);
 
 	// disengage from game world
 	destroy();
@@ -366,14 +366,14 @@ void Player::end_session()
 	disconnect();
 }
 
-uint Player::get_age() const
+uint Player::getAge() const
 {
 	// calculate the age in years, based on birthdate and current time
-	uint years = MTime.time.get_year() - birthday.get_year();
-	if (MTime.time.get_month() < birthday.get_month())
+	uint years = MTime.time.getYear() - birthday.getYear();
+	if (MTime.time.getMonth() < birthday.getMonth())
 		years --;
-	else if (MTime.time.get_month() == birthday.get_month())
-		if (MTime.time.get_day() < birthday.get_day())
+	else if (MTime.time.getMonth() == birthday.getMonth())
+		if (MTime.time.getDay() < birthday.getDay())
 			years --;
 	return years;
 }
@@ -381,18 +381,18 @@ uint Player::get_age() const
 void Player::kill(Creature *killer)
 {
 	// death message
-	if (get_room())
-		*get_room() << StreamIgnore(this) << StreamName(this, DEFINITE, true) << " has been slain!\n";
+	if (getRoom())
+		*getRoom() << StreamIgnore(this) << StreamName(this, DEFINITE, true) << " has been slain!\n";
 	*this << "You have been slain!\n";
 
 	// now laying down
 	position = CreaturePosition::LAY;
 
 	// FIXME EVENT
-	Hooks::player_death(this, killer);
+	Hooks::playerDeath(this, killer);
 }
 
-void Player::display_inventory()
+void Player::displayInventory()
 {
 	// start - worn
 	*this << "You are wearing ";
@@ -404,7 +404,7 @@ void Player::display_inventory()
 	bool didshow = false;
 
 	// worn items
-	while ((obj = get_worn_at(loc++)) != NULL) {
+	while ((obj = getWornAt(loc++)) != NULL) {
 		// we had one already?
 		if (last) {
 			// prefix
@@ -435,7 +435,7 @@ void Player::display_inventory()
 	loc = 0;
 	didshow = false;
 	last = NULL;
-	while ((obj = get_held_at(loc++)) != NULL) {
+	while ((obj = getHeldAt(loc++)) != NULL) {
 		// we had one already?
 		if (last) {
 			// prefix
@@ -462,33 +462,33 @@ void Player::display_inventory()
 	*this << ".  You have " << coins << " coins.\n";
 }
 
-void Player::display_skills()
+void Player::displaySkills()
 {
 	*this << "Skills:\n";
 
-	set_indent(2);
+	setIndent(2);
 
 	for (size_t i = 1; i < SkillID::size(); ++i) {
 		if (skills.hasSkill(SkillID(i)))
-			*this << SkillID(i).getName() << " " << get_roman(skills.getSkill(SkillID(i))) << "\n";
+			*this << SkillID(i).getName() << " " << getRoman(skills.getSkill(SkillID(i))) << "\n";
 	}
 
-	set_indent(0);
+	setIndent(0);
 }
 
-void Player::grant_exp(uint amount)
+void Player::grantExp(uint amount)
 {
 	experience += amount;
 }
 
-void Player::recalc_stats()
+void Player::recalcStats()
 {
-	Creature::recalc_stats();
+	Creature::recalcStats();
 
 	// apply racial stat modifications
 	if (race) {
 		for (int i = 0; i < CreatureStatID::COUNT; ++i)
-			set_effective_stat(i, get_base_stat(i) + race->get_stat(i));
+			setEffectiveStat(i, getBaseStat(i) + race->getStat(i));
 	}
 }
 
@@ -504,8 +504,8 @@ void Player::heartbeat()
 
 	// timeout?  then die
 	if (ninfo.timeout_ticks == 1) {
-		Log::Info << "Player '" << get_id() << "' has timed out.";
-		end_session();
+		Log::Info << "Player '" << getId() << "' has timed out.";
+		endSession();
 	} else if (ninfo.timeout_ticks > 0) {
 		--ninfo.timeout_ticks;
 	}
@@ -513,13 +513,13 @@ void Player::heartbeat()
 	// STATUS UPDATES
 
 	// force a prompt redraw if these change
-	uint rts = get_round_time();
-	if (get_hp() != ninfo.last_hp || get_max_hp() != ninfo.last_max_hp || rts != ninfo.last_rt)
-		get_conn()->pconn_force_prompt();
+	uint rts = getRoundTime();
+	if (getHP() != ninfo.last_hp || getMaxHP() != ninfo.last_max_hp || rts != ninfo.last_rt)
+		getConn()->pconnForcePrompt();
 
 	// store values
-	ninfo.last_hp = get_hp();
-	ninfo.last_max_hp = get_max_hp();
+	ninfo.last_hp = getHP();
+	ninfo.last_max_hp = getMaxHP();
 	ninfo.last_rt = rts;
 
 	// max is either current max, or zero if rt is done
@@ -529,7 +529,7 @@ void Player::heartbeat()
 		ninfo.last_max_rt = 0;
 
 	// update handler
-	Hooks::player_heartbeat(this);
+	Hooks::playerHeartbeat(this);
 }
 
 void Player::activate()
@@ -548,37 +548,37 @@ void Player::deactivate()
 	Creature::deactivate();
 }
 
-void Player::show_prompt()
+void Player::showPrompt()
 {
-	*this << "< HP:" << get_hp() << "/" << get_max_hp() << " RT:" << get_round_time() << " >";
+	*this << "< HP:" << getHP() << "/" << getMaxHP() << " RT:" << getRoundTime() << " >";
 }
 
-int Player::macro_property(const StreamControl& stream, const std::string& comm, const MacroList& argv) const
+int Player::macroProperty(const StreamControl& stream, const std::string& comm, const MacroList& argv) const
 {
 	// RACE
-	if (str_eq(comm, "race")) {
-		if (get_race())
-			stream << get_race()->get_name();
+	if (strEq(comm, "race")) {
+		if (getRace())
+			stream << getRace()->getName();
 		// RACE ADJECTIVE
-	} else if (str_eq(comm, "race-adj")) {
-		if (get_race())
-			stream << get_race()->get_adj();
+	} else if (strEq(comm, "race-adj")) {
+		if (getRace())
+			stream << getRace()->getAdj();
 		// PHYSICAL FORM
-	} else if (str_eq(comm, "build")) {
-		stream << form.build.get_name();
-	} else if (str_eq(comm, "skin_color")) {
-		stream << form.skin_color.get_name();
-	} else if (str_eq(comm, "eye_color")) {
-		stream << form.eye_color.get_name();
-	} else if (str_eq(comm, "hair_color")) {
-		stream << form.hair_color.get_name();
-	} else if (str_eq(comm, "hair_style")) {
-		stream << form.hair_style.get_name();
-	} else if (str_eq(comm, "height")) {
-		stream << form.height.get_name();
+	} else if (strEq(comm, "build")) {
+		stream << form.build.getName();
+	} else if (strEq(comm, "skin_color")) {
+		stream << form.skin_color.getName();
+	} else if (strEq(comm, "eye_color")) {
+		stream << form.eye_color.getName();
+	} else if (strEq(comm, "hair_color")) {
+		stream << form.hair_color.getName();
+	} else if (strEq(comm, "hair_style")) {
+		stream << form.hair_style.getName();
+	} else if (strEq(comm, "height")) {
+		stream << form.height.getName();
 		// default...
 	} else {
-		return Creature::macro_property(stream, comm, argv);
+		return Creature::macroProperty(stream, comm, argv);
 	}
 
 	return 0;
@@ -592,14 +592,14 @@ void Player::connect(IPlayerConnection* handler)
 
 	// had a previous connection?  kill it
 	if (conn) {
-		Log::Info << "Booting previous connection for player '" << get_id() << "'";
+		Log::Info << "Booting previous connection for player '" << getId() << "'";
 		*this << CADMIN << "Connection replaced by second login.\n" CNORMAL;
 		disconnect();
 	}
 
 	// set connection
 	conn = handler;
-	handler->pconn_connect(this);
+	handler->pconnConnect(this);
 
 	// reset all network info
 	memset(&ninfo, 0, sizeof(ninfo));
@@ -609,11 +609,11 @@ void Player::connect(IPlayerConnection* handler)
 void Player::disconnect()
 {
 	// already disconnected?
-	if (!get_conn())
+	if (!getConn())
 		return;
 
 	// tell connection handler we're disconnecting
-	get_conn()->pconn_disconnect();
+	getConn()->pconnDisconnect();
 
 	// no more connection handler
 	conn = NULL;
@@ -623,44 +623,44 @@ void Player::disconnect()
 }
 
 // output text
-void Player::stream_put(const char* data, size_t len)
+void Player::streamPut(const char* data, size_t len)
 {
-	if (get_conn())
-		get_conn()->pconn_write(data, len);
+	if (getConn())
+		getConn()->pconnWrite(data, len);
 }
 
 // toggle echo
-void Player::toggle_echo(bool value)
+void Player::toggleEcho(bool value)
 {
-	if (get_conn())
-		get_conn()->pconn_set_echo(value);
+	if (getConn())
+		getConn()->pconnSetEcho(value);
 }
 
 // set indent
-void Player::set_indent(uint level)
+void Player::setIndent(uint level)
 {
-	if (get_conn())
-		get_conn()->pconn_set_indent(level);
+	if (getConn())
+		getConn()->pconnSetIndent(level);
 }
 
 // get width of view
-uint Player::get_width()
+uint Player::getWidth()
 {
-	if (get_conn())
-		return get_conn()->pconn_get_width();
+	if (getConn())
+		return getConn()->pconnGetWidth();
 	else
 		return TELNET_DEFAULT_WIDTH;
 }
 
 // clear screen
-void Player::clear_scr()
+void Player::clearScr()
 {
-	if (get_conn())
-		get_conn()->pconn_clear();
+	if (getConn())
+		getConn()->pconnClear();
 }
 
 // show player description
-void Player::display_desc(const StreamControl& stream) const
+void Player::displayDesc(const StreamControl& stream) const
 {
-	stream << StreamMacro(get_race()->get_desc(), "self", this);
+	stream << StreamMacro(getRace()->getDesc(), "self", this);
 }

@@ -36,7 +36,7 @@ void command_admin_grant(Player* admin, std::string argv[])
 			account->grantAccess(access);
 			account->save();
 			*admin << "Granted '" << AccessID::nameof(access) << "' to " << account->getId() << ".\n";
-			Log::Admin << admin->get_account()->getId() << " granted '" << AccessID::nameof(access) << "' to " << account->getId();
+			Log::Admin << admin->getAccount()->getId() << " granted '" << AccessID::nameof(access) << "' to " << account->getId();
 		} else {
 			*admin << "Account " << account->getId() << " already has '" << AccessID::nameof(access) << "'.\n";
 		}
@@ -64,7 +64,7 @@ void command_admin_revoke(Player* admin, std::string argv[])
 		if (account->revokeAccess(access)) {
 			account->save();
 			*admin << "Revoked '" << AccessID::nameof(access) << "' from " << account->getId() << ".\n";
-			Log::Admin << admin->get_account()->getId() << " revoked '" << AccessID::nameof(access) << "' from " << account->getId();
+			Log::Admin << admin->getAccount()->getId() << " revoked '" << AccessID::nameof(access) << "' from " << account->getId();
 		} else {
 			*admin << "Account " << account->getId() << " doesn't have '" << AccessID::nameof(access) << "'.\n";
 		}
@@ -83,7 +83,7 @@ void command_admin_revoke(Player* admin, std::string argv[])
 void command_admin_shutdown(Player* admin, std::string[])
 {
 	*admin << CADMIN "Shutdown issued." CNORMAL "\n";
-	Log::Admin << "Shutdown issued by " << admin->get_account()->getId();
+	Log::Admin << "Shutdown issued by " << admin->getAccount()->getId();
 	MZone.announce("Shutting down, NOW!");
 	MUD::shutdown();
 }
@@ -102,9 +102,9 @@ void command_admin_blockip(Player* admin, std::string argv[])
 	*admin << CADMIN "TEMPORARLY DISABLED" CNORMAL << "\n";
 	// FIXME: fix this
 	/*
-	if (server.tcp_players.add_deny(argv[0])) {
+	if (server.tcp_players.addDeny(argv[0])) {
 		*admin << "Adding '" << argv[0] << "' to block list.\n";
-		Log::Info << admin->get_account()->get_id() << "' added '" << argv[0] << "' to the user block list.";
+		Log::Info << admin->getAccount()->getId() << "' added '" << argv[0] << "' to the user block list.";
 	} else {
 		*admin << "Invalid deny value.\n";
 	}

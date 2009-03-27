@@ -39,10 +39,10 @@ Entity::~Entity()
 	Lua::releaseObject(this);
 }
 
-EventHandler* Entity::get_event(EventID name)
+EventHandler* Entity::getEvent(EventID name)
 {
 	for (EventList::iterator i = events.begin(); i != events.end(); ++i) {
-		if ((*i)->get_event() == name)
+		if ((*i)->getEvent() == name)
 			return *i;
 	}
 	return NULL;
@@ -117,34 +117,34 @@ void Entity::deactivate()
 
 void Entity::destroy()
 {
-	Entity* owner = get_owner();
+	Entity* owner = getOwner();
 	if (owner != NULL)
-		owner->owner_release(this);
-	if (is_active())
+		owner->ownerRelease(this);
+	if (isActive())
 		deactivate();
 }
 
-bool Entity::name_match(const std::string& match) const
+bool Entity::nameMatch(const std::string& match) const
 {
-	return get_name().matches(match);
+	return getName().matches(match);
 
 	// no match
 	return false;
 }
 
-void Entity::display_desc(const StreamControl& stream) const
+void Entity::displayDesc(const StreamControl& stream) const
 {
-	stream << StreamMacro(get_desc(), "self", this);
+	stream << StreamMacro(getDesc(), "self", this);
 }
 
 void Entity::save(File::Writer& writer, const std::string& ns, const std::string& name)
 {
-	writer.begin_attr(ns, name, factory_type());
-	save_data(writer);
+	writer.beginAttr(ns, name, factoryType());
+	saveData(writer);
 	writer.end();
 }
 
-void Entity::save_data(File::Writer& writer)
+void Entity::saveData(File::Writer& writer)
 {
 	// event handler list
 	for (EventList::const_iterator i = events.begin(); i != events.end(); i ++) {
@@ -158,12 +158,12 @@ void Entity::save_data(File::Writer& writer)
 		writer.attr("entity", "tag", TagID::nameof(*i));
 
 	// call save hook
-	save_hook(writer);
+	saveHook(writer);
 }
 
-void Entity::save_hook(File::Writer& writer)
+void Entity::saveHook(File::Writer& writer)
 {
-	Hooks::save_entity(this, writer);
+	Hooks::saveEntity(this, writer);
 }
 
 // load
@@ -191,32 +191,32 @@ int Entity::load(File::Reader& reader)
 	// load the thing
 	FO_READ_BEGIN
 }
-else if (load_node(reader, node) == FO_SUCCESS_CODE)
+else if (loadNode(reader, node) == FO_SUCCESS_CODE)
 {
 	FO_READ_ERROR
 	return -1;
 	FO_READ_END
 
 	// final check
-	if (load_finish() != 0)
+	if (loadFinish() != 0)
 		return -1;
 
 	return 0;
 }
 
-int Entity::load_node(File::Reader& reader, File::Node& node)
+int Entity::loadNode(File::Reader& reader, File::Node& node)
 {
-	FO_NODE_BEGIN
+FO_NODE_BEGIN
 	FO_ATTR("entity", "tag")
-	add_tag(TagID::create(node.get_string()));
+		addTag(TagID::create(node.getString()));
 	FO_OBJECT("entity", "event")
-	EventHandler* event = new EventHandler();
-	if (!event->load(reader))
-		events.push_back(event);
-	FO_NODE_END
+		EventHandler* event = new EventHandler();
+		if (!event->load(reader))
+			events.push_back(event);
+FO_NODE_END
 }
 
-int Entity::macro_property(const StreamControl& stream, const std::string& comm, const MacroList& argv) const
+int Entity::macroProperty(const StreamControl& stream, const std::string& comm, const MacroList& argv) const
 {
 	// SPECIAL: one-letter name commands
 	if (comm.size() == 1) {
@@ -247,32 +247,32 @@ int Entity::macro_property(const StreamControl& stream, const std::string& comm,
 	}
 
 	// ENTITY's NAME
-	if (str_eq(comm, "name")) {
+	if (strEq(comm, "name")) {
 		stream << StreamName(this);
 		return 0;
 		// ENTITY'S DESC
-	} else if (str_eq(comm, "desc")) {
-		display_desc(stream);
+	} else if (strEq(comm, "desc")) {
+		displayDesc(stream);
 		return 0;
 	}
 
 	return -1;
 }
 
-void Entity::macro_default(const StreamControl& stream) const
+void Entity::macroDefault(const StreamControl& stream) const
 {
 	stream << StreamName(*this);
 }
 
-bool Entity::has_tag(TagID tag) const
+bool Entity::hasTag(TagID tag) const
 {
 	return tags.find(tag) != tags.end();
 }
 
-int Entity::add_tag(TagID tag)
+int Entity::addTag(TagID tag)
 {
 	// no duplicates
-	if (has_tag(tag))
+	if (hasTag(tag))
 		return 1;
 
 	// add tag
@@ -280,13 +280,13 @@ int Entity::add_tag(TagID tag)
 
 	// register with entity manager
 	// FIXME: check for error, maybe?
-	if (is_active())
+	if (isActive())
 		MEntity.tag_map.insert(std::pair<TagID, Entity*> (tag, this));
 
 	return 0;
 }
 
-int Entity::remove_tag(TagID tag)
+int Entity::removeTag(TagID tag)
 {
 	// find
 	TagList::iterator ti = std::find(tags.begin(), tags.end(), tag);
@@ -297,7 +297,7 @@ int Entity::remove_tag(TagID tag)
 	tags.erase(ti);
 
 	// unregister with entity manager
-	if (is_active()) {
+	if (isActive()) {
 		std::pair<TagTable::iterator, TagTable::iterator> mi = MEntity.tag_map.equal_range(tag);
 		while (mi.first != mi.second) {
 			if (mi.first->second == this) {
@@ -313,24 +313,23 @@ int Entity::remove_tag(TagID tag)
 	}
 }
 
-void Entity::set_owner(Entity* owner)
+void Entity::setOwner(Entity* owner)
 {
 	assert(owner != NULL);
 
-	Entity* old_owner = get_owner();
+	Entity* old_owner = getOwner();
 	if (old_owner != NULL)
-		old_owner->owner_release(this);
+		old_owner->ownerRelease(this);
 
-	if (is_active() && !owner->is_active())
+	if (isActive() && !owner->isActive())
 		deactivate();
-	else if (!is_active() && owner->is_active())
+	else if (!isActive() && owner->isActive())
 		activate();
 }
 
-bool
-Entity::operator< (const Entity& ent) const
+bool Entity::operator< (const Entity& ent) const
 {
-	return get_name() < ent.get_name();
+	return getName() < ent.getName();
 }
 
 // ----- _MEntity -----
@@ -372,12 +371,12 @@ void _MEntity::heartbeat()
 	}
 }
 
-size_t _MEntity::tag_count(TagID tag) const
+size_t _MEntity::tagCount(TagID tag) const
 {
 	return tag_map.count(tag);
 }
 
-std::pair<TagTable::const_iterator, TagTable::const_iterator> _MEntity::tag_list(TagID tag) const
+std::pair<TagTable::const_iterator, TagTable::const_iterator> _MEntity::tagList(TagID tag) const
 {
 	return tag_map.equal_range(tag);
 }

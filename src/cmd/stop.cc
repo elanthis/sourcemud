@@ -19,5 +19,5 @@
 
 void command_stop(Creature* ch, std::string argv[])
 {
-	ch->cancel_action();
+	ch->cancelAction();
 }

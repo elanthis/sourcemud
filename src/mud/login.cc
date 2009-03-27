@@ -22,50 +22,50 @@
 
 int TelnetModeNewAccount::initialize()
 {
-	show_info();
+	showInfo();
 	state = STATE_ID;
 	return 0;
 }
 
-void TelnetModeNewAccount::show_info()
+void TelnetModeNewAccount::showInfo()
 {
-	get_handler()->clear_scr();
-	*get_handler() << "Account Information\n";
-	*get_handler() << "-------------------\n";
+	getHandler()->clearScreen();
+	*getHandler() << "Account Information\n";
+	*getHandler() << "-------------------\n";
 
 	if (!id.empty())
-		*get_handler() << "Account name:   " CPLAYER << id << CNORMAL "\n";
+		*getHandler() << "Account name:   " CPLAYER << id << CNORMAL "\n";
 	if (!name.empty())
-		*get_handler() << "Real name:      " << name << "\n";
+		*getHandler() << "Real name:      " << name << "\n";
 	if (!email.empty())
-		*get_handler() << "E-mail address: " << email << "\n";
+		*getHandler() << "E-mail address: " << email << "\n";
 
-	*get_handler() << "\n";
+	*getHandler() << "\n";
 }
 
 void TelnetModeNewAccount::prompt()
 {
 	switch (state) {
 	case STATE_ID:
-		*get_handler() << "Enter a name for your account:";
+		*getHandler() << "Enter a name for your account:";
 		break;
 	case STATE_NAME:
-		*get_handler() << "Enter your full, *real life* name:";
+		*getHandler() << "Enter your full, *real life* name:";
 		break;
 	case STATE_EMAIL:
-		*get_handler() << "Enter your e-mail address:";
+		*getHandler() << "Enter your e-mail address:";
 		break;
 	case STATE_PASS:
-		*get_handler() << "Enter a passphrase:";
+		*getHandler() << "Enter a passphrase:";
 		break;
 	case STATE_CHECKPASS:
-		*get_handler() << "Retype your passphrase:";
+		*getHandler() << "Retype your passphrase:";
 		break;
 	case STATE_APPROVE:
-		*get_handler() << "Is this correct? (Y/n)";
+		*getHandler() << "Is this correct? (Y/n)";
 		break;
 	default:
-		*get_handler() << "Oops, internal error.";
+		*getHandler() << "Oops, internal error.";
 		break;
 	}
 }
@@ -79,19 +79,19 @@ void TelnetModeNewAccount::process(char* data)
 	case STATE_ID:
 		// valid name?
 		if (!MAccount.validName(line)) {
-			*get_handler() << "\n" CADMIN "Account names must be between " << ACCOUNT_NAME_MIN_LEN << " and " << ACCOUNT_NAME_MAX_LEN << " characters, and consist of only letters and numbers." CNORMAL "\n";
+			*getHandler() << "\n" CADMIN "Account names must be between " << ACCOUNT_NAME_MIN_LEN << " and " << ACCOUNT_NAME_MAX_LEN << " characters, and consist of only letters and numbers." CNORMAL "\n";
 			break;
 		}
 
 		// already exists?
 		if (MAccount.exists(line)) {
-			*get_handler() << "\n" CADMIN "The account name '" << line << "' is already in use." CNORMAL "\n";
+			*getHandler() << "\n" CADMIN "The account name '" << line << "' is already in use." CNORMAL "\n";
 		}
 
 		// next
 		id = line;
 		state = STATE_NAME;
-		show_info();
+		showInfo();
 		break;
 		// enter real name
 	case STATE_NAME:
@@ -100,57 +100,57 @@ void TelnetModeNewAccount::process(char* data)
 
 		if (!name.empty()) {
 			state = STATE_EMAIL;
-			show_info();
+			showInfo();
 		}
 		break;
 		// enter email address
 	case STATE_EMAIL:
 		if (!line.empty()) {
-			if (str_is_email(line)) {
+			if (strIsEmail(line)) {
 				email = line;
-				get_handler()->toggle_echo(false);
+				getHandler()->toggleEcho(false);
 			} else {
 				email.clear();
-				*get_handler() << CADMIN "That is not a valid e-mail address." CNORMAL "\n";
+				*getHandler() << CADMIN "That is not a valid e-mail address." CNORMAL "\n";
 			}
 		}
 
 		if (!email.empty()) {
 			state = STATE_PASS;
-			show_info();
+			showInfo();
 		}
 		break;
 		// enter passphrase
 	case STATE_PASS:
 		// legal?
 		if (line.empty() || !MAccount.validPassphrase(line)) {
-			*get_handler() << "\n" CADMIN "Passphrases must be at least " << ACCOUNT_PASS_MIN_LEN << " characters, and have both letters and numbers.  Passphrases may also contain symbols or punctuation characters." CNORMAL "\n";
+			*getHandler() << "\n" CADMIN "Passphrases must be at least " << ACCOUNT_PASS_MIN_LEN << " characters, and have both letters and numbers.  Passphrases may also contain symbols or punctuation characters." CNORMAL "\n";
 			break;
 		}
 
 		// alright, next
 		passphrase = line;
 		state = STATE_CHECKPASS;
-		show_info();
+		showInfo();
 		break;
 		// double check passphrase
 	case STATE_CHECKPASS:
 		if (passphrase != line) {
-			*get_handler() << "\n" CADMIN "Passwords do not match." CNORMAL "\n";
+			*getHandler() << "\n" CADMIN "Passwords do not match." CNORMAL "\n";
 			state = STATE_PASS;
 		} else {
 			state = STATE_APPROVE;
-			show_info();
-			get_handler()->toggle_echo(true);
+			showInfo();
+			getHandler()->toggleEcho(true);
 		}
 		break;
 		// approve it all
 	case STATE_APPROVE:
 		// done?
-		if (line.empty() || str_is_true(line)) {
+		if (line.empty() || strIsTrue(line)) {
 			// double check account is unique
 			if (MAccount.get(id)) {
-				*get_handler() << "\n" CADMIN "The account name '" << id << "' is already in use." CNORMAL "\n";
+				*getHandler() << "\n" CADMIN "The account name '" << id << "' is already in use." CNORMAL "\n";
 				state = STATE_ID;
 			} else {
 				// create the account!
@@ -160,12 +160,12 @@ void TelnetModeNewAccount::process(char* data)
 				account->setPassphrase(passphrase);
 
 				// enter main menu
-				get_handler()->set_mode(new TelnetModeMainMenu(get_handler(), account));
+				getHandler()->setMode(new TelnetModeMainMenu(getHandler(), account));
 				return;
 			}
-		} else if (str_is_false(line)) {
+		} else if (strIsFalse(line)) {
 			state = STATE_ID;
-			show_info();
+			showInfo();
 		}
 		break;
 	}
@@ -180,8 +180,8 @@ int TelnetModeLogin::initialize()
 
 void TelnetModeLogin::prompt()
 {
-	if (!pass) *get_handler() << "Enter thy name:";
-	else *get_handler() << "Enter thy passphrase:";
+	if (!pass) *getHandler() << "Enter thy name:";
+	else *getHandler() << "Enter thy passphrase:";
 }
 
 void TelnetModeLogin::process(char* line)
@@ -193,8 +193,8 @@ void TelnetModeLogin::process(char* line)
 		return;
 
 	// quit?
-	if (str_eq(data, "quit")) {
-		get_handler()->disconnect();
+	if (strEq(data, "quit")) {
+		getHandler()->disconnect();
 		return;
 	}
 
@@ -203,28 +203,28 @@ void TelnetModeLogin::process(char* line)
 		// no name?
 		if (data.empty()) {
 			// enabled?
-			if (MSettings.get_account_creation()) {
-				*get_handler() << "\nYou must enter your account name to login or type " CBOLD "new" CNORMAL " to begin creating a new account.\n\n";
+			if (MSettings.getAccountCreation()) {
+				*getHandler() << "\nYou must enter your account name to login or type " CBOLD "new" CNORMAL " to begin creating a new account.\n\n";
 			} else {
-				*get_handler() << "\nYou must enter your account name to login.\n\n";
+				*getHandler() << "\nYou must enter your account name to login.\n\n";
 			}
 			return;
 		}
 
 		// create account?
-		if (str_eq(data, "new") || str_eq(data, "create")) {
+		if (strEq(data, "new") || strEq(data, "create")) {
 			// enabled?
-			if (MSettings.get_account_creation()) {
-				get_handler()->set_mode(new TelnetModeNewAccount(get_handler()));
+			if (MSettings.getAccountCreation()) {
+				getHandler()->setMode(new TelnetModeNewAccount(getHandler()));
 			} else {
-				*get_handler() << "\nNew account creation is disabled.\n\n";
+				*getHandler() << "\nNew account creation is disabled.\n\n";
 			}
 			return;
 		}
 
 		// invalid name?
 		if (!MAccount.validName(data)) {
-			*get_handler() << "\nAccount names must be between " << ACCOUNT_NAME_MIN_LEN << " and " << ACCOUNT_NAME_MAX_LEN << " characters, and consist of only letters and numbers.\n\n";
+			*getHandler() << "\nAccount names must be between " << ACCOUNT_NAME_MIN_LEN << " and " << ACCOUNT_NAME_MAX_LEN << " characters, and consist of only letters and numbers.\n\n";
 			return;
 		}
 
@@ -234,22 +234,22 @@ void TelnetModeLogin::process(char* line)
 
 		// do passphrase stage
 		pass = true;
-		get_handler()->toggle_echo(false);
+		getHandler()->toggleEcho(false);
 		// at passphrase stage
 	} else {
-		get_handler()->toggle_echo(true);
-		*get_handler() << "\n";
+		getHandler()->toggleEcho(true);
+		*getHandler() << "\n";
 
 		// check the account and passphrase
 		if (account == NULL || !account->checkPassphrase(data)) {
-			*get_handler() << "\nIncorrect account name or passphrase.\n\n";
+			*getHandler() << "\nIncorrect account name or passphrase.\n\n";
 
 			// too many failed attempts?
 			tries ++;
 			if (tries >= 3) {
-				*get_handler() << "\n" CADMIN "Too many login failures: disconnecting." CNORMAL "\n";
+				*getHandler() << "\n" CADMIN "Too many login failures: disconnecting." CNORMAL "\n";
 				Log::Info << "Disconnecting user due to 3 failed login attempts.\n";
-				get_handler()->disconnect();
+				getHandler()->disconnect();
 				return;
 			}
 
@@ -261,7 +261,7 @@ void TelnetModeLogin::process(char* line)
 
 		// double check stuffs
 		if (account->isDisabled()) {
-			*get_handler() << "\n" CADMIN "Your account has been disabled by an administrator." CNORMAL "\n";
+			*getHandler() << "\n" CADMIN "Your account has been disabled by an administrator." CNORMAL "\n";
 			Log::Info << "Disabled account '" << account->getId() << "' attempted to login";
 			pass = false;
 			account.reset();
@@ -272,7 +272,7 @@ void TelnetModeLogin::process(char* line)
 		account->updateTimeLogin();
 
 		// ok, do login
-		get_handler()->set_mode(new TelnetModeMainMenu(get_handler(), account));
+		getHandler()->setMode(new TelnetModeMainMenu(getHandler(), account));
 	}
 }
 

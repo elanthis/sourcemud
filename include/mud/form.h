@@ -17,9 +17,9 @@ public:
 	FormColor() : value(0) {}
 	FormColor(const FormColor& c) : value(c.value) {}
 
-	std::string get_name() const;
+	std::string getName() const;
 
-	uint8_t get_value() const { return value; }
+	uint8_t getValue() const { return value; }
 
 	static FormColor lookup(const std::string&);
 	static FormColor create(const std::string&);
@@ -55,9 +55,9 @@ public:
 	FormBuild(const FormBuild& form) : value(form.value) {}
 	FormBuild() : value(NONE) {}
 
-	std::string get_name() const { return valid() ? names[value] : std::string(); }
+	std::string getName() const { return valid() ? names[value] : std::string(); }
 
-	type_t get_value() const { return value; }
+	type_t getValue() const { return value; }
 
 	static FormBuild lookup(const std::string& name);
 
@@ -89,9 +89,9 @@ public:
 	FormHeight(const FormHeight& form) : value(form.value) {}
 	FormHeight() : value(NONE) {}
 
-	std::string get_name() const { return valid() ? names[value] : std::string(); }
+	std::string getName() const { return valid() ? names[value] : std::string(); }
 
-	type_t get_value() const { return value; }
+	type_t getValue() const { return value; }
 
 	static FormHeight lookup(const std::string& name);
 
@@ -125,9 +125,9 @@ public:
 	FormHairStyle(const FormHairStyle& form) : value(form.value) {}
 	FormHairStyle() : value(NONE) {}
 
-	std::string get_name() const { return valid() ? names[value] : std::string(); }
+	std::string getName() const { return valid() ? names[value] : std::string(); }
 
-	type_t get_value() const { return value; }
+	type_t getValue() const { return value; }
 
 	static FormHairStyle lookup(const std::string& name);
 

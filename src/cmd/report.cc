@@ -29,7 +29,7 @@ void command_report_abuse(Player* player, std::string argv[])
 {
 #ifdef HAVE_SENDMAIL
 	// mail address
-	std::string rcpt = MSettings.get_abuse_email();
+	std::string rcpt = MSettings.getAbuseEmail();
 	if (rcpt.empty()) {
 		*player << CADMIN "Abuse reporting has been disabled." CNORMAL "\n";
 		return;
@@ -39,8 +39,8 @@ void command_report_abuse(Player* player, std::string argv[])
 	std::ostringstream body;
 	body << "# -- HEADER --\n";
 	body << "Issue: ABUSE\n";
-	body << "Host: " << MNetwork.get_host() << "\n";
-	body << "From: " << player->get_account()->getId() << "\n";
+	body << "Host: " << MNetwork.getHost() << "\n";
+	body << "From: " << player->getAccount()->getId() << "\n";
 	body << "About: " << argv[0] << "\n";
 	body << "# -- END --\n";
 	body << "# -- BODY --\n";
@@ -51,7 +51,7 @@ void command_report_abuse(Player* player, std::string argv[])
 	msg.send();
 
 	// send message
-	Log::Info << "Player " << player->get_account()->getId() << " issued an abuse report.";
+	Log::Info << "Player " << player->getAccount()->getId() << " issued an abuse report.";
 	*player << "Your abuse report has been sent.\n";
 #else // HAVE_SENDMAIL
 	*player << CADMIN "Bug reporting has been disabled." CNORMAL "\n";
@@ -70,7 +70,7 @@ void command_report_bug(Player* player, std::string argv[])
 {
 #ifdef HAVE_SENDMAIL
 	// mail address
-	std::string rcpt = MSettings.get_bugs_email();
+	std::string rcpt = MSettings.getBugsEmail();
 	if (rcpt.empty()) {
 		*player << CADMIN "Bug reporting has been disabled." CNORMAL "\n";
 		return;
@@ -80,8 +80,8 @@ void command_report_bug(Player* player, std::string argv[])
 	std::ostringstream body;
 	body << "# -- HEADER --\n";
 	body << "Issue: BUG\n";
-	body << "Host: " << MNetwork.get_host() << "\n";
-	body << "From: " << player->get_account()->getId() << "\n";
+	body << "Host: " << MNetwork.getHost() << "\n";
+	body << "From: " << player->getAccount()->getId() << "\n";
 	body << "# -- END --\n";
 	body << "# -- BODY --\n";
 	body << argv[0] << "\n";
@@ -91,7 +91,7 @@ void command_report_bug(Player* player, std::string argv[])
 	msg.send();
 
 	// send message
-	Log::Info << "Player " << player->get_account()->getId() << " issued a bug report.";
+	Log::Info << "Player " << player->getAccount()->getId() << " issued a bug report.";
 	*player << "Your bug report has been sent.\n";
 #else // HAVE_SENDMAIL
 	*player << CADMIN "Bug reporting has been disabled." CNORMAL "\n";

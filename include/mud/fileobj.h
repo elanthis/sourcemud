@@ -21,7 +21,7 @@ public:
 	Error() : what() {}
 	Error(const std::string& s_what) : what(s_what) {}
 
-	inline const std::string& get_what() const { return what; }
+	inline const std::string& getWhat() const { return what; }
 };
 
 class Value
@@ -39,9 +39,9 @@ public:
 	Value(Type s_type, const std::string& s_value) : type(s_type), value(s_value), list() {}
 	Value(const std::vector<Value>& s_list) : type(TYPE_LIST), value(), list(s_list) {}
 
-	Type get_type() const { return type; }
-	std::string get_value() const { return value; }
-	const std::vector<Value>& get_list() const { return list; }
+	Type getType() const { return type; }
+	std::string getValue() const { return value; }
+	const std::vector<Value>& getList() const { return list; }
 
 private:
 	Type type;
@@ -62,32 +62,32 @@ public:
 
 	Node(class Reader& s_reader) : reader(s_reader) {}
 
-	inline std::string get_ns() const { return ns; }
-	inline std::string get_name() const { return name; }
-	inline Value::Type get_value_type() const { return value.get_type(); }
+	inline std::string getNs() const { return ns; }
+	inline std::string getName() const { return name; }
+	inline Value::Type getValueType() const { return value.getType(); }
 
 	// type checking getters; throws File::Error on type-mismatch
-	std::string get_string() const;
-	bool get_bool() const;
-	int get_int() const;
+	std::string getString() const;
+	bool getBool() const;
+	int getInt() const;
 
-	const std::vector<Value>& get_list() const;
-	const std::vector<Value>& get_list(size_t size) const;
+	const std::vector<Value>& getList() const;
+	const std::vector<Value>& getList(size_t size) const;
 
-	std::string get_string(size_t index) const;
-	int get_int(size_t index) const;
+	std::string getString(size_t index) const;
+	int getInt(size_t index) const;
 
 	// file info
-	class Reader& get_reader() const { return reader; }
-	inline size_t get_line() const { return line; }
+	class Reader& getReader() const { return reader; }
+	inline size_t getLine() const { return line; }
 
 	// type of node
-	inline bool is_attr() const { return type == ATTR; }
-	inline bool is_end() const { return type == END; }
-	inline bool is_begin() const { return type == BEGIN_UNTYPED || type == BEGIN_TYPED; }
-	inline bool is_begin_untyped() const { return type == BEGIN_UNTYPED; }
-	inline bool is_begin_typed() const { return type == BEGIN_TYPED; }
-	inline Type get_node_type() const { return type; }
+	inline bool isAttr() const { return type == ATTR; }
+	inline bool isEnd() const { return type == END; }
+	inline bool isBegin() const { return type == BEGIN_UNTYPED || type == BEGIN_TYPED; }
+	inline bool isBeginUntyped() const { return type == BEGIN_UNTYPED; }
+	inline bool isBeginTyped() const { return type == BEGIN_TYPED; }
+	inline Type getNodeType() const { return type; }
 
 private:
 	Type type;
@@ -106,9 +106,9 @@ public:
 	Reader() : in(), filename(), line(0) {}
 	~Reader() { close(); }
 
-	const std::string get_filename() const { return filename; }
+	const std::string getFilename() const { return filename; }
 	int open(const std::string& file);
-	bool is_open() const { return in; }
+	bool isOpen() const { return in; }
 	void close() { if (in) in.close(); }
 
 	// fetch another node from the input
@@ -117,10 +117,10 @@ public:
 	void consume();
 
 	// get the current path
-	std::string get_path() const { return filename; }
+	std::string getPath() const { return filename; }
 
 	// get current line
-	inline size_t get_line() const { return line; }
+	inline size_t getLine() const { return line; }
 
 private:
 	std::ifstream in;
@@ -129,8 +129,8 @@ private:
 
 	enum Token { TOKEN_ERROR, TOKEN_EOF, TOKEN_STRING, TOKEN_NUMBER, TOKEN_TRUE, TOKEN_FALSE, TOKEN_BEGIN, TOKEN_END, TOKEN_SET, TOKEN_KEY, TOKEN_START_LIST, TOKEN_END_LIST, TOKEN_COMMA, TOKEN_NAME };
 
-	Token read_token(std::string& data);
-	bool set_value(Token type, std::string& data, Value& value);
+	Token readToken(std::string& data);
+	bool setValue(Token type, std::string& data, Value& value);
 };
 
 class Writer
@@ -141,7 +141,7 @@ public:
 	~Writer() { close(); }
 
 	int open(const std::string& file);
-	bool is_open() const { return out; }
+	bool isOpen() const { return out; }
 	void close();
 
 	// attributes
@@ -163,7 +163,7 @@ public:
 	void begin(const std::string& ns, const std::string& name);
 
 	// open begin... MUST be followed by a regular begin
-	void begin_attr(const std::string& ns, const std::string& name, const std::string& type);
+	void beginAttr(const std::string& ns, const std::string& name, const std::string& type);
 
 	// end a section
 	void end();
@@ -179,11 +179,11 @@ private:
 	std::ofstream out;
 	size_t indent;
 
-	void do_indent();
+	void doIndent();
 };
 
 // return true if a valid attribute/object name
-bool valid_name(const std::string& name);
+bool validName(const std::string& name);
 }
 
 // stream a node
@@ -199,34 +199,34 @@ const StreamControl& operator<< (const StreamControl& stream, const File::Node& 
 			const bool _x_is_read = true; \
 			File::Node node(reader); \
 			while (reader.get(node) && _x_is_read) { \
-				if (node.is_end()) { \
+				if (node.isEnd()) { \
 					break;
 #define FO_NODE_BEGIN \
 	do { \
 	const bool _x_is_read = false; \
 	if (false && _x_is_read) {
 #define FO_ATTR(ns,name) \
-		} else if (node.is_attr() && node.get_ns() == ns && node.get_name() == name) {
+		} else if (node.isAttr() && node.getNs() == ns && node.getName() == name) {
 #define FO_WILD(ns) \
-		} else if (node.is_attr() && node.get_ns() == ns) {
+		} else if (node.isAttr() && node.getNs() == ns) {
 #define FO_OBJECT(ns,name) \
-		} else if (node.is_begin_untyped() && node.get_ns() == ns && node.get_name() == name) {
+		} else if (node.isBeginUntyped() && node.getNs() == ns && node.getName() == name) {
 #define FO_ENTITY(ns,name) \
-		} else if (node.is_begin_typed() && node.get_ns() == ns && node.get_name() == name) { \
-			Entity* entity = Entity::load(node.get_string(), reader); \
+		} else if (node.isBeginTyped() && node.getNs() == ns && node.getName() == name) { \
+			Entity* entity = Entity::load(node.getString(), reader); \
 			if (entity == NULL) throw File::Error();
 #define FO_PARENT(ns) \
-		} else if (ns::load_node(reader, node) == FO_SUCCESS_CODE) { \
+		} else if (ns::loadNode(reader, node) == FO_SUCCESS_CODE) { \
 			/* no-op */
 #define FO_READ_ERROR \
 		} else { \
-			if (node.is_begin()) \
+			if (node.isBegin()) \
 				reader.consume(); \
 			Log::Error << node << ": Unrecognized attribute"; \
 			throw File::Error(); \
 		} \
 	} } catch (File::Error& error) { \
-		if (!error.get_what().empty()) Log::Error << reader.get_filename() << ',' << reader.get_line() << ": " << error.get_what();
+		if (!error.getWhat().empty()) Log::Error << reader.getFilename() << ',' << reader.getLine() << ": " << error.getWhat();
 #define FO_READ_END \
 	} } while(false);
 #define FO_NODE_END \

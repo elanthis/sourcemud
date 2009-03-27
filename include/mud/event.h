@@ -43,8 +43,8 @@ public:
 	EventID() : value(NONE) {}
 
 	bool valid() const { return value != NONE; }
-	const std::string& get_name() const { return names[value]; }
-	type_t get_value() const { return value; }
+	const std::string& getName() const { return names[value]; }
+	type_t getValue() const { return value; }
 
 	static EventID lookup(const std::string& name);
 
@@ -69,18 +69,18 @@ public:
 	int load(File::Reader& reader);
 	void save(File::Writer& writer) const;
 
-	EventID get_event() const { return event; }
+	EventID getEvent() const { return event; }
 };
 
 // should only be stack allocated
 class Event
 {
 public:
-	EventID get_id() const { return id; }
+	EventID getId() const { return id; }
 
-	Entity* get_recipient() const { return recipient; }
-	Entity* get_aux1() const { return aux1; }
-	Entity* get_aux2() const { return aux2; }
+	Entity* getRecipient() const { return recipient; }
+	Entity* getAux1() const { return aux1; }
+	Entity* getAux2() const { return aux2; }
 
 private:
 	EventID id;
@@ -120,7 +120,7 @@ public:
 	void resend(const Event& event, Entity* recipient);
 
 	// return true if there are pending events
-	bool events_pending() { return !events.empty(); }
+	bool eventsPending() { return !events.empty(); }
 
 	// compile an event handler script
 	int compile(EventID id, const std::string& source, const std::string& filename, unsigned long fileline);

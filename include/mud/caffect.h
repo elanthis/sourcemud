@@ -29,8 +29,8 @@ public:
 	inline CreatureAffectType() : value(UNKNOWN) {}
 
 	inline bool valid() const { return value != UNKNOWN; }
-	inline std::string get_name() const { return names[value]; }
-	inline type_t get_value() const { return value; }
+	inline std::string getName() const { return names[value]; }
+	inline type_t getValue() const { return value; }
 
 	static CreatureAffectType lookup(const std::string& name);
 
@@ -59,16 +59,16 @@ class CreatureAffectGroup
 public:
 	CreatureAffectGroup(const std::string& s_title, CreatureAffectType s_type, uint s_duration);
 
-	int add_affect(ICreatureAffect* affect);
+	int addAffect(ICreatureAffect* affect);
 
 	int apply(Creature* character) const;
 	void remove(Creature* character) const;
 
 	void update(Creature* character);
 
-	inline std::string get_title() const { return title; }
-	inline CreatureAffectType get_type() const { return type; }
-	inline uint get_time_left() const { return duration; }
+	inline std::string getTitle() const { return title; }
+	inline CreatureAffectType getType() const { return type; }
+	inline uint getTimeLeft() const { return duration; }
 
 private:
 	typedef std::vector<ICreatureAffect*> AffectList;
@@ -87,8 +87,8 @@ public:
 	inline CreatureAffectStat(CreatureStatID s_stat, int s_mod) :
 			stat(s_stat), mod(s_mod) {}
 
-	inline virtual int apply(Creature* character) const {character->set_effective_stat(stat, character->get_base_stat(stat) + mod); return 0; }
-	inline virtual void remove(Creature* character) const {character->set_effective_stat(stat, character->get_base_stat(stat) - mod); }
+	inline virtual int apply(Creature* character) const {character->setEffectiveStat(stat, character->getBaseStat(stat) + mod); return 0; }
+	inline virtual void remove(Creature* character) const {character->setEffectiveStat(stat, character->getBaseStat(stat) - mod); }
 
 	inline virtual void update(Creature* character) const {};
 

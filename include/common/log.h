@@ -11,7 +11,6 @@
 #include "common/error.h"
 #include "common/streams.h"
 #include "common/imanager.h"
-#include "common/strbuf.h"
 
 enum LogClass {
 	LOG_NOTICE,
@@ -34,8 +33,8 @@ public:
 
 	void reset();
 
-	std::string get_path() const { return path; }
-	std::string get_http_path() const { return http_path; }
+	std::string getPath() const { return path; }
+	std::string getHttpPath() const { return http_path; }
 
 protected:
 	std::string path;
@@ -54,12 +53,12 @@ class LogWrapper : public IStreamSink
 public:
 	LogWrapper(LogClass s_klass) : klass(s_klass) {}
 
-	virtual void stream_put(const char* str, size_t len);
-	virtual void stream_end();
+	virtual void streamPut(const char* str, size_t len);
+	virtual void streamEnd();
 
 private:
 	LogClass klass;
-	StringBuffer msg;
+	std::ostringstream msg;
 };
 
 // the output

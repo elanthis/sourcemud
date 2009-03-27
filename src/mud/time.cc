@@ -14,7 +14,7 @@
 
 _MTime MTime;
 
-void GameTime::time_str(char *buf, int len) const
+void GameTime::timeStr(char *buf, int len) const
 {
 	snprintf(buf, len, "%d:%02d %s",
 	         hour == 0 ? 12 : (hour <= 12 ? hour : hour - 12),
@@ -22,43 +22,43 @@ void GameTime::time_str(char *buf, int len) const
 	         (hour < 12) ? "am" : "pm");
 }
 
-std::string GameTime::time_str() const
+std::string GameTime::timeStr() const
 {
 	char buffer[32];
-	time_str(buffer, sizeof(buffer));
+	timeStr(buffer, sizeof(buffer));
 	return std::string(buffer);
 }
 
-void GameTime::date_str(char *buf, int len) const
+void GameTime::dateStr(char *buf, int len) const
 {
 	// base date string
 	size_t add = snprintf(buf, len, "%s, %d%s of %s, %d",
-	                      MTime.calendar.weekdays[MTime.calendar.get_weekday(*this)].c_str(),
+	                      MTime.calendar.weekdays[MTime.calendar.getWeekday(*this)].c_str(),
 	                      day,
-	                      get_num_suffix(day).c_str(),
+	                      getNumSuffix(day).c_str(),
 	                      MTime.calendar.months[month - 1].name.c_str(),
 	                      year);
 	// append holiday if we have one
-	std::string holiday = MTime.calendar.get_holiday(*this);
+	std::string holiday = MTime.calendar.getHoliday(*this);
 	if (!holiday.empty()) {
 		snprintf(buf + add, len - add, " (%s)", holiday.c_str());
 	}
 }
 
-std::string GameTime::date_str() const
+std::string GameTime::dateStr() const
 {
 	char buffer[256];
-	date_str(buffer, sizeof(buffer));
+	dateStr(buffer, sizeof(buffer));
 	return std::string(buffer);
 }
 
 void GameTime::update(uint ticks)
 {
 	ticks_in_hour += ticks;
-	clip_time();
+	clipTime();
 }
 
-void GameTime::clip_time()
+void GameTime::clipTime()
 {
 	while (ticks_in_hour >= TICKS_PER_HOUR) {
 		ticks_in_hour -= TICKS_PER_HOUR;
@@ -68,8 +68,8 @@ void GameTime::clip_time()
 		hour -= 24;
 		day ++;
 	}
-	while (day > MTime.calendar.days_in_month(*this)) {
-		day -= MTime.calendar.days_in_month(*this);
+	while (day > MTime.calendar.daysInMonth(*this)) {
+		day -= MTime.calendar.daysInMonth(*this);
 		month ++;
 	}
 	if (day < 1)
@@ -129,12 +129,12 @@ int _MTime::initialize()
 
 	File::Reader reader;
 
-	if (reader.open(MSettings.get_world_path() + "/" + "time"))
+	if (reader.open(MSettings.getWorldPath() + "/" + "time"))
 		return 1;
 
 	FO_READ_BEGIN
 	FO_ATTR("time", "current")
-	time.decode(node.get_string());
+	time.decode(node.getString());
 	FO_READ_ERROR
 	return -1;
 	FO_READ_END
@@ -147,7 +147,7 @@ void _MTime::save()
 	// open
 	File::Writer writer;
 
-	if (writer.open(MSettings.get_world_path() + "/" + "time"))
+	if (writer.open(MSettings.getWorldPath() + "/" + "time"))
 		return;
 
 	// save

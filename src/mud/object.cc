@@ -37,10 +37,10 @@ Object::Object(ObjectBP* s_blueprint) : owner(0), blueprint(s_blueprint), calc_w
 
 Object::~Object() { }
 
-void Object::save_data(File::Writer& writer)
+void Object::saveData(File::Writer& writer)
 {
 	// parent data
-	Entity::save_data(writer);
+	Entity::saveData(writer);
 
 	// save blueprint
 	if (blueprint) {
@@ -49,13 +49,13 @@ void Object::save_data(File::Writer& writer)
 			blueprint->save(writer);
 			writer.end();
 		} else {
-			writer.attr("object", "blueprint", get_blueprint()->get_id());
+			writer.attr("object", "blueprint", getBlueprint()->getId());
 		}
 	}
 
 	// save name, if set
 	if (!name.empty())
-		writer.attr("object", "name", name.get_name());
+		writer.attr("object", "name", name.getFull());
 
 	// parent location
 	if (in_container == ObjectLocation::IN)
@@ -69,25 +69,25 @@ void Object::save_data(File::Writer& writer)
 	}
 }
 
-void Object::save_hook(File::Writer& writer)
+void Object::saveHook(File::Writer& writer)
 {
-	Entity::save_hook(writer);
-	Hooks::save_object(this, writer);
+	Entity::saveHook(writer);
+	Hooks::saveObject(this, writer);
 }
 
-int Object::load_finish()
+int Object::loadFinish()
 {
 	if (blueprint == NULL) {
 		Log::Error << "object has no blueprint";
 		return -1;
 	}
 
-	recalc_weight();
+	recalcWeight();
 
 	return 0;
 }
 
-int Object::load_node(File::Reader& reader, File::Node& node)
+int Object::loadNode(File::Reader& reader, File::Node& node)
 {
 	FO_NODE_BEGIN
 	FO_OBJECT("object", "blueprint")
@@ -96,43 +96,43 @@ int Object::load_node(File::Reader& reader, File::Node& node)
 		delete blueprint;
 		throw new File::Error("Failed to load unique object");
 	} else {
-		set_blueprint(blueprint);
+		setBlueprint(blueprint);
 	}
 	FO_ATTR("object", "location")
-	if (node.get_string() == "in")
+	if (node.getString() == "in")
 		in_container = ObjectLocation::IN;
-	else if (node.get_string() == "on")
+	else if (node.getString() == "on")
 		in_container = ObjectLocation::ON;
 	else
 		throw File::Error("Object has invalid container attribute");
 	FO_ATTR("object", "blueprint")
 	// sets a real blueprint
 	ObjectBP* blueprint = NULL;
-	if ((blueprint = MObjectBP.lookup(node.get_string())) == NULL)
-		Log::Error << "Could not find object blueprint '" << node.get_string() << "'";
+	if ((blueprint = MObjectBP.lookup(node.getString())) == NULL)
+		Log::Error << "Could not find object blueprint '" << node.getString() << "'";
 	else
-		set_blueprint(blueprint);
+		setBlueprint(blueprint);
 	FO_ATTR("object", "name")
-	name.set_name(node.get_string());
+	name.setFull(node.getString());
 	FO_ENTITY("object", "child")
 	if (OBJECT(entity) == NULL) throw File::Error("Object child is not an Object");
-	OBJECT(entity)->set_owner(this);
+	OBJECT(entity)->setOwner(this);
 	children.add(OBJECT(entity));
 	FO_PARENT(Entity)
 	FO_NODE_END
 }
 
-void Object::set_owner(Entity* s_owner)
+void Object::setOwner(Entity* s_owner)
 {
 	// type check
 	assert(OBJECT(s_owner) || ROOM(s_owner) || CHARACTER(s_owner));
 
 	// set owner
-	Entity::set_owner(s_owner);
+	Entity::setOwner(s_owner);
 	owner = s_owner;
 }
 
-void Object::owner_release(Entity* child)
+void Object::ownerRelease(Entity* child)
 {
 	// we only own objects
 	Object* obj = OBJECT(child);
@@ -150,12 +150,12 @@ void Object::owner_release(Entity* child)
 void Object::heartbeat()
 {
 	// see if we can trash the object
-	if (is_trashable()) {
+	if (isTrashable()) {
 		// must be laying in a room
-		Room* room = ROOM(get_owner());
+		Room* room = ROOM(getOwner());
 		if (room != NULL) {
 			// rotting?
-			if (is_rotting() && trash_timer >= OBJECT_ROT_TICKS) {
+			if (isRotting() && trash_timer >= OBJECT_ROT_TICKS) {
 				// destroy it
 				*room << StreamName(this, INDEFINITE, true) << " rots away.\n";
 				destroy();
@@ -163,7 +163,7 @@ void Object::heartbeat()
 				// not rotting - normal trash
 			} else if (trash_timer >= OBJECT_TRASH_TICKS) {
 				// room must not have any players in it
-				if (room->count_players() == 0) {
+				if (room->countPlayers() == 0) {
 					// destroy it
 					destroy();
 				}
@@ -174,7 +174,7 @@ void Object::heartbeat()
 	}
 
 	// call update hook
-	Hooks::object_heartbeat(this);
+	Hooks::objectHeartbeat(this);
 }
 
 void Object::activate()
@@ -193,29 +193,29 @@ void Object::deactivate()
 	Entity::deactivate();
 }
 
-bool Object::add_object(Object *object, ObjectLocation container)
+bool Object::addObject(Object *object, ObjectLocation container)
 {
 	assert(object != NULL);
 
 	// has contianer?
-	if (!has_location(container))
+	if (!hasLocation(container))
 		return false;
 
 	// release and add
-	object->set_owner(this);
+	object->setOwner(this);
 	object->in_container = container;
 	children.add(object);
 
 	// recalc our weight, and parent's weight
-	recalc_weight();
+	recalcWeight();
 	if (OBJECT(owner))
-		((Object*)owner)->recalc_weight();
+		((Object*)owner)->recalcWeight();
 
 	// ok add
 	return true;
 }
 
-void Object::show_contents(Player *player, ObjectLocation container) const
+void Object::showContents(Player *player, ObjectLocation container) const
 {
 	*player << "You see ";
 
@@ -260,7 +260,7 @@ void Object::show_contents(Player *player, ObjectLocation container) const
 	*player << " " << tname << " " << StreamName(*this, DEFINITE, false) << ".\n";
 }
 
-Object* Object::find_object(const std::string& name, uint index, ObjectLocation container, uint *matches) const
+Object* Object::findObject(const std::string& name, uint index, ObjectLocation container, uint *matches) const
 {
 	assert(index != 0);
 
@@ -272,7 +272,7 @@ Object* Object::find_object(const std::string& name, uint index, ObjectLocation 
 		// right container container
 		if ((*i)->in_container == container) {
 			// check name
-			if ((*i)->name_match(name)) {
+			if ((*i)->nameMatch(name)) {
 				if (matches)
 					++ *matches;
 				if ((-- index) == 0)
@@ -286,105 +286,105 @@ Object* Object::find_object(const std::string& name, uint index, ObjectLocation 
 }
 
 // recalc weight of object
-void Object::recalc_weight()
+void Object::recalcWeight()
 {
 	calc_weight = 0;
 
 	// add up weight of objects
 	for (EList<Object>::const_iterator i = children.begin(); i != children.end(); ++i)
-		calc_weight += (*i)->get_weight();
+		calc_weight += (*i)->getWeight();
 }
 
 // find parent room
-Room* Object::get_room() const
+Room* Object::getRoom() const
 {
-	Entity* owner = get_owner();
+	Entity* owner = getOwner();
 	while (owner != NULL && !ROOM(owner))
-		owner = owner->get_owner();
+		owner = owner->getOwner();
 	return ROOM(owner);
 }
 
 // find parent owner
-Creature* Object::get_holder() const
+Creature* Object::getHolder() const
 {
-	Entity* owner = get_owner();
+	Entity* owner = getOwner();
 	while (owner != NULL && OBJECT(owner))
-		owner = owner->get_owner();
+		owner = owner->getOwner();
 	return CHARACTER(owner);
 }
 
-bool Object::set_name(const std::string& s_name)
+bool Object::setName(const std::string& s_name)
 {
-	bool ret = name.set_name(s_name);
+	bool ret = name.setFull(s_name);
 	return ret;
 }
 
 // get object name information
-EntityName Object::get_name() const
+EntityName Object::getName() const
 {
 	assert(blueprint != NULL);
 	if (name.empty())
-		return blueprint->get_name();
+		return blueprint->getName();
 	else
 		return name;
 }
 
 // get object description
-std::string Object::get_desc() const
+std::string Object::getDesc() const
 {
 	assert(blueprint != NULL);
-	return blueprint->get_desc();
+	return blueprint->getDesc();
 }
 
 // get object properties
-uint Object::get_cost() const
+uint Object::getCost() const
 {
 	assert(blueprint != NULL);
-	return blueprint->get_cost();
+	return blueprint->getCost();
 }
 
-uint Object::get_real_weight() const
+uint Object::getRealWeight() const
 {
 	assert(blueprint != NULL);
-	return blueprint->get_weight();
+	return blueprint->getWeight();
 }
 
-EquipSlot Object::get_equip() const
+EquipSlot Object::getEquip() const
 {
 	assert(blueprint != NULL);
-	return blueprint->get_equip();
+	return blueprint->getEquip();
 }
 
 // get parsable member values
-int Object::macro_property(const StreamControl& stream, const std::string& comm, const MacroList& argv) const
+int Object::macroProperty(const StreamControl& stream, const std::string& comm, const MacroList& argv) const
 {
 	// COST
-	if (str_eq(comm, "cost")) {
-		stream << get_cost();
+	if (strEq(comm, "cost")) {
+		stream << getCost();
 		return 0;
 	}
 	// WEIGHT
-	if (str_eq(comm, "weight")) {
-		stream << get_weight();
+	if (strEq(comm, "weight")) {
+		stream << getWeight();
 		return 0;
 	}
 	// try the entity
-	return Entity::macro_property(stream, comm, argv);
+	return Entity::macroProperty(stream, comm, argv);
 }
 
 // event handling
-void Object::handle_event(const Event& event)
+void Object::handleEvent(const Event& event)
 {
-	Entity::handle_event(event);
+	Entity::handleEvent(event);
 }
 
-void Object::broadcast_event(const Event& event)
+void Object::broadcastEvent(const Event& event)
 {
 	for (EList<Object>::const_iterator i = children.begin(); i != children.end(); ++i)
 		MEvent.resend(event, *i);
 }
 
-void Object::set_blueprint(ObjectBP* s_blueprint)
+void Object::setBlueprint(ObjectBP* s_blueprint)
 {
 	if (blueprint != NULL && blueprint->isAnonymous())
 		delete blueprint;
@@ -392,7 +392,7 @@ void Object::set_blueprint(ObjectBP* s_blueprint)
 }
 
 // load object from a blueprint
-Object* Object::load_blueprint(const std::string& name)
+Object* Object::loadBlueprint(const std::string& name)
 {
 	ObjectBP* blueprint = MObjectBP.lookup(name);
 	if (!blueprint)
@@ -401,26 +401,26 @@ Object* Object::load_blueprint(const std::string& name)
 	return new Object(blueprint);
 }
 
-bool Object::is_blueprint(const std::string& name) const
+bool Object::isBlueprint(const std::string& name) const
 {
-	ObjectBP* blueprint = get_blueprint();
+	ObjectBP* blueprint = getBlueprint();
 
 	if (blueprint != NULL)
-		return str_eq(blueprint->get_id(), name);
+		return strEq(blueprint->getId(), name);
 
 	return false;
 }
 
-bool Object::name_match(const std::string& match) const
+bool Object::nameMatch(const std::string& match) const
 {
-	if (get_name().matches(match))
+	if (getName().matches(match))
 		return true;
 
 	// blueprint keywords
-	ObjectBP* blueprint = get_blueprint();
+	ObjectBP* blueprint = getBlueprint();
 	if (blueprint != NULL) {
-		for (std::vector<std::string>::const_iterator i = blueprint->get_keywords().begin(); i != blueprint->get_keywords().end(); ++i)
-			if (phrase_match(*i, match))
+		for (std::vector<std::string>::const_iterator i = blueprint->getKeywords().begin(); i != blueprint->getKeywords().end(); ++i)
+			if (phraseMatch(*i, match))
 				return true;
 	}
 

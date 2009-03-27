@@ -27,7 +27,7 @@
  * END COMMAND */
 void command_emote(Creature* ch, std::string argv[])
 {
-	ch->do_emote(argv[0]);
+	ch->doEmote(argv[0]);
 }
 
 /* BEGIN COMMAND
@@ -45,7 +45,7 @@ void command_laugh(Creature* ch, std::string argv[])
 	// lookup target, if any
 	Creature* target = NULL;
 	if (!argv[0].empty())
-		if ((target = ch->cl_find_creature(argv[0])) == NULL)
+		if ((target = ch->clFindCreature(argv[0])) == NULL)
 			return;
 
 	// determine adverb
@@ -53,20 +53,20 @@ void command_laugh(Creature* ch, std::string argv[])
 		if (target) {
 			*ch << "You laugh evilly at " << StreamName(target, DEFINITE) << ".\n";
 			*target << StreamName(ch, INDEFINITE, true) << " laughs evilly at you.\n";
-			*ch->get_room() << StreamIgnore(ch) << StreamIgnore(target) << StreamName(ch, INDEFINITE, true) << " laughs evilly at " << StreamName(target, INDEFINITE) << ".\n";
+			*ch->getRoom() << StreamIgnore(ch) << StreamIgnore(target) << StreamName(ch, INDEFINITE, true) << " laughs evilly at " << StreamName(target, INDEFINITE) << ".\n";
 		} else {
 			*ch << "You laugh evilly.\n";
-			*ch->get_room() << StreamIgnore(ch) << StreamName(ch, INDEFINITE, true) << " laughs evilly.";
+			*ch->getRoom() << StreamIgnore(ch) << StreamName(ch, INDEFINITE, true) << " laughs evilly.";
 		}
 		// no adverb
 	} else {
 		if (target) {
 			*ch << "You laugh at " << StreamName(target, DEFINITE) << ".\n";
 			*target << StreamName(ch, INDEFINITE, true) << " laughs at you.\n";
-			*ch->get_room() << StreamIgnore(ch) << StreamIgnore(target) << StreamName(ch, INDEFINITE, true) << " laughs at " << StreamName(target, INDEFINITE) << ".\n";
+			*ch->getRoom() << StreamIgnore(ch) << StreamIgnore(target) << StreamName(ch, INDEFINITE, true) << " laughs at " << StreamName(target, INDEFINITE) << ".\n";
 		} else {
 			*ch << "You laugh.\n";
-			*ch->get_room() << StreamIgnore(ch) << StreamName(ch, INDEFINITE, true) << " laughs.";
+			*ch->getRoom() << StreamIgnore(ch) << StreamName(ch, INDEFINITE, true) << " laughs.";
 		}
 	}
 }

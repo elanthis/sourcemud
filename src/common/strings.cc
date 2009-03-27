@@ -13,10 +13,10 @@
 
 // for portability
 #ifndef __va_copy
-#define __va_copy(x, y) x = y
+#define _VaCopy(x, y) x = y
 #endif
 
-bool str_is_valid_id(const std::string& string)
+bool strIsValidId(const std::string& string)
 {
 	// can't be empty
 	if (string.empty())
@@ -35,7 +35,7 @@ bool str_is_valid_id(const std::string& string)
 	return true;
 }
 
-bool str_is_number(const std::string& string)
+bool strIsNumber(const std::string& string)
 {
 	// no length?  bad
 	if (string.empty())
@@ -60,7 +60,7 @@ bool str_is_number(const std::string& string)
 	return true;
 }
 
-bool str_is_email(const std::string& string)
+bool strIsEmail(const std::string& string)
 {
 	const char *valid =
 	    "abcdefghijklmnopqrstuvwxyz"
@@ -95,27 +95,27 @@ bool str_is_email(const std::string& string)
 	return true;
 }
 
-bool str_is_true(const std::string& string)
+bool strIsTrue(const std::string& string)
 {
 	return (
-	           str_eq(string, "true") ||
-	           str_eq(string, "yes") ||
-	           str_eq(string, "on") ||
-	           (str_is_number(string) && tolong(string) != 0)
+	           strEq(string, "true") ||
+	           strEq(string, "yes") ||
+	           strEq(string, "on") ||
+	           (strIsNumber(string) && tolong(string) != 0)
 	       );
 }
 
-bool str_is_false(const std::string& string)
+bool strIsFalse(const std::string& string)
 {
 	return (
-	           str_eq(string, "false") ||
-	           str_eq(string, "no") ||
-	           str_eq(string, "off") ||
+	           strEq(string, "false") ||
+	           strEq(string, "no") ||
+	           strEq(string, "off") ||
 	           string == "0"
 	       );
 }
 
-bool str_eq(const std::string& str_a, const std::string& str_b, size_t len)
+bool strEq(const std::string& str_a, const std::string& str_b, size_t len)
 {
 	// do comparison
 	if (len)
@@ -124,7 +124,7 @@ bool str_eq(const std::string& str_a, const std::string& str_b, size_t len)
 		return !strcasecmp(str_a.c_str(), str_b.c_str());
 }
 
-bool prefix_match(const char* string, const char* prefix)
+bool prefixMatch(const char* string, const char* prefix)
 {
 	assert(string != NULL);
 	assert(prefix != NULL);
@@ -132,7 +132,7 @@ bool prefix_match(const char* string, const char* prefix)
 	return strncasecmp(string, prefix, strlen(prefix)) == 0;
 }
 
-bool phrase_match(const char* match, const char* test)
+bool phraseMatch(const char* match, const char* test)
 {
 	assert(match != NULL);
 	assert(test != NULL);
@@ -212,7 +212,7 @@ bool phrase_match(const char* match, const char* test)
 	return matches == cchunk ? true : false;
 }
 
-std::string get_num_suffix(unsigned int num)
+std::string getNumSuffix(unsigned int num)
 {
 	if (num == 11 || num == 12 || num == 13) { return "th"; }
 	num %= 10;
@@ -351,7 +351,7 @@ std::string trim(const std::string& source, const std::string& accept)
 	return ret.str();
 }
 
-std::string str_tr(std::string source, const std::string& from, const std::string& to)
+std::string strTr(std::string source, const std::string& from, const std::string& to)
 {
 	std::ostringstream result;
 
@@ -366,7 +366,7 @@ std::string str_tr(std::string source, const std::string& from, const std::strin
 	return result.str();
 }
 
-std::string make_path(const char* path, const char* file)
+std::string makePath(const char* path, const char* file)
 {
 	assert(path != NULL);
 	assert(file != NULL);
@@ -391,7 +391,7 @@ std::string make_path(const char* path, const char* file)
 	return res.str();
 }
 
-std::string base_name(const char* path)
+std::string baseName(const char* path)
 {
 	assert(path != NULL);
 
@@ -411,7 +411,7 @@ std::string base_name(const char* path)
 		return std::string(start, ext - start);
 }
 
-bool has_suffix(const char* base, const char* suffix)
+bool hasSuffix(const char* base, const char* suffix)
 {
 	assert(base != NULL);
 	assert(suffix != NULL);

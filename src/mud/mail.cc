@@ -34,7 +34,7 @@ int MailMessage::send() const
 	}
 
 	// configuration
-	std::string sendmail = MSettings.get_sendmail_bin();
+	std::string sendmail = MSettings.getSendmailBin();
 	if (sendmail.empty()) {
 		Log::Error << "No sendmail binary configured";
 		return -1;

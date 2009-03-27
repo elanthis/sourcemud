@@ -42,11 +42,11 @@ int EventHandler::load(File::Reader& reader)
 {
 	FO_READ_BEGIN
 	FO_ATTR("event", "id")
-	event = EventID::lookup(node.get_string());
+	event = EventID::lookup(node.getString());
 	if (!event.valid())
-		Log::Warning << node << ": Unknown event '" << node.get_string() << "'";
+		Log::Warning << node << ": Unknown event '" << node.getString() << "'";
 	FO_ATTR("event", "script")
-	script = node.get_string();
+	script = node.getString();
 	FO_READ_ERROR
 	return -1;
 	FO_READ_END
@@ -56,16 +56,16 @@ int EventHandler::load(File::Reader& reader)
 
 void EventHandler::save(File::Writer& writer) const
 {
-	writer.attr("event", "id", event.get_name());
+	writer.attr("event", "id", event.getName());
 	if (!script.empty())
 		writer.block("event", "script", script);
 }
 
-void Entity::handle_event(const Event& event)
+void Entity::handleEvent(const Event& event)
 {
 	for (EventList::const_iterator i = events.begin(); i != events.end(); ++ i) {
-		if (event.get_id() == (*i)->get_event()) {
-			//(*i)->get_func().run(len, argv);
+		if (event.getId() == (*i)->getEvent()) {
+			//(*i)->getFunc().run(len, argv);
 		}
 	}
 }
@@ -111,7 +111,7 @@ void _MEvent::broadcast(EventID id, Entity* recipient, Entity* aux1, Entity* aux
 	event.aux3 = aux3;
 
 	// ask entity to broadcast it
-	recipient->broadcast_event(event);
+	recipient->broadcastEvent(event);
 }
 
 void _MEvent::resend(const Event& event, Entity* recipient)
@@ -138,19 +138,19 @@ void _MEvent::process()
 
 		// DEBUG:
 		/*
-		Log::Info << "Event[" << event.get_name() <<
-			"] P:" << event.get_id().name() <<
-			" R:" << (event.get_room() ? event.get_room()->get_id().c_str() : "n/a") <<
-			" A:" << (event.get_actor() ? event.get_actor()->get_name().get_name().c_str() : "n/a") <<
-			" D:" << (event.get_data(0) ? event.get_data(0).get_type()->get_name().name().c_str() : "n/a") <<
-			" D:" << (event.get_data(1) ? event.get_data(1).get_type()->get_name().name().c_str() : "n/a") <<
-			" D:" << (event.get_data(2) ? event.get_data(2).get_type()->get_name().name().c_str() : "n/a") <<
-			" D:" << (event.get_data(3) ? event.get_data(3).get_type()->get_name().name().c_str() : "n/a") <<
-			" D:" << (event.get_data(4) ? event.get_data(4).get_type()->get_name().name().c_str() : "n/a");
+		Log::Info << "Event[" << event.getName() <<
+			"] P:" << event.getId().name() <<
+			" R:" << (event.getRoom() ? event.getRoom()->getId().c_str() : "n/a") <<
+			" A:" << (event.getActor() ? event.getActor()->getName().getName().c_str() : "n/a") <<
+			" D:" << (event.getData(0) ? event.getData(0).getType()->getName().name().c_str() : "n/a") <<
+			" D:" << (event.getData(1) ? event.getData(1).getType()->getName().name().c_str() : "n/a") <<
+			" D:" << (event.getData(2) ? event.getData(2).getType()->getName().name().c_str() : "n/a") <<
+			" D:" << (event.getData(3) ? event.getData(3).getType()->getName().name().c_str() : "n/a") <<
+			" D:" << (event.getData(4) ? event.getData(4).getType()->getName().name().c_str() : "n/a");
 		*/
 
 		// send event
-		event.get_recipient()->handle_event(event);
+		event.getRecipient()->handleEvent(event);
 	}
 }
 

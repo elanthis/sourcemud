@@ -41,10 +41,10 @@ using namespace OLC;
 void command_olc_create(Player* builder, std::string argv[])
 {
 	// create npc from blueprint
-	if (str_eq(argv[0], "npc")) {
+	if (strEq(argv[0], "npc")) {
 		Npc *new_npc = NULL;
 		if (!argv[1].empty()) {
-			new_npc = Npc::load_blueprint(argv[1]);
+			new_npc = Npc::loadBlueprint(argv[1]);
 			if (!new_npc) {
 				*builder << "Failed to load blueprint '" << argv[1] << "'.\n";
 				return;
@@ -53,13 +53,13 @@ void command_olc_create(Player* builder, std::string argv[])
 			new_npc = new Npc();
 		}
 
-		new_npc->enter(builder->get_room(), NULL);
+		new_npc->enter(builder->getRoom(), NULL);
 		*builder << "New NPC " << StreamName(*new_npc, NONE) << " created.\n";
 		// creat object from blueprint
-	} else if (str_eq(argv[0], "object")) {
+	} else if (strEq(argv[0], "object")) {
 		Object* new_object = NULL;
 		if (!argv[1].empty()) {
-			new_object = Object::load_blueprint(argv[1]);
+			new_object = Object::loadBlueprint(argv[1]);
 			if (!new_object) {
 				*builder << "Failed to load blueprint '" << argv[1] << "'.\n";
 				return;
@@ -68,11 +68,11 @@ void command_olc_create(Player* builder, std::string argv[])
 			new_object = new Object();
 		}
 
-		builder->get_room()->add_object(new_object);
+		builder->getRoom()->addObject(new_object);
 		*builder << "New object " << StreamName(*new_object, NONE) << " created.\n";
 		// create portal in room
-	} else if (str_eq(argv[0], "portal")) {
-		Room* room = builder->get_room();
+	} else if (strEq(argv[0], "portal")) {
+		Room* room = builder->getRoom();
 		if (room == NULL) {
 			*builder << "You are not in a room.\n";
 			return;
@@ -84,63 +84,63 @@ void command_olc_create(Player* builder, std::string argv[])
 			return;
 		}
 
-		if (room->get_portal_by_dir(dir)) {
-			*builder << "Portal for direction " << dir.get_name() << " already exists.\n";
+		if (room->getPortalByDir(dir)) {
+			*builder << "Portal for direction " << dir.getName() << " already exists.\n";
 			return;
 		}
 
-		Room* target = MZone.get_room(argv[2]);
+		Room* target = MZone.getRoom(argv[2]);
 		if (target == NULL) {
 			*builder << "Target room '" << argv[2] << "' not found.\n";
 			return;
 		}
 
-		Portal* portal = room->new_portal(dir);
-		portal->set_target(target->get_id());
+		Portal* portal = room->newPortal(dir);
+		portal->setTarget(target->getId());
 		*builder << "Portal created.\n";
 		// create room in zone
-	} else if (str_eq(argv[0], "room")) {
+	} else if (strEq(argv[0], "room")) {
 		Zone *zone = NULL;
 		if (!argv[2].empty()) {
-			zone = MZone.get_zone(argv[2]);
+			zone = MZone.getZone(argv[2]);
 			if (zone == NULL) {
 				*builder << "Zone '" << argv[2] << "' does not exist.\n";
 				return;
 			}
 		} else {
-			Room *our_room = ROOM(builder->get_room());
+			Room *our_room = ROOM(builder->getRoom());
 			if (our_room)
-				zone = our_room->get_zone();
+				zone = our_room->getZone();
 			if (zone == NULL) {
 				*builder << "You are not in a zone.\n";
 				return;
 			}
 		}
 
-		if (MZone.get_room(argv[1])) {
+		if (MZone.getRoom(argv[1])) {
 			*builder << "Room '" << argv[1] << "' already exists.\n";
 			return;
 		}
 
 		Room *room = new Room();
-		room->set_id(argv[1]);
-		room->set_name(argv[1]);
+		room->setId(argv[1]);
+		room->setName(argv[1]);
 
-		*builder << "Room '" << room->get_id() << "' added.\n";
-		zone->add_room(room);
+		*builder << "Room '" << room->getId() << "' added.\n";
+		zone->addRoom(room);
 		// create zone
-	} else if (str_eq(argv[0], "zone")) {
-		if (MZone.get_zone(argv[1])) {
+	} else if (strEq(argv[0], "zone")) {
+		if (MZone.getZone(argv[1])) {
 			*builder << "Zone '" << argv[1] << "' already exists.\n";
 			return;
 		}
 
 		Zone *zone = new Zone();
-		zone->set_id(argv[1]);
-		zone->set_name(argv[1]);
+		zone->setId(argv[1]);
+		zone->setName(argv[1]);
 
-		MZone.add_zone(zone);
-		*builder << "Zone '" << zone->get_id() << "' added.\n";
+		MZone.addZone(zone);
+		*builder << "Zone '" << zone->getId() << "' added.\n";
 	}
 }
 
@@ -163,7 +163,7 @@ void command_olc_destroy(Player* builder, std::string argv[])
 	Entity* entity;
 
 	// valid form?
-	if (!lookup_editable(builder, argv[0], argv[1], entity)) {
+	if (!lookupEditable(builder, argv[0], argv[1], entity)) {
 		return;
 	}
 
@@ -196,20 +196,20 @@ void command_olc_destroy(Player* builder, std::string argv[])
 
 	// find room?
 	if (ROOM(entity)) {
-		if (ROOM(entity) == builder->get_room()) {
+		if (ROOM(entity) == builder->getRoom()) {
 			*builder << "You cannot delete the room you are in.\n";
 			return;
 		}
 
 		entity->destroy();
-		*builder << "Room '" << ROOM(entity)->get_id() << "' destroyed.\n";
+		*builder << "Room '" << ROOM(entity)->getId() << "' destroyed.\n";
 		return;
 	}
 
 	// find zone?
 	/* FIXME
 	if (ZONE(entity)) {
-		if (builder->get_room() && builder->get_room()->get_zone() == ZONE(entity)) {
+		if (builder->getRoom() && builder->getRoom()->getZone() == ZONE(entity)) {
 			*builder << "You cannot delete the zone you are in.\n";
 			return;
 		}
@@ -236,13 +236,13 @@ void command_olc_portals(Player *builder, std::string argv[])
 	Room *room = NULL;
 
 	if (argv[0].empty()) {
-		room = ROOM(builder->get_room());
+		room = ROOM(builder->getRoom());
 		if (room == NULL) {
 			*builder << "You are not in a room.\n";
 			return;
 		}
 	} else {
-		room = MZone.get_room(argv[0]);
+		room = MZone.getRoom(argv[0]);
 		if (room == NULL) {
 			*builder << "Could not find room '" << argv[0] << "'.\n";
 			return;
@@ -251,5 +251,5 @@ void command_olc_portals(Player *builder, std::string argv[])
 
 	*builder << "Portal list:\n";
 
-	room->show_portals(*builder);
+	room->showPortals(*builder);
 }

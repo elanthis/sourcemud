@@ -41,7 +41,7 @@ namespace
 				CHECKSELF(Entity);
 
 				// push the name, return
-				lua_pushstring(s, self->get_name().get_name().c_str());
+				lua_pushstring(s, self->getName().getFull().c_str());
 				return 1;
 			}
 

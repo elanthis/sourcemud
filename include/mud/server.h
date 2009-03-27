@@ -12,11 +12,11 @@
 
 namespace MUD
 {
-// shutdown the server
-void shutdown();
+	// shutdown the server
+	void shutdown();
 
-// get uptime
-std::string get_uptime();
+	// get uptime
+	std::string getUptime();
 }
 
 #endif

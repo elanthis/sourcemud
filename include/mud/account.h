@@ -85,8 +85,8 @@ public:
 	void grantBuilder() { grantAccess(AccessID::lookup("builder")); }
 
 	// parsing
-	virtual int macro_property(const class StreamControl& stream, const std::string& method, const MacroList& argv) const;
-	virtual void macro_default(const class StreamControl& stream) const;
+	virtual int macroProperty(const class StreamControl& stream, const std::string& method, const MacroList& argv) const;
+	virtual void macroDefault(const class StreamControl& stream) const;
 
 private:
 	std::string id;

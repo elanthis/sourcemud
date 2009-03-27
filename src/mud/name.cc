@@ -22,14 +22,14 @@ std::string EntityArticleClass::names[] = {
 EntityArticleClass EntityArticleClass::lookup(const std::string& text)
 {
 	for (uint i = 0; i < COUNT; ++i)
-		if (str_eq(text, names[i]))
+		if (strEq(text, names[i]))
 			return i;
 	return NORMAL;
 }
 
-std::string EntityName::get_name() const
+std::string EntityName::getFull() const
 {
-	switch (article.get_value()) {
+	switch (article.getValue()) {
 	case EntityArticleClass::NORMAL:
 		return "a " + text;
 		break;
@@ -51,7 +51,7 @@ std::string EntityName::get_name() const
 	}
 }
 
-bool EntityName::set_name(const std::string& s_text)
+bool EntityName::setFull(const std::string& s_text)
 {
 	// empty text?  no article, no text
 	if (s_text.empty()) {
@@ -103,13 +103,13 @@ bool EntityName::set_name(const std::string& s_text)
 
 bool EntityName::matches(const std::string& match) const
 {
-	return phrase_match(get_text(), match);
+	return phraseMatch(getText(), match);
 }
 
 const StreamControl& operator << (const StreamControl& stream, const StreamName& name)
 {
-	std::string text = name.ref.get_name().get_text();
-	EntityArticleClass article = name.ref.get_name().get_article();
+	std::string text = name.ref.getName().getText();
+	EntityArticleClass article = name.ref.getName().getArticle();
 
 	// PROPER NAMES (SPECIAL ARTICLES)
 

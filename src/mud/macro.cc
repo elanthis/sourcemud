@@ -79,24 +79,24 @@ namespace
 		const char* end;
 	};
 
-	token_type get_token(const char** in, const char* end, StringBuffer& namebuf);
+	token_type getToken(const char** in, const char* end, StringBuffer& namebuf);
 	void skip(const char** in, const char* end);
-	std::string get_arg(MacroArgs& argv, uint index);
-	int invoke_method(const StreamControl& stream, MacroValue self, const std::string& method, MacroList& argv);
-	int do_macro(const char** in, const char* end, MacroState& state, const StreamControl& stream, int depth, bool if_allowed);
-	int do_text(const StreamControl& stream, const std::string& in, MacroState& state, int depth);
+	std::string getArg(MacroArgs& argv, uint index);
+	int invokeMethod(const StreamControl& stream, MacroValue self, const std::string& method, MacroList& argv);
+	int doMacro(const char** in, const char* end, MacroState& state, const StreamControl& stream, int depth, bool if_allowed);
+	int doText(const StreamControl& stream, const std::string& in, MacroState& state, int depth);
 }
 
 namespace macro
 {
-	int exec_macro(const StreamControl& stream, const std::string& macro, MacroList& argv);
+	int execMacro(const StreamControl& stream, const std::string& macro, MacroList& argv);
 }
 
 // function definitions
 namespace
 {
 	// get a token
-	token_type get_token(MacroIn& in, StringBuffer& namebuf)
+	token_type getToken(MacroIn& in, StringBuffer& namebuf)
 	{
 		// clear buffer
 		namebuf.reset();
@@ -209,30 +209,30 @@ namespace
 	}
 
 	// get an argument as a string
-	std::string get_arg(MacroList& argv, uint index)
+	std::string getArg(MacroList& argv, uint index)
 	{
 		// bounds check
 		if (index >= argv.size())
 			return std::string();
 
 		// return string (empty if type is not a string)
-		return argv[index].get_string();
+		return argv[index].getString();
 	}
 
 	// invoke a method
-	int invoke_method(const StreamControl& stream, MacroValue self, const std::string& method, MacroList& argv)
+	int invokeMethod(const StreamControl& stream, MacroValue self, const std::string& method, MacroList& argv)
 	{
-		// if it's an object, invoke Entity::macro_property();
-		if (self.is_object()) {
-			return self.get_object()->macro_property(stream, method, argv);
+		// if it's an object, invoke Entity::macroProperty();
+		if (self.isObject()) {
+			return self.getObject()->macroProperty(stream, method, argv);
 		}
 
 		// it's a string, so process it ourself
-		if (self.is_string()) {
-			std::string string = self.get_string();
+		if (self.isString()) {
+			std::string string = self.getString();
 
 			// LENGTH
-			if (str_eq(method, "length")) {
+			if (strEq(method, "length")) {
 				stream << string.size();
 				return 0;
 			}
@@ -242,7 +242,7 @@ namespace
 	}
 
 	// handle a macro
-	int do_macro(MacroIn& in, MacroState& state, const StreamControl& stream, int depth, bool if_allowed)
+	int doMacro(MacroIn& in, MacroState& state, const StreamControl& stream, int depth, bool if_allowed)
 	{
 		token_type token;
 		bool is_if = false;
@@ -260,7 +260,7 @@ namespace
 		}
 
 		// grab a token
-		if ((token = get_token(in, buffer)) == TOK_ERROR) {
+		if ((token = getToken(in, buffer)) == TOK_ERROR) {
 			skip(in);
 			stream << "{error: invalid token: " << buffer.c_str() << "}";
 			return -1;
@@ -337,7 +337,7 @@ namespace
 
 			// if it was an if, grab another token
 			if (is_if) {
-				if ((token = get_token(in, buffer)) == TOK_ERROR) {
+				if ((token = getToken(in, buffer)) == TOK_ERROR) {
 					skip(in);
 					stream << "{error: invalid token: " << buffer.c_str() << "}";
 					return -1;
@@ -355,7 +355,7 @@ namespace
 		if (token == TOK_BANG) {
 			is_bang = true;
 
-			if ((token = get_token(in, buffer)) == TOK_ERROR) {
+			if ((token = getToken(in, buffer)) == TOK_ERROR) {
 				skip(in);
 				stream << "{error: invalid token: " << buffer.c_str() << "}";
 				return -1;
@@ -365,7 +365,7 @@ namespace
 		// if a variable, get name, then another token
 		if (token == TOK_VAR) {
 			// expect a name token
-			if ((token = get_token(in, buffer)) != TOK_NAME) {
+			if ((token = getToken(in, buffer)) != TOK_NAME) {
 				skip(in);
 				stream << "{error: expected name}";
 				return -1;
@@ -378,7 +378,7 @@ namespace
 				value = i->second;
 
 			// next token
-			if ((token = get_token(in, buffer)) == TOK_ERROR) {
+			if ((token = getToken(in, buffer)) == TOK_ERROR) {
 				skip(in);
 				stream << "{error: invalid token: " << buffer.c_str() << "}";
 				return -1;
@@ -387,7 +387,7 @@ namespace
 			// eat method token, syntactic sugar
 			if (token == TOK_METHOD) {
 				// next token
-				if ((token = get_token(in, buffer)) == TOK_ERROR) {
+				if ((token = getToken(in, buffer)) == TOK_ERROR) {
 					skip(in);
 					stream << "{error: invalid token: " << buffer.c_str() << "}";
 					return -1;
@@ -400,7 +400,7 @@ namespace
 			method = buffer.str();
 
 			// next token
-			if ((token = get_token(in, buffer)) == TOK_ERROR) {
+			if ((token = getToken(in, buffer)) == TOK_ERROR) {
 				skip(in);
 				stream << "{error: invalid token: " << buffer.c_str() << "}";
 				return -1;
@@ -420,7 +420,7 @@ namespace
 				argv.push_back(buffer.str());
 				// sub-macro
 			} else if (token == TOK_BEGIN) {
-				if (do_macro(in, state, buffer, depth + 1, false)) {
+				if (doMacro(in, state, buffer, depth + 1, false)) {
 					stream << "{error: unknown macro}";
 					return -1;
 				}
@@ -432,7 +432,7 @@ namespace
 				return -1;
 			}
 			// another token
-			if ((token = get_token(in, buffer)) == TOK_ERROR) {
+			if ((token = getToken(in, buffer)) == TOK_ERROR) {
 				skip(in);
 				stream << "{error: invalid token: " << buffer.c_str() << "}";
 				return -1;
@@ -440,23 +440,23 @@ namespace
 		}
 
 		// have a variable
-		if (!value.is_null()) {
+		if (!value.isNull()) {
 			// a method?
 			if (!method.empty()) {
-				if (invoke_method(buffer, value, method, argv)) {
+				if (invokeMethod(buffer, value, method, argv)) {
 					stream << "{error: unknown method}";
 					return -1;
 				}
 				// just a value
 			} else {
-				if (value.is_string())
-					buffer << value.get_string();
-				else if (value.is_object())
-					value.get_object()->macro_default(buffer);
+				if (value.isString())
+					buffer << value.getString();
+				else if (value.isObject())
+					value.getObject()->macroDefault(buffer);
 			}
 			// just a function?
 		} else if (!method.empty()) {
-			if (macro::exec_macro(buffer, method, argv)) {
+			if (macro::execMacro(buffer, method, argv)) {
 				stream << "{error: macro failed}";
 				return -1;
 			}
@@ -479,7 +479,7 @@ namespace
 		} else if (is_bang) {
 			MacroState bstate(state.argv);
 			StringBuffer bbuffer;
-			if (do_text(bbuffer, buffer.str(), bstate, depth + 1)) {
+			if (doText(bbuffer, buffer.str(), bstate, depth + 1)) {
 				stream << bbuffer;
 				return -1;
 			}
@@ -495,7 +495,7 @@ namespace
 
 	// macro text
 	int
-	do_text(const StreamControl& stream, const std::string& text, MacroState& state, int depth)
+	doText(const StreamControl& stream, const std::string& text, MacroState& state, int depth)
 	{
 		// declarations
 		MacroIn in(text.c_str(), text.c_str() + text.size());
@@ -524,7 +524,7 @@ namespace
 
 				// begin macro macro
 			} else if (c == '{') {
-				do_macro(in, state, stream, depth, true);
+				doMacro(in, state, stream, depth, true);
 				// just text
 			} else if (!state.disable) {
 				stream << c;
@@ -544,92 +544,92 @@ namespace macro
 	{
 		MacroState state(argv);
 
-		if (do_text(stream, in, state, 1))
+		if (doText(stream, in, state, 1))
 			stream << in;
 
 		return stream;
 	}
 
-	int exec_macro(const StreamControl& stream, const std::string& _cmd_name, MacroList& _cmd_argv)
+	int execMacro(const StreamControl& stream, const std::string& command, MacroList& argv)
 	{
-		if (str_eq(_cmd_name, "eq")) {
-			if (_cmd_argv.size() != 2)
+		if (strEq(command, "eq")) {
+			if (argv.size() != 2)
 				return -1;
-			std::string s1 = _cmd_argv[0].get_string();
-			std::string s2 = _cmd_argv[1].get_string();
-			stream << (str_eq(s1, s2) ? "yes" : "");
-		} else if (str_eq(_cmd_name, "ne")) {
-			if (_cmd_argv.size() != 2)
+			std::string s1 = argv[0].getString();
+			std::string s2 = argv[1].getString();
+			stream << (strEq(s1, s2) ? "yes" : "");
+		} else if (strEq(command, "ne")) {
+			if (argv.size() != 2)
 				return -1;
-			std::string s1 = _cmd_argv[0].get_string();
-			std::string s2 = _cmd_argv[1].get_string();
-			stream << (str_eq(s1, s2) ? "" : "yes");
-		} else if (str_eq(_cmd_name, "version")) {
-			if (_cmd_argv.size() != 0)
+			std::string s1 = argv[0].getString();
+			std::string s2 = argv[1].getString();
+			stream << (strEq(s1, s2) ? "" : "yes");
+		} else if (strEq(command, "version")) {
+			if (argv.size() != 0)
 				return -1;
 			stream << PACKAGE_VERSION;
-		} else if (str_eq(_cmd_name, "build")) {
-			if (_cmd_argv.size() != 0)
+		} else if (strEq(command, "build")) {
+			if (argv.size() != 0)
 				return -1;
 			stream << __DATE__ " " __TIME__;
-		} else if (str_eq(_cmd_name, "uptime")) {
-			if (_cmd_argv.size() != 0)
+		} else if (strEq(command, "uptime")) {
+			if (argv.size() != 0)
 				return -1;
-			stream << MUD::get_uptime();
-		} else if (str_eq(_cmd_name, "player-count")) {
-			if (_cmd_argv.size() != 0)
+			stream << MUD::getUptime();
+		} else if (strEq(command, "player-count")) {
+			if (argv.size() != 0)
 				return -1;
 			stream << MPlayer.count();
-		} else if (str_eq(_cmd_name, "day-or-night")) {
-			if (_cmd_argv.size() != 0)
+		} else if (strEq(command, "day-or-night")) {
+			if (argv.size() != 0)
 				return -1;
-			stream << (MTime.time.is_night() ? "night" : "day");
-		} else if (str_eq(_cmd_name, "bold")) {
-			if (_cmd_argv.size() != 1)
+			stream << (MTime.time.isNight() ? "night" : "day");
+		} else if (strEq(command, "bold")) {
+			if (argv.size() != 1)
 				return -1;
-			std::string str = _cmd_argv[0].get_string();
+			std::string str = argv[0].getString();
 			stream << CBOLD << str << CNORMAL;
-		} else if (str_eq(_cmd_name, "hostname")) {
-			if (_cmd_argv.size() != 0)
+		} else if (strEq(command, "hostname")) {
+			if (argv.size() != 0)
 				return -1;
-			stream << MNetwork.get_host();
-		} else if (str_eq(_cmd_name, "date")) {
-			if (_cmd_argv.size() != 0)
+			stream << MNetwork.getHost();
+		} else if (strEq(command, "date")) {
+			if (argv.size() != 0)
 				return -1;
-			stream << MTime.time.date_str();
-		} else if (str_eq(_cmd_name, "time")) {
-			if (_cmd_argv.size() != 0)
+			stream << MTime.time.dateStr();
+		} else if (strEq(command, "time")) {
+			if (argv.size() != 0)
 				return -1;
-			stream << MTime.time.time_str();
-		} else if (str_eq(_cmd_name, "date-year")) {
-			if (_cmd_argv.size() != 0)
+			stream << MTime.time.timeStr();
+		} else if (strEq(command, "date-year")) {
+			if (argv.size() != 0)
 				return -1;
-			stream << MTime.time.get_year();
-		} else if (str_eq(_cmd_name, "date-month")) {
-			if (_cmd_argv.size() != 0)
+			stream << MTime.time.getYear();
+		} else if (strEq(command, "date-month")) {
+			if (argv.size() != 0)
 				return -1;
-			stream << MTime.time.get_month();
-		} else if (str_eq(_cmd_name, "date-day")) {
-			if (_cmd_argv.size() != 0)
+			stream << MTime.time.getMonth();
+		} else if (strEq(command, "date-day")) {
+			if (argv.size() != 0)
 				return -1;
-			stream << MTime.time.get_day();
-		} else if (str_eq(_cmd_name, "time-hours24")) {
-			if (_cmd_argv.size() != 0)
+			stream << MTime.time.getDay();
+		} else if (strEq(command, "time-hours24")) {
+			if (argv.size() != 0)
 				return -1;
-			stream << MTime.time.get_hour();
-		} else if (str_eq(_cmd_name, "time-hours12")) {
-			if (_cmd_argv.size() != 0)
+			stream << MTime.time.getHour();
+		} else if (strEq(command, "time-hours12")) {
+			if (argv.size() != 0)
 				return -1;
-			uint hours = MTime.time.get_hour();
+			uint hours = MTime.time.getHour();
 			stream << (hours == 0 ? 12 : (hours <= 12 ? hours : hours - 12));
-		} else if (str_eq(_cmd_name, "time-ampm")) {
-			if (_cmd_argv.size() != 0)
+		} else if (strEq(command, "time-ampm")) {
+			if (argv.size() != 0)
 				return -1;
-			stream << (MTime.time.get_hour() < 12 ? "am" : "pm");
-		} else if (str_eq(_cmd_name, "time-minutes")) {
-			if (_cmd_argv.size() != 0)
+			stream << (MTime.time.getHour() < 12 ? "am" : "pm");
+		} else if (strEq(command, "time-minutes")) {
+			if (argv.size() != 0)
 				return -1;
-			stream << (MTime.time.get_minutes());
+			stream << (MTime.time.getMinutes());
 		} else {
 			return -1;
 		}

@@ -39,7 +39,7 @@ namespace
 	public:
 		inline TelnetListener(int s_sock) : SocketListener(s_sock) {}
 
-		virtual void sock_in_ready();
+		virtual void sockInReady();
 	};
 
 	class HTTPListener : public SocketListener
@@ -47,12 +47,12 @@ namespace
 	public:
 		inline HTTPListener(int s_sock) : SocketListener(s_sock) {}
 
-		virtual void sock_in_ready();
+		virtual void sockInReady();
 	};
 
 	void cleanup();
-	int write_pid_file(const std::string& path);
-	double count_ticks(timeval& start, timeval& cur);
+	int writePidFile(const std::string& path);
+	double countTicks(timeval& start, timeval& cur);
 }
 
 // GLOBALS
@@ -76,28 +76,28 @@ namespace
 
 	// termination signal handler
 	void
-	sigterm_handler(int)
+	sigtermHandler(int)
 	{
 		signaled_shutdown = true;
 	}
 
 	// interrupt signal handler
 	void
-	sigint_handler(int)
+	sigintHandler(int)
 	{
 		signaled_shutdown = true;
 	}
 
 	// hangup signal handler
 	void
-	sighup_handler(int)
+	sighupHandler(int)
 	{
 		signaled_reload = true;
 	}
 
 	// write out our pid file
 	int
-	write_pid_file(const std::string& path)
+	writePidFile(const std::string& path)
 	{
 		// open it up
 		int fd;
@@ -146,7 +146,7 @@ namespace
 	cleanup()
 	{
 		// remember paths
-		std::string pid_path = MSettings.get_pid_file();
+		std::string pid_path = MSettings.getPidFile();
 
 		// remove files
 		if (!pid_path.empty())
@@ -154,7 +154,7 @@ namespace
 	}
 
 	inline void
-	timeval_add_ms(struct timeval& tv, long msecs)
+	timevalAddMs(struct timeval& tv, long msecs)
 	{
 		tv.tv_sec += msecs / 1000;
 		tv.tv_usec += (msecs % 1000) * 1000;
@@ -165,7 +165,7 @@ namespace
 	}
 
 	inline long
-	ms_until_timeval(struct timeval& tv)
+	msUntilTimeval(struct timeval& tv)
 	{
 		struct timeval now;
 		gettimeofday(&now, NULL);
@@ -185,7 +185,7 @@ namespace
 	}
 
 	void
-	TelnetListener::sock_in_ready()
+	TelnetListener::sockInReady()
 	{
 		// accept client
 		NetAddr addr;
@@ -232,16 +232,16 @@ namespace
 		}
 
 		// add to poll manager
-		if (MNetwork.add_socket(telnet)) {
+		if (MNetwork.addSocket(telnet)) {
 			fdprintf(client, "Internal server error.\r\n");
-			Log::Error << "PollSystem::add_socket() failed, closing connection.";
+			Log::Error << "PollSystem::addSocket() failed, closing connection.";
 			close(client);
 			MNetwork.connections.remove(addr);
 			return;
 		}
 
 		// banner
-		telnet->clear_scr();
+		telnet->clearScreen();
 		*telnet <<
 		"\n ----===[ Source MUD V" PACKAGE_VERSION " ]===----\n\n"
 		"Source MUD Copyright (C) 2000-2005  Sean Middleditch\n"
@@ -251,11 +251,11 @@ namespace
 		*telnet << StreamMacro(MMessage.get("connect"));
 
 		// init login
-		telnet->set_mode(new TelnetModeLogin(telnet));
+		telnet->setMode(new TelnetModeLogin(telnet));
 	}
 
 	void
-	HTTPListener::sock_in_ready()
+	HTTPListener::sockInReady()
 	{
 		// accept client
 		NetAddr addr;
@@ -299,9 +299,9 @@ namespace
 		}
 
 		// add to poll manager
-		if (MNetwork.add_socket(http)) {
+		if (MNetwork.addSocket(http)) {
 			fdprintf(client, "HTTP/1.0 500 Internal Server Error\n\nServer failure.\n");
-			Log::Error << "PollSystem::add_socket() failed, closing connection.";
+			Log::Error << "PollSystem::addSocket() failed, closing connection.";
 			close(client);
 			MNetwork.connections.remove(addr);
 			return;
@@ -315,17 +315,17 @@ void MUD::shutdown()
 	running = false;
 }
 
-ulong MUD::get_ticks()
+ulong MUD::getTicks()
 {
 	return game_ticks;
 }
 
-ulong MUD::get_rounds()
+ulong MUD::getRounds()
 {
 	return TICKS_TO_ROUNDS(game_ticks);
 }
 
-std::string MUD::get_uptime()
+std::string MUD::getUptime()
 {
 	std::ostringstream uptime;
 
@@ -375,13 +375,13 @@ int main(int argc, char **argv)
 		return 1;
 	if (MSettings.parseArgv(argc, argv))
 		return 1;
-	if (!MSettings.get_config_file().empty() && MSettings.loadFile(MSettings.get_config_file()))
+	if (!MSettings.getConfigFile().empty() && MSettings.loadFile(MSettings.getConfigFile()))
 		return 1;
 
 	// change to chroot dir, but don't actually chroot yet
-	if (!MSettings.get_chroot().empty()) {
-		if (chdir(MSettings.get_chroot().c_str())) {
-			Log::Error << "chroot() failed: " << MSettings.get_chroot() << ": " << strerror(errno);
+	if (!MSettings.getChroot().empty()) {
+		if (chdir(MSettings.getChroot().c_str())) {
+			Log::Error << "chroot() failed: " << MSettings.getChroot() << ": " << strerror(errno);
 			return 1;
 		}
 	}
@@ -391,7 +391,7 @@ int main(int argc, char **argv)
 		return 1;
 
 	// fork daemon
-	if (MSettings.get_daemon()) {
+	if (MSettings.getDaemon()) {
 		if (fork())
 			_exit(0);
 
@@ -422,16 +422,16 @@ int main(int argc, char **argv)
 	::time(&start_time);
 
 	// write PID
-	std::string pid_path = MSettings.get_pid_file();
-	if (write_pid_file(pid_path))
+	std::string pid_path = MSettings.getPidFile();
+	if (writePidFile(pid_path))
 		return 1;
 	Log::Info << "Wrote PID file '" << pid_path << "'";
 
 	// read group/user info
 	struct group *grp = NULL;
-	std::string group_name = MSettings.get_group();
-	if (!group_name.empty() && !str_is_number(group_name)) {
-		if (str_is_number(group_name))
+	std::string group_name = MSettings.getGroup();
+	if (!group_name.empty() && !strIsNumber(group_name)) {
+		if (strIsNumber(group_name))
 			grp = getgrgid(tolong(group_name));
 		else
 			grp = getgrnam(group_name.c_str());
@@ -441,9 +441,9 @@ int main(int argc, char **argv)
 		}
 	}
 	struct passwd *usr = NULL;
-	std::string user_name = MSettings.get_user();
+	std::string user_name = MSettings.getUser();
 	if (!user_name.empty()) {
-		if (str_is_number(user_name))
+		if (strIsNumber(user_name))
 			usr = getpwuid(tolong(user_name));
 		else
 			usr = getpwnam(user_name.c_str());
@@ -454,7 +454,7 @@ int main(int argc, char **argv)
 	}
 
 	// do chroot jail
-	std::string chroot_dir = MSettings.get_chroot();
+	std::string chroot_dir = MSettings.getChroot();
 	if (!chroot_dir.empty()) {
 		if (chroot(chroot_dir.c_str())) {
 			Log::Error << "chroot() failed: " << strerror(errno);
@@ -470,13 +470,13 @@ int main(int argc, char **argv)
 	// seting up signal handlers
 	struct sigaction sa;
 	memset(&sa, 0, sizeof(sa));
-	sa.sa_handler = sigterm_handler;
+	sa.sa_handler = sigtermHandler;
 	if (sigaction(SIGTERM, &sa, NULL)) {
 		Log::Error << "sigaction() failed (SIGTERM)";
 		return 1;
 	}
 	memset(&sa, 0, sizeof(sa));
-	sa.sa_handler = sigint_handler;
+	sa.sa_handler = sigintHandler;
 	if (sigaction(SIGINT, &sa, NULL)) {
 		Log::Error << "sigaction() failed (SIGINT)";
 		return 1;
@@ -488,16 +488,16 @@ int main(int argc, char **argv)
 		return 1;
 	}
 	memset(&sa, 0, sizeof(sa));
-	sa.sa_handler = sighup_handler;
+	sa.sa_handler = sighupHandler;
 	if (sigaction(SIGHUP, &sa, NULL)) {
 		Log::Error << "sigaction() failed (SIGHUP)";
 		return 1;
 	}
 
-	init_random();  // random info
+	Random::init();  // random info
 
 	// load all managers
-	if (IManager::initialize_all())
+	if (IManager::initializeAll())
 		return 1;
 
 	// initialie Lua
@@ -505,7 +505,7 @@ int main(int argc, char **argv)
 		return 1;
 
 	// load the world
-	if (MZone.load_world())
+	if (MZone.loadWorld())
 		return 1;
 
 	// listen sockets
@@ -515,39 +515,39 @@ int main(int argc, char **argv)
 	int http_ipv4 = -1;
 
 	// get port
-	int accept_port = MSettings.get_port();
+	int accept_port = MSettings.getPort();
 
 	// IPv6 message
 #ifdef HAVE_IPV6
-	if (MSettings.get_ipv6()) {
-		player_ipv6 = Network::listen_tcp(accept_port, AF_INET6);
+	if (MSettings.getIpv6()) {
+		player_ipv6 = Network::listenTcp(accept_port, AF_INET6);
 		if (player_ipv6 == -1)
 			return 1;
 	}
 #endif // HAVE_IPV6
 
 	// network server
-	player_ipv4 = Network::listen_tcp(accept_port, AF_INET);
+	player_ipv4 = Network::listenTcp(accept_port, AF_INET);
 	if (player_ipv4 == -1)
 		return 1;
 
-	Log::Info << "Listening for players on " << MNetwork.get_host() << "." << accept_port;
+	Log::Info << "Listening for players on " << MNetwork.getHost() << "." << accept_port;
 
 	// HTTP server
-	if (MSettings.get_http() != 0) {
+	if (MSettings.getHttp() != 0) {
 #ifdef HAVE_IPV6
-		if (MSettings.get_ipv6()) {
-			http_ipv6 = Network::listen_tcp(MSettings.get_http(), AF_INET6);
+		if (MSettings.getIpv6()) {
+			http_ipv6 = Network::listenTcp(MSettings.getHttp(), AF_INET6);
 			if (http_ipv6 == -1)
 				return 1;
 		}
 #endif // HAVE_IPV6
 
-		http_ipv4 = Network::listen_tcp(MSettings.get_http(), AF_INET);
+		http_ipv4 = Network::listenTcp(MSettings.getHttp(), AF_INET);
 		if (http_ipv4 == -1)
 			return 1;
 
-		Log::Info << "Listening for web clients on " << MNetwork.get_host() << "." << MSettings.get_http();
+		Log::Info << "Listening for web clients on " << MNetwork.getHost() << "." << MSettings.getHttp();
 	}
 
 	// change user/group
@@ -569,7 +569,7 @@ int main(int argc, char **argv)
 	}
 
 	// Load the init script for Lua
-	Lua::runfile(MSettings.get_scripts_path() + "/init.lua");
+	Lua::runfile(MSettings.getScriptsPath() + "/init.lua");
 
 	// run init hook
 	Hooks::ready();
@@ -577,31 +577,31 @@ int main(int argc, char **argv)
 	// initialize time
 	struct timeval nexttick;
 	gettimeofday(&nexttick, NULL);
-	timeval_add_ms(nexttick, 1000 / TICKS_PER_ROUND);
+	timevalAddMs(nexttick, 1000 / TICKS_PER_ROUND);
 	ulong last_autosave = 0;
 	ulong cur_ticks = 0;
 	game_ticks = 0;
 
 	// initialize listen sockets
-	if (MNetwork.add_socket(new TelnetListener(player_ipv4))) {
-		Log::Error << "MNetwork.add_socket() failed";
+	if (MNetwork.addSocket(new TelnetListener(player_ipv4))) {
+		Log::Error << "MNetwork.addSocket() failed";
 		return 1;
 	}
 	if (player_ipv6 != -1) {
-		if (MNetwork.add_socket(new TelnetListener(player_ipv6))) {
-			Log::Error << "MNetwork.add_socket() failed";
+		if (MNetwork.addSocket(new TelnetListener(player_ipv6))) {
+			Log::Error << "MNetwork.addSocket() failed";
 			return 1;
 		}
 	}
 	if (http_ipv4 != -1) {
-		if (MNetwork.add_socket(new HTTPListener(http_ipv4))) {
-			Log::Error << "MNetwork.add_socket() failed";
+		if (MNetwork.addSocket(new HTTPListener(http_ipv4))) {
+			Log::Error << "MNetwork.addSocket() failed";
 			return 1;
 		}
 	}
 	if (http_ipv6 != -1) {
-		if (MNetwork.add_socket(new HTTPListener(http_ipv6))) {
-			Log::Error << "MNetwork.add_socket() failed";
+		if (MNetwork.addSocket(new HTTPListener(http_ipv6))) {
+			Log::Error << "MNetwork.addSocket() failed";
 			return 1;
 		}
 	}
@@ -613,14 +613,14 @@ int main(int argc, char **argv)
 		long timeout = 15000; // 15 seconds
 
 		// need to run now to process data?
-		if (MEvent.events_pending())
+		if (MEvent.eventsPending())
 			timeout = 0;
 		// behind on ticks?
 		else if (cur_ticks > game_ticks)
 			timeout = 0;
 		// have players?  need a timeout for game updates
 		else if (MPlayer.count())
-			timeout = ms_until_timeval(nexttick);
+			timeout = msUntilTimeval(nexttick);
 
 		// do select - no player, don't timeout
 		MNetwork.poll(timeout);
@@ -633,7 +633,7 @@ int main(int argc, char **argv)
 			++game_ticks;
 
 			// time of next tick
-			timeval_add_ms(nexttick, 1000 / TICKS_PER_ROUND);
+			timevalAddMs(nexttick, 1000 / TICKS_PER_ROUND);
 			if (timercmp(&current, &nexttick, >))
 				nexttick = current;
 
@@ -644,22 +644,22 @@ int main(int argc, char **argv)
 			MWeather.update();
 
 			// update time
-			bool is_day = MTime.time.is_day();
-			uint hour = MTime.time.get_hour();
+			bool was_day = MTime.time.isDay();
+			uint hour = MTime.time.getHour();
 			MTime.time.update(1);
 
 			// change from day/night
-			if (is_day && !MTime.time.is_day()) {
+			if (was_day && !MTime.time.isDay()) {
 				if (!MTime.calendar.sunset_text.empty())
-					MZone.announce(MTime.calendar.sunset_text[get_random(MTime.calendar.sunset_text.size())], ANFL_OUTDOORS);
-			} else if (!is_day && MTime.time.is_day()) {
+					MZone.announce(MTime.calendar.sunset_text[Random::get(MTime.calendar.sunset_text.size())], ANFL_OUTDOORS);
+			} else if (!was_day && MTime.time.isDay()) {
 				if (!MTime.calendar.sunrise_text.empty())
-					MZone.announce(MTime.calendar.sunrise_text[get_random(MTime.calendar.sunrise_text.size())], ANFL_OUTDOORS);
+					MZone.announce(MTime.calendar.sunrise_text[Random::get(MTime.calendar.sunrise_text.size())], ANFL_OUTDOORS);
 			}
 
 			// new hour
-			if (MTime.time.get_hour() != hour)
-				Hooks::change_hour();
+			if (MTime.time.getHour() != hour)
+				Hooks::changeHour();
 		}
 
 		// handle events
@@ -669,17 +669,17 @@ int main(int argc, char **argv)
 		MEntity.collect();
 
 		// do auto-save
-		if ((cur_ticks - last_autosave) >= (uint)MSettings.get_auto_save() * TICKS_PER_ROUND * 60) {
+		if ((cur_ticks - last_autosave) >= (uint)MSettings.getAutoSave() * TICKS_PER_ROUND * 60) {
 			last_autosave = cur_ticks;
 			Log::Info << "Auto-saving...";
-			IManager::save_all();
+			IManager::saveAll();
 		}
 
 		// check for reload
 		if (signaled_reload == true) {
 			signaled_reload = false;
 			Log::Info << "Server received a SIGHUP";
-			IManager::save_all();
+			IManager::saveAll();
 			MLog.reset();
 		}
 
@@ -692,10 +692,10 @@ int main(int argc, char **argv)
 	}
 
 	// all done running - save the world
-	IManager::save_all();
+	IManager::saveAll();
 
 	// shutdown all managers
-	IManager::shutdown_all();
+	IManager::shutdownAll();
 
 	// clean up all entities
 	MEntity.collect();

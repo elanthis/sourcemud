@@ -63,8 +63,7 @@ public:
 
 	// send the ZMP pack along!
 	inline void
-	send(TelnetHandler* telnet)
-	{ telnet->send_zmp(args.size(), &args[0]); }
+	send(TelnetHandler* telnet) { telnet->sendZmp(args.size(), &args[0]); }
 
 private:
 	std::vector<std::string> args;

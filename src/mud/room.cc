@@ -40,43 +40,43 @@ Room::~Room()
 {
 }
 
-int Room::load_node(File::Reader& reader, File::Node& node)
+int Room::loadNode(File::Reader& reader, File::Node& node)
 {
 	FO_NODE_BEGIN
 	FO_ATTR("room", "id")
-	set_id(node.get_string());
+	setId(node.getString());
 	FO_ATTR("room", "name")
-	set_name(node.get_string());
+	setName(node.getString());
 	FO_ATTR("room", "desc")
-	set_desc(node.get_string());
+	setDesc(node.getString());
 	FO_ATTR("room", "outdoors")
-	flags.outdoors = node.get_bool();
+	flags.outdoors = node.getBool();
 	FO_ATTR("room", "safe")
-	flags.safe = node.get_bool();
+	flags.safe = node.getBool();
 	FO_ATTR("room", "noweather")
-	flags.noweather = node.get_bool();
+	flags.noweather = node.getBool();
 	FO_ATTR("room", "coins")
-	coins = node.get_int();
+	coins = node.getInt();
 	FO_ENTITY("room", "child")
 	if (NPC(entity)) {
-		add_creature(NPC(entity));
+		addCreature(NPC(entity));
 	} else if (OBJECT(entity)) {
-		add_object(OBJECT(entity));
+		addObject(OBJECT(entity));
 	} else if (PORTAL(entity)) {
 		Portal* portal = PORTAL(entity);
 
 		// direction checking
-		if (!portal->get_dir().valid())
+		if (!portal->getDir().valid())
 			throw File::Error("Portal has no dir");
-		if (get_portal_by_dir(portal->get_dir()) != NULL)
+		if (getPortalByDir(portal->getDir()) != NULL)
 			throw File::Error("Duplicate portal direction");
 
 		// add
 		portal->parent_room = this;
-		portals[portal->get_dir()] = portal;
+		portals[portal->getDir()] = portal;
 
 		// activate if necessary
-		if (is_active())
+		if (isActive())
 			portal->activate();
 	} else {
 		throw File::Error("Room child is not an Npc, Object, or Portal");
@@ -85,23 +85,23 @@ int Room::load_node(File::Reader& reader, File::Node& node)
 	FO_NODE_END
 }
 
-int Room::load_finish()
+int Room::loadFinish()
 {
 	return 0;
 }
 
 /* save the stupid thing */
-void Room::save_data(File::Writer& writer)
+void Room::saveData(File::Writer& writer)
 {
 	writer.attr("room", "id", id);
 
 	if (!name.empty())
-		writer.attr("room", "name", name.get_name());
+		writer.attr("room", "name", name.getFull());
 
 	if (!desc.empty())
 		writer.attr("room", "desc", desc);
 
-	Entity::save_data(writer);
+	Entity::saveData(writer);
 
 	if (flags.outdoors)
 		writer.attr("room", "outdoors", true);
@@ -114,7 +114,7 @@ void Room::save_data(File::Writer& writer)
 		writer.attr("room", "coins", coins);
 
 	for (std::map<PortalDir, Portal*>::const_iterator i = portals.begin(); i != portals.end(); ++i) {
-		if (i->second->get_owner() == this)
+		if (i->second->getOwner() == this)
 			i->second->save(writer, "room", "child");
 	}
 
@@ -127,13 +127,13 @@ void Room::save_data(File::Writer& writer)
 	}
 }
 
-void Room::save_hook(File::Writer& writer)
+void Room::saveHook(File::Writer& writer)
 {
-	Entity::save_hook(writer);
-	Hooks::save_room(this, writer);
+	Entity::saveHook(writer);
+	Hooks::saveRoom(this, writer);
 }
 
-Portal* Room::find_portal(const std::string& e_name, uint c, uint *matches)
+Portal* Room::findPortal(const std::string& e_name, uint c, uint *matches)
 {
 	assert(c != 0);
 
@@ -141,7 +141,7 @@ Portal* Room::find_portal(const std::string& e_name, uint c, uint *matches)
 		*matches = 0;
 
 	for (std::map<PortalDir, Portal*>::const_iterator i = portals.begin(); i != portals.end(); ++i) {
-		if (i->second->name_match(e_name)) {
+		if (i->second->nameMatch(e_name)) {
 			if (matches)
 				++ *matches;
 			if ((-- c) == 0)
@@ -151,7 +151,7 @@ Portal* Room::find_portal(const std::string& e_name, uint c, uint *matches)
 	return NULL;
 }
 
-Portal* Room::get_portal_by_dir(PortalDir dir)
+Portal* Room::getPortalByDir(PortalDir dir)
 {
 	std::map<PortalDir, Portal*>::iterator i = portals.find(dir);
 	if (i != portals.end())
@@ -160,27 +160,27 @@ Portal* Room::get_portal_by_dir(PortalDir dir)
 		return NULL;
 }
 
-Portal* Room::new_portal(PortalDir dir)
+Portal* Room::newPortal(PortalDir dir)
 {
 	Portal *portal = new Portal();
 	if (portal == NULL)
 		return NULL;
-	portal->set_dir(dir);
+	portal->setDir(dir);
 	portal->parent_room = this;
 	portals[dir] = portal;
-	if (is_active())
+	if (isActive())
 		portal->activate();
 	return portal;
 }
 
-bool Room::register_portal(Portal* portal)
+bool Room::registerPortal(Portal* portal)
 {
 	assert(portal != NULL);
-	assert(portal->get_target() == get_id());
+	assert(portal->getTarget() == getId());
 
-	std::map<PortalDir, Portal*>::iterator i = portals.find(portal->get_dir().get_opposite());
+	std::map<PortalDir, Portal*>::iterator i = portals.find(portal->getDir().getOpposite());
 	if (i == portals.end()) {
-		portals[portal->get_dir().get_opposite()] = portal;
+		portals[portal->getDir().getOpposite()] = portal;
 		return true;
 	} else if (i->second == portal)
 		return true; // already registered
@@ -188,22 +188,22 @@ bool Room::register_portal(Portal* portal)
 		return false; // another portal is here
 }
 
-void Room::unregister_portal(Portal* portal)
+void Room::unregisterPortal(Portal* portal)
 {
 	assert(portal != NULL);
-	assert(portal->get_target() == get_id());
+	assert(portal->getTarget() == getId());
 
-	std::map<PortalDir, Portal*>::iterator i = portals.find(portal->get_dir().get_opposite());
+	std::map<PortalDir, Portal*>::iterator i = portals.find(portal->getDir().getOpposite());
 	if (i != portals.end() && i->second == portal)
 		portals.erase(i);
 }
 
 // coins
-uint Room::give_coins(uint amount)
+uint Room::giveCoins(uint amount)
 {
 	return coins += amount < (UINT_MAX - coins) ? amount : (UINT_MAX - coins);
 }
-uint Room::take_coins(uint amount)
+uint Room::takeCoins(uint amount)
 {
 	return coins -= amount < coins ? amount : coins;
 }
@@ -212,7 +212,7 @@ uint Room::take_coins(uint amount)
 void Room::heartbeat()
 {
 	// call update hook
-	Hooks::room_heartbeat(this);
+	Hooks::roomHeartbeat(this);
 }
 
 void Room::activate()
@@ -220,7 +220,7 @@ void Room::activate()
 	Entity::activate();
 
 	for (std::map<PortalDir, Portal*>::const_iterator i = portals.begin(); i != portals.end(); ++i)
-		if (i->second->get_room() == this)
+		if (i->second->getRoom() == this)
 			i->second->activate();
 
 	for (EList<Creature>::const_iterator i = creatures.begin(); i != creatures.end(); ++i)
@@ -233,7 +233,7 @@ void Room::activate()
 void Room::deactivate()
 {
 	for (std::map<PortalDir, Portal*>::const_iterator i = portals.begin(); i != portals.end(); ++i) {
-		if (i->second->get_room() == this)
+		if (i->second->getRoom() == this)
 			i->second->deactivate();
 	}
 
@@ -246,16 +246,16 @@ void Room::deactivate()
 	Entity::deactivate();
 }
 
-void Room::set_owner(Entity* s_owner)
+void Room::setOwner(Entity* s_owner)
 {
 }
 
-Entity* Room::get_owner() const
+Entity* Room::getOwner() const
 {
 	return NULL;
 }
 
-void Room::owner_release(Entity* child)
+void Room::ownerRelease(Entity* child)
 {
 	// Creature?
 	Creature* ch = CHARACTER(child);
@@ -274,7 +274,7 @@ void Room::owner_release(Entity* child)
 	// Portal?
 	Portal* portal = PORTAL(child);
 	if (portal != NULL) {
-		std::map<PortalDir, Portal*>::iterator i = portals.find(portal->get_dir());
+		std::map<PortalDir, Portal*>::iterator i = portals.find(portal->getDir());
 		if (i != portals.end() && i->second == portal)
 			portals.erase(i);
 	}
@@ -287,25 +287,25 @@ void Room::owner_release(Entity* child)
 void Room::show(const StreamControl& stream, Creature* viewer)
 {
 	// if there's a hook for this, don't do our version
-	if (Hooks::show_room(this, viewer))
+	if (Hooks::showRoom(this, viewer))
 		return;
 
 	// basic info
 	stream << "[ " << StreamName(*this, NONE, true) << " ]\n";
-	stream << CDESC "  " << StreamMacro(get_desc(), "room", this, "actor", viewer) << CNORMAL;
+	stream << CDESC "  " << StreamMacro(getDesc(), "room", this, "actor", viewer) << CNORMAL;
 
 	// we're outdoors - do that stuff
-	if (is_outdoors()) {
+	if (isOutdoors()) {
 		// show weather
 		if (!flags.noweather)
-			stream << "  " << MWeather.get_current_desc();
+			stream << "  " << MWeather.getCurrentDesc();
 		// show time
-		if (MTime.time.is_day()) {
+		if (MTime.time.isDay()) {
 			if (!MTime.calendar.day_text.empty())
-				stream << "  " << MTime.calendar.day_text[get_random(MTime.calendar.day_text.size())];
+				stream << "  " << MTime.calendar.day_text[Random::get(MTime.calendar.day_text.size())];
 		} else {
 			if (!MTime.calendar.night_text.empty())
-				stream << "  " << MTime.calendar.night_text[get_random(MTime.calendar.night_text.size())];
+				stream << "  " << MTime.calendar.night_text[Random::get(MTime.calendar.night_text.size())];
 		}
 	}
 	stream << "\n";
@@ -317,7 +317,7 @@ void Room::show(const StreamControl& stream, Creature* viewer)
 	// portals
 	for (std::map<PortalDir, Portal*>::const_iterator i = portals.begin(); i != portals.end(); ++i) {
 		// portal not hidden?
-		if (!i->second->is_hidden() && !i->second->is_disabled())
+		if (!i->second->isHidden() && !i->second->isDisabled())
 			ents.push_back(i->second);
 	}
 	if (!ents.empty()) {
@@ -331,10 +331,10 @@ void Room::show(const StreamControl& stream, Creature* viewer)
 				else
 					stream << ", ";
 			}
-			if (PORTAL(ents[i])->is_standard())
-				stream << CEXIT << PORTAL(ents[i])->get_relative_dir(this).get_name() << CNORMAL;
+			if (PORTAL(ents[i])->isStandard())
+				stream << CEXIT << PORTAL(ents[i])->getRelativeDir(this).getName() << CNORMAL;
 			else
-				stream << StreamName(ents[i], INDEFINITE) << '[' << PORTAL(ents[i])->get_relative_dir(this).get_abbr() << ']';
+				stream << StreamName(ents[i], INDEFINITE) << '[' << PORTAL(ents[i])->getRelativeDir(this).getAbbr() << ']';
 		}
 		stream << ".\n";
 	}
@@ -375,7 +375,7 @@ void Room::show(const StreamControl& stream, Creature* viewer)
 		// iterator
 		for (EList<Object>::const_iterator i = objects.begin(); i != objects.end(); ++i) {
 			// no hidden?
-			if (!(*i)->is_hidden()) {
+			if (!(*i)->isHidden()) {
 				// have we a last item?
 				if (last) {
 					// pre-text
@@ -438,10 +438,10 @@ void Room::show(const StreamControl& stream, Creature* viewer)
 }
 
 /* print all portals */
-void Room::show_portals(const StreamControl& stream)
+void Room::showPortals(const StreamControl& stream)
 {
 	for (std::map<PortalDir, Portal*>::const_iterator i = portals.begin(); i != portals.end(); ++i)
-		stream << StreamName(*i->second) << " <" << i->second->get_target() << ">\n";
+		stream << StreamName(*i->second) << " <" << i->second->getTarget() << ">\n";
 }
 
 /* broadcast a message to the Room */
@@ -455,12 +455,12 @@ void Room::put(const std::string& msg, size_t len, std::vector<Creature*>* ignor
 				continue;
 		}
 		// output
-		(*i)->stream_put(msg.c_str(), len);
+		(*i)->streamPut(msg.c_str(), len);
 	}
 }
 
 /* find a Creature by name */
-Creature* Room::find_creature(const std::string& cname, uint c, uint *matches)
+Creature* Room::findCreature(const std::string& cname, uint c, uint *matches)
 {
 	assert(c != 0);
 
@@ -468,30 +468,30 @@ Creature* Room::find_creature(const std::string& cname, uint c, uint *matches)
 }
 
 /* find an object by name */
-Object* Room::find_object(const std::string& oname, uint c, uint *matches)
+Object* Room::findObject(const std::string& oname, uint c, uint *matches)
 {
 	assert(c != 0);
 
 	return OBJECT(objects.match(oname, c, matches));
 }
 
-void Room::add_creature(Creature* creature)
+void Room::addCreature(Creature* creature)
 {
 	assert(creature != NULL);
 
-	creature->set_owner(this);
+	creature->setOwner(this);
 	creatures.add(creature);
 }
 
-void Room::add_object(Object* object)
+void Room::addObject(Object* object)
 {
 	assert(object != NULL);
 
-	object->set_owner(this);
+	object->setOwner(this);
 	objects.add(object);
 }
 
-unsigned long Room::count_players() const
+unsigned long Room::countPlayers() const
 {
 	unsigned long count = 0;
 	for (EList<Creature>::const_iterator i = creatures.begin(); i != creatures.end(); ++i)
@@ -500,12 +500,12 @@ unsigned long Room::count_players() const
 	return count;
 }
 
-void Room::handle_event(const Event& event)
+void Room::handleEvent(const Event& event)
 {
-	Entity::handle_event(event);
+	Entity::handleEvent(event);
 }
 
-void Room::broadcast_event(const Event& event)
+void Room::broadcastEvent(const Event& event)
 {
 	// propogate to objects
 	for (EList<Object>::const_iterator i = objects.begin(); i != objects.end(); ++i)
@@ -527,9 +527,9 @@ class
 public:
 	RoomStreamSink(class Room& s_room) : room(s_room), buffer(), ignores() {}
 
-	virtual void stream_put(const char* text, size_t len) { buffer.write(text, len); }
-	virtual void stream_ignore(class Creature* ch) { ignores.push_back(ch); }
-	virtual void stream_end();
+	virtual void streamPut(const char* text, size_t len) { buffer.write(text, len); }
+	virtual void streamIgnore(class Creature* ch) { ignores.push_back(ch); }
+	virtual void streamEnd();
 
 private:
 	class Room& room;
@@ -539,7 +539,7 @@ private:
 };
 
 // flush room output
-void RoomStreamSink::stream_end()
+void RoomStreamSink::streamEnd()
 {
 	// send output
 	std::string text = buffer.str();
@@ -552,7 +552,7 @@ void RoomStreamSink::stream_end()
 	}
 }
 
-IStreamSink* Room::get_stream()
+IStreamSink* Room::getStream()
 {
 	return new RoomStreamSink(*this);
 }

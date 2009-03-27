@@ -18,13 +18,13 @@ int _MMessage::initialize()
 	File::Reader reader;
 
 	// open messages file
-	if (reader.open(MSettings.get_misc_path() + "/messages"))
+	if (reader.open(MSettings.getMiscPath() + "/messages"))
 		return -1;
 
 	// read said file
 	FO_READ_BEGIN
 	FO_WILD("text")
-	messages[node.get_name()] = node.get_string();
+	messages[node.getName()] = node.getString();
 	FO_READ_ERROR
 	// damnable errors!
 	return -1;

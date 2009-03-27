@@ -32,8 +32,8 @@ public:
 	inline EntityArticleClass() : value(NORMAL) {}
 	inline EntityArticleClass(const EntityArticleClass& s_value) : value(s_value.value) {}
 
-	inline std::string get_name() const { return names[value]; }
-	inline type_t get_value() const { return value; }
+	inline std::string getName() const { return names[value]; }
+	inline type_t getValue() const { return value; }
 	static EntityArticleClass lookup(const std::string& name);
 
 	inline bool operator == (const EntityArticleClass& dir) const { return dir.value == value; }
@@ -66,17 +66,17 @@ public:
 			text(s_text), article(s_article) {}
 
 	// these handle full names with articles
-	std::string get_name() const;
-	bool set_name(const std::string& s_name);  // returns false if it had to guess at the article
+	std::string getFull() const;
+	bool setFull(const std::string& s_name);  // returns false if it had to guess at the article
 
 	// compare name to string
 	bool matches(const std::string& match) const;  // returns true on match; uses phrase_match
 
 	// these handle name components
-	inline std::string get_text() const { return text; }
-	inline EntityArticleClass get_article() const { return article; }
-	inline void set_text(const std::string& s_text) { text = s_text; }
-	inline void set_article(EntityArticleClass s_article) { article = s_article; }
+	inline std::string getText() const { return text; }
+	inline EntityArticleClass getArticle() const { return article; }
+	inline void setText(const std::string& s_text) { text = s_text; }
+	inline void setArticle(EntityArticleClass s_article) { article = s_article; }
 
 	inline bool empty() const { return text.empty(); }
 
@@ -90,8 +90,7 @@ private:
 class Entity;
 
 // stream entity names
-struct
-			StreamName {
+struct StreamName {
 	// constructors
 	inline
 	explicit StreamName(const Entity* s_ptr, EntityArticleUsage s_article = NONE, bool s_capitalize = false) :

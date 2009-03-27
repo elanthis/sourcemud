@@ -45,7 +45,7 @@ int IManager::require(IManager& manager)
 }
 
 // load all managers
-int IManager::initialize_all()
+int IManager::initializeAll()
 {
 	// load manager
 	for (std::vector<IManager*>::iterator i = pending->begin(); i != pending->end(); ++i)
@@ -60,14 +60,14 @@ int IManager::initialize_all()
 }
 
 // shutdown all managers
-void IManager::shutdown_all()
+void IManager::shutdownAll()
 {
 	for (std::vector<IManager*>::reverse_iterator i = managers->rbegin(); i != managers->rend(); ++i)
 		(*i)->shutdown();
 }
 
 // save state for all managers
-void IManager::save_all()
+void IManager::saveAll()
 {
 	for (std::vector<IManager*>::reverse_iterator i = managers->rbegin(); i != managers->rend(); ++i)
 		(*i)->save();

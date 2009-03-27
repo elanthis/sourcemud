@@ -26,9 +26,9 @@
 	if (cur_col < margin) { \
 		while (margin - cur_col >= 16) { \
 			cur_col += 16; \
-			buffer_output("                ", 16); \
+			bufferOutput("                ", 16); \
 		} \
-		buffer_output("                ", margin - cur_col); \
+		bufferOutput("                ", margin - cur_col); \
 		cur_col = margin; \
 	}
 
@@ -162,9 +162,9 @@ std::string color_type_rgb[] = {
 // ---- END COLOURS ----
 
 namespace {
-	void _telnet_event(telnet_t* telnet, telnet_event_t* event, void* ud) {
+	void _telnetEvent(telnet_t* telnet, telnet_event_t* event, void* ud) {
 		TelnetHandler *th = (TelnetHandler*)ud;
-		th->telnet_event(event);
+		th->telnetEvent(event);
 	}
 }
 
@@ -181,8 +181,8 @@ TelnetHandler::TelnetHandler(int s_sock, const NetAddr& s_netaddr) : SocketConne
 	cur_col = 0;
 	mode = NULL;
 	memset(&io_flags, 0, sizeof(IOFlags));
-	timeout = MSettings.get_telnet_timeout();
-	telnet_init(&telnet, telopts, _telnet_event, 0, this);
+	timeout = MSettings.getTelnetTimeout();
+	telnet_init(&telnet, telopts, _telnetEvent, 0, this);
 
 	// initial telnet options
 	io_flags.want_echo = true;
@@ -228,14 +228,14 @@ void TelnetHandler::disconnect()
 	}
 
 	// flush wiating text
-	end_chunk();
+	endChunk();
 
 	// close socket
-	sock_disconnect();
+	sockDisconnect();
 }
 
 // toggle echo
-bool TelnetHandler::toggle_echo(bool v)
+bool TelnetHandler::toggleEcho(bool v)
 {
 	io_flags.want_echo = v;
 	telnet_negotiate(&telnet, v ? TELNET_WONT : TELNET_WILL, TELNET_TELOPT_ECHO);
@@ -247,7 +247,7 @@ bool TelnetHandler::toggle_echo(bool v)
  * deal with formatting new-lines and such, and also
  * escaping/removing/translating Source MUD commands
  */
-void TelnetHandler::stream_put(const char *text, size_t len)
+void TelnetHandler::streamPut(const char *text, size_t len)
 {
 	assert(text != NULL);
 
@@ -269,7 +269,7 @@ void TelnetHandler::stream_put(const char *text, size_t len)
 			switch (c) {
 			// space?
 			case ' ':
-				end_chunk();
+				endChunk();
 
 				// not soft-wrapped?
 				if (!io_flags.soft_break) {
@@ -287,7 +287,7 @@ void TelnetHandler::stream_put(const char *text, size_t len)
 				break;
 			// newline?
 			case '\n':
-				end_chunk();
+				endChunk();
 
 				// not after a soft-break
 				if (!io_flags.soft_break) {
@@ -300,7 +300,7 @@ void TelnetHandler::stream_put(const char *text, size_t len)
 				break;
 			// escape sequence?
 			case '\033':
-				end_chunk();
+				endChunk();
 				OUTPUT_INDENT()
 				ostate = OSTATE_ESCAPE;
 				esc_buf[0] = '\033';
@@ -308,14 +308,14 @@ void TelnetHandler::stream_put(const char *text, size_t len)
 				break;
 			// tab?
 			case '\t':
-				end_chunk();
+				endChunk();
 				OUTPUT_INDENT()
-				buffer_output("    ", 4 % cur_col);
+				bufferOutput("    ", 4 % cur_col);
 				cur_col += 4 % cur_col;
 				break;
 			// just data
 			default:
-				add_to_chunk(&c, 1);
+				addToChunk(&c, 1);
 				++chunk_size;
 				break;
 			}
@@ -362,7 +362,7 @@ void TelnetHandler::stream_put(const char *text, size_t len)
 				// zmp color?
 				if (io_flags.zmp_color) {
 					std::string argv[2] = {"color.use", &esc_buf[1]};
-					add_zmp(2, argv);
+					addZmp(2, argv);
 				}
 
 				// ansi color?
@@ -385,7 +385,7 @@ void TelnetHandler::stream_put(const char *text, size_t len)
 						// other color
 					} else if (color > 0 && color < NUM_CTYPES) {
 						// put color
-						int cvalue = get_color(color);
+						int cvalue = getColor(color);
 						colors.push_back(cvalue);
 						telnet_send(&telnet, color_values[cvalue].c_str(), color_values[cvalue].size());
 					}
@@ -396,7 +396,7 @@ void TelnetHandler::stream_put(const char *text, size_t len)
 			case 'I': {
 				long mlen = strtol(&esc_buf[1], NULL, 10);
 				if (mlen >= 0)
-					set_indent(mlen);
+					setIndent(mlen);
 				break;
 			}
 			// auto-indent
@@ -429,7 +429,7 @@ void TelnetHandler::stream_put(const char *text, size_t len)
 }
 
 // clear the screen
-void TelnetHandler::clear_scr()
+void TelnetHandler::clearScreen()
 {
 	// try clear screen sequence
 	if (io_flags.use_ansi) {
@@ -443,14 +443,14 @@ void TelnetHandler::clear_scr()
 }
 
 // set indentation/margin
-void TelnetHandler::set_indent(uint amount)
+void TelnetHandler::setIndent(uint amount)
 {
-	end_chunk();
+	endChunk();
 	margin = amount;
 }
 
 // draw a progress bar
-void TelnetHandler::draw_bar(uint percent)
+void TelnetHandler::drawBar(uint percent)
 {
 	// 20 part bar
 	static const char* bar = "============";
@@ -471,7 +471,7 @@ void TelnetHandler::draw_bar(uint percent)
 }
 
 // process telnet events
-void TelnetHandler::telnet_event(telnet_event_t* ev) {
+void TelnetHandler::telnetEvent(telnet_event_t* ev) {
 	switch (ev->type) {
 	/* user input */
 	case TELNET_EV_DATA:
@@ -533,13 +533,13 @@ void TelnetHandler::telnet_event(telnet_event_t* ev) {
 						++lines;
 
 					// process input line
-					process_input();
+					processInput();
 				}
 			}
 		}
 		break;
 	case TELNET_EV_SEND:
-		sock_buffer((const char*)ev->buffer, ev->size);
+		sockBuffer((const char*)ev->buffer, ev->size);
 		break;
 	case TELNET_EV_WILL:
 		switch (ev->telopt) {
@@ -571,15 +571,15 @@ void TelnetHandler::telnet_event(telnet_event_t* ev) {
 			io_flags.zmp = true;
 			// send zmp.ident command
 			std::string argv[4] = {"zmp.ident", "Source MUD", PACKAGE_VERSION, "Powerful C++ MUD server software" };
-			send_zmp(4, argv);
+			sendZmp(4, argv);
 			// check for net.sourcemud package
 			argv[0] = "zmp.check";
 			argv[1] = "net.sourcemud.";
-			send_zmp(2, argv);
+			sendZmp(2, argv);
 			// check for color.define command
 			argv[0] = "zmp.check";
 			argv[1] = "color.define";
-			send_zmp(2, argv);
+			sendZmp(2, argv);
 			break;
 		}
 		break;
@@ -599,8 +599,8 @@ void TelnetHandler::telnet_event(telnet_event_t* ev) {
 		switch (ev->telopt) {
 			// handle ZMP
 		case TELNET_TELOPT_ZMP:
-			if (has_zmp())
-				process_zmp(ev->buffer, ev->size);
+			if (hasZmp())
+				processZmp(ev->buffer, ev->size);
 			break;
 			// reev->size of telnet window
 		case TELNET_TELOPT_NAWS:
@@ -656,7 +656,7 @@ void TelnetHandler::telnet_event(telnet_event_t* ev) {
 }
 
 // process input
-void TelnetHandler::sock_input(char* buffer, size_t size)
+void TelnetHandler::sockInput(char* buffer, size_t size)
 {
 	// time stamp
 	in_stamp = time(NULL);
@@ -695,14 +695,14 @@ void TelnetHandler::sock_input(char* buffer, size_t size)
 
 				// echo back normal characters
 				if (c != '\n' && (io_flags.want_echo && io_flags.do_echo))
-					send_data(1, c);
+					sendData(1, c);
 				// basic backspace support
 			} else if (c == 127) {
 				if (in_cnt > 0 && input.data()[in_cnt - 1] != '\n') {
 					input.data()[--in_cnt] = '\0';
 
 					if (io_flags.do_echo)
-						send_data(3, 127, ' ', 127);
+						sendData(3, 127, ' ', 127);
 				}
 			}
 
@@ -710,7 +710,7 @@ void TelnetHandler::sock_input(char* buffer, size_t size)
 			if (c == '\n') {
 				// handle the input data
 				if (io_flags.do_echo)
-					send_data(2, '\r', '\n');
+					sendData(2, '\r', '\n');
 				io_flags.need_newline = false;
 				io_flags.need_prompt = true;
 
@@ -787,7 +787,7 @@ void TelnetHandler::sock_input(char* buffer, size_t size)
 			break;
 		case ISTATE_SE:
 			if (c == SE) {
-				process_sb();
+				processSb();
 				subrequest.release();
 				sb_cnt = 0;
 				istate = ISTATE_TEXT;
@@ -815,11 +815,11 @@ void TelnetHandler::sock_input(char* buffer, size_t size)
 				break;
 			case TELNET_TELOPT_NEW_ENVIRON:
 				telnet_iac(&telnet, 4, SB, TELNET_TELOPT_NEW_ENVIRON, 1, 0);  // 1 is 'SEND', 0 is 'VAR'
-				send_data(10, 'S', 'Y', 'S', 'T', 'E', 'M', 'T', 'Y', 'P', 'E');
+				sendData(10, 'S', 'Y', 'S', 'T', 'E', 'M', 'T', 'Y', 'P', 'E');
 				telnet_iac(&telnet, 1, SE);
 				break;
 			default:
-				telnet_send_telopt(&telnet, DONT, c);
+				telnet_sendTelopt(&telnet, DONT, c);
 				break;
 			}
 			break;
@@ -842,12 +842,12 @@ void TelnetHandler::sock_input(char* buffer, size_t size)
 			case TELNET_TELOPT_EOR:
 				if (!io_flags.do_eor) {
 					io_flags.do_eor = true;
-					telnet_send_telopt(&telnet, WILL, TELNET_TELOPT_EOR);
+					telnet_sendTelopt(&telnet, WILL, TELNET_TELOPT_EOR);
 				}
 				break;
 #ifdef HAVE_ZLIB
 			case TELNET_TELOPT_MCCP2:
-				begin_mccp();
+				beginMccp();
 				break;
 #endif // HAVE_ZLIB
 			case TELNET_TELOPT_ZMP: {
@@ -855,19 +855,19 @@ void TelnetHandler::sock_input(char* buffer, size_t size)
 				io_flags.zmp = true;
 				// send zmp.ident command
 				std::string argv[4] = {"zmp.ident", "Source MUD", PACKAGE_VERSION, "Powerful C++ MUD server software" };
-				send_zmp(4, argv);
+				sendZmp(4, argv);
 				// check for net.sourcemud package
 				argv[0] = "zmp.check";
 				argv[1] = "net.sourcemud.";
-				send_zmp(2, argv);
+				sendZmp(2, argv);
 				// check for color.define command
 				argv[0] = "zmp.check";
 				argv[1] = "color.define";
-				send_zmp(2, argv);
+				sendZmp(2, argv);
 				break;
 			}
 			default:
-				telnet_send_telopt(&telnet, WONT, c);
+				telnet_sendTelopt(&telnet, WONT, c);
 				break;
 			}
 			break;
@@ -881,14 +881,14 @@ void TelnetHandler::sock_input(char* buffer, size_t size)
 			case TELNET_TELOPT_EOR:
 				if (io_flags.do_eor) {
 					io_flags.do_eor = false;
-					telnet_send_telopt(&telnet, WONT, TELNET_TELOPT_EOR);
+					telnet_sendTelopt(&telnet, WONT, TELNET_TELOPT_EOR);
 				}
 				break;
 			case TELNET_TELOPT_ZMP:
 				// ignore
 				break;
 			default:
-				telnet_send_telopt(&telnet, WONT, c);
+				telnet_sendTelopt(&telnet, WONT, c);
 				break;
 			}
 			break;
@@ -900,11 +900,11 @@ void TelnetHandler::sock_input(char* buffer, size_t size)
 	}
 	*/
 
-	process_input();
+	processInput();
 }
 
 // handle entered commands
-void TelnetHandler::process_input()
+void TelnetHandler::processInput()
 {
 	// have we any input?
 	if (inpos == 0)
@@ -917,7 +917,7 @@ void TelnetHandler::process_input()
 	*nl = '\0';
 
 	// do process
-	process_command(input);
+	processCommand(input);
 
 	// consume command data
 	size_t len = nl - input + 1;
@@ -926,7 +926,7 @@ void TelnetHandler::process_input()
 }
 
 // handle a specific command
-void TelnetHandler::process_command(char* cbuffer)
+void TelnetHandler::processCommand(char* cbuffer)
 {
 	// force output update
 	io_flags.need_prompt = true;
@@ -936,11 +936,11 @@ void TelnetHandler::process_command(char* cbuffer)
 		mode->process(cbuffer);
 		// if it starts with !, process as a telnet layer command
 	} else {
-		process_telnet_command(&cbuffer[1]);
+		processTelnetCommand(&cbuffer[1]);
 	}
 }
 
-void TelnetHandler::set_mode(ITelnetMode* new_mode)
+void TelnetHandler::setMode(ITelnetMode* new_mode)
 {
 	// close old mode
 	if (mode)
@@ -955,7 +955,7 @@ void TelnetHandler::set_mode(ITelnetMode* new_mode)
 	}
 }
 
-void TelnetHandler::process_telnet_command(char* data)
+void TelnetHandler::processTelnetCommand(char* data)
 {
 	std::vector<std::string> args = explode(std::string(data), ' '); // FIXME: make more efficient
 	// enable/disable color
@@ -1009,13 +1009,13 @@ void TelnetHandler::process_telnet_command(char* data)
 }
 
 // flush out the output, write prompt
-void TelnetHandler::sock_flush()
+void TelnetHandler::sockFlush()
 {
 	// check timeout
-	check_timeout();
+	checkTimeout();
 
 	// end chunk
-	end_chunk();
+	endChunk();
 
 	// fix up color
 	if (!colors.empty()) {
@@ -1033,7 +1033,7 @@ void TelnetHandler::sock_flush()
 			*this << ">";
 
 		// clean output
-		end_chunk();
+		endChunk();
 		telnet_printf(&telnet, " ");
 
 		// GOAHEAD telnet command
@@ -1046,7 +1046,7 @@ void TelnetHandler::sock_flush()
 	}
 }
 
-void TelnetHandler::add_to_chunk(const char *data, size_t len)
+void TelnetHandler::addToChunk(const char *data, size_t len)
 {
 	// output indenting
 	OUTPUT_INDENT()
@@ -1063,11 +1063,11 @@ void TelnetHandler::add_to_chunk(const char *data, size_t len)
 		chunkwidth += write;
 
 		if (chunkpos == TELNET_CHUNK_BUFFER_SIZE)
-			end_chunk();
+			endChunk();
 	}
 }
 
-void TelnetHandler::end_chunk()
+void TelnetHandler::endChunk()
 {
 	// need to word-wrap?
 	if (width > 0 && chunkwidth + cur_col >= width - 2) {
@@ -1087,7 +1087,7 @@ void TelnetHandler::end_chunk()
 }
 
 // check various timeouts
-void TelnetHandler::check_timeout()
+void TelnetHandler::checkTimeout()
 {
 	if ((time(NULL) - in_stamp) >= (int)(timeout * 60)) {
 		// disconnect the dink
@@ -1097,7 +1097,7 @@ void TelnetHandler::check_timeout()
 	}
 }
 
-void TelnetHandler::sock_hangup()
+void TelnetHandler::sockHangup()
 {
 	disconnect();
 }

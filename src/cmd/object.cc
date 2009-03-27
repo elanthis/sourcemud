@@ -20,9 +20,9 @@
  * END COMMAND */
 void command_drink(Creature* ch, std::string argv[])
 {
-	Object* obj = ch->cl_find_object(argv[0], GOC_ANY);
+	Object* obj = ch->clFindObject(argv[0], GOC_ANY);
 	if (obj)
-		ch->do_drink(obj);
+		ch->doDrink(obj);
 }
 
 /* BEGIN COMMAND
@@ -35,9 +35,9 @@ void command_drink(Creature* ch, std::string argv[])
  * END COMMAND */
 void command_eat(Creature* ch, std::string argv[])
 {
-	Object* obj = ch->cl_find_object(argv[0], GOC_HELD);
+	Object* obj = ch->clFindObject(argv[0], GOC_HELD);
 	if (obj)
-		ch->do_eat(obj);
+		ch->doEat(obj);
 }
 
 /* BEGIN COMMAND
@@ -50,14 +50,14 @@ void command_eat(Creature* ch, std::string argv[])
  * END COMMAND */
 void command_kick(Creature* ch, std::string argv[])
 {
-	Object* obj = ch->cl_find_object(argv[0], GOC_ANY, true);
+	Object* obj = ch->clFindObject(argv[0], GOC_ANY, true);
 	if (obj) {
-		ch->do_kick(obj);
+		ch->doKick(obj);
 		return;
 	}
-	Portal* portal = ch->cl_find_portal(argv[0]);
+	Portal* portal = ch->clFindPortal(argv[0]);
 	if (portal) {
-		ch->do_kick(portal);
+		ch->doKick(portal);
 		return;
 	}
 }
@@ -72,9 +72,9 @@ void command_kick(Creature* ch, std::string argv[])
  * END COMMAND */
 void command_raise(Creature* ch, std::string argv[])
 {
-	Object* obj = ch->cl_find_object(argv[0], GOC_HELD);
+	Object* obj = ch->clFindObject(argv[0], GOC_HELD);
 	if (obj)
-		ch->do_raise(obj);
+		ch->doRaise(obj);
 }
 
 /* BEGIN COMMAND
@@ -87,9 +87,9 @@ void command_raise(Creature* ch, std::string argv[])
  * END COMMAND */
 void command_read(Creature* ch, std::string argv[])
 {
-	Object* obj = ch->cl_find_object(argv[0], GOC_ANY);
+	Object* obj = ch->clFindObject(argv[0], GOC_ANY);
 	if (obj)
-		ch->do_read(obj);
+		ch->doRead(obj);
 }
 
 /* BEGIN COMMAND
@@ -102,7 +102,7 @@ void command_read(Creature* ch, std::string argv[])
  * END COMMAND */
 void command_touch(Creature* ch, std::string argv[])
 {
-	Object* obj = ch->cl_find_object(argv[0], GOC_ANY);
+	Object* obj = ch->clFindObject(argv[0], GOC_ANY);
 	if (obj)
-		ch->do_touch(obj);
+		ch->doTouch(obj);
 }

@@ -27,7 +27,7 @@
  * END COMMAND */
 void command_say(Creature* ch, std::string argv[])
 {
-	ch->do_say(argv[0]);
+	ch->doSay(argv[0]);
 }
 
 /* BEGIN COMMAND
@@ -40,7 +40,7 @@ void command_say(Creature* ch, std::string argv[])
  * END COMMAND */
 void command_sing(Creature* ch, std::string argv[])
 {
-	ch->do_sing(argv[0]);
+	ch->doSing(argv[0]);
 }
 
 /* BEGIN COMMAND
@@ -53,10 +53,10 @@ void command_sing(Creature* ch, std::string argv[])
  * END COMMAND */
 void command_reply(Player* player, std::string argv[])
 {
-	player->do_reply(argv[0]);
+	player->doReply(argv[0]);
 }
 
-void Player::do_reply(const std::string& what)
+void Player::doReply(const std::string& what)
 {
 	if (last_tell.empty()) {
 		*this << "No one has sent you a tell yet.\n";
@@ -66,7 +66,7 @@ void Player::do_reply(const std::string& what)
 	Player* who = MPlayer.get(last_tell);
 	if (who) {
 		*who << "[" << StreamName(this) << "]: " CTALK << what << CNORMAL "\n";
-		who->last_tell = get_id();
+		who->last_tell = getId();
 		*this << "Reply sent to " << StreamName(who) << ".\n";
 	} else {
 		*this << "Player '" << last_tell << "' is not logged in.\n";
@@ -85,15 +85,15 @@ void command_tell(Player* player, std::string argv[])
 {
 	Player* cn = MPlayer.get(argv[0]);
 	if (cn) {
-		player->do_tell(cn, argv[1]);
+		player->doTell(cn, argv[1]);
 	} else {
 		*player << "Player '" << argv[0] << "' is not logged in.\n";
 	}
 }
 
-void Player::do_tell(Player* who, const std::string& what)
+void Player::doTell(Player* who, const std::string& what)
 {
 	*who << "[" << StreamName(this) << "]: " CTALK << what << CNORMAL "\n";
-	who->last_tell = get_id();
+	who->last_tell = getId();
 	*this << "Message sent to " << StreamName(who) << ".\n";
 }

@@ -28,13 +28,13 @@ public:
 	static int require(IManager& manager);
 
 	// initialize all managers
-	static int initialize_all();
+	static int initializeAll();
 
 	// stop all managers
-	static void shutdown_all();
+	static void shutdownAll();
 
 	// tell all managers to save state
-	static void save_all();
+	static void saveAll();
 
 private:
 	static std::vector<IManager*>* managers;

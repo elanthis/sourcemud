@@ -481,7 +481,7 @@ namespace MD5
 		salt[1] = '1';
 		salt[2] = '$';
 		for (int i = 3; i < 12; i ++) {
-			int c = ::get_random(63);
+			int c = Random::get(63);
 			if (c < 26) {
 				salt[i] = c + 'a';
 			} else if (c < 52) {

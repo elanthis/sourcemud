@@ -35,7 +35,7 @@ int Network::addrcmp(const NetAddr& addr1, const NetAddr& addr2)
 }
 
 // compare addresses - with mask applied to *first* address (only)
-int Network::addrcmp_mask(const NetAddr& in_addr1, const NetAddr& addr2, uint mask)
+int Network::addrcmpMask(const NetAddr& in_addr1, const NetAddr& addr2, uint mask)
 {
 	// same family, yes?
 	if (in_addr1.family != addr2.family)
@@ -61,7 +61,7 @@ int Network::addrcmp_mask(const NetAddr& in_addr1, const NetAddr& addr2, uint ma
 }
 
 // listen/server connection
-int Network::listen_tcp(int port, int family)
+int Network::listenTcp(int port, int family)
 {
 	NetAddr ss;
 	size_t ss_len = sizeof(ss);
@@ -125,7 +125,7 @@ int Network::listen_tcp(int port, int family)
 	return sock;
 }
 
-int Network::parse_addr(const char* item, NetAddr* host, uint* mask)
+int Network::parseAddr(const char* item, NetAddr* host, uint* mask)
 {
 	char buffer[128];
 
@@ -162,7 +162,7 @@ int Network::parse_addr(const char* item, NetAddr* host, uint* mask)
 			return -1; // FAIL
 		else if (inmask < 0)
 			inmask = 128;
-		addr_apply_mask((uint8*)&((sockaddr_in6*)&ss)->sin6_addr, 16, inmask);
+		addrApplyMask((uint8*)&((sockaddr_in6*)&ss)->sin6_addr, 16, inmask);
 		ss.family = AF_INET6;
 		*host = NetAddr(ss);
 		*mask = inmask;
@@ -183,7 +183,7 @@ int Network::parse_addr(const char* item, NetAddr* host, uint* mask)
 			*mask = inmask;
 			return 0;
 #else // HAVE_INET_PTON
-		if (inet_aton(buffer, &((sockaddr_in*)&ss)->sin_addr) != 0) { // match
+		if (inetAton(buffer, &((sockaddr_in*)&ss)->sin_addr) != 0) { // match
 			// check mask
 			if (inmask > 32)
 				return -1; // FAIL

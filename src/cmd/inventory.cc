@@ -36,17 +36,17 @@ void command_get(Creature* ch, std::string argv[])
 			type = ObjectLocation::IN;
 
 		// get container
-		Object* cobj = ch->cl_find_object(argv[2], GOC_ANY);
+		Object* cobj = ch->clFindObject(argv[2], GOC_ANY);
 		if (!cobj)
 			return;
 
 		// no type, pick best, from in or on
 		if (type == 0) {
-			if (cobj->has_location(ObjectLocation::IN))
+			if (cobj->hasLocation(ObjectLocation::IN))
 				type = ObjectLocation::IN;
-			else if (cobj->has_location(ObjectLocation::ON))
+			else if (cobj->hasLocation(ObjectLocation::ON))
 				type = ObjectLocation::ON;
-		} else if (!cobj->has_location(type)) {
+		} else if (!cobj->hasLocation(type)) {
 			type = ObjectLocation::NONE; // invalidate type
 		}
 
@@ -57,22 +57,22 @@ void command_get(Creature* ch, std::string argv[])
 		}
 
 		// get object from container
-		Object* obj = ch->cl_find_object(argv[0], cobj, type);
+		Object* obj = ch->clFindObject(argv[0], cobj, type);
 		if (obj)
-			ch->do_get(obj, cobj, type);
+			ch->doGet(obj, cobj, type);
 		else
 			*ch << "Can't find '" << argv[0] << "' " << argv[1] << " " << StreamName(*cobj, DEFINITE) << ".\n";
 		// get from the room
 	} else {
 		// coins?
 		if (!argv[0].empty()) {
-			Room* room = ch->get_room();
+			Room* room = ch->getRoom();
 			if (room == NULL) {
 				*ch << "You are not in a room.\n";
 				return;
 			}
 
-			uint max = room->get_coins();
+			uint max = room->getCoins();
 			int amount = 0;
 
 			// how many?
@@ -99,8 +99,8 @@ void command_get(Creature* ch, std::string argv[])
 			}
 
 			// do transfer
-			ch->give_coins(amount);
-			room->take_coins(amount);
+			ch->giveCoins(amount);
+			room->takeCoins(amount);
 			if (amount == 1) {
 				*ch << "You pick up a coin.\n";
 				*room << StreamIgnore(ch) << StreamName(ch, DEFINITE, true) << " picks up a coin.\n";
@@ -110,9 +110,9 @@ void command_get(Creature* ch, std::string argv[])
 			}
 			// object
 		} else {
-			Object* obj = ch->cl_find_object(argv[0], GOC_ROOM);
+			Object* obj = ch->clFindObject(argv[0], GOC_ROOM);
 			if (obj)
-				ch->do_get(obj, NULL, ObjectLocation::NONE);
+				ch->doGet(obj, NULL, ObjectLocation::NONE);
 		}
 	}
 }
@@ -129,13 +129,13 @@ void command_drop(Creature* ch, std::string argv[])
 {
 	// object?
 	if (argv[0].empty()) {
-		Object* obj = ch->cl_find_object(argv[0], GOC_HELD);
+		Object* obj = ch->clFindObject(argv[0], GOC_HELD);
 		if (obj)
-			ch->do_drop(obj);
+			ch->doDrop(obj);
 		// coins
 	} else {
 		// must be numeric
-		if (!str_is_number(argv[1])) {
+		if (!strIsNumber(argv[1])) {
 			*ch << "You must specify a number of coins to drop.\n";
 			return;
 		}
@@ -146,22 +146,22 @@ void command_drop(Creature* ch, std::string argv[])
 			return;
 		}
 		// must have enough coins
-		if ((uint)amount > ch->get_coins()) {
-			if (ch->get_coins() == 1)
+		if ((uint)amount > ch->getCoins()) {
+			if (ch->getCoins() == 1)
 				*ch << "You only have one coin.\n";
 			else
-				*ch << "You only have " << ch->get_coins() << " coins.\n";
+				*ch << "You only have " << ch->getCoins() << " coins.\n";
 			return;
 		}
 		// must be in a room
-		Room* room = ch->get_room();
+		Room* room = ch->getRoom();
 		if (room == NULL) {
 			*ch << "You are not in a room.\n";
 			return;
 		}
 		// do transfer
-		room->give_coins(amount);
-		ch->take_coins(amount);
+		room->giveCoins(amount);
+		ch->takeCoins(amount);
 		// print it out
 		if (amount == 1) {
 			*ch << "You drop a coin.\n";
@@ -185,18 +185,18 @@ void command_drop(Creature* ch, std::string argv[])
  * END COMMAND */
 void command_put(Creature* ch, std::string argv[])
 {
-	Object* obj = ch->cl_find_object(argv[0], GOC_HELD);
+	Object* obj = ch->clFindObject(argv[0], GOC_HELD);
 	if (!obj)
 		return;
 
-	Object* cobj = ch->cl_find_object(argv[2], GOC_ANY);
+	Object* cobj = ch->clFindObject(argv[2], GOC_ANY);
 	if (!cobj)
 		return;
 
 	if (argv[1] == "on")
-		ch->do_put(obj, cobj, ObjectLocation::ON);
+		ch->doPut(obj, cobj, ObjectLocation::ON);
 	else if (argv[1] == "in")
-		ch->do_put(obj, cobj, ObjectLocation::IN);
+		ch->doPut(obj, cobj, ObjectLocation::IN);
 }
 
 /* BEGIN COMMAND
@@ -211,9 +211,9 @@ void command_put(Creature* ch, std::string argv[])
  * END COMMAND */
 void command_wear(Creature* ch, std::string argv[])
 {
-	Object* obj = ch->cl_find_object(argv[0], GOC_HELD);
+	Object* obj = ch->clFindObject(argv[0], GOC_HELD);
 	if (obj)
-		ch->do_wear(obj);
+		ch->doWear(obj);
 }
 
 /* BEGIN COMMAND
@@ -226,9 +226,9 @@ void command_wear(Creature* ch, std::string argv[])
  * END COMMAND */
 void command_remove(Creature* ch, std::string argv[])
 {
-	Object* obj = ch->cl_find_object(argv[0], GOC_WORN);
+	Object* obj = ch->clFindObject(argv[0], GOC_WORN);
 	if (obj)
-		ch->do_remove(obj);
+		ch->doRemove(obj);
 }
 
 /* BEGIN COMMAND
@@ -238,7 +238,7 @@ void command_remove(Creature* ch, std::string argv[])
  * END COMMAND */
 void command_inventory(Player* player, std::string[])
 {
-	player->display_inventory();
+	player->displayInventory();
 }
 
 /* BEGIN COMMAND
@@ -251,7 +251,7 @@ void command_inventory(Player* player, std::string[])
 void command_swap(Creature* ch, std::string[])
 {
 	*ch << "You swap the contents of your hands.\n";
-	ch->swap_hands();
+	ch->swapHands();
 }
 
 /* BEGIN COMMAND
@@ -267,7 +267,7 @@ void command_give(Creature* ch, std::string argv[])
 	static const char* usage = "You must supply a positive number of coins to give.\n";
 
 	// get coin count
-	if (!str_is_number(argv[0])) {
+	if (!strIsNumber(argv[0])) {
 		*ch << usage;
 		return;
 	}
@@ -278,10 +278,10 @@ void command_give(Creature* ch, std::string argv[])
 	}
 
 	// get target
-	Creature* target = ch->cl_find_creature(argv[1]);
+	Creature* target = ch->clFindCreature(argv[1]);
 	if (!target)
 		return;
 
 	// do give
-	ch->do_give_coins(target, amount);
+	ch->doGiveCoins(target, amount);
 }

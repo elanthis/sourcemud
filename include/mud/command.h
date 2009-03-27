@@ -45,14 +45,14 @@ public:
 	CommandFormat(class Command* s_command, const std::string& format, PlayerCommandFunc s_func, int s_priority = 100) : command(s_command), ch_func(NULL), ply_func(s_func), priority(s_priority) { build(format); }
 
 	// get the basics
-	inline std::string get_format() const { return format; }
-	inline int get_priority() const { return priority; }
+	inline std::string getFormat() const { return format; }
+	inline int getPriority() const { return priority; }
 
 	// construct format; return non-zero on failure
 	int build(const std::string& format);
 
 	// get the command desc
-	inline Command* get_command() const { return command; }
+	inline Command* getCommand() const { return command; }
 
 	// sort
 	bool operator< (const CommandFormat& format) const;
@@ -92,12 +92,12 @@ public:
 	inline Command(const std::string& s_name, const std::string& s_usage, AccessID s_access) : name(s_name), usage(s_usage), access(s_access)  {}
 
 	// basics
-	const std::string& get_name() const { return name; }
-	const std::string& get_usage() const { return usage; }
-	AccessID get_access() const { return access; }
+	const std::string& getName() const { return name; }
+	const std::string& getUsage() const { return usage; }
+	AccessID getAccess() const { return access; }
 
 	// display help
-	void show_man(class StreamControl& player);
+	void showMan(class StreamControl& player);
 
 	// sort
 	bool operator< (const Command& command) const;
@@ -123,10 +123,10 @@ public:
 	int call(class Creature* character, const std::string& cmd_line);
 
 	// show a man page; return false if cmd_name is not found
-	bool show_man(class StreamControl& stream, const std::string& cmd_name, bool quiet = false);
+	bool showMan(class StreamControl& stream, const std::string& cmd_name, bool quiet = false);
 
 	// show a command list
-	void show_list(class Player* player);
+	void showList(class Player* player);
 
 private:
 	typedef std::vector<Command*> CommandList;
@@ -137,10 +137,10 @@ extern _MCommand MCommand;
 
 namespace commands
 {
-char *get_arg(char **);  /* updates pointer, returns arg */
-bool is_arg(char *);
-char *fix_arg(char *, char **);  /* give an arg and current pointer, it moves pointer back and unsets the null bit, making it reparsable/complete */
-char *restore(char *, char **);  /* like fix_arg, but fixes from a start location to the current location, restoring possibly multiple arguments */
+	char *getArg(char **);  /* updates pointer, returns arg */
+	bool isArg(char *);
+	char *fixArg(char *, char **);  /* give an arg and current pointer, it moves pointer back and unsets the null bit, making it reparsable/complete */
+	char *restore(char *, char **);  /* like fix_arg, but fixes from a start location to the current location, restoring possibly multiple arguments */
 }
 
 #define COMMAND(name,usage,func,access,klass) \

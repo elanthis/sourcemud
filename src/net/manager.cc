@@ -25,7 +25,7 @@ int _MNetwork::initialize()
 	p_data = new PollData();
 
 	// set our hostname
-	host = MSettings.get_hostname();
+	host = MSettings.getHostname();
 	if (host.empty()) {
 		char host_buffer[256];
 		if (gethostname(host_buffer, sizeof(host_buffer))) {
@@ -41,10 +41,10 @@ int _MNetwork::initialize()
 	}
 
 	// load IP block list
-	if (!MSettings.get_deny_file().empty()) {
-		Log::Info << "Reading denied hosts from " << MSettings.get_deny_file();
+	if (!MSettings.getDenyFile().empty()) {
+		Log::Info << "Reading denied hosts from " << MSettings.getDenyFile();
 
-		if (denies.load(MSettings.get_deny_file()))
+		if (denies.load(MSettings.getDenyFile()))
 			return 1;
 	}
 
@@ -66,7 +66,7 @@ void _MNetwork::shutdown()
 	delete p_data;
 }
 
-int _MNetwork::add_socket(ISocketHandler* socket)
+int _MNetwork::addSocket(ISocketHandler* socket)
 {
 	p_data->add.push_back(socket);
 	return 0;
@@ -92,13 +92,13 @@ int _MNetwork::poll(long timeout)
 	// build the cread and cwrite bit sets
 	i = p_data->sockets.begin();
 	while (i != p_data->sockets.end()) {
-		if (!(*i)->sock_is_disconnect_waiting())
-			(*i)->sock_flush();
+		if (!(*i)->sockIsDisconnectWaiting())
+			(*i)->sockFlush();
 
-		if ((*i)->sock_is_disconnect_waiting() && !(*i)->sock_is_out_waiting())
-			(*i)->sock_complete_disconnect();
+		if ((*i)->sockIsDisconnectWaiting() && !(*i)->sockIsOutWaiting())
+			(*i)->sockCompleteDisconnect();
 
-		int sock = (*i)->sock_get_fd();
+		int sock = (*i)->sockGetFd();
 		if (sock == -1) {
 			delete *i;
 			i = p_data->sockets.erase(i);
@@ -109,7 +109,7 @@ int _MNetwork::poll(long timeout)
 			max_sock = sock;
 
 		FD_SET(sock, &cread);
-		if ((*i)->sock_is_out_waiting())
+		if ((*i)->sockIsOutWaiting())
 			FD_SET(sock, &cwrite);
 
 		++ i;
@@ -134,11 +134,11 @@ int _MNetwork::poll(long timeout)
 	// process states
 	if (ret > 0) {
 		for (i = p_data->sockets.begin(); i != p_data->sockets.end(); ++i) {
-			int sock = (*i)->sock_get_fd();
+			int sock = (*i)->sockGetFd();
 			if (FD_ISSET(sock, &cwrite))
-				(*i)->sock_out_ready();
+				(*i)->sockOutReady();
 			if (FD_ISSET(sock, &cread))
-				(*i)->sock_in_ready();
+				(*i)->sockInReady();
 		}
 	}
 

@@ -6,13 +6,14 @@
  */
 
 #include "common.h"
+#include "common/rand.h"
 
-void init_random()
+void Random::init()
 {
 	srandom(time(NULL));
 }
 
-int get_random(int range)
+int Random::get(int range)
 {
 	if (range)
 		return random() % range;
@@ -20,10 +21,10 @@ int get_random(int range)
 		return 0;
 }
 
-int roll_dice(int dice, int sides)
+int Random::roll(int dice, int sides)
 {
 	int val = 0;
 	for (int i = 0; i < dice; i ++)
-		val += get_random(sides) + 1;
+		val += Random::get(sides) + 1;
 	return val;
 }

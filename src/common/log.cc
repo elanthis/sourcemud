@@ -23,23 +23,23 @@ namespace Log
 	LogWrapper Admin(LOG_ADMIN);
 
 	void
-	LogWrapper::stream_put(const char* text, size_t len)
+	LogWrapper::streamPut(const char* text, size_t len)
 	{
 		msg.write(text, len);
 	}
 
 	void
-	LogWrapper::stream_end()
+	LogWrapper::streamEnd()
 	{
 		MLog.print(klass, msg.str());
-		msg.reset();
+		msg.str("");
 	}
 }
 
 int _MLog::initialize()
 {
-	path = MSettings.get_log_file();
-	http_path = MSettings.get_http_log_file();
+	path = MSettings.getLogFile();
+	http_path = MSettings.getHttpLogFile();
 
 	if (!path.empty()) {
 		if ((log = fopen(path.c_str(), "a")) == NULL) {

@@ -15,11 +15,11 @@
 // helper function to generate path names
 std::string _MPlayer::path(const std::string& name)
 {
-	return MSettings.get_player_path() + "/" + strlower(name) + ".ply";
+	return MSettings.getPlayerPath() + "/" + strlower(name) + ".ply";
 }
 
 // check if a name is valid
-bool _MPlayer::valid_name(const std::string& name)
+bool _MPlayer::validName(const std::string& name)
 {
 	// empty?  just fail
 	if (name.empty())
@@ -36,7 +36,7 @@ bool _MPlayer::valid_name(const std::string& name)
 			return false;
 
 	// check 'badnames' file
-	std::string path = MSettings.get_player_path() + "/badnames";
+	std::string path = MSettings.getPlayerPath() + "/badnames";
 
 	std::ifstream badnames(path.c_str());
 	if (!badnames) {
@@ -59,7 +59,7 @@ Player* _MPlayer::get(const std::string& name)
 
 	// try loading alive
 	for (PlayerList::iterator i = player_list.begin(); i != player_list.end(); ++i)
-		if (((*i)->is_active()) && str_eq(name, (*i)->get_id()))
+		if (((*i)->isActive()) && strEq(name, (*i)->getId()))
 			return *i;
 
 	// not found
@@ -71,14 +71,14 @@ void _MPlayer::list(const StreamControl& stream)
 	stream << "Currently logged in players:\n";
 	size_t count = 0;
 	for (PlayerList::iterator i = player_list.begin(); i != player_list.end(); ++i) {
-		if ((*i)->is_active()) {
+		if ((*i)->isActive()) {
 			++ count;
 			stream << "  " << StreamName(*i);
-			if ((*i)->get_account()->isAdmin())
+			if ((*i)->getAccount()->isAdmin())
 				stream << CADMIN " (Admin)" CNORMAL;
-			else if ((*i)->get_account()->isBuilder())
+			else if ((*i)->getAccount()->isBuilder())
 				stream << CSPECIAL " (Builder)" CNORMAL;
-			else if ((*i)->get_account()->isGM())
+			else if ((*i)->getAccount()->isGM())
 				stream << CSPECIAL " (GM)" CNORMAL;
 			stream << "\n";
 		}
@@ -93,7 +93,7 @@ size_t _MPlayer::count()
 {
 	size_t count = 0;
 	for (PlayerList::iterator i = player_list.begin(); i != player_list.end(); ++i)
-		if ((*i)->is_active())
+		if ((*i)->isActive())
 			++ count;
 	return count;
 }
@@ -121,7 +121,7 @@ void _MPlayer::shutdown()
 Player* _MPlayer::load(std::tr1::shared_ptr<Account> account, const std::string& name)
 {
 	// must be valid before attempting load
-	if (!valid_name(name))
+	if (!validName(name))
 		return NULL;
 
 	// already oepn?  just return
@@ -152,13 +152,13 @@ Player* _MPlayer::load(std::tr1::shared_ptr<Account> account, const std::string&
 bool _MPlayer::exists(const std::string& name)
 {
 	// must be a valid name
-	if (!valid_name(name))
+	if (!validName(name))
 		return false;
 
 	// look thru list for valid and/or connected players
 	for (PlayerList::iterator i = player_list.begin(); i != player_list.end(); ++i) {
-		if (str_eq((*i)->get_id(), name)) {
-			if ((*i)->is_connected())
+		if (strEq((*i)->getId(), name)) {
+			if ((*i)->isConnected())
 				return true;
 			break;
 		}
@@ -179,14 +179,14 @@ bool _MPlayer::exists(const std::string& name)
 int _MPlayer::destroy(const std::string& name)
 {
 	// must be a valid name
-	if (!valid_name(name))
+	if (!validName(name))
 		return 1;
 
 	// player already on?  force quit, invalidate
 	for (PlayerList::iterator i = player_list.begin(); i != player_list.end(); ++i) {
-		if ((*i)->get_id() == name) {
-			if ((*i)->is_connected())
-				(*i)->end_session();
+		if ((*i)->getId() == name) {
+			if ((*i)->isConnected())
+				(*i)->endSession();
 			break;
 		}
 	}
@@ -210,6 +210,6 @@ int _MPlayer::destroy(const std::string& name)
 void _MPlayer::save()
 {
 	for (PlayerList::iterator i = player_list.begin(); i != player_list.end(); ++i)
-		if ((*i)->is_active())
+		if ((*i)->isActive())
 			(*i)->save();
 }

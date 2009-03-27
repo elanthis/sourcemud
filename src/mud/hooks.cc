@@ -16,25 +16,25 @@
 
 namespace Hooks
 {
-	bool save_creature(Creature* self, File::Writer& writer) { return false; }
-	bool creature_heartbeat(Creature* self) { return false; }
-	bool save_entity(Entity* self, File::Writer& writer) { return false; }
-	bool save_portal(Portal* self, File::Writer& writer) { return false; }
+	bool saveCreature(Creature* self, File::Writer& writer) { return false; }
+	bool creatureHeartbeat(Creature* self) { return false; }
+	bool saveEntity(Entity* self, File::Writer& writer) { return false; }
+	bool savePortal(Portal* self, File::Writer& writer) { return false; }
 	bool ready() { return false; }
-	bool change_hour() { return false; }
-	bool save_npc(Npc* self, File::Writer& writer) { return false; }
-	bool npc_death(Npc* self, Creature* killer) { return false; }
-	bool npc_heartbeat(Npc* self) { return false; }
-	bool save_object_blueprint(ObjectBP* self, File::Writer& swriter) { return false; }
-	bool save_object(Object* self, File::Writer& writer) { return false; }
-	bool object_heartbeat(Object* self) { return false; }
-	bool save_player(Player* self, File::Writer& writer) { return false; }
-	bool player_start(Player* self) { return false; }
-	bool create_creature(Player* self) { return false; }
-	bool player_death(Player* self, Creature* killer) { return false; }
-	bool player_heartbeat(Player* self) { return false; }
-	bool save_room(Room* self, File::Writer& writer) { return false; }
-	bool room_heartbeat(Room* self) { return false; }
-	bool show_room(Room* self, Creature* viewer) { return false; }
-	bool save_zone(Zone* self, File::Writer& writer) { return false; }
+	bool changeHour() { return false; }
+	bool saveNpc(Npc* self, File::Writer& writer) { return false; }
+	bool npcDeath(Npc* self, Creature* killer) { return false; }
+	bool npcHeartbeat(Npc* self) { return false; }
+	bool saveObjectBlueprint(ObjectBP* self, File::Writer& swriter) { return false; }
+	bool saveObject(Object* self, File::Writer& writer) { return false; }
+	bool objectHeartbeat(Object* self) { return false; }
+	bool savePlayer(Player* self, File::Writer& writer) { return false; }
+	bool playerStart(Player* self) { return false; }
+	bool createCreature(Player* self) { return false; }
+	bool playerDeath(Player* self, Creature* killer) { return false; }
+	bool playerHeartbeat(Player* self) { return false; }
+	bool saveRoom(Room* self, File::Writer& writer) { return false; }
+	bool roomHeartbeat(Room* self) { return false; }
+	bool showRoom(Room* self, Creature* viewer) { return false; }
+	bool saveZone(Zone* self, File::Writer& writer) { return false; }
 }

@@ -49,20 +49,20 @@ void HTTPHandler::disconnect()
 	MNetwork.connections.remove(addr);
 
 	// close socket
-	sock_disconnect();
+	sockDisconnect();
 }
 
 /* output a data of text -
  * deal with formatting new-lines and such, and also
  * escaping/removing/translating Source MUD commands
  */
-void HTTPHandler::stream_put(const char *text, size_t len)
+void HTTPHandler::streamPut(const char *text, size_t len)
 {
-	sock_buffer(text, len);
+	sockBuffer(text, len);
 }
 
 // process input
-void HTTPHandler::sock_input(char* buffer, size_t size)
+void HTTPHandler::sockInput(char* buffer, size_t size)
 {
 	timeout = time(NULL);
 
@@ -100,7 +100,7 @@ void HTTPHandler::sock_input(char* buffer, size_t size)
 			} else {
 				// if we still don't have a line but we're over the max, fail
 				if (line.size() + size >= HTTP_HEADER_LINE_MAX) {
-					http_error(413);
+					httpError(413);
 					return;
 				}
 
@@ -115,11 +115,11 @@ void HTTPHandler::sock_input(char* buffer, size_t size)
 }
 
 // flush out the output, write prompt
-void HTTPHandler::sock_flush()
+void HTTPHandler::sockFlush()
 {
 	// handle timeout
 	if (timeout != 0 && (time(NULL) - timeout) >= HTTP_REQUEST_TIMEOUT) {
-		http_error(408);
+		httpError(408);
 		timeout = 0;
 	}
 
@@ -128,7 +128,7 @@ void HTTPHandler::sock_flush()
 		disconnect();
 }
 
-void HTTPHandler::sock_hangup()
+void HTTPHandler::sockHangup()
 {
 	disconnect();
 }
@@ -148,14 +148,14 @@ void HTTPHandler::process()
 
 		// check size
 		if (parts.size() != 3) {
-			http_error(400);
+			httpError(400);
 			return;
 		}
 
 		// http method
 		method = parts[0];
 		if (method != "GET" && method != "POST") {
-			http_error(405);
+			httpError(405);
 			return;
 		}
 
@@ -164,7 +164,7 @@ void HTTPHandler::process()
 		const char* sep = strchr(url.c_str(), '?');
 		if (sep != NULL) {
 			path = std::string(url.c_str(), sep - url.c_str());
-			parse_request_data(get, sep + 1);
+			parseRequestData(get, sep + 1);
 		} else {
 			path = url;
 		}
@@ -179,7 +179,7 @@ void HTTPHandler::process()
 			// determine content length of body, if any
 			content_length = tolong(getHeader("content-length"));
 			if (content_length > HTTP_POST_BODY_MAX) {
-				http_error(413);
+				httpError(413);
 				// if we have no content length, go straight to processing
 			} else if (content_length == 0) {
 				execute();
@@ -195,7 +195,7 @@ void HTTPHandler::process()
 		const char* c = strchr(line.c_str(), ':');
 		// require ': ' after header name
 		if (c == NULL || *(c + 1) != ' ') {
-			http_error(400);
+			httpError(400);
 			return;
 		}
 
@@ -225,7 +225,7 @@ void HTTPHandler::process()
 
 								// re-hash and compare
 								std::ostringstream buf;
-								buf << HTTPManager.get_session_key() << ':' << salt << ':' << id;
+								buf << HTTPManager.getSessionKey() << ':' << salt << ':' << id;
 								if (hash == MD5::hash(buf.str())) {
 									// lookup the account, we're successful
 									account = AccountManager.get(id);
@@ -239,7 +239,7 @@ void HTTPHandler::process()
 	case BODY: {
 		// parse the post data, we we can
 		if (getHeader("content-type") == "application/x-www-form-urlencoded")
-			parse_request_data(post, line.c_str());
+			parseRequestData(post, line.c_str());
 
 		// execute
 		execute();
@@ -251,7 +251,7 @@ void HTTPHandler::process()
 	}
 }
 
-void HTTPHandler::parse_request_data(std::map<std::string, std::string>& map, const char* line) const
+void HTTPHandler::parseRequestData(std::map<std::string, std::string>& map, const char* line) const
 {
 	// parse the data
 	std::ostringstream value;
@@ -334,7 +334,7 @@ void HTTPHandler::execute()
 
 	// run; fail with HTTP 500 on error
 	if (!exec.run()) {
-		http_error(500);
+		httpError(500);
 		return;
 	}
 
@@ -350,7 +350,7 @@ void HTTPHandler::execute()
 	// url request into a full path
 	exec.cleanup();
 
-	std::string file = MSettings.get_html_path() + path;
+	std::string file = MSettings.getHtmlPath() + path;
 
 	// check to see if our file exists, and serve it if it does
 	if (File::isfile(file)) {
@@ -366,7 +366,7 @@ void HTTPHandler::execute()
 	}
 
 	// not found
-	http_error(404);
+	httpError(404);
 }
 
 void HTTPHandler::serve(const std::string& full_path)
@@ -377,7 +377,7 @@ void HTTPHandler::serve(const std::string& full_path)
 	// stat the file
 	struct stat st;
 	if (stat(full_path.c_str(), &st) != 0) {
-		http_error(404);
+		httpError(404);
 		return;
 	}
 
@@ -413,7 +413,7 @@ void HTTPHandler::serve(const std::string& full_path)
 		rs = ifs.readsome(buf, sizeof(buf));
 		if (rs == 0)
 			break;
-		this->stream_put(buf, rs);
+		this->streamPut(buf, rs);
 	}
 	ifs.close();
 
@@ -429,16 +429,16 @@ void HTTPHandler::log(int error)
 	Log::HTTP
 	<< addr.getString(false) << ' '
 	<< "- " // RFC 1413 identify -- apache log compatibility place-holder
-	<< (get_account() ? get_account()->getId().c_str() : "-") << ' '
+	<< (getAccount() ? getAccount()->getId().c_str() : "-") << ' '
 	<< '[' << StreamTime("%d/%b/%Y:%H:%M:%S %z") << "] "
 	<< '"' << request << "\" "
 	<< error << ' '
-	<< get_out_bytes() << ' '
+	<< getOutBytes() << ' '
 	<< '"' << (referer.empty() ? "-" : referer.c_str()) << "\" "
 	<< '"' << (user_agent.empty() ? "-" : user_agent.c_str()) << '"';
 }
 
-void HTTPHandler::http_error(int error)
+void HTTPHandler::httpError(int error)
 {
 	// lookup HTTP error msg code
 	std::string http_msg;
@@ -543,9 +543,9 @@ int _HTTPManager::initialize()
 {
 	std::ostringstream buf;
 
-	std::ifstream ifs(MSettings.get_skey_path().c_str());
+	std::ifstream ifs(MSettings.getSkeyPath().c_str());
 	if (!ifs) {
-		Log::Error << "Failed to open session key file " << MSettings.get_skey_path();
+		Log::Error << "Failed to open session key file " << MSettings.getSkeyPath();
 		return -1;
 	}
 	ifs >> session_key;

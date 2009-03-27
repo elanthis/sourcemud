@@ -25,25 +25,25 @@ public:
 
 	int load(File::Reader&);
 
-	int get_life_span() const { return life_span; }
-	int get_age_min() const { return age_min; }
-	int get_age_max() const { return age_max; }
+	int getLifeSpan() const { return life_span; }
+	int getAgeMin() const { return age_min; }
+	int getAgeMax() const { return age_max; }
 
-	int get_stat(int i) const { if (i >= 0 && i < CreatureStatID::COUNT) return stats[i] ; else return 0; }
+	int getStat(int i) const { if (i >= 0 && i < CreatureStatID::COUNT) return stats[i] ; else return 0; }
 
-	int get_average_height(GenderType gender) const { return height[gender.get_value()]; }
+	int getAverageHeight(GenderType gender) const { return height[gender.getValue()]; }
 
-	std::string get_name() const { return name; }
-	std::string get_adj() const { return adj; }
-	std::string get_body() const { return body; }
-	std::string get_about() const { return about; }
-	std::string get_desc() const { return desc; }
+	std::string getName() const { return name; }
+	std::string getAdj() const { return adj; }
+	std::string getBody() const { return body; }
+	std::string getAbout() const { return about; }
+	std::string getDesc() const { return desc; }
 
-	const std::vector<FormColor>& get_eye_colors() const { return eye_colors; }
-	const std::vector<FormColor>& get_skin_colors() const { return skin_colors; }
-	const std::vector<FormColor>& get_hair_colors() const { return hair_colors; }
+	const std::vector<FormColor>& getEyeColors() const { return eye_colors; }
+	const std::vector<FormColor>& getSkinColors() const { return skin_colors; }
+	const std::vector<FormColor>& getHairColors() const { return hair_colors; }
 
-	Race* get_next() const { return next; }
+	Race* getNext() const { return next; }
 
 	// ---- data ----
 protected:

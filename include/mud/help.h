@@ -30,7 +30,7 @@ public:
 
 	// get a topic; category is optional, its use limits
 	// the topic search to topics in the given category
-	HelpTopic* get_topic(const std::string& name);
+	HelpTopic* getTopic(const std::string& name);
 
 private:
 	typedef std::vector<HelpTopic*> TopicList;

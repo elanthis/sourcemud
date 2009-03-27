@@ -21,10 +21,10 @@ public:
 	virtual ~IMacroObject() {}
 
 	// return non-zero if the requested method/property does not exist
-	virtual int macro_property(const class StreamControl& stream, const std::string& method, const MacroList& argv) const = 0;
+	virtual int macroProperty(const class StreamControl& stream, const std::string& method, const MacroList& argv) const = 0;
 
 	// stream a default desc/name/whatever
-	virtual void macro_default(const class StreamControl& stream) const = 0;
+	virtual void macroDefault(const class StreamControl& stream) const = 0;
 };
 
 class MacroValue
@@ -38,14 +38,14 @@ public:
 	MacroValue(const std::string& s_string) : type(T_STRING), object(NULL), string(s_string) {}
 
 	// fetch the type of the mixed value
-	Type get_type() const { return type; }
-	bool is_object() const { return type == T_OBJECT; }
-	bool is_string() const { return type == T_STRING; }
-	bool is_null() const { return type == T_NULL; }
+	Type getType() const { return type; }
+	bool isObject() const { return type == T_OBJECT; }
+	bool isString() const { return type == T_STRING; }
+	bool isNull() const { return type == T_NULL; }
 
 	// specific getters
-	const IMacroObject* get_object() const { return this->object; }
-	const std::string& get_string() const { return this->string; }
+	const IMacroObject* getObject() const { return this->object; }
+	const std::string& getString() const { return this->string; }
 
 	// assign
 	const IMacroObject* operator= (const IMacroObject* object) { type = (object == NULL ? T_NULL : T_OBJECT); return this->object = object; }

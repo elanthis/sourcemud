@@ -23,29 +23,29 @@ ObjectBP::ObjectBP()
 	cost = 0;
 }
 
-bool ObjectBP::set_name(const std::string& s_name)
+bool ObjectBP::setName(const std::string& s_name)
 {
-	bool ret = name.set_name(s_name);
+	bool ret = name.setFull(s_name);
 	return ret;
 }
 
-EntityName ObjectBP::get_name() const
+EntityName ObjectBP::getName() const
 {
 	return name;
 }
 
-bool ObjectBP::has_tag(TagID tag) const
+bool ObjectBP::hasTag(TagID tag) const
 {
 	return tags.find(tag) != tags.end();
 }
 
-int ObjectBP::add_tag(TagID tag)
+int ObjectBP::addTag(TagID tag)
 {
 	tags.insert(tag);
 	return 0;
 }
 
-int ObjectBP::remove_tag(TagID tag)
+int ObjectBP::removeTag(TagID tag)
 {
 	// find
 	TagList::iterator ti = std::find(tags.begin(), tags.end(), tag);
@@ -63,13 +63,13 @@ void ObjectBP::save(File::Writer& writer)
 	if (!isAnonymous())
 		writer.attr("blueprint", "id", id);
 
-	writer.attr("blueprint", "name", name.get_name());
+	writer.attr("blueprint", "name", name.getFull());
 	writer.attr("blueprint", "desc", desc);
 
 	for (std::vector<std::string>::const_iterator i = keywords.begin(); i != keywords.end(); ++i)
 		writer.attr("blueprint", "keyword", *i);
 
-	writer.attr("blueprint", "equip", equip.get_name());
+	writer.attr("blueprint", "equip", equip.getName());
 
 	writer.attr("blueprint", "cost", cost);
 	writer.attr("blueprint", "weight", weight);
@@ -90,47 +90,47 @@ void ObjectBP::save(File::Writer& writer)
 		writer.attr("blueprint", "tag", i->name());
 
 	// script hook
-	Hooks::save_object_blueprint(this, writer);
+	Hooks::saveObjectBlueprint(this, writer);
 }
 
 int ObjectBP::load(File::Reader& reader)
 {
 	FO_READ_BEGIN
 	FO_ATTR("blueprint", "id")
-	id = node.get_string();
+	id = node.getString();
 	FO_ATTR("blueprint", "name")
-	set_name(node.get_string());
+	setName(node.getString());
 	FO_ATTR("blueprint", "keyword")
-	keywords.push_back(node.get_string());
+	keywords.push_back(node.getString());
 	FO_ATTR("blueprint", "desc")
-	set_desc(node.get_string());
+	setDesc(node.getString());
 	FO_ATTR("blueprint", "weight")
-	set_weight(node.get_int());
+	setWeight(node.getInt());
 	FO_ATTR("blueprint", "cost")
-	set_cost(node.get_int());
+	setCost(node.getInt());
 	FO_ATTR("blueprint", "equip")
-	set_equip(EquipSlot::lookup(node.get_string()));
+	setEquip(EquipSlot::lookup(node.getString()));
 	FO_ATTR("blueprint", "gettable")
-	set_flag(ObjectFlag::GET, node.get_bool());
+	setFlag(ObjectFlag::GET, node.getBool());
 	FO_ATTR("blueprint", "touchable")
-	set_flag(ObjectFlag::TOUCH, node.get_bool());
+	setFlag(ObjectFlag::TOUCH, node.getBool());
 	FO_ATTR("blueprint", "hidden")
-	set_flag(ObjectFlag::HIDDEN, node.get_bool());
+	setFlag(ObjectFlag::HIDDEN, node.getBool());
 	FO_ATTR("blueprint", "dropable")
-	set_flag(ObjectFlag::DROP, node.get_bool());
+	setFlag(ObjectFlag::DROP, node.getBool());
 	FO_ATTR("blueprint", "trashable")
-	set_flag(ObjectFlag::TRASH, node.get_bool());
+	setFlag(ObjectFlag::TRASH, node.getBool());
 	FO_ATTR("blueprint", "rotting")
-	set_flag(ObjectFlag::ROT, node.get_bool());
+	setFlag(ObjectFlag::ROT, node.getBool());
 	FO_ATTR("blueprint", "container")
-	if (node.get_string() == "on") {
+	if (node.getString() == "on") {
 		locations.set(ObjectLocation::ON);
-	} else if (node.get_string() == "in") {
+	} else if (node.getString() == "in") {
 		locations.set(ObjectLocation::IN);
 	} else
-		Log::Warning << "Unknown container type '" << node.get_string() << "' at " << reader.get_filename() << ':' << node.get_line();
+		Log::Warning << "Unknown container type '" << node.getString() << "' at " << reader.getFilename() << ':' << node.getLine();
 	FO_ATTR("blueprint", "tag")
-	tags.insert(TagID::create(node.get_string()));
+	tags.insert(TagID::create(node.getString()));
 	FO_READ_ERROR
 	return -1;
 	FO_READ_END
@@ -144,7 +144,7 @@ int _MObjectBP::initialize()
 	if (require(MEvent) != 0)
 		return 1;
 
-	std::vector<std::string> files = File::dirlist(MSettings.get_blueprint_path());
+	std::vector<std::string> files = File::dirlist(MSettings.getBlueprintPath());
 	File::filter(files, "*.objs");
 	for (std::vector<std::string>::iterator i = files.begin(); i != files.end(); ++i) {
 		// load from file
@@ -155,16 +155,16 @@ int _MObjectBP::initialize()
 		FO_OBJECT("blueprint", "object")
 		ObjectBP* blueprint = new ObjectBP();
 		if (blueprint->load(reader)) {
-			Log::Warning << "Failed to load blueprint in " << reader.get_filename() << " at " << node.get_line();
+			Log::Warning << "Failed to load blueprint in " << reader.getFilename() << " at " << node.getLine();
 			return -1;
 		}
 
-		if (blueprint->get_id().empty()) {
-			Log::Warning << "Blueprint has no ID in " << reader.get_filename() << " at " << node.get_line();
+		if (blueprint->getId().empty()) {
+			Log::Warning << "Blueprint has no ID in " << reader.getFilename() << " at " << node.getLine();
 			return -1;
 		}
 
-		blueprints[blueprint->get_id()] = blueprint;
+		blueprints[blueprint->getId()] = blueprint;
 		FO_READ_ERROR
 		return -1;
 		FO_READ_END

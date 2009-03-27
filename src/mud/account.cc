@@ -32,7 +32,7 @@ Account::~Account()
 
 int Account::save() const
 {
-	std::string path = MSettings.get_account_path() + "/" + strlower(id) + ".acct";
+	std::string path = MSettings.getAccountPath() + "/" + strlower(id) + ".acct";
 
 	// open
 	File::Writer writer;
@@ -53,8 +53,8 @@ int Account::save() const
 		writer.attr("account", "maxactive", maxactive);
 	if (timeout > 0)
 		writer.attr("account", "maxactive", timeout);
-	writer.attr("account", "created", time_to_str(time_created));
-	writer.attr("account", "lastlogin", time_to_str(time_lastlogin));
+	writer.attr("account", "created", timeToStr(time_created));
+	writer.attr("account", "lastlogin", timeToStr(time_lastlogin));
 	for (AccessList::const_iterator i = access.begin(); i != access.end(); ++i)
 		writer.attr("account", "access", AccessID::nameof(*i));
 
@@ -119,7 +119,7 @@ uint Account::getMaxCharacters() const
 		return maxcharacters;
 
 	// default
-	return MSettings.get_characters_per_account();
+	return MSettings.getCharactersPerAccount();
 }
 
 // get max active characters allowed
@@ -130,7 +130,7 @@ uint Account::getMaxActive() const
 		return maxactive;
 
 	// default
-	return MSettings.get_active_per_account();
+	return MSettings.getActivePerAccount();
 }
 
 // update login time
@@ -163,7 +163,7 @@ bool Account::revokeAccess(AccessID id)
 	return true;
 }
 
-int Account::macro_property(const StreamControl& stream, const std::string& method, const MacroList& argv) const
+int Account::macroProperty(const StreamControl& stream, const std::string& method, const MacroList& argv) const
 {
 	if (method == "id") {
 		stream << id;
@@ -179,7 +179,7 @@ int Account::macro_property(const StreamControl& stream, const std::string& meth
 	}
 }
 
-void Account::macro_default(const StreamControl& stream) const
+void Account::macroDefault(const StreamControl& stream) const
 {
 	stream << id;
 }
@@ -251,7 +251,7 @@ std::tr1::shared_ptr<Account> _MAccount::get(const std::string& in_name)
 	File::Reader reader;
 
 	// open
-	if (reader.open(MSettings.get_account_path() + "/" + name + ".acct"))
+	if (reader.open(MSettings.getAccountPath() + "/" + name + ".acct"))
 		return std::tr1::shared_ptr<Account>();
 
 	// create
@@ -262,27 +262,27 @@ std::tr1::shared_ptr<Account> _MAccount::get(const std::string& in_name)
 	// read it in
 	FO_READ_BEGIN
 	FO_ATTR("account", "name")
-	account->name = node.get_string();
+	account->name = node.getString();
 	FO_ATTR("account", "email")
-	account->email = node.get_string();
+	account->email = node.getString();
 	FO_ATTR("account", "passphrase")
-	account->pass = node.get_string();
+	account->pass = node.getString();
 	FO_ATTR("account", "character")
-	account->characters.push_back(node.get_string());
+	account->characters.push_back(node.getString());
 	FO_ATTR("account", "maxcharacters")
-	account->maxcharacters = node.get_int();
+	account->maxcharacters = node.getInt();
 	FO_ATTR("account", "maxactive")
-	account->maxactive = node.get_int();
+	account->maxactive = node.getInt();
 	FO_ATTR("account", "timeout")
-	account->timeout = node.get_int();
+	account->timeout = node.getInt();
 	FO_ATTR("account", "disabled")
-	account->flags.disabled = node.get_bool();
+	account->flags.disabled = node.getBool();
 	FO_ATTR("account", "access")
-	account->access.insert(AccessID::create(node.get_string()));
+	account->access.insert(AccessID::create(node.getString()));
 	FO_ATTR("account", "created")
-	account->time_created = str_to_time(node.get_string());
+	account->time_created = strToTime(node.getString());
 	FO_ATTR("account", "lastlogin")
-	account->time_lastlogin = str_to_time(node.get_string());
+	account->time_lastlogin = strToTime(node.getString());
 	FO_READ_ERROR
 	return std::tr1::shared_ptr<Account>();
 	FO_READ_END
@@ -333,7 +333,7 @@ _MAccount::exists(const std::string& name)
 		return true;
 
 	// check if player file exists
-	std::string path = MSettings.get_account_path() + "/" + name + ".acct";
+	std::string path = MSettings.getAccountPath() + "/" + name + ".acct";
 	struct stat st;
 	int res = stat(path.c_str(), &st);
 	if (res == 0)

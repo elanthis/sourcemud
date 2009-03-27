@@ -28,7 +28,7 @@ SocketConnection::SocketConnection(int s_sock) : output(), sock(s_sock),
 		disconnect(false), in_bytes(0), out_bytes(0)
 {}
 
-void SocketConnection::sock_in_ready()
+void SocketConnection::sockInReady()
 {
 	char buffer[2048];
 	int err = recv(sock, buffer, sizeof(buffer), 0);
@@ -39,7 +39,7 @@ void SocketConnection::sock_in_ready()
 		close(sock);
 		sock = -1;
 
-		sock_hangup();
+		sockHangup();
 		return;
 
 		// eof
@@ -47,17 +47,17 @@ void SocketConnection::sock_in_ready()
 		close(sock);
 		sock = -1;
 
-		sock_hangup();
+		sockHangup();
 		return;
 
 		// real data
 	} else if (err > 0 && !disconnect) {
 		in_bytes += err;
-		sock_input(buffer, err);
+		sockInput(buffer, err);
 	}
 }
 
-void SocketConnection::sock_out_ready()
+void SocketConnection::sockOutReady()
 {
 	int ret = send(sock, &output[0], output.size(), 0);
 	if (ret > 0) {
@@ -71,7 +71,7 @@ void SocketConnection::sock_out_ready()
 		output = std::vector<char>();
 }
 
-void SocketConnection::sock_buffer(const char* bytes, size_t len)
+void SocketConnection::sockBuffer(const char* bytes, size_t len)
 {
 	out_bytes += len;
 	if (output.size() + len > output.capacity()) {
@@ -84,12 +84,12 @@ void SocketConnection::sock_buffer(const char* bytes, size_t len)
 	memcpy(&output[oldsize], bytes, len);
 }
 
-void SocketConnection::sock_disconnect()
+void SocketConnection::sockDisconnect()
 {
 	disconnect = true;
 }
 
-void SocketConnection::sock_complete_disconnect()
+void SocketConnection::sockCompleteDisconnect()
 {
 	shutdown(sock, SHUT_RDWR);
 	close(sock);

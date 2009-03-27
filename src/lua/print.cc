@@ -40,7 +40,7 @@ namespace
 		for (int i = 1, e = lua_gettop(s); i <= e; ++i) {
 			size_t len;
 			const char* str = lua_tolstring(s, i, &len);
-			Lua::sink->stream_put(str, len);
+			Lua::sink->streamPut(str, len);
 		}
 
 		// done; no return values

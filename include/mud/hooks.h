@@ -21,27 +21,27 @@ namespace File { class Writer; }
 
 namespace Hooks
 {
-bool save_creature(Creature* self, File::Writer& writer);
-bool creature_heartbeat(Creature* self);
-bool save_entity(Entity* self, File::Writer& writer);
-bool save_portal(Portal* self, File::Writer& writer);
-bool ready();
-bool change_hour();
-bool save_npc(Npc* self, File::Writer& writer);
-bool npc_death(Npc* self, Creature* killer);
-bool npc_heartbeat(Npc* self);
-bool save_object_blueprint(ObjectBP* self, File::Writer& swriter);
-bool save_object(Object* self, File::Writer& writer);
-bool object_heartbeat(Object* self);
-bool save_player(Player* self, File::Writer& writer);
-bool player_start(Player* self);
-bool create_creature(Player* self);
-bool player_death(Player* self, Creature* killer);
-bool player_heartbeat(Player* self);
-bool save_room(Room* self, File::Writer& writer);
-bool room_heartbeat(Room* self);
-bool show_room(Room* self, Creature* viewer);
-bool save_zone(Zone* self, File::Writer& writer);
+	bool saveCreature(Creature* self, File::Writer& writer);
+	bool creatureHeartbeat(Creature* self);
+	bool saveEntity(Entity* self, File::Writer& writer);
+	bool savePortal(Portal* self, File::Writer& writer);
+	bool ready();
+	bool changeHour();
+	bool saveNpc(Npc* self, File::Writer& writer);
+	bool npcDeath(Npc* self, Creature* killer);
+	bool npcHeartbeat(Npc* self);
+	bool saveObjectBlueprint(ObjectBP* self, File::Writer& swriter);
+	bool saveObject(Object* self, File::Writer& writer);
+	bool objectHeartbeat(Object* self);
+	bool savePlayer(Player* self, File::Writer& writer);
+	bool playerStart(Player* self);
+	bool createCreature(Player* self);
+	bool playerDeath(Player* self, Creature* killer);
+	bool playerHeartbeat(Player* self);
+	bool saveRoom(Room* self, File::Writer& writer);
+	bool roomHeartbeat(Room* self);
+	bool showRoom(Room* self, Creature* viewer);
+	bool saveZone(Zone* self, File::Writer& writer);
 }
 
 #endif

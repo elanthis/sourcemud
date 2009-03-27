@@ -48,7 +48,7 @@ public:
 	virtual void finish(); // disconnect session by default
 
 	// the handler this mode is connected to
-	inline class TelnetHandler* get_handler() const { return handler; }
+	inline class TelnetHandler* getHandler() const { return handler; }
 
 private:
 	class TelnetHandler* handler;
@@ -60,43 +60,43 @@ public:
 	TelnetHandler(int s_sock, const NetAddr& s_netaddr);
 
 	// color info
-	inline uint get_color(uint i) const { return color_set[i] < 0 ? color_type_defaults[i] : color_set[i]; }
-	inline void set_color(uint i, uint v) { color_set[i] = v; }
-	inline void clear_color(uint i) { color_set[i] = -1; }
-	inline bool use_color() const { return io_flags.use_ansi; }
+	inline uint getColor(uint i) const { return color_set[i] < 0 ? color_type_defaults[i] : color_set[i]; }
+	inline void setColor(uint i, uint v) { color_set[i] = v; }
+	inline void clearColor(uint i) { color_set[i] = -1; }
+	inline bool useColor() const { return io_flags.use_ansi; }
 
 	// processing IO
 	void process();
-	inline int get_width() const { return width; }
-	bool toggle_echo(bool value);
-	void process_command(char* cmd); // just as if typed in by user
+	inline int getWidth() const { return width; }
+	bool toggleEcho(bool value);
+	void processCommand(char* cmd); // just as if typed in by user
 	void disconnect();
 	void finish(); // tells the current mode to 'end', disconnects by default
 
 	// output
-	virtual void stream_put(const char*, size_t len);
-	void clear_scr(); // clear da screen
-	void set_indent(uint amount);
-	inline uint get_indent() const { return margin; }
-	void draw_bar(uint percent); // draws a 14 character width progress bar
-	inline void force_update() { io_flags.need_prompt = true; }
+	virtual void streamPut(const char*, size_t len);
+	void clearScreen(); // clear da screen
+	void setIndent(uint amount);
+	inline uint getIndent() const { return margin; }
+	void drawBar(uint percent); // draws a 14 character width progress bar
+	inline void forceUpdate() { io_flags.need_prompt = true; }
 
 	// change timeout
-	inline void set_timeout(uint s_timeout) { timeout = s_timeout; }
+	inline void setTimeout(uint s_timeout) { timeout = s_timeout; }
 
 	// ZMP
-	inline bool has_zmp() const { return io_flags.zmp; }
-	inline bool has_zmp_color() const { return io_flags.zmp_color; } // supports the color.define command?
-	void send_zmp(size_t argc, std::string argv[]);
-	void zmp_support(const std::string& pkg, bool value);
+	inline bool hasZmp() const { return io_flags.zmp; }
+	inline bool hasZmpColor() const { return io_flags.zmp_color; } // supports the color.define command?
+	void sendZmp(size_t argc, std::string argv[]);
+	void zmpSupport(const std::string& pkg, bool value);
 
 	// mode
-	void set_mode(ITelnetMode* new_mode);
+	void setMode(ITelnetMode* new_mode);
 
 	// low-level IO
-	virtual void sock_input(char* buffer, size_t size);
-	virtual void sock_hangup();
-	virtual void sock_flush();
+	virtual void sockInput(char* buffer, size_t size);
+	virtual void sockHangup();
+	virtual void sockFlush();
 
 protected:
 	// destructor
@@ -150,23 +150,23 @@ protected:
 	NetAddr addr;
 
 	// processing
-	void process_input();
-	void process_zmp(const char* buffer, size_t size);
+	void processInput();
+	void processZmp(const char* buffer, size_t size);
 
 	// command handling
-	void process_telnet_command(char* cmd);
+	void processTelnetCommand(char* cmd);
 
 	// data output
-	void add_to_chunk(const char* data, size_t len);
-	void buffer_output(const char* data, size_t len) { telnet_send(&telnet, data, len); }
-	void end_chunk();
-	void add_zmp(size_t argc, std::string argv[]);
+	void addToChunk(const char* data, size_t len);
+	void bufferOutput(const char* data, size_t len) { telnet_send(&telnet, data, len); }
+	void endChunk();
+	void addZmp(size_t argc, std::string argv[]);
 
 	// timeout handling
-	virtual void check_timeout(); // check to see if we should disconnect
+	virtual void checkTimeout(); // check to see if we should disconnect
 
 public:
-	void telnet_event(telnet_event_t* ev);
+	void telnetEvent(telnet_event_t* ev);
 };
 
 // indent stream

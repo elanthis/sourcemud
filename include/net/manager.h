@@ -30,11 +30,11 @@ public:
 	virtual int initialize();
 	virtual void shutdown();
 
-	int add_socket(class ISocketHandler* socket);
+	int addSocket(class ISocketHandler* socket);
 
 	int poll(long timeout);
 
-	inline const std::string& get_host() const { return host; }
+	inline const std::string& getHost() const { return host; }
 
 	// track connections
 	IPConnList connections;

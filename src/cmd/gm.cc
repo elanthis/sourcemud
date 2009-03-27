@@ -49,13 +49,13 @@ void command_gm_boot(Player* gm, std::string argv[])
 		*gm << "You cannot boot yourself.\n";
 	} else if (cn == NULL) {
 		*gm << "Player '" << argv[0] << "' is not logged in.\n";
-	} else if (cn->get_conn() == NULL) {
+	} else if (cn->getConn() == NULL) {
 		*gm << "Player '" << argv[0] << "' is not actively connected.\n";
 	} else {
-		if (cn->get_conn()) {
+		if (cn->getConn()) {
 			*gm << "Booting " << StreamName(cn) << "...\n";
 			*cn << CADMIN "You are being booted by a GM." CNORMAL "\n";
-			Log::Info << "User " << cn->get_account()->getId() << " booted by " << gm->get_account()->getId();
+			Log::Info << "User " << cn->getAccount()->getId() << " booted by " << gm->getAccount()->getId();
 			cn->disconnect();
 		} else {
 			*gm << StreamName(cn, DEFINITE, true) << " is already disconnected.\n";

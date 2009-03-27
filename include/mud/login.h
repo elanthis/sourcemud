@@ -47,7 +47,7 @@ private:
 	std::string passphrase;
 	int state;
 
-	void show_info();
+	void showInfo();
 };
 
 class TelnetModeMainMenu : public ITelnetMode
@@ -74,12 +74,12 @@ private:
 	std::string tmp;
 
 	// menus
-	void show_banner();
-	void show_main();
-	void show_characters();
-	void show_create();
-	void show_del_confirm();
-	void show_account();
+	void showBanner();
+	void showMain();
+	void showCharacters();
+	void showCreate();
+	void showDelConfirm();
+	void showAccount();
 };
 
 class TelnetModePlay : public ITelnetMode, public IPlayerConnection
@@ -93,15 +93,15 @@ public:
 	virtual void shutdown();
 	virtual void finish();
 
-	virtual void pconn_connect(Player* player) {}
-	virtual void pconn_disconnect();
-	virtual void pconn_write(const char* data, size_t len) { get_handler()->stream_put(data, len); }
-	virtual void pconn_set_echo(bool value) { get_handler()->toggle_echo(value); }
-	virtual void pconn_set_indent(uint level) { get_handler()->set_indent(level); }
-	virtual void pconn_set_color(int color, int value) { get_handler()->set_color(color, value); }
-	virtual void pconn_clear() { get_handler()->clear_scr(); }
-	virtual void pconn_force_prompt() { get_handler()->force_update(); }
-	virtual uint pconn_get_width() { return get_handler()->get_width(); }
+	virtual void pconnConnect(Player* player) {}
+	virtual void pconnDisconnect();
+	virtual void pconnWrite(const char* data, size_t len) { getHandler()->streamPut(data, len); }
+	virtual void pconnSetEcho(bool value) { getHandler()->toggleEcho(value); }
+	virtual void pconnSetIndent(uint level) { getHandler()->setIndent(level); }
+	virtual void pconnSetColor(int color, int value) { getHandler()->setColor(color, value); }
+	virtual void pconnClear() { getHandler()->clearScreen(); }
+	virtual void pconnForcePrompt() { getHandler()->forceUpdate(); }
+	virtual uint pconnGetWidth() { return getHandler()->getWidth(); }
 
 private:
 	class Player* player;

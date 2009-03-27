@@ -9,8 +9,8 @@
 #define SOURCEMUD_COMMON_TIME_H
 
 // legacy cruft
-std::string time_to_str(time_t time);
-time_t str_to_time(const std::string& str);
+std::string timeToStr(time_t time);
+time_t strToTime(const std::string& str);
 
 namespace Time
 {

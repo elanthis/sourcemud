@@ -108,34 +108,34 @@ void TelnetModeRealNewCharacter::prompt()
 	switch (state) {
 	case STATE_NAME:
 	case STATE_RENAME:
-		*get_handler() << "Enter thy name:";
+		*getHandler() << "Enter thy name:";
 		break;
 	case STATE_RACE:
-		*get_handler() << "Choose thy race:";
+		*getHandler() << "Choose thy race:";
 		break;
 	case STATE_GENDER:
-		*get_handler() << "Choose thy gender:";
+		*getHandler() << "Choose thy gender:";
 		break;
 	case STATE_HEIGHT:
-		*get_handler() << "Choose thy stature:";
+		*getHandler() << "Choose thy stature:";
 		break;
 	case STATE_BUILD:
-		*get_handler() << "Choose thy physical build:";
+		*getHandler() << "Choose thy physical build:";
 		break;
 	case STATE_SKINCOLOR:
-		*get_handler() << "Choose thy skin color:";
+		*getHandler() << "Choose thy skin color:";
 		break;
 	case STATE_EYECOLOR:
-		*get_handler() << "Choose thy eye color:";
+		*getHandler() << "Choose thy eye color:";
 		break;
 	case STATE_HAIRCOLOR:
-		*get_handler() << "Choose thy hair color:";
+		*getHandler() << "Choose thy hair color:";
 		break;
 	case STATE_HAIRSTYLE:
-		*get_handler() << "Choose thy hair style:";
+		*getHandler() << "Choose thy hair style:";
 		break;
 	case STATE_STATS:
-		*get_handler() << "Which attribute shall thee increase?";
+		*getHandler() << "Which attribute shall thee increase?";
 		break;
 	case STATE_NAME_CONFIRM:
 	case STATE_RACE_CONFIRM:
@@ -143,10 +143,10 @@ void TelnetModeRealNewCharacter::prompt()
 	case STATE_STATS_CONFIRM:
 	case STATE_FINAL_CONFIRM:
 	case STATE_RENAME_CONFIRM:
-		*get_handler() << "Accept? (Y/n)";
+		*getHandler() << "Accept? (Y/n)";
 		break;
 	case STATE_CONTINUE:
-		*get_handler() << "Thy profile is complete. (Press ENTER to continue)";
+		*getHandler() << "Thy profile is complete. (Press ENTER to continue)";
 		break;
 	}
 }
@@ -166,7 +166,7 @@ void TelnetModeRealNewCharacter::process(char* line)
 	case STATE_NAME:
 	case STATE_RENAME:
 		// must be a valid name
-		if (!MPlayer.valid_name(input)) {
+		if (!MPlayer.validName(input)) {
 			show_error("Thy chosen name is not acceptable.");
 			break;
 		}
@@ -195,9 +195,9 @@ void TelnetModeRealNewCharacter::process(char* line)
 		int index = 1;
 		int selected = numeric;
 		while (rptr != NULL) {
-			if (phrase_match(rptr->get_name(), input) || index == selected)
+			if (phraseMatch(rptr->getName(), input) || index == selected)
 				break;
-			rptr = rptr->get_next();
+			rptr = rptr->getNext();
 			++ index;
 		}
 		if (rptr == NULL) {
@@ -231,7 +231,7 @@ void TelnetModeRealNewCharacter::process(char* line)
 		break;
 	case STATE_HEIGHT:
 		for (int i = 1; i < FormHeight::COUNT; ++i) {
-			if (i == numeric || is_match(FormHeight(i).get_name(), input)) {
+			if (i == numeric || is_match(FormHeight(i).getName(), input)) {
 				height = FormHeight(i);
 				enter_state(STATE_BUILD);
 				return;
@@ -241,7 +241,7 @@ void TelnetModeRealNewCharacter::process(char* line)
 		break;
 	case STATE_BUILD:
 		for (int i = 1; i < FormBuild::COUNT; ++i) {
-			if (i == numeric || is_match(FormBuild(i).get_name(), input)) {
+			if (i == numeric || is_match(FormBuild(i).getName(), input)) {
 				build = FormBuild(i);
 				enter_state(STATE_SKINCOLOR);
 				return;
@@ -250,8 +250,8 @@ void TelnetModeRealNewCharacter::process(char* line)
 		show_error("I do not understand thy response.");
 		break;
 	case STATE_SKINCOLOR:
-		for (std::vector<FormColor>::const_iterator i = race->get_skin_colors().begin(); i != race->get_skin_colors().end(); ++i) {
-			if ((--numeric) == 0 || is_match(i->get_name(), input)) {
+		for (std::vector<FormColor>::const_iterator i = race->getSkinColors().begin(); i != race->getSkinColors().end(); ++i) {
+			if ((--numeric) == 0 || is_match(i->getName(), input)) {
 				skin_color = *i;
 				enter_state(STATE_EYECOLOR);
 				return;
@@ -260,8 +260,8 @@ void TelnetModeRealNewCharacter::process(char* line)
 		show_error("I do not understand thy response.");
 		break;
 	case STATE_EYECOLOR:
-		for (std::vector<FormColor>::const_iterator i = race->get_eye_colors().begin(); i != race->get_eye_colors().end(); ++i) {
-			if ((--numeric) == 0 || is_match(i->get_name(), input)) {
+		for (std::vector<FormColor>::const_iterator i = race->getEyeColors().begin(); i != race->getEyeColors().end(); ++i) {
+			if ((--numeric) == 0 || is_match(i->getName(), input)) {
 				eye_color = *i;
 				enter_state(STATE_HAIRCOLOR);
 				return;
@@ -270,8 +270,8 @@ void TelnetModeRealNewCharacter::process(char* line)
 		show_error("I do not understand thy response.");
 		break;
 	case STATE_HAIRCOLOR:
-		for (std::vector<FormColor>::const_iterator i = race->get_hair_colors().begin(); i != race->get_hair_colors().end(); ++i) {
-			if ((--numeric) == 0 || is_match(i->get_name(), input)) {
+		for (std::vector<FormColor>::const_iterator i = race->getHairColors().begin(); i != race->getHairColors().end(); ++i) {
+			if ((--numeric) == 0 || is_match(i->getName(), input)) {
 				hair_color = *i;
 				enter_state(STATE_HAIRSTYLE);
 				return;
@@ -281,7 +281,7 @@ void TelnetModeRealNewCharacter::process(char* line)
 		break;
 	case STATE_HAIRSTYLE:
 		for (int i = 1; i < FormHairStyle::COUNT; ++i) {
-			if (i == numeric || is_match(FormHairStyle(i).get_name(), input)) {
+			if (i == numeric || is_match(FormHairStyle(i).getName(), input)) {
 				hair_style = FormHairStyle(i);
 				enter_state(STATE_FORM_CONFIRM);
 				return;
@@ -310,7 +310,7 @@ void TelnetModeRealNewCharacter::process(char* line)
 			stat = numeric - 1;
 		} else {
 			for (stat = 0; stat < CreatureStatID::COUNT; ++stat) {
-				if (is_match(CreatureStatID(stat).get_name(), input))
+				if (is_match(CreatureStatID(stat).getName(), input))
 					break;
 			}
 			if (stat == CreatureStatID::COUNT) {
@@ -364,126 +364,126 @@ void TelnetModeRealNewCharacter::process(char* line)
 
 void TelnetModeRealNewCharacter::display()
 {
-	get_handler()->clear_scr();
-	*get_handler() << "Character Creation\n------------------\n";
+	getHandler()->clearScreen();
+	*getHandler() << "Character Creation\n------------------\n";
 	if (!name.empty()) {
 		if (race)
-			*get_handler() << name << " (" << capwords(race->get_name()) << ")\n";
+			*getHandler() << name << " (" << capwords(race->getName()) << ")\n";
 		else
-			*get_handler() << name << "\n";
+			*getHandler() << name << "\n";
 	}
-	if (gender.get_value() != 0) {
-		*get_handler() << capwords(gender.get_name());
+	if (gender.getValue() != 0) {
+		*getHandler() << capwords(gender.getName());
 		if (height.valid())
-			*get_handler() << ", " << height.get_name();
+			*getHandler() << ", " << height.getName();
 		if (build.valid())
-			*get_handler() << ", " << build.get_name();
-		*get_handler() << "\n";
+			*getHandler() << ", " << build.getName();
+		*getHandler() << "\n";
 	}
 	if (skin_color.valid()) {
-		*get_handler() << "Skin: " << skin_color.get_name();
+		*getHandler() << "Skin: " << skin_color.getName();
 		if (eye_color.valid())
-			*get_handler() << ", eyes: " << eye_color.get_name();
+			*getHandler() << ", eyes: " << eye_color.getName();
 		if (hair_color.valid()) {
-			*get_handler() << ", hair: " << hair_color.get_name();
+			*getHandler() << ", hair: " << hair_color.getName();
 			if (hair_style.valid())
-				*get_handler() << " (" << hair_style.get_name() << ")";
+				*getHandler() << " (" << hair_style.getName() << ")";
 		}
-		*get_handler() << "\n";
+		*getHandler() << "\n";
 	}
 	if (state > STATE_STATS_CONFIRM) {
 		for (int i = 0; i < CreatureStatID::COUNT; ++i) {
 			if (i > 0)
-				*get_handler() << ", ";
-			*get_handler() << CreatureStatID(i).get_short_name() << ':' << stats[i];
+				*getHandler() << ", ";
+			*getHandler() << CreatureStatID(i).getShortName() << ':' << stats[i];
 		}
-		*get_handler() << '\n';
+		*getHandler() << '\n';
 	}
 
-	*get_handler() << "\n";
+	*getHandler() << "\n";
 
 	switch (state) {
 	case STATE_NAME:
-		*get_handler() << "Choose the name thy new charater shalle be called.\n\n";
+		*getHandler() << "Choose the name thy new charater shalle be called.\n\n";
 		break;
 	case STATE_RENAME:
-		*get_handler() << "Thy chosen name has been taken by another.  Choose a new name.\n\n";
+		*getHandler() << "Thy chosen name has been taken by another.  Choose a new name.\n\n";
 		break;
 	case STATE_RACE: {
 		Race* rptr = MRace.first();
 		int index = 1;
 		while (rptr != NULL) {
-			*get_handler() << index << ") " << capwords(rptr->get_name()) << "\n";
-			rptr = rptr->get_next();
+			*getHandler() << index << ") " << capwords(rptr->getName()) << "\n";
+			rptr = rptr->getNext();
 			++ index;
 		}
-		*get_handler() << "\n";
+		*getHandler() << "\n";
 		break;
 	}
 	case STATE_RACE_CONFIRM: {
-		get_handler()->set_indent(2);
+		getHandler()->setIndent(2);
 		for (int i = 0; i < CreatureStatID::COUNT; ++i) {
-			if (race->get_stat(i) != 0) {
-				*get_handler() << CreatureStatID(i).get_name() << ':';
-				get_handler()->set_indent(16);
-				if (race->get_stat(i) > 0)
-					*get_handler() << '+';
-				else if (race->get_stat(i) < 0)
-					*get_handler() << '-';
+			if (race->getStat(i) != 0) {
+				*getHandler() << CreatureStatID(i).getName() << ':';
+				getHandler()->setIndent(16);
+				if (race->getStat(i) > 0)
+					*getHandler() << '+';
+				else if (race->getStat(i) < 0)
+					*getHandler() << '-';
 				else
-					*get_handler() << ' ';
-				if (abs(race->get_stat(i)) < 10)
-					*get_handler() << ' ';
-				*get_handler() << abs(race->get_stat(i)) << "\n";
-				get_handler()->set_indent(2);
+					*getHandler() << ' ';
+				if (abs(race->getStat(i)) < 10)
+					*getHandler() << ' ';
+				*getHandler() << abs(race->getStat(i)) << "\n";
+				getHandler()->setIndent(2);
 			}
 		}
-		get_handler()->set_indent(0);
+		getHandler()->setIndent(0);
 
-		*get_handler() << "\nLife span: ";
-		*get_handler() << race->get_life_span() << " years\n";
+		*getHandler() << "\nLife span: ";
+		*getHandler() << race->getLifeSpan() << " years\n";
 
 		// About
-		*get_handler() << "\n" << CDESC << race->get_about() << CNORMAL << "\n\n";
+		*getHandler() << "\n" << CDESC << race->getAbout() << CNORMAL << "\n\n";
 		break;
 	}
 	case STATE_GENDER:
-		*get_handler() << "1) Female\n2) Male\n\n";
+		*getHandler() << "1) Female\n2) Male\n\n";
 		break;
 	case STATE_BUILD:
 		for (size_t i = 1; i < FormBuild::COUNT; ++i)
-			*get_handler() << i << ") " << capwords(FormBuild(i).get_name()) << "\n";
-		*get_handler() << "\n";
+			*getHandler() << i << ") " << capwords(FormBuild(i).getName()) << "\n";
+		*getHandler() << "\n";
 		break;
 	case STATE_SKINCOLOR: {
 		size_t c = 1;
-		for (std::vector<FormColor>::const_iterator i = race->get_skin_colors().begin(); i != race->get_skin_colors().end(); ++i)
-			*get_handler() << c++ << ") " << capwords(i->get_name()) << "\n";
-		*get_handler() << "\n";
+		for (std::vector<FormColor>::const_iterator i = race->getSkinColors().begin(); i != race->getSkinColors().end(); ++i)
+			*getHandler() << c++ << ") " << capwords(i->getName()) << "\n";
+		*getHandler() << "\n";
 		break;
 	}
 	case STATE_EYECOLOR: {
 		size_t c = 1;
-		for (std::vector<FormColor>::const_iterator i = race->get_eye_colors().begin(); i != race->get_eye_colors().end(); ++i)
-			*get_handler() << c++ << ") " << capwords(i->get_name()) << "\n";
-		*get_handler() << "\n";
+		for (std::vector<FormColor>::const_iterator i = race->getEyeColors().begin(); i != race->getEyeColors().end(); ++i)
+			*getHandler() << c++ << ") " << capwords(i->getName()) << "\n";
+		*getHandler() << "\n";
 		break;
 	}
 	case STATE_HAIRCOLOR: {
 		size_t c = 1;
-		for (std::vector<FormColor>::const_iterator i = race->get_hair_colors().begin(); i != race->get_hair_colors().end(); ++i)
-			*get_handler() << c++ << ") " << capwords(i->get_name()) << "\n";
-		*get_handler() << "\n";
+		for (std::vector<FormColor>::const_iterator i = race->getHairColors().begin(); i != race->getHairColors().end(); ++i)
+			*getHandler() << c++ << ") " << capwords(i->getName()) << "\n";
+		*getHandler() << "\n";
 		break;
 	}
 	case STATE_HAIRSTYLE:
 		for (size_t i = 1; i < FormHairStyle::COUNT; ++i)
-			*get_handler() << i << ") " << capwords(FormHairStyle(i).get_name()) << "\n";
-		*get_handler() << "\n";
+			*getHandler() << i << ") " << capwords(FormHairStyle(i).getName()) << "\n";
+		*getHandler() << "\n";
 		break;
 	case STATE_STATS:
 	case STATE_STATS_CONFIRM: {
-		*get_handler() <<
+		*getHandler() <<
 		"You have " << STAT_TOKENS << " tokens with which to increase your "
 		"character attributes.  Each token increases an attribute "
 		"by " << STAT_TOKEN_INC << " points.  Your base attributes are "
@@ -495,40 +495,40 @@ void TelnetModeRealNewCharacter::display()
 			int mod = (stats[i] - 50) / 10;
 
 			// name
-			*get_handler() << "  " << (i + 1) << ") " << CreatureStatID(i).get_name() << ": ";
+			*getHandler() << "  " << (i + 1) << ") " << CreatureStatID(i).getName() << ": ";
 
 			// descriptor
-			get_handler()->set_indent(14);
-			*get_handler() << get_stat_color(stats[i]) << get_stat_level(stats[i]) << CNORMAL;
+			getHandler()->setIndent(14);
+			*getHandler() << getStatColor(stats[i]) << getStatLevel(stats[i]) << CNORMAL;
 
 			// value/+mod
-			get_handler()->set_indent(25);
-			*get_handler() << '(' << stats[i] << '/';
+			getHandler()->setIndent(25);
+			*getHandler() << '(' << stats[i] << '/';
 			if (mod >= 0)
-				*get_handler() << '+';
-			*get_handler() << mod << ")\n";
+				*getHandler() << '+';
+			*getHandler() << mod << ")\n";
 
-			get_handler()->set_indent(0);
+			getHandler()->setIndent(0);
 		}
 
 		// display remaining tokens
 		if (tokens > 0)
-			*get_handler() << "\nYe have " << tokens << " tokens remaining.\n\n";
+			*getHandler() << "\nYe have " << tokens << " tokens remaining.\n\n";
 		else
-			*get_handler() << "\nThy tokens have been spent.\n\n";
+			*getHandler() << "\nThy tokens have been spent.\n\n";
 		break;
 	}
 	case STATE_HEIGHT:
 		for (size_t i = 1; i < FormHeight::COUNT; ++i)
-			*get_handler() << i << ") " << capwords(FormHeight(i).get_name()) << "\n";
-		*get_handler() << "\n";
+			*getHandler() << i << ") " << capwords(FormHeight(i).getName()) << "\n";
+		*getHandler() << "\n";
 		break;
 	case STATE_FINAL_CONFIRM:
 	case STATE_RENAME_CONFIRM:
-		*get_handler() << "Is it thy wish for me to create this profile?\n\n";
+		*getHandler() << "Is it thy wish for me to create this profile?\n\n";
 		break;
 	case STATE_CONTINUE:
-		*get_handler() << " " CADMIN "** Character Created **" CNORMAL "\n\n";
+		*getHandler() << " " CADMIN "** Character Created **" CNORMAL "\n\n";
 		break;
 	default:
 		break;
@@ -538,7 +538,7 @@ void TelnetModeRealNewCharacter::display()
 void TelnetModeRealNewCharacter::show_error(const std::string& msg)
 {
 	display();
-	*get_handler() << CWARNING << msg << CNORMAL << "\n\n";
+	*getHandler() << CWARNING << msg << CNORMAL << "\n\n";
 }
 
 void TelnetModeRealNewCharacter::enter_state(state_t new_state)
@@ -560,7 +560,7 @@ void TelnetModeRealNewCharacter::enter_state(state_t new_state)
 		for (int i = 0; i < CreatureStatID::COUNT; ++i)
 			stats[i] = STAT_BASE;
 		for (int i = STAT_POINTS; i > 0; i -= STAT_RAND_INC)
-			stats[get_random(CreatureStatID::COUNT)] += STAT_RAND_INC;
+			stats[Random::get(CreatureStatID::COUNT)] += STAT_RAND_INC;
 		break;
 	}
 	default:
@@ -578,38 +578,38 @@ void TelnetModeRealNewCharacter::create()
 	player = new Player(account, name);
 
 	// set basics
-	player->set_race(race);
-	player->set_gender(gender);
+	player->setRace(race);
+	player->setGender(gender);
 
 	// set birthday
-	int age = race->get_age_min() + get_random(race->get_age_max() - race->get_age_min());
+	int age = race->getAgeMin() + Random::get(race->getAgeMax() - race->getAgeMin());
 	GameTime birthday = MTime.time;
-	birthday.set_year(birthday.get_year() - age);
-	player->set_birthday(birthday);
+	birthday.setYear(birthday.getYear() - age);
+	player->setBirthday(birthday);
 
 	// set form
-	player->set_height(height);
-	player->set_build(build);
-	player->set_eye_color(eye_color);
-	player->set_skin_color(skin_color);
-	player->set_hair_color(hair_color);
-	player->set_hair_style(hair_style);
+	player->setHeight(height);
+	player->setBuild(build);
+	player->setEyeColor(eye_color);
+	player->setSkinColor(skin_color);
+	player->setHairColor(hair_color);
+	player->setHairStyle(hair_style);
 
 	// set stats
 	for (int i = 0; i < CreatureStatID::COUNT; ++i)
-		player->set_base_stat(i, stats[i]);
+		player->setBaseStat(i, stats[i]);
 
 	// setup various other bits
 	player->recalc();
-	player->set_hp(player->get_max_hp());
+	player->setHP(player->getMaxHP());
 
 	// save player
 	player->save();
 
 	// add to account
-	account->addCharacter(player->get_id());
+	account->addCharacter(player->getId());
 	account->save();
-	Log::Info << "Character '" << player->get_id() << "' added to account '" << account->getId() << "'";
+	Log::Info << "Character '" << player->getId() << "' added to account '" << account->getId() << "'";
 
 	// go to continue state
 	enter_state(STATE_CONTINUE);
@@ -618,5 +618,5 @@ void TelnetModeRealNewCharacter::create()
 // RETURN TO THE MAIN MENU
 void TelnetModeRealNewCharacter::finish()
 {
-	get_handler()->set_mode(new TelnetModeMainMenu(get_handler(), account));
+	getHandler()->setMode(new TelnetModeMainMenu(getHandler(), account));
 }

@@ -41,12 +41,12 @@ public:
 	PortalDir(int s_value) : value((dir_t)s_value) {}
 	PortalDir() : value(NONE) {}
 
-	std::string get_name() const { return names[value]; }
-	std::string get_abbr() const { return abbreviations[value]; }
-	PortalDir get_opposite() const { return opposites[value]; }
+	std::string getName() const { return names[value]; }
+	std::string getAbbr() const { return abbreviations[value]; }
+	PortalDir getOpposite() const { return opposites[value]; }
 	bool valid() const { return value != NONE; }
 
-	dir_t get_value() const { return value; }
+	dir_t getValue() const { return value; }
 
 	static PortalDir lookup(const std::string& name);
 
@@ -76,9 +76,9 @@ public:
 	PortalUsage(int s_value) : value((type_t)s_value) {}
 	PortalUsage() : value(WALK) {}
 
-	std::string get_name() const { return names[value]; }
+	std::string getName() const { return names[value]; }
 
-	type_t get_value() const { return value; }
+	type_t getValue() const { return value; }
 
 	static PortalUsage lookup(const std::string& name);
 
@@ -113,9 +113,9 @@ public:
 	PortalDetail(int s_value) : value((type_t)s_value) {}
 	PortalDetail() : value(NONE) {}
 
-	std::string get_name() const { return names[value]; }
+	std::string getName() const { return names[value]; }
 
-	type_t get_value() const { return value; }
+	type_t getValue() const { return value; }
 
 	static PortalDetail lookup(const std::string& name);
 
@@ -130,70 +130,70 @@ class Portal : public Entity
 public:
 	Portal();
 
-	virtual const char* factory_type() const { return "portal"; }
+	virtual const char* factoryType() const { return "portal"; }
 
 	// name information
-	virtual EntityName get_name() const;
-	bool set_name(const std::string& s_name) { return name.set_name(s_name); }
-	void add_keyword(const std::string& keyword);
+	virtual EntityName getName() const;
+	bool setName(const std::string& s_name) { return name.setFull(s_name); }
+	void addKeyword(const std::string& keyword);
 
 	// description information
-	virtual std::string get_desc() const { return desc; }
-	virtual void set_desc(const std::string& s_desc) { desc = s_desc; }
+	virtual std::string getDesc() const { return desc; }
+	virtual void setDesc(const std::string& s_desc) { desc = s_desc; }
 
 	// 'standard' portals have no custom name
-	bool is_standard() const { return name.empty(); }
+	bool isStandard() const { return name.empty(); }
 
 	// the taget room and portal (target portal is the portal you come out of)
-	std::string get_target() const { return target; }
-	void set_target(const std::string& t) { target = t; }
+	std::string getTarget() const { return target; }
+	void setTarget(const std::string& t) { target = t; }
 
 	// movement messages based on usage/detail
-	std::string get_go() const;
-	std::string get_leaves() const;
-	std::string get_enters() const;
+	std::string getGo() const;
+	std::string getLeaves() const;
+	std::string getEnters() const;
 
 	// ownership - see entity.h
-	virtual void set_owner(Entity*);
-	virtual Entity* get_owner() const;
-	virtual void owner_release(Entity*);
-	class Room* get_room() const { return parent_room; }
+	virtual void setOwner(Entity*);
+	virtual Entity* getOwner() const;
+	virtual void ownerRelease(Entity*);
+	class Room* getRoom() const { return parent_room; }
 
 	// events
-	virtual void handle_event(const Event& event);
-	virtual void broadcast_event(const Event& event);
+	virtual void handleEvent(const Event& event);
+	virtual void broadcastEvent(const Event& event);
 
 	// activate/deactivtee
 	virtual void activate();
 	virtual void deactivate();
 
 	// portal usage (climb, etc.)
-	PortalUsage get_usage() const { return usage; }
-	void set_usage(PortalUsage t) { usage = t; }
+	PortalUsage getUsage() const { return usage; }
+	void setUsage(PortalUsage t) { usage = t; }
 
 	// portal detail (on, over, etc.)
-	PortalDetail get_detail() const { return detail; }
-	void set_detail(PortalDetail t) { detail = t; }
+	PortalDetail getDetail() const { return detail; }
+	void setDetail(PortalDetail t) { detail = t; }
 
 	// direction (east, west, etc.)
-	PortalDir get_dir() const { return dir; }
-	void set_dir(PortalDir d) { dir = d; }
+	PortalDir getDir() const { return dir; }
+	void setDir(PortalDir d) { dir = d; }
 
 	// get relative dir and target
-	Room* get_relative_target(Room* base) const;
-	PortalDir get_relative_dir(Room* base) const;
-	Portal* get_relative_portal(Room* base) const;
-	bool has_room(Room* base) const;
+	Room* getRelativeTarget(Room* base) const;
+	PortalDir getRelativeDir(Room* base) const;
+	Portal* getRelativePortal(Room* base) const;
+	bool hasRoom(Room* base) const;
 
 	// flags
-	bool is_valid() const;
-	bool is_hidden() const { return flags.hidden; }
-	bool is_closed() const { return flags.closed; }
-	bool is_oneway() const { return flags.oneway; }
-	bool is_locked() const { return flags.locked; }
-	bool is_door() const { return flags.door; }
-	bool is_nolook() const { return flags.nolook; }
-	bool is_disabled() const { return flags.disabled; }
+	bool isValid() const;
+	bool isHidden() const { return flags.hidden; }
+	bool isClosed() const { return flags.closed; }
+	bool isOneway() const { return flags.oneway; }
+	bool isLocked() const { return flags.locked; }
+	bool isDoor() const { return flags.door; }
+	bool isNolook() const { return flags.nolook; }
+	bool isDisabled() const { return flags.disabled; }
 
 	// color of portal
 	virtual const char* ncolor() const { return CEXIT; }
@@ -207,22 +207,22 @@ public:
 	// heartbeat
 	void heartbeat();
 
-	virtual bool name_match(const std::string& name) const;
+	virtual bool nameMatch(const std::string& name) const;
 
 	// set flags
-	void set_door(bool v) { flags.door = v; }
-	void set_hidden(bool v) { flags.hidden = v; }
-	void set_closed(bool v) { flags.closed = v; }
-	void set_oneway(bool v) { flags.oneway = v; }
-	void set_locked(bool v) { flags.locked = v; }
-	void set_nolook(bool v) { flags.nolook = v; }
-	void set_disabled(bool v) { flags.disabled = v; }
+	void setDoor(bool v) { flags.door = v; }
+	void setHidden(bool v) { flags.hidden = v; }
+	void setClosed(bool v) { flags.closed = v; }
+	void setOneway(bool v) { flags.oneway = v; }
+	void setLocked(bool v) { flags.locked = v; }
+	void setNolook(bool v) { flags.nolook = v; }
+	void setDisabled(bool v) { flags.disabled = v; }
 
 	// IO
-	virtual void save_data(File::Writer& writer);
-	virtual void save_hook(File::Writer& writer);
-	virtual int load_node(File::Reader& reader, File::Node& node);
-	virtual int load_finish();
+	virtual void saveData(File::Writer& writer);
+	virtual void saveHook(File::Writer& writer);
+	virtual int loadNode(File::Reader& reader, File::Node& node);
+	virtual int loadFinish();
 
 protected:
 	// data members
@@ -256,7 +256,6 @@ protected:
 
 	// extra
 	friend class Room;
-	E_TYPE(Portal)
 };
 
 #define PORTAL(ent) E_CAST(ent,Portal)

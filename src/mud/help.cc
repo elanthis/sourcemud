@@ -26,10 +26,10 @@ void command_help(Player* player, std::string argv[])
 	MHelp.print(stream, argv[0]);
 }
 
-HelpTopic* _MHelp::get_topic(const std::string& name)
+HelpTopic* _MHelp::getTopic(const std::string& name)
 {
 	for (TopicList::iterator i = topics.begin(); i != topics.end(); ++i)
-		if (phrase_match((*i)->name, name))
+		if (phraseMatch((*i)->name, name))
 			return *i;
 	return NULL;
 }
@@ -37,11 +37,11 @@ HelpTopic* _MHelp::get_topic(const std::string& name)
 void _MHelp::print(StreamControl& stream, const std::string& name)
 {
 	// try a man page
-	if (!name.empty() && MCommand.show_man(stream, name, true))
+	if (!name.empty() && MCommand.showMan(stream, name, true))
 		return;
 
 	// try a help topic
-	HelpTopic* topic = name.empty() ? get_topic("general") : get_topic(name);
+	HelpTopic* topic = name.empty() ? getTopic("general") : getTopic(name);
 	if (topic) {
 		stream << CSPECIAL "Help: " CNORMAL << topic->name << "\n\n";
 		stream << StreamIndent(2) << StreamMacro(topic->about) << StreamIndent(0) << "\n";
@@ -54,7 +54,7 @@ void _MHelp::print(StreamControl& stream, const std::string& name)
 
 int _MHelp::initialize()
 {
-	std::vector<std::string> files = File::dirlist(MSettings.get_help_path());
+	std::vector<std::string> files = File::dirlist(MSettings.getHelpPath());
 	File::filter(files, "*.help");
 	for (std::vector<std::string>::iterator i = files.begin(); i != files.end(); ++i) {
 		File::Reader reader;

@@ -38,21 +38,21 @@ int WeatherRegion::load(File::Reader& reader)
 
 	FO_READ_BEGIN
 	FO_OBJECT("weather", "state")
-	WeatherState state(node.get_name());
+	WeatherState state(node.getName());
 	FO_READ_BEGIN
 	FO_ATTR("state", "id")
-	state.id = node.get_string();
+	state.id = node.getString();
 	FO_ATTR("state", "desc")
-	state.descs.push_back(node.get_string());
+	state.descs.push_back(node.getString());
 	FO_OBJECT("state", "change")
 	WeatherChange change;
 	FO_READ_BEGIN
 	FO_ATTR("change", "target")
-	change.to = node.get_string();
+	change.to = node.getString();
 	FO_ATTR("change", "chance")
-	change.chance = node.get_int();
+	change.chance = node.getInt();
 	FO_ATTR("change", "text")
-	change.desc = node.get_string();
+	change.desc = node.getString();
 	FO_READ_ERROR
 	throw error;
 	FO_READ_END
@@ -62,11 +62,11 @@ int WeatherRegion::load(File::Reader& reader)
 	FO_READ_END
 	states.push_back(state);
 	FO_ATTR("weather", "current")
-	state = get_state(node.get_string());
+	state = getState(node.getString());
 	if (state < 0)
 		throw File::Error("Current state out of range");
 	FO_ATTR("weather", "ticks")
-	ticks = node.get_int();
+	ticks = node.getInt();
 	if (ticks > 500) // ludicrous
 		ticks = 500;
 	FO_READ_ERROR
@@ -83,7 +83,7 @@ int WeatherRegion::load(File::Reader& reader)
 	for (std::vector<WeatherState>::const_iterator si = states.begin(); si != states.end(); ++si)
 		for (std::vector<WeatherChange>::const_iterator ci = si->changes.begin(); ci != si->changes.end(); ++ci)
 			// have state?
-			if (get_state(ci->to) < 0) {
+			if (getState(ci->to) < 0) {
 				Log::Error << "Weather state " << si->id << " has a change rule to non-existant state " << ci->to << ".";
 				return -1;
 			}
@@ -114,7 +114,7 @@ void WeatherRegion::save(File::Writer& writer) const
 
 int WeatherRegion::load()
 {
-	std::string path = MSettings.get_world_path() + "/weather";
+	std::string path = MSettings.getWorldPath() + "/weather";
 
 	// open
 	File::Reader reader;
@@ -130,7 +130,7 @@ int WeatherRegion::load()
 
 int WeatherRegion::save() const
 {
-	std::string path = MSettings.get_world_path() + "/weather";
+	std::string path = MSettings.getWorldPath() + "/weather";
 
 	// open
 	File::Writer writer;
@@ -144,7 +144,7 @@ int WeatherRegion::save() const
 	return 0;
 }
 
-int WeatherRegion::get_state(const std::string& name) const
+int WeatherRegion::getState(const std::string& name) const
 {
 	for (uint i = 0; i < states.size(); ++i)
 		if (states[i].id == name)
@@ -152,9 +152,9 @@ int WeatherRegion::get_state(const std::string& name) const
 	return -1;
 }
 
-std::string WeatherRegion::get_current_desc() const
+std::string WeatherRegion::getCurrentDesc() const
 {
-	uint i = get_random(states[state].descs.size());
+	uint i = Random::get(states[state].descs.size());
 	return states[state].descs[i];
 }
 
@@ -167,7 +167,7 @@ void WeatherRegion::update()
 	// time for update?
 	if (ticks-- == 0) {
 		// random number
-		uint random = get_random(100) + 1;
+		uint random = Random::get(100) + 1;
 
 		// check if it fall in under any of the state changes
 		// if it doesn't, then the chance just means 'don't change'
@@ -175,7 +175,7 @@ void WeatherRegion::update()
 			// yes, in range
 			if (random <= i->chance) {
 				// get state
-				int nstate = get_state(i->to);
+				int nstate = getState(i->to);
 
 				// valid state?
 				if (nstate >= 0) {
@@ -192,6 +192,6 @@ void WeatherRegion::update()
 		}
 
 		// update time
-		ticks = (get_random(4) + 1) * TICKS_PER_HOUR;
+		ticks = (Random::get(4) + 1) * TICKS_PER_HOUR;
 	}
 }

@@ -36,35 +36,35 @@ void command_look(Creature* ch, std::string argv[])
 {
 	// have we a target (argv[1])
 	if (argv[1].empty()) {
-		ch->do_look();
+		ch->doLook();
 		return;
 	}
 
 	// looking in/on/etc. container?
 	if (!argv[0].empty() && argv[0] != "at") {
-		Object* obj = ch->cl_find_object(argv[1], GOC_ANY);
+		Object* obj = ch->clFindObject(argv[1], GOC_ANY);
 		if (obj) {
 			if (argv[0] == "on")
-				ch->do_look(obj, ObjectLocation::ON);
+				ch->doLook(obj, ObjectLocation::ON);
 			else if (argv[0] == "in")
-				ch->do_look(obj, ObjectLocation::IN);
+				ch->doLook(obj, ObjectLocation::IN);
 			else
-				ch->do_look(obj, ObjectLocation::NONE);
+				ch->doLook(obj, ObjectLocation::NONE);
 		}
 		return;
 	}
 
 	// generic find
-	Entity* entity = ch->cl_find_any(argv[1]);
+	Entity* entity = ch->clFindAny(argv[1]);
 	if (entity != NULL) {
 		// creature?
 		if (CHARACTER(entity))
-			ch->do_look((Creature*)(entity));
+			ch->doLook((Creature*)(entity));
 		// object?
 		else if (OBJECT(entity))
-			ch->do_look((Object*)(entity), ObjectLocation::NONE);
+			ch->doLook((Object*)(entity), ObjectLocation::NONE);
 		// eixt?
 		else if (PORTAL(entity))
-			ch->do_look((Portal*)(entity));
+			ch->doLook((Portal*)(entity));
 	}
 }

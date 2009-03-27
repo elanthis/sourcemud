@@ -52,7 +52,7 @@ namespace
 // return 0 if not valid, or non-0 if valid
 namespace
 {
-	bool check_zmp_chunk(size_t size, const char* data)
+	bool checkZmpChunk(size_t size, const char* data)
 	{
 		// size must be at least two bytes
 		if (size < 2)
@@ -153,7 +153,7 @@ ZMPCommand* SZMPManager::lookup(const std::string& name)
 {
 	// search list - easy enough
 	for (ZMPCommandList::iterator i = commands.begin(); i != commands.end(); ++i) {
-		if (i->wild && str_eq(i->name, name, i->name.size()))
+		if (i->wild && strEq(i->name, name, i->name.size()))
 			return &(*i);
 		if (!i->wild && i->name == name)
 			return &(*i);
@@ -178,11 +178,11 @@ bool SZMPManager::match(const std::string& pattern)
 	// search for match
 	for (ZMPCommandList::iterator i = commands.begin(); i != commands.end(); ++i) {
 		// package match?
-		if (package && str_eq(i->name, pattern, pattern.size()))
+		if (package && strEq(i->name, pattern, pattern.size()))
 			return true; // found match
 		else if (!package && i->name == pattern)
 			return true; // found match
-		else if (i->wild && str_eq(i->name, pattern, i->name.size()))
+		else if (i->wild && strEq(i->name, pattern, i->name.size()))
 			return true; // found match
 	}
 
@@ -191,7 +191,7 @@ bool SZMPManager::match(const std::string& pattern)
 }
 
 // handle an ZMP command - size is size of chunk, data is chunk
-void TelnetHandler::process_zmp(const char* data, size_t size)
+void TelnetHandler::processZmp(const char* data, size_t size)
 {
 	const size_t argv_size = 20; // argv[] element size
 	std::string argv[argv_size]; // arg list
@@ -200,7 +200,7 @@ void TelnetHandler::process_zmp(const char* data, size_t size)
 	ZMPCommand* command;
 
 	// check the data chunk is valid
-	if (!check_zmp_chunk(size, data))
+	if (!checkZmpChunk(size, data))
 		return;
 
 	// add command to argv
@@ -236,10 +236,10 @@ void TelnetHandler::process_zmp(const char* data, size_t size)
 }
 
 // send an zmp command
-void TelnetHandler::send_zmp(size_t argc, std::string argv[])
+void TelnetHandler::sendZmp(size_t argc, std::string argv[])
 {
 	// check for ZMP support
-	if (!has_zmp())
+	if (!hasZmp())
 		return;
 
 	// must have at least one arg
@@ -258,10 +258,10 @@ void TelnetHandler::send_zmp(size_t argc, std::string argv[])
 }
 
 // add a zmp command (to insert mid-processing, basically for color - YUCJ)
-void TelnetHandler::add_zmp(size_t argc, std::string argv[])
+void TelnetHandler::addZmp(size_t argc, std::string argv[])
 {
 	// check for ZMP support
-	if (!has_zmp())
+	if (!hasZmp())
 		return;
 
 	// must have at least one arg
@@ -269,7 +269,7 @@ void TelnetHandler::add_zmp(size_t argc, std::string argv[])
 		return;
 
 	// clear chunk
-	end_chunk();
+	endChunk();
 
 	// send request start
 	telnet_begin_sb(&telnet, TELNET_TELOPT_ZMP);
@@ -283,10 +283,10 @@ void TelnetHandler::add_zmp(size_t argc, std::string argv[])
 }
 
 // deal with ZMP support/no-support
-void TelnetHandler::zmp_support(const std::string& pkg, bool value)
+void TelnetHandler::zmpSupport(const std::string& pkg, bool value)
 {
 	// color.define?
-	if (str_eq(pkg, "color.define")) {
+	if (strEq(pkg, "color.define")) {
 		io_flags.zmp_color = value;
 
 		// init if true
@@ -296,7 +296,7 @@ void TelnetHandler::zmp_support(const std::string& pkg, bool value)
 				argv[1] = tostr(i);
 				argv[2] = color_type_names[i];
 				argv[3] = color_type_rgb[i];
-				send_zmp(4, argv);
+				sendZmp(4, argv);
 			}
 		}
 	}
@@ -316,7 +316,7 @@ namespace
 		strftime(buffer, sizeof(buffer), "%Y-%m-%d %H:%M:%S", gmtime(&t));
 		buffer[sizeof(buffer) - 1] = 0;
 		std::string response[2] = { "zmp.time", std::string(buffer) };
-		telnet->send_zmp(2, response);
+		telnet->sendZmp(2, response);
 	}
 
 	// handle a zmp.check command
@@ -330,11 +330,11 @@ namespace
 		// have we the argument?
 		if (ZMPManager.match(argv[1])) {
 			argv[0] = "zmp.support";
-			telnet->send_zmp(2, argv);
+			telnet->sendZmp(2, argv);
 			// nope
 		} else {
 			argv[0] = "zmp.no-support";
-			telnet->send_zmp(2, argv);
+			telnet->sendZmp(2, argv);
 		}
 	}
 
@@ -347,7 +347,7 @@ namespace
 			return;
 
 		// tell the user about it
-		telnet->zmp_support(argv[1], true);
+		telnet->zmpSupport(argv[1], true);
 	}
 
 	// handle a zmp.no-support command
@@ -359,7 +359,7 @@ namespace
 			return;
 
 		// tell the user about it
-		telnet->zmp_support(argv[1], false);
+		telnet->zmpSupport(argv[1], false);
 	}
 
 	// handle a zmp.input command
@@ -374,6 +374,6 @@ namespace
 		// FIXME: ugly hack!
 		char buffer[1024];
 		snprintf(buffer, sizeof(buffer), "%s", argv[1].c_str());
-		telnet->process_command(buffer);
+		telnet->processCommand(buffer);
 	}
 }

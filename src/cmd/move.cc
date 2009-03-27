@@ -21,20 +21,20 @@
 void command_north(Creature* ch, std::string argv[])
 {
 	// must be in a room
-	if (!ch->get_room()) {
+	if (!ch->getRoom()) {
 		*ch << "You are not in a room.\n";
 		return;
 	}
 
 	// get portal
-	Portal* portal = ch->get_room()->get_portal_by_dir(PortalDir::NORTH);
+	Portal* portal = ch->getRoom()->getPortalByDir(PortalDir::NORTH);
 	if (!portal) {
 		*ch << "You do not see an portal in that direction.\n";
 		return;
 	}
 
 	// go
-	ch->do_go(portal);
+	ch->doGo(portal);
 }
 
 /* BEGIN COMMAND
@@ -48,20 +48,20 @@ void command_north(Creature* ch, std::string argv[])
 void command_northeast(Creature* ch, std::string argv[])
 {
 	// must be in a room
-	if (!ch->get_room()) {
+	if (!ch->getRoom()) {
 		*ch << "You are not in a room.\n";
 		return;
 	}
 
 	// get portal
-	Portal* portal = ch->get_room()->get_portal_by_dir(PortalDir::NORTHEAST);
+	Portal* portal = ch->getRoom()->getPortalByDir(PortalDir::NORTHEAST);
 	if (!portal) {
 		*ch << "You do not see an portal in that direction.\n";
 		return;
 	}
 
 	// go
-	ch->do_go(portal);
+	ch->doGo(portal);
 }
 
 /* BEGIN COMMAND
@@ -75,20 +75,20 @@ void command_northeast(Creature* ch, std::string argv[])
 void command_east(Creature* ch, std::string argv[])
 {
 	// must be in a room
-	if (!ch->get_room()) {
+	if (!ch->getRoom()) {
 		*ch << "You are not in a room.\n";
 		return;
 	}
 
 	// get portal
-	Portal* portal = ch->get_room()->get_portal_by_dir(PortalDir::EAST);
+	Portal* portal = ch->getRoom()->getPortalByDir(PortalDir::EAST);
 	if (!portal) {
 		*ch << "You do not see an portal in that direction.\n";
 		return;
 	}
 
 	// go
-	ch->do_go(portal);
+	ch->doGo(portal);
 }
 
 /* BEGIN COMMAND
@@ -102,20 +102,20 @@ void command_east(Creature* ch, std::string argv[])
 void command_southeast(Creature* ch, std::string argv[])
 {
 	// must be in a room
-	if (!ch->get_room()) {
+	if (!ch->getRoom()) {
 		*ch << "You are not in a room.\n";
 		return;
 	}
 
 	// get portal
-	Portal* portal = ch->get_room()->get_portal_by_dir(PortalDir::SOUTHEAST);
+	Portal* portal = ch->getRoom()->getPortalByDir(PortalDir::SOUTHEAST);
 	if (!portal) {
 		*ch << "You do not see an portal in that direction.\n";
 		return;
 	}
 
 	// go
-	ch->do_go(portal);
+	ch->doGo(portal);
 }
 
 /* BEGIN COMMAND
@@ -129,20 +129,20 @@ void command_southeast(Creature* ch, std::string argv[])
 void command_south(Creature* ch, std::string argv[])
 {
 	// must be in a room
-	if (!ch->get_room()) {
+	if (!ch->getRoom()) {
 		*ch << "You are not in a room.\n";
 		return;
 	}
 
 	// get portal
-	Portal* portal = ch->get_room()->get_portal_by_dir(PortalDir::SOUTH);
+	Portal* portal = ch->getRoom()->getPortalByDir(PortalDir::SOUTH);
 	if (!portal) {
 		*ch << "You do not see an portal in that direction.\n";
 		return;
 	}
 
 	// go
-	ch->do_go(portal);
+	ch->doGo(portal);
 }
 
 /* BEGIN COMMAND
@@ -156,20 +156,20 @@ void command_south(Creature* ch, std::string argv[])
 void command_southwest(Creature* ch, std::string argv[])
 {
 	// must be in a room
-	if (!ch->get_room()) {
+	if (!ch->getRoom()) {
 		*ch << "You are not in a room.\n";
 		return;
 	}
 
 	// get portal
-	Portal* portal = ch->get_room()->get_portal_by_dir(PortalDir::SOUTHWEST);
+	Portal* portal = ch->getRoom()->getPortalByDir(PortalDir::SOUTHWEST);
 	if (!portal) {
 		*ch << "You do not see an portal in that direction.\n";
 		return;
 	}
 
 	// go
-	ch->do_go(portal);
+	ch->doGo(portal);
 }
 
 /* BEGIN COMMAND
@@ -183,20 +183,20 @@ void command_southwest(Creature* ch, std::string argv[])
 void command_west(Creature* ch, std::string argv[])
 {
 	// must be in a room
-	if (!ch->get_room()) {
+	if (!ch->getRoom()) {
 		*ch << "You are not in a room.\n";
 		return;
 	}
 
 	// get portal
-	Portal* portal = ch->get_room()->get_portal_by_dir(PortalDir::WEST);
+	Portal* portal = ch->getRoom()->getPortalByDir(PortalDir::WEST);
 	if (!portal) {
 		*ch << "You do not see an portal in that direction.\n";
 		return;
 	}
 
 	// go
-	ch->do_go(portal);
+	ch->doGo(portal);
 }
 
 /* BEGIN COMMAND
@@ -210,20 +210,20 @@ void command_west(Creature* ch, std::string argv[])
 void command_northwest(Creature* ch, std::string argv[])
 {
 	// must be in a room
-	if (!ch->get_room()) {
+	if (!ch->getRoom()) {
 		*ch << "You are not in a room.\n";
 		return;
 	}
 
 	// get portal
-	Portal* portal = ch->get_room()->get_portal_by_dir(PortalDir::NORTHWEST);
+	Portal* portal = ch->getRoom()->getPortalByDir(PortalDir::NORTHWEST);
 	if (!portal) {
 		*ch << "You do not see an portal in that direction.\n";
 		return;
 	}
 
 	// go
-	ch->do_go(portal);
+	ch->doGo(portal);
 }
 
 /* BEGIN COMMAND
@@ -236,15 +236,15 @@ void command_northwest(Creature* ch, std::string argv[])
  * END COMMAND */
 void command_climb(Creature* ch, std::string argv[])
 {
-	if (ch->get_pos() != CreaturePosition::STAND) {
-		*ch << "You cannot climb while " << ch->get_pos().get_verbing() << ".\n";
+	if (ch->getPosition() != CreaturePosition::STAND) {
+		*ch << "You cannot climb while " << ch->getPosition().getState() << ".\n";
 		return;
 	}
 
 	Portal* portal;
-	if ((portal = ch->cl_find_portal(argv[0])) != NULL) {
-		if (portal->get_usage() == PortalUsage::CLIMB) {
-			ch->do_go(portal);
+	if ((portal = ch->clFindPortal(argv[0])) != NULL) {
+		if (portal->getUsage() == PortalUsage::CLIMB) {
+			ch->doGo(portal);
 		} else {
 			*ch << "You cannot climb " << StreamName(*portal, DEFINITE) << ".\n";
 		}
@@ -261,15 +261,15 @@ void command_climb(Creature* ch, std::string argv[])
  * END COMMAND */
 void command_crawl(Creature* ch, std::string argv[])
 {
-	if (ch->get_pos() != CreaturePosition::KNEEL && ch->get_pos() != CreaturePosition::SIT) {
-		*ch << "You cannot crawl while " << ch->get_pos().get_verbing() << ".\n";
+	if (ch->getPosition() != CreaturePosition::KNEEL && ch->getPosition() != CreaturePosition::SIT) {
+		*ch << "You cannot crawl while " << ch->getPosition().getState() << ".\n";
 		return;
 	}
 
 	Portal* portal;
-	if ((portal = ch->cl_find_portal(argv[0])) != NULL) {
-		if (portal->get_usage() == PortalUsage::CRAWL) {
-			ch->do_go(portal);
+	if ((portal = ch->clFindPortal(argv[0])) != NULL) {
+		if (portal->getUsage() == PortalUsage::CRAWL) {
+			ch->doGo(portal);
 		} else {
 			*ch << "You cannot crawl on " << StreamName(*portal, DEFINITE) << ".\n";
 		}
@@ -286,15 +286,15 @@ void command_crawl(Creature* ch, std::string argv[])
  * END COMMAND */
 void command_go(Creature* ch, std::string argv[])
 {
-	if (ch->get_pos() != CreaturePosition::STAND) {
-		*ch << "You cannot climb while " << ch->get_pos().get_verbing() << ".\n";
+	if (ch->getPosition() != CreaturePosition::STAND) {
+		*ch << "You cannot climb while " << ch->getPosition().getState() << ".\n";
 		return;
 	}
 
 	Portal* portal;
-	if ((portal = ch->cl_find_portal(argv[0])) != NULL) {
-		if (portal->get_usage() == PortalUsage::WALK) {
-			ch->do_go(portal);
+	if ((portal = ch->clFindPortal(argv[0])) != NULL) {
+		if (portal->getUsage() == PortalUsage::WALK) {
+			ch->doGo(portal);
 		} else {
 			*ch << "You cannot do that with " << StreamName(*portal, DEFINITE) << ".\n";
 		}

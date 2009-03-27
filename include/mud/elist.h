@@ -82,7 +82,7 @@ EList<EntType>::match(const std::string& str, uint index, uint *matches)
 
 	// the loop
 	for (typename vtype::iterator i = vtype::begin(); i != vtype::end(); ++i)
-		if ((*i)->name_match(str))
+		if ((*i)->nameMatch(str))
 			if (++count == index) {
 				value = *i;
 				break;

@@ -15,14 +15,14 @@
 #include "mud/action.h"
 
 // attack command
-void command_attack(Creature* attacker, std::string argv[])
+void commandAttack(Creature* attacker, std::string argv[])
 {
 	// check status
-	if (!attacker->check_alive() || !attacker->check_move() || !attacker->check_rt())
+	if (!attacker->checkAlive() || !attacker->checkMove() || !attacker->checkRound())
 		return;
 
 	// find victim
-	Entity* evictim = attacker->cl_find_any(argv[1]);
+	Entity* evictim = attacker->clFindAny(argv[1]);
 	if (!evictim)
 		return;
 	Creature* victim = CHARACTER(evictim);
@@ -33,9 +33,9 @@ void command_attack(Creature* attacker, std::string argv[])
 
 	// do attack
 	if (argv[0][0] == 'k') // KILL
-		attacker->do_kill(victim);
+		attacker->doKill(victim);
 	else // ATTACK
-		attacker->do_attack(victim);
+		attacker->doAttack(victim);
 }
 
 class ActionAttackCreature : public IAction
@@ -43,14 +43,14 @@ class ActionAttackCreature : public IAction
 public:
 	ActionAttackCreature(Creature* s_ch, Creature* s_victim, bool s_repeat) : IAction(s_ch), victim(s_victim), rounds(5), repeat(s_repeat) {}
 
-	virtual uint get_rounds() const { return rounds; }
+	virtual uint getRounds() const { return rounds; }
 	virtual void describe(const StreamControl& stream) const { stream << "attacking " << StreamName(victim, INDEFINITE); }
 
 	virtual int start() {
-		Creature* attacker = get_actor();
+		Creature* attacker = getActor();
 
 		// checks
-		if (!attacker->check_move())
+		if (!attacker->checkMove())
 			return 1;
 
 		// attacking self?  haha
@@ -66,7 +66,7 @@ public:
 		}
 
 		// safe room?
-		if (attacker->get_room() && attacker->get_room()->is_safe()) {
+		if (attacker->getRoom() && attacker->getRoom()->isSafe()) {
 			*attacker << "This room is combat free.\n";
 			return -1;
 		}
@@ -75,7 +75,7 @@ public:
 		rounds = 0;
 
 		// base skills
-		int dodge_skill = victim->get_combat_dodge();
+		int dodge_skill = victim->getCombatDodge();
 		int defend_strength = dodge_skill +  10; // FIXME
 
 		int attack_skill = 5; // FIXME
@@ -88,15 +88,15 @@ public:
 
 		// loop thru held objects (looking for weapons)
 		Object* weapon;
-		for (uint wi = 0; (weapon = attacker->get_held_at(wi)) != NULL; ++wi) {
+		for (uint wi = 0; (weapon = attacker->getHeldAt(wi)) != NULL; ++wi) {
 			// is a weapon - calculate stuff:
 			// speed: (weight in kilograms) * 2 = (weight / 100) * 2 = weight / 50
-			int attack_speed = weapon->get_weight() / 50;
+			int attack_speed = weapon->getWeight() / 50;
 			if (attack_speed < 3)
 				attack_speed = 3;
 
 			// roll
-			int attack_roll = roll_dice(2, 10);
+			int attack_roll = Random::roll(2, 10);
 
 			// roll for damage
 			int damage = attack_roll * 2; // FIXME
@@ -112,7 +112,7 @@ public:
 				*victim << StreamName(attacker, DEFINITE, true) << " hit YOU with " << StreamName(weapon, INDEFINITE) << "!\n";
 
 				// message to room
-				*attacker->get_room() << StreamIgnore(attacker) << StreamIgnore(victim) << StreamName(attacker, DEFINITE, true) << " hit " << StreamName(victim, DEFINITE) << " with " << StreamName(weapon, INDEFINITE) << "!\n";
+				*attacker->getRoom() << StreamIgnore(attacker) << StreamIgnore(victim) << StreamName(attacker, DEFINITE, true) << " hit " << StreamName(victim, DEFINITE) << " with " << StreamName(weapon, INDEFINITE) << "!\n";
 
 				// accounting
 				total_damage += damage;
@@ -126,15 +126,15 @@ public:
 				*victim << StreamName(attacker, DEFINITE, true) << " attacks YOU with " << StreamName(weapon, INDEFINITE) << ", but missed!\n";
 
 				// message to room
-				*attacker->get_room() << StreamIgnore(attacker) << StreamIgnore(victim) << StreamName(attacker, DEFINITE, true) << " attacks " << StreamName(victim, DEFINITE) << " with " << StreamName(weapon, INDEFINITE) << ", but misses!\n";
+				*attacker->getRoom() << StreamIgnore(attacker) << StreamIgnore(victim) << StreamName(attacker, DEFINITE, true) << " attacks " << StreamName(victim, DEFINITE) << " with " << StreamName(weapon, INDEFINITE) << ", but misses!\n";
 			}
 
 			// combat info
-			*attacker->get_room() << "  Atk:" << attack_strength << " + 2d10:" << attack_roll << " VS Def:" << defend_strength << " = " << attack_strength + attack_roll << " VS " << defend_strength;
+			*attacker->getRoom() << "  Atk:" << attack_strength << " + 2d10:" << attack_roll << " VS Def:" << defend_strength << " = " << attack_strength + attack_roll << " VS " << defend_strength;
 			if (attack_roll + attack_strength >= defend_strength)
-				*attacker->get_room() << " = HIT, Dmg:" << damage << "\n";
+				*attacker->getRoom() << " = HIT, Dmg:" << damage << "\n";
 			else
-				*attacker->get_room() << " = MISS\n";
+				*attacker->getRoom() << " = MISS\n";
 
 			// FIXME EVENT
 
@@ -143,7 +143,7 @@ public:
 			rounds += attack_speed;
 
 			// dead?  quit
-			if (victim->is_dead())
+			if (victim->isDead())
 				break;
 		}
 
@@ -170,8 +170,8 @@ public:
 
 	virtual void finish() {
 		// re-attack if repeat is on
-		if (repeat && !victim->is_dead() && victim->get_room() == get_actor()->get_room())
-			get_actor()->add_action(this);
+		if (repeat && !victim->isDead() && victim->getRoom() == getActor()->getRoom())
+			getActor()->addAction(this);
 	}
 
 private:
@@ -181,35 +181,35 @@ private:
 };
 
 // attack a creature
-void Creature::do_attack(Creature* victim)
+void Creature::doAttack(Creature* victim)
 {
 	// no NULL
 	assert(victim != NULL);
 
-	add_action(new ActionAttackCreature(this, victim, false));
+	addAction(new ActionAttackCreature(this, victim, false));
 }
 
 // attack a creature until dead
-void Creature::do_kill(Creature* victim)
+void Creature::doKill(Creature* victim)
 {
 	// no NULL
 	assert(victim != NULL);
 
-	add_action(new ActionAttackCreature(this, victim, true));
+	addAction(new ActionAttackCreature(this, victim, true));
 }
 
 // handle player combat abilities
-uint Player::get_combat_dodge() const
+uint Player::getCombatDodge() const
 {
 	return 10; // FIXME
 }
 
-uint Player::get_combat_attack() const
+uint Player::getCombatAttack() const
 {
 	return 10; // FIXME
 }
 
-uint Player::get_combat_damage() const
+uint Player::getCombatDamage() const
 {
 	return 10; // FIXME
 }

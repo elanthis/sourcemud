@@ -78,7 +78,7 @@ int IPDenyList::remove(const std::string& line)
 	NetAddr addr;
 	uint mask;
 
-	if (Network::parse_addr(line.c_str(), &addr, &mask))
+	if (Network::parseAddr(line.c_str(), &addr, &mask))
 		return -1;
 
 	for (std::vector<IPDeny>::iterator i = denylist.begin(); i != denylist.end(); ++i)
@@ -95,7 +95,7 @@ int IPDenyList::add(const std::string& line)
 	NetAddr addr;
 	uint mask;
 
-	if (Network::parse_addr(line.c_str(), &addr, &mask))
+	if (Network::parseAddr(line.c_str(), &addr, &mask))
 		return -1;
 
 	for (uint i = 0; i < denylist.size(); ++i)
@@ -112,7 +112,7 @@ int IPDenyList::add(const std::string& line)
 bool IPDenyList::exists(NetAddr& addr)
 {
 	for (uint i = 0; i < denylist.size(); ++i)
-		if (Network::addrcmp_mask(addr, denylist[i].addr, denylist[i].mask) == 0)
+		if (Network::addrcmpMask(addr, denylist[i].addr, denylist[i].mask) == 0)
 			return true;
 	return false;
 }
@@ -126,14 +126,14 @@ int IPConnList::add(NetAddr& addr)
 	// NOTE: we never limit connections from localhost
 
 	// too many total connections?
-	if (!addr.isLocal() && total_conns >= MSettings.get_max_clients())
+	if (!addr.isLocal() && total_conns >= MSettings.getMaxClients())
 		return -1;
 
 	// find existing connection from host
 	for (std::vector<IPTrack>::iterator i = connections.begin(); i != connections.end(); ++i) {
 		if (!Network::addrcmp(addr, i->addr)) {
 			// too many from this host?
-			if (!addr.isLocal() && i->conns >= MSettings.get_max_per_host())
+			if (!addr.isLocal() && i->conns >= MSettings.getMaxPerHost())
 				return -2;
 
 			// inc, and return OK

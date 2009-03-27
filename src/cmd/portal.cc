@@ -21,9 +21,9 @@
 void command_open(Creature* ch, std::string argv[])
 {
 	Portal* portal;
-	if ((portal = ch->cl_find_portal(argv[0])) != NULL) {
-		if (portal->is_door())
-			ch->do_open(portal);
+	if ((portal = ch->clFindPortal(argv[0])) != NULL) {
+		if (portal->isDoor())
+			ch->doOpen(portal);
 		else
 			*ch << StreamName(portal, DEFINITE, true) << " is not a door.\n";
 	}
@@ -40,9 +40,9 @@ void command_open(Creature* ch, std::string argv[])
 void command_close(Creature* ch, std::string argv[])
 {
 	Portal* portal;
-	if ((portal = ch->cl_find_portal(argv[0])) != NULL) {
-		if (portal->is_door())
-			ch->do_close(portal);
+	if ((portal = ch->clFindPortal(argv[0])) != NULL) {
+		if (portal->isDoor())
+			ch->doClose(portal);
 		else
 			*ch << StreamName(portal, DEFINITE, true) << " is not a door.\n";
 	}
@@ -59,9 +59,9 @@ void command_close(Creature* ch, std::string argv[])
 void command_lock(Creature* ch, std::string argv[])
 {
 	Portal* portal;
-	if ((portal = ch->cl_find_portal(argv[0])) != NULL) {
-		if (portal->is_door())
-			ch->do_lock(portal);
+	if ((portal = ch->clFindPortal(argv[0])) != NULL) {
+		if (portal->isDoor())
+			ch->doLock(portal);
 		else
 			*ch << StreamName(portal, DEFINITE, true) << " is not a door.\n";
 	}
@@ -78,9 +78,9 @@ void command_lock(Creature* ch, std::string argv[])
 void command_unlock(Creature* ch, std::string argv[])
 {
 	Portal* portal;
-	if ((portal = ch->cl_find_portal(argv[0])) != NULL) {
-		if (portal->is_door())
-			ch->do_unlock(portal);
+	if ((portal = ch->clFindPortal(argv[0])) != NULL) {
+		if (portal->isDoor())
+			ch->doUnlock(portal);
 		else
 			*ch << StreamName(portal, DEFINITE, true) << " is not a door.\n";
 	}

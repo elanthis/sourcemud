@@ -20,8 +20,7 @@
 #define SUN_DOWN_HOUR 19
 #define SUN_CHANGE_LENGTH ROUNDS_TO_TICKS(60 * 5)
 
-class
-			GameCalendar
+class GameCalendar
 {
 public:
 	struct Month {
@@ -54,18 +53,17 @@ public:
 
 	GameCalendar() : months(), holidays(), weekdays(), day_text(), night_text(), sunrise_text(), sunset_text() {}
 
-	uint8 get_weekday(const class GameTime &) const;
-	uint16 days_in_month(const class GameTime &) const;
-	std::string get_holiday(const class GameTime &) const;
+	uint8 getWeekday(const class GameTime &) const;
+	uint16 daysInMonth(const class GameTime &) const;
+	std::string getHoliday(const class GameTime &) const;
 
-	int find_month(const std::string& name);
-	int find_weekday(const std::string& name);
+	int findMonth(const std::string& name);
+	int findWeekday(const std::string& name);
 
 	int load();
 };
 
-class
-			GameTime
+class GameTime
 {
 private:
 	uint16 year;
@@ -77,31 +75,31 @@ private:
 public:
 	GameTime() : year(0), day(1), ticks_in_hour(0), month(1), hour(0) {}
 
-	uint get_year() const { return year; }
-	uint set_year(uint val) { year = val; clip_time(); return year; }
-	uint16 get_month() const { return month; }
-	uint16 set_month(uint16 val) { month = val; clip_time(); return month; }
-	uint16 get_day() const { return day; }
-	uint16 set_day(uint16 val) { day = val; clip_time(); return day; }
-	uint8 get_hour() const { return hour; }
-	uint8 set_hour(uint8 val) { hour = val; clip_time(); return hour; }
-	uint16 get_ticks() const { return ticks_in_hour; }
-	uint16 set_ticks(uint16 val) { ticks_in_hour = val; clip_time(); return ticks_in_hour; }
-	uint8 get_minutes() const { return ticks_in_hour * 60 / TICKS_PER_HOUR; }
+	uint getYear() const { return year; }
+	uint setYear(uint val) { year = val; clipTime(); return year; }
+	uint16 getMonth() const { return month; }
+	uint16 setMonth(uint16 val) { month = val; clipTime(); return month; }
+	uint16 getDay() const { return day; }
+	uint16 setDay(uint16 val) { day = val; clipTime(); return day; }
+	uint8 getHour() const { return hour; }
+	uint8 setHour(uint8 val) { hour = val; clipTime(); return hour; }
+	uint16 getTicks() const { return ticks_in_hour; }
+	uint16 setTicks(uint16 val) { ticks_in_hour = val; clipTime(); return ticks_in_hour; }
+	uint8 getMinutes() const { return ticks_in_hour * 60 / TICKS_PER_HOUR; }
 
-	void time_str(char *buf, int len) const;
-	void date_str(char *buf, int len) const;
-	std::string time_str() const;
-	std::string date_str() const;
+	void timeStr(char *buf, int len) const;
+	void dateStr(char *buf, int len) const;
+	std::string timeStr() const;
+	std::string dateStr() const;
 
 	std::string encode() const;
 	int decode(const std::string& time);
 
-	bool is_day() const { return hour >= SUN_UP_HOUR && hour < SUN_DOWN_HOUR; }
-	bool is_night() const { return !is_day(); }
+	bool isDay() const { return hour >= SUN_UP_HOUR && hour < SUN_DOWN_HOUR; }
+	bool isNight() const { return !isDay(); }
 
 	void update(uint);
-	void clip_time();
+	void clipTime();
 
 	int load(File::Reader& reader);
 	void save(File::Writer& writer) const;

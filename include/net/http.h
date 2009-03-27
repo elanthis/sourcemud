@@ -22,30 +22,30 @@ public:
 	HTTPHandler(int s_sock, const NetAddr& s_netaddr);
 
 	// output
-	virtual void stream_put(const char*, size_t len);
-	virtual IStreamSink* get_stream() { return this; }
+	virtual void streamPut(const char*, size_t len);
+	virtual IStreamSink* getStream() { return this; }
 
 	// processing
 	void process();
 	void execute();
 
 	// hard-coded pages
-	void page_index();
-	void page_login();
-	void page_logout();
-	void page_account();
+	void pageIndex();
+	void pageLogin();
+	void pageLogout();
+	void pageAccount();
 
 	// error
-	void http_error(int error);
+	void httpError(int error);
 
 	// get user account
-	Account* get_account() const { return account; }
+	Account* getAccount() const { return account; }
 
 	// low-level IO
 	void disconnect();
-	virtual void sock_input(char* buffer, size_t size);
-	virtual void sock_hangup();
-	virtual void sock_flush();
+	virtual void sockInput(char* buffer, size_t size);
+	virtual void sockHangup();
+	virtual void sockFlush();
 
 	// log a request
 	void log(int status);
@@ -65,7 +65,7 @@ protected:
 
 protected:
 	// parse urlencoded data (GET/POST)
-	void parse_request_data(std::map<std::string, std::string>& map, const char* input) const;
+	void parseRequestData(std::map<std::string, std::string>& map, const char* input) const;
 
 	NetAddr addr;
 
@@ -96,7 +96,7 @@ public:
 	virtual int initialize();
 	virtual void shutdown();
 
-	std::string get_session_key() { return session_key; }
+	std::string getSessionKey() { return session_key; }
 
 private:
 	std::string session_key;

@@ -39,37 +39,37 @@ int Race::load(File::Reader& reader)
 
 	FO_READ_BEGIN
 	FO_ATTR("race", "name")
-	name = node.get_string();
+	name = node.getString();
 	FO_ATTR("race", "adj")
-	adj = node.get_string();
+	adj = node.getString();
 	FO_ATTR("race", "body")
-	body = node.get_string();
+	body = node.getString();
 	FO_ATTR("race", "desc")
-	desc = node.get_string();
+	desc = node.getString();
 	FO_ATTR("race", "about")
-	about = node.get_string();
+	about = node.getString();
 	FO_ATTR("race", "eye_color")
-	eye_colors.push_back(FormColor::create(node.get_string()));
+	eye_colors.push_back(FormColor::create(node.getString()));
 	FO_ATTR("race", "hair_color")
-	hair_colors.push_back(FormColor::create(node.get_string()));
+	hair_colors.push_back(FormColor::create(node.getString()));
 	FO_ATTR("race", "skin_color")
-	skin_colors.push_back(FormColor::create(node.get_string()));
+	skin_colors.push_back(FormColor::create(node.getString()));
 	FO_ATTR("race", "min_age")
-	age_min = node.get_int();
+	age_min = node.getInt();
 	FO_ATTR("race", "max_age")
-	age_max = node.get_int();
+	age_max = node.getInt();
 	FO_ATTR("race", "lifespan")
-	life_span = node.get_int();
+	life_span = node.getInt();
 	FO_ATTR("race", "neuter_height")
-	height[GenderType::NONE] = node.get_int();
+	height[GenderType::NONE] = node.getInt();
 	FO_ATTR("race", "female_height")
-	height[GenderType::FEMALE] = node.get_int();
+	height[GenderType::FEMALE] = node.getInt();
 	FO_ATTR("race", "male_height")
-	height[GenderType::MALE] = node.get_int();
+	height[GenderType::MALE] = node.getInt();
 	FO_ATTR("race", "stat_bonus")
-	CreatureStatID stat = CreatureStatID::lookup(node.get_string(0));
+	CreatureStatID stat = CreatureStatID::lookup(node.getString(0));
 	if (stat)
-		stats[stat.get_value()] = node.get_int(1);
+		stats[stat.getValue()] = node.getInt(1);
 	FO_READ_ERROR
 	return -1;
 	FO_READ_END
@@ -92,9 +92,9 @@ Race* _MRace::get(const std::string& name)
 {
 	Race *race = head;
 	while (race != NULL) {
-		if (str_eq(race->get_name(), name))
+		if (strEq(race->getName(), name))
 			return race;
-		race = race->get_next();
+		race = race->getNext();
 	}
 	return NULL;
 }
@@ -102,7 +102,7 @@ Race* _MRace::get(const std::string& name)
 int _MRace::initialize()
 {
 	File::Reader reader;
-	std::string path = MSettings.get_misc_path() + "/races";
+	std::string path = MSettings.getMiscPath() + "/races";
 
 	if (reader.open(path)) {
 		Log::Error << "Failed to open " << path;
@@ -113,7 +113,7 @@ int _MRace::initialize()
 	FO_READ_BEGIN
 	FO_OBJECT("races", "race")
 	// load race
-	Race *race = new Race(node.get_name(), head);
+	Race *race = new Race(node.getName(), head);
 	if (race->load(reader))
 		return -1;
 	head = race;
@@ -127,7 +127,7 @@ int _MRace::initialize()
 void _MRace::shutdown()
 {
 	while (head != NULL) {
-		Race* r = head->get_next();
+		Race* r = head->getNext();
 		delete head;
 		head = r;
 	}

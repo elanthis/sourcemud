@@ -42,7 +42,7 @@ public:
 	int load();
 	int save() const;
 
-	std::string get_current_desc() const;
+	std::string getCurrentDesc() const;
 
 	void update();
 
@@ -51,7 +51,7 @@ protected:
 	uint state;
 	uint ticks;
 
-	int get_state(const std::string& name) const;
+	int getState(const std::string& name) const;
 };
 
 // manage all regions
@@ -67,7 +67,7 @@ public:
 	inline void update() { region.update(); }
 
 	// get current weather description
-	inline std::string get_current_desc() const { return region.get_current_desc(); }
+	inline std::string getCurrentDesc() const { return region.getCurrentDesc(); }
 
 private:
 	WeatherRegion region;

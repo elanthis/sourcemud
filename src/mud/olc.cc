@@ -33,7 +33,7 @@ enum OLCMode {
 		type* edit = dynamic_cast<type*>(olc_entity); \
 	if (edit != NULL) {
 #define OLC_BEGIN_ATTR(attr_name) \
-	if (olc_mode == OLC_MODE_LIST || prefix_match(#attr_name, olc_attr)) { \
+	if (olc_mode == OLC_MODE_LIST || prefixMatch(#attr_name, olc_attr)) { \
 		const char* attr = #attr_name; \
 		olc_ok = true; \
 		if (0) {
@@ -64,24 +64,24 @@ namespace OLC
 {
 	// lookup entity
 	bool
-	lookup_editable(Player* builder, const std::string& tname, const std::string& name, Entity*& entity)
+	lookupEditable(Player* builder, const std::string& tname, const std::string& name, Entity*& entity)
 	{
 		// init
 		entity = NULL;
 		enum { tNone, tPlayer, tCreature, tNPC, tObject, tRoom, tPortal, tZone } type = tNone;
 
 		// is name comprised of 'room' or 'zone' or whatever?
-		if (str_eq(tname, "room"))
+		if (strEq(tname, "room"))
 			type = tRoom;
-		else if (str_eq(tname, "zone"))
+		else if (strEq(tname, "zone"))
 			type = tZone;
-		else if (str_eq(tname, "player"))
+		else if (strEq(tname, "player"))
 			type = tPlayer;
-		else if (str_eq(tname, "npc"))
+		else if (strEq(tname, "npc"))
 			type = tNPC;
-		else if (str_eq(tname, "portal"))
+		else if (strEq(tname, "portal"))
 			type = tPortal;
-		else if (str_eq(tname, "object"))
+		else if (strEq(tname, "object"))
 			type = tObject;
 
 		if (type != tRoom && type != tZone) {
@@ -91,7 +91,7 @@ namespace OLC
 
 		// find creature?
 		if (type == tNone || type == tCreature) {
-			Creature* creature = builder->cl_find_creature(name, true);
+			Creature* creature = builder->clFindCreature(name, true);
 			if (creature != NULL) {
 				entity = creature;
 				return true;
@@ -99,7 +99,7 @@ namespace OLC
 		}
 		// limit to NPCs?
 		if (type == tNPC) {
-			Creature* creature = builder->cl_find_creature(name);
+			Creature* creature = builder->clFindCreature(name);
 			if (NPC(creature)) {
 				entity = creature;
 				return true;
@@ -122,7 +122,7 @@ namespace OLC
 
 		// find object?
 		if (type == tNone || type == tObject) {
-			Object* object = builder->cl_find_object(name, GOC_ANY, true);
+			Object* object = builder->clFindObject(name, GOC_ANY, true);
 			if (object != NULL) {
 				entity = object;
 				return true;
@@ -131,19 +131,19 @@ namespace OLC
 
 		// find portal?
 		if (type == tNone) {
-			Portal* portal = builder->cl_find_portal(name, true);
+			Portal* portal = builder->clFindPortal(name, true);
 			if (portal != NULL) {
 				entity = portal;
 				return true;
 			}
 		}
 		if (type == tPortal) {
-			Room* room = builder->get_room();
+			Room* room = builder->getRoom();
 			if (!room) {
 				*builder << "You are not in a room.\n";
 				return false;
 			}
-			Portal* portal = builder->cl_find_portal(name, true);
+			Portal* portal = builder->clFindPortal(name, true);
 			if (portal == NULL) {
 				*builder << "Cannot find portal '" << name << "'.\n";
 				return false;
@@ -156,9 +156,9 @@ namespace OLC
 		if (type == tRoom) {
 			Room* room = NULL;
 			if (!name.empty())
-				room = MZone.get_room(name);
+				room = MZone.getRoom(name);
 			else
-				room = builder->get_room();
+				room = builder->getRoom();
 			if (room != NULL) {
 				entity = room;
 				return true;
@@ -173,9 +173,9 @@ namespace OLC
 		if (type == tZone) {
 			Zone* zone = NULL;
 			if (!name.empty())
-				zone = MZone.get_zone(name);
+				zone = MZone.getZone(name);
 			else
-				zone = builder->get_room() ? builder->get_room()->get_zone() : NULL;
+				zone = builder->getRoom() ? builder->getRoom()->getZone() : NULL;
 			if (zone != NULL) {
 				entity = zone;
 				return true;
@@ -192,7 +192,7 @@ namespace OLC
 	}
 
 	void
-	do_olc(Player* user, OLCMode olc_mode, Entity* olc_entity, const std::string& olc_attr, const std::string& value)
+	doOlc(Player* user, OLCMode olc_mode, Entity* olc_entity, const std::string& olc_attr, const std::string& value)
 	{
 		bool olc_ok = false;
 
@@ -201,31 +201,31 @@ namespace OLC
 		OLC_BEGIN_TYPE(Entity)
 		OLC_BEGIN_ATTR(name)
 		OLC_GET
-		OLC_DISPLAY(edit->get_name().get_name())
+		OLC_DISPLAY(edit->getName().getFull())
 		OLC_END_ATTR
 		OLC_BEGIN_ATTR(desc)
 		OLC_GET
-		OLC_DISPLAY(edit->get_desc())
+		OLC_DISPLAY(edit->getDesc())
 		OLC_END_ATTR
 		OLC_END_TYPE
 
 		OLC_BEGIN_TYPE(Creature)
 		OLC_BEGIN_ATTR(hp)
 		OLC_GET
-		OLC_DISPLAY(edit->get_hp())
+		OLC_DISPLAY(edit->getHP())
 		OLC_SET
-		edit->set_hp(tolong(value));
+		edit->setHP(tolong(value));
 		OLC_END_ATTR
 		OLC_END_TYPE
 
 		OLC_BEGIN_TYPE(Object)
 		OLC_BEGIN_ATTR(blueprint)
 		OLC_GET
-		OLC_DISPLAY(edit->get_blueprint()->get_id())
+		OLC_DISPLAY(edit->getBlueprint()->getId())
 		OLC_SET
 		ObjectBP* blueprint = MObjectBP.lookup(value);
 		if (blueprint != NULL)
-			edit->set_blueprint(blueprint);
+			edit->setBlueprint(blueprint);
 		else
 			*user << "Blueprint not found.\n";
 		OLC_END_ATTR
@@ -234,11 +234,11 @@ namespace OLC
 		OLC_BEGIN_TYPE(Npc)
 		OLC_BEGIN_ATTR(blueprint)
 		OLC_GET
-		OLC_DISPLAY(edit->get_blueprint()->get_id())
+		OLC_DISPLAY(edit->getBlueprint()->getId())
 		OLC_SET
 		NpcBP* blueprint = MNpcBP.lookup(value);
 		if (blueprint != NULL)
-			edit->set_blueprint(blueprint);
+			edit->setBlueprint(blueprint);
 		else
 			*user << "Blueprint not found.\n";
 		OLC_END_ATTR

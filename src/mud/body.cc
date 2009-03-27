@@ -55,7 +55,7 @@ std::string GenderType::malefemale[GenderType::COUNT] = {
 GenderType GenderType::lookup(const std::string& name)
 {
 	for (uint i = 0; i < COUNT; ++i)
-		if (str_eq(name, names[i]))
+		if (strEq(name, names[i]))
 			return i;
 	return NONE;
 }
@@ -77,12 +77,12 @@ std::string EquipSlot::names[] = {
 EquipSlot EquipSlot::lookup(const std::string& name)
 {
 	for (uint i = 0; i < COUNT; ++i)
-		if (str_eq(name, names[i]))
+		if (strEq(name, names[i]))
 			return i;
 	return NONE;
 }
 
-bool Creature::is_held(Object *obj) const
+bool Creature::isHeld(Object *obj) const
 {
 	assert(obj != NULL);
 
@@ -93,7 +93,7 @@ bool Creature::is_held(Object *obj) const
 	return false;
 }
 
-bool Creature::is_worn(Object *obj) const
+bool Creature::isWorn(Object *obj) const
 {
 	assert(obj != NULL);
 
@@ -107,10 +107,10 @@ bool Creature::is_worn(Object *obj) const
 	return false;
 }
 
-bool Creature::is_equipped(Object *obj) const
+bool Creature::isEquipped(Object *obj) const
 {
 	assert(obj != NULL);
-	return is_held(obj) || is_worn(obj);
+	return isHeld(obj) || isWorn(obj);
 }
 
 int Creature::hold(Object *obj)
@@ -118,12 +118,12 @@ int Creature::hold(Object *obj)
 	assert(obj != NULL);
 
 	if (equipment.right_held == NULL) {
-		obj->set_owner(this);
+		obj->setOwner(this);
 		equipment.right_held = obj;
 		return 0;
 	}
 	if (equipment.left_held == NULL) {
-		obj->set_owner(this);
+		obj->setOwner(this);
 		equipment.left_held = obj;
 		return 1;
 	}
@@ -134,18 +134,18 @@ int Creature::wear(Object *obj)
 {
 	assert(obj != NULL);
 
-	if (equipment.body_worn == NULL && obj->get_equip() == EquipSlot::TORSO) {
-		obj->set_owner(this);
+	if (equipment.body_worn == NULL && obj->getEquip() == EquipSlot::TORSO) {
+		obj->setOwner(this);
 		equipment.body_worn = obj;
 		return 2;
 	}
-	if (equipment.back_worn == NULL && obj->get_equip() == EquipSlot::BACK) {
-		obj->set_owner(this);
+	if (equipment.back_worn == NULL && obj->getEquip() == EquipSlot::BACK) {
+		obj->setOwner(this);
 		equipment.back_worn = obj;
 		return 3;
 	}
-	if (equipment.waist_worn == NULL && obj->get_equip() == EquipSlot::WAIST) {
-		obj->set_owner(this);
+	if (equipment.waist_worn == NULL && obj->getEquip() == EquipSlot::WAIST) {
+		obj->setOwner(this);
 		equipment.waist_worn = obj;
 		return 4;
 	}
@@ -164,7 +164,7 @@ int Creature::equip(Object *obj)
 	return hold(obj);
 }
 
-void Creature::release_object(Object *obj)
+void Creature::releaseObject(Object *obj)
 {
 	assert(obj != NULL);
 
@@ -180,7 +180,7 @@ void Creature::release_object(Object *obj)
 		equipment.waist_worn = NULL;
 }
 
-int Creature::free_hands() const
+int Creature::freeHands() const
 {
 	int hands = 0;
 	if (equipment.right_held == NULL)
@@ -190,7 +190,7 @@ int Creature::free_hands() const
 	return hands;
 }
 
-Object* Creature::get_held_at(uint i) const
+Object* Creature::getHeldAt(uint i) const
 {
 	if (equipment.right_held) {
 		if (!i)
@@ -207,7 +207,7 @@ Object* Creature::get_held_at(uint i) const
 	return NULL;
 }
 
-Object* Creature::get_worn_at(uint i) const
+Object* Creature::getWornAt(uint i) const
 {
 	if (equipment.body_worn) {
 		if (!i)
@@ -228,19 +228,19 @@ Object* Creature::get_worn_at(uint i) const
 	return NULL;
 }
 
-Object* Creature::get_equip_at(uint i) const
+Object* Creature::getEquipAt(uint i) const
 {
 	Object *ret;
-	ret = get_held_at(i);
+	ret = getHeldAt(i);
 	if (ret)
 		return ret;
 	if (equipment.right_held) i --;
 	if (equipment.left_held) i --;
 
-	return get_worn_at(i);
+	return getWornAt(i);
 }
 
-Object* Creature::find_worn(const std::string& name, uint count, uint *matches) const
+Object* Creature::findWorn(const std::string& name, uint count, uint *matches) const
 {
 	assert(count != 0);
 
@@ -248,19 +248,19 @@ Object* Creature::find_worn(const std::string& name, uint count, uint *matches) 
 	if (matches)
 		*matches = 0;
 
-	if (equipment.body_worn != NULL && equipment.body_worn->name_match(name)) {
+	if (equipment.body_worn != NULL && equipment.body_worn->nameMatch(name)) {
 		if (matches)
 			++ *matches;
 		if (--count == 0)
 			return equipment.body_worn;
 	}
-	if (equipment.back_worn != NULL && equipment.back_worn->name_match(name)) {
+	if (equipment.back_worn != NULL && equipment.back_worn->nameMatch(name)) {
 		if (matches)
 			++ *matches;
 		if (--count == 0)
 			return equipment.back_worn;
 	}
-	if (equipment.waist_worn != NULL && equipment.waist_worn->name_match(name)) {
+	if (equipment.waist_worn != NULL && equipment.waist_worn->nameMatch(name)) {
 		if (matches)
 			++ *matches;
 		if (--count == 0)
@@ -270,7 +270,7 @@ Object* Creature::find_worn(const std::string& name, uint count, uint *matches) 
 	return NULL;
 }
 
-Object* Creature::find_held(const std::string& name, uint count, uint *matches) const
+Object* Creature::findHeld(const std::string& name, uint count, uint *matches) const
 {
 	assert(count != 0);
 
@@ -278,14 +278,14 @@ Object* Creature::find_held(const std::string& name, uint count, uint *matches) 
 	if (matches)
 		*matches = 0;
 
-	if (equipment.right_held != NULL && equipment.right_held->name_match(name)) {
+	if (equipment.right_held != NULL && equipment.right_held->nameMatch(name)) {
 		if (matches)
 			++ *matches;
 		if (--count == 0)
 			return equipment.right_held;
 	}
 
-	if (equipment.left_held != NULL && equipment.left_held->name_match(name)) {
+	if (equipment.left_held != NULL && equipment.left_held->nameMatch(name)) {
 		if (matches)
 			++ *matches;
 		if (--count == 0)
@@ -295,13 +295,13 @@ Object* Creature::find_held(const std::string& name, uint count, uint *matches) 
 	return NULL;
 }
 
-Object* Creature::find_equip(const std::string& name, uint count, uint *matches) const
+Object* Creature::findEquip(const std::string& name, uint count, uint *matches) const
 {
 	assert(count != 0);
 	uint held_matches;
 
 	Object *obj;
-	if ((obj = find_held(name, count, &held_matches)) != NULL) {
+	if ((obj = findHeld(name, count, &held_matches)) != NULL) {
 		if (matches)
 			*matches = held_matches;
 		return obj;
@@ -310,7 +310,7 @@ Object* Creature::find_equip(const std::string& name, uint count, uint *matches)
 		count -= held_matches;
 		// if we have a count left
 		if (count) {
-			obj = find_worn(name, count, matches);
+			obj = findWorn(name, count, matches);
 			// total matches
 			if (matches)
 				*matches += held_matches;
@@ -325,48 +325,48 @@ Object* Creature::find_equip(const std::string& name, uint count, uint *matches)
 	return NULL;
 }
 
-void Creature::swap_hands()
+void Creature::swapHands()
 {
 	Object *temp = equipment.right_held;
 	equipment.right_held = equipment.left_held;
 	equipment.left_held = temp;
 }
 
-void Creature::drop_held(Room *r)
+void Creature::dropHeld(Room *r)
 {
 	assert(r != NULL);
 
-	if (equipment.right_held && equipment.right_held->is_dropable()) {
-		r->add_object(equipment.right_held);
+	if (equipment.right_held && equipment.right_held->isDropable()) {
+		r->addObject(equipment.right_held);
 		equipment.right_held = NULL;
 	}
-	if (equipment.left_held && equipment.left_held->is_dropable()) {
-		r->add_object(equipment.left_held);
+	if (equipment.left_held && equipment.left_held->isDropable()) {
+		r->addObject(equipment.left_held);
 		equipment.left_held = NULL;
 	}
 }
 
-void Creature::drop_all(Room *r)
+void Creature::dropAll(Room *r)
 {
 	assert(r != NULL);
 
-	drop_held(r);
+	dropHeld(r);
 
-	if (equipment.body_worn && equipment.body_worn->is_dropable()) {
-		r->add_object(equipment.body_worn);
+	if (equipment.body_worn && equipment.body_worn->isDropable()) {
+		r->addObject(equipment.body_worn);
 		equipment.body_worn = NULL;
 	}
-	if (equipment.back_worn && equipment.back_worn->is_dropable()) {
-		r->add_object(equipment.back_worn);
+	if (equipment.back_worn && equipment.back_worn->isDropable()) {
+		r->addObject(equipment.back_worn);
 		equipment.back_worn = NULL;
 	}
-	if (equipment.waist_worn && equipment.waist_worn->is_dropable()) {
-		r->add_object(equipment.waist_worn);
+	if (equipment.waist_worn && equipment.waist_worn->isDropable()) {
+		r->addObject(equipment.waist_worn);
 		equipment.waist_worn = NULL;
 	}
 }
 
-void Creature::owner_release(Entity* child)
+void Creature::ownerRelease(Entity* child)
 {
 	// we only hold objects
 	Object* obj = OBJECT(child);

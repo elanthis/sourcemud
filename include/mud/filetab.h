@@ -16,9 +16,9 @@ public:
 	TabReader() : in(), filename(), line(0) {}
 	~TabReader() { close(); }
 
-	const std::string get_filename() const { return filename; }
+	const std::string getFilename() const { return filename; }
 	int open(const std::string& file);
-	bool is_open() const { return in; }
+	bool isOpen() const { return in; }
 	void close() { if (in) in.close(); }
 
 	// read in the file
@@ -31,7 +31,7 @@ public:
 	std::string get(size_t line, size_t col) const;
 
 	// get the actual line of a particular entry
-	size_t get_line(size_t line) { return entries[line].first; }
+	size_t getLine(size_t line) { return entries[line].first; }
 
 private:
 	std::ifstream in;

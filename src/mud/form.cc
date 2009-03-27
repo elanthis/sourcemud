@@ -41,7 +41,7 @@ std::string FormHairStyle::names [] = {
 	"short, curly",
 };
 
-std::string FormColor::get_name() const
+std::string FormColor::getName() const
 {
 	if (!valid())
 		return std::string();

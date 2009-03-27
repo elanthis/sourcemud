@@ -87,43 +87,43 @@ public:
 	ObjectBP();
 
 	// blueprint id
-	inline std::string get_id() const { return id; }
+	inline std::string getId() const { return id; }
 	inline bool isAnonymous() const { return id.empty(); }
 
 	// name
-	virtual EntityName get_name() const;
-	bool set_name(const std::string& s_name);
+	virtual EntityName getName() const;
+	bool setName(const std::string& s_name);
 
-	const std::vector<std::string>& get_keywords() const { return keywords; }
+	const std::vector<std::string>& getKeywords() const { return keywords; }
 
 	// description
-	const std::string& get_desc() const { return desc; }
-	void set_desc(const std::string& s_desc) { desc = s_desc; }
+	const std::string& getDesc() const { return desc; }
+	void setDesc(const std::string& s_desc) { desc = s_desc; }
 
 	// weight
-	uint get_weight() const { return weight; }
-	void set_weight(uint s_weight) { weight = s_weight; }
+	uint getWeight() const { return weight; }
+	void setWeight(uint s_weight) { weight = s_weight; }
 
 	// cost
-	uint get_cost() const { return cost; }
-	void set_cost(uint s_cost) { cost = s_cost; }
+	uint getCost() const { return cost; }
+	void setCost(uint s_cost) { cost = s_cost; }
 
 	// container
-	bool has_location(ObjectLocation type) const { return locations.test(type); }
+	bool hasLocation(ObjectLocation type) const { return locations.test(type); }
 
 	// equip location
-	EquipSlot get_equip() const { return equip; }
-	void set_equip(EquipSlot s_equip) { equip = s_equip; }
+	EquipSlot getEquip() const { return equip; }
+	void setEquip(EquipSlot s_equip) { equip = s_equip; }
 
 	// flags
-	bool get_flag(ObjectFlag flag) const { return flags.test(flag); }
-	void set_flag(ObjectFlag flag, bool b) { flags.set(flag, b); }
+	bool getFlag(ObjectFlag flag) const { return flags.test(flag); }
+	void setFlag(ObjectFlag flag, bool b) { flags.set(flag, b); }
 
 	// tags
-	bool has_tag(TagID tag) const;
-	int add_tag(TagID tag);
-	int remove_tag(TagID tag);
-	inline const TagList& get_tags() const { return tags; }
+	bool hasTag(TagID tag) const;
+	int addTag(TagID tag);
+	int removeTag(TagID tag);
+	inline const TagList& getTags() const { return tags; }
 
 	// load
 	int load(File::Reader& reader);
@@ -155,66 +155,66 @@ public:
 	Object(ObjectBP* s_blueprint);
 
 	// factory name
-	virtual const char* factory_type() const { return "object"; }
+	virtual const char* factoryType() const { return "object"; }
 
 	// return ture if we derive from the named blueprint
-	bool is_blueprint(const std::string& blueprint) const;
+	bool isBlueprint(const std::string& blueprint) const;
 
 	// blueprint information
-	virtual ObjectBP* get_blueprint() const { return blueprint; }
-	void set_blueprint(ObjectBP* blueprint);
-	static Object* load_blueprint(const std::string& name);
+	virtual ObjectBP* getBlueprint() const { return blueprint; }
+	void setBlueprint(ObjectBP* blueprint);
+	static Object* loadBlueprint(const std::string& name);
 
 	// name info
-	bool set_name(const std::string&);
-	EntityName get_name() const;
-	bool name_match(const std::string& name) const;
+	bool setName(const std::string&);
+	EntityName getName() const;
+	bool nameMatch(const std::string& name) const;
 
 	// description
-	std::string get_desc() const;
+	std::string getDesc() const;
 
 	// save/load
-	virtual int load_node(File::Reader& reader, File::Node& node);
-	virtual int load_finish();
-	virtual void save_data(File::Writer& writer);
-	virtual void save_hook(File::Writer& writer);
+	virtual int loadNode(File::Reader& reader, File::Node& node);
+	virtual int loadFinish();
+	virtual void saveData(File::Writer& writer);
+	virtual void saveHook(File::Writer& writer);
 
 	// weight
-	inline uint get_weight() const { return calc_weight + get_real_weight(); }
-	uint get_real_weight() const;
+	inline uint getWeight() const { return calc_weight + getRealWeight(); }
+	uint getRealWeight() const;
 
 	// owner tracking - see entity.h
-	virtual inline Entity* get_owner() const { return owner; }
-	virtual void set_owner(Entity* s_owner);
-	virtual void owner_release(Entity* child);
+	virtual inline Entity* getOwner() const { return owner; }
+	virtual void setOwner(Entity* s_owner);
+	virtual void ownerRelease(Entity* child);
 
 	// events
-	virtual void handle_event(const Event& event);
-	virtual void broadcast_event(const Event& event);
+	virtual void handleEvent(const Event& event);
+	virtual void broadcastEvent(const Event& event);
 
 	// returns the room the object is in (tracing through parents) or the
 	// character holding the object (again, tracing through parenst)
-	class Creature* get_holder() const;
-	class Room* get_room() const;
+	class Creature* getHolder() const;
+	class Room* getRoom() const;
 
 	// name color
 	virtual const char* ncolor() const { return CITEM; }
 
 	// for parsing, pull a property based on a char*
-	virtual int macro_property(const class StreamControl& stream, const std::string& method, const MacroList& argv) const;
+	virtual int macroProperty(const class StreamControl& stream, const std::string& method, const MacroList& argv) const;
 
 	// object properties
-	uint get_cost() const;
-	EquipSlot get_equip() const;
+	uint getCost() const;
+	EquipSlot getEquip() const;
 
 	// check flags
-	bool get_flag(ObjectFlag flag) const { return blueprint->get_flag(flag); }
-	bool is_hidden() const { return get_flag(ObjectFlag::HIDDEN); }
-	bool is_touchable() const { return get_flag(ObjectFlag::TOUCH); }
-	bool is_gettable() const { return get_flag(ObjectFlag::GET); }
-	bool is_dropable() const { return get_flag(ObjectFlag::DROP); }
-	bool is_trashable() const { return get_flag(ObjectFlag::TRASH); }
-	bool is_rotting() const { return get_flag(ObjectFlag::ROT); }
+	bool getFlag(ObjectFlag flag) const { return blueprint->getFlag(flag); }
+	bool isHidden() const { return getFlag(ObjectFlag::HIDDEN); }
+	bool isTouchable() const { return getFlag(ObjectFlag::TOUCH); }
+	bool isGettable() const { return getFlag(ObjectFlag::GET); }
+	bool isDropable() const { return getFlag(ObjectFlag::DROP); }
+	bool isTrashable() const { return getFlag(ObjectFlag::TRASH); }
+	bool isRotting() const { return getFlag(ObjectFlag::ROT); }
 
 	// (de)activate children
 	virtual void activate();
@@ -224,11 +224,11 @@ public:
 	void heartbeat();
 
 	// containers
-	bool has_location(ObjectLocation type) const { return blueprint->has_location(type); }
-	bool add_object(Object *sub, ObjectLocation type);
-	void remove_object(Object *sub, ObjectLocation type);
-	Object *find_object(const std::string& name, uint index, ObjectLocation type, uint *matches = NULL) const;
-	void show_contents(class Player *player, ObjectLocation type) const;
+	bool hasLocation(ObjectLocation type) const { return blueprint->hasLocation(type); }
+	bool addObject(Object *sub, ObjectLocation type);
+	void removeObject(Object *sub, ObjectLocation type);
+	Object *findObject(const std::string& name, uint index, ObjectLocation type, uint *matches = NULL) const;
+	void showContents(class Player *player, ObjectLocation type) const;
 
 	// data
 private:
@@ -242,7 +242,7 @@ private:
 	EList<Object> children; // child objects
 
 	// weight tracking
-	void recalc_weight();
+	void recalcWeight();
 
 protected:
 	virtual ~Object();

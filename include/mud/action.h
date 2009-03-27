@@ -15,7 +15,7 @@ class StreamControl;
 
 // A pending action.  All actions should derive from this action.
 // Must provide implementations of:
-//  uint get_rounds() const
+//  uint getRounds() const
 //      - return total rounds of action in seconds
 //  void describe(StreamControl&) const
 //      - describe the action
@@ -37,13 +37,13 @@ public:
 	inline virtual ~IAction() {}
 
 	// returns the character performing the action
-	inline Creature* get_actor() const { return actor; }
+	inline Creature* getActor() const { return actor; }
 
 	// called when the user wishes to cancel; return 1 to abort the cancel
 	inline virtual int cancel() { return 1; }
 
 	// return the total number of rounds the action takes, in seconds
-	virtual uint get_rounds() const = 0;
+	virtual uint getRounds() const = 0;
 
 	// display a description of the action
 	// should be sentence fragment in the current tense:
@@ -71,7 +71,7 @@ public:
 	inline IInstantAction(Creature* s_actor) : IAction(s_actor) {}
 
 	// always zero rounds
-	inline virtual uint get_rounds() const { return 0; }
+	inline virtual uint getRounds() const { return 0; }
 
 	// no description necessary
 	virtual void describe(const StreamControl& stream) const {}

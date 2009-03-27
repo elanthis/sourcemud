@@ -26,7 +26,7 @@
  * END COMMAND */
 void command_affects(Creature* ch, std::string argv[])
 {
-	ch->display_affects(*ch);
+	ch->displayAffects(*ch);
 }
 
 /* BEGIN COMMAND
@@ -36,7 +36,7 @@ void command_affects(Creature* ch, std::string argv[])
  * END COMMAND */
 void command_commands(Player *ply, std::string[])
 {
-	MCommand.show_list(ply);
+	MCommand.showList(ply);
 }
 
 /* BEGIN COMMAND
@@ -50,7 +50,7 @@ void command_commands(Player *ply, std::string[])
 void command_man(Player* player, std::string argv[])
 {
 	StreamControl stream(player);
-	MCommand.show_man(stream, argv[0]);
+	MCommand.showMan(stream, argv[0]);
 }
 
 /* BEGIN COMMAND
@@ -60,7 +60,7 @@ void command_man(Player* player, std::string argv[])
  * END COMMAND */
 void command_server(Player *player, std::string[])
 {
-	*player << "Source MUD V" PACKAGE_VERSION "\nBuild: " __DATE__ " " __TIME__ "\nUptime: " << MUD::get_uptime() << "\n";
+	*player << "Source MUD V" PACKAGE_VERSION "\nBuild: " __DATE__ " " __TIME__ "\nUptime: " << MUD::getUptime() << "\n";
 }
 
 /* BEGIN COMMAND
@@ -70,7 +70,7 @@ void command_server(Player *player, std::string[])
  * END COMMAND */
 void command_skills(Player* player, std::string[])
 {
-	player->display_skills();
+	player->displaySkills();
 }
 
 /* BEGIN COMMAND
@@ -82,13 +82,13 @@ void command_time(Player *player, std::string[])
 {
 	char time_str[40];
 	char date_str[120];
-	MTime.time.time_str(time_str, sizeof(time_str));
-	MTime.time.date_str(date_str, sizeof(date_str));
+	MTime.time.timeStr(time_str, sizeof(time_str));
+	MTime.time.dateStr(date_str, sizeof(date_str));
 	*player << "It is currently " << time_str << " on " << date_str << ".  ";
-	if (MTime.time.is_day())
-		*player << "It is daytime.  The Sun will set in " << (SUN_DOWN_HOUR - MTime.time.get_hour()) << " hours.\n";
+	if (MTime.time.isDay())
+		*player << "It is daytime.  The Sun will set in " << (SUN_DOWN_HOUR - MTime.time.getHour()) << " hours.\n";
 	else
-		*player << "It is nighttime.  The Sun will rise in " << ((MTime.time.get_hour() < SUN_UP_HOUR) ? SUN_UP_HOUR - MTime.time.get_hour() : SUN_UP_HOUR + 24 - MTime.time.get_hour()) << " hours.\n";
+		*player << "It is nighttime.  The Sun will rise in " << ((MTime.time.getHour() < SUN_UP_HOUR) ? SUN_UP_HOUR - MTime.time.getHour() : SUN_UP_HOUR + 24 - MTime.time.getHour()) << " hours.\n";
 }
 
 /* BEGIN COMMAND

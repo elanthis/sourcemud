@@ -17,15 +17,15 @@ class ISocketHandler
 public:
 	virtual ~ISocketHandler() {}
 
-	virtual void sock_flush() = 0;
-	virtual void sock_in_ready() = 0;
-	virtual void sock_out_ready() = 0;
-	virtual void sock_hangup() = 0;
+	virtual void sockFlush() = 0;
+	virtual void sockInReady() = 0;
+	virtual void sockOutReady() = 0;
+	virtual void sockHangup() = 0;
 
-	virtual int sock_get_fd() = 0;
-	virtual bool sock_is_out_waiting() = 0;
-	virtual bool sock_is_disconnect_waiting() = 0;
-	virtual void sock_complete_disconnect() = 0;
+	virtual int sockGetFd() = 0;
+	virtual bool sockIsOutWaiting() = 0;
+	virtual bool sockIsDisconnectWaiting() = 0;
+	virtual void sockCompleteDisconnect() = 0;
 };
 
 class SocketListener : public ISocketHandler
@@ -34,20 +34,20 @@ public:
 	inline SocketListener(int s_sock) : sock(s_sock) {}
 
 	// sub_classes provide sock_in_ready to accept() incoming connections
-	virtual void sock_in_ready() = 0;
+	virtual void sockInReady() = 0;
 
 	int accept(class NetAddr& out) const;
 
 private:
 	// never need be called
-	virtual void sock_flush() {}
-	virtual void sock_out_ready() {}
-	virtual void sock_hangup() {}
+	virtual void sockFlush() {}
+	virtual void sockOutReady() {}
+	virtual void sockHangup() {}
 
-	virtual inline int sock_get_fd() { return sock; }
-	virtual bool sock_is_out_waiting() { return false; }
-	virtual bool sock_is_disconnect_waiting() { return false; }
-	virtual void sock_complete_disconnect() {}
+	virtual inline int sockGetFd() { return sock; }
+	virtual bool sockIsOutWaiting() { return false; }
+	virtual bool sockIsDisconnectWaiting() { return false; }
+	virtual void sockCompleteDisconnect() {}
 
 protected:
 	int sock;
@@ -59,30 +59,30 @@ public:
 	SocketConnection(int s_sock);
 
 	// called with input
-	virtual void sock_input(char* buffer, size_t size) = 0;
+	virtual void sockInput(char* buffer, size_t size) = 0;
 
 	// sub-classes must implement:
-	virtual void sock_flush() = 0;
-	virtual void sock_hangup() = 0;
+	virtual void sockFlush() = 0;
+	virtual void sockHangup() = 0;
 
 	// request close
-	void sock_disconnect();
+	void sockDisconnect();
 
 	// add data to the output buffer
-	void sock_buffer(const char* data, size_t size);
+	void sockBuffer(const char* data, size_t size);
 
 	// stats
-	size_t get_in_bytes() const { return in_bytes; }
-	size_t get_out_bytes() const { return out_bytes; }
+	size_t getInBytes() const { return in_bytes; }
+	size_t getOutBytes() const { return out_bytes; }
 
 private:
 	// internal
-	virtual void sock_in_ready();
-	virtual void sock_out_ready();
-	virtual int sock_get_fd() { return sock; }
-	virtual bool sock_is_out_waiting() { return !output.empty(); }
-	virtual bool sock_is_disconnect_waiting() { return disconnect; }
-	virtual void sock_complete_disconnect();
+	virtual void sockInReady();
+	virtual void sockOutReady();
+	virtual int sockGetFd() { return sock; }
+	virtual bool sockIsOutWaiting() { return !output.empty(); }
+	virtual bool sockIsDisconnectWaiting() { return disconnect; }
+	virtual void sockCompleteDisconnect();
 
 private:
 	std::vector<char> output;

@@ -10,7 +10,7 @@
 
 const std::string Time::RFC_822_FORMAT = "%a, %d %b %Y %H:%M:%S %z";
 
-std::string time_to_str(time_t time)
+std::string timeToStr(time_t time)
 {
 	struct tm tm;
 	char buffer[128];
@@ -20,7 +20,7 @@ std::string time_to_str(time_t time)
 	return std::string(buffer);
 }
 
-time_t str_to_time(const std::string& str)
+time_t strToTime(const std::string& str)
 {
 	struct tm tm;
 	memset(&tm, 0, sizeof(tm));

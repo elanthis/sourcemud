@@ -26,7 +26,7 @@ public:
 	size_t size() const { return strlen(buffer); }
 
 	void write(const char* bytes, size_t len);
-	virtual void stream_put(const char* bytes, size_t len) { write(bytes, len); }
+	virtual void streamPut(const char* bytes, size_t len) { write(bytes, len); }
 	void reset();
 	void clear() { reset(); }
 
@@ -41,7 +41,7 @@ private:
 inline
 const StreamControl& operator << (const StreamControl& stream, StringBuffer& buffer)
 {
-	return stream.stream_put(buffer.str().c_str());
+	return stream.streamPut(buffer.str().c_str());
 }
 
 #endif

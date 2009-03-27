@@ -49,23 +49,23 @@ public:
 	Zone();
 
 	// zone ID
-	std::string get_id() const { return id; }
-	void set_id(const std::string& new_id) { id = new_id; }
+	std::string getId() const { return id; }
+	void setId(const std::string& new_id) { id = new_id; }
 
 	// name information
-	std::string get_name() const { return name; }
-	void set_name(const std::string& s_name) { name = s_name; }
+	std::string getName() const { return name; }
+	void setName(const std::string& s_name) { name = s_name; }
 
 	// find rooms
-	class Room* get_room(const std::string& name) const;
-	class Room* get_room_at(size_t index) const;
-	size_t get_room_count() const;
+	class Room* getRoom(const std::string& name) const;
+	class Room* getRoomAt(size_t index) const;
+	size_t getRoomCount() const;
 
 	// manage rooms
-	void add_room(class Room*);
+	void addRoom(class Room*);
 
 	// events
-	void broadcast_event(const Event& event);
+	void broadcastEvent(const Event& event);
 
 	// load/save
 	int load(const std::string& path);
@@ -105,21 +105,21 @@ public:
 	virtual void save();
 
 	// load the world
-	int load_world();
+	int loadWorld();
 
 	// lookup entries
-	Zone* get_zone(const std::string&);
-	Zone* get_zone_at(size_t index);
-	class Room* get_room(const std::string&);
+	Zone* getZone(const std::string&);
+	Zone* getZoneAt(size_t index);
+	class Room* getRoom(const std::string&);
 
 	// send an announcement to all the rooms in all the zones
 	void announce(const std::string&, AnnounceFlags = ANFL_NONE);
 
 	// add a new zone
-	void add_zone(Zone*);
+	void addZone(Zone*);
 
 	// show all rooms
-	void list_rooms(const class StreamControl& stream);
+	void listRooms(const class StreamControl& stream);
 
 private:
 	typedef std::vector<Zone*> ZoneList;
