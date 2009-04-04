@@ -65,12 +65,12 @@ const StreamControl& text(const StreamControl& stream, const std::string& format
 
 // macro info
 struct StreamMacro {
-	StreamMacro(const std::string& s_text);
-	StreamMacro(const std::string& s_text, const std::string& s_name, MacroValue s_value);
-	StreamMacro(const std::string& s_text, const std::string& s_name1, MacroValue s_value1, const std::string& s_name2, MacroValue s_value2);
-	StreamMacro(const std::string& s_text, const std::string& s_name1, MacroValue s_value1, const std::string& s_name2, MacroValue s_value2, const std::string& s_name3, MacroValue s_value3);
+	StreamMacro(const std::string& s_text) : text(s_text) {}
 
-	StreamMacro& add(const std::string& s_name, MacroValue s_value);
+	StreamMacro& set(const std::string& name, MacroValue value) {
+		argv[name] = value;
+		return *this;
+	}
 
 	friend inline
 	const StreamControl&

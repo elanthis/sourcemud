@@ -212,7 +212,7 @@ Npc* Npc::loadBlueprint(const std::string& name)
 void Npc::displayDesc(const StreamControl& stream)
 {
 	if (!getDesc().empty())
-		stream << StreamMacro(getDesc(), "npc", this); // FIXME: re-enable 'actor'(looker)
+		stream << StreamMacro(getDesc()).set("npc", this); // FIXME: re-enable 'actor'(looker)
 	else
 		stream << StreamName(this, DEFINITE, true) << " doesn't appear very interesting.";
 }

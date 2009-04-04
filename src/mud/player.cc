@@ -297,7 +297,7 @@ int Player::startSession()
 {
 	// login message
 	clearScr();
-	*this << "\n" << StreamMacro(MMessage.get("login"), "player", this) << "\n";
+	*this << "\n" << StreamMacro(MMessage.get("login")).set("player", this) << "\n";
 
 	// not already active?  add to room...
 	if (!isActive()) {
@@ -662,5 +662,5 @@ void Player::clearScr()
 // show player description
 void Player::displayDesc(const StreamControl& stream) const
 {
-	stream << StreamMacro(getRace()->getDesc(), "self", this);
+	stream << StreamMacro(getRace()->getDesc()).set("self", this);
 }

@@ -168,7 +168,7 @@ void Creature::doLook(Object *obj, ObjectLocation type)
 	} else {
 		// generic - description and on or in contents
 		if (!obj->getDesc().empty())
-			*this << StreamMacro(obj->getDesc(), "self", obj, "actor", this) << "  ";
+			*this << StreamMacro(obj->getDesc()).set("self", obj).set("actor", this) << "  ";
 		// on contents?
 		if (obj->hasLocation(ObjectLocation::ON))
 			obj->showContents(PLAYER(this), ObjectLocation::ON);
@@ -190,7 +190,7 @@ void Creature::doLook(Portal *portal)
 
 	// basic description
 	if (!portal->getDesc().empty())
-		*this << StreamMacro(portal->getDesc(), "portal", portal, "actor", this) << "  ";
+		*this << StreamMacro(portal->getDesc()).set("portal", portal).set("actor", this) << "  ";
 	else if (targetRoom == NULL)
 		*this << "There is nothing remarkable about " << StreamName(*portal, DEFINITE) << ".  ";
 

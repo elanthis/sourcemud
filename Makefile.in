@@ -88,7 +88,6 @@ SOURCES = \
 	src/common/log.cc \
 	src/common/md5.cc \
 	src/common/rand.cc \
-	src/common/streams.cc \
 	src/common/strbuf.cc \
 	src/common/strings.cc \
 	src/common/time.cc \

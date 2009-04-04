@@ -134,7 +134,7 @@ bool Entity::nameMatch(const std::string& match) const
 
 void Entity::displayDesc(const StreamControl& stream) const
 {
-	stream << StreamMacro(getDesc(), "self", this);
+	stream << StreamMacro(getDesc()).set("self", this);
 }
 
 void Entity::save(File::Writer& writer, const std::string& ns, const std::string& name)

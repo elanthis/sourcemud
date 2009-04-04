@@ -292,7 +292,7 @@ void Room::show(const StreamControl& stream, Creature* viewer)
 
 	// basic info
 	stream << "[ " << StreamName(*this, NONE, true) << " ]\n";
-	stream << CDESC "  " << StreamMacro(getDesc(), "room", this, "actor", viewer) << CNORMAL;
+	stream << CDESC "  " << StreamMacro(getDesc()).set("room", this).set("actor", viewer) << CNORMAL;
 
 	// we're outdoors - do that stuff
 	if (isOutdoors()) {
