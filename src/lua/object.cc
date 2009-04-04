@@ -18,6 +18,9 @@ namespace Lua
 
 bool Lua::createObject(void* obj, const char* metatable)
 {
+	// this will be our index in the registry
+	lua_pushlightuserdata(Lua::state, obj);
+
 	// create the userdata for the object
 	void** data = (void**)lua_newuserdata(Lua::state, sizeof(void*));
 	*data = obj;
@@ -25,27 +28,19 @@ bool Lua::createObject(void* obj, const char* metatable)
 	// look up the metatable
 	luaL_getmetatable(Lua::state, metatable);
 	if (lua_isnil(Lua::state, -1)) {
-		// remove our user data and our nil
-		lua_pop(Lua::state, 2);
 		Log::Error << "Attempt to create Lua object with unknown "
-		"metatable `" << metatable << "'";
+				"metatable `" << metatable << "'";
+
+		// pop data
+		lua_pop(Lua::state, 3);
 		return false;
 	}
 
 	// set the metatable
 	lua_setmetatable(Lua::state, -2);
 
-	// this will be our index in the registry
-	lua_pushlightuserdata(Lua::state, obj);
-
-	// copy our object userdata
-	lua_pushvalue(Lua::state, -2);
-
 	// store in the registry
 	lua_settable(Lua::state, LUA_REGISTRYINDEX);
-
-	// remove the excess full userdata
-	lua_pop(Lua::state, 1);
 
 	return true;
 }

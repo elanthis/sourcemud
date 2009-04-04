@@ -17,6 +17,7 @@ namespace Lua
 	lua_State* state = NULL;
 
 	extern bool initializePrint();
+	extern bool initializeMisclib();
 	extern bool initializeMudlib();
 	extern bool initializeEntlib();
 }
@@ -40,6 +41,8 @@ bool Lua::initialize()
 
 	// initialize our custom libraries
 	if (!initializePrint())
+		return false;
+	if (!initializeMisclib())
 		return false;
 	if (!initializeMudlib())
 		return false;

@@ -31,26 +31,41 @@ Lua::Exec::Exec(const std::string& funcname) : stack(0), print(NULL)
 
 void Lua::Exec::param(bool v)
 {
-	lua_pushboolean(Lua::state, v);
-	++stack;
+	if (stack != 0) {
+		lua_pushboolean(Lua::state, v);
+		++stack;
+	}
 }
 
 void Lua::Exec::param(double v)
 {
-	lua_pushnumber(Lua::state, v);
-	++stack;
+	if (stack != 0) {
+		lua_pushnumber(Lua::state, v);
+		++stack;
+	}
 }
 
 void Lua::Exec::param(const char* str, size_t len)
 {
-	lua_pushlstring(Lua::state, str, len);
-	++stack;
+	if (stack != 0) {
+		lua_pushlstring(Lua::state, str, len);
+		++stack;
+	}
+}
+
+void Lua::Exec::param(void *object) {
+	if (stack != 0) {
+		Lua::getObject(object);
+		++stack;
+	}
 }
 
 void Lua::Exec::table()
 {
-	lua_newtable(Lua::state);
-	++stack;
+	if (stack != 0) {
+		lua_newtable(Lua::state);
+		++stack;
+	}
 }
 
 void Lua::Exec::setTable(const char* key)
@@ -65,41 +80,46 @@ void Lua::Exec::setTable(const char* key)
 
 bool Lua::Exec::isBoolean()
 {
-	return lua_isboolean(Lua::state, -1);
+	return stack != 0 && lua_isboolean(Lua::state, -1);
 }
 
 bool Lua::Exec::isNumber()
 {
-	return lua_isnumber(Lua::state, -1);
+	return stack != 0 && lua_isnumber(Lua::state, -1);
 }
 
 bool Lua::Exec::isString()
 {
-	return lua_isstring(Lua::state, -1);
+	return stack != 0 && lua_isstring(Lua::state, -1);
 }
 
 bool Lua::Exec::getBoolean()
 {
-	return lua_toboolean(Lua::state, -1);
+	return stack != 0 ? lua_toboolean(Lua::state, -1) : false;
 }
 
 double Lua::Exec::getNumber()
 {
-	return lua_tonumber(Lua::state, -1);
+	return stack != 0 ? lua_tonumber(Lua::state, -1) : 0.0;
 }
 
 std::string Lua::Exec::getString()
 {
-	return lua_tostring(Lua::state, -1);
+	return stack != 0 ? lua_tostring(Lua::state, -1) : std::string();
 }
 
 bool Lua::Exec::run()
 {
+	// no function, nothing to invoke
+	if (stack == 0)
+		return false;
+
 	// set the print handler
 	Lua::setPrint(print);
 
 	// execute the function
-	if (lua_pcall(Lua::state, stack, 1, 0) != 0) {
+	if (lua_pcall(Lua::state, stack - 1, 1, 0) != 0) {
+		Log::Info << "post-run " << lua_gettop(Lua::state) << " " << stack;
 		// remove the error
 		lua_pop(Lua::state, 1);
 		// we have nothing left on the stack
@@ -120,18 +140,21 @@ Lua::ExecHook::ExecHook(const std::string& hookname) : Lua::Exec()
 {
 	// look up hook table
 	lua_getfield(Lua::state, LUA_REGISTRYINDEX, "_hooks");
-	if (lua_isnil(Lua::state, -1)) {
+	if (!lua_isnil(Lua::state, -1)) {
+		// get the hook from the table
+		lua_getfield(Lua::state, -1, hookname.c_str());
+		if (!lua_isnil(Lua::state, -1)) {
+			// remove hook table
+			lua_remove(Lua::state, -2);
+			stack = 1;
+		} else {
+			// clean up table and nil
+			lua_pop(Lua::state, 2);
+		}
+	} else {
+		// clean up table
 		lua_pop(Lua::state, 1);
-		return;
 	}
-
-	// get the hook from the table
-	lua_getfield(Lua::state, -1, hookname.c_str());
-	if (lua_isnil(Lua::state, -1)) {
-		lua_pop(Lua::state, 2);
-		return;
-	}
-	lua_replace(Lua::state, -2);
 }
 
 void Lua::Exec::cleanup()

@@ -96,6 +96,7 @@ SOURCES = \
 	src/lua/core.cc \
 	src/lua/entlib.cc \
 	src/lua/exec.cc \
+	src/lua/misclib.cc \
 	src/lua/mudlib.cc \
 	src/lua/object.cc \
 	src/lua/print.cc \

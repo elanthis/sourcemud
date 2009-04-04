@@ -46,9 +46,9 @@
 #include <string>
 
 #include "common/streams.h"
+#include "lua/object.h"
 
-namespace Lua
-{
+namespace Lua {
 
 // Execution manager
 class Exec
@@ -81,6 +81,9 @@ public:
 	void param(const char* str, size_t len);
 	void param(const char* v) { param(v, strlen(v)); }
 	void param(const std::string& v) { param(v.c_str(), v.size()); }
+
+	// pushes any other object onto the stack
+	void param(void* object);
 
 	// create a table, or set a table element
 	void table();
@@ -133,6 +136,6 @@ public:
 	ExecHook(const std::string& hookname);
 };
 
-}
+} // namespace Lua
 
 #endif
