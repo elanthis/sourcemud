@@ -32,7 +32,7 @@ public:
 	static void register_factory(const IEntityFactory*);
 
 private:
-	typedef std::map<std::string, const IEntityFactory*> FactoryList;
+	typedef std::tr1::unordered_map<std::string, const IEntityFactory*> FactoryList;
 	static FactoryList* factories;
 };
 

@@ -65,7 +65,7 @@ protected:
 
 protected:
 	// parse urlencoded data (GET/POST)
-	void parseRequestData(std::map<std::string, std::string>& map, const char* input) const;
+	void parseRequestData(std::tr1::unordered_map<std::string, std::string>& map, const char* input) const;
 
 	NetAddr addr;
 
@@ -80,10 +80,10 @@ protected:
 	time_t timeout;
 
 	// request data
-	std::map<std::string, std::string> header;
-	std::map<std::string, std::string> get;
-	std::map<std::string, std::string> post;
-	std::map<std::string, std::string> cookie;
+	std::tr1::unordered_map<std::string, std::string> header;
+	std::tr1::unordered_map<std::string, std::string> get;
+	std::tr1::unordered_map<std::string, std::string> post;
+	std::tr1::unordered_map<std::string, std::string> cookie;
 
 	// the session
 	std::string session;

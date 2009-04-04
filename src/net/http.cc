@@ -251,7 +251,7 @@ void HTTPHandler::process()
 	}
 }
 
-void HTTPHandler::parseRequestData(std::map<std::string, std::string>& map, const char* line) const
+void HTTPHandler::parseRequestData(std::tr1::unordered_map<std::string, std::string>& map, const char* line) const
 {
 	// parse the data
 	std::ostringstream value;
@@ -489,7 +489,7 @@ void HTTPHandler::httpError(int error)
 
 const std::string& HTTPHandler::getHeader(const std::string& name) const
 {
-	std::map<std::string, std::string>::const_iterator i = header.find(name);
+	std::tr1::unordered_map<std::string, std::string>::const_iterator i = header.find(name);
 	if (i != header.end())
 		return i->second;
 	static const std::string empty;
@@ -498,7 +498,7 @@ const std::string& HTTPHandler::getHeader(const std::string& name) const
 
 const std::string& HTTPHandler::getCookie(const std::string& name) const
 {
-	std::map<std::string, std::string>::const_iterator i = cookie.find(name);
+	std::tr1::unordered_map<std::string, std::string>::const_iterator i = cookie.find(name);
 	if (i != cookie.end())
 		return i->second;
 	static const std::string empty;
@@ -507,7 +507,7 @@ const std::string& HTTPHandler::getCookie(const std::string& name) const
 
 const std::string& HTTPHandler::getGET(const std::string& name) const
 {
-	std::map<std::string, std::string>::const_iterator i = get.find(name);
+	std::tr1::unordered_map<std::string, std::string>::const_iterator i = get.find(name);
 	if (i != get.end())
 		return i->second;
 	static const std::string empty;
@@ -516,7 +516,7 @@ const std::string& HTTPHandler::getGET(const std::string& name) const
 
 const std::string& HTTPHandler::getPOST(const std::string& name) const
 {
-	std::map<std::string, std::string>::const_iterator i = post.find(name);
+	std::tr1::unordered_map<std::string, std::string>::const_iterator i = post.find(name);
 	if (i != post.end())
 		return i->second;
 	static const std::string empty;
@@ -526,7 +526,7 @@ const std::string& HTTPHandler::getPOST(const std::string& name) const
 const std::string& HTTPHandler::getRequest(const std::string& name) const
 {
 	// searches POST. GET. then cookie
-	std::map<std::string, std::string>::const_iterator i = post.find(name);
+	std::tr1::unordered_map<std::string, std::string>::const_iterator i = post.find(name);
 	if (i != post.end())
 		return i->second;
 	i = get.find(name);

@@ -279,7 +279,7 @@ int _MSettings::loadFile(const std::string& path)
 
 const std::string& _MSettings::getString(const std::string& name)
 {
-	std::map<std::string, SettingInfo*>::const_iterator i = by_name.find(name);
+	std::tr1::unordered_map<std::string, SettingInfo*>::const_iterator i = by_name.find(name);
 	if (i != by_name.end() && i->second->val_string)
 		return *i->second->val_string;
 	static const std::string empty;
@@ -288,7 +288,7 @@ const std::string& _MSettings::getString(const std::string& name)
 
 int _MSettings::getInt(const std::string& name)
 {
-	std::map<std::string, SettingInfo*>::const_iterator i = by_name.find(name);
+	std::tr1::unordered_map<std::string, SettingInfo*>::const_iterator i = by_name.find(name);
 	if (i != by_name.end() && i->second->val_int)
 		return *i->second->val_int;
 	return 0;
@@ -296,7 +296,7 @@ int _MSettings::getInt(const std::string& name)
 
 bool _MSettings::getBool(const std::string& name)
 {
-	std::map<std::string, SettingInfo*>::const_iterator i = by_name.find(name);
+	std::tr1::unordered_map<std::string, SettingInfo*>::const_iterator i = by_name.find(name);
 	if (i != by_name.end() && i->second->val_bool)
 		return *i->second->val_bool;
 	return false;

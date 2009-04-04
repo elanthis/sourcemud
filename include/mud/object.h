@@ -250,7 +250,7 @@ protected:
 
 class _MObjectBP : public IManager
 {
-	typedef std::map<std::string, ObjectBP*> BlueprintMap;
+	typedef std::tr1::unordered_map<std::string, ObjectBP*> BlueprintMap;
 
 public:
 	int initialize();

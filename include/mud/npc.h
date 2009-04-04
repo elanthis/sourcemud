@@ -184,7 +184,7 @@ revroomtag:
 
 class _MNpcBP : public IManager
 {
-	typedef std::map<std::string, NpcBP*> BlueprintMap;
+	typedef std::tr1::unordered_map<std::string, NpcBP*> BlueprintMap;
 
 public:
 	int initialize();

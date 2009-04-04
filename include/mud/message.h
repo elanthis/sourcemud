@@ -20,7 +20,7 @@ public:
 	std::string get(const std::string& id);
 
 private:
-	typedef std::map<std::string, std::string> MessageMap;
+	typedef std::tr1::unordered_map<std::string, std::string> MessageMap;
 	MessageMap messages;
 };
 extern _MMessage MMessage;

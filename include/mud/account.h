@@ -126,7 +126,7 @@ public:
 	bool exists(const std::string& name);  // account already exists
 
 private:
-	typedef std::map<std::string, std::tr1::shared_ptr<Account> > AccountList;
+	typedef std::tr1::unordered_map<std::string, std::tr1::shared_ptr<Account> > AccountList;
 	AccountList accounts;
 
 	friend class Account;

@@ -74,7 +74,7 @@ public:
 	SETTING_BOOL(BackupZones, backup_zones)
 
 private:
-	std::map<std::string, SettingInfo*> by_name;
+	std::tr1::unordered_map<std::string, SettingInfo*> by_name;
 };
 
 extern _MSettings MSettings;

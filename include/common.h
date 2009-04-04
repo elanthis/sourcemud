@@ -21,6 +21,7 @@
 
 // C++ TR1
 #include <tr1/memory>
+#include <tr1/unordered_map>
 
 // C++ ANSI C Wrappers
 #include <cassert>

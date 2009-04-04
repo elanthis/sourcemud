@@ -140,7 +140,7 @@ std::string& File::normalize(std::string& path)
 const std::string& File::getMimeType(const std::string& path)
 {
 	// mime types mapping
-	static std::map<std::string, std::string> mime_map;
+	static std::tr1::unordered_map<std::string, std::string> mime_map;
 	static std::string mime_unknown = "unknown";
 	if (mime_map.empty()) {
 		mime_map["txt"] = "text/plain";
@@ -162,7 +162,7 @@ const std::string& File::getMimeType(const std::string& path)
 	std::string ext = strlower(path.substr(esep + 1));
 
 	// find the extension in the map, or return unknown if not found
-	std::map<std::string, std::string>::iterator i = mime_map.find(ext);
+	std::tr1::unordered_map<std::string, std::string>::iterator i = mime_map.find(ext);
 	if (i != mime_map.end())
 		return i->second;
 	else
