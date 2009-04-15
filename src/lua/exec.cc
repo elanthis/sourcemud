@@ -14,11 +14,6 @@
 #include "lib/lua51/lauxlib.h"
 #include "lib/lua51/lualib.h"
 
-namespace Lua
-{
-	extern lua_State* state;
-}
-
 Lua::Exec::Exec(const std::string& funcname) : stack(0), print(NULL)
 {
 	// look up the function

@@ -5,3 +5,6 @@
 
 -- Initialize HTTP handler
 dofile 'scripts/http.lua'
+
+-- Macro routines
+dofile 'scripts/macro.lua'

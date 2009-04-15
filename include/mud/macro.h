@@ -15,8 +15,7 @@ class MacroValue;
 typedef std::map<std::string, MacroValue> MacroArgs;
 typedef std::vector<MacroValue> MacroList;
 
-class IMacroObject
-{
+class IMacroObject {
 public:
 	virtual ~IMacroObject() {}
 
@@ -27,8 +26,7 @@ public:
 	virtual void macroDefault(const class StreamControl& stream) const = 0;
 };
 
-class MacroValue
-{
+class MacroValue {
 public:
 	enum Type { T_OBJECT, T_STRING, T_NULL };
 
@@ -58,9 +56,8 @@ private:
 	std::string string;
 };
 
-namespace macro
-{
-const StreamControl& text(const StreamControl& stream, const std::string& format, const MacroArgs& argv);
+namespace macro {
+	bool text(const StreamControl& stream, const std::string& format, const MacroArgs& argv);
 }
 
 // macro info
@@ -75,7 +72,8 @@ struct StreamMacro {
 	friend inline
 	const StreamControl&
 	operator << (const StreamControl& stream, const StreamMacro& smacro) {
-		return macro::text(stream, smacro.text, smacro.argv);
+		macro::text(stream, smacro.text, smacro.argv);
+		return stream;
 	}
 
 private:

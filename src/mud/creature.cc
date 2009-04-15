@@ -392,16 +392,16 @@ bool Creature::enter(Room *new_room, Portal *old_portal)
 	// did we go thru an portal?
 	if (old_portal) {
 		// "You go..." message
-		*this << StreamMacro(old_portal->getGo()).set("actor", this).set("portal", old_portal) << "\n";
+		*this << StreamMacro(old_portal->getGo()).set("self", this).set("portal", old_portal) << "\n";
 
 		// "So-and-so leaves thru..." message
 		if (old_room)
-			*old_room << StreamIgnore(this) << StreamMacro(old_portal->getLeaves()).set("actor", this).set("portal", old_portal) << "\n";
+			*old_room << StreamIgnore(this) << StreamMacro(old_portal->getLeaves()).set("self", this).set("portal", old_portal) << "\n";
 	}
 
 	// valid portal?
 	if (enter_portal)
-		*new_room << StreamMacro(enter_portal->getEnters()).set("actor", this).set("portal", enter_portal) << "\n";
+		*new_room << StreamMacro(enter_portal->getEnters()).set("self", this).set("portal", enter_portal) << "\n";
 	else
 		*new_room << StreamName(this, INDEFINITE, true) << " arrives.\n";
 
@@ -630,7 +630,7 @@ void Creature::displayEquip(const StreamControl& stream) const
 			if (didshow) {
 				stream << ", ";
 			} else {
-				stream << StreamMacro("  {$self.He} is wearing ").set("self", this);
+				stream << StreamMacro("  {^$self.He} is wearing ").set("self", this);
 				didshow = true;
 			}
 			// do show
@@ -645,7 +645,7 @@ void Creature::displayEquip(const StreamControl& stream) const
 		if (didshow) {
 			stream << " and ";
 		} else {
-			stream << StreamMacro("  {$self.He} is wearing ").set("self", this);
+			stream << StreamMacro("  {^$self.He} is wearing ").set("self", this);
 			didshow = true;
 		}
 		// show it
@@ -666,7 +666,7 @@ void Creature::displayEquip(const StreamControl& stream) const
 			if (didshow) {
 				stream << ", ";
 			} else {
-				stream << StreamMacro("  {$self.He} is holding ").set("self", this);
+				stream << StreamMacro("  {^$self.He} is holding ").set("self", this);
 				didshow = true;
 			}
 			// show
@@ -680,7 +680,7 @@ void Creature::displayEquip(const StreamControl& stream) const
 		if (didshow) {
 			stream << " and ";
 		} else {
-			stream << StreamMacro("  {$self.He} is holding ").set("self", this);
+			stream << StreamMacro("  {^$self.He} is holding ").set("self", this);
 			didshow = true;
 		}
 		// show it
@@ -689,18 +689,18 @@ void Creature::displayEquip(const StreamControl& stream) const
 
 	// dead or position
 	if (isDead())
-		stream << StreamMacro("  {$self.He} is laying on the ground, dead.").set("self", this);
+		stream << StreamMacro("  {^$self.He} is laying on the ground, dead.").set("self", this);
 	else if (getPosition() != CreaturePosition::STAND)
-		stream << StreamMacro("  {$self.He} is {$self.position}.").set("self", this);
+		stream << StreamMacro("  {^$self.He} is {$self.position}.").set("self", this);
 
 	// health
 	if (!isDead() && getMaxHP() > 0) {
 		if (getHP() * 100 / getMaxHP() <= 25)
-			stream << StreamMacro("  {$self.He} appears severely wounded.").set("self", this);
+			stream << StreamMacro("  {^$self.He} appears severely wounded.").set("self", this);
 		else if (getHP() * 100 / getMaxHP() <= 75)
-			stream << StreamMacro("  {$self.He} appears wounded.").set("self", this);
+			stream << StreamMacro("  {^$self.He} appears wounded.").set("self", this);
 		else
-			stream << StreamMacro("  {$self.He} appears to be in good health.").set("self", this);
+			stream << StreamMacro("  {^$self.He} appears to be in good health.").set("self", this);
 	}
 }
 

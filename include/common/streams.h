@@ -14,8 +14,7 @@ class Room;
 class StreamControl;
 
 // base stream type
-class IStreamSink
-{
+class IStreamSink {
 public:
 	virtual ~IStreamSink() {}
 
@@ -25,9 +24,7 @@ public:
 };
 
 // base stream type
-class
-			StreamControl
-{
+class StreamControl {
 public:
 	// create sink
 	inline StreamControl(IStreamSink* sptr) : sink(sptr) { assert(sink != NULL); }
@@ -60,6 +57,19 @@ private:
 	IStreamSink* sink;
 };
 
+// stream control wrapper
+struct StreamWrap : public IStreamSink {
+	StreamWrap(const StreamControl& _sc) : sc(_sc) {}
+	virtual ~StreamWrap() {}
+
+	virtual void streamPut(const char* text, size_t len = 0) { sc.streamPut(text, len); }
+	inline virtual void streamIgnore(class Creature* ch) { sc.streamIgnore(ch); }
+	inline virtual void streamEnd() {}
+
+private:
+	const StreamControl& sc;
+};
+
 // ignore holder
 struct StreamIgnore {
 	explicit StreamIgnore(class Creature* s_ch) : ch(s_ch) {}
@@ -78,6 +88,11 @@ struct StreamChunk {
 
 	friend const StreamControl& operator <<(const StreamControl& stream, const StreamChunk& chunk) {
 		return stream.streamPut(chunk.text, chunk.len);
+	}
+
+	friend std::ostream& operator <<(std::ostream& stream, const StreamChunk& chunk) {
+		stream.write(chunk.text, chunk.len);
+		return stream;
 	}
 
 	const char* text;

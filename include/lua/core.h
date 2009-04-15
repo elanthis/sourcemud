@@ -8,20 +8,23 @@
 #ifndef SOURCEMUD_LUA_CORE_H
 #define SOURCEMUD_LUA_CORE_H
 
-#include <string>
-
+#include "common.h"
 #include "common/imanager.h"
 
-namespace Lua
-{
-// Initialize the Lua subsystem
-bool initialize();
+struct lua_State;
 
-// Close Lua
-void shutdown();
+namespace Lua {
+	// Initialize the Lua subsystem
+	bool initialize();
 
-// Load and execute a script file
-bool runfile(const std::string& path);
+	// Close Lua
+	void shutdown();
+
+	// Load and execute a script file
+	bool runfile(const std::string& path);
+
+	// global stack (ick, but we need it)
+	extern lua_State *state;
 }
 
 #endif

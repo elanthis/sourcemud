@@ -14,7 +14,7 @@
 
 namespace Lua
 {
-	lua_State* state = NULL;
+	lua_State *state = NULL;
 
 	extern bool initializePrint();
 	extern bool initializeMisclib();
@@ -31,13 +31,20 @@ bool Lua::initialize()
 	Log::Info << "Initializing Lua...";
 
 	// initialize the Lua state object
-	if ((state = luaL_newstate()) == NULL) {
+	if ((Lua::state = luaL_newstate()) == NULL) {
 		Log::Error << "luaL_newstate() failed";
 		return false;
 	}
 
 	// load Lua libs
 	luaL_openlibs(state);
+
+	// set some special variables
+	lua_pushstring(state, PACKAGE_VERSION);
+	lua_setglobal(state, "VERSION");
+
+	lua_pushstring(state, __DATE__ " " __TIME__);
+	lua_setglobal(state, "BUILD");
 
 	// initialize our custom libraries
 	if (!initializePrint())

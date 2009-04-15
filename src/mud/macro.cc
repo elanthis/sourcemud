@@ -13,566 +13,522 @@
 #include "mud/gametime.h"
 #include "mud/player.h"
 #include "net/manager.h"
+#include "lua/core.h"
+#include "lua/print.h"
+#include "lib/lua51/lua.h"
+#include "lib/lua51/lauxlib.h"
 
 #define MACRO_MAX_DEPTH 8
 
 #define CHUNK_LEN(start, end) ((end)-(start)+1)
 
-// macro value
-namespace
-{
-	// if statements
-	enum if_state {
-		IF_DONE = 0,	// this if group has already had a true value
-		IF_TRUE,		// this if group is currently in a true value
-		IF_FALSE,		// this group has not yet had a true value
-	};
-	enum if_type {
-		IF_NONE = 0,
-		IF_EQUAL,
-		IF_NOTEQUAL,
-		IF_MATCH,
-		IF_LESSTHAN,
-		IF_LESSTHANOREQUAL,
-		IF_GREATERTHAN,
-		IF_GREATERTHANOREQUAL
-	};
-	enum token_type {
-		TOK_ERROR,
-		TOK_NAME,
-		TOK_STRING,
-		TOK_BEGIN,
-		TOK_END,
-		TOK_IF,
-		TOK_ELIF,
-		TOK_ELSE,
-		TOK_ENDIF,
-		TOK_BANG,
-		TOK_VAR,
-		TOK_EQ,
-		TOK_NEQ,
-		TOK_METHOD
-	};
-
-	typedef std::vector<char> IfStack;
-
-	struct MacroState {
-		IfStack if_stack;
-		const MacroArgs& argv;
-		int disable;
-
-		inline MacroState(const MacroArgs& s_argv) : if_stack(), argv(s_argv), disable(0) {}
-	};
-
-	class MacroIn
-	{
+class MacroParseException {
 	public:
-		MacroIn(const char* s_cur, const char* s_end) : cur(s_cur), end(s_end) {}
+	MacroParseException(const char *_msg) : msg(_msg) {}
 
-		char get() { if (cur == end) return 0; else return *cur++; }
-		char peek() const { if (cur == end) return 0; else return *cur; }
+	const char* msg;
+};
 
-		bool eof() const { return cur == end; }
+// macro value
+class MacroCompiler {
+public:
+	MacroCompiler(const char *_source, size_t _source_len) : source(_source),
+			sptr(source), source_len(_source_len), next_token(TOK_NONE) {}
 
-	protected:
-		const char* cur;
-		const char* end;
+	// macro text
+	bool compile(std::ostream& stream) {
+		try {
+			parseBody(stream, true);
+			return true;
+		} catch (MacroParseException& e) {
+			stream << "print(\"[[error: " << e.msg << "]]\")\n";
+			return false;
+		}
+	}
+
+private:
+	// if statements
+	enum token_type {
+		TOK_NONE, TOK_ERROR, TOK_NAME, TOK_STRING, TOK_TRUE, TOK_FALSE,
+		TOK_NUMBER, TOK_BEGIN, TOK_END, TOK_IF, TOK_ELIF, TOK_ELSE, TOK_ENDIF,
+		TOK_EXPAND, TOK_RAISE, TOK_LPAREN, TOK_RPAREN, TOK_COMMA, TOK_AND,
+		TOK_OR, TOK_NOT, TOK_VAR, TOK_EQ, TOK_NE, TOK_PROPERTY
 	};
 
-	token_type getToken(const char** in, const char* end, StringBuffer& namebuf);
-	void skip(const char** in, const char* end);
-	std::string getArg(MacroArgs& argv, uint index);
-	int invokeMethod(const StreamControl& stream, MacroValue self, const std::string& method, MacroList& argv);
-	int doMacro(const char** in, const char* end, MacroState& state, const StreamControl& stream, int depth, bool if_allowed);
-	int doText(const StreamControl& stream, const std::string& in, MacroState& state, int depth);
-}
+	const char *source;
+	const char *sptr;
+	size_t source_len;
 
-namespace macro
-{
-	int execMacro(const StreamControl& stream, const std::string& macro, MacroList& argv);
-}
+	token_type next_token;
+	std::string token_value;
 
-// function definitions
-namespace
-{
-	// get a token
-	token_type getToken(MacroIn& in, StringBuffer& namebuf)
-	{
-		// clear buffer
-		namebuf.reset();
+	char getc() { if (sptr == source + source_len) return 0; else return *sptr++; }
+	char peekc() const { if (sptr == source + source_len) return 0; else return *sptr; }
+	bool eof() const { return sptr == source + source_len; }
 
+	// format a Lua string safely
+	void printString(std::ostream& stream, const char *string, size_t len) {
+		stream << '\'';
+		for (size_t i = 0; i != len; ++i) {
+			if (string[i] == '\\')
+				stream << "\\\\";
+			else if (string[i] == '\'')
+				stream << "\\'";
+			else if (string[i] == '\n')
+				stream << "\\n";
+			else if (isprint(string[i]))
+				stream << string[i];
+			else {
+				char buf[5];
+				snprintf(buf, sizeof(buf), "\\%03d", (int)string[i]);
+				stream << buf;
+			}
+		}
+		stream << '\'';
+	}
+
+	// getc a token
+	token_type getToken() {
 		// skip whitespace
-		while (!in.eof() && isspace(in.peek()))
-			in.get();
+		while (!eof() && isspace(peekc()))
+			getc();
 
 		// no more tokens - error, expect }
-		if (in.eof()) {
+		if (eof())
 			return TOK_ERROR;
-		}
 
-		char c = in.get();
+		char c = getc();
 
-		// ! is a bang
+		// ! is an eval
 		if (c == '!') {
-			return TOK_BANG;
-			// == is an equals comparison
-		} else if (c == '=' && in.peek() == '=') {
-			in.get(); // consume second =
-			return TOK_EQ;
-			// != is a not-equals comparison
-		} else if (c == '!' && in.peek() == '=') {
-			in.get(); // consume =
-			return TOK_NEQ;
-			// { is a begin
-		} else if (c == '{') {
-			return TOK_BEGIN;
-			// } is an end
+			return TOK_EXPAND;
+		// ^ is a raise
+		} else if (c == '^') {
+			return TOK_RAISE;
+		// parenthesis
+		} else if (c == '(') {
+			return TOK_LPAREN;
+		} else if (c == ')') {
+			return TOK_RPAREN;
+		// } is an end
 		} else if (c == '}') {
 			return TOK_END;
-			// $ is a variable
-		} else if (c == '$') {
-			return TOK_VAR;
-			// . is method syntactic sugar
+		// , separates function args
+		} else if (c == ',') {
+			return TOK_COMMA;
+		// . is for property lookup
 		} else if (c == '.') {
-			return TOK_METHOD;
+			return TOK_PROPERTY;
 
-			// alphanumeric is a name
-		} else if (isalnum(c) || c == '_') {
+		// digits make a number
+		} else if (isdigit(c)) {
+			std::ostringstream numberbuf;
+			numberbuf << c;
+			while (!eof() && (isdigit(peekc()))) {
+				c = getc();
+				numberbuf << c;
+			}
+			token_value = numberbuf.str();
+			return TOK_NUMBER;
+
+		// alphanumeric is a name (or variable if starst with $)
+		} else if (isalpha(c) || c == '_' || c == '$') {
+			std::ostringstream namebuf;
 			namebuf << c;
-			while (!in.eof() && (isalnum(in.peek()) || in.peek() == '-' || in.peek() == '_')) {
-				c = in.get();
+			while (!eof() && (isalnum(peekc()) || peekc() == '-' || peekc() == '_')) {
+				c = getc();
 				namebuf << c;
 			}
-			// if, elif, else, and endif are special
-			if (!strcasecmp(namebuf.c_str(), "if"))
+			token_value = namebuf.str();
+			if (token_value[0] == '$')
+				return TOK_VAR;
+			// keywords
+			if (strcasecmp(token_value.c_str(), "eq") == 0)
+				return TOK_EQ;
+			else if (strcasecmp(token_value.c_str(), "ne") == 0)
+				return TOK_NE;
+			else if (strcasecmp(token_value.c_str(), "and") == 0)
+				return TOK_AND;
+			else if (strcasecmp(token_value.c_str(), "or") == 0)
+				return TOK_OR;
+			else if (strcasecmp(token_value.c_str(), "not") == 0)
+				return TOK_NOT;
+			else if (strcasecmp(token_value.c_str(), "if") == 0)
 				return TOK_IF;
-			else if (!strcasecmp(namebuf.c_str(), "elif"))
+			else if (strcasecmp(token_value.c_str(), "elif") == 0)
 				return TOK_ELIF;
-			else if (!strcasecmp(namebuf.c_str(), "else"))
+			else if (strcasecmp(token_value.c_str(), "else") == 0)
 				return TOK_ELSE;
-			else if (!strcasecmp(namebuf.c_str(), "endif"))
+			else if (strcasecmp(token_value.c_str(), "endif") == 0)
 				return TOK_ENDIF;
+			else if (strcasecmp(token_value.c_str(), "true") == 0)
+				return TOK_TRUE;
+			else if (strcasecmp(token_value.c_str(), "false") == 0)
+				return TOK_FALSE;
 			return TOK_NAME;
 
 			// ' or " is a string
 		} else if (c == '"' || c == '\'') {
+			std::ostringstream stringbuf;
 			// find end of string
-			while (!in.eof() && in.peek() != c)
-				namebuf << in.get();
+			// FIXME: check for backslashes
+			while (!eof() && peekc() != c)
+				stringbuf << getc();
 			// eat quote
-			if (in.peek() == c)
-				in.get();
+			if (peekc() == c)
+				getc();
+			token_value = stringbuf.str();
 			return TOK_STRING;
 		}
 
 		// unknown
-		namebuf << c;
 		return TOK_ERROR;
 	}
 
-	// skip to end of processing
-	void skip(MacroIn& in)
-	{
-		int nest = 0;
-		char quote = 0;
+	// accept a token
+	bool accept(token_type is_token) {
+		if (next_token == TOK_NONE)
+			next_token = getToken();
 
-		// iterate
-		while (!in.eof()) {
-			// in quote?
-			if (quote) {
-				// de-quote?
-				if (in.peek() == quote)
-					quote = 0;
-				// not in quote
-			} else {
-				// nest on {
-				if (in.peek() == '{') {
-					++nest;
-					// ignore \\ sequence
-				} else if (in.peek() == '\\') {
-					in.get(); // eat character
-					// handle quote
-				} else if (in.peek() == '"' || in.peek() == '\'') {
-					quote = in.peek();
-					// un-nest
-				} else if (in.peek() == '}') {
-					if (nest == 0) {
-						in.get(); // consume
+		if (next_token == is_token) {
+			next_token = TOK_NONE;
+			return true;
+		} else
+			return false;
+	}
+
+	// peek at token without removing it
+	bool peek(token_type is_token) {
+		if (next_token == TOK_NONE)
+			next_token = getToken();
+
+		return next_token == is_token;
+	}
+
+	// expect a token
+	void expect(token_type is_token) {
+		if (next_token == TOK_NONE)
+			next_token = getToken();
+
+		if (next_token == is_token)
+			next_token = TOK_NONE;
+		else
+			throw MacroParseException("did not get expected token type");
+	}
+
+	bool acceptBinaryOp(std::ostream& stream) {
+		// == operator
+		if (accept(TOK_EQ)) {
+			stream << " == ";
+			return true;
+
+		// ~= operator
+		} else if (accept(TOK_NE)) {
+			stream << " ~= ";
+			return true;
+	
+		// and operator
+		} else if (accept(TOK_AND)) {
+			stream << " and ";
+			return true;
+
+		// or operator
+		} else if (accept(TOK_OR)) {
+			stream << " or ";
+			return true;
+
+		// not a binary operator
+		} else
+			return false;
+	}
+
+	bool acceptTerminal(std::ostream& stream) {
+		// variable
+		if (accept(TOK_VAR)) {
+			stream << "macro.lookup('" << token_value << "')";
+			return true;
+
+		// boolean literals
+		} else if (accept(TOK_TRUE)) {
+			stream << "true";
+			return true;
+		} else if (accept(TOK_FALSE)) {
+			stream << "false";
+			return true;
+
+		// number literal
+		} else if (accept(TOK_NUMBER)) {
+			stream << token_value;
+			return true;
+
+		// string literal
+		} else if (accept(TOK_STRING)) {
+			printString(stream, token_value.c_str(), token_value.size());
+			return true;
+
+		// unknown token
+		} else
+			return false;
+	}
+
+	void parseArguments(std::ostream& stream) {
+		if (accept(TOK_LPAREN)) {
+			if (!accept(TOK_RPAREN)) {
+				for (;;) {
+					stream << ',';
+					if (!acceptUnary(stream))
+						throw MacroParseException("expected expression in argument list");
+					if (!accept(TOK_COMMA)) {
+						expect(TOK_RPAREN);
 						break;
 					}
-					--nest;
 				}
 			}
-			// consume
-			in.get();
 		}
 	}
 
-	// get an argument as a string
-	std::string getArg(MacroList& argv, uint index)
-	{
-		// bounds check
-		if (index >= argv.size())
-			return std::string();
+	bool acceptPostfix(std::ostream& stream) {
+		// function (with optional arguments)
+		if (accept(TOK_NAME)) {
+			stream << "macro.invoke('" << token_value << '\'';
+			parseArguments(stream);
+			stream << ')';
+			return true;
 
-		// return string (empty if type is not a string)
-		return argv[index].getString();
-	}
-
-	// invoke a method
-	int invokeMethod(const StreamControl& stream, MacroValue self, const std::string& method, MacroList& argv)
-	{
-		// if it's an object, invoke Entity::macroProperty();
-		if (self.isObject()) {
-			return self.getObject()->macroProperty(stream, method, argv);
-		}
-
-		// it's a string, so process it ourself
-		if (self.isString()) {
-			std::string string = self.getString();
-
-			// LENGTH
-			if (strEq(method, "length")) {
-				stream << string.size();
-				return 0;
-			}
-		}
-
-		return -1;
-	}
-
-	// handle a macro
-	int doMacro(MacroIn& in, MacroState& state, const StreamControl& stream, int depth, bool if_allowed)
-	{
-		token_type token;
-		bool is_if = false;
-		bool is_bang = false;
-		MacroValue value;
-		std::string method;
-		StringBuffer buffer;
-		MacroList argv;
-
-		// max depth
-		if (depth > MACRO_MAX_DEPTH) {
-			skip(in);
-			stream << "{error: overflow}";
-			return -1;
-		}
-
-		// grab a token
-		if ((token = getToken(in, buffer)) == TOK_ERROR) {
-			skip(in);
-			stream << "{error: invalid token: " << buffer.c_str() << "}";
-			return -1;
-		}
-
-		// if processing, depth one only
-		if (if_allowed) {
-			// begin new true block
-			if (token == TOK_IF) {
-				state.if_stack.push_back(IF_DONE);
-				is_if = true;
-
-				// if disabled, go no further
-				if (state.disable)
-					return 0;
-				// execute another if
-			} else if (token == TOK_ELIF) {
-				// check we're not empty
-				if (state.if_stack.empty()) {
-					skip(in);
-					stream << "{error: elif without if}";
-					return -1;
-
-					// already had true state - all done
-				} else if (state.if_stack.back() == IF_TRUE || state.if_stack.back() == IF_DONE) {
-					state.if_stack.back() = IF_DONE;
-					skip(in);
-					++state.disable;
-					return 0;
-
-					// we were false, so now we _may_ be true...
-				} else {
-					is_if = true;
-				}
-				// alternate to true state
-			} else if (token == TOK_ELSE) {
-				// chek we're not empty
-				if (state.if_stack.empty()) {
-					skip(in);
-					stream << "{error: else without if}";
-					return -1;
-
-					// already had true state - all done
-				} else if (state.if_stack.back() == IF_TRUE) {
-					state.if_stack.back() = IF_DONE;
-					++state.disable;
-
-					// we were false, so now we are true
-				} else if (state.if_stack.back() == IF_FALSE) {
-					state.if_stack.back() = IF_TRUE;
-					--state.disable;
-				}
-
-				skip(in);
-				return 0;
-				// end if block
-			} else if (token == TOK_ENDIF) {
-				// chek we're not empty
-				if (state.if_stack.empty()) {
-					skip(in);
-					stream << "{error: endif without if}";
-					return -1;
-
-					// just end the if block
-				} else {
-					skip(in);
-				}
-
-				if (state.if_stack.back() == IF_DONE || state.if_stack.back() == IF_FALSE)
-					--state.disable;
-				state.if_stack.pop_back();
-				return 0;
-			}
-
-			// if it was an if, grab another token
-			if (is_if) {
-				if ((token = getToken(in, buffer)) == TOK_ERROR) {
-					skip(in);
-					stream << "{error: invalid token: " << buffer.c_str() << "}";
-					return -1;
-				}
-			}
-		}
-
-		// if we're disable and not in a check, exit now
-		if (state.disable) {
-			skip(in);
-			return 0;
-		}
-
-		// if a bang, mark and grab another token
-		if (token == TOK_BANG) {
-			is_bang = true;
-
-			if ((token = getToken(in, buffer)) == TOK_ERROR) {
-				skip(in);
-				stream << "{error: invalid token: " << buffer.c_str() << "}";
-				return -1;
-			}
-		}
-
-		// if a variable, get name, then another token
-		if (token == TOK_VAR) {
-			// expect a name token
-			if ((token = getToken(in, buffer)) != TOK_NAME) {
-				skip(in);
-				stream << "{error: expected name}";
-				return -1;
-			}
-
-			// get value of variable, error if no such variable
-			value = MacroValue();
-			MacroArgs::const_iterator i = state.argv.find(buffer.str());
-			if (i != state.argv.end())
-				value = i->second;
-
-			// next token
-			if ((token = getToken(in, buffer)) == TOK_ERROR) {
-				skip(in);
-				stream << "{error: invalid token: " << buffer.c_str() << "}";
-				return -1;
-			}
-
-			// eat method token, syntactic sugar
-			if (token == TOK_METHOD) {
-				// next token
-				if ((token = getToken(in, buffer)) == TOK_ERROR) {
-					skip(in);
-					stream << "{error: invalid token: " << buffer.c_str() << "}";
-					return -1;
-				}
-			}
-		}
-
-		// if we have a name, then it's a method
-		if (token == TOK_NAME) {
-			method = buffer.str();
-
-			// next token
-			if ((token = getToken(in, buffer)) == TOK_ERROR) {
-				skip(in);
-				stream << "{error: invalid token: " << buffer.c_str() << "}";
-				return -1;
-			}
-
-			// if we have no method, then we can have no arguments
-		} else if (token != TOK_END) {
-			skip(in);
-			stream << "{error: arguments given to non-function}";
-			return -1;
-		}
-
-		// keep pushing arguments
-		while (token != TOK_END) {
-			// string
-			if (token == TOK_STRING) {
-				argv.push_back(buffer.str());
-				// sub-macro
-			} else if (token == TOK_BEGIN) {
-				if (doMacro(in, state, buffer, depth + 1, false)) {
-					stream << "{error: unknown macro}";
-					return -1;
-				}
-				argv.push_back(buffer.str());
-				// something else
+		// variable (with optional property lookup... with optional arguments)
+		} else if (accept(TOK_VAR)) {
+			std::string var = token_value;
+			if (accept(TOK_PROPERTY)) {
+				expect(TOK_NAME);
+				stream << "macro.property(";
+				printString(stream, var.c_str(), var.size());
+				stream << ',';
+				printString(stream, token_value.c_str(), token_value.size());
+				parseArguments(stream);
+				stream << ')';
 			} else {
-				skip(in);
-				stream << "{error: macro error}";
-				return -1;
+				stream << "macro.lookup(";
+				printString(stream, var.c_str(), var.size());
+				stream << ')';
 			}
-			// another token
-			if ((token = getToken(in, buffer)) == TOK_ERROR) {
-				skip(in);
-				stream << "{error: invalid token: " << buffer.c_str() << "}";
-				return -1;
-			}
-		}
+			return true;
 
-		// have a variable
-		if (!value.isNull()) {
-			// a method?
-			if (!method.empty()) {
-				if (invokeMethod(buffer, value, method, argv)) {
-					stream << "{error: unknown method}";
-					return -1;
-				}
-				// just a value
-			} else {
-				if (value.isString())
-					buffer << value.getString();
-				else if (value.isObject())
-					value.getObject()->macroDefault(buffer);
-			}
-			// just a function?
-		} else if (!method.empty()) {
-			if (macro::execMacro(buffer, method, argv)) {
-				stream << "{error: macro failed}";
-				return -1;
-			}
-		}
+		// get terminal
+		} else
+			return acceptTerminal(stream);
 
-		// upper-case output if method name was upper-cased
-		if (isupper(method[0])) {
-			buffer[0] = toupper(buffer[0]);
-		}
-
-		// execute if statement
-		if (is_if) {
-			if (buffer[0] != 0) {
-				state.if_stack.back() = IF_TRUE;
-			} else {
-				state.if_stack.back() = IF_FALSE;
-				++state.disable;
-			}
-			// or expand bang
-		} else if (is_bang) {
-			MacroState bstate(state.argv);
-			StringBuffer bbuffer;
-			if (doText(bbuffer, buffer.str(), bstate, depth + 1)) {
-				stream << bbuffer;
-				return -1;
-			}
-			stream << bbuffer;
-			// or output text
-		} else {
-			stream << buffer;
-		}
-
-		// done
-		return 0;
+		return true;
 	}
 
-	// macro text
-	int
-	doText(const StreamControl& stream, const std::string& text, MacroState& state, int depth)
-	{
-		// declarations
-		MacroIn in(text.c_str(), text.c_str() + text.size());
+	bool acceptUnary(std::ostream& stream) {
+		// NOT operator
+		if (accept(TOK_NOT)) {
+			stream << "not ";
+			if (!acceptUnary(stream))
+				throw MacroParseException("expected expression after unary operator");
+			return true;
 
-		// iterate over input
-		while (!in.eof()) {
-			char c = in.get();
+		// RAISE operator
+		} else if (accept(TOK_RAISE)) {
+			stream << "macro.raise(";
+			if (!acceptUnary(stream))
+				throw MacroParseException("expected expression after unary operator");
+			stream << ')';
+			return true;
 
-			// backslash escape
-			if (c == '\\') {
-				// get escape operand
-				c = in.get();
+		// sub-expression
+		} else if (accept(TOK_LPAREN)) {
+			stream << '(';
+			if (!acceptUnary(stream))
+				throw MacroParseException("expected expression after unary operator");
+			stream << ')';
+			return true;
 
-				if (!state.disable) {
-					// another backslash
-					if (c == '\\')
-						stream << '\\';
-					// newline
-					else if (c == 'n')
-						stream << '\n';
-					// begin-macro
-					else if (c == '{')
-						stream << '{';
-					// anything else is unsupported, ignore
-				}
+		// just a terminal with no unary operator
+		} else
+			return acceptPostfix(stream);
+	}
 
-				// begin macro macro
-			} else if (c == '{') {
-				doMacro(in, state, stream, depth, true);
-				// just text
-			} else if (!state.disable) {
-				stream << c;
-			}
+	bool acceptExpr(std::ostream& stream) {
+		// start with a unary
+		if (!acceptUnary(stream))
+			return false;
+
+		// so long as we have a binary operator
+		while (acceptBinaryOp(stream)) {
+			if (!acceptUnary(stream))
+				throw MacroParseException("Expected expression after binary operator");
 		}
 
-		return 0;
+		return true;
 	}
-}
+
+	void parseBody(std::ostream& stream, bool top) {
+		const char *lptr = sptr;
+		// look for {
+		while (!eof()) {
+			// possible macro code
+			if (*sptr == '{') {
+				// spit out string so far
+				if (sptr != lptr) {
+					stream << "print(";
+					printString(stream, lptr, sptr - lptr);
+					stream << ")\n";
+				}
+
+				// look to next location; use lptr for source info
+				lptr = ++sptr;
+
+				// hit end of string inside macro
+				if (eof())
+					throw MacroParseException("unexpected end of string after {");
+
+				// if it's another {, it's an escape; set it as the next printable
+				// character and continue
+				if (*sptr == '{') {
+					lptr = sptr;
+					continue;
+				}
+
+				// compile macro
+				try {
+					next_token = TOK_NONE;
+
+					// if statement
+					if (accept(TOK_IF)) {
+						// parse expression
+						stream << "if ";
+						if (!acceptExpr(stream))
+							throw MacroParseException("expected expression after if");
+						expect(TOK_END);
+						stream << " then\n";
+
+						// true-case body
+						parseBody(stream, false);
+
+						// else-ifs?
+						while (accept(TOK_ELIF)) {
+							// parse expression
+							stream << "elseif ";
+							if (!acceptExpr(stream))
+								throw MacroParseException("expected expression after elif");
+							expect(TOK_END);
+							stream << " then\n";
+
+							// true-case body
+							parseBody(stream, false);
+						}
+
+						// else?
+						if (accept(TOK_ELSE)) {
+							expect(TOK_END);
+							stream << "else\n";
+							parseBody(stream, false);
+						}
+
+						// require the endif
+						expect(TOK_ENDIF);
+						stream << "end\n";
+						expect(TOK_END);
+
+					// return to parent on else/elseif/endif
+					} else if (peek(TOK_ELSE) || peek(TOK_ELIF) || peek(TOK_ENDIF)) {
+						if (top)
+							throw MacroParseException("else/elif/endif outside of if");
+						return;
+
+					// expression
+					} else {
+						stream << "print(";
+						if (!acceptExpr(stream))
+							throw MacroParseException("expected expression");
+						expect(TOK_END);
+						stream << ")\n";
+					}
+
+				} catch (MacroParseException& e) {
+					// print if in top of body
+					if (top)
+						stream << "print(\"[[error: " << StreamChunk(lptr, sptr - lptr) << ": " << e.msg << "]]\")\n";
+					else
+						throw e;
+				}
+
+				// set lptr to the current character
+				lptr = sptr;
+			} else
+				++sptr;
+		}
+
+		// spit out remaining bit of string
+		if (sptr != lptr) {
+			stream << "print(";
+			printString(stream, lptr, sptr - lptr);
+			stream << ")\n";
+		}
+
+		// if we hit the EOF and we're not the top-level block, that's an error
+		if (!top)
+			throw MacroParseException("unexpected end of string inside if block");
+	}
+};
 
 // parsing
-namespace macro
-{
+namespace macro {
 	// macro text
-	const StreamControl&
-	text(const StreamControl& stream, const std::string& in, const MacroArgs& argv)
-	{
-		MacroState state(argv);
+	bool text(const StreamControl& stream, const std::string& in, const MacroArgs& argv) {
+		// look up the macro cache
+		lua_getfield(Lua::state, LUA_REGISTRYINDEX, "macro-cache");
+		if (!lua_istable(Lua::state, -1)) {
+			lua_pop(Lua::state, 1);
+			lua_newtable(Lua::state);
+			lua_pushvalue(Lua::state, -1);
+			lua_setfield(Lua::state, LUA_REGISTRYINDEX, "macro-cache");
+		}
 
-		if (doText(stream, in, state, 1))
-			stream << in;
+		// look up the macro in the macro cache
+		lua_getfield(Lua::state, -1, in.c_str());
+		if (!lua_isfunction(Lua::state, -1)) {
+			lua_pop(Lua::state, 1);
 
-		return stream;
+			// create compiler
+			MacroCompiler mc(in.c_str(), in.size());
+
+			// compile macro
+			std::ostringstream source;
+			mc.compile(source);
+			Log::Info << "SCRIPT:\n" << source.str();
+
+			// compile Lua script
+			int rs = luaL_loadstring(Lua::state, source.str().c_str());
+			if (rs != 0) {
+				Log::Error << "Couldn't compile script: " << lua_tostring(Lua::state, -1);
+				lua_pop(Lua::state, 2);
+				return false;
+			}
+
+			// store in cache
+			lua_pushvalue(Lua::state, -1);
+			lua_setfield(Lua::state, -3, in.c_str());
+			lua_remove(Lua::state, -2);
+		}
+
+		// execute the script
+		Lua::setPrint(new StreamWrap(stream));
+		int rs = lua_pcall(Lua::state, 0, 0, 0);
+		Lua::setPrint(NULL);
+		if (rs != 0) {
+			Log::Error << "Couldn't execute script: " << lua_tostring(Lua::state, -1);
+			lua_pop(Lua::state, 1);
+			return false;
+		}
+
+		return true;
 	}
 
-	int execMacro(const StreamControl& stream, const std::string& command, MacroList& argv)
-	{
-		if (strEq(command, "eq")) {
-			if (argv.size() != 2)
-				return -1;
-			std::string s1 = argv[0].getString();
-			std::string s2 = argv[1].getString();
-			stream << (strEq(s1, s2) ? "yes" : "");
-		} else if (strEq(command, "ne")) {
-			if (argv.size() != 2)
-				return -1;
-			std::string s1 = argv[0].getString();
-			std::string s2 = argv[1].getString();
-			stream << (strEq(s1, s2) ? "" : "yes");
-		} else if (strEq(command, "version")) {
-			if (argv.size() != 0)
-				return -1;
-			stream << PACKAGE_VERSION;
-		} else if (strEq(command, "build")) {
-			if (argv.size() != 0)
-				return -1;
-			stream << __DATE__ " " __TIME__;
-		} else if (strEq(command, "uptime")) {
+	int execMacro(const StreamControl& stream, const std::string& command, MacroList& argv) {
+		// FIXME: implement these in scripts/macro.lua
+		if (strEq(command, "uptime")) {
 			if (argv.size() != 0)
 				return -1;
 			stream << MUD::getUptime();
@@ -584,11 +540,6 @@ namespace macro
 			if (argv.size() != 0)
 				return -1;
 			stream << (MTime.time.isNight() ? "night" : "day");
-		} else if (strEq(command, "bold")) {
-			if (argv.size() != 1)
-				return -1;
-			std::string str = argv[0].getString();
-			stream << CBOLD << str << CNORMAL;
 		} else if (strEq(command, "hostname")) {
 			if (argv.size() != 0)
 				return -1;

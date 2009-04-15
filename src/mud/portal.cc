@@ -126,89 +126,89 @@ namespace
 	// When {person} goes {the-portal}
 	const std::string portal_leaves_table[PortalDetail::COUNT][PortalUsage::COUNT] = {
 		{
-			"{$actor.I} heads to {$portal.d}.",
-			"{$actor.I} climbs {$portal.d}.",
-			"{$actor.I} crawls to {$portal.d}."
+			"{^$self.I} heads to {$portal.d}.",
+			"{^$self.I} climbs {$portal.d}.",
+			"{^$self.I} crawls to {$portal.d}."
 		}, {
-			"{$actor.I} goes in {$portal.d}.",
-			"{$actor.I} climbs in {$portal.d}.",
-			"{$actor.I} crawls in {$portal.d}."
+			"{^$self.I} goes in {$portal.d}.",
+			"{^$self.I} climbs in {$portal.d}.",
+			"{^$self.I} crawls in {$portal.d}."
 		}, {
-			"{$actor.I} gets on {$portal.d}.",
-			"{$actor.I} climbs on {$portal.d}.",
-			"{$actor.I} crawls on {$portal.d}."
+			"{^$self.I} gets on {$portal.d}.",
+			"{^$self.I} climbs on {$portal.d}.",
+			"{^$self.I} crawls on {$portal.d}."
 		}, {
-			"{$actor.I} heads over {$portal.d}.",
-			"{$actor.I} climbs over {$portal.d}.",
-			"{$actor.I} crawls over {$portal.d}."
+			"{^$self.I} heads over {$portal.d}.",
+			"{^$self.I} climbs over {$portal.d}.",
+			"{^$self.I} crawls over {$portal.d}."
 		}, {
-			"{$actor.I} goes under {$portal.d}.",
-			"{$actor.I} climbs beneath {$portal.d}.",
-			"{$actor.I} crawls under {$portal.d}."
+			"{^$self.I} goes under {$portal.d}.",
+			"{^$self.I} climbs beneath {$portal.d}.",
+			"{^$self.I} crawls under {$portal.d}."
 		}, {
-			"{$actor.I} heads across {$portal.d}.",
-			"{$actor.I} climbs across {$portal.d}.",
-			"{$actor.I} crawls across {$portal.d}."
+			"{^$self.I} heads across {$portal.d}.",
+			"{^$self.I} climbs across {$portal.d}.",
+			"{^$self.I} crawls across {$portal.d}."
 		}, {
-			"{$actor.I} goes out {$portal.d}.",
-			"{$actor.I} climbs out {$portal.d}.",
-			"{$actor.I} crawls out {$portal.d}."
+			"{^$self.I} goes out {$portal.d}.",
+			"{^$self.I} climbs out {$portal.d}.",
+			"{^$self.I} crawls out {$portal.d}."
 		}, {
-			"{$actor.I} goes up {$portal.d}.",
-			"{$actor.I} climbs up {$portal.d}.",
-			"{$actor.I} crawls up {$portal.d}."
+			"{^$self.I} goes up {$portal.d}.",
+			"{^$self.I} climbs up {$portal.d}.",
+			"{^$self.I} crawls up {$portal.d}."
 		}, {
-			"{$actor.I} goes down {$portal.d}.",
-			"{$actor.I} climbs down {$portal.d}.",
-			"{$actor.I} crawls down {$portal.d}."
+			"{^$self.I} goes down {$portal.d}.",
+			"{^$self.I} climbs down {$portal.d}.",
+			"{^$self.I} crawls down {$portal.d}."
 		}, {
-			"{$actor.I} heads through {$portal.d}.",
-			"{$actor.I} climbs through {$portal.d}.",
-			"{$actor.I} crawls through {$portal.d}."
+			"{^$self.I} heads through {$portal.d}.",
+			"{^$self.I} climbs through {$portal.d}.",
+			"{^$self.I} crawls through {$portal.d}."
 		},
 	};
 	// When {person} enters from {the-portal}
 	const std::string portal_enters_table[PortalDetail::COUNT][PortalUsage::COUNT] = {
 		{
-			"{$actor.I} arrives from {$portal.d}.",
-			"{$actor.I} climbs in from {$portal.d}.",
-			"{$actor.I} crawls in from {$portal.d}."
+			"{^$self.I} arrives from {$portal.d}.",
+			"{^$self.I} climbs in from {$portal.d}.",
+			"{^$self.I} crawls in from {$portal.d}."
 		}, {
-			"{$actor.I} comes out from {$portal.d}.",
-			"{$actor.I} climbs out from {$portal.d}.",
-			"{$actor.I} crawls out from {$portal.d}."
+			"{^$self.I} comes out from {$portal.d}.",
+			"{^$self.I} climbs out from {$portal.d}.",
+			"{^$self.I} crawls out from {$portal.d}."
 		}, {
-			"{$actor.I} gets off {$portal.d}.",
-			"{$actor.I} climbs off {$portal.d}.",
-			"{$actor.I} crawls off {$portal.d}."
+			"{^$self.I} gets off {$portal.d}.",
+			"{^$self.I} climbs off {$portal.d}.",
+			"{^$self.I} crawls off {$portal.d}."
 		}, {
-			"{$actor.I} arrives from over {$portal.d}.",
-			"{$actor.I} climbs over from {$portal.d}.",
-			"{$actor.I} crawls over from {$portal.d}."
+			"{^$self.I} arrives from over {$portal.d}.",
+			"{^$self.I} climbs over from {$portal.d}.",
+			"{^$self.I} crawls over from {$portal.d}."
 		}, {
-			"{$actor.I} comes from under {$portal.d}.",
-			"{$actor.I} climbs from beneath {$portal.d}.",
-			"{$actor.I} crawls from under {$portal.d}."
+			"{^$self.I} comes from under {$portal.d}.",
+			"{^$self.I} climbs from beneath {$portal.d}.",
+			"{^$self.I} crawls from under {$portal.d}."
 		}, {
-			"{$actor.I} arrives from across {$portal.d}.",
-			"{$actor.I} climbs from across {$portal.d}.",
-			"{$actor.I} crawls from across {$portal.d}."
+			"{^$self.I} arrives from across {$portal.d}.",
+			"{^$self.I} climbs from across {$portal.d}.",
+			"{^$self.I} crawls from across {$portal.d}."
 		}, {
-			"{$actor.I} comes in from {$portal.d}.",
-			"{$actor.I} climbs in from {$portal.d}.",
-			"{$actor.I} crawls in from {$portal.d}."
+			"{^$self.I} comes in from {$portal.d}.",
+			"{^$self.I} climbs in from {$portal.d}.",
+			"{^$self.I} crawls in from {$portal.d}."
 		}, {
-			"{$actor.I} comes down from {$portal.d}.",
-			"{$actor.I} climbs down {$portal.d}.",
-			"{$actor.I} crawls down {$portal.d}."
+			"{^$self.I} comes down from {$portal.d}.",
+			"{^$self.I} climbs down {$portal.d}.",
+			"{^$self.I} crawls down {$portal.d}."
 		}, {
-			"{$actor.I} comes up {$portal.d}.",
-			"{$actor.I} climbs up {$portal.d}.",
-			"{$actor.I} crawls up {$portal.d}."
+			"{^$self.I} comes up {$portal.d}.",
+			"{^$self.I} climbs up {$portal.d}.",
+			"{^$self.I} crawls up {$portal.d}."
 		}, {
-			"{$actor.I} comes through {$portal.d}.",
-			"{$actor.I} climbs through from {$portal.d}.",
-			"{$actor.I} crawls from through {$portal.d}."
+			"{^$self.I} comes through {$portal.d}.",
+			"{^$self.I} climbs through from {$portal.d}.",
+			"{^$self.I} crawls from through {$portal.d}."
 		},
 	};
 }

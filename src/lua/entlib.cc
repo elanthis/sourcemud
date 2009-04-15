@@ -54,17 +54,13 @@ int getName(lua_State* s)
 } // anonymous
 
 namespace Lua {
+	bool initializeEntlib()
+	{
+		// create the Entity metatable
+		luaL_newmetatable(Lua::state, "Entity");
+		luaL_register(Lua::state, NULL, bindings::entity::methods);
+		lua_pop(Lua::state, 1);
 
-extern lua_State* state;
-
-bool initializeEntlib()
-{
-	// create the Entity metatable
-	luaL_newmetatable(Lua::state, "Entity");
-	luaL_register(Lua::state, NULL, bindings::entity::methods);
-	lua_pop(Lua::state, 1);
-
-	return true;
-}
-
+		return true;
+	}
 } // namespace Lua

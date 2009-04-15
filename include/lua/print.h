@@ -26,10 +26,9 @@
 
 #include "common/streams.h"
 
-namespace Lua
-{
-// Set the current print handler
-void setPrint(IStreamSink* sink);
+namespace Lua {
+	// Set the current print handler
+	void setPrint(IStreamSink* sink);
 }
 
 #endif
