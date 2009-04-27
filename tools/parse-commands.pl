@@ -59,9 +59,10 @@ for my $file (glob "src/cmd/*.cc") {
 			foreach my $format (@format) {
 				my $priority = 50;
 				if ($format =~ /^(.*)\s+[(](\d+)[)]\s*$/) {
-					chomp $1;
-					$format = $1;
-					$priority = $2;
+					my $f = $1;
+					chomp $f;
+					$format = $f;
+					$priority = $f;
 				}
 				print OUT "\tFORMAT($priority, \"$format\")\n";
 			}
