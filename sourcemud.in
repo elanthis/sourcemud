@@ -4,9 +4,8 @@ prefix="@prefix@"
 sysconfdir="@sysconfdir@"
 exec_prefix="@exec_prefix@"
 bindir="@bindir@"
-tarname='@PACKAGE_TARNAME@'
 
-if ! test -x "$bindir/sourcemud-bin" || ! test -f "$sysconfdir/$tarname/sourcemud.conf" ; then
+if ! test -x "$bindir/sourcemud-bin" || ! test -f "$sysconfdir/sourcemud.conf" ; then
 	echo "You must first 'make install' to use this utility."
 	echo "To run Source MUD from the source directory, use './sourcemud-bin'"
 	exit 1

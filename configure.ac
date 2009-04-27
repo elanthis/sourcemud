@@ -115,6 +115,7 @@ AC_SUBST(LIBS)
 AC_OUTPUT([
 Makefile
 sourcemud
+sourcemud.conf
 tools/replace.sh
 ])
 

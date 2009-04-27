@@ -3,46 +3,46 @@
 ## @VERSION@
 
 ## Log file.
-log_file = @DATADIR@/log/sourcemud.log
+log_file = log/sourcemud.log
 
 ## HTTP Log file.
-http_log_file = @DATADIR@/log/sm_access.log
+http_log_file = log/sm_access.log
 
 ## PID file
-pid_file = @DATADIR@/run/sourcemud.pid
+pid_file = var/sourcemud.pid
 
 ## HTTP session key file.
-skey_path = @DATADIR@/lib/sourcemud/session.key
+skey_dir = data/session.key
 
 ## Directory holding player files.
-player_path = @DATADIR@/lib/sourcemud/players/
+player_dir = data/players/
 
 ## Directory holding account files.
-account_path = @DATADIR@/lib/sourcemud/accounts/
+account_dir = data/accounts/
 
 ## Directory holding zones.
-zone_path = @DATADIR@/lib/sourcemud/world/
+zone_dir = data/world/
 
 ## Directory holding world state.
-world_path = @DATADIR@/lib/sourcemud/world/
+world_dir = data/
 
 ## Directory holding scripts.
-script_path = @DATADIR@/lib/sourcemud/scripts/
+script_dir = data/scripts/
 
 ## Directory holding AI definitions.
-ai_path = @DATADIR@/lib/sourcemud/scripts/
+ai_dir = data/scripts/
 
 ## Directory holding blueprints.
-blueprint_path = @DATADIR@/lib/sourcemud/blueprints/
+blueprint_dir = data/blueprints/
 
 ## Directory holding help files.
-help_path = @DATADIR@/lib/sourcemud/help/
+help_dir = data/help/
 
 ## Directory holding misc. data.
-misc_path = @DATADIR@/lib/sourcemud/data/
+misc_dir = data/
 
 ## Directory holding HTML .tpl files.
-html_path = @DATADIR@/lib/sourcemud/data/html/
+html_dir = data/html/
 
 ## Port to listen on for both IPv4 and IPv6 clients.
 #port = 4545
@@ -63,7 +63,7 @@ html_path = @DATADIR@/lib/sourcemud/data/html/
 #ipv6 = true
 
 ## List of denies hosts and networks.
-#denied_hosts_file = @DATADIR@/etc/sourcemud/hosts.deny
+#denied_hosts_file = hosts.deny
 
 ## The host name of the server.
 hostname = @HOSTNAME@
@@ -99,7 +99,7 @@ hostname = @HOSTNAME@
 #group = daemon
 
 ## Path to the sendmail binary.
-sendmail = @SENDMAIL@
+sendmail = @PATH_SENDMAIL@
 
 ## Address to send admin notifications to.
 #admin_mail = sourcemud-admin@@HOSTNAME@
