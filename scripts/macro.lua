@@ -33,8 +33,8 @@ macro = {
 
 	-- list of built-ins
 	builtins = {
-		'bold' = function(str) return "\027!C14!", str, "\027!C0!" end,
-		'version' = VERSION,
-		'build' = BUILD
+		bold = function(str) return "\027!C14!", str, "\027!C0!" end,
+		version = VERSION,
+		build = BUILD
 	}
 }
