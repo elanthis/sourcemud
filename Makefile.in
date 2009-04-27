@@ -310,6 +310,7 @@ data/session.key:
 src/generated/commands.cc: tools/parse-commands.pl $(wildcard src/cmd/*.cc)
 	@[ -d src/generated ] || mkdir src/generated
 	@echo Generating $@
+	@[ -d src/generated ] || mkdir src/generated
 	@$(PERL) tools/parse-commands.pl
 
 include/common.h.gch: include/common.h
