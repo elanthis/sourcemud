@@ -22,17 +22,41 @@ AC_HEADER_STDC
 AC_HEADER_TIME
 AC_FUNC_VPRINTF
 
+# Enable pre-compiled headers
+AC_ARG_ENABLE(
+	pch,
+	[AS_HELP_STRING([--disable-pch],[Disable use of pre-compiled headers])],
+	[],
+	[enable_pch=yes]
+)
+AS_IF([test "x$enable_pch" = xyes],[
+	AC_SUBST([PCH_COMMON], [include/common.h.gch])
+	AC_MSG_NOTICE([Using pre-compiled header support])
+])
+
 # Look for sendmail
-AC_ARG_WITH(sendmail,[  --with-sendmail=<path>  Path of your sendmail bianry],[PATH_SENDMAIL="$withval"],[AC_PATH_PROG(PATH_SENDMAIL, sendmail, none, [$PATH:/usr/sbin:/sbin])])
+AC_ARG_WITH(
+	sendmail,
+	[AS_HELP_STRING([--with-sendmail=<path>],[Path of your sendmail bianry])],
+	[PATH_SENDMAIL="$withval"],
+	[AC_PATH_PROG(
+		PATH_SENDMAIL,
+		sendmail,
+		none,
+		[$PATH:/usr/sbin:/sbin]
+	)]
+)
 if test "x$PATH_SENDMAIL" != "xnone" ; then
 	AC_DEFINE(HAVE_SENDMAIL, 1, [Sendmail binary is available])
 	AC_SUBST(PATH_SENDMAIL)
 fi
 
+# 
+
 # Look for perl
 AC_ARG_WITH(
 	perl,
-	[  --with-perl=<path>      Path of your perl bianry],
+	[AS_HELP_STRING([--with-perl=<path>],[Path of your perl bianry])],
 	[PATH_PERL="$withval"],
 	[AC_PATH_PROG(
 		PATH_PERL,

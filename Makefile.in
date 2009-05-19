@@ -260,7 +260,7 @@ HTTPKEY = data/session.key
 OBJECTS = $(SOURCES:%.cc=$(BUILDDIR)/%.o) $(LUA_SOURCES:%.cc=$(BUILDDIR)/%.o) \
 	$(LIBTELNET_SOURCES:%.c=$(BUILDDIR)/%.o)
 
-GENERATED = src/generated/commands.cc include/common.h.gch
+GENERATED = src/generated/commands.cc @PCH_COMMON@
 
 # CORE BUILD
 all: $(BUILD) $(TOOLS) $(XML) $(HEADERS) $(LUA_HEADERS) $(LIBTELNET_HEADERS) \
@@ -275,9 +275,9 @@ all: $(BUILD) $(TOOLS) $(XML) $(HEADERS) $(LUA_HEADERS) $(LIBTELNET_HEADERS) \
 clean:
 	@echo Cleaning
 	@rm -fr $(BINARIES) $(OBJECTS) $(DEPDIR) $(BUILDDIR) \
-		src/generated/commands.cc include/common.h.gch
+		src/generated/commands.cc @PCH_COMMON@
 
-$(BUILDDIR)/%.o: %.cc include/common.h.gch .build/stamp
+$(BUILDDIR)/%.o: %.cc @PCH_COMMON@ .build/stamp
 	@echo Compiling $<
 	@$(CXX) -c -o $@ $(CXXFLAGS) $<
 	@depfile=$(DEPDIR)/$(shell echo "$@" | \
