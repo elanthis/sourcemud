@@ -275,7 +275,7 @@ all: $(BUILD) $(TOOLS) $(XML) $(HEADERS) $(LUA_HEADERS) $(LIBTELNET_HEADERS) \
 clean:
 	@echo Cleaning
 	@rm -fr $(BINARIES) $(OBJECTS) $(DEPDIR) $(BUILDDIR) \
-		src/generated/commands.cc @PCH_COMMON@
+		src/generated/commands.cc include/common.h.gch
 
 $(BUILDDIR)/%.o: %.cc @PCH_COMMON@ .build/stamp
 	@echo Compiling $<
