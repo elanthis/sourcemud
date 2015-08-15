@@ -42,12 +42,12 @@ EList<EntType>::add(EntType* ent)
 		// if it's lower than the new one, insert us after
 		if (!(**i < *ent)) {
 			++i;
-			insert(i, ent);
+			vtype::insert(i, ent);
 			return;
 		}
 	}
 	// no sorted insert and no duplicate, push to back
-	push_back(ent);
+	vtype::push_back(ent);
 }
 
 template<class EntType>
@@ -57,7 +57,7 @@ EList<EntType>::remove(EntType* ent)
 	assert(ent != NULL);
 	typename vtype::iterator i = std::find(vtype::begin(), vtype::end(), ent);
 	if (i != vtype::end())
-		erase(i);
+		vtype::erase(i);
 }
 
 template<class EntType>
